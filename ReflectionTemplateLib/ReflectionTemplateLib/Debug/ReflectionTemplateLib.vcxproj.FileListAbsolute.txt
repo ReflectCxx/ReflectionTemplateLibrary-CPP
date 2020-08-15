@@ -1,0 +1,2 @@
+D:\Git\ReflectionTemplateLib\Debug\ReflectionTemplateLib.pdb
+D:\Git\ReflectionTemplateLib\ReflectionTemplateLib\Debug\ReflectionTemplateLib.pdb
