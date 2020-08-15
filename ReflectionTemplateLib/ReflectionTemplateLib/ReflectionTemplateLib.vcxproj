@@ -24,7 +24,6 @@
     <ClInclude Include="RTLsrc\ConstructorReflection.h" />
     <ClInclude Include="RTLsrc\ConstructorReflection.hpp" />
     <ClInclude Include="RTLsrc\CppMirror.h" />
-    <ClInclude Include="RTLsrc\CppMirrorBuilder.h" />
     <ClInclude Include="RTLsrc\CppTypeReflection.h" />
     <ClInclude Include="RTLsrc\MethodReflection.h" />
     <ClInclude Include="RTLsrc\MethodReflection.hpp" />
@@ -34,6 +33,7 @@
     <ClInclude Include="RTLsrc\ReflClassBuilder.hpp" />
     <ClInclude Include="RTLsrc\ReflectionBuilder.h" />
     <ClInclude Include="RTLsrc\ReflectionBuilder.hpp" />
+    <ClInclude Include="RTLsrc\ReflectionTemplateBuilder.h" />
     <ClInclude Include="RTLsrc\ReflExecuter.h" />
     <ClInclude Include="RTLsrc\ReflExecuter.hpp" />
     <ClInclude Include="RTLsrc\ReflInheritanceBuilder.h" />

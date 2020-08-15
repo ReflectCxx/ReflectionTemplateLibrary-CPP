@@ -1,9 +1,1 @@
-﻿  RTLUnitTests.cpp
-  Book.cpp
-  ConstructorTests.cpp
-  InheritanceTests.cpp
-  MethodCallTests.cpp
-  Reflection.cpp
-  TestFact.cpp
-  Generating Code...
-  RTLUnitTests.vcxproj -> D:\Git\ReflectionTemplateLib\Debug\RTLUnitTests.exe
+﻿

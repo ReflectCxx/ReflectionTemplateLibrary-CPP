@@ -30,9 +30,6 @@
     <ClInclude Include="RTLsrc\CppMirror.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RTLsrc\CppMirrorBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RTLsrc\CppTypeReflection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -97,6 +94,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RTLsrc\VarReflection.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTLsrc\ReflectionTemplateBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
