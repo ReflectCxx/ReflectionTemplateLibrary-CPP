@@ -12,7 +12,7 @@ const CppMirror<>& Reflection::system()
     static CppMirror<> cppMirror = CppMirror<>(
     {
         add<Book, ctor::VOID, ctor::COPY, ctorArgs<const string&>, 
-        ctorArgs<double, string>, ctorArgs<Date&, string>>("Book")->add(
+            ctorArgs<double, string>, ctorArgs<Date&, string>>("Book")->add(
         {
             { "getTitle", add(&Book::getTitle) },
             { "getAuthor", add(&Book::getAuthor) },
