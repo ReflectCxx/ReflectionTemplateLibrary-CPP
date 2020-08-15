@@ -25,16 +25,16 @@ namespace rtl {
 		static const unsigned getFunctorTypeId();
 
 		static _retTy execute(const std::pair<ReflMethodId, FunctorIndex>& pFuncIdIndexPair, 
-							  const unsigned pTargetTypeId, void* pTarget, _args... params);
+				      const unsigned pTargetTypeId, void* pTarget, _args... params);
 
 		static _retTy execute(const std::pair<ReflMethodId, FunctorIndex>& pFuncIdIndexPair, 
-							  const unsigned pTargetTypeId, const void* pTarget, _args... params);
+				      const unsigned pTargetTypeId, const void* pTarget, _args... params);
 
 		template<typeQ _funcTy, class _lambdaTy>
 		static const unsigned addLambdaWrappedFunctor(const ReflMethodId pReflMethodId, _lambdaTy pFunctor,
-													  sfinae_typeQT<_funcTy, typeQ::CONST>* p_null = nullptr);
+							      sfinae_typeQT<_funcTy, typeQ::CONST>* p_null = nullptr);
 		template<typeQ _funcTy, class _lambdaTy>
 		static const unsigned addLambdaWrappedFunctor(const ReflMethodId pReflMethodId, _lambdaTy pFunctor,
-													  sfinae_typeQT<_funcTy, typeQ::MUTABLE>* p_null = nullptr);
+							      sfinae_typeQT<_funcTy, typeQ::MUTABLE>* p_null = nullptr);
 	};
 }

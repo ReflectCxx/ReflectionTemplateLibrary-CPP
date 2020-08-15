@@ -61,21 +61,21 @@ namespace rtl {
 
 		template<ctor _ctorTy, class _objTy = void>
 		ReflObject<_objTy> instance(const ReflObject<_objTy>& pSrcObj, 
-									const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
+					    const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
 
 		template<ctor _ctorTy, class _objTy = void>
-		ReflObject<_objTy> instance(const ReflObject<const _objTy>& pSrcObj, 
-									const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
+		ReflObject<_objTy> instance(const ReflObject<const _objTy>& pSrcObj,
+					    const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
 
 		template<class _objTy = void, class..._args>
 		ReflObject<const _objTy> instanceConst(_args...params) const;
 
 		template<ctor _ctorTy, class _objTy = void>
 		ReflObject<const _objTy> instanceConst(const ReflObject<_objTy>& pSrcObj,
-											   const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
+						       const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
 
 		template<ctor _ctorTy, class _objTy = void>
 		ReflObject<const _objTy> instanceConst(const ReflObject<const _objTy>& pSrcObj,
-											   const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
+						       const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null = nullptr) const;
 	};
 }

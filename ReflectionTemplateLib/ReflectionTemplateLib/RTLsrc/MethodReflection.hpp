@@ -25,7 +25,7 @@ namespace rtl {
 	template<class _retTy, class... _args>
 	template<typeQ _funcTy, class _lambdaTy>
 	inline const unsigned MethodReflection< _retTy, _args...>::addLambdaWrappedFunctor(const ReflMethodId pReflMethodId, _lambdaTy pFunctor,
-																					   sfinae_typeQT<_funcTy, typeQ::CONST>* p_null)
+											   sfinae_typeQT<_funcTy, typeQ::CONST>* p_null)
 	{
 		m_constFunctors.push_back(std::make_pair(pReflMethodId, pFunctor));
 		return static_cast<unsigned>(m_constFunctors.size() - 1);
@@ -34,7 +34,7 @@ namespace rtl {
 	template<class _retTy, class... _args>
 	template<typeQ _funcTy, class _lambdaTy>
 	inline const unsigned MethodReflection< _retTy, _args...>::addLambdaWrappedFunctor(const ReflMethodId pReflMethodId, _lambdaTy pFunctor,
-																					   sfinae_typeQT<_funcTy, typeQ::MUTABLE>* p_null)
+											   sfinae_typeQT<_funcTy, typeQ::MUTABLE>* p_null)
 	{
 		m_functors.push_back(std::make_pair(pReflMethodId, pFunctor));
 		return static_cast<unsigned>(m_functors.size() - 1);
@@ -42,7 +42,7 @@ namespace rtl {
 
 	template<class _retTy, class... _args>
 	inline _retTy MethodReflection< _retTy, _args...>::execute(const std::pair<ReflMethodId, FunctorIndex>& pFuncIdIndexPair, 
-															   const unsigned pTargetTypeId, void* pTarget, _args... params)
+								   const unsigned pTargetTypeId, void* pTarget, _args... params)
 	{
 		assert(pFuncIdIndexPair.second < m_functors.size() && "Bad function call exception.. abort!");
 		auto& functorPair = m_functors.at(pFuncIdIndexPair.second);
@@ -52,7 +52,7 @@ namespace rtl {
 
 	template<class _retTy, class... _args>
 	inline _retTy MethodReflection< _retTy, _args...>::execute(const std::pair<ReflMethodId, FunctorIndex>& pFuncIdIndexPair, 
-															   const unsigned pTargetTypeId, const void* pTarget, _args... params)
+								   const unsigned pTargetTypeId, const void* pTarget, _args... params)
 	{
 		assert(pFuncIdIndexPair.second < m_constFunctors.size() && "Bad function call exception.. abort!");
 		auto& functorPair = m_constFunctors.at(pFuncIdIndexPair.second);
