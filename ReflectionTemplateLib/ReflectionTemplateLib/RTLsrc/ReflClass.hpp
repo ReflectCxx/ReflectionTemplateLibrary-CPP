@@ -60,14 +60,14 @@ namespace rtl {
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<_objTy> ReflClass::instance(const ReflObject<_objTy>& pSrcObj, 
-												  const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
+						      const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
 		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctorCOPY()), m_deleteFunctor);
 	}
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<_objTy> ReflClass::instance(const ReflObject<const _objTy>& pSrcObj, 
-												  const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
+						      const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
 		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctorCOPY()), m_deleteFunctor);
 	}
@@ -80,14 +80,14 @@ namespace rtl {
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<const _objTy> ReflClass::instanceConst(const ReflObject<_objTy>& pSrcObj, 
-															 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
+								 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
 		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctorCOPY()), m_deleteFunctor);
 	}
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<const _objTy> ReflClass::instanceConst(const ReflObject<const _objTy>& pSrcObj, 
-															 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
+								 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
 		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctorCOPY()), m_deleteFunctor);
 	}
