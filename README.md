@@ -91,14 +91,14 @@ int main()
   setName(personObj1).invoke(string("Krishna"));
   
 //Outputs : Person : { name : Krishna, age: 23 }
-  cout << "Person : { name : " << getName(personObj1).invoke<int>() 
-       << ", age: " << getAge(personObj1).invoke<string>() << " }";
+  cout << "Person : { name : " << getName(personObj1).invoke<string>() 
+       << ", age: " << getAge(personObj1).invoke<int>() << " }";
 
 //Create instance using overloaded constructor (the one registered as ctorArgs<string, int>)
   auto personObj2 = classPerson.instance(std::string("John Doe"), 37);
   
 //Outputs : Person : { name : John Doe, age: 37 }
-  cout << "Person : { name : " << getName(personObj2).invoke<int>()
-       << ", age: " << getAge(personObj2).invoke<string>() << " }";
+  cout << "Person : { name : " << getName(personObj2).invoke<string>()
+       << ", age: " << getAge(personObj2).invoke<int>() << " }";
 }
 ```
