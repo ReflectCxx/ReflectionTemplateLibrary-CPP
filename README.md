@@ -39,7 +39,7 @@ public:
 
 const CppMirror<>& MyReflection() 
 {
-    static CppMirror<> cppMirror(
+    static const CppMirror<> cppMirror(
     {
         add<Person, ctor::VOID, ctorArgs<string, int>>("Person")->add(
         {
