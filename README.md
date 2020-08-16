@@ -81,7 +81,7 @@ Get Class & Method objects from reflection as **ReflClass** & **ReflMethod**,
 ```
 Create Instance using default constructor *(the one registered as **ctor::VOID**)*,
 ```c++
-  auto personObj1 = classPerson.instance();	  //(returns instance of Person wrapped in ReflObject<>)
+  auto personObj1 = classPerson.instance();	  //(returns instance of Person wrapped in ReflObject<> which extends std::unique_ptr<>)
 ```
 Method Call Syantax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
 ```c++
