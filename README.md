@@ -55,10 +55,10 @@ const CppMirror<>& MyReflection()
 ```
 Keep adding more types following syantax,
 ```c++
-        /*add<SOME_OTHER_TYPE, DEFAULT_CTOR or <CTOR_WITH_ARGS>, <OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
-            { "METHOD_NAME", add(METHOD_POINTER)},
-            { "METHOD_NAME", add(METHOD_POINTER)},
-        })*/
+    /*add<SOME_OTHER_TYPE, DEFAULT_CTOR or <CTOR_WITH_ARGS>, <OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
+        { "METHOD_NAME", add(METHOD_POINTER)},
+        { "METHOD_NAME", add(METHOD_POINTER)},
+    })*/
 ```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
 ```c++
