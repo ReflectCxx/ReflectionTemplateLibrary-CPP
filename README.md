@@ -1,5 +1,5 @@
 # Reflection Template Library C++
-Reflection Template Library for Modern C++.
+Reflection Template Library for Modern C++. *(built using standard ISO C++11 only)*
 - Introspect a class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
 - **Static Library**, core functionality is built around the concept of **"Type Erasure"** using Lambdas, without utilizing any RTTI or dynamic_cast.
 ## Exclusive Features,
@@ -114,8 +114,8 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Query a class for its super classes & for all its derived classes (vice-versa).
 - Resolves *Inheritance- Diamond Problem*, by default, even if not using virtual keyword while inheriting.
 - Totally supports *virtual methods - Overriding*.
-- No additional 3rd party dependencies are needed
-- No external compiler or tool needed, only standard ISO C++11
+- No need of any 3rd party dependencies.
+- No need of any external compiler or tool, only ISO standard C++11
 - Manual registration with **NO MACROS**.
 - No use of **RTTI** at all.
 ## Upcoming Features,
