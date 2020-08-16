@@ -4,7 +4,7 @@ Reflection Template Library for Modern C++.
 - **Static Library**, core functionality is built around the concept of **"Type Erasure"** using Lambdas, without utilizing any RTTI or dynamic_cast.
 ## Exclusive Features,
 - Pure syntatic way of manual registration of types, No need to use any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
-- No need to add any bit of a code with any class/struct/type declearation or to its implementation.</br>No **Code Littering, Keep it clean!**
+- No need to add any bit of a code with any class/struct/type declearation or to its implementation.</br>**No Code Littering, Keep it clean!**
 - Manage all the manual registration of any required type in one single implementation unit, away from rest of the code in project.</br>Or in a **Class with Single Responsibility!**
 - Create an Object of **"CppMirror<>"**, pass all type information to reflect as constructor parameter and you're good to GO!
   ```c++
