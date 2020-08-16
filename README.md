@@ -100,7 +100,7 @@ No need to specify RETURN_TYPE if its void,
 ```
 Create instance using overloaded constructor *(the one registered as **ctorArgs<string, int>**)*,
 ```c++
-  auto personObj2 = classPerson.instance(std::string("John Doe"), 37);
+  auto personObj2 = classPerson.instance(string("John Doe"), 37);
   age = getAge(personObj2).invoke<int>();
   name = getName(personObj2).invoke<string>();
   cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : John Doe, age: 37 }
