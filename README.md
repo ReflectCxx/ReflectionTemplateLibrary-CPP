@@ -1,4 +1,4 @@
-# Reflection Template Library -CPP
+# Reflection Template Library C++
 Reflection Template Library for Modern C++.
 - Introspect a class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
 - **Static Library**, core functionality is built around the concept of **"Type Erasure"** using Lambdas, without utilizing any RTTI or dynamic_cast.
