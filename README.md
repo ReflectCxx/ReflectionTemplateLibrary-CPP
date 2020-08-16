@@ -106,3 +106,19 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
   cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : John Doe, age: 37 }
 }
 ```
+## Reflection Features,
+- Reflection features similar to *Java*, Reflect Class/Struct/*Enums(WIP)*. Create instances & call methods in absence of complete type exposure.
+- Supports default & copy constructor along with all kinds of overloads (except rvalue refs. & *Move Constructors(WIP)*).
+- Supports all kinds of method overloading (except rvalue refs..*YET*), including constant method overloads for *const objects*.
+- Supports single, multiple, multilevel & virtual inheritance.
+- Query a class for its super classes & for all its derived classes (vice-versa).
+- Resolves *Inheritance- Diamond Problem*, by default, even if not using virtual keyword while inheriting.
+- Totally supports *virtual methods - Overriding*.
+- Manual registration with **NO MACROS**.
+- No use of **RTTI** at all.
+## Upcoming Features,
+- Class/Struct's Field reflection (Currently only methods are supported).
+- Enum Class reflection.
+- Support for Move Constructors.
+- Overloading based on *RValue References*.
+- Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
