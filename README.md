@@ -48,17 +48,18 @@ const CppMirror<>& MyReflection()
             {"setName", add(&Person::setName)},
             {"getName", add(&Person::getName)},
         }),
-        /*
-        add<SOME_OTHER_TYPE, DEFAULT_CTOR or <CTOR_WITH_ARGS>...>("TYPE_NAME")->add({
-            { "METHOD_NAME", add(METHOD_POINTER)},
-            { "METHOD_NAME", add(METHOD_POINTER)},
-        })*/
+        /*...add more types...*/
     });
     return cppMirror;
 }
-
 ```
-
+Keep adding more types following syantax,
+```c++
+        add<SOME_OTHER_TYPE, DEFAULT_CTOR or <CTOR_WITH_ARGS>, <OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
+            { "METHOD_NAME", add(METHOD_POINTER)},
+            { "METHOD_NAME", add(METHOD_POINTER)},
+        })
+```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
 ```c++
 #include <iostream>
@@ -69,36 +70,38 @@ extern const rtl::CppMirror<>& MyReflection();
 
 int main()
 {
-//Get "ReflClass" object from CppMirror<>
-  auto classPerson = MyReflection().getClass("Person");
-  auto getAge = classPerson.getMethod("getAge");    //(returns instance of ReflMethod)
+```
+Get Class & Method objects from reflection as **ReflClass** & **ReflMethod**,
+```c++
+  auto classPerson = MyReflection().getClass("Person");   //(returns instance of ReflClass)
+  auto getAge = classPerson.getMethod("getAge");          //(returns instance of ReflMethod)
   auto getName = classPerson.getMethod("getName");
   auto setAge = classPerson.getMethod("setAge");
   auto setName = classPerson.getMethod("setName");
-  
-//Create Instance using default constructor (the one registered as ctor::VOID)
+```
+Create Instance using default constructor *(the one registered as **ctor::VOID**)*,
+```c++
   auto personObj1 = classPerson.instance();	  //(returns instance of Person wrapped in ReflObject<>)
-  
-//Syantax : ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()
+```
+Method Call Syantax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
+```c++
   int age = getAge(personObj1).invoke<int>();
   string name = getName(personObj1).invoke<string>();
-  
-//Outputs : Person : { name : NULLSTR, age: -1 }
-  cout << "Person : { name : " << name << ", age: " << age << " }";
-  
-//No need to mention RETURN_TYPE if its void.
+  cout << "Person : { name : " << name << ", age: " << age << " }";   //Outs- Person : { name : NULLSTR, age: -1 }
+```
+No need to specify RETURN_TYPE if its void,
+```c++
   setAge(personObj1).invoke(23);
   setName(personObj1).invoke(string("Krishna"));
-  
-//Outputs : Person : { name : Krishna, age: 23 }
-  cout << "Person : { name : " << getName(personObj1).invoke<string>() 
-       << ", age: " << getAge(personObj1).invoke<int>() << " }";
-
-//Create instance using overloaded constructor (the one registered as ctorArgs<string, int>)
+  age = getAge(personObj1).invoke<int>();
+  name = getName(personObj1).invoke<string>();
+  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : Krishna, age: 23 }
+```
+Create instance using overloaded constructor *(the one registered as **ctorArgs<string, int>**)*,
+```c++
   auto personObj2 = classPerson.instance(std::string("John Doe"), 37);
-  
-//Outputs : Person : { name : John Doe, age: 37 }
-  cout << "Person : { name : " << getName(personObj2).invoke<string>()
-       << ", age: " << getAge(personObj2).invoke<int>() << " }";
+  age = getAge(personObj2).invoke<int>();
+  name = getName(personObj2).invoke<string>();
+  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : John Doe, age: 37 }
 }
 ```
