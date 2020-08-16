@@ -107,7 +107,7 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 }
 ```
 ## Reflection Features,
-- Reflection features similar to *Java*, Reflect Class/Struct/*Enums(WIP)*. Create instances & call methods in absence of complete type exposure.
+- Reflection features similar to *Java*, Reflect Class/Struct/*Enums(WIP)*. Create instances & call methods in complete absence of type exposure.
 - Supports default & copy constructor along with all kinds of overloads (except rvalue refs. & *Move Constructors(WIP)*).
 - Supports all kinds of method overloading (except rvalue refs..*YET*), including constant method overloads for *const objects*.
 - Supports single, multiple, multilevel & virtual inheritance.
