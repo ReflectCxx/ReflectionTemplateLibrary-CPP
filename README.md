@@ -122,3 +122,12 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Support for Move Constructors.
 - Overloading based on *RValue References*.
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
+- Exception handeling, Error reporting.
+- *no_except* feature & safe method/constructor call & field access.
+- Light weight JSON Serialization/Deserialization feature.
+## Work In Progress
+- Portability Check *(Presently tested on only VS2019)*
+- Performance Benchmark.
+- Multithreading safety analysis.
+- More Unit Test Cases.
+- Complete Documentation, PPTs & Video Tutorial.
