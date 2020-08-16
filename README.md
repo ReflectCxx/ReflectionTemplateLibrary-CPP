@@ -131,3 +131,4 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Multithreading safety analysis.
 - More Unit Test Cases.
 - Complete Documentation, PPTs & Video Tutorial.
+- licensing
