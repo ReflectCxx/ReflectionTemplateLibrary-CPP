@@ -13,6 +13,12 @@ namespace rtl
 	}
 
 	template<class _objTy>
+	inline const unsigned ReflObject<_objTy>::getTypeId() const
+	{
+		return m_objTypeId;
+	}
+	
+	template<class _objTy>
 	template<class _ptrTy>
 	inline ReflObject<_objTy> ReflObject<_objTy>::create(_ptrTy* pObject, const unsigned pReflId)
 	{
@@ -30,10 +36,10 @@ namespace rtl
 	inline ReflObject<_objTy> ReflObject<_objTy>::create(std::unique_ptr<_ptrTy> pSrcPtr, const unsigned pReflId)
 	{
 		return ReflObject(pReflId, pSrcPtr.release(),
-			[](const void* pTarget)->void
-			{
-				delete static_cast<const _ptrTy*>(pTarget);
-			});
+		[](const void* pTarget)->void
+		{
+			delete static_cast<const _ptrTy*>(pTarget);
+		});
 	}
 
 	template<class _objTy>
@@ -41,15 +47,9 @@ namespace rtl
 	inline ReflObject<_objTy> ReflObject<_objTy>::create(std::unique_ptr<_ptrTy>& pSrcPtr, const unsigned pReflId)
 	{
 		return ReflObject(pReflId, pSrcPtr.release(),
-			[](const void* pTarget)->void
-			{
-				delete static_cast<const _ptrTy*>(pTarget);
-			});
-	}
-
-	template<class _objTy>
-	inline const unsigned ReflObject<_objTy>::getTypeId() const
-	{
-		return m_objTypeId;
+		[](const void* pTarget)->void
+		{
+			delete static_cast<const _ptrTy*>(pTarget);
+		});
 	}
 }
