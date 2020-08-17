@@ -36,10 +36,6 @@ namespace rtl
 	template<class _objTy>
 	inline const ReflExecuter<typeQ::MUTABLE> ReflMethod::operator()(const ReflObject<_objTy>& pTargetReflObj) const
 	{
-		if (m_isAmbiguous)
-		{
-			std::cout << "\n\n[warning]..\t\t\t{ Ambiguous function, calling::" << m_ownerReflClass->getClassName() << "() }";
-		}
 		const bool isTypeSafe = m_ownerReflClass->isCastSafeToTypeId(pTargetReflObj.getTypeId());
 		assert(isTypeSafe && "Object & method type mismatch. Bad function call exception.. abort!");
 		return ReflExecuter<typeQ::MUTABLE>(*this, pTargetReflObj.getTypeId(), static_cast<void*>(pTargetReflObj.get()));
@@ -48,10 +44,6 @@ namespace rtl
 	template<class _objTy>
 	inline const ReflExecuter<typeQ::CONST> ReflMethod::operator()(const ReflObject<const _objTy>& pTargetReflObj) const
 	{
-		if (m_isAmbiguous)
-		{
-			std::cout << "\n[WARNING]..\t\t\t{ Ambiguous function, calling::" << m_ownerReflClass->getClassName() << "() }\n";
-		}
 		const bool isTypeSafe = m_ownerReflClass->isCastSafeToTypeId(pTargetReflObj.getTypeId()); 
 		assert(isTypeSafe && "Object & method type mismatch. Bad function call exception.. abort!");
 		return ReflExecuter<typeQ::CONST>(*this, pTargetReflObj.getTypeId(), static_cast<const void*>(pTargetReflObj.get()));
@@ -98,13 +90,3 @@ namespace rtl
 	}
 }
 
-
-
-
-
-
-//const InheritanceCastFunctor safeUp_cast = ClassReflection<_classTy>::getSafeDowncastFptr(pTargetTypeId);
-//std::cout << std::endl; 
-//void* const target = safeUp_cast(pTarget, pTargetTypeId);
-//std::cout << "\n[FINL_cast]..\t\t\t{ sc<" << typeid(_classTy).name() << ">(" << pTargetTypeId << ") }\n";
-//return	((static_cast<_classTy*>(target))->*pFunctor)(params...);
