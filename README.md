@@ -55,7 +55,7 @@ const CppMirror<>& MyReflection()
 ```
 Keep adding more types following syantax,
 ```c++
-    /*add<SOME_OTHER_TYPE, DEFAULT_CTOR or <CTOR_WITH_ARGS>, <OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
+    /*add<SOME_OTHER_TYPE, ctor::VOID or ctor::COPY or ctorArgs<CTOR_ARGS>, ctorArgs<OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
         { "METHOD_NAME", add(METHOD_POINTER)},
         { "METHOD_NAME", add(METHOD_POINTER)},
     })*/
