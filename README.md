@@ -133,5 +133,5 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Performance Benchmark.
 - Multithreading safety analysis.
 - More Unit Test Cases.
-- Complete Documentation, PPTs & Video Tutorial.
+- Complete Documentation, PPTs & a Video Tutorial.
 - Licensing
