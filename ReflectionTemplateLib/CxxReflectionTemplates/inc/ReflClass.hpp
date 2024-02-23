@@ -62,14 +62,16 @@ namespace rtl {
 	inline ReflObject<_objTy> ReflClass::instance(const ReflObject<_objTy>& pSrcObj, 
 						      const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
-		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctorCOPY()), m_deleteFunctor);
+		auto ctor = ctorCOPY();
+		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctor), m_deleteFunctor);
 	}
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<_objTy> ReflClass::instance(const ReflObject<const _objTy>& pSrcObj, 
 						      const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
-		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctorCOPY()), m_deleteFunctor);
+		auto ctor = ctorCOPY();
+		return ReflObject<_objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctor), m_deleteFunctor);
 	}
 
 	template<class _objTy, class..._args>
@@ -82,14 +84,16 @@ namespace rtl {
 	inline ReflObject<const _objTy> ReflClass::instanceConst(const ReflObject<_objTy>& pSrcObj, 
 								 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
-		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctorCOPY()), m_deleteFunctor);
+		auto ctor = ctorCOPY();
+		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(pSrcObj.get(), &ctor), m_deleteFunctor);
 	}
 
 	template<ctor _ctorTy, class _objTy>
 	inline ReflObject<const _objTy> ReflClass::instanceConst(const ReflObject<const _objTy>& pSrcObj, 
 								 const sfinae_ctorT<_ctorTy, ctor::COPY>* p_null) const
 	{
-		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctorCOPY()), m_deleteFunctor);
+		auto ctor = ctorCOPY();
+		return ReflObject<const _objTy>(m_reflClassId, construct<_objTy>(const_cast<_objTy*>(pSrcObj.get()), &ctor), m_deleteFunctor);
 	}
 
 	template<class _objTy, class..._args>
