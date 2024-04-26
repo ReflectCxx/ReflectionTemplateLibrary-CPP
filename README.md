@@ -12,6 +12,9 @@ Reflection Template Library for Modern C++
   const CppMirror<> myReflection({/*.. Pass all type information ..*/});
   ```
 - Wrap that powerful object in a singleton and use C++ Reflection with richness as in Java or c#.
+- To generate this boilerplate code automatically, Use **clang-reflect**
+  https://github.com/neeraj31285/clang-reflect
+  which is under development right now. Once this is complete, no need to write this boilerplate code manually.
 
 ## How To Use,
 - Class to reflect - **Person.h** *(Independent of any code related to reflection)*
