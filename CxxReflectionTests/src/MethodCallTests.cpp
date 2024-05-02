@@ -39,7 +39,7 @@ const vector<void(*)(const TestFact&)> MethodCallTests::UNIT_TEST_CASES = {
 		auto setPublishedOn = bookClass.getMethod("setPublishedOn");
 
 		book->setPublishedOn(10, 12, 1982);
-		setPublishedOn(reflBook).invoke(10, 12, 1982);
+		setPublishedOn(reflBook).invoke(10, 12, size_t(1982));
 
 		fact.ASSERT_STATES_EQUAL(book, reflBook);
 		fact.RESULT_DESCRIPTION(book, reflBook);
