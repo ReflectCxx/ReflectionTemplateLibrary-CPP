@@ -10,15 +10,7 @@ if(WIN32)
 	endif()
 endif(WIN32)
 
-#set(LLVM_DIR_STR "LLVM")
-#set(CLANG_DIR_STR "CLANG")
-
-#string(REGEX MATCH "llvm-.*.src$" LLVM_DIR_STR ${LLVM_SRC})
-#string(REPLACE "llvm" "clang" CLANG_DIR_STR ${LLVM_DIR_STR})
-
 message(STATUS "Project: ${PROJECT_NAME}")
-#message(STATUS "Llvm dir: ${LLVM_DIR_STR}")
-#message(STATUS "Clang dir: ${CLANG_DIR_STR}")
 message(STATUS "Output dir: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if(WIN32)
@@ -40,12 +32,12 @@ if(WIN32)
 	)
 
 	include_directories(
-		${LLVM_SRC}/include
-		${LLVM_BUILD}/include
-		${LLVM_SRC}/tools/${CLANG_DIR_STR}/include
-		${LLVM_SRC}/tools/${CLANG_DIR_STR}/tools/extra
-		${LLVM_BUILD}/tools/${CLANG_DIR_STR}/include
-		inc
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/llvm-17.0.5.src/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/llvm-17.0.5.src/build/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/clang-tools-extra"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/build/include"
+		"${CMAKE_SOURCE_DIR}/clang-reflect/inc"
 	)
 
 	# Link libraries
@@ -164,8 +156,8 @@ if(UNIX)
 			# List all other libraries as before...
 		)
 		
-		include_directories(${CMAKE_SOURCE_DIR}/clang-reflect/inc)
-		include_directories(${CMAKE_SOURCE_DIR}/dependencies/linux/include)
+		include_directories("${CMAKE_SOURCE_DIR}/clang-reflect/inc")
+		include_directories("${CMAKE_SOURCE_DIR}/dependencies/linux/include")
 		target_link_libraries(${CXX_EXE_NAME} ${LLVM_LIBS})
 		target_link_libraries(${CXX_EXE_NAME} ${CLANG_LIBS})
 
