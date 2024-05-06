@@ -4,26 +4,13 @@ project(clang-reflect)
 
 set(CMAKE_CXX_STANDARD 20)
 
-#Set LLVM_SRC and LLVM_BUILD variables from command line
-if(NOT LLVM_SRC)
-    message(FATAL_ERROR "LLVM_SRC not provided. Please specify LLVM source directory.")
-endif()
-
 if(WIN32)
 	if(NOT LLVM_BUILD)
 		message(FATAL_ERROR "LLVM_BUILD not provided. Please specify LLVM build directory.")
 	endif()
 endif(WIN32)
 
-set(LLVM_DIR_STR "LLVM")
-set(CLANG_DIR_STR "CLANG")
-
-string(REGEX MATCH "llvm-.*.src$" LLVM_DIR_STR ${LLVM_SRC})
-string(REPLACE "llvm" "clang" CLANG_DIR_STR ${LLVM_DIR_STR})
-
-message(STATUS "Project name: ${PROJECT_NAME}")
-message(STATUS "Llvm dir: ${LLVM_DIR_STR}")
-message(STATUS "Clang dir: ${CLANG_DIR_STR}")
+message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Output dir: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if(WIN32)
@@ -45,12 +32,12 @@ if(WIN32)
 	)
 
 	include_directories(
-		${LLVM_SRC}/include
-		${LLVM_BUILD}/include
-		${LLVM_SRC}/tools/${CLANG_DIR_STR}/include
-		${LLVM_SRC}/tools/${CLANG_DIR_STR}/tools/extra
-		${LLVM_BUILD}/tools/${CLANG_DIR_STR}/include
-		inc
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/llvm-17.0.5.src/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/llvm-17.0.5.src/build/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/include"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/clang-tools-extra"
+		"${CMAKE_SOURCE_DIR}/dependencies/windows/clang-17.0.5.src/build/include"
+		"${CMAKE_SOURCE_DIR}/clang-reflect/inc"
 	)
 
 	# Link libraries
@@ -169,16 +156,16 @@ if(UNIX)
 			# List all other libraries as before...
 		)
 		
-		include_directories(${LLVM_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/inc)
+		include_directories("${CMAKE_SOURCE_DIR}/clang-reflect/inc")
+		include_directories("${CMAKE_SOURCE_DIR}/dependencies/linux/include")
 		target_link_libraries(${CXX_EXE_NAME} ${LLVM_LIBS})
 		target_link_libraries(${CXX_EXE_NAME} ${CLANG_LIBS})
 
 		message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 		message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 		message(STATUS "Clang Libraries: ${CLANG_LIBS}")
-		message(STATUS "LLVM Include dirs: ${LLVM_INCLUDE_DIRS}")
 		message(STATUS "LLVM Linker dirs: ${LLVM_LIBRARY_DIRS}")
-		message(STATUS "LLVM Libraries: ${LLVM_LIBS}")	
+		message(STATUS "LLVM Libraries: ${LLVM_LIBS}")
 	endif (LLVM_FOUND)
 endif (UNIX)
 
