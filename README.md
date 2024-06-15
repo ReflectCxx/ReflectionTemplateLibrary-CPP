@@ -4,17 +4,17 @@ Reflection Template Library for Modern C++
 - Introspect a class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
 - **Static Library**, core functionality is built around the concept of **Type Erasure** using **Lambdas** & **Templates**, without utilizing any RTTI/dynamic_cast or virtual functions.
 ## Exclusive Features,
-- Pure syntatic way of manual registration of types, No need to use any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
-- No need to add any bit of a code with any class/struct/type declearation or to its implementation.</br>Yes, **No Code Littering, Keep it clean!**
+- Pure **Builder Pattern** for manual registration of types, super-easy to understand, No use of any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
+- No need to add any bit of a code to any class/struct/type (to be reflected) declaration or to its implementation.</br>Yes, **No Code Littering, Keep it clean!**
 - Manage all the manual registration of any required type in one single implementation unit, away from rest of the code in project.</br>Or in a **Class with Single Responsibility!**
 - Create an Object of **"CppMirror<>"**, pass all type information to reflect as constructor parameter and you're good to GO!
   ```c++
   const CppMirror<> myReflection({/*.. Pass all type information ..*/});
   ```
 - Wrap that powerful object in a singleton and use C++ Reflection with richness as in Java or c#.
-- *To generate this boilerplate code automatically, Use **clang-reflect**
+- *To generate this boilerplate code automatically, can be used **clang-reflect**
   https://github.com/neeraj31285/clang-reflect
-  which is under development right now. Once this is complete, no need to write this boilerplate code manually.*
+  which is under development right now. Once completed, this boilerplate code can be generated automatically for any large projects.*
 
 ## How To Use,
 - Class to reflect - **Person.h** *(Independent of any code related to reflection)*

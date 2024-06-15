@@ -2,28 +2,38 @@
 #include <cassert>
 #include <iostream>
 
-#include "TestFact.h"
-#include "MethodCallTests.h"
-#include "ConstructorTests.h"
-#include "InheritanceTests.h"
+#include "Reflection.h"
 
-template<class _testsType>
-void runRTLUnitTests()
-{
-	for (const auto performTest : _testsType::UNIT_TEST_CASES)
-	{
-		const TestFact testObject;
-		
-		performTest(testObject);
-
-		std::cout	<< "\n\n************************[" << testObject.fact() << "]*************************\n"
-					<< "\n" << testObject.expectation() << "\n" << testObject.result() << "\n";
-	}
-}
+using namespace rtl;
+using namespace rtl_tests;
 
 int main()
 {
-	runRTLUnitTests< ConstructorTests >();
-	runRTLUnitTests< MethodCallTests >();
-	runRTLUnitTests< InheritanceTests >();
+	auto& cxxMirror = CxxReflection::instance();
+
+	auto showBook = cxxMirror.getFunction("book", "showBookInfo");
+
+	std::cout << "\n1st Call : ";
+	
+	if (showBook.has_value()) {
+		cxxMirror(showBook.value())();
+	}
+
+	const double& price = 99.99;
+	const unsigned int& pages = 1050;
+	const char* bookName = "Somehow, I manage.";
+	const std::string& author = "Micheal G. Scott";
+
+	std::cout << "\n2nd Call : ";
+	auto addBook = cxxMirror.getFunction("book", "addBookInfo");
+	if (addBook.has_value()) {
+		cxxMirror(addBook.value())(bookName, author, pages, price);
+	}
+
+	std::cout << "\n3rd Call : ";
+	if (showBook.has_value()) {
+		cxxMirror(showBook.value())();
+	}
+
+	return 0;
 }
