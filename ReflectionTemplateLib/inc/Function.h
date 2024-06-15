@@ -24,8 +24,11 @@ namespace rtl {
 		const std::size_t& getSignatureId() const;
 		const std::string& getFunctionName() const;
 
+		template<class _recordType, class ..._ctorSignature>
+		static const Function addConstructor(const std::string& pNamespace, const std::string& pRecord);
+
 		template<class _returnType, class ..._signature>
-		static const Function add(	const std::string& pNamespace, const std::string& pRecord, 
-									const std::string& pFunction, _returnType(*pFunctor)(_signature...));
+		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord, 
+								  const std::string& pFunction, _returnType(*pFunctor)(_signature...));
 	};
 }

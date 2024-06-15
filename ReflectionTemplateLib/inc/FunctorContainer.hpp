@@ -57,6 +57,19 @@ namespace rtl {
 
 
 	template<class ..._signature>
+	template<class _recordType>
+	inline int FunctorContainer<_signature...>::addConstructor()
+	{
+		const auto functor = [=](_signature...params)->void
+		{
+			auto obj = new _recordType(params...);
+		};
+		m_functors.push_back(functor);
+		return (m_functors.size() - 1);
+	}
+
+
+	template<class ..._signature>
 	template<class _returnType>
 	inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...))
 	{
