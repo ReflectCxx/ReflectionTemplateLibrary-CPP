@@ -6,7 +6,7 @@
 
 #include "Function.hpp"
 #include "NameSpace.h"
-#include "SignatureTypeList.h"
+#include "TypeDescriptorList.h"
 #include "FunctorContainer.h"
 
 namespace rtl {
@@ -17,7 +17,7 @@ namespace rtl {
 	template<class ..._signaturesList>
 	class CxxMirror
 	{
-		using SignatureDescriptor = SignatureTypeList<0, _signaturesList...>;
+		using TypesDescriptor = TypeDescriptorList<0, _signaturesList...>;
 
 		std::unordered_map<std::string, NameSpace> m_namespaces;
 
@@ -30,10 +30,10 @@ namespace rtl {
 
 		inline static const bool init();
 
+		inline auto operator()(const Function& pFunction);
+
 		inline std::optional<Function> getFunction(const std::string& pFunction);
 
 		inline std::optional<Function> getFunction(const std::string& pNameSpace, const std::string& pFunction);
-
-		inline auto operator()(const Function& pFunction);
 	};
 }

@@ -3,10 +3,10 @@
 namespace rtl {
 
 	template<unsigned int _index, class _first, class ..._rest>
-	struct SignatureTypeList;
+	struct TypeDescriptorList;
 
 	template<unsigned int _index, class ..._rest>
-	struct SignatureTypeList<_index, std::nullptr_t, _rest...>
+	struct TypeDescriptorList<_index, std::nullptr_t, _rest...>
 	{
 		using HEAD = std::nullptr_t;
 
@@ -22,10 +22,10 @@ namespace rtl {
 
 
 	template<unsigned int _index, class _first, class ..._rest>
-	struct SignatureTypeList
+	struct TypeDescriptorList
 	{
 		using HEAD = _first;
-		using TAIL = SignatureTypeList<_index + 1, _rest...>;
+		using TAIL = TypeDescriptorList<_index + 1, _rest...>;
 
 		inline static void init()
 		{

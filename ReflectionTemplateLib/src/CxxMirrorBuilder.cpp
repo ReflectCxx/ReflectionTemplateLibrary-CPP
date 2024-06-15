@@ -3,7 +3,7 @@
 namespace rtl 
 {
 	Reflect::Reflect()
-	: m_class("")
+	: m_record("")
 	, m_function("")
 	, m_namespace("")
 	{
@@ -11,7 +11,7 @@ namespace rtl
 
 	Reflect& Reflect::record(const std::string& pClass)
 	{
-		m_class = pClass;
+		m_record = pClass;
 		return *this;
 	}
 

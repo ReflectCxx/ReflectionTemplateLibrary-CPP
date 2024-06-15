@@ -17,6 +17,21 @@ namespace rtl {
 		return getFunction(NS_GLOBAL, pFunction);
 	}
 
+	template<class ..._signaturesTypeList>
+	inline const bool CxxMirror<_signaturesTypeList...>::init()
+	{
+		TypesDescriptor::init();
+		return true;
+	}
+
+	template<class ..._signaturesList>
+	inline auto CxxMirror<_signaturesList...>::operator()(const Function& pFunction)
+	{
+		return [&](auto...params) {
+			TypesDescriptor::call(pFunction.getSignatureId(), pFunction.getFunctorId(), params...);
+		};
+	}
+
 	template<class ..._signaturesList>
 	inline std::optional<Function> CxxMirror<_signaturesList...>::getFunction(const std::string& pNameSpace, const std::string& pFunction)
 	{
@@ -25,21 +40,5 @@ namespace rtl {
 			return itr->second.getFunction(pFunction);
 		}
 		return std::nullopt;
-	}
-
-	template<class ..._signaturesTypeList>
-	inline const bool CxxMirror<_signaturesTypeList...>::init()
-	{
-		SignatureDescriptor::init();
-		return true;
-	}
-
-
-	template<class ..._signaturesList>
-	inline auto CxxMirror<_signaturesList...>::operator()(const Function& pFunction)
-	{
-		return [&](auto...params) {
-			SignatureDescriptor::call(pFunction.getSignatureId(), pFunction.getFunctorId(), params...);
-		};
 	}
 }

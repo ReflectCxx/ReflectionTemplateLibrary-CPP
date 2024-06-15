@@ -5,9 +5,10 @@
 
 namespace rtl {
 
+	// Builder class to encapsulate all type names, pointers.
 	class Reflect
 	{
-		std::string m_class;
+		std::string m_record;
 		std::string m_function;
 		std::string m_namespace;
 
@@ -26,7 +27,7 @@ namespace rtl {
 		template<class _returnType, class ..._signature>
 		inline constexpr const Function build(_returnType(*pFunctor)(_signature...)) const
 		{
-			return Function::add(m_namespace, m_class, m_function, pFunctor);
+			return Function::add(m_namespace, m_record, m_function, pFunctor);
 		}
 	};
 }
