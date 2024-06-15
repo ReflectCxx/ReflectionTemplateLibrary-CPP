@@ -2,6 +2,8 @@
 
 #include "Function.hpp"
 #include "Constants.h"
+#include "FunctionBuilder.h"
+#include "ConstructorBuilder.hpp"
 
 namespace rtl {
 
@@ -9,7 +11,6 @@ namespace rtl {
 	class Reflect
 	{
 		std::string m_record;
-		std::string m_function;
 		std::string m_namespace;
 
 	public:
@@ -22,12 +23,12 @@ namespace rtl {
 
 		Reflect& nameSpace(const std::string& pNamespace = NS_GLOBAL);
 
-		const Reflect& function(const std::string& pFunction);
+		const FunctionBuilder& function(const std::string& pFunction);
 
-		template<class _returnType, class ..._signature>
-		inline constexpr const Function build(_returnType(*pFunctor)(_signature...)) const
+		template<class _recordType>
+		const ConstructorBuilder<_recordType>& constructor() 
 		{
-			return Function::add(m_namespace, m_record, m_function, pFunctor);
-		}
+			return ConstructorBuilder<_recordType>(m_namespace, m_record);
+		}		
 	};
 }

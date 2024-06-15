@@ -1,8 +1,10 @@
 #include "Reflection.h"
 #include "CxxMirrorBuilder.h"
 #include "NSFunction.h"
+#include "Date.h"
 
 using namespace rtl;
+using namespace test_project;
 
 namespace rtl_tests {
 
@@ -15,7 +17,7 @@ namespace rtl_tests {
 		*	CxxMirror<...>({...register function/type pointers by name...})	*/
 		static Reflection cxxMirror({
 
-		    /* Reflect is a builder calss, to provide type/pointers by names. Points to note -
+			/* Reflect is a builder calss, to provide type/pointers by names. Points to note -
 			*  - Variable/Function pointers can only be passed to Reflect::build() function.
 			*  - build function can only be called on objects returned by Reflect::variable() or Reflect::function().
 			*  - if the function is global, not enclosed in any namespace, it can be registered as
@@ -26,12 +28,14 @@ namespace rtl_tests {
 			Reflect().nameSpace("book").function("addBookInfo").build(book::addBookInfo),
 			Reflect().nameSpace("book").function("showBookInfo").build(book::showBookInfo),
 			Reflect().nameSpace("person").function("setProfile").build(person::setProfile),
-			Reflect().nameSpace("person").function("showProfile").build(person::showProfile)
+			Reflect().nameSpace("person").function("showProfile").build(person::showProfile),
 
 			/*
 			*  - if the its a member function, it can be registered as
 			*		Reflect().record("class/struct/union_name").function("function_name").build(_function_pointer_).
 			*/
+			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build()
+
 
 			/*
 			*  - if the its a member function and enclosed in a namespace, it can be registered as
