@@ -23,10 +23,10 @@ namespace rtl {
 
 		Reflect& nameSpace(const std::string& pNamespace = NS_GLOBAL);
 
-		const FunctionBuilder& function(const std::string& pFunction);
+		const FunctionBuilder function(const std::string& pFunction);
 
 		template<class _recordType>
-		const ConstructorBuilder<_recordType>& constructor() 
+		const ConstructorBuilder<_recordType> constructor() 
 		{
 			return ConstructorBuilder<_recordType>(m_namespace, m_record);
 		}		
