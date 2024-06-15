@@ -1,13 +1,13 @@
 #pragma once
 
+#include <vector>
 #include <optional>
 #include <unordered_map>
 
+#include "Function.h"
+
 namespace rtl {
 
-	class Record;
-	class Function;
-	
 	class NameSpace
 	{
 		//std::unordered_map<std::string, Record> m_records;

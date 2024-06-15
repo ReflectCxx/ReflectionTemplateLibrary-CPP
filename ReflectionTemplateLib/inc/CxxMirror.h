@@ -5,12 +5,11 @@
 #include <unordered_map>
 
 #include "Function.hpp"
+#include "NameSpace.h"
 #include "SignatureTypeList.h"
 #include "FunctorContainer.h"
 
 namespace rtl {
-
-	class NameSpace;
 
 	template<class ..._signType>
 	using TypeSignature = FunctorContainer<_signType...>;

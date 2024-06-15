@@ -1,10 +1,9 @@
 #pragma once
 
 #include <unordered_map>
+#include "Function.h"
 
 namespace rtl {
-
-	class Function;
 
 	class Record
 	{
