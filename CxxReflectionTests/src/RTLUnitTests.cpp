@@ -35,5 +35,12 @@ int main()
 		showBook.value().execute();
 	}
 
+
+	const auto& classDateOpt = cxxMirror.getRecord("test_project", "Date");
+	std::cout << "Constructor call...\n";
+	if (classDateOpt.has_value()) {
+		const auto& classDate = classDateOpt.value();
+		classDate.newInstance();
+	}
 	return 0;
 }

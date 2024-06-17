@@ -23,7 +23,8 @@ namespace rtl {
 	{
 		const std::size_t signatureId = FunctorContainer<_ctorSignature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
-		return Function(pNamespace, pRecord, signatureId, functorId, (pRecord + CTOR_SUFFIX));
+		const std::string& ctorName = (pRecord + CTOR_SUFFIX + std::to_string(signatureId));
+		return Function(pNamespace, pRecord, signatureId, functorId, ctorName);
 	}
 
 
