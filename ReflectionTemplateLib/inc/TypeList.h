@@ -19,6 +19,18 @@ namespace rtl {
 	};
 
 
+	template<class ..._rest>
+	struct TypeList<std::string, _rest...>
+	{
+		using TAIL = TypeList<_rest...>;
+
+		static const std::string toString() {
+			const std::string& tailStr = TAIL::toString();
+			return "std::string" + (tailStr.empty() ? "" : (", " + tailStr));
+		}
+	};
+
+
 	template<class _first, class ..._rest>
 	struct TypeList 
 	{
