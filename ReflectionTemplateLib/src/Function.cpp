@@ -3,8 +3,7 @@
 
 namespace rtl {
 
-	Function::Function(	const std::string& pNamespace, const std::string& pRecord, 
-						const std::size_t& pSignatureId, const std::size_t& pFunctorId, const std::string& pFunction)
+	Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::size_t& pSignatureId, const std::size_t& pFunctorId, const std::string& pFunction)
 		: m_record(pRecord)
 		, m_namespace(pNamespace)
 		, m_functorId(pFunctorId)

@@ -35,6 +35,9 @@ namespace rtl {
 
 	void NameSpace::operator=(NameSpace&& pNameSpace) noexcept
 	{
+		if (this == &pNameSpace) {
+			return;
+		}
 		m_records = std::move(pNameSpace.m_records);
 		m_functions = std::move(pNameSpace.m_functions);
 	}

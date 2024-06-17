@@ -16,13 +16,13 @@ namespace rtl {
 	template<class ..._signature>
 	class FunctorContainer
 	{
+		static const std::size_t m_containerId;
+
 		static std::vector<std::function<void(_signature...)>> m_functors;
 
 	public:
 
-		static const std::size_t getContainerId();
-
-		static const std::size_t setId(const std::size_t pIndex = -1);
+		static const std::size_t& getContainerId();
 
 		template<class ..._params>
 		static void dispatchCall(std::size_t pFunctorId, _params..._args);
