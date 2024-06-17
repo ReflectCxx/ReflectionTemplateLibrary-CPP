@@ -7,21 +7,18 @@
 
 namespace rtl {
 
+	extern std::size_t g_containerId;
+
 	template<class ..._signature>
 	std::vector<std::function<void(_signature...)>> FunctorContainer<_signature...>::m_functors;
 
 	template<class ..._signature>
-	inline const std::size_t FunctorContainer<_signature...>::getContainerId()
-	{
-		return setId();
-	}
-
+	const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerId++;
 
 	template<class ..._signature>
-	inline const std::size_t FunctorContainer<_signature...>::setId(const std::size_t pIndex/* = -1*/)
+	inline const std::size_t& FunctorContainer<_signature...>::getContainerId()
 	{
-		static const std::size_t containerId = pIndex;
-		return containerId;
+		return m_containerId;
 	}
 
 

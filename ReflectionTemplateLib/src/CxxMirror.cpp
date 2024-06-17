@@ -1,27 +1,28 @@
 #include "CxxMirror.h"
+#include "Constants.h"
+#include "NameSpace.h"
 #include "FunctorContainer.hpp"
 
 namespace rtl {
+	
+	CxxMirror::CxxMirror(std::vector<Function> pFunctions)
+	{
+		NameSpace::init(pFunctions, m_namespaces);
+	}
 
-	//template<class ..._signaturesTypeList>
-	//RFunction CxxMirror<_signaturesTypeList...>::getFunction(const std::string& pFunctionName)
-	//{
-	//	return m_functionsMap.at(pFunctionName);
-	//}
+	
+	std::optional<Function> CxxMirror::getFunction(const std::string& pFunction)
+	{
+		return getFunction(NS_GLOBAL, pFunction);
+	}
 
-	//template<class ..._signaturesTypeList>
-	//const bool CxxMirror<_signaturesTypeList...>::init()
-	//{
-	//	SignatureDescriptor::init();
-	//	return true;
-	//}
 
-	//template<class ..._signaturesTypeList>
-	//CxxMirror<_signaturesTypeList...>::CxxMirror(std::vector<RFunction> pFunctions)
-	//{
-	//	for (auto& function : pFunctions) {
-	//		auto& funcName = function.getFunctionName();
-	//		m_functionsMap.insert(std::make_pair(funcName, function));
-	//	}
-	//}
+	std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpace, const std::string& pFunction)
+	{
+		const auto& itr = m_namespaces.find(pNameSpace);
+		if (itr != m_namespaces.end()) {
+			return itr->second.getFunction(pFunction);
+		}
+		return std::nullopt;
+	}
 }
