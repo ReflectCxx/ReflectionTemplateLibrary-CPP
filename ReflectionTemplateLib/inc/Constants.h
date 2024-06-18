@@ -9,4 +9,10 @@ namespace rtl {
 		inline constexpr _type get##_name() const {	\
 			return _var;							\
 		}
+
+	template<class _typeA, class _typeB>
+	using enable_if_same = typename std::enable_if< std::is_same<_typeA, _typeB>::value >::type;
+
+	template<class _typeA, class _typeB>
+	using enable_if_notSame = typename std::enable_if< !std::is_same<_typeA, _typeB>::value >::type;
 }

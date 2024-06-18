@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TypeList.h"
 #include "Function.h"
 #include "Constants.h"
 #include "FunctorContainer.hpp"
@@ -7,14 +8,15 @@
 namespace rtl {
 	
 	template<class ..._args>
-	inline void Function::execute(_args ...params) const
+	inline std::unique_ptr<RObject> Function::execute(_args ...params) const
 	{
 		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
-			FunctorContainer<_args...>::reflectCall(m_functorId, params...);
+			return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
 		}
+		return nullptr;
 	}
 
 

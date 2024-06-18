@@ -37,14 +37,16 @@ int main()
 
 
 	const auto& classDateOpt = cxxMirror.getRecord("test_project", "Date");
-	std::cout << "Constructor call...\n";
+	std::cout << "\n[Reflection] Constructor call..\n";
 	if (classDateOpt.has_value()) {
 		const auto& classDate = classDateOpt.value();
-		classDate.newInstance();
+		auto dateObj0 = classDate.newInstance();
 
 		const std::string& dateStr = "17/06/2024";
-		classDate.newInstance(dateStr);
+		auto dateObj1 = classDate.newInstance(dateStr);
 	}
+	
+	std::cout << std::endl;
 
 	return 0;
 }
