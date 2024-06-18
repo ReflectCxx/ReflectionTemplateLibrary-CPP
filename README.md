@@ -22,7 +22,7 @@ Create a build directory in project root folder.
 ```sh
     mkdir Build && cd Build
 ```
-Generate a build system using Unix Makefiles or Visual Studio, in CMake. (Use compiler with C++20)
+Generate a build system using **Unix Makefiles** or **Visual Studio**, in CMake. (Use compiler with C++20)
 ```sh
     cmake -G "<Generator>"
 ```   
@@ -80,7 +80,7 @@ Registration syntax is simple **Builder Pattern**,
   
 		Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
 			 .record("..")		//pass class/struct name as string.
-			 .function("..")	//pass function name as pointer.
+			 .function("..")	//pass function name as string.
 			 .build(*);		//pass function pointer.
 
 		Reflect().nameSpace("..")		
@@ -113,7 +113,7 @@ Create Instance using default constructor *(the one registered as **ctor::VOID**
   //returns instance of Person wrapped in ReflObject<> which extends std::unique_ptr<>
   auto personObj1 = classPerson.instance();
 ```
-Method Call Syantax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
+Method Call Syntax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
 ```c++
   int age = getAge(personObj1).invoke<int>();
   string name = getName(personObj1).invoke<string>();
