@@ -53,7 +53,10 @@ public:
 ```
 - Do manual registration while creating **CxxMirror** object.   *(..somwhere in some far far away .cpp file..)*
 ```c++
-#include "ReflectionTemplateBuilder.h"
+
+#include "CxxMirrorBuilder.h"	//Provides interface to RTL
+
+//User defined types, to be reflected.
 #include "Person.h"
 
 using namespace rtl;
