@@ -3,6 +3,7 @@
 
 #include "Record.h"
 #include "Constants.h"
+#include "FunctorContainer.hpp"
 
 namespace rtl {
 
