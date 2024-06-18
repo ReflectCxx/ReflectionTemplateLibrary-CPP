@@ -33,7 +33,7 @@ namespace rtl {
 		static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void>* _ = nullptr);
 
 		template<class _recordType>
-		static int addConstructor();
+		static int addConstructor(const std::string& pCtorType);
 
 		template<class ..._params>
 		static std::unique_ptr<RObject> reflectCall(std::size_t pFunctorId, _params..._args);

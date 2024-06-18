@@ -11,7 +11,7 @@ namespace test_project
 {
 
 	Date::~Date() {
-		std::cout << "\nDestructor called, ~Date(). objectCount: " << --objectCount;
+		std::cout << "\n[Dctor] ~Date(), objectCount: " << --objectCount;
 	}
 
 	Date::Date()
@@ -19,7 +19,7 @@ namespace test_project
 		, m_month(0)
 		, m_year(0)
 	{
-		std::cout << "\nConstructor called, Date(). objectCount: " << ++objectCount;
+		std::cout << "\n[ Ctor] Date(). objectCount: " << ++objectCount;
 	}
 
 	Date::Date(const string& pDateStr)
@@ -42,7 +42,7 @@ namespace test_project
 		m_month = stoi(date[1]);
 		m_year = stoi(strBuf);
 
-		std::cout << "\nConstructor called, Date(string). objectCount: " << ++objectCount;
+		std::cout << "\n[ Ctor] Date(string), objectCount: " << ++objectCount;
 	}
 
 	const bool Date::operator==(const Date& pOther) const

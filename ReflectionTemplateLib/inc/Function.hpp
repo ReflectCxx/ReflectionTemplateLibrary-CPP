@@ -23,8 +23,11 @@ namespace rtl {
 	template<typename _recordType, class ..._ctorSignature>
 	inline const Function Function::addConstructor(const std::string& pNamespace, const std::string& pRecord)
 	{
+		const auto& namspaceStr = (pNamespace != NS_GLOBAL) ? pNamespace : "";
+		const auto& recordTypeStr = namspaceStr + "::" + pRecord;
+
 		const std::size_t signatureId = FunctorContainer<_ctorSignature...>::getContainerId();
-		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
+		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>(recordTypeStr);
 		const std::string& ctorName = (pRecord + CTOR_SUFFIX + std::to_string(signatureId));
 		const std::string& signature = "(" + TypeList<_ctorSignature...>::toString() + ")";
 		return Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId);

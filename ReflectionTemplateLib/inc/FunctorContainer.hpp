@@ -40,12 +40,12 @@ namespace rtl {
 
 	template<class ..._signature>
 	template<class _recordType>
-	inline int FunctorContainer<_signature...>::addConstructor()
+	inline int FunctorContainer<_signature...>::addConstructor(const std::string& pCtorType)
 	{
 		const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
 		{
 			_recordType* retObj = new _recordType(params...);
-			return std::unique_ptr<RObject>(new ReturnObject<_recordType*>(retObj));
+			return std::unique_ptr<RObject>(new ReturnObject<_recordType*>(pCtorType, retObj));
 		};
 		m_functors.push_back(functor);
 		return (m_functors.size() - 1);
@@ -73,7 +73,7 @@ namespace rtl {
 		const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
 		{
 			const auto& retObj = (*pFunctor)(params...);
-			return std::unique_ptr<RObject>(new ReturnObject<_returnType>(retObj));
+			return std::unique_ptr<RObject>(new ReturnObject<_returnType>(TypeList<_returnType>::toString(), retObj));
 		};
 		m_functors.push_back(functor);
 		return (m_functors.size() - 1);
