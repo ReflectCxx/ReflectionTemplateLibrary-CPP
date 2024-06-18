@@ -19,7 +19,7 @@ namespace person
 
 namespace book
 {
-	void showBookInfo();
+	std::string showBookInfo();
 
 	void setName(const std::string pBookName);
 

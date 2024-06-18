@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+#include "RObject.h"
 #include "Constants.h"
 
 namespace rtl {
@@ -30,7 +33,7 @@ namespace rtl {
 		GETTER(std::string, Namespace, m_namespace)
 
 		template<class ..._args>
-		void execute(_args...params) const;
+		std::unique_ptr<RObject> execute(_args...params) const;
 
 		template<class _recordType, class ..._ctorSignature>
 		static const Function addConstructor(const std::string& pNamespace, const std::string& pRecord);

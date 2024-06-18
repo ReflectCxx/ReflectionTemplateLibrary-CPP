@@ -30,21 +30,32 @@ int main()
 		addBook.value().execute(bookName, author, pages, price);
 	}
 
-	std::cout << "\n3rd Call : ";
+	std::cout << "\n\n[Reflection]-------Function call, returns value-------";
 	if (showBook.has_value()) {
-		showBook.value().execute();
+		const auto retPtr = showBook.value().execute();
+		const auto bookOpt = retPtr->get<std::string>();
+
+		if (bookOpt.has_value()) {
+			const auto& bookStr = bookOpt.value();
+			std::cout << bookStr;
+		}
+		else {
+			std::cout << "\nWrong type used to get value in RObject..!!";
+		}
 	}
 
 
 	const auto& classDateOpt = cxxMirror.getRecord("test_project", "Date");
-	std::cout << "Constructor call...\n";
+	std::cout << "\n\n[Reflection]-------Constructor/Destroctor call--------";
 	if (classDateOpt.has_value()) {
 		const auto& classDate = classDateOpt.value();
-		classDate.newInstance();
+		auto dateObj0 = classDate.newInstance();
 
 		const std::string& dateStr = "17/06/2024";
-		classDate.newInstance(dateStr);
+		auto dateObj1 = classDate.newInstance(dateStr);
 	}
+	
+	std::cout << std::endl;
 
 	return 0;
 }

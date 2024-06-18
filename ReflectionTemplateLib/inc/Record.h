@@ -33,7 +33,8 @@ namespace rtl {
 		std::optional<Function> getFunction(const std::string& pFunction) const;
 
 		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+
 		template<class ..._ctorArgs>
-		void newInstance(_ctorArgs ...params) const;
+		std::unique_ptr<RObject> newInstance(_ctorArgs ...params) const;
 	};
 }

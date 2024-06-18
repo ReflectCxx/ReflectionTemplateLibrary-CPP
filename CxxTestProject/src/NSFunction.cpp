@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include "NSFunction.h"
 
@@ -38,12 +39,13 @@ namespace person {
 
 	std::string showProfile()
 	{
-		std::cout << "\n------Person-------\nName: " << g_firstName
+		std::stringstream outStr;
+		outStr << "\n------Person-------\nName: " << g_firstName
 			<< " " << g_lastName
 			<< "\nAge: " << g_age
 			<< "\nWeight: " << g_weight << "\n";
 
-		return "xxo";
+		return outStr.str();
 	}
 }
 
@@ -83,11 +85,15 @@ namespace book {
 		g_price = pPrice;
 	}
 
-	void showBookInfo()
+	std::string showBookInfo()
 	{
-		std::cout << "\n------Book-------\nName: " << g_name
+		std::cout << "\nCalled book::showBookInfo()->std::string.";
+		std::stringstream outStr;
+		outStr << "\n------Book-------\nName: " << g_name
 			<< "\nAuthor: " << g_author
 			<< "\nPages: " << g_pageCount
 			<< "\nPrice: " << g_price << "\n";
+
+		return outStr.str();
 	}
 }

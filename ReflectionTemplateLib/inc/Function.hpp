@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TypeList.h"
 #include "Function.h"
 #include "Constants.h"
 #include "FunctorContainer.hpp"
@@ -7,22 +8,26 @@
 namespace rtl {
 	
 	template<class ..._args>
-	inline void Function::execute(_args ...params) const
+	inline std::unique_ptr<RObject> Function::execute(_args ...params) const
 	{
 		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
-			FunctorContainer<_args...>::reflectCall(m_functorId, params...);
+			return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
 		}
+		return nullptr;
 	}
 
 
 	template<typename _recordType, class ..._ctorSignature>
 	inline const Function Function::addConstructor(const std::string& pNamespace, const std::string& pRecord)
 	{
+		const auto& namspaceStr = (pNamespace != NS_GLOBAL) ? pNamespace : "";
+		const auto& recordTypeStr = namspaceStr + "::" + pRecord;
+
 		const std::size_t signatureId = FunctorContainer<_ctorSignature...>::getContainerId();
-		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
+		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>(recordTypeStr);
 		const std::string& ctorName = (pRecord + CTOR_SUFFIX + std::to_string(signatureId));
 		const std::string& signature = "(" + TypeList<_ctorSignature...>::toString() + ")";
 		return Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId);

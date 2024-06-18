@@ -1,16 +1,25 @@
 
+#include <iostream>
 #include <vector>
 #include "Date.h"
 
 using namespace std;
 
+static int objectCount = 0;
+
 namespace test_project
 {
+
+	Date::~Date() {
+		std::cout << "\n[Dctor] ~Date(), objectCount: " << --objectCount;
+	}
+
 	Date::Date()
 		: m_day(0)
 		, m_month(0)
 		, m_year(0)
 	{
+		std::cout << "\n[ Ctor] Date(). objectCount: " << ++objectCount;
 	}
 
 	Date::Date(const string& pDateStr)
@@ -32,6 +41,8 @@ namespace test_project
 		m_day = stoi(date[0]);
 		m_month = stoi(date[1]);
 		m_year = stoi(strBuf);
+
+		std::cout << "\n[ Ctor] Date(string), objectCount: " << ++objectCount;
 	}
 
 	const bool Date::operator==(const Date& pOther) const
