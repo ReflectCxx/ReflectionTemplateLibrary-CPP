@@ -11,22 +11,22 @@ Reflection Template Library for Modern C++
   ```c++
   const rtl::CxxMirror myReflection({/*.. Pass all type information ..*/});
   ```
-- Wrap that powerful object in a singleton and use C++ Reflection with similar features as in Java or c#.
+- Wrap that powerful object in a singleton and use C++ Reflection with similar features as in Java or C#.
 - *To generate this boilerplate code automatically, can be used **clang-reflect**
   https://github.com/neeraj31285/clang-reflect
   which is under development right now. Once completed, this boilerplate code can be generated automatically for any large projects.*
 
 ## How To build (Windows/Linux),
 
-*Create a build directory in project root folder.*
+Create a build directory in project root folder.
 ```sh
     mkdir Build && cd Build
 ```
-*Generate a build system using Unix Makefiles or Visual Studio, in CMake. (Use compiler with C++20)*
+Generate a build system using Unix Makefiles or Visual Studio, in CMake. (Use compiler with C++20)
 ```sh
     cmake -G "<Generator>"
 ```   
-*Build - you can use any IDE if applicable to the generator, but you can also just build straight from CMake.*
+Build - you can use any IDE if applicable to the generator, but you can also just build straight from CMake.
 ```sh
     cmake --build .
 ```
@@ -62,15 +62,15 @@ const CxxMirror& MyReflection()
 {
     static const CxxMirror cxxMirror(
     {
-		//Function registration
-		Reflect().record("Person").function("setAge").build(&Person::setAge),
-		Reflect().record("Person").function("getAge").build(&Person::getAge),
-		Reflect().record("Person").function("setName").build(&Person::setName),
-		Reflect().record("Person").function("getName").build(&Person::getName),
-		
-		//Constructor registration
-		Reflect().record("Person").constructor<Person>().build(),		//ctor taking zero arguments
-		Reflect().record("Person").constructor<Person>().build<string, int>()		//ctor with arguments, Person(string, int)
+	//Function registration
+	Reflect().record("Person").function("setAge").build(&Person::setAge),
+	Reflect().record("Person").function("getAge").build(&Person::getAge),
+	Reflect().record("Person").function("setName").build(&Person::setName),
+	Reflect().record("Person").function("getName").build(&Person::getName),
+	
+	//Constructor registration
+	Reflect().record("Person").constructor<Person>().build(),		//ctor taking zero arguments
+	Reflect().record("Person").constructor<Person>().build<string, int>()		//ctor with arguments, Person(string, int)
     });
     return cxxMirror;
 }
@@ -81,15 +81,15 @@ Registration syntax is simple **Builder Pattern**,
 		Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
 			 .record("..")		//pass class/struct name as string.
 			 .function("..")	//pass function name as pointer.
-			 .build(*)		//pass function pointer.
+			 .build(*);		//pass function pointer.
 
 		Reflect().nameSpace("..")		
 			 .record("..")			
 			 .constructor<..>()	//pass struct/class type as template parameter.
-			 .build<..>()		//zero args for constructors, register constructor signature as template params.
+			 .build<..>();		//zero args for constructors, register constructor signature as template params.
 ```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
-(*New underlying access mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
+(*New underlying access-mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
 ```c++
 #include <iostream>
 #include "CxxMirror.h"
