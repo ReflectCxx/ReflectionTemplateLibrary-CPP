@@ -18,6 +18,10 @@ namespace rtl {
 
 
 	template<class ..._signature>
+	std::vector<typename FunctorContainer<_signature...>::RecordFunctorType> FunctorContainer<_signature...>::m_recordFunctors;
+
+
+	template<class ..._signature>
 	inline const std::size_t& FunctorContainer<_signature...>::getContainerId()
 	{
 		return m_containerId;
@@ -77,5 +81,50 @@ namespace rtl {
 		};
 		m_functors.push_back(functor);
 		return (m_functors.size() - 1);
+	}
+
+
+	template<class ..._signature>
+	template<class _recordType, class _returnType>
+	inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
+	{
+		const auto functor = [=](std::unique_ptr<RObject> pTargetObj, _signature...params)->std::unique_ptr<RObject>
+		{
+			auto targetObj = pTargetObj->get<_recordType*>();
+			if (targetObj.has_value())
+			{
+				_recordType* target = targetObj.value();
+				(target->*pFunctor)(params...);
+			}
+			else {
+				assert(false && "Throw bad call exception");
+			}
+			return nullptr;
+		};
+		m_recordFunctors.push_back(functor);
+		return (m_recordFunctors.size() - 1);
+	}
+
+
+	template<class ..._signature>
+	template<class _recordType, class _returnType>
+	inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
+	{
+		const auto functor = [=](std::unique_ptr<RObject> pTargetObj, _signature...params)->std::unique_ptr<RObject>
+		{
+			auto targetObj = pTargetObj->get<_recordType*>();
+			if (targetObj.has_value()) 
+			{
+				_recordType* target = targetObj.value();
+				const auto& retObj = (target->*pFunctor)(params...);
+				return std::unique_ptr<RObject>(new ReturnObject<_returnType>(TypeList<_returnType>::toString(), retObj));
+			}
+			else {
+				assert(false && "Throw bad call exception");
+				return nullptr;
+			}
+		};
+		m_recordFunctors.push_back(functor);
+		return (m_recordFunctors.size() - 1);
 	}
 }

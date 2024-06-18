@@ -153,5 +153,6 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Unit test cases (WIP)
 - Class/Struct's Field reflection (Currently only methods are supported).
 - Enum Class reflection.
+- Exception handling (WIP)
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
 - Light weight JSON Serialization/Deserialization feature.

@@ -18,8 +18,10 @@ namespace rtl {
 		const std::string m_signature;
 		const std::string m_namespace;
 
+		const bool m_isMemberFunction;
+
 		Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName, 
-				 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
+			 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId, const bool& pIsMemberFunction);
 
 	public:
 
@@ -39,6 +41,11 @@ namespace rtl {
 		static const Function addConstructor(const std::string& pNamespace, const std::string& pRecord);
 
 		template<class _returnType, class ..._signature>
-		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction, _returnType(*pFunctor)(_signature...));
+		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+						 const std::string& pFunction, _returnType(*pFunctor)(_signature...));
+
+		template<class _recordType, class _returnType, class ..._signature>
+		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+						 const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...));
 	};
 }

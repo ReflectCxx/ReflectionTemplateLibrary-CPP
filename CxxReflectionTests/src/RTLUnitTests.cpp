@@ -53,6 +53,16 @@ int main()
 
 		const std::string& dateStr = "17/06/2024";
 		auto dateObj1 = classDate.newInstance(dateStr);
+
+		std::cout << "\n\n[Reflection]-------Member function call--------";
+		const auto& getDateOpt = classDate.getFunction("getDateAsString");
+		if (getDateOpt.has_value()) {
+			const auto& getDateStr = getDateOpt.value();
+			getDateStr.execute();
+		}
+		else {
+			std::cout << "error..! couldn't resolve function call - Date::getDateAsString().";
+		}
 	}
 	
 	std::cout << std::endl;

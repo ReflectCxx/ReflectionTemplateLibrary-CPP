@@ -23,7 +23,9 @@ namespace rtl_tests {
 			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build(),
 
 			//Constructor registration, Date(std::string)
-			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<std::string>()
+			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<std::string>(),
+
+			Reflect().nameSpace("test_project").record("Date").function("getDateAsString").build(&Date::getDateAsString)
 		});
 
 		return cxxMirror;

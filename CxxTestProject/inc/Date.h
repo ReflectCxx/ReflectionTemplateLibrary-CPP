@@ -12,5 +12,7 @@ namespace test_project
 		~Date();
 		Date(const std::string& pDateStr);
 		const bool operator==(const Date& pOther) const;
+
+		std::string getDateAsString();
 	};
 }

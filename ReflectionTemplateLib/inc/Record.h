@@ -7,6 +7,8 @@
 
 namespace rtl {
 
+	class NameSpace;
+
 	class Record
 	{
 		using FunctionMap = std::unordered_map<std::string, Function>;
@@ -21,7 +23,9 @@ namespace rtl {
 
 		void addConstructor(const Function& pFunction) const;
 
-	public:
+		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+
+	public: friend NameSpace;
 
 		Record() = delete;
 		Record(const Record& pRecord);
@@ -31,8 +35,6 @@ namespace rtl {
 		void operator=(Record&& pRecord) noexcept;
 
 		std::optional<Function> getFunction(const std::string& pFunction) const;
-
-		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
 
 		template<class ..._ctorArgs>
 		std::unique_ptr<RObject> newInstance(_ctorArgs ...params) const;
