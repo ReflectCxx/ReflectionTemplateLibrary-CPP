@@ -1,21 +1,36 @@
 # Reflection Template Library C++
 ###### (in development...)
 Reflection Template Library for Modern C++
-- Introspect a class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
-- **Static Library**, core functionality is built around the concept of **Type Erasure** using **Lambdas** & **Templates**, without utilizing any RTTI/dynamic_cast or virtual functions.
+- Introspect a (user defined) class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
+- **Static Library**, core design is to maintain table of function/variable pointers, collected at compile time and providing a mechanism access them without exposing their types at all.
 ## Exclusive Features,
 - Pure **Builder Pattern** for manual registration of types, super-easy to understand, No use of any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
 - No need to add any bit of a code to any class/struct/type (to be reflected) declaration or to its implementation.</br>Yes, **No Code Littering, Keep it clean!**
 - Manage all the manual registration of any required type in one single implementation unit, away from rest of the code in project.</br>Or in a **Class with Single Responsibility!**
-- Create an Object of **"CppMirror<>"**, pass all type information to reflect as constructor parameter and you're good to GO!
+- Create an Object of **"CxxMirror"**, pass all type information to reflect as constructor parameter and you're good to GO!
   ```c++
-  const CppMirror<> myReflection({/*.. Pass all type information ..*/});
+  const rtl::CxxMirror myReflection({/*.. Pass all type information ..*/});
   ```
-- Wrap that powerful object in a singleton and use C++ Reflection with richness as in Java or c#.
+- Wrap that powerful object in a singleton and use C++ Reflection with similar features as in Java or c#.
 - *To generate this boilerplate code automatically, can be used **clang-reflect**
   https://github.com/neeraj31285/clang-reflect
   which is under development right now. Once completed, this boilerplate code can be generated automatically for any large projects.*
 
+## How To build (Windows/Linux),
+```sh
+*Create a build directory in project root folder.*
+
+    mkdir Build && cd Build
+    
+*Generate a build system using Unix Makefiles or Visual Studio, in CMake.* (Use compiler with C++20)
+
+    cmake -G "<Generator>"
+    
+*Build - you can use any IDE if applicable to the generator, but you can also just build straight from CMake.*
+
+    cmake --build .
+```
+Run **CxxReflectionTests** binary, generated in ../bin folder. *(currently tested on windows and Ubuntu-20 only)*
 ## How To Use,
 - Class to reflect - **Person.h** *(Independent of any code related to reflection)*
 ```c++
@@ -36,41 +51,52 @@ public:
     void setName(std::string pName) { name = pName; }
 };
 ```
-- Do manual registration while creating **CppMirror<>** object.   *(..somwhere in some far far away .cpp file..)*
+- Do manual registration while creating **CxxMirror** object.   *(..somwhere in some far far away .cpp file..)*
 ```c++
 #include "ReflectionTemplateBuilder.h"
 #include "Person.h"
 
-const CppMirror<>& MyReflection() 
+using namespace rtl;
+
+const CxxMirror& MyReflection() 
 {
-    static const CppMirror<> cppMirror(
+    static const CxxMirror cxxMirror(
     {
-        add<Person, ctor::VOID, ctorArgs<string, int>>("Person")->add(
-        {
-            {"setAge", add(&Person::setAge)},
-            {"getAge", add(&Person::getAge)},
-            {"setName", add(&Person::setName)},
-            {"getName", add(&Person::getName)},
-        }),
-        /*...add more types...*/
+		//Function registration
+		Reflect().record("Person").function("setAge").build(&Person::setAge),
+		Reflect().record("Person").function("getAge").build(&Person::getAge),
+		Reflect().record("Person").function("setName").build(&Person::setName),
+		Reflect().record("Person").function("getName").build(&Person::getName),
+		
+		//Constructor registration
+		Reflect().record("Person").constructor<Person>().build(),		//ctor taking zero arguments
+		Reflect().record("Person").constructor<Person>().build<string, int>()		//ctor with arguments, Person(string, int)
     });
-    return cppMirror;
+    return cxxMirror;
 }
 ```
-Keep adding more types following syantax,
+Registration syntax is simple **Builder Pattern**,
 ```c++
-  /*add<SOME_OTHER_TYPE, ctor::VOID or ctor::COPY or ctorArgs<CTOR_ARGS>, ctorArgs<OTHER_CTOR_OVERLOAD>...>("TYPE_NAME")->add({
-      { "METHOD_NAME", add(METHOD_POINTER)},
-      { "METHOD_NAME", add(METHOD_POINTER)},
-  })*/
+  
+		Reflect().nameSpace("..")		//use if type is enclosed in a namespace, pass namespace as string.
+			 .record("..")			//pass class/struct name as string.
+			 .function("..")		//pass function name as pointer.
+			 .build(*)			//pass function pointer.
+
+		Reflect().nameSpace("..")		
+			 .record("..")			
+			 .constructor<..>()		//pass struct/class type as template parameter.
+			 .build<..>()			//zero args for constructors, register constructor signature as template params.
+  })
 ```
-- In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
+- In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**. 
+(*New underlying access mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
 ```c++
 #include <iostream>
-#include "CppMirror.h"
+#include "CxxMirror.h"
 
 using namespace std;
-extern const rtl::CppMirror<>& MyReflection();
+extern const rtl::CxxMirror& MyReflection();
 
 int main()
 {
@@ -97,10 +123,10 @@ Method Call Syantax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
 No need to specify RETURN_TYPE if its void,
 ```c++
   setAge(personObj1).invoke(23);
-  setName(personObj1).invoke(string("Krishna"));
+  setName(personObj1).invoke(string("Scott"));
   age = getAge(personObj1).invoke<int>();
   name = getName(personObj1).invoke<string>();
-  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : Krishna, age: 23 }
+  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : Scott, age: 23 }
 ```
 Create instance using overloaded constructor *(the one registered as **ctorArgs<string, int>**)*,
 ```c++
@@ -111,31 +137,18 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 }
 ```
 ## Reflection Features,
-- Reflection features similar to *Java*, Reflect Class/Struct/*Enums(WIP)*. Create instances & call methods in complete absence of type exposure.
-- Supports default & copy constructor along with all kinds of overloads including based on const/lvalue references types(except rvalue refs. & *Move Constructors(WIP)*).
-- Supports all kinds of method overloading (except rvalue refs..*YET*), including constant method overloads for *const objects* & based on const/lvalue references types.
-- Supports single, multiple, multilevel & virtual inheritance.
-- Query a class for its super classes & for all its derived classes (vice-versa).
-- Resolves *Inheritance- Diamond Problem*, by default, even if not using virtual keyword while inheriting.
-- Totally supports *virtual methods - Overriding*.
+- Create instances & call methods in complete absence of its type.
+- Supports default & copy constructor along with all kinds of overloads.
+- Supports all kinds of member function overloading, including constant function overloads(WIP) for *const objects*.
+- Supports single, multiple, multilevel & virtual inheritance (WIP).
+- Query a class for its super classes & for all its derived classes (vice-versa) (WIP).
+- Resolves *Inheritance- Diamond Problem* (WIP).
+- Supports *virtual methods - Overriding*.
 - No need of any 3rd party dependencies.
-- No need of any external compiler or tool, only ISO standard C++11
 - Manual registration with **NO MACROS**.
-- No use of **RTTI** at all.
-## Upcoming Features,
+
+## TODO Features,
 - Class/Struct's Field reflection (Currently only methods are supported).
 - Enum Class reflection.
-- Support for Move Constructors.
-- Overloading based on *RValue References*.
-- Support for default constructor & method arguments.
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
-- Exception handeling, Error reporting.
-- *no_except* feature & safe method/constructor call & field access.
 - Light weight JSON Serialization/Deserialization feature.
-## Work In Progress,
-- Portability Check *(Presently tested on only VS2019)*
-- Performance Benchmark.
-- Multithreading safety analysis.
-- More Unit Test Cases.
-- Complete Documentation, PPTs & a Video Tutorial.
-- Licensing
