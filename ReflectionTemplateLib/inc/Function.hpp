@@ -10,7 +10,7 @@ namespace rtl {
 	inline void Function::execute(_args ...params) const
 	{
 		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
-			FunctorContainer<_args...>::dispatchCall(m_functorId, params...);
+			FunctorContainer<_args...>::reflectCall(m_functorId, params...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
@@ -23,7 +23,9 @@ namespace rtl {
 	{
 		const std::size_t signatureId = FunctorContainer<_ctorSignature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
-		return Function(pNamespace, pRecord, signatureId, functorId, (pRecord + CTOR_SUFFIX));
+		const std::string& ctorName = (pRecord + CTOR_SUFFIX + std::to_string(signatureId));
+		const std::string& signature = "(" + TypeList<_ctorSignature...>::toString() + ")";
+		return Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId);
 	}
 
 
@@ -32,6 +34,7 @@ namespace rtl {
 	{
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
-		return Function(pNamespace, pClassName, signatureId, functorId, pFunctionName);
+		const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
+		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 	}
 }

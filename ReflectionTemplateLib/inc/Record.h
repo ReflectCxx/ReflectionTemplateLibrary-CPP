@@ -11,23 +11,29 @@ namespace rtl {
 	{
 		using FunctionMap = std::unordered_map<std::string, Function>;
 
+		std::string m_recordName;
 		std::shared_ptr<FunctionMap> m_functions;
+		std::shared_ptr<FunctionMap> m_constructors;
 
-		Record();
+		Record(const std::string& pRecordName);
 
-		void addFunction(const Function& pFunction);
+		void addFunction(const Function& pFunction) const;
+
+		void addConstructor(const Function& pFunction) const;
 
 	public:
 
-		
+		Record() = delete;
 		Record(const Record& pRecord);
 		Record(Record&& pRecord) noexcept;
 
 		void operator=(const Record& pRecord);
 		void operator=(Record&& pRecord) noexcept;
 
-		std::optional<Function> getFunction(const std::string& pFunction);
+		std::optional<Function> getFunction(const std::string& pFunction) const;
 
 		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+		template<class ..._ctorArgs>
+		void newInstance(_ctorArgs ...params) const;
 	};
 }

@@ -22,6 +22,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/FunctionBuilder.h"
 	"${PROJECT_SOURCE_DIR}/inc/NameSpace.h"
 	"${PROJECT_SOURCE_DIR}/inc/Record.h"
+	"${PROJECT_SOURCE_DIR}/inc/Record.hpp"
     "${PROJECT_SOURCE_DIR}/inc/TypeDescriptorList.h"
     "${PROJECT_SOURCE_DIR}/inc/TypeList.h"
 )

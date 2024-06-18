@@ -24,27 +24,11 @@ namespace rtl {
 
 	template<class ..._signature>
 	template<class ..._params>
-	inline void FunctorContainer<_signature...>::dispatchCall(std::size_t pFunctorId, _params ..._args)
+	inline void FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
 	{
-		resolveCall<TypeList<_params...>, TypeList<_signature...>>(pFunctorId, nullptr, _args...);
-	}
-
-
-	template<class ..._signature>
-	template<class _signListA, class _signListB, class ..._params>
-	inline void FunctorContainer<_signature...>::resolveCall(std::size_t pFunctorId, enable_if_sign_diff<_signListA, _signListB>* _, _params ..._args)
-	{
-		std::cout << "\n[resolution un-successful]   expected:(" << _signListB::toString() << "), not(" << _signListA::toString() << ")\n";
-	}
-
-
-	template<class ..._signature>
-	template<class _signListA, class _signListB, class ..._params>
-	inline void FunctorContainer<_signature...>::resolveCall(std::size_t pFunctorId, enable_if_sign_same<_signListA, _signListB> *_, _params ..._args)
-	{
-		std::cout << "\n[resolution successful]";
-
+		//resolveCall<TypeList<_params...>, TypeList<_signature...>>(pFunctorId, nullptr, _args...);
 		if (pFunctorId < m_functors.size()) {
+			std::cout << "\n[resolution successful]";
 			m_functors.at(pFunctorId)(_args...);
 		}
 		else {
@@ -78,3 +62,30 @@ namespace rtl {
 		return (m_functors.size() - 1);
 	}
 }
+
+
+
+
+
+
+//template<class _signListA, class _signListB>
+//using enable_if_sign_same = typename std::enable_if< std::is_same<_signListA, _signListB>::value >::type;
+
+//template<class _signListA, class _signListB>
+//using enable_if_sign_diff = typename std::enable_if< !std::is_same<_signListA, _signListB>::value >::type;
+
+
+//template<class ..._signature>
+//template<class _signListA, class _signListB, class ..._params>
+//inline void FunctorContainer<_signature...>::resolveCall(std::size_t pFunctorId, enable_if_sign_diff<_signListA, _signListB>* _, _params ..._args)
+//{
+//	std::cout << "\n[resolution un-successful]   expected:(" << _signListB::toString() << "), not(" << _signListA::toString() << ")\n";
+//}
+//
+//
+//template<class ..._signature>
+//template<class _signListA, class _signListB, class ..._params>
+//inline void FunctorContainer<_signature...>::resolveCall(std::size_t pFunctorId, enable_if_sign_same<_signListA, _signListB>* _, _params ..._args)
+//{
+//	std::cout << "\n[resolution successful]";
+//}

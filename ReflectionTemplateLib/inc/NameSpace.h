@@ -5,8 +5,8 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Function.h"
-#include "Record.h"
+#include "Record.hpp"
+#include "Function.hpp"
 
 namespace rtl {
 

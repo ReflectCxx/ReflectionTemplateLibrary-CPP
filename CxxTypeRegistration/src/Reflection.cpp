@@ -19,7 +19,11 @@ namespace rtl_tests {
 			Reflect().nameSpace("person").function("setProfile").build(person::setProfile),
 			Reflect().nameSpace("person").function("showProfile").build(person::showProfile),
 
-			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build()
+			//Constructor registration, Date()
+			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build(),
+
+			//Constructor registration, Date(std::string)
+			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<std::string>()
 		});
 
 		return cxxMirror;
