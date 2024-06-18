@@ -2,7 +2,7 @@
 ###### (in development...)
 Reflection Template Library for Modern C++
 - Introspect a (user defined) class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
-- **Static Library**, core design is to maintain table of function/variable pointers, collected at compile time and providing a mechanism access them without exposing their types at all.
+- **Static Library**, core design is to maintain several tables of function/variable pointers, collected at compile time and providing a mechanism to access them in complete absence of their types at run time.
 ## Exclusive Features,
 - Pure **Builder Pattern** for manual registration of types, super-easy to understand, No use of any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
 - No need to add any bit of a code to any class/struct/type (to be reflected) declaration or to its implementation.</br>Yes, **No Code Littering, Keep it clean!**
@@ -17,17 +17,17 @@ Reflection Template Library for Modern C++
   which is under development right now. Once completed, this boilerplate code can be generated automatically for any large projects.*
 
 ## How To build (Windows/Linux),
-```sh
+
 *Create a build directory in project root folder.*
-
+```sh
     mkdir Build && cd Build
-    
-*Generate a build system using Unix Makefiles or Visual Studio, in CMake.* (Use compiler with C++20)
-
+```
+*Generate a build system using Unix Makefiles or Visual Studio, in CMake. (Use compiler with C++20)*
+```sh
     cmake -G "<Generator>"
-    
+```   
 *Build - you can use any IDE if applicable to the generator, but you can also just build straight from CMake.*
-
+```sh
     cmake --build .
 ```
 Run **CxxReflectionTests** binary, generated in ../bin folder. *(currently tested on windows and Ubuntu-20 only)*
@@ -78,18 +78,17 @@ const CxxMirror& MyReflection()
 Registration syntax is simple **Builder Pattern**,
 ```c++
   
-		Reflect().nameSpace("..")		//use if type is enclosed in a namespace, pass namespace as string.
-			 .record("..")			//pass class/struct name as string.
-			 .function("..")		//pass function name as pointer.
-			 .build(*)			//pass function pointer.
+		Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
+			 .record("..")		//pass class/struct name as string.
+			 .function("..")	//pass function name as pointer.
+			 .build(*)		//pass function pointer.
 
 		Reflect().nameSpace("..")		
 			 .record("..")			
-			 .constructor<..>()		//pass struct/class type as template parameter.
-			 .build<..>()			//zero args for constructors, register constructor signature as template params.
-  })
+			 .constructor<..>()	//pass struct/class type as template parameter.
+			 .build<..>()		//zero args for constructors, register constructor signature as template params.
 ```
-- In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**. 
+- In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
 (*New underlying access mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
 ```c++
 #include <iostream>
@@ -147,7 +146,8 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - No need of any 3rd party dependencies.
 - Manual registration with **NO MACROS**.
 
-## TODO Features,
+## TODO,
+- Unit test cases (WIP)
 - Class/Struct's Field reflection (Currently only methods are supported).
 - Enum Class reflection.
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
