@@ -2,7 +2,6 @@
 #include "Record.h"
 #include "RObject.h"
 #include "Method.h"
-#include "Function.h"
 #include "Constants.h"
 
 namespace rtl {

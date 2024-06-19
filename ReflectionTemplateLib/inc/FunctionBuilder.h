@@ -1,8 +1,8 @@
 #pragma once
 
-namespace rtl {
+#include "Function.h"
 
-	class Function;
+namespace rtl {
 
 	class FunctionBuilder
 	{

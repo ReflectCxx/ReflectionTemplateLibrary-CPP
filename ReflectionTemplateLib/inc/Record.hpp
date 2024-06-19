@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "Record.h"
+#include "Function.h"
 #include "Constants.h"
 #include "FunctorContainer.hpp"
 
