@@ -18,7 +18,7 @@ namespace rtl {
 
 
 	template<class ..._signature>
-	std::vector<typename FunctorContainer<_signature...>::RecordFunctorType> FunctorContainer<_signature...>::m_recordFunctors;
+	std::vector<typename FunctorContainer<_signature...>::MethodPtrType> FunctorContainer<_signature...>::m_methodPtrs;
 
 
 	template<class ..._signature>
@@ -34,6 +34,20 @@ namespace rtl {
 	{
 		if (pFunctorId < m_functors.size()) {
 			return m_functors.at(pFunctorId)(_args...);
+		}
+		else {
+			assert(false && "Throw bad call exception");
+		}
+		return nullptr;
+	}
+
+
+	template<class ..._signature>
+	template<class ..._params>
+	inline std::unique_ptr<RObject> FunctorContainer<_signature...>::reflectCall(const std::unique_ptr<RObject>& pTarget, std::size_t pFunctorId, _params ..._args)
+	{
+		if (pFunctorId < m_methodPtrs.size()) {
+			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
@@ -88,7 +102,7 @@ namespace rtl {
 	template<class _recordType, class _returnType>
 	inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 	{
-		const auto functor = [=](std::unique_ptr<RObject> pTargetObj, _signature...params)->std::unique_ptr<RObject>
+		const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
 		{
 			auto targetObj = pTargetObj->get<_recordType*>();
 			if (targetObj.has_value())
@@ -101,8 +115,8 @@ namespace rtl {
 			}
 			return nullptr;
 		};
-		m_recordFunctors.push_back(functor);
-		return (m_recordFunctors.size() - 1);
+		m_methodPtrs.push_back(functor);
+		return (m_methodPtrs.size() - 1);
 	}
 
 
@@ -110,7 +124,7 @@ namespace rtl {
 	template<class _recordType, class _returnType>
 	inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 	{
-		const auto functor = [=](std::unique_ptr<RObject> pTargetObj, _signature...params)->std::unique_ptr<RObject>
+		const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
 		{
 			auto targetObj = pTargetObj->get<_recordType*>();
 			if (targetObj.has_value()) 
@@ -124,7 +138,7 @@ namespace rtl {
 				return nullptr;
 			}
 		};
-		m_recordFunctors.push_back(functor);
-		return (m_recordFunctors.size() - 1);
+		m_methodPtrs.push_back(functor);
+		return (m_methodPtrs.size() - 1);
 	}
 }

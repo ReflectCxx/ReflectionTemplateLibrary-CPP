@@ -4,10 +4,11 @@
 #include <optional>
 #include <unordered_map>
 
-#include "RObject.hpp"
-#include "NameSpace.h"
-
 namespace rtl {
+
+	class Record;
+	class Function;
+	class NameSpace;
 
 	class CxxMirror
 	{

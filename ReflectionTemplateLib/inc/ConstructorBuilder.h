@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Function.h"
-
 namespace rtl {
+
+	class Function;
 
 	template<class _recordType>
 	class ConstructorBuilder

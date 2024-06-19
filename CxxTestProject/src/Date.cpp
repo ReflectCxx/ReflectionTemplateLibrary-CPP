@@ -53,6 +53,7 @@ namespace test_project
 
 	std::string Date::getDateAsString()
 	{
+		std::cout << "\n[Method] Date::getDateAsString() called.";
 		return std::to_string(m_day) + "/" + std::to_string(m_month) + "/" + std::to_string(m_year);
 	}
 }

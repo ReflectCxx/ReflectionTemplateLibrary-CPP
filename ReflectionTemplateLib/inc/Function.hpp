@@ -2,7 +2,6 @@
 
 #include "TypeList.h"
 #include "Function.h"
-#include "Constants.h"
 #include "FunctorContainer.hpp"
 
 namespace rtl {
@@ -10,8 +9,21 @@ namespace rtl {
 	template<class ..._args>
 	inline std::unique_ptr<RObject> Function::execute(_args ...params) const
 	{
-		if (!m_isMemberFunction && m_signatureId == FunctorContainer<_args...>::getContainerId()) {
+		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 			return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
+		}
+		else {
+			assert(false && "Throw bad call exception");
+		}
+		return nullptr;
+	}
+
+
+	template<class ..._args>
+	inline std::unique_ptr<RObject> Function::execute(const std::unique_ptr<RObject>& pTarget, _args ...params) const
+	{
+		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
+			return FunctorContainer<_args...>::reflectCall(pTarget, m_functorId, params...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
@@ -30,7 +42,7 @@ namespace rtl {
 		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>(recordTypeStr);
 		const std::string& ctorName = (pRecord + CTOR_SUFFIX + std::to_string(signatureId));
 		const std::string& signature = "(" + TypeList<_ctorSignature...>::toString() + ")";
-		return Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId, false);
+		return Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId);
 	}
 
 
@@ -41,8 +53,9 @@ namespace rtl {
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
 		const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
-		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId, false);
+		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 	}
+
 
 	template<class _recordType, class _returnType, class ..._signature>
 	inline const Function Function::addFunctor(const std::string& pNamespace, const std::string& pClassName,
@@ -51,6 +64,6 @@ namespace rtl {
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
 		const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
-		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId, true);
+		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 	}
 }

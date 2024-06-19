@@ -3,10 +3,12 @@
 #include <string>
 #include <memory>
 
-#include "RObject.h"
 #include "Constants.h"
 
 namespace rtl {
+
+	class RObject;
+	class MethodInvoker;
 
 	class Function
 	{
@@ -18,12 +20,13 @@ namespace rtl {
 		const std::string m_signature;
 		const std::string m_namespace;
 
-		const bool m_isMemberFunction;
-
 		Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName, 
-			 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId, const bool& pIsMemberFunction);
+			 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
 
-	public:
+		template<class ..._args>
+		std::unique_ptr<RObject> execute(const std::unique_ptr<RObject>& pTarget, _args...params) const;
+
+	public: friend MethodInvoker;
 
 		Function() = delete;
 

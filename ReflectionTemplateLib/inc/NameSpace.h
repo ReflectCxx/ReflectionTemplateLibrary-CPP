@@ -5,10 +5,11 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Record.hpp"
-#include "Function.hpp"
-
 namespace rtl {
+
+	class Record;
+	class Function;
+	class NameSpace;
 
 	class NameSpace
 	{

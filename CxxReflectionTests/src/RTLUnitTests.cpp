@@ -48,21 +48,41 @@ int main()
 	const auto& classDateOpt = cxxMirror.getRecord("test_project", "Date");
 	std::cout << "\n\n[Reflection]-------Constructor/Destroctor call--------";
 	if (classDateOpt.has_value()) {
+
+		std::cout << "\nCreating \"Date\" instances via reflection..";
+
 		const auto& classDate = classDateOpt.value();
 		auto dateObj0 = classDate.newInstance();
+
+		if (dateObj0 == nullptr) {
+			std::cout << "\nError..! \"Date()\" ctor call via reflection failed.";
+			return 0;
+		}
 
 		const std::string& dateStr = "17/06/2024";
 		auto dateObj1 = classDate.newInstance(dateStr);
 
+		if (dateObj1 == nullptr) {
+			std::cout << "\nError..! \"Date(std::string)\" ctor call via reflection failed.";
+			return 0;
+		}
+
+
 		std::cout << "\n\n[Reflection]-------Member function call--------";
-		const auto& getDateOpt = classDate.getFunction("getDateAsString");
+		const auto& getDateOpt = classDate.getMethod("getDateAsString");
 		if (getDateOpt.has_value()) {
 			const auto& getDateStr = getDateOpt.value();
-			getDateStr.execute();
+			const auto& retOpt = getDateStr(dateObj1).invoke();
+
+			if (retOpt != nullptr) {
+				std::cout << "\ncall to Date::getDateAsString() return value : " << retOpt->get<std::string>().value();
+			}
 		}
 		else {
 			std::cout << "error..! couldn't resolve function call - Date::getDateAsString().";
 		}
+
+		std::cout << "\n\"Date\" instances created via reflection will destroy now.\n";
 	}
 	
 	std::cout << std::endl;
