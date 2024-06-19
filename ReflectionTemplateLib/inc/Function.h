@@ -3,10 +3,12 @@
 #include <string>
 #include <memory>
 
-#include "RObject.h"
 #include "Constants.h"
 
 namespace rtl {
+
+	class RObject;
+	class MethodInvoker;
 
 	class Function
 	{
@@ -19,9 +21,12 @@ namespace rtl {
 		const std::string m_namespace;
 
 		Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName, 
-				 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
+			 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
 
-	public:
+		template<class ..._args>
+		std::unique_ptr<RObject> execute(const std::unique_ptr<RObject>& pTarget, _args...params) const;
+
+	public: friend MethodInvoker;
 
 		Function() = delete;
 
@@ -39,6 +44,11 @@ namespace rtl {
 		static const Function addConstructor(const std::string& pNamespace, const std::string& pRecord);
 
 		template<class _returnType, class ..._signature>
-		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction, _returnType(*pFunctor)(_signature...));
+		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+						 const std::string& pFunction, _returnType(*pFunctor)(_signature...));
+
+		template<class _recordType, class _returnType, class ..._signature>
+		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+						 const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...));
 	};
 }

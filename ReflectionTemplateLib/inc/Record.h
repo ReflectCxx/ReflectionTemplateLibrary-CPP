@@ -3,9 +3,13 @@
 #include <memory>
 #include <optional>
 #include <unordered_map>
-#include "Function.h"
 
 namespace rtl {
+
+	class Method;
+	class RObject;
+	class Function;
+	class NameSpace;
 
 	class Record
 	{
@@ -21,7 +25,9 @@ namespace rtl {
 
 		void addConstructor(const Function& pFunction) const;
 
-	public:
+		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+
+	public: friend NameSpace;
 
 		Record() = delete;
 		Record(const Record& pRecord);
@@ -30,9 +36,7 @@ namespace rtl {
 		void operator=(const Record& pRecord);
 		void operator=(Record&& pRecord) noexcept;
 
-		std::optional<Function> getFunction(const std::string& pFunction) const;
-
-		static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+		std::optional<Method> getMethod(const std::string& pMethod) const;
 
 		template<class ..._ctorArgs>
 		std::unique_ptr<RObject> newInstance(_ctorArgs ...params) const;

@@ -2,7 +2,6 @@
 
 #include "TypeList.h"
 #include "Function.h"
-#include "Constants.h"
 #include "FunctorContainer.hpp"
 
 namespace rtl {
@@ -12,6 +11,19 @@ namespace rtl {
 	{
 		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 			return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
+		}
+		else {
+			assert(false && "Throw bad call exception");
+		}
+		return nullptr;
+	}
+
+
+	template<class ..._args>
+	inline std::unique_ptr<RObject> Function::execute(const std::unique_ptr<RObject>& pTarget, _args ...params) const
+	{
+		if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
+			return FunctorContainer<_args...>::reflectCall(pTarget, m_functorId, params...);
 		}
 		else {
 			assert(false && "Throw bad call exception");
@@ -35,7 +47,19 @@ namespace rtl {
 
 
 	template<class _returnType, class ..._signature>
-	inline const Function Function::addFunctor(const std::string& pNamespace, const std::string& pClassName, const std::string& pFunctionName, _returnType(*pFunctor)(_signature...))
+	inline const Function Function::addFunctor(const std::string& pNamespace, const std::string& pClassName,
+						   const std::string& pFunctionName, _returnType(*pFunctor)(_signature...))
+	{
+		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
+		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
+		const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
+		return Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
+	}
+
+
+	template<class _recordType, class _returnType, class ..._signature>
+	inline const Function Function::addFunctor(const std::string& pNamespace, const std::string& pClassName,
+						   const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...))
 	{
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);

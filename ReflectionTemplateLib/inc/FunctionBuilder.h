@@ -21,5 +21,12 @@ namespace rtl {
 		{
 			return Function::addFunctor(m_namespace, m_record, m_function, pFunctor);
 		}
+
+
+		template<class _recordType, class _returnType, class ..._signature>
+		inline constexpr const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const
+		{
+			return Function::addFunctor(m_namespace, m_record, m_function, pFunctor);
+		}
 	};
 }

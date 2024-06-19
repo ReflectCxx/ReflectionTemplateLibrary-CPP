@@ -81,15 +81,15 @@ const CxxMirror& MyReflection()
 Registration syntax is simple **Builder Pattern**,
 ```c++
   
-		Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
-			 .record("..")		//pass class/struct name as string.
-			 .function("..")	//pass function name as string.
-			 .build(*);		//pass function pointer.
+Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
+	 .record("..")		//pass class/struct name as string.
+	 .function("..")	//pass function name as string.
+	 .build(*);		//pass function pointer.
 
-		Reflect().nameSpace("..")		
-			 .record("..")			
-			 .constructor<..>()	//pass struct/class type as template parameter.
-			 .build<..>();		//zero args for constructors, register constructor signature as template params.
+Reflect().nameSpace("..")		
+	 .record("..")			
+	 .constructor<..>()	//pass struct/class type as template parameter.
+	 .build<..>();		//zero args for constructors, register constructor signature as template params.
 ```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
 (*New underlying access-mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
@@ -153,5 +153,6 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Unit test cases (WIP)
 - Class/Struct's Field reflection (Currently only methods are supported).
 - Enum Class reflection.
+- Exception handling (WIP)
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
 - Light weight JSON Serialization/Deserialization feature.

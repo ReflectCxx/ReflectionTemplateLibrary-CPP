@@ -1,4 +1,7 @@
+
 #include "Record.h"
+#include "RObject.h"
+#include "Method.h"
 #include "Constants.h"
 
 namespace rtl {
@@ -38,6 +41,16 @@ namespace rtl {
 	}
 
 
+	std::optional<Method> Record::getMethod(const std::string& pMethod) const
+	{
+		const auto& itr = m_functions->find(pMethod);
+		if (itr != m_functions->end()) {
+			return std::optional(Method(itr->second));
+		}
+		return std::nullopt;
+	}
+
+
 	void Record::operator=(const Record& pRecord)
 	{
 		if (this == &pRecord) {
@@ -58,16 +71,6 @@ namespace rtl {
 	void Record::addConstructor(const Function& pFunction) const
 	{
 		m_constructors->emplace(pFunction.getFunctionName(), pFunction);
-	}
-
-
-	std::optional<Function> Record::getFunction(const std::string& pFunction) const
-	{
-		const auto& itr = m_functions->find(pFunction);
-		if (itr != m_functions->end()) {
-			return std::optional(itr->second);
-		}
-		return std::nullopt;
 	}
 
 

@@ -49,4 +49,11 @@ namespace test_project
 	{
 		return (m_day == pOther.m_day && m_month == pOther.m_month && m_year == pOther.m_year);
 	}
+
+
+	std::string Date::getDateAsString()
+	{
+		std::cout << "\n[Method] Date::getDateAsString() called.";
+		return std::to_string(m_day) + "/" + std::to_string(m_month) + "/" + std::to_string(m_year);
+	}
 }

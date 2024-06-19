@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CxxMirror.h"
+#include "ReflectionTemplateLib.h"
 
 namespace rtl_tests {
 
