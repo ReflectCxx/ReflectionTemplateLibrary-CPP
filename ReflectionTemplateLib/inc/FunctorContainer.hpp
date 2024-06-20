@@ -58,12 +58,13 @@ namespace rtl {
 
 	template<class ..._signature>
 	template<class _recordType>
-	inline int FunctorContainer<_signature...>::addConstructor(const std::string& pCtorType)
+	inline int FunctorContainer<_signature...>::addConstructor()
 	{
+		const auto& ctorType = TypeList<_recordType>::toString();
 		const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
 		{
 			_recordType* retObj = new _recordType(params...);
-			return std::unique_ptr<RObject>(new ReturnObject<_recordType*>(pCtorType, retObj));
+			return std::unique_ptr<RObject>(new ReturnObject<_recordType*>(ctorType, retObj));
 		};
 		m_functors.push_back(functor);
 		return (m_functors.size() - 1);
@@ -88,10 +89,11 @@ namespace rtl {
 	template<class _returnType>
 	inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 	{
+		const auto& retTypeStr = TypeList<_returnType>::toString();
 		const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
 		{
 			const auto& retObj = (*pFunctor)(params...);
-			return std::unique_ptr<RObject>(new ReturnObject<_returnType>(TypeList<_returnType>::toString(), retObj));
+			return std::unique_ptr<RObject>(new ReturnObject<_returnType>(retTypeStr, retObj));
 		};
 		m_functors.push_back(functor);
 		return (m_functors.size() - 1);
@@ -124,6 +126,7 @@ namespace rtl {
 	template<class _recordType, class _returnType>
 	inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 	{
+		const auto& retTypeStr = TypeList<_returnType>::toString();
 		const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
 		{
 			auto targetObj = pTargetObj->get<_recordType*>();
@@ -131,7 +134,7 @@ namespace rtl {
 			{
 				_recordType* target = targetObj.value();
 				const auto& retObj = (target->*pFunctor)(params...);
-				return std::unique_ptr<RObject>(new ReturnObject<_returnType>(TypeList<_returnType>::toString(), retObj));
+				return std::unique_ptr<RObject>(new ReturnObject<_returnType>(retTypeStr, retObj));
 			}
 			else {
 				assert(false && "Throw bad call exception");

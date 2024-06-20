@@ -16,6 +16,7 @@ namespace rtl {
 	template<class ..._ctorSignature>
 	inline constexpr const Function ConstructorBuilder<_recordType>::build() const
 	{
-		return Function::addConstructor<_recordType, _ctorSignature...>(m_namespace, m_record);
+		const auto& functionName = m_record + CTOR_SUFFIX;
+		return FunctionBuilder(m_namespace, m_record, functionName).build<_recordType, _ctorSignature...>();
 	}
 }
