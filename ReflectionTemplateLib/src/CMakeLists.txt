@@ -22,6 +22,7 @@ SET(LOCAL_HEADERS
     "${PROJECT_SOURCE_DIR}/inc/FunctorContainer.h"
     "${PROJECT_SOURCE_DIR}/inc/FunctorContainer.hpp"
 	"${PROJECT_SOURCE_DIR}/inc/FunctionBuilder.h"
+	"${PROJECT_SOURCE_DIR}/inc/FunctionBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/inc/Method.hpp"
 	"${PROJECT_SOURCE_DIR}/inc/NameSpace.h"

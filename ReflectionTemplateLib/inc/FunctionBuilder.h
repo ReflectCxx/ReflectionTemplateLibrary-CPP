@@ -16,17 +16,26 @@ namespace rtl {
 
 		FunctionBuilder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
 
-		template<class _returnType, class ..._signature>
-		inline constexpr const Function build(_returnType(*pFunctor)(_signature...)) const
-		{
-			return Function::addFunctor(m_namespace, m_record, m_function, pFunctor);
-		}
+		template<class _recordType, class ..._signature>
+		inline constexpr const Function build() const;
 
+		template<class _returnType, class ..._signature>
+		inline constexpr const Function build(_returnType(*pFunctor)(_signature...)) const;
 
 		template<class _recordType, class _returnType, class ..._signature>
-		inline constexpr const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const
-		{
-			return Function::addFunctor(m_namespace, m_record, m_function, pFunctor);
-		}
+		inline constexpr const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+		
+	private:
+
+		template<class _returnType, class ..._signature>
+		const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+					  const std::string& pFunction, _returnType(*pFunctor)(_signature...)) const;
+
+		template<class _recordType, class _returnType, class ..._signature>
+		const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
+					  const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...)) const;
+
+		template<class _recordType, class ..._ctorSignature>
+		const Function addConstructor(const std::string& pNamespace, const std::string& pRecord, const std::string& pCtor) const;
 	};
 }

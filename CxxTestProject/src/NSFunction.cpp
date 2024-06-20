@@ -79,6 +79,7 @@ namespace book {
 
 	void addBookInfo(const char* pBookName, std::string pAuthor, unsigned int pPageCount, double pPrice)
 	{
+		std::cout << "\nCalled book::addBookInfo(const char*, string, unsigned int, double)->void.";
 		g_name = pBookName;
 		g_author = pAuthor;
 		g_pageCount = pPageCount;
