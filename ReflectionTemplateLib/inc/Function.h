@@ -9,6 +9,7 @@ namespace rtl {
 
 	class RObject;
 	class MethodInvoker;
+	class FunctionBuilder;
 
 	class Function
 	{
@@ -26,7 +27,7 @@ namespace rtl {
 		template<class ..._args>
 		std::unique_ptr<RObject> execute(const std::unique_ptr<RObject>& pTarget, _args...params) const;
 
-	public: friend MethodInvoker;
+	public: friend MethodInvoker; friend FunctionBuilder;
 
 		Function() = delete;
 
@@ -39,16 +40,5 @@ namespace rtl {
 
 		template<class ..._args>
 		std::unique_ptr<RObject> execute(_args...params) const;
-
-		template<class _recordType, class ..._ctorSignature>
-		static const Function addConstructor(const std::string& pNamespace, const std::string& pRecord);
-
-		template<class _returnType, class ..._signature>
-		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
-						 const std::string& pFunction, _returnType(*pFunctor)(_signature...));
-
-		template<class _recordType, class _returnType, class ..._signature>
-		static const Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
-						 const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...));
 	};
 }
