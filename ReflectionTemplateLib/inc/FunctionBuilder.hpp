@@ -25,7 +25,7 @@ namespace rtl {
 
 	template<class _returnType, class ..._signature>
 	inline const Function FunctionBuilder::addFunctor(const std::string& pNamespace, const std::string& pClassName,
-													  const std::string& pFunctionName, _returnType(*pFunctor)(_signature...)) const
+							  const std::string& pFunctionName, _returnType(*pFunctor)(_signature...)) const
 	{
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
@@ -36,7 +36,7 @@ namespace rtl {
 
 	template<class _recordType, class _returnType, class ..._signature>
 	inline const Function FunctionBuilder::addFunctor(const std::string& pNamespace, const std::string& pClassName,
-													  const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...)) const
+							  const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...)) const
 	{
 		const std::size_t signatureId = FunctorContainer<_signature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_signature...>::addFunctor(pFunctor);
@@ -47,7 +47,7 @@ namespace rtl {
 
 	template<typename _recordType, class ..._ctorSignature>
 	inline const Function FunctionBuilder::addConstructor(const std::string& pNamespace, const std::string& pRecord,
-														  const std::string& pCtor) const
+							      const std::string& pCtor) const
 	{
 		const std::size_t signatureId = FunctorContainer<_ctorSignature...>::getContainerId();
 		const std::size_t functorId = FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
