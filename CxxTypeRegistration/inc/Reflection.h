@@ -6,6 +6,6 @@ namespace rtl_tests {
 
 	struct MyReflection
 	{
-		static rtl::CxxMirror& instance();
+		static rtl::access::CxxMirror& instance();
 	};
 }
