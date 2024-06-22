@@ -5,7 +5,8 @@
 #include "NSFunction.h"
 #include "Date.h"
 
-using namespace rtl;
+using namespace rtl::access;
+using namespace rtl::builder;
 using namespace test_project;
 
 namespace rtl_tests {
