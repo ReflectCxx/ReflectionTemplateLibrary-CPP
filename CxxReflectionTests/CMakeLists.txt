@@ -5,16 +5,30 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(CxxReflectionTests)
 
-SET(CXX_EXE_NAME CxxReflectionTests)
-ADD_EXECUTABLE(${CXX_EXE_NAME} "")
+set(CXX_EXE_NAME CxxReflectionTests)
+add_executable(${CXX_EXE_NAME} "")
 
-INCLUDE_DIRECTORIES(inc)
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/CxxTypeRegistration/inc")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
 
-TARGET_LINK_LIBRARIES(${CXX_EXE_NAME} CxxTypeRegistration)
-TARGET_LINK_LIBRARIES(${CXX_EXE_NAME} ReflectionTemplateLib)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+include_directories(inc)
+include_directories("${CMAKE_SOURCE_DIR}/CxxTypeRegistration/inc")
+include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
+include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
+
+target_link_libraries(${CXX_EXE_NAME} GTest::gtest_main)
+target_link_libraries(${CXX_EXE_NAME} CxxTypeRegistration)
+target_link_libraries(${CXX_EXE_NAME} ReflectionTemplateLib)
 
 # Add the source directory
-INCLUDE(src/CMakeLists.txt)
+include(src/CMakeLists.txt)
+
+include(GoogleTest)
+gtest_discover_tests(${CXX_EXE_NAME})

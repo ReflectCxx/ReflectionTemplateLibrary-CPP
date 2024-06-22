@@ -2,13 +2,13 @@
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/Book.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Date.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/NSFunction.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Complex.cpp"
 )
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/Book.h"
 	"${PROJECT_SOURCE_DIR}/inc/Date.h"
-	"${PROJECT_SOURCE_DIR}/inc/NSFunction.h"
+	"${PROJECT_SOURCE_DIR}/inc/Complex.h"
 )
 
 # Add any additional source files if needed

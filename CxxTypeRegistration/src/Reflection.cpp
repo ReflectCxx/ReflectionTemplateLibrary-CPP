@@ -2,7 +2,7 @@
 #include "CxxMirrorBuilder.h"
 
 //User defined types to be reflected.
-#include "NSFunction.h"
+#include "Complex.h"
 #include "Date.h"
 
 using namespace rtl::access;
@@ -15,10 +15,11 @@ namespace rtl_tests {
 	{
 		static CxxMirror cxxMirror({
 
-			Reflect().nameSpace("book").function("addBookInfo").build(book::addBookInfo),
-			Reflect().nameSpace("book").function("showBookInfo").build(book::showBookInfo),
-			Reflect().nameSpace("person").function("setProfile").build(person::setProfile),
-			Reflect().nameSpace("person").function("showProfile").build(person::showProfile),
+			Reflect().function("getComplexNumAsString").build(getComplexNumAsString),
+
+			Reflect().nameSpace("complex").function("setReal").build(complex::setReal),
+			Reflect().nameSpace("complex").function("setImaginary").build(complex::setImaginary),
+			Reflect().nameSpace("complex").function("getMagnitude").build(complex::getMagnitude),
 
 			//Constructor registration, Date()
 			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build(),
