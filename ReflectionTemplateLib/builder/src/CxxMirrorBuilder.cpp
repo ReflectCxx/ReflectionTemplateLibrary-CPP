@@ -6,7 +6,7 @@ namespace rtl
 	{
 		Reflect::Reflect()
 			: m_record("")
-			, m_namespace("")
+			, m_namespace(NAMESPACE_GLOBAL)
 		{
 		}
 
@@ -16,7 +16,7 @@ namespace rtl
 			return *this;
 		}
 
-		Reflect& Reflect::nameSpace(const std::string& pNamespace/* = NAMESPACE_GLOBAL*/)
+		Reflect& Reflect::nameSpace(const std::string& pNamespace)
 		{
 			m_namespace = pNamespace;
 			return *this;

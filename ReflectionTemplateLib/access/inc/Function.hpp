@@ -9,7 +9,7 @@ namespace rtl {
 	namespace access 
 	{
 		template<class ..._args>
-		inline std::unique_ptr<RObject> Function::execute(_args ...params) const
+		inline std::unique_ptr<RObject> Function::operator()(_args ...params) const
 		{
 			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 				return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
@@ -22,7 +22,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline std::unique_ptr<RObject> Function::execute(const std::unique_ptr<RObject>& pTarget, _args ...params) const
+		inline std::unique_ptr<RObject> Function::operator()(const std::unique_ptr<RObject>& pTarget, _args ...params) const
 		{
 			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 				return FunctorContainer<_args...>::reflectCall(pTarget, m_functorId, params...);

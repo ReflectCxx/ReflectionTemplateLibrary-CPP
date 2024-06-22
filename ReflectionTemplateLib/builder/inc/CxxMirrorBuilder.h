@@ -23,7 +23,7 @@ namespace rtl {
 
 			Reflect& record(const std::string& pClass);
 
-			Reflect& nameSpace(const std::string& pNamespace = NAMESPACE_GLOBAL);
+			Reflect& nameSpace(const std::string& pNamespace);
 
 			const FunctionBuilder function(const std::string& pFunction);
 

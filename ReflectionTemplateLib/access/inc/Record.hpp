@@ -18,7 +18,7 @@ namespace rtl {
 			const auto& itr = m_constructors->find(ctorName);
 
 			if (itr != m_constructors->end()) {
-				return itr->second.execute(params...);
+				return itr->second(params...);
 			}
 			else {
 				assert(false && "Throw bad call exception");

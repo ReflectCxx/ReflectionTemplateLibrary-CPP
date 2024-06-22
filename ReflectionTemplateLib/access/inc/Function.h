@@ -32,10 +32,10 @@ namespace rtl {
 			const std::string m_namespace;
 
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
+				 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
 
 			template<class ..._args>
-			std::unique_ptr<RObject> execute(const std::unique_ptr<RObject>& pTarget, _args...params) const;
+			std::unique_ptr<RObject> operator()(const std::unique_ptr<RObject>& pTarget, _args...params) const;
 
 		public: 
 			
@@ -49,7 +49,7 @@ namespace rtl {
 			GETTER(std::string, Namespace, m_namespace)
 
 			template<class ..._args>
-			std::unique_ptr<RObject> execute(_args...params) const;
+			std::unique_ptr<RObject> operator()(_args...params) const;
 		};
 	}
 }
