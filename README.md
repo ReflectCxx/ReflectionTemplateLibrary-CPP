@@ -20,13 +20,13 @@ Reflection Template Library for Modern C++
 
 Create a build directory in project root folder.
 ```sh
-    mkdir Build && cd Build
+    mkdir build && cd build
 ```
 Generate a build system using **Unix Makefiles** or **Visual Studio**, in CMake. (Use compiler with C++20)
 ```sh
     cmake -G "<Generator>"
 ```   
-Build - you can use any IDE if applicable to the generator, but you can also just build straight from CMake.
+to build, any IDE applicable to the generator can be used or you can also just build straight from CMake.
 ```sh
     cmake --build .
 ```
