@@ -9,27 +9,26 @@ using namespace rtl::access;
 using namespace rtl::builder;
 using namespace test_project;
 
-namespace rtl_tests {
+CxxMirror& MyReflection::instance()
+{
+	static CxxMirror cxxMirror({
 
-	CxxMirror& MyReflection::instance()
-	{
-		static CxxMirror cxxMirror({
+		//Global function, not contained in any namespace.
+		Reflect().function("getComplexNumAsString").build(getComplexNumAsString),
 
-			Reflect().function("getComplexNumAsString").build(getComplexNumAsString),
+		//Global functions, in "complex" namespace.
+		Reflect().nameSpace("complex").function("setReal").build(complex::setReal),
+		Reflect().nameSpace("complex").function("setImaginary").build(complex::setImaginary),
+		Reflect().nameSpace("complex").function("getMagnitude").build(complex::getMagnitude),
 
-			Reflect().nameSpace("complex").function("setReal").build(complex::setReal),
-			Reflect().nameSpace("complex").function("setImaginary").build(complex::setImaginary),
-			Reflect().nameSpace("complex").function("getMagnitude").build(complex::getMagnitude),
+		//"Date" struct, in test_project namespace. Ctor, Date()
+		Reflect().nameSpace("test_project").record("Date").constructor<Date>().build(),
+		//Ctor, Date(std::string)
+		Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<std::string>(),
+		//Ctor, Date(unsigned, unsigned, unsigned)
+		Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<unsigned, unsigned, unsigned>()
 
-			//Constructor registration, Date()
-			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build(),
+	});
 
-			//Constructor registration, Date(std::string)
-			Reflect().nameSpace("test_project").record("Date").constructor<Date>().build<std::string>(),
-
-			Reflect().nameSpace("test_project").record("Date").function("getDateAsString").build(&Date::getDateAsString)
-		});
-
-		return cxxMirror;
-	}
+	return cxxMirror;
 }

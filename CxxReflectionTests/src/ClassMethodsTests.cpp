@@ -4,8 +4,9 @@
 
 namespace rtl_tests {
 
-	TEST(ClassTest, GetClassObjects)
+	TEST(ClassMethodsTest, GetClassObjects)
 	{
+		//In progress--
 		EXPECT_TRUE(true);
 	}
 

@@ -9,40 +9,29 @@ static int objectCount = 0;
 
 namespace test_project
 {
+	unsigned int Date::m_instanceCount = 0;
 
 	Date::~Date() {
-		std::cout << "\n[Dctor] ~Date(), objectCount: " << --objectCount;
+		m_instanceCount--;
+	}
+
+	unsigned Date::instanceCount()
+	{
+		return m_instanceCount;
 	}
 
 	Date::Date()
-		: m_day(0)
-		, m_month(0)
-		, m_year(0)
-	{
-		std::cout << "\n[ Ctor] Date(). objectCount: " << ++objectCount;
+		: m_day(1)
+		, m_month(1)
+		, m_year(2000) {
+		m_instanceCount++;
 	}
 
-	Date::Date(const string& pDateStr)
-	{
-		string strBuf;
-		vector<string> date;
-		for (size_t i = 0; i < pDateStr.length(); i++)
-		{
-			if (pDateStr.at(i) == '/')
-			{
-				date.push_back(strBuf);
-				strBuf.clear();
-			}
-			else
-			{
-				strBuf.push_back(pDateStr.at(i));
-			}
-		}
-		m_day = stoi(date[0]);
-		m_month = stoi(date[1]);
-		m_year = stoi(strBuf);
-
-		std::cout << "\n[ Ctor] Date(string), objectCount: " << ++objectCount;
+	Date::Date(unsigned dd, unsigned mm, unsigned yy)
+		: m_day(dd)
+		, m_month(mm)
+		, m_year(yy) {
+		m_instanceCount++;
 	}
 
 	const bool Date::operator==(const Date& pOther) const
@@ -50,10 +39,23 @@ namespace test_project
 		return (m_day == pOther.m_day && m_month == pOther.m_month && m_year == pOther.m_year);
 	}
 
-
-	std::string Date::getDateAsString()
+	Date::Date(const string& pDateStr)
 	{
-		std::cout << "\n[Method] Date::getDateAsString() called.";
-		return std::to_string(m_day) + "/" + std::to_string(m_month) + "/" + std::to_string(m_year);
+		m_instanceCount++;
+		string strBuf;
+		vector<string> date;
+		for (size_t i = 0; i < pDateStr.length(); i++)
+		{
+			if (pDateStr.at(i) == '/') {
+				date.push_back(strBuf);
+				strBuf.clear();
+			}
+			else {
+				strBuf.push_back(pDateStr.at(i));
+			}
+		}
+		m_day = stoi(date[0]);
+		m_month = stoi(date[1]);
+		m_year = stoi(strBuf);
 	}
 }

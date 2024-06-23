@@ -24,9 +24,9 @@ namespace rtl {
 			virtual ~RObject() = 0;
 
 			GETTER(std::string, Type, m_type)
-				GETTER(std::size_t, TypeId, m_typeId)
+			GETTER(std::size_t, TypeId, m_typeId)
 
-				template<class _type>
+			template<class _type>
 			std::optional<_type> get();
 		};
 	}

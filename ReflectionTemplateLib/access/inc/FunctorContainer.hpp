@@ -33,13 +33,7 @@ namespace rtl {
 		template<class ..._params>
 		inline std::unique_ptr<RObject> FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
 		{
-			if (pFunctorId < m_functors.size()) {
-				return m_functors.at(pFunctorId)(_args...);
-			}
-			else {
-				assert(false && "Throw bad call exception");
-			}
-			return nullptr;
+			return m_functors.at(pFunctorId)(_args...);
 		}
 
 
@@ -47,13 +41,7 @@ namespace rtl {
 		template<class ..._params>
 		inline std::unique_ptr<RObject> FunctorContainer<_signature...>::reflectCall(const std::unique_ptr<RObject>& pTarget, std::size_t pFunctorId, _params ..._args)
 		{
-			if (pFunctorId < m_methodPtrs.size()) {
-				return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
-			}
-			else {
-				assert(false && "Throw bad call exception");
-			}
-			return nullptr;
+			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
 
 
