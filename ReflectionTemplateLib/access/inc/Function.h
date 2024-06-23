@@ -12,7 +12,7 @@ namespace rtl {
 		class FunctionBuilder;
 	}
 
-	namespace access 
+	namespace access
 	{
 		class RObject;
 		class MethodInvoker;
@@ -41,15 +41,16 @@ namespace rtl {
 			
 			Function() = delete;
 
-			GETTER(std::size_t, FunctorId, m_functorId)
-			GETTER(std::size_t, SignatureId, m_signatureId)
 			GETTER(std::string, RecordName, m_record)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signature, m_signature)
 			GETTER(std::string, Namespace, m_namespace)
 
+			template<class _arg0, class ..._args>
+			const bool hasSignature() const;
+
 			template<class ..._args>
-			std::unique_ptr<RObject> operator()(_args...params) const;
+			std::unique_ptr<RObject> operator()(_args...params) const noexcept;
 		};
 	}
 }

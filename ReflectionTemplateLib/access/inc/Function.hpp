@@ -8,14 +8,23 @@ namespace rtl {
 	
 	namespace access 
 	{
+		template<class _arg0, class ..._args>
+		inline const bool Function::hasSignature() const
+		{
+			return (m_signatureId == FunctorContainer<_arg0, _args...>::getContainerId());
+		}
+
+		template<>
+		inline const bool Function::hasSignature<void>() const
+		{
+			return (m_signatureId == FunctorContainer<>::getContainerId());
+		}
+
 		template<class ..._args>
-		inline std::unique_ptr<RObject> Function::operator()(_args ...params) const
+		inline std::unique_ptr<RObject> Function::operator()(_args ...params) const noexcept
 		{
 			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 				return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
-			}
-			else {
-				assert(false && "Throw bad call exception");
 			}
 			return nullptr;
 		}
@@ -26,9 +35,6 @@ namespace rtl {
 		{
 			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
 				return FunctorContainer<_args...>::reflectCall(pTarget, m_functorId, params...);
-			}
-			else {
-				assert(false && "Throw bad call exception");
 			}
 			return nullptr;
 		}

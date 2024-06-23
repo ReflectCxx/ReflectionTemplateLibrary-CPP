@@ -86,9 +86,9 @@ namespace test_project
 	void Book::setPublishedOn(int pDay, int pMonth, int pYear)
 	{
 		m_fuctorSignature = "void Book::setPublishedOn(int, int, int)";
-		m_date.m_day = pDay;
-		m_date.m_month = pMonth;
-		m_date.m_year = pYear;
+		//m_date.m_day = pDay;
+		//m_date.m_month = pMonth;
+		//m_date.m_year = pYear;
 	}
 
 	void Book::setAuthor(const char* pAuthor)
@@ -130,7 +130,7 @@ namespace test_project
 	string Book::getBookInfo() const
 	{
 		m_fuctorSignature = "string Book::getBookInfo() const";
-		const string dateStr = to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
+		const string dateStr = "";// to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
 		const string info = string("{\n\tTitle:") + m_title + string(",\n\tAuthor:") + m_author + string(",\n\tPrice:") +
 			to_string(m_price) + string(",\n\tPublished date:") + dateStr + string("\n}");
 		return info;
@@ -139,13 +139,13 @@ namespace test_project
 	string Book::getPublishedOn() const
 	{
 		m_fuctorSignature = "string Book::getPublishedOn() const";
-		const string dateStr = to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
+		const string dateStr = "";// to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
 		return dateStr;
 	}
 
 	std::string Book::getState()
 	{
-		const string dateStr = to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
+		const string dateStr = "";// to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
 		const string info = string("\n") + thisStr(this) + string(" : {\n|") +
 			string("\n|  Price: \"") + to_string(m_price) + string("\",") +
 			string("\n|  Title: \"") + m_title + string("\",") +
@@ -159,7 +159,7 @@ namespace test_project
 
 	std::string Book::getState() const
 	{
-		const string dateStr = to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
+		const string dateStr = "";// to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
 		const string info = string("\n") + thisStr(this) + string(" : {\n|") +
 			string("\n|  Price: \"") + to_string(m_price) + string("\",") +
 			string("\n|  Title: \"") + m_title + string("\",") +
@@ -182,7 +182,7 @@ namespace test_project
 
 	string Book::getPublishedOn()
 	{
-		const string dateStr = to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
+		const string dateStr = "";// to_string(m_date.m_day) + "/" + to_string(m_date.m_month) + "/" + to_string(m_date.m_year);
 		return dateStr;
 	}
 }

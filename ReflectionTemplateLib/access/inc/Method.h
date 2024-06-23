@@ -36,7 +36,7 @@ namespace rtl {
 		public:
 			
 			template<class ..._args>
-			std::unique_ptr<RObject> invoke(_args...params) const;
+			std::unique_ptr<RObject> invoke(_args...params) const noexcept;
 		};
 	}
 }
