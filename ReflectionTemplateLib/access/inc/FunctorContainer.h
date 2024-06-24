@@ -23,7 +23,6 @@ namespace rtl {
 		class FunctorContainer
 		{
 			friend Function;
-
 			friend builder::FunctionBuilder;
 
 		public:

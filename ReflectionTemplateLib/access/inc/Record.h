@@ -21,15 +21,14 @@ namespace rtl {
 
 			std::string m_recordName;
 			std::shared_ptr<FunctionMap> m_functions;
-			std::shared_ptr<FunctionMap> m_constructors;
 
 			Record(const std::string& pRecordName);
 
+			void init() const;
+
 			void addFunction(const Function& pFunction) const;
 
-			void addConstructor(const Function& pFunction) const;
-
-			static void addFunction(const Function& pFunctions, std::unordered_map<std::string, Record>& pNamespaces);
+			static void addFunction(const Function& pFunction, std::unordered_map<std::string, Record>& pNamespaces);
 
 		public:
 

@@ -26,11 +26,11 @@ namespace rtl {
 
 			NameSpace();
 
+			void init() const;
+
 			void addRecord(const Function& pFunction);
 
 			void addFunction(const Function& pFunction);
-
-			static void init(const std::vector<Function>& pFunctions, std::unordered_map<std::string, NameSpace>& pNamespaces);
 
 		public:
 

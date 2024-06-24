@@ -32,7 +32,8 @@ namespace rtl {
 		{
 			const std::size_t signatureId = access::FunctorContainer<_signature...>::getContainerId();
 			const std::size_t functorId = access::FunctorContainer<_signature...>::addFunctor(pFunctor);
-			const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
+			const std::string& typeStr = TypeList<_signature...>::toString();
+			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 		}
 
@@ -43,7 +44,8 @@ namespace rtl {
 		{
 			const std::size_t signatureId = access::FunctorContainer<_signature...>::getContainerId();
 			const std::size_t functorId = access::FunctorContainer<_signature...>::addFunctor(pFunctor);
-			const std::string& signature = "(" + TypeList<_signature...>::toString() + ")";
+			const std::string& typeStr = TypeList<_signature...>::toString();
+			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 		}
 
@@ -54,9 +56,9 @@ namespace rtl {
 		{
 			const std::size_t signatureId = access::FunctorContainer<_ctorSignature...>::getContainerId();
 			const std::size_t functorId = access::FunctorContainer<_ctorSignature...>::template addConstructor<_recordType>();
-			const std::string& ctorName = pCtor + std::to_string(signatureId);
-			const std::string& signature = "(" + TypeList<_ctorSignature...>::toString() + ")";
-			return access::Function(pNamespace, pRecord, ctorName, signature, signatureId, functorId);
+			const std::string& typeStr = TypeList<_ctorSignature...>::toString();
+			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
+			return access::Function(pNamespace, pRecord, pCtor, signature, signatureId, functorId);
 		}
 	}
 }

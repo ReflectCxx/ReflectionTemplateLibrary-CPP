@@ -14,12 +14,12 @@ namespace rtl_tests {
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
-		EXPECT_TRUE(record.has_value());
+		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
 		unique_ptr<RObject> instance = classDate.newInstance();
 
-		EXPECT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance != nullptr);
 		EXPECT_TRUE(date::testNewInstanceDefaultCtor(instance));
 	}
 
@@ -29,13 +29,13 @@ namespace rtl_tests {
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
-		EXPECT_TRUE(record.has_value());
+		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
 		const string& dateStr = date::DATE_STR;
 		unique_ptr<RObject> instance = classDate.newInstance(dateStr);
 
-		EXPECT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance != nullptr);
 		EXPECT_TRUE(date::testNewInstanceCtorString(instance));
 	}
 
@@ -45,12 +45,12 @@ namespace rtl_tests {
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
-		EXPECT_TRUE(record.has_value());
+		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
 		unique_ptr<RObject> instance = classDate.newInstance(date::day, date::month, date::year);
 
-		EXPECT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance != nullptr);
 		EXPECT_TRUE(date::testNewInstanceCtorUnsignedInt(instance));
 	}
 
@@ -62,10 +62,12 @@ namespace rtl_tests {
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
-		EXPECT_TRUE(record.has_value());
+		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
 			unique_ptr<RObject> instance = classDate.newInstance();
+			ASSERT_TRUE(instance != nullptr);
+			EXPECT_TRUE(date::testNewInstanceDefaultCtor(instance));
 		}
 		EXPECT_TRUE(date::assertZeroInstanceCount());
 	}
