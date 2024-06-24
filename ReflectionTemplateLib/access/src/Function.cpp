@@ -41,7 +41,7 @@ namespace rtl {
 					return a.first < b.first;
 				});
 
-			if (itr != m_functorHash.end()) {
+			if (itr != m_functorHash.end() && itr->first == pSignId) {
 				pFuncHash = *itr;
 				return true;
 			}
