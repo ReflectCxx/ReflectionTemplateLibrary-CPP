@@ -30,7 +30,7 @@ public:
 	void setAuthor(const std::string& pAuthor);
 
 	std::string getPublishedOn();
-	std::string getPublishedOn() const;
+	//std::string getPublishedOn() const;
 
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);
 

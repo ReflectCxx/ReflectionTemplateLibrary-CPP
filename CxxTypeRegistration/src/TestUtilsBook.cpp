@@ -18,6 +18,15 @@ namespace test_utils
 		return (Book::getInstanceCount() == 0);
 	}
 
+
+	template<>
+	const bool book::test_method_getPublishedOn_return(const std::string& pRetStr)
+	{
+		Book bookObj;
+		return (bookObj.getPublishedOn() == pRetStr);
+	}
+
+
 	template<>
 	const bool book::test_new_instance_ctor<>(const std::unique_ptr<rtl::access::RObject>& pInstance)
 	{
@@ -31,6 +40,7 @@ namespace test_utils
 
 		return (bookObj == bookRObj);
 	}
+
 
 	template<>
 	const bool book::test_new_instance_ctor<double, string>(const std::unique_ptr<rtl::access::RObject>& pInstance)

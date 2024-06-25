@@ -13,11 +13,20 @@ namespace rtl {
 
 		}
 
+
 		template<class _recordType>
 		template<class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
 		{
 			return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record);
+		}
+
+
+		template<class _recordType>
+		template<class ..._signature>
+		inline constexpr const MethodBuilder<_recordType, _signature...> RecordBuilder<_recordType>::method(const std::string& pMethod) const
+		{
+			return MethodBuilder<_recordType, _signature...>(m_namespace, m_record, pMethod);
 		}
 	}
 }

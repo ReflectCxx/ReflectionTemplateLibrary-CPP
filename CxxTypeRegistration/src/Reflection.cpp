@@ -34,12 +34,12 @@ CxxMirror& MyReflection::instance()
 
 		//class Book, no namespace. constructors builds.
 		Reflect().record<Book>("Book").constructor().build(),
-		Reflect().record<Book>("Book").constructor<double, string>().build()
+		Reflect().record<Book>("Book").constructor<double, string>().build(),
 
-		////class Book, Methods
-		//Reflect().record("Book").function("getPublishedOn").build(&Book::getPublishedOn),
-		////Overloaded Methods
-		//Reflect().record("Book").function("updateBookInfo").build(&Book::updateBookInfo)
+		//class Book, Methods
+		Reflect().record<Book>("Book").method("getPublishedOn").build(&Book::getPublishedOn)
+		//Overloaded Methods
+		//Reflect().record<Book>("Book").method("updateBookInfo").build(&Book::updateBookInfo)
 	});
 
 	return cxxMirror;

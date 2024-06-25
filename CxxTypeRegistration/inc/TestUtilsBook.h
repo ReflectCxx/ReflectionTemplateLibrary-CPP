@@ -15,7 +15,10 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		template<class ..._argsType>
+		template<class ..._ctorArgs>
 		static const bool test_new_instance_ctor(const std::unique_ptr<rtl::access::RObject>& pInstance);
+
+		template<class ..._ctorArgs>
+		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 	};
 }

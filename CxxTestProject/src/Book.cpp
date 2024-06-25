@@ -69,9 +69,9 @@ void Book::setAuthor(const string& pAuthor) {
 	m_author = pAuthor;
 }
 
-string Book::getPublishedOn() const {
-	return m_date.getAsString();
-}
+//string Book::getPublishedOn() const {
+//	return m_date.getAsString();
+//}
 
 const bool Book::operator==(const Book& pOther) const {
 	return (m_price == pOther.m_price && m_author == pOther.m_author && m_date == pOther.m_date);
