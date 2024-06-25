@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "TestUtils.h"
 #include "Reflection.h"
 
 using namespace std;
@@ -9,26 +8,26 @@ using namespace test_utils;
 
 namespace rtl_tests {
 
-	TEST(ConstructorTest, DefaultCtor)
+	TEST(ConstructorDate, args_void)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
+		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
 		unique_ptr<RObject> instance = classDate.newInstance();
 
 		ASSERT_TRUE(instance != nullptr);
-		EXPECT_TRUE(date::testNewInstanceDefaultCtor(instance));
+		EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
 	}
 
 
-	TEST(ConstructorTest, OverloadedCtorString)
+	TEST(ConstructorDate, args_string)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
+		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
@@ -36,39 +35,93 @@ namespace rtl_tests {
 		unique_ptr<RObject> instance = classDate.newInstance(dateStr);
 
 		ASSERT_TRUE(instance != nullptr);
-		EXPECT_TRUE(date::testNewInstanceCtorString(instance));
+		EXPECT_TRUE(date::test_new_instance_ctor<string>(instance));
 	}
 
 
-	TEST(ConstructorTest, OverloadedCtorUnsignedInt)
+	TEST(ConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
+		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
 		unique_ptr<RObject> instance = classDate.newInstance(date::day, date::month, date::year);
 
 		ASSERT_TRUE(instance != nullptr);
-		EXPECT_TRUE(date::testNewInstanceCtorUnsignedInt(instance));
+
+		const bool isPassed = date::test_new_instance_ctor<unsigned, unsigned, unsigned>(instance);
+		EXPECT_TRUE(isPassed);
 	}
 
-
-	TEST(DestructorTest, NonVirtual)
+	
+	TEST(DestructorDate, non_virtual)
 	{
-		EXPECT_TRUE(date::assertZeroInstanceCount());
+		EXPECT_TRUE(date::assert_zero_instance_count());
 
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("test_project", "Date");
+		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
 			unique_ptr<RObject> instance = classDate.newInstance();
 			ASSERT_TRUE(instance != nullptr);
-			EXPECT_TRUE(date::testNewInstanceDefaultCtor(instance));
+			EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
 		}
-		EXPECT_TRUE(date::assertZeroInstanceCount());
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
+	TEST(ConstructorBook, args_default)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> record = cxxMirror.getRecord("Book");
+		ASSERT_TRUE(record.has_value());
+
+		const Record& classBook = record.value();
+		unique_ptr<RObject> instance = classBook.newInstance();
+
+		ASSERT_TRUE(instance != nullptr);
+		EXPECT_TRUE(book::test_new_instance_ctor(instance));
+	}
+
+
+	TEST(ConstructorBook, args_double_string)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> record = cxxMirror.getRecord("Book");
+		ASSERT_TRUE(record.has_value());
+
+		double price = book::PRICE;
+		string title = book::TITLE;
+		const Record& classBook = record.value();
+
+		unique_ptr<RObject> instance = classBook.newInstance(price, title);
+		ASSERT_TRUE(instance != nullptr);
+
+		const bool isPassed = book::test_new_instance_ctor<double, string>(instance);
+		EXPECT_TRUE(isPassed);
+	}
+
+
+	TEST(DestructorBook, non_virtual)
+	{
+		EXPECT_TRUE(book::assert_zero_instance_count());
+
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> record = cxxMirror.getRecord("Book");
+		ASSERT_TRUE(record.has_value());
+		{
+			const Record& classDate = record.value();
+			unique_ptr<RObject> instance = classDate.newInstance();
+			ASSERT_TRUE(instance != nullptr);
+			EXPECT_TRUE(book::test_new_instance_ctor(instance));
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 }

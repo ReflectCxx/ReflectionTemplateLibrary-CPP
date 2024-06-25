@@ -4,8 +4,8 @@
 
 namespace rtl {
 
-    constexpr const char* const NAMESPACE_GLOBAL = "namespace_global";
-    constexpr const char* const CTOR_SUFFIX = "::ctor";
+    constexpr const char* CTOR_SUFFIX = "::ctor";
+    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
 #define GETTER(_type, _name, _var)                        \
     inline constexpr const _type& get##_name() const {    \

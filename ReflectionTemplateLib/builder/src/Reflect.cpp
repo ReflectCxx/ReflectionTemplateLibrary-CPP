@@ -1,4 +1,4 @@
-#include "CxxMirrorBuilder.h"
+#include "Reflect.h"
 
 namespace rtl 
 {
@@ -20,11 +20,6 @@ namespace rtl
 		{
 			m_namespace = pNamespace;
 			return *this;
-		}
-
-		const FunctionBuilder Reflect::function(const std::string& pFunction)
-		{
-			return FunctionBuilder(m_namespace, m_record, pFunction);
 		}
 	}
 }

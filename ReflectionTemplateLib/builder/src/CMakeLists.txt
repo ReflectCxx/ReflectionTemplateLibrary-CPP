@@ -1,6 +1,6 @@
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
-	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorBuilder.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Reflect.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionBuilder.cpp"
 )
 
@@ -10,10 +10,11 @@ SET(COMMON_HEADERS
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/builder/inc/ConstructorBuilder.h"
-	"${PROJECT_SOURCE_DIR}/builder/inc/ConstructorBuilder.hpp"	
-	"${PROJECT_SOURCE_DIR}/builder/inc/CxxMirrorBuilder.h"
+	"${PROJECT_SOURCE_DIR}/builder/inc/ConstructorBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/builder/inc/FunctionBuilder.h"
 	"${PROJECT_SOURCE_DIR}/builder/inc/FunctionBuilder.hpp"
+	"${PROJECT_SOURCE_DIR}/builder/inc/Reflect.h"
+	"${PROJECT_SOURCE_DIR}/builder/inc/Reflect.hpp"
 )
 
 # Add any additional source files if needed

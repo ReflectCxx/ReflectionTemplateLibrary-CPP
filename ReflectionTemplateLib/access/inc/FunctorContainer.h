@@ -12,6 +12,7 @@ namespace rtl {
 
 	namespace builder
 	{
+		template<class ..._signature>
 		class FunctionBuilder;
 	}
 
@@ -23,7 +24,9 @@ namespace rtl {
 		class FunctorContainer
 		{
 			friend Function;
-			friend builder::FunctionBuilder;
+
+			template<class ..._signature>
+			friend class builder::FunctionBuilder;
 
 		public:
 

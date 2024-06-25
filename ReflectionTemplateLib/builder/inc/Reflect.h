@@ -25,13 +25,11 @@ namespace rtl {
 
 			Reflect& nameSpace(const std::string& pNamespace);
 
-			const FunctionBuilder function(const std::string& pFunction);
+			template<class ..._argsType>
+			inline constexpr const FunctionBuilder<_argsType...> function(const std::string& pFunction);
 
 			template<class _recordType>
-			const ConstructorBuilder<_recordType> constructor()
-			{
-				return ConstructorBuilder<_recordType>(m_namespace, m_record);
-			}
+			inline constexpr const ConstructorBuilder<_recordType> constructor();
 		};
 	}
 }

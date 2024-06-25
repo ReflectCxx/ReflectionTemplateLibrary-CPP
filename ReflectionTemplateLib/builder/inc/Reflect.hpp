@@ -1,0 +1,26 @@
+#pragma once
+
+#include "Reflect.h"
+
+namespace rtl {
+
+	namespace builder 
+	{
+		template<>
+		inline const FunctionBuilder<> Reflect::function(const std::string& pFunction)
+		{
+			return FunctionBuilder<>(m_namespace, m_record, pFunction);
+		}
+
+		template<class ..._argsType>
+		inline constexpr const FunctionBuilder<_argsType...> Reflect::function(const std::string& pFunction) {
+			return FunctionBuilder<_argsType...>(m_namespace, m_record, pFunction);
+		}
+
+		template<class _recordType>
+		inline constexpr const ConstructorBuilder<_recordType> Reflect::constructor()
+		{
+			return ConstructorBuilder<_recordType>(m_namespace, m_record);
+		}
+	}
+}

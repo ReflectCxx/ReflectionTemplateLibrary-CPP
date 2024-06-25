@@ -13,6 +13,7 @@ namespace rtl {
 
 	namespace builder 
 	{
+		template<class ..._signature>
 		class FunctionBuilder;
 	}
 
@@ -28,7 +29,9 @@ namespace rtl {
 			friend Record;
 			friend NameSpace;
 			friend MethodInvoker;
-			friend builder::FunctionBuilder;
+
+			template<class ..._signature>
+			friend class builder::FunctionBuilder;
 
 			const std::string m_record;
 			const std::string m_function;

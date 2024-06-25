@@ -10,7 +10,7 @@ using namespace rtl::access;
 static constexpr double g_img = 9.27;
 static constexpr double g_real = 3.92;
 
-TEST(FunctionInNameSpace, GetFunctionObjects)
+TEST(FunctionInNameSpace, get_namespace_function_objects)
 {
 	CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -33,7 +33,7 @@ TEST(FunctionInNameSpace, GetFunctionObjects)
 }
 
 
-TEST(FunctionInNameSpace, ExecuteAndGetReturn)
+TEST(FunctionInNameSpace, namespace_function_execute_return)
 {
 	CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -66,7 +66,25 @@ TEST(FunctionInNameSpace, ExecuteAndGetReturn)
 }
 
 
-TEST(GlobalFunction, GetFunctionObject)
+TEST(FunctionInNameSpace, execute_with_wrong_signature)
+{
+	CxxMirror& cxxMirror = MyReflection::instance();
+
+	optional<Function> rfunc = cxxMirror.getFunction("complex", "setReal");
+	ASSERT_TRUE(rfunc.has_value());
+
+	const Function& setReal = rfunc.value();
+
+	EXPECT_TRUE(setReal.hasSignature<double>());
+	EXPECT_FALSE(setReal.hasSignature<float>());
+
+	//No op.
+	unique_ptr<RObject> retObj = setReal(float(g_real));
+	ASSERT_TRUE(retObj == nullptr);
+}
+
+
+TEST(GlobalFunction, get_function_execute_return)
 {
 	CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -87,19 +105,28 @@ TEST(GlobalFunction, GetFunctionObject)
 }
 
 
-TEST(FunctionInNameSpace, ExecuteWithWrongParams)
+TEST(GlobalFunction, overloaded_function_execute_return)
 {
 	CxxMirror& cxxMirror = MyReflection::instance();
 
-	optional<Function> rfunc = cxxMirror.getFunction("complex", "setReal");
-	ASSERT_TRUE(rfunc.has_value());
+	optional<Function> getFunc = cxxMirror.getFunction("reverseString");
+	ASSERT_TRUE(getFunc.has_value());
 
-	const Function& setReal = rfunc.value();
+	const Function& reverseString = getFunc.value();
 
-	EXPECT_TRUE(setReal.hasSignature<double>());
-	EXPECT_FALSE(setReal.hasSignature<float>());
+	const char* charStr = "ReflectC++";
+	unique_ptr<RObject> retObj0 = reverseString(charStr);
+	ASSERT_TRUE(retObj0 != nullptr);
 
-	//No op.
-	unique_ptr<RObject> retObj = setReal(float(g_real));
-	ASSERT_TRUE(retObj == nullptr);
+	optional<string> retVal0 = retObj0->get<string>();
+	ASSERT_TRUE(retVal0.has_value());
+	EXPECT_TRUE(retVal0.value() == "++CtcelfeR");
+
+	string stdStr = "cxxReflection";
+	unique_ptr<RObject> retObj1 = reverseString(stdStr);
+	ASSERT_TRUE(retObj1 != nullptr);
+
+	optional<string> retVal1 = retObj1->get<string>();
+	ASSERT_TRUE(retVal1.has_value());
+	EXPECT_TRUE(retVal1.value() == "noitcelfeRxxc");
 }
