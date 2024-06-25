@@ -18,9 +18,9 @@ namespace rtl {
 			return RecordBuilder<_recordType>(m_namespace, pClass);
 		}
 
-		template<class ..._argsType>
-		inline constexpr const FunctionBuilder<_argsType...> Reflect::function(const std::string& pFunction) {
-			return FunctionBuilder<_argsType...>(m_namespace, m_record, pFunction);
+		template<class ..._signature>
+		inline constexpr const FunctionBuilder<_signature...> Reflect::function(const std::string& pFunction) {
+			return FunctionBuilder<_signature...>(m_namespace, m_record, pFunction);
 		}
 	}
 }

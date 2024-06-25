@@ -44,10 +44,14 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Book>(book::class_).constructor<double, string>().build(),
 
 		//class Book, Methods
-		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn)
+		Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
+		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
 
 		//Overloaded Methods
-		//Reflect().record<Book>("Book").method("updateBookInfo").build(&Book::updateBookInfo)
+		Reflect().record<Book>(book::class_).method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+		Reflect().record<Book>(book::class_).method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo)
+
 	});
 
 	return cxxMirror;

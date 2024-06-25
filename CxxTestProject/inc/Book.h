@@ -24,16 +24,17 @@ public:
 	void setPublishedOn(nsdate::Date& pDate);
 	void setPublishedOn(const nsdate::Date& pDate);
 
-	void setAuthor(const char* pAuthor);
+	//void setAuthor(const char* pAuthor);
 	void setAuthor(std::string pAuthor);
-	void setAuthor(std::string& pAuthor);
-	void setAuthor(const std::string& pAuthor);
+	//void setAuthor(std::string& pAuthor);
+	//void setAuthor(const std::string& pAuthor);
 
 	std::string getPublishedOn();
 	//std::string getPublishedOn() const;
 
+	//TODO: Add one overload with default params
+	void updateBookInfo();
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);
-
 	void updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle);
 
 	const bool operator==(const Book& pOther) const;

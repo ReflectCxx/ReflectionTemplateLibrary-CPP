@@ -21,12 +21,10 @@ namespace rtl {
 			return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record);
 		}
 
-
 		template<class _recordType>
 		template<class ..._signature>
-		inline constexpr const MethodBuilder<_recordType, _signature...> RecordBuilder<_recordType>::method(const std::string& pMethod) const
-		{
-			return MethodBuilder<_recordType, _signature...>(m_namespace, m_record, pMethod);
+		inline constexpr const FunctionBuilder<_signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const {
+			return FunctionBuilder<_signature...>(m_namespace, m_record, pFunction);
 		}
 	}
 }

@@ -76,6 +76,9 @@ namespace rtl {
 
 			template<class _returnType>
 			inline constexpr const access::Function build(_returnType(*pFunctor)()) const;
+
+			template<class _recordType, class _returnType>
+			inline constexpr const access::Function build(_returnType(_recordType::* pFunctor)()) const;
 		};
 	}
 }

@@ -13,8 +13,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/builder/inc/ConstructorBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/builder/inc/FunctionBuilder.h"
 	"${PROJECT_SOURCE_DIR}/builder/inc/FunctionBuilder.hpp"
-	"${PROJECT_SOURCE_DIR}/builder/inc/MethodBuilder.h"
-	"${PROJECT_SOURCE_DIR}/builder/inc/MethodBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/builder/inc/RecordBuilder.h"
 	"${PROJECT_SOURCE_DIR}/builder/inc/RecordBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/builder/inc/Reflect.h"

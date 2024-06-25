@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Function.h"
-#include "MethodBuilder.hpp"
 #include "ConstructorBuilder.hpp"
 
 namespace rtl {
@@ -21,8 +20,14 @@ namespace rtl {
 			template<class ..._signature>
 			inline constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
 
+
 			template<class ..._signature>
-			inline constexpr const MethodBuilder<_recordType, _signature...> method(const std::string& pMethod) const;
+			inline constexpr const FunctionBuilder<_signature...> method(const std::string& pFunction) const;
+
+			template<>
+			inline constexpr const FunctionBuilder<> method<>(const std::string& pFunction) const {
+				return FunctionBuilder<>(m_namespace, m_record, pFunction);
+			}
 		};
 	}
 }

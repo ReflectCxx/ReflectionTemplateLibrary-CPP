@@ -27,8 +27,8 @@ namespace rtl {
 			template<class _recordType>
 			inline constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
 
-			template<class ..._argsType>
-			inline constexpr const FunctionBuilder<_argsType...> function(const std::string& pFunction);
+			template<class ..._signature>
+			inline constexpr const FunctionBuilder<_signature...> function(const std::string& pFunction);
 		};
 	}
 }

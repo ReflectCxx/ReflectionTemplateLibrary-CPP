@@ -37,6 +37,13 @@ namespace rtl {
 		}
 
 
+		template<class _recordType, class _returnType>
+		inline constexpr const access::Function FunctionBuilder<void>::build(_returnType(_recordType::* pFunctor)()) const 
+		{
+			return FunctionBuilder<>(m_namespace, m_record, m_function).build(pFunctor);
+		}
+
+
 		template<class _recordType, class ..._ctorSignature>
 		inline constexpr const access::Function FunctionBuilder<>::build() const
 		{
