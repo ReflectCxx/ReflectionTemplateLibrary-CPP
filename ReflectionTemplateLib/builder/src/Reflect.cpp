@@ -10,12 +10,6 @@ namespace rtl
 		{
 		}
 
-		Reflect& Reflect::record(const std::string& pClass)
-		{
-			m_record = pClass;
-			return *this;
-		}
-
 		Reflect& Reflect::nameSpace(const std::string& pNamespace)
 		{
 			m_namespace = pNamespace;

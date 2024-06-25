@@ -26,15 +26,15 @@ CxxMirror& MyReflection::instance()
 		Reflect().nameSpace("complex").function("getMagnitude").build(complex::getMagnitude),
 
 		//"Date" struct, in test_project namespace. Ctor, Date()
-		Reflect().nameSpace("nsdate").record("Date").constructor<Date>().build(),
+		Reflect().nameSpace("nsdate").record<Date>("Date").constructor().build(),
 		//Ctor, Date(std::string)
-		Reflect().nameSpace("nsdate").record("Date").constructor<Date>().build<string>(),
+		Reflect().nameSpace("nsdate").record<Date>("Date").constructor<string>().build(),
 		//Ctor, Date(unsigned, unsigned, unsigned)
-		Reflect().nameSpace("nsdate").record("Date").constructor<Date>().build<unsigned, unsigned, unsigned>(),
+		Reflect().nameSpace("nsdate").record<Date>("Date").constructor<unsigned, unsigned, unsigned>().build(),
 
 		//class Book, no namespace. constructors builds.
-		Reflect().record("Book").constructor<Book>().build(),
-		Reflect().record("Book").constructor<Book>().build<double, string>(),
+		Reflect().record<Book>("Book").constructor().build(),
+		Reflect().record<Book>("Book").constructor<double, string>().build()
 
 		////class Book, Methods
 		//Reflect().record("Book").function("getPublishedOn").build(&Book::getPublishedOn),

@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "NameSpace.h"
+#include "RecordBuilder.hpp"
 #include "FunctionBuilder.hpp"
 #include "ConstructorBuilder.hpp"
 
@@ -21,15 +22,13 @@ namespace rtl {
 			Reflect(const Reflect&) = delete;
 			Reflect& operator=(const Reflect&) = delete;
 
-			Reflect& record(const std::string& pClass);
-
 			Reflect& nameSpace(const std::string& pNamespace);
+
+			template<class _recordType>
+			inline constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
 
 			template<class ..._argsType>
 			inline constexpr const FunctionBuilder<_argsType...> function(const std::string& pFunction);
-
-			template<class _recordType>
-			inline constexpr const ConstructorBuilder<_recordType> constructor();
 		};
 	}
 }
