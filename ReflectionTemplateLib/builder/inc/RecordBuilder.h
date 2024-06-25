@@ -17,17 +17,13 @@ namespace rtl {
 
 			RecordBuilder(const std::string& pNamespace, const std::string& pRecord);
 
-			template<class ..._signature>
-			inline constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
-
+			inline constexpr const FunctionBuilder<> method(const std::string& pFunction) const;
 
 			template<class ..._signature>
 			inline constexpr const FunctionBuilder<_signature...> method(const std::string& pFunction) const;
 
-			template<>
-			inline constexpr const FunctionBuilder<> method<>(const std::string& pFunction) const {
-				return FunctionBuilder<>(m_namespace, m_record, pFunction);
-			}
+			template<class ..._signature>
+			inline constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
 		};
 	}
 }
