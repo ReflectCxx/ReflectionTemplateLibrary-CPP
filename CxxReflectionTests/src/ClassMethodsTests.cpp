@@ -2,94 +2,174 @@
 
 #include "Reflection.h"
 
+using namespace std;
+using namespace rtl::access;
+using namespace test_utils;
+
 namespace rtl_tests {
 
-	TEST(ClassMethodsTest, GetClassObjects)
+	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
-		//In progress--
-		EXPECT_TRUE(true);
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+		optional<Method> noMethod = classBook.getMethod("no_method");
+		EXPECT_FALSE(noMethod.has_value());
 	}
 
-/* TODO:
 
-	int mainX()
+	TEST(ClassBookMethod, wrong_args)
 	{
-		auto& cxxMirror = MyReflection::instance();
+		CxxMirror& cxxMirror = MyReflection::instance();
 
-		const double& price = 99.99;
-		const unsigned int& pages = 1050;
-		const char* bookName = "Somehow, I manage.";
-		const std::string& author = "Micheal G. Scott";
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
 
-		std::cout << "\n\n[Reflection]-------Function call, sets value-------";
-		auto addBook = cxxMirror.getFunction("book", "addBookInfo");
-		if (addBook.has_value()) {
-			addBook.value()(bookName, author, pages, price);
-		}
+		const Record& classBook = recOpt.value();
 
+		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
+		ASSERT_TRUE(methOpt.has_value());
 
-		std::cout << "\n\n[Reflection]-------Function call, returns value-------";
-		auto showBook = cxxMirror.getFunction("book", "showBookInfo");
-		if (showBook.has_value()) {
-			const auto retPtr = showBook.value()();
-			const auto bookOpt = retPtr->get<std::string>();
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
 
-			if (bookOpt.has_value()) {
-				const auto& bookStr = bookOpt.value();
-				std::cout << bookStr;
-			}
-			else {
-				std::cout << "\nWrong type used to get value in RObject..!!";
-			}
-		}
-		else {
-			std::cout << "\n[Reflection] Call failed..!";
-		}
+		const char* authorStr = book::AUTHOR;
+		const Method& setAuthor = methOpt.value();
 
+		std::unique_ptr<RObject> retObj = setAuthor(bookObj).invoke(authorStr);
+		ASSERT_TRUE(retObj == nullptr);
 
-		const auto& classDateOpt = cxxMirror.getRecord("test_project", "Date");
-		std::cout << "\n\n[Reflection]-------Constructor/Destructor call--------";
-		if (classDateOpt.has_value()) {
-
-			std::cout << "\nCreating \"Date\" instances via reflection..";
-
-			const auto& classDate = classDateOpt.value();
-			auto dateObj0 = classDate.newInstance();
-
-			if (dateObj0 == nullptr) {
-				std::cout << "\nError..! \"Date()\" ctor call via reflection failed.";
-				return 0;
-			}
-
-			const std::string& dateStr = "17/06/2024";
-			auto dateObj1 = classDate.newInstance(dateStr);
-
-			if (dateObj1 == nullptr) {
-				std::cout << "\nError..! \"Date(std::string)\" ctor call via reflection failed.";
-				return 0;
-			}
-
-
-			std::cout << "\n\n[Reflection]-------Member function call--------";
-			const auto& getDateOpt = classDate.getMethod("getDateAsString");
-			if (getDateOpt.has_value()) {
-				const auto& getDateStr = getDateOpt.value();
-				const auto& retOpt = getDateStr(dateObj1).invoke();
-
-				if (retOpt != nullptr) {
-					std::cout << "\ncall to Date::getDateAsString() return value : " << retOpt->get<std::string>().value();
-				}
-			}
-			else {
-				std::cout << "\nerror..! couldn't resolve function call - Date::getDateAsString().";
-			}
-
-			std::cout << "\n\n\"Date\" instances created via reflection will destroy now.";
-		}
-
-		std::cout << std::endl;
-
-		return 0;
+		EXPECT_FALSE(book::test_method_setAuthor(bookObj));
 	}
-	*/
+
+
+	TEST(ClassBookMethod, args_void)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+
+		optional<Method> methOpt = classBook.getMethod(book::str_getPublishedOn);
+		ASSERT_TRUE(methOpt.has_value());
+
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
+
+		const Method& getPublishedOn = methOpt.value();
+
+		std::unique_ptr<RObject> retObj = getPublishedOn(bookObj).invoke();
+		ASSERT_TRUE(retObj != nullptr);
+
+		optional<string> retOp = retObj->get<string>();
+		ASSERT_TRUE(retOp.has_value());
+
+		const string& retStr = retOp.value();
+		EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
+	}
+
+
+	TEST(ClassBookMethod, args_string)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+
+		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
+		ASSERT_TRUE(methOpt.has_value());
+
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
+
+		std::string authorStr = book::AUTHOR;
+		const Method& setAuthor = methOpt.value();
+
+		std::unique_ptr<RObject> retObj = setAuthor(bookObj).invoke(authorStr);
+		ASSERT_TRUE(retObj == nullptr);
+
+		EXPECT_TRUE(book::test_method_setAuthor(bookObj));
+	}
+
+
+	TEST(ClassBookMethodOverload, args_void)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+
+		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
+		ASSERT_TRUE(methOpt.has_value());
+
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
+
+		const Method& updateBookInfo = methOpt.value();
+
+		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke();
+		ASSERT_TRUE(retObj == nullptr);
+		EXPECT_TRUE(book::test_method_updateBookInfo(bookObj));
+	}
+
+
+	TEST(ClassBookMethodOverload, args_string_double_charPtr)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+
+		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
+		ASSERT_TRUE(methOpt.has_value());
+
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
+
+		string author = book::AUTHOR;
+		const Method& updateBookInfo = methOpt.value();
+
+		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
+		ASSERT_TRUE(retObj == nullptr);
+
+		const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj);
+		EXPECT_TRUE(isSuccess);
+	}
+
+
+	TEST(ClassBookMethodOverload, args_charPtr_double_string)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(recOpt.has_value());
+
+		const Record& classBook = recOpt.value();
+
+		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
+		ASSERT_TRUE(methOpt.has_value());
+
+		std::unique_ptr<RObject> bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj != nullptr);
+
+		string author = book::AUTHOR;
+		const Method& updateBookInfo = methOpt.value();
+
+		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
+		ASSERT_TRUE(retObj == nullptr);
+
+		const bool isSuccess = book::test_method_updateBookInfo<const char* , double, string>(bookObj);
+		EXPECT_TRUE(isSuccess);
+	}
 }

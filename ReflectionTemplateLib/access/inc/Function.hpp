@@ -11,20 +11,29 @@ namespace rtl {
 		template<class _arg0, class ..._args>
 		inline const bool Function::hasSignature() const
 		{
-			return (m_signatureId == FunctorContainer<_arg0, _args...>::getContainerId());
+			auto hash = std::pair<signatureId, functorIndex>();
+			const auto& signId = FunctorContainer<_arg0, _args...>::getContainerId();
+			return hasSignatureId(signId, hash);
 		}
+
 
 		template<>
 		inline const bool Function::hasSignature<void>() const
 		{
-			return (m_signatureId == FunctorContainer<>::getContainerId());
+			auto hash = std::pair<signatureId, functorIndex>();
+			const auto& signId = FunctorContainer<>::getContainerId();
+			return hasSignatureId(signId, hash);
 		}
+
 
 		template<class ..._args>
 		inline std::unique_ptr<RObject> Function::operator()(_args ...params) const noexcept
 		{
-			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
-				return FunctorContainer<_args...>::reflectCall(m_functorId, params...);
+			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
+			const auto& signId = FunctorContainer<_args...>::getContainerId();
+			if (hasSignatureId(signId, hash)) 
+			{
+				return FunctorContainer<_args...>::reflectCall(hash.second, params...);
 			}
 			return nullptr;
 		}
@@ -33,8 +42,11 @@ namespace rtl {
 		template<class ..._args>
 		inline std::unique_ptr<RObject> Function::operator()(const std::unique_ptr<RObject>& pTarget, _args ...params) const
 		{
-			if (m_signatureId == FunctorContainer<_args...>::getContainerId()) {
-				return FunctorContainer<_args...>::reflectCall(pTarget, m_functorId, params...);
+			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
+			const auto& signId = FunctorContainer<_args...>::getContainerId();
+			if (hasSignatureId(signId, hash))
+			{
+				return FunctorContainer<_args...>::reflectCall(pTarget, hash.second, params...);
 			}
 			return nullptr;
 		}

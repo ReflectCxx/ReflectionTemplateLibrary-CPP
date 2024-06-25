@@ -50,7 +50,15 @@ namespace rtl {
 
 		void NameSpace::addFunction(const Function& pFunction)
 		{
-			m_functions->emplace(pFunction.getFunctionName(), pFunction);
+			const auto& funcName = pFunction.getFunctionName();
+			const auto& itr = m_functions->find(funcName);
+			if (itr == m_functions->end()) {
+				m_functions->emplace(pFunction.getFunctionName(), pFunction);
+			}
+			else {
+				const auto& function = itr->second;
+				function.addOverload(pFunction);
+			}
 		}
 
 
@@ -80,31 +88,18 @@ namespace rtl {
 		}
 
 
-		void NameSpace::init(const std::vector<Function>& pFunctions, std::unordered_map<std::string, NameSpace>& pNamespaces)
+		void NameSpace::init() const
 		{
-			for (const auto& function : pFunctions)
+			for (const auto& itr : *m_functions)
 			{
-				const auto& nameSpace = function.getNamespace();
-				const auto& recordName = function.getRecordName();
+				const Function& function = itr.second;
+				function.sortFunctorsHash();
+			}
 
-				const auto& itr0 = pNamespaces.find(nameSpace);
-				if (itr0 == pNamespaces.end()) {
-					const auto& itr1 = pNamespaces.emplace(nameSpace, NameSpace());
-					if (recordName.empty()) {
-						itr1.first->second.addFunction(function);
-					}
-					else {
-						itr1.first->second.addRecord(function);
-					}
-				}
-				else {
-					if (recordName.empty()) {
-						itr0->second.addFunction(function);
-					}
-					else {
-						itr0->second.addRecord(function);
-					}
-				}
+			for (const auto& itr : *m_records)
+			{
+				const Record& record = itr.second;
+				record.init();
 			}
 		}
 	}

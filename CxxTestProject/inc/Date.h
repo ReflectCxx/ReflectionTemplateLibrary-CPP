@@ -1,7 +1,9 @@
 
+#pragma once
+
 #include <string>
 
-namespace test_project 
+namespace nsdate
 {
 	struct Date
 	{
@@ -14,6 +16,8 @@ namespace test_project
 		~Date();
 
 		static unsigned instanceCount();
+
+		std::string getAsString();
 
 	private:
 

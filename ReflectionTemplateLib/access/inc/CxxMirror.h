@@ -17,6 +17,8 @@ namespace rtl {
 		{
 			std::unordered_map<std::string, NameSpace> m_namespaces;
 
+			void init(const std::vector<Function>& pFunctions);
+
 		public:
 
 			CxxMirror() = delete;

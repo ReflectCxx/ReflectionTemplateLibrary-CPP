@@ -7,7 +7,7 @@ using namespace std;
 
 static int objectCount = 0;
 
-namespace test_project
+namespace nsdate
 {
 	unsigned int Date::m_instanceCount = 0;
 
@@ -19,6 +19,13 @@ namespace test_project
 	{
 		return m_instanceCount;
 	}
+
+
+	std::string Date::getAsString()
+	{
+		return (to_string(m_day) + "/" + to_string(m_month) + "/" + to_string(m_year));
+	}
+
 
 	Date::Date()
 		: m_day(1)
