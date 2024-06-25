@@ -16,7 +16,10 @@ CxxMirror& MyReflection::instance()
 	static CxxMirror cxxMirror({
 
 		//Global function, not contained in any namespace.
+		//No need to specify "function<>" template types, since its the unique function, no overloads.
 		Reflect().function("getComplexNumAsString").build(getComplexNumAsString),
+		//Overloads, if one of the function takes zero params, <void> must be used, else complie error.
+		Reflect().function<void>("reverseString").build(reverseString),
 		Reflect().function<std::string>("reverseString").build(reverseString),
 		Reflect().function<const char*>("reverseString").build(reverseString),
 

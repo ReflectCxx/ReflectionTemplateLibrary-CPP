@@ -4,6 +4,7 @@
 
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
+#include "TestUtilsGlobals.h"
 
 struct MyReflection
 {

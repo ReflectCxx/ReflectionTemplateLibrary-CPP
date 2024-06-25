@@ -30,6 +30,15 @@ namespace rtl {
 		};
 
 
+		/*
+		* TODO
+		* FixMe: if instead of object pointers, raw pointers are returned (like const char*)
+		* test for:
+		*	const char* someFunction() {
+		*		return "char_litrals_must_not_b_deleted_explicitly";
+		*	}
+		* Reflect, call & get return test.
+		*/
 		template<class _objType>
 		class ReturnObject<_objType*> : public RObject
 		{
