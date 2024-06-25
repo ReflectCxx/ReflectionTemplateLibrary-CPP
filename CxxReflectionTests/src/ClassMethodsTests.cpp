@@ -12,7 +12,7 @@ namespace rtl_tests {
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> recOpt = cxxMirror.getRecord("Book");
+		optional<Record> recOpt = cxxMirror.getRecord(book::class_);
 		ASSERT_TRUE(recOpt.has_value());
 
 		const Record& classBook = recOpt.value();

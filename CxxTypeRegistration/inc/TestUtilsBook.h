@@ -12,6 +12,8 @@ namespace test_utils
 		static constexpr const unsigned int PAGES = 1050;
 		static constexpr const char* TITLE = "Somehow, I manage.";
 		static constexpr const char* AUTHOR = "Micheal G. Scott";
+		static constexpr const char* class_ = "Book";
+		static constexpr const char* str_getPublishedOn = "getPublishedOn";
 
 		static const bool assert_zero_instance_count();
 

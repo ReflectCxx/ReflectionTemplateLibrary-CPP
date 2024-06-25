@@ -8,11 +8,40 @@ using namespace test_utils;
 
 namespace rtl_tests {
 
+	TEST(RTLInterfaceCxxMirror, get_record_types_with_wrong_names)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Function> noFunc = cxxMirror.getFunction(date::ns, "wrong_date_struct");
+		EXPECT_FALSE(noFunc.has_value());
+
+		optional<Record> noRec = cxxMirror.getRecord(date::ns, "wrong" + std::string(date::struct_));
+		EXPECT_FALSE(noRec.has_value());
+	}
+
+
+	TEST(ConstructorDate, wrong_args)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+		ASSERT_TRUE(record.has_value());
+
+		const Record& classDate = record.value();
+
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		unique_ptr<RObject> instance = classDate.newInstance("wrong", "args0", 10);
+
+		ASSERT_TRUE(instance == nullptr);
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
 	TEST(ConstructorDate, args_void)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
+		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
@@ -27,7 +56,7 @@ namespace rtl_tests {
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
+		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
@@ -43,7 +72,7 @@ namespace rtl_tests {
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
+		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
@@ -62,7 +91,7 @@ namespace rtl_tests {
 
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::NS_DATE, "Date");
+		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
@@ -74,11 +103,28 @@ namespace rtl_tests {
 	}
 
 
+	TEST(ConstructorBook, wrong_args)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> record = cxxMirror.getRecord(book::class_);
+		ASSERT_TRUE(record.has_value());
+		
+		const Record& classBook = record.value();
+		
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		unique_ptr<RObject> instance = classBook.newInstance(19.0, 87.5);
+
+		ASSERT_TRUE(instance == nullptr);
+		EXPECT_TRUE(book::assert_zero_instance_count());
+	}
+
+
 	TEST(ConstructorBook, args_default)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("Book");
+		optional<Record> record = cxxMirror.getRecord(book::class_);
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classBook = record.value();
@@ -93,7 +139,7 @@ namespace rtl_tests {
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("Book");
+		optional<Record> record = cxxMirror.getRecord(book::class_);
 		ASSERT_TRUE(record.has_value());
 
 		double price = book::PRICE;
@@ -114,7 +160,7 @@ namespace rtl_tests {
 
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord("Book");
+		optional<Record> record = cxxMirror.getRecord(book::class_);
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();

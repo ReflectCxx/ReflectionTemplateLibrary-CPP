@@ -2,12 +2,12 @@
 #include "Reflect.hpp"
 
 //User defined types to be reflected.
-#include "Complex.h"
 #include "Date.h"
 #include "Book.h"
+#include "Complex.h"
 
 using namespace std;
-using namespace nsdate;
+using namespace test_utils;
 using namespace rtl::access;
 using namespace rtl::builder;
 
@@ -17,30 +17,35 @@ CxxMirror& MyReflection::instance()
 
 		//Global function, not contained in any namespace.
 		//No need to specify "function<>" template types, since its the unique function, no overloads.
-		Reflect().function("getComplexNumAsString").build(getComplexNumAsString),
-		//Overloads, if one of the function takes zero params, <void> must be used, else complie error.
-		Reflect().function<void>("reverseString").build(reverseString),
-		Reflect().function<std::string>("reverseString").build(reverseString),
-		Reflect().function<const char*>("reverseString").build(reverseString),
+		Reflect().function(str_getComplexNumAsString).build(getComplexNumAsString),
+
+		//Overloads, Specify the overload signature as template in "function<_signature...>"
+		//if one of the function takes zero params, <void> must be used, else complie error.
+		Reflect().function<void>(str_reverseString).build(reverseString),
+		Reflect().function<std::string>(str_reverseString).build(reverseString),
+		Reflect().function<const char*>(str_reverseString).build(reverseString),
 
 		//Global functions, in "complex" namespace.
-		Reflect().nameSpace("complex").function("setReal").build(complex::setReal),
-		Reflect().nameSpace("complex").function("setImaginary").build(complex::setImaginary),
-		Reflect().nameSpace("complex").function("getMagnitude").build(complex::getMagnitude),
+		Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
+		Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
+		Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
 
-		//"Date" struct, in test_project namespace. Ctor, Date()
-		Reflect().nameSpace("nsdate").record<Date>("Date").constructor().build(),
+		//date::record struct, in nsdate namespace. Ctor, Date()
+		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),
+
 		//Ctor, Date(std::string)
-		Reflect().nameSpace("nsdate").record<Date>("Date").constructor<string>().build(),
+		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),
+
 		//Ctor, Date(unsigned, unsigned, unsigned)
-		Reflect().nameSpace("nsdate").record<Date>("Date").constructor<unsigned, unsigned, unsigned>().build(),
+		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),
 
 		//class Book, no namespace. constructors builds.
-		Reflect().record<Book>("Book").constructor().build(),
-		Reflect().record<Book>("Book").constructor<double, string>().build(),
+		Reflect().record<Book>(book::class_).constructor().build(),
+		Reflect().record<Book>(book::class_).constructor<double, string>().build(),
 
 		//class Book, Methods
-		Reflect().record<Book>("Book").method("getPublishedOn").build(&Book::getPublishedOn)
+		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn)
+
 		//Overloaded Methods
 		//Reflect().record<Book>("Book").method("updateBookInfo").build(&Book::updateBookInfo)
 	});
