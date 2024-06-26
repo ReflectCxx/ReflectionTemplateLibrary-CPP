@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <optional>
+
 namespace test_utils {
 
 	extern const char* REV_STR_VOID_RET;
@@ -20,4 +23,14 @@ namespace test_utils {
 	static constexpr const char* str_setReal = "setReal";
 	static constexpr const char* str_setImaginary = "setImaginary";
 	static constexpr const char* str_getMagnitude = "getMagnitude";
+
+	template<class Type>
+	static Type* getObject(const std::unique_ptr<rtl::access::RObject>& pInstance)
+	{
+		std::optional<Type*> robj = pInstance->get<Type*>();
+		if (!robj.has_value()) {
+			return nullptr;
+		}
+		return robj.value();
+	}
 }
