@@ -47,16 +47,16 @@ namespace rtl {
 			static int addConstructor();
 
 			template<class _returnType>
-			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void>* _ = nullptr);
+			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_ = nullptr);
 
 			template<class _returnType>
-			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void>* _ = nullptr);
+			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
 
 			template<class _recordType, class _returnType>
-			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void>* _ = nullptr);
+			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_ = nullptr);
 
 			template<class _recordType, class _returnType>
-			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void>* _ = nullptr);
+			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
 
 			template<class ..._params>
 			static std::unique_ptr<RObject> reflectCall(std::size_t pFunctorId, _params..._args);

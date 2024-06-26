@@ -3,6 +3,13 @@
 #include <memory>
 #include <optional>
 
+
+/*
+TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
+strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
+
+Provides interface for Testing/Comparing the global functions & types (may or not be in some namespace) without exposing their actual implementation.
+*/
 namespace test_utils {
 
 	extern const char* REV_STR_VOID_RET;

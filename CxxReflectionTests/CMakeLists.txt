@@ -22,6 +22,7 @@ include_directories(inc)
 include_directories("${CMAKE_SOURCE_DIR}/CxxTypeRegistration/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
+include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc")
 
 target_link_libraries(${CXX_EXE_NAME} GTest::gtest_main)
 target_link_libraries(${CXX_EXE_NAME} CxxTypeRegistration)

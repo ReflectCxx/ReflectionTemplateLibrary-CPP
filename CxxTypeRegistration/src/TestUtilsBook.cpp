@@ -1,6 +1,4 @@
 
-#include<optional>
-
 #include "RObject.hpp"
 #include "TestUtilsBook.h"
 #include "TestUtilsGlobals.h"

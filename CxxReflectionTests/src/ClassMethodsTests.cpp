@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Reflection.h"
+#include "MyReflection.h"
+#include "TestUtilsBook.h"
 
 using namespace std;
 using namespace rtl::access;

@@ -2,7 +2,8 @@
 #include <complex>
 #include <gtest/gtest.h>
 
-#include "Reflection.h"
+#include "MyReflection.h"
+#include "TestUtilsGlobals.h"
 
 using namespace std;
 using namespace test_utils;

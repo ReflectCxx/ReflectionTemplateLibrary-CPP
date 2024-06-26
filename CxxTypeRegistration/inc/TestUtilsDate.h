@@ -4,6 +4,12 @@
 
 #include "RObject.h"
 
+/*
+TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
+strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
+
+Provides interface for Testing/Comparing the class "Date" objects states/returns without exposing the actual type "Date".
+*/
 namespace test_utils
 {
 	struct date

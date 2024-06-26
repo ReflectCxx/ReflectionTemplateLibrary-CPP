@@ -62,7 +62,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class _returnType>
-		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void>* _)
+		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
 			{
@@ -76,7 +76,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class _returnType>
-		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void>* _)
+		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
 			const auto& retTypeStr = TypeList<_returnType>::toString();
 			const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
@@ -91,7 +91,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class _recordType, class _returnType>
-		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void>* _)
+		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
 			{
@@ -113,7 +113,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class _recordType, class _returnType>
-		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void>* _)
+		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
 			const auto& retTypeStr = TypeList<_returnType>::toString();
 			const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
