@@ -11,7 +11,7 @@ namespace rtl {
 	namespace access 
 	{
 		template<class ..._ctorArgs>
-		inline std::unique_ptr<RObject> Record::newInstance(_ctorArgs ...params) const
+		inline Rany Record::newInstance(_ctorArgs ...params) const
 		{
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions->find(ctorName);
@@ -21,7 +21,7 @@ namespace rtl {
 			else {
 				assert(false && "Throw bad call exception");
 			}
-			return nullptr;
+			return Rany();
 		}
 	}
 }

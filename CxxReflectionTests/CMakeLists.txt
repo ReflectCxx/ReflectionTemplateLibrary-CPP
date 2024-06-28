@@ -21,6 +21,7 @@ FetchContent_MakeAvailable(googletest)
 include_directories(inc)
 include_directories("${CMAKE_SOURCE_DIR}/CxxTypeRegistration/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc")
 

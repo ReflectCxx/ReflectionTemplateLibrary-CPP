@@ -1,29 +1,28 @@
 #pragma once
 
-#include <memory>
 #include <vector>
-#include <iostream>
 #include <functional>
 
-#include "RObject.hpp"
 #include "Constants.h"
 
 namespace rtl {
 
-	namespace builder
-	{
+	namespace access {
+		class Rany;
+		class Function;
+	}
+
+	namespace builder {
 		template<class ..._args>
 		class FunctionBuilder;
 	}
 
-	namespace access
+	namespace detail
 	{
-		class Function;
-
 		template<class ..._signature>
 		class FunctorContainer
 		{
-			friend Function;
+			friend access::Function;
 
 			template<class ..._args>
 			friend class builder::FunctionBuilder;
@@ -36,12 +35,11 @@ namespace rtl {
 			
 			static const std::size_t m_containerId;
 
-			using FunctorType = std::function < std::unique_ptr<RObject>(_signature...) >;
-			using MethodPtrType = std::function < std::unique_ptr<RObject>(const std::unique_ptr<RObject>&, _signature...) >;
+			using FunctorType = std::function < access::Rany(_signature...) >;
+			using MethodPtrType = std::function < access::Rany(const access::Rany&, _signature...) >;
 
 			static std::vector<FunctorType> m_functors;
 			static std::vector<MethodPtrType> m_methodPtrs;
-
 
 			template<class _recordType>
 			static int addConstructor();
@@ -59,10 +57,10 @@ namespace rtl {
 			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
 
 			template<class ..._params>
-			static std::unique_ptr<RObject> reflectCall(std::size_t pFunctorId, _params..._args);
+			static access::Rany reflectCall(std::size_t pFunctorId, _params..._args);
 
 			template<class ..._params>
-			static std::unique_ptr<RObject> reflectCall(const std::unique_ptr<RObject>& pTarget, std::size_t pFunctorId, _params..._args);
+			static access::Rany reflectCall(const access::Rany& pTarget, std::size_t pFunctorId, _params..._args);
 		};
 	}
 }

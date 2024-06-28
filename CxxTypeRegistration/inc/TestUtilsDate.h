@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
-
-#include "RObject.h"
+#include "Rany.h"
 
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
@@ -24,6 +22,6 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		template<class ..._argsType>
-		static const bool test_new_instance_ctor(const std::unique_ptr<rtl::access::RObject>& pInstance);
+		static const bool test_new_instance_ctor(const rtl::access::Rany& pInstance);
 	};
 }

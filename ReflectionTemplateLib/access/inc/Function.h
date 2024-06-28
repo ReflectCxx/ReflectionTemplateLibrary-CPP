@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <memory>
 #include <vector>
 
 #include "Constants.h"
@@ -19,8 +18,8 @@ namespace rtl {
 
 	namespace access
 	{
+		class Rany;
 		class Record;
-		class RObject;
 		class NameSpace;
 		class MethodInvoker;
 
@@ -47,10 +46,10 @@ namespace rtl {
 			const bool hasSignatureId(const signatureId pSignId, std::pair<signatureId, functorIndex>& pFuncHash) const;
 
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId);
+				 const std::string& pSignature, const signatureId& pSignatureId, const functorIndex& pFunctorId);
 
 			template<class ..._args>
-			std::unique_ptr<RObject> operator()(const std::unique_ptr<RObject>& pTarget, _args...params) const;
+			Rany operator()(const Rany& pTarget, _args...params) const;
 
 		public: 
 			
@@ -65,7 +64,7 @@ namespace rtl {
 			const bool hasSignature() const;
 
 			template<class ..._args>
-			std::unique_ptr<RObject> operator()(_args...params) const noexcept;
+			Rany operator()(_args...params) const noexcept;
 		};
 	}
 }

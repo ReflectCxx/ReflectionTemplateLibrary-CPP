@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Function.h"
-#include "RObject.hpp"
 
 namespace rtl {
 
@@ -20,7 +19,7 @@ namespace rtl {
 
 		public:
 
-			const MethodInvoker operator()(const std::unique_ptr<RObject>& pTarget) const;
+			const MethodInvoker operator()(const Rany& pTarget) const;
 		};
 
 
@@ -28,15 +27,15 @@ namespace rtl {
 		{
 			friend Method;
 
+			const Rany& m_target;
 			const Function& m_function;
-			const std::unique_ptr<RObject>& m_target;
 
-			MethodInvoker(const Function& pFunction, const std::unique_ptr<RObject>& pTarget);
+			MethodInvoker(const Function& pFunction, const Rany& pTarget);
 
 		public:
 			
 			template<class ..._args>
-			std::unique_ptr<RObject> invoke(_args...params) const noexcept;
+			Rany invoke(_args...params) const noexcept;
 		};
 	}
 }

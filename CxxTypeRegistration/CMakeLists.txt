@@ -15,6 +15,7 @@ ADD_LIBRARY(${PROJECT_NAME} STATIC "")
 INCLUDE_DIRECTORIES(inc)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/CxxTestProject/inc")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc")
 

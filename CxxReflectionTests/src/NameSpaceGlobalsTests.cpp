@@ -65,14 +65,14 @@ TEST(FunctionInNameSpace, namespace_function_execute_return)
 	setImaginary(g_imaginary);
 
 	EXPECT_TRUE(getMagnitude.hasSignature<void>());
-	unique_ptr<RObject> retObj = getMagnitude();
-	ASSERT_TRUE(retObj != nullptr);
+	Rany retObj = getMagnitude();
+	ASSERT_TRUE(retObj.get().has_value());
+	ASSERT_TRUE(retObj.isOfType<double>());
 
-	optional<double> retVal = retObj->get<double>();
-	ASSERT_TRUE(retVal.has_value());
-
+	double retVal = std::any_cast<double>(retObj.get());
 	double magnitude = abs(complex(g_real, g_imaginary));
-	EXPECT_DOUBLE_EQ(magnitude, retVal.value());
+
+	EXPECT_DOUBLE_EQ(magnitude, retVal);
 }
 
 
@@ -89,8 +89,8 @@ TEST(FunctionInNameSpace, execute_with_wrong_signature)
 	EXPECT_FALSE(setReal.hasSignature<float>());
 
 	//No op.
-	unique_ptr<RObject> retObj = setReal(float(g_real));
-	ASSERT_TRUE(retObj == nullptr);
+	Rany retObj = setReal(float(g_real));
+	ASSERT_FALSE(retObj.get().has_value());
 }
 
 
@@ -103,13 +103,13 @@ TEST(GlobalFunction, get_function_execute_return)
 
 	const Function& getComplexNumAsString = getFunc.value();
 
-	unique_ptr<RObject> retObj = getComplexNumAsString();
-	ASSERT_TRUE(retObj != nullptr);
-	optional<string> retVal = retObj->get<string>();
-	ASSERT_TRUE(retVal.has_value());
+	Rany retObj = getComplexNumAsString();
+	ASSERT_TRUE(retObj.get().has_value());
 
+	string retVal = std::any_cast<string>(retObj.get());
 	string comlexNumStr = to_string(g_real) + "i" + to_string(g_imaginary);
-	EXPECT_TRUE(comlexNumStr == retVal.value());
+
+	EXPECT_TRUE(comlexNumStr == retVal);
 }
 
 
@@ -122,26 +122,21 @@ TEST(GlobalFunction, overloaded_function_execute_return)
 
 	const Function& reverseString = getFunc.value();
 
-	const char* charStr = STRA;
-	unique_ptr<RObject> retObj0 = reverseString(charStr);
-	ASSERT_TRUE(retObj0 != nullptr);
+	Rany retObj0 = reverseString(string(STRA));
+	ASSERT_TRUE(retObj0.get().has_value());
 
-	optional<string> retVal0 = retObj0->get<string>();
-	ASSERT_TRUE(retVal0.has_value());
-	EXPECT_TRUE(retVal0.value() == STRA_REVERSE);
+	string retVal0 = std::any_cast<string>(retObj0.get());
+	EXPECT_TRUE(retVal0 == STRA_REVERSE);
 
-	string stdStr = STRB;
-	unique_ptr<RObject> retObj1 = reverseString(stdStr);
-	ASSERT_TRUE(retObj1 != nullptr);
+	Rany retObj1 = reverseString(string(STRB));
+	ASSERT_TRUE(retObj1.get().has_value());
 
-	optional<string> retVal1 = retObj1->get<string>();
-	ASSERT_TRUE(retVal1.has_value());
-	EXPECT_TRUE(retVal1.value() == STRB_REVERSE);
+	string retVal1 = std::any_cast<string>(retObj1.get());
+	EXPECT_TRUE(retVal1 == STRB_REVERSE);
 
-	unique_ptr<RObject> retObj2 = reverseString();
-	ASSERT_TRUE(retObj2 != nullptr);
+	Rany retObj2 = reverseString();
+	ASSERT_TRUE(retObj2.get().has_value());
 
-	optional<string> retVal2 = retObj2->get<string>();
-	ASSERT_TRUE(retVal2.has_value());
-	EXPECT_TRUE(retVal2.value() == REV_STR_VOID_RET);
+	string retVal2 = std::any_cast<string>(retObj2.get());
+	EXPECT_TRUE(retVal2 == REV_STR_VOID_RET);
 }

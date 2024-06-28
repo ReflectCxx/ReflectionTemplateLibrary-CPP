@@ -13,9 +13,11 @@ SET(CXX_LIB_NAME ReflectionTemplateLib)
 ADD_LIBRARY(${PROJECT_NAME} STATIC "")
 
 INCLUDE_DIRECTORIES(common)
+INCLUDE_DIRECTORIES(detail/inc)
 INCLUDE_DIRECTORIES(access/inc)
 INCLUDE_DIRECTORIES(builder/inc)
 
 # Add the source directory
+INCLUDE(detail/src/CMakeLists.txt)
 INCLUDE(access/src/CMakeLists.txt)
 INCLUDE(builder/src/CMakeLists.txt)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TypeList.h"
+#include "Rany.h"
 #include "Function.h"
 #include "FunctorContainer.hpp"
 
@@ -12,7 +12,7 @@ namespace rtl {
 		inline const bool Function::hasSignature() const
 		{
 			auto hash = std::pair<signatureId, functorIndex>();
-			const auto& signId = FunctorContainer<_arg0, _args...>::getContainerId();
+			const auto& signId = detail::FunctorContainer<_arg0, _args...>::getContainerId();
 			return hasSignatureId(signId, hash);
 		}
 
@@ -21,34 +21,34 @@ namespace rtl {
 		inline const bool Function::hasSignature<void>() const
 		{
 			auto hash = std::pair<signatureId, functorIndex>();
-			const auto& signId = FunctorContainer<>::getContainerId();
+			const auto& signId = detail::FunctorContainer<>::getContainerId();
 			return hasSignatureId(signId, hash);
 		}
 
 
 		template<class ..._args>
-		inline std::unique_ptr<RObject> Function::operator()(_args ...params) const noexcept
+		inline Rany Function::operator()(_args ...params) const noexcept
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
-			const auto& signId = FunctorContainer<_args...>::getContainerId();
+			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash)) 
 			{
-				return FunctorContainer<_args...>::reflectCall(hash.second, params...);
+				return detail::FunctorContainer<_args...>::reflectCall(hash.second, params...);
 			}
-			return nullptr;
+			return Rany();
 		}
 
 
 		template<class ..._args>
-		inline std::unique_ptr<RObject> Function::operator()(const std::unique_ptr<RObject>& pTarget, _args ...params) const
+		inline Rany Function::operator()(const Rany& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
-			const auto& signId = FunctorContainer<_args...>::getContainerId();
+			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return FunctorContainer<_args...>::reflectCall(pTarget, hash.second, params...);
+				return detail::FunctorContainer<_args...>::reflectCall(pTarget, hash.second, params...);
 			}
-			return nullptr;
+			return Rany();
 		}
 	}
 }
