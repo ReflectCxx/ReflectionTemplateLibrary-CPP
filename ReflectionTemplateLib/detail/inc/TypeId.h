@@ -30,24 +30,24 @@ namespace rtl {
 		};
 
 
-		template<class ..._rest>
-		struct TypeId<std::string, _rest...>
-		{
-			using TAIL = TypeId<_rest...>;
+		// template<class ..._rest>
+		// struct TypeId<std::string, _rest...>
+		// {
+		// 	using TAIL = TypeId<_rest...>;
 
-			static constexpr const std::size_t get() {
-				return m_typeId;
-			}
+		// 	static constexpr const std::size_t get() {
+		// 		return m_typeId;
+		// 	}
 
-			static const std::string toString()
-			{
-				const std::string& tailStr = TAIL::toString();
-				return ("std::string" + (tailStr.empty() ? "" : (", " + tailStr)));
-			}
+		// 	static const std::string toString()
+		// 	{
+		// 		const std::string& tailStr = TAIL::toString();
+		// 		return ("std::string" + (tailStr.empty() ? "" : (", " + tailStr)));
+		// 	}
 
-		private:
-			static const std::size_t m_typeId;
-		};
+		// private:
+		// 	static const std::size_t m_typeId;
+		// };
 
 
 		template<class _first, class ..._rest>
@@ -68,7 +68,7 @@ namespace rtl {
 		template<class _type>
 		const std::size_t TypeId<_type>::m_typeId = ++g_typeIdCounter;
 
-		template<class ..._rest>
-		const std::size_t TypeId<std::string, _rest...>::m_typeId = ++g_typeIdCounter;
+		// template<class ..._rest>
+		// const std::size_t TypeId<std::string, _rest...>::m_typeId = ++g_typeIdCounter;
 	}
 }

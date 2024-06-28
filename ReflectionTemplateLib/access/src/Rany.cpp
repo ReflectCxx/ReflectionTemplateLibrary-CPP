@@ -1,4 +1,3 @@
-#pragma once
 
 #include <any>
 #include "Rany.h"
