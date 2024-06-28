@@ -34,14 +34,14 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		const char* authorStr = book::AUTHOR;
 		const Method& setAuthor = methOpt.value();
 
-		std::unique_ptr<RObject> retObj = setAuthor(bookObj).invoke(authorStr);
-		ASSERT_TRUE(retObj == nullptr);
+		Rany retObj = setAuthor(bookObj).invoke(authorStr);
+		ASSERT_FALSE(retObj.get().has_value());
 
 		EXPECT_FALSE(book::test_method_setAuthor(bookObj));
 	}
@@ -59,18 +59,15 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_getPublishedOn);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& getPublishedOn = methOpt.value();
+		Rany retObj = getPublishedOn(bookObj).invoke();
 
-		std::unique_ptr<RObject> retObj = getPublishedOn(bookObj).invoke();
-		ASSERT_TRUE(retObj != nullptr);
+		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
 
-		optional<string> retOp = retObj->get<string>();
-		ASSERT_TRUE(retOp.has_value());
-
-		const string& retStr = retOp.value();
+		const std::string& retStr = any_cast<string>(retObj.get());
 		EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 	}
 
@@ -87,14 +84,14 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		std::string authorStr = book::AUTHOR;
 		const Method& setAuthor = methOpt.value();
 
-		std::unique_ptr<RObject> retObj = setAuthor(bookObj).invoke(authorStr);
-		ASSERT_TRUE(retObj == nullptr);
+		Rany retObj = setAuthor(bookObj).invoke(authorStr);
+		ASSERT_FALSE(retObj.get().has_value());
 
 		EXPECT_TRUE(book::test_method_setAuthor(bookObj));
 	}
@@ -112,13 +109,13 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& updateBookInfo = methOpt.value();
+		Rany retObj = updateBookInfo(bookObj).invoke();
 
-		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke();
-		ASSERT_TRUE(retObj == nullptr);
+		ASSERT_FALSE(retObj.get().has_value());
 		EXPECT_TRUE(book::test_method_updateBookInfo(bookObj));
 	}
 
@@ -135,14 +132,14 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;
 		const Method& updateBookInfo = methOpt.value();
 
-		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
-		ASSERT_TRUE(retObj == nullptr);
+		Rany retObj = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
+		ASSERT_FALSE(retObj.get().has_value());
 
 		const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj);
 		EXPECT_TRUE(isSuccess);
@@ -161,14 +158,14 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		std::unique_ptr<RObject> bookObj = classBook.newInstance();
-		ASSERT_TRUE(bookObj != nullptr);
+		Rany bookObj = classBook.newInstance();
+		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;
 		const Method& updateBookInfo = methOpt.value();
 
-		std::unique_ptr<RObject> retObj = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
-		ASSERT_TRUE(retObj == nullptr);
+		Rany retObj = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
+		ASSERT_FALSE(retObj.get().has_value());
 
 		const bool isSuccess = book::test_method_updateBookInfo<const char* , double, string>(bookObj);
 		EXPECT_TRUE(isSuccess);

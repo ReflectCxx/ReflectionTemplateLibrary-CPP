@@ -32,9 +32,9 @@ namespace rtl_tests {
 		const Record& classDate = record.value();
 
 		EXPECT_TRUE(date::assert_zero_instance_count());
-		unique_ptr<RObject> instance = classDate.newInstance("wrong", "args0", 10);
+		Rany instance = classDate.newInstance("wrong", "args0", 10);
 
-		ASSERT_TRUE(instance == nullptr);
+		ASSERT_FALSE(instance.get().has_value());
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
@@ -47,9 +47,9 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
-		unique_ptr<RObject> instance = classDate.newInstance();
+		Rany instance = classDate.newInstance();
 
-		ASSERT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance.get().has_value());
 		EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
 	}
 
@@ -63,9 +63,9 @@ namespace rtl_tests {
 
 		const Record& classDate = record.value();
 		const string& dateStr = date::DATE_STR;
-		unique_ptr<RObject> instance = classDate.newInstance(dateStr);
+		Rany instance = classDate.newInstance(dateStr);
 
-		ASSERT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance.get().has_value());
 		EXPECT_TRUE(date::test_new_instance_ctor<string>(instance));
 	}
 
@@ -78,9 +78,9 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
-		unique_ptr<RObject> instance = classDate.newInstance(date::day, date::month, date::year);
+		Rany instance = classDate.newInstance(date::day, date::month, date::year);
 
-		ASSERT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance.get().has_value());
 
 		const bool isPassed = date::test_new_instance_ctor<unsigned, unsigned, unsigned>(instance);
 		EXPECT_TRUE(isPassed);
@@ -97,8 +97,8 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
-			unique_ptr<RObject> instance = classDate.newInstance();
-			ASSERT_TRUE(instance != nullptr);
+			Rany instance = classDate.newInstance();
+			ASSERT_TRUE(instance.get().has_value());
 			EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -115,9 +115,9 @@ namespace rtl_tests {
 		const Record& classBook = record.value();
 		
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		unique_ptr<RObject> instance = classBook.newInstance(19.0, 87.5);
+		Rany instance = classBook.newInstance(19.0, 87.5);
 
-		ASSERT_TRUE(instance == nullptr);
+		ASSERT_FALSE(instance.get().has_value());
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
@@ -130,9 +130,9 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classBook = record.value();
-		unique_ptr<RObject> instance = classBook.newInstance();
+		Rany instance = classBook.newInstance();
 
-		ASSERT_TRUE(instance != nullptr);
+		ASSERT_TRUE(instance.get().has_value());
 		EXPECT_TRUE(book::test_new_instance_ctor(instance));
 	}
 
@@ -148,8 +148,8 @@ namespace rtl_tests {
 		string title = book::TITLE;
 		const Record& classBook = record.value();
 
-		unique_ptr<RObject> instance = classBook.newInstance(price, title);
-		ASSERT_TRUE(instance != nullptr);
+		Rany instance = classBook.newInstance(price, title);
+		ASSERT_TRUE(instance.get().has_value());
 
 		const bool isPassed = book::test_new_instance_ctor<double, string>(instance);
 		EXPECT_TRUE(isPassed);
@@ -166,8 +166,8 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
-			unique_ptr<RObject> instance = classDate.newInstance();
-			ASSERT_TRUE(instance != nullptr);
+			Rany instance = classDate.newInstance();
+			ASSERT_TRUE(instance.get().has_value());
 			EXPECT_TRUE(book::test_new_instance_ctor(instance));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

@@ -8,7 +8,7 @@ namespace rtl {
 	namespace access 
 	{
 		Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction,
-				   const std::string& pSignature, const std::size_t& pSignatureId, const std::size_t& pFunctorId)
+				   const std::string& pSignature, const signatureId& pSignatureId, const functorIndex& pFunctorId)
 			: m_functorHash({ std::make_pair(pSignatureId, pFunctorId) })
 			, m_record(pRecord)
 			, m_function(pFunction)
@@ -28,7 +28,7 @@ namespace rtl {
 		void Function::sortFunctorsHash() const
 		{
 			std::sort(m_functorHash.begin(), m_functorHash.end(),
-				[](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+				[](const std::pair<signatureId, functorIndex>& a, const std::pair<signatureId, functorIndex>& b) {
 					return a.first < b.first;
 				});
 		}
@@ -37,7 +37,7 @@ namespace rtl {
 		const bool Function::hasSignatureId(const signatureId pSignId, std::pair<signatureId, functorIndex>& pFuncHash) const
 		{
 			const auto& itr = std::lower_bound(m_functorHash.begin(), m_functorHash.end(), std::make_pair(pSignId, 0),
-				[](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+				[](const std::pair<signatureId, functorIndex>& a, const std::pair<signatureId, functorIndex>& b) {
 					return a.first < b.first;
 				});
 

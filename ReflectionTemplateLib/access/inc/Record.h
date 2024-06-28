@@ -8,8 +8,8 @@ namespace rtl {
 
 	namespace access 
 	{
+		class Rany;
 		class Method;
-		class RObject;
 		class Function;
 		class NameSpace;
 
@@ -42,7 +42,7 @@ namespace rtl {
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
 			template<class ..._ctorArgs>
-			std::unique_ptr<RObject> newInstance(_ctorArgs ...params) const;
+			Rany newInstance(_ctorArgs ...params) const;
 		};
 	}
 }

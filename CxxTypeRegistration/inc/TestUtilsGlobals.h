@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <optional>
-
+#include "Rany.h"
 
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
@@ -32,12 +30,10 @@ namespace test_utils {
 	static constexpr const char* str_getMagnitude = "getMagnitude";
 
 	template<class Type>
-	static Type* getObject(const std::unique_ptr<rtl::access::RObject>& pInstance)
-	{
-		std::optional<Type*> robj = pInstance->get<Type*>();
-		if (!robj.has_value()) {
+	static Type getObject(const rtl::access::Rany& pInstance) {
+		if (!pInstance.isOfType<Type>()) {
 			return nullptr;
 		}
-		return robj.value();
+		return std::any_cast<Type>(pInstance.get());
 	}
 }

@@ -1,17 +1,19 @@
 #pragma once
 
 #include <cassert>
-#include "TypeList.h"
+
+#include "Rany.h"
+#include "TypeId.h"
 #include "FunctorContainer.h"
 
 namespace rtl {
 
-	extern std::size_t g_containerId;
-
-	namespace access 
+	namespace detail 
 	{
+		extern std::size_t g_containerId;
+
 		template<class ..._signature>
-		const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerId++;
+		const std::size_t FunctorContainer<_signature...>::m_containerId = ++g_containerId;
 
 
 		template<class ..._signature>
@@ -31,7 +33,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline std::unique_ptr<RObject> FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
+		inline access::Rany FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
 		{
 			return m_functors.at(pFunctorId)(_args...);
 		}
@@ -39,7 +41,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline std::unique_ptr<RObject> FunctorContainer<_signature...>::reflectCall(const std::unique_ptr<RObject>& pTarget, std::size_t pFunctorId, _params ..._args)
+		inline access::Rany FunctorContainer<_signature...>::reflectCall(const access::Rany& pTarget, std::size_t pFunctorId, _params ..._args)
 		{
 			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
@@ -49,11 +51,11 @@ namespace rtl {
 		template<class _recordType>
 		inline int FunctorContainer<_signature...>::addConstructor()
 		{
-			const auto& ctorType = TypeList<_recordType>::toString();
-			const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
+			const auto functor = [=](_signature...params)->access::Rany
 			{
+				const auto& typeId = TypeId<_recordType*>::get();
 				_recordType* retObj = new _recordType(params...);
-				return std::unique_ptr<RObject>(new ReturnObject<_recordType*>(ctorType, retObj));
+				return access::Rany(std::make_any<_recordType*>(retObj), typeId);
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -64,10 +66,10 @@ namespace rtl {
 		template<class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
-			const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
+			const auto functor = [=](_signature...params)->access::Rany
 			{
 				(*pFunctor)(params...);
-				return nullptr;
+				return access::Rany();
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -78,11 +80,11 @@ namespace rtl {
 		template<class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
-			const auto& retTypeStr = TypeList<_returnType>::toString();
-			const auto functor = [=](_signature...params)->std::unique_ptr<RObject>
+			const auto functor = [=](_signature...params)->access::Rany
 			{
 				const auto& retObj = (*pFunctor)(params...);
-				return std::unique_ptr<RObject>(new ReturnObject<_returnType>(retTypeStr, retObj));
+				const auto& typeId = TypeId<_returnType>::get();
+				return access::Rany(std::make_any<_returnType>(retObj), typeId);
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -93,18 +95,20 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
-			const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
+			const auto functor = [=](const access::Rany& pTargetObj, _signature...params)->access::Rany
 			{
-				auto targetObj = pTargetObj->get<_recordType*>();
-				if (targetObj.has_value())
+				if (pTargetObj.get().has_value() && pTargetObj.isOfType<_recordType*>())
 				{
-					_recordType* target = targetObj.value();
-					(target->*pFunctor)(params...);
+					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+					if (target != nullptr) 
+					{
+						(target->*pFunctor)(params...);
+						return access::Rany();
+					}
+					assert(false && "Throw call on bad target exception");
 				}
-				else {
-					assert(false && "Throw bad call exception");
-				}
-				return nullptr;
+				assert(false && "Throw call on bad target exception");
+				return access::Rany();
 			};
 			m_methodPtrs.push_back(functor);
 			return (m_methodPtrs.size() - 1);
@@ -115,20 +119,21 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
-			const auto& retTypeStr = TypeList<_returnType>::toString();
-			const auto functor = [=](const std::unique_ptr<RObject>& pTargetObj, _signature...params)->std::unique_ptr<RObject>
+			const auto functor = [=](const access::Rany& pTargetObj, _signature...params)->access::Rany
 			{
-				auto targetObj = pTargetObj->get<_recordType*>();
-				if (targetObj.has_value())
+				if (pTargetObj.get().has_value() && pTargetObj.isOfType<_recordType*>())
 				{
-					_recordType* target = targetObj.value();
-					const auto& retObj = (target->*pFunctor)(params...);
-					return std::unique_ptr<RObject>(new ReturnObject<_returnType>(retTypeStr, retObj));
+					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+					if (target != nullptr) 
+					{
+						const auto& typeId = TypeId<_returnType>::get();
+						const auto& retObj = (target->*pFunctor)(params...);
+						return access::Rany(std::make_any<_returnType>(retObj), typeId);
+					}
+					assert(false && "Throw call on bad target exception");
 				}
-				else {
-					assert(false && "Throw bad call exception");
-					return nullptr;
-				}
+				assert(false && "Throw call on bad target exception");
+				return access::Rany();
 			};
 			m_methodPtrs.push_back(functor);
 			return (m_methodPtrs.size() - 1);
