@@ -7,14 +7,12 @@
 
 using namespace std;
 using namespace nsdate;
-using namespace rtl::access;
 
 namespace test_utils
 {
 	const bool book::assert_zero_instance_count()
 	{
-		//Fix Me: enable destructor reflection
-		return true;// (Book::getInstanceCount() == 0);
+		return (Book::getInstanceCount() == 0);
 	}
 
 
@@ -25,9 +23,9 @@ namespace test_utils
 	}
 
 	template<>
-	const bool book::test_new_instance_ctor<>(const Rany& pInstance)
+	const bool book::test_new_instance_ctor<>(const any& pInstance)
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}
@@ -36,9 +34,9 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_new_instance_ctor<double, string>(const Rany& pInstance)
+	const bool book::test_new_instance_ctor<double, string>(const any& pInstance)
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}
@@ -46,9 +44,9 @@ namespace test_utils
 	}
 
 
-	const bool book::test_method_setAuthor(const Rany& pInstance)
+	const bool book::test_method_setAuthor(const any& pInstance)
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}
@@ -60,9 +58,9 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<>(const Rany& pInstance) 
+	const bool book::test_method_updateBookInfo<>(const any& pInstance) 
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}
@@ -74,9 +72,9 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<const char*, double, string>(const Rany& pInstance)
+	const bool book::test_method_updateBookInfo<const char*, double, string>(const any& pInstance)
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}
@@ -88,9 +86,9 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<string, double, const char*>(const Rany& pInstance)
+	const bool book::test_method_updateBookInfo<string, double, const char*>(const any& pInstance)
 	{
-		Book* rbook = test_utils::getObject<Book*>(pInstance);
+		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
 			return false;
 		}

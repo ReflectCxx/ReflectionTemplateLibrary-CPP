@@ -34,16 +34,16 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const char* authorStr = book::AUTHOR;
 		const Method& setAuthor = methOpt.value();
 
-		Rany retObj = setAuthor(bookObj).invoke(authorStr);
+		SmartAny retObj = setAuthor(bookObj).invoke(authorStr);
 		ASSERT_FALSE(retObj.get().has_value());
 
-		EXPECT_FALSE(book::test_method_setAuthor(bookObj));
+		EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
 	}
 
 
@@ -59,11 +59,11 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_getPublishedOn);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& getPublishedOn = methOpt.value();
-		Rany retObj = getPublishedOn(bookObj).invoke();
+		SmartAny retObj = getPublishedOn(bookObj).invoke();
 
 		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
 
@@ -84,16 +84,16 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		std::string authorStr = book::AUTHOR;
 		const Method& setAuthor = methOpt.value();
 
-		Rany retObj = setAuthor(bookObj).invoke(authorStr);
+		SmartAny retObj = setAuthor(bookObj).invoke(authorStr);
 		ASSERT_FALSE(retObj.get().has_value());
 
-		EXPECT_TRUE(book::test_method_setAuthor(bookObj));
+		EXPECT_TRUE(book::test_method_setAuthor(bookObj.get()));
 	}
 
 
@@ -109,14 +109,14 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& updateBookInfo = methOpt.value();
-		Rany retObj = updateBookInfo(bookObj).invoke();
+		SmartAny retObj = updateBookInfo(bookObj).invoke();
 
 		ASSERT_FALSE(retObj.get().has_value());
-		EXPECT_TRUE(book::test_method_updateBookInfo(bookObj));
+		EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get()));
 	}
 
 
@@ -132,16 +132,16 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;
 		const Method& updateBookInfo = methOpt.value();
 
-		Rany retObj = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
+		SmartAny retObj = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
 		ASSERT_FALSE(retObj.get().has_value());
 
-		const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj);
+		const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.get());
 		EXPECT_TRUE(isSuccess);
 	}
 
@@ -158,16 +158,16 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		Rany bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.newInstance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;
 		const Method& updateBookInfo = methOpt.value();
 
-		Rany retObj = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
+		SmartAny retObj = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
 		ASSERT_FALSE(retObj.get().has_value());
 
-		const bool isSuccess = book::test_method_updateBookInfo<const char* , double, string>(bookObj);
+		const bool isSuccess = book::test_method_updateBookInfo<const char* , double, string>(bookObj.get());
 		EXPECT_TRUE(isSuccess);
 	}
 }

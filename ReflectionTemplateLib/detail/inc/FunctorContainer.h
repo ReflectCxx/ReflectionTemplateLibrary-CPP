@@ -8,7 +8,7 @@
 namespace rtl {
 
 	namespace access {
-		class Rany;
+		class SmartAny;
 		class Function;
 	}
 
@@ -35,8 +35,8 @@ namespace rtl {
 			
 			static const std::size_t m_containerId;
 
-			using FunctorType = std::function < access::Rany(_signature...) >;
-			using MethodPtrType = std::function < access::Rany(const access::Rany&, _signature...) >;
+			using FunctorType = std::function < access::SmartAny(_signature...) >;
+			using MethodPtrType = std::function < access::SmartAny(const access::SmartAny&, _signature...) >;
 
 			static std::vector<FunctorType> m_functors;
 			static std::vector<MethodPtrType> m_methodPtrs;
@@ -57,10 +57,10 @@ namespace rtl {
 			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
 
 			template<class ..._params>
-			static access::Rany reflectCall(std::size_t pFunctorId, _params..._args);
+			static access::SmartAny reflectCall(std::size_t pFunctorId, _params..._args);
 
 			template<class ..._params>
-			static access::Rany reflectCall(const access::Rany& pTarget, std::size_t pFunctorId, _params..._args);
+			static access::SmartAny reflectCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params..._args);
 		};
 	}
 }

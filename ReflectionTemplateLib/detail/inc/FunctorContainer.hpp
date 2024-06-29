@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "Rany.h"
+#include "SmartAny.h"
 #include "TypeId.h"
 #include "FunctorContainer.h"
 
@@ -33,7 +33,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::Rany FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
 		{
 			return m_functors.at(pFunctorId)(_args...);
 		}
@@ -41,7 +41,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::Rany FunctorContainer<_signature...>::reflectCall(const access::Rany& pTarget, std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params ..._args)
 		{
 			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
@@ -51,11 +51,15 @@ namespace rtl {
 		template<class _recordType>
 		inline int FunctorContainer<_signature...>::addConstructor()
 		{
-			const auto functor = [=](_signature...params)->access::Rany
+			const auto functor = [=](_signature...params)->access::SmartAny
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
 				_recordType* retObj = new _recordType(params...);
-				return access::Rany(std::make_any<_recordType*>(retObj), typeId);
+				std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
+					_recordType* object = std::any_cast<_recordType*>(pTarget);
+					delete object;
+				};
+				return access::SmartAny(std::make_any<_recordType*>(retObj), typeId, destructor);
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -66,10 +70,10 @@ namespace rtl {
 		template<class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
-			const auto functor = [=](_signature...params)->access::Rany
+			const auto functor = [=](_signature...params)->access::SmartAny
 			{
 				(*pFunctor)(params...);
-				return access::Rany();
+				return access::SmartAny();
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -80,11 +84,11 @@ namespace rtl {
 		template<class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
-			const auto functor = [=](_signature...params)->access::Rany
+			const auto functor = [=](_signature...params)->access::SmartAny
 			{
 				const auto& retObj = (*pFunctor)(params...);
 				const auto& typeId = TypeId<_returnType>::get();
-				return access::Rany(std::make_any<_returnType>(retObj), typeId);
+				return access::SmartAny(std::make_any<_returnType>(retObj), typeId);
 			};
 			m_functors.push_back(functor);
 			return (m_functors.size() - 1);
@@ -95,7 +99,7 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
-			const auto functor = [=](const access::Rany& pTargetObj, _signature...params)->access::Rany
+			const auto functor = [=](const access::SmartAny& pTargetObj, _signature...params)->access::SmartAny
 			{
 				if (pTargetObj.get().has_value() && pTargetObj.isOfType<_recordType*>())
 				{
@@ -103,12 +107,12 @@ namespace rtl {
 					if (target != nullptr) 
 					{
 						(target->*pFunctor)(params...);
-						return access::Rany();
+						return access::SmartAny();
 					}
 					assert(false && "Throw call on bad target exception");
 				}
 				assert(false && "Throw call on bad target exception");
-				return access::Rany();
+				return access::SmartAny();
 			};
 			m_methodPtrs.push_back(functor);
 			return (m_methodPtrs.size() - 1);
@@ -119,7 +123,7 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
-			const auto functor = [=](const access::Rany& pTargetObj, _signature...params)->access::Rany
+			const auto functor = [=](const access::SmartAny& pTargetObj, _signature...params)->access::SmartAny
 			{
 				if (pTargetObj.get().has_value() && pTargetObj.isOfType<_recordType*>())
 				{
@@ -128,12 +132,12 @@ namespace rtl {
 					{
 						const auto& typeId = TypeId<_returnType>::get();
 						const auto& retObj = (target->*pFunctor)(params...);
-						return access::Rany(std::make_any<_returnType>(retObj), typeId);
+						return access::SmartAny(std::make_any<_returnType>(retObj), typeId);
 					}
 					assert(false && "Throw call on bad target exception");
 				}
 				assert(false && "Throw call on bad target exception");
-				return access::Rany();
+				return access::SmartAny();
 			};
 			m_methodPtrs.push_back(functor);
 			return (m_methodPtrs.size() - 1);

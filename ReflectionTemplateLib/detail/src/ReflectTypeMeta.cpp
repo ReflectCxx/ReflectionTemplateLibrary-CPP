@@ -1,11 +1,9 @@
 
-
 #include "ReflectTypeMeta.h"
-
 
 namespace rtl {
 
-	namespace detail 
+	namespace detail
 	{
 		ReflectTypeMeta::ReflectTypeMeta(const std::vector<access::Function>& pFunctions)
 		{
@@ -15,16 +13,16 @@ namespace rtl {
 
 			for (const auto& itr : m_nsFunctionsMap)
 			{
-				for (const auto& itr0 : itr.second) {
-					itr0.second.sortFunctorsHash();
+				for (const auto& funcItr : itr.second) {
+					funcItr.second.sortFunctorsHash();
 				}
 			}
 
 			for (const auto& itr : m_nsRecordsMap)
 			{
-				for (const auto& itr1 : itr.second) {
-					for (const auto& itr0 : itr1.second) {
-						itr0.second.sortFunctorsHash();
+				for (const auto& recordItr : itr.second) {
+					for (const auto& funcItr : recordItr.second) {
+						funcItr.second.sortFunctorsHash();
 					}
 				}
 			}
@@ -36,8 +34,8 @@ namespace rtl {
 			const auto& recordName = pFunction.getRecordName();
 			const auto& itr = pRecordMap.find(recordName);
 			if (itr == pRecordMap.end()) {
-				const auto& itr0 = pRecordMap.emplace(recordName, FunctionMap());
-				addFunction(itr0.first->second, pFunction);
+				const auto& recordItr = pRecordMap.emplace(recordName, FunctionMap());
+				addFunction(recordItr.first->second, pFunction);
 			}
 			else {
 				addFunction(itr->second, pFunction);
@@ -66,8 +64,8 @@ namespace rtl {
 			if (pFunction.getRecordName().empty()) {
 				const auto& itr = m_nsFunctionsMap.find(nameSpace);
 				if (itr == m_nsFunctionsMap.end()) {
-					const auto& itr0 = m_nsFunctionsMap.emplace(nameSpace, FunctionMap());
-					addFunction(itr0.first->second, pFunction);
+					const auto& funcMapItr = m_nsFunctionsMap.emplace(nameSpace, FunctionMap());
+					addFunction(funcMapItr.first->second, pFunction);
 				}
 				else {
 					addFunction(itr->second, pFunction);
@@ -76,8 +74,8 @@ namespace rtl {
 			else {
 				const auto& itr = m_nsRecordsMap.find(nameSpace);
 				if (itr == m_nsRecordsMap.end()) {
-					const auto& itr0 = m_nsRecordsMap.emplace(nameSpace, RecordMap());
-					addFunction(itr0.first->second, pFunction);
+					const auto& recordMapItr = m_nsRecordsMap.emplace(nameSpace, RecordMap());
+					addFunction(recordMapItr.first->second, pFunction);
 				}
 				else {
 					addFunction(itr->second, pFunction);

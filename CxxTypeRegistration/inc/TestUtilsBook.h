@@ -1,7 +1,7 @@
 #pragma once
 
+#include <any>
 #include <string>
-#include "Rany.h"
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
 strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
@@ -25,13 +25,13 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		template<class ..._ctorArgs>
-		static const bool test_new_instance_ctor(const rtl::access::Rany& pInstance);
+		static const bool test_new_instance_ctor(const std::any& pInstance);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 
-		static const bool test_method_setAuthor(const rtl::access::Rany& pInstance);
+		static const bool test_method_setAuthor(const std::any& pInstance);
 
 		template<class ..._signature>
-		static const bool test_method_updateBookInfo(const rtl::access::Rany& pInstance);
+		static const bool test_method_updateBookInfo(const std::any& pInstance);
 	};
 }
