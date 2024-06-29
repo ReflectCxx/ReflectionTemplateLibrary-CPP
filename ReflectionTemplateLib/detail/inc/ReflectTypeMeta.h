@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <optional>
 #include <unordered_map>
 
+#include "Function.h"
 #include "Constants.h"
 
 namespace rtl {
