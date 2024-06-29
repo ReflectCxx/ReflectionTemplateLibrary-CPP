@@ -12,7 +12,6 @@ namespace rtl {
 	{
 		class Rany;
 		class Method;
-		class Function;
 		class CxxMirror;
 
 		class Record
