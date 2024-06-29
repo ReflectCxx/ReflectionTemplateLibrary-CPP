@@ -1,4 +1,5 @@
 
+#include <cassert>
 #include <algorithm>
 
 #include "Function.h"
@@ -20,6 +21,16 @@ namespace rtl {
 
 		void Function::addOverload(const Function& pOtherFunc) const
 		{
+			const signatureId& otherFuncSignId = pOtherFunc.m_functorHash[0].first;
+			auto itr = std::find_if(m_functorHash.begin(), m_functorHash.end(),
+				[otherFuncSignId](const std::pair<signatureId, functorIndex>& funcHash) {
+					return funcHash.first == otherFuncSignId;
+				});
+
+			if (itr != m_functorHash.end()) {
+				assert(false && "multiple registration of same function");
+			}
+
 			m_functorHash.push_back(pOtherFunc.m_functorHash[0]);
 			m_signatures.append("\n" + pOtherFunc.m_signatures);
 		}

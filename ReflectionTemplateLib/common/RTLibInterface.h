@@ -57,7 +57,7 @@
 * object (suppose, retObj). it must be validated before finally applying the std::any_cast<>() to avoid exception, like,
 *    1. if(retObj.get().has_value() == true)
 *    2. if(retObj.isOfType<std::string>() == true)
-*    3. std::string str = std::any_cast(retObj.get())
+*    3. std::string str = std::any_cast<std::string>(retObj.get())
 * 
 * decleared in namespace rtl::access. */
 #include "Rany.h"

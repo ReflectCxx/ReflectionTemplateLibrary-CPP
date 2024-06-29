@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Constants.h"
-#include "NameSpace.h"
 #include "RecordBuilder.hpp"
 #include "FunctionBuilder.hpp"
 #include "ConstructorBuilder.hpp"

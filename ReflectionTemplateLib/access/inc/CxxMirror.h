@@ -4,9 +4,11 @@
 #include <optional>
 #include <unordered_map>
 
-#include "NameSpace.h"
-
 namespace rtl {
+
+	namespace detail {
+		class ReflectTypeMeta;
+	}
 
 	namespace access 
 	{
@@ -15,9 +17,7 @@ namespace rtl {
 
 		class CxxMirror
 		{
-			std::unordered_map<std::string, NameSpace> m_namespaces;
-
-			void init(const std::vector<Function>& pFunctions);
+			detail::ReflectTypeMeta m_reflectTypeMeta;
 
 		public:
 

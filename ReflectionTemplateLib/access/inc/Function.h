@@ -10,6 +10,10 @@ namespace rtl {
 	using signatureId = std::size_t;
 	using functorIndex = std::size_t;
 
+	namespace detail {
+		class ReflectTypeMeta;
+	}
+
 	namespace builder 
 	{
 		template<class ..._signature>
@@ -20,14 +24,13 @@ namespace rtl {
 	{
 		class Rany;
 		class Record;
-		class NameSpace;
 		class MethodInvoker;
 
 		class Function
 		{
 			friend Record;
-			friend NameSpace;
 			friend MethodInvoker;
+			friend detail::ReflectTypeMeta;
 
 			template<class ..._signature>
 			friend class builder::FunctionBuilder;
