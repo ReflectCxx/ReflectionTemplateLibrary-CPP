@@ -10,13 +10,8 @@ namespace rtl {
 	namespace access 
 	{
 		CxxMirror::CxxMirror(std::vector<Function> pFunctions)
+			:m_reflectTypeMeta(pFunctions)
 		{
-			init(pFunctions);
-
-			for (const auto& itr : m_namespaces) {
-				const NameSpace& nameSpace = itr.second;
-				nameSpace.init();
-			}
 		}
 
 
@@ -34,9 +29,15 @@ namespace rtl {
 
 		std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpace, const std::string& pRecord)
 		{
-			const auto& itr = m_namespaces.find(pNameSpace);
-			if (itr != m_namespaces.end()) {
-				return itr->second.getRecord(pRecord);
+			const auto& nsRecordMap = m_reflectTypeMeta.getNamespaceRecordMap();
+			const auto& itr = nsRecordMap.find(pNameSpace);
+			if (itr != nsRecordMap.end()) 
+			{
+				const auto& recordMap = itr->second;
+				const auto& itr0 = recordMap.find(pRecord);
+				if (itr0 != recordMap.end()) {
+					return std::make_optional(Record(pRecord, itr0->second));
+				}
 			}
 			return std::nullopt;
 		}
@@ -44,40 +45,17 @@ namespace rtl {
 
 		std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpace, const std::string& pFunction)
 		{
-			const auto& itr = m_namespaces.find(pNameSpace);
-			if (itr != m_namespaces.end()) {
-				return itr->second.getFunction(pFunction);
+			const auto& nsFunctionMap = m_reflectTypeMeta.getNamespaceFunctionsMap();
+			const auto& itr = nsFunctionMap.find(pNameSpace);
+			if (itr != nsFunctionMap.end()) 
+			{
+				const auto& functionMap = itr->second;
+				const auto& itr0 = functionMap.find(pFunction);
+				if (itr0 != functionMap.end()) {
+					return std::make_optional(itr0->second);
+				}
 			}
 			return std::nullopt;
-		}
-
-
-		void CxxMirror::init(const std::vector<Function>& pFunctions)
-		{
-			for (const auto& function : pFunctions)
-			{
-				const auto& nameSpace = function.getNamespace();
-				const auto& recordName = function.getRecordName();
-
-				const auto& itr0 = m_namespaces.find(nameSpace);
-				if (itr0 == m_namespaces.end()) {
-					const auto& itr1 = m_namespaces.emplace(nameSpace, NameSpace());
-					if (recordName.empty()) {
-						itr1.first->second.addFunction(function);
-					}
-					else {
-						itr1.first->second.addRecord(function);
-					}
-				}
-				else {
-					if (recordName.empty()) {
-						itr0->second.addFunction(function);
-					}
-					else {
-						itr0->second.addRecord(function);
-					}
-				}
-			}
 		}
 	}
 }

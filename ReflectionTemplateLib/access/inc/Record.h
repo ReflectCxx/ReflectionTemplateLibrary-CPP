@@ -4,6 +4,8 @@
 #include <optional>
 #include <unordered_map>
 
+#include "ReflectTypeMeta.h"
+
 namespace rtl {
 
 	namespace access 
@@ -11,33 +13,20 @@ namespace rtl {
 		class Rany;
 		class Method;
 		class Function;
-		class NameSpace;
+		class CxxMirror;
 
 		class Record
 		{
-			friend NameSpace;
+			friend CxxMirror;
 
-			using FunctionMap = std::unordered_map<std::string, Function>;
+			const std::string m_recordName;
+			const detail::FunctionMap& m_functions;
 
-			std::string m_recordName;
-			std::shared_ptr<FunctionMap> m_functions;
-
-			Record(const std::string& pRecordName);
-
-			void init() const;
-
-			void addFunction(const Function& pFunction) const;
-
-			static void addFunction(const Function& pFunction, std::unordered_map<std::string, Record>& pNamespaces);
+			Record(const std::string& pRecordName, const detail::FunctionMap& pFunctions);
 
 		public:
 
 			Record() = delete;
-			Record(const Record& pRecord);
-			Record(Record&& pRecord) noexcept;
-
-			void operator=(const Record& pRecord);
-			void operator=(Record&& pRecord) noexcept;
 
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 

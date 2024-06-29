@@ -14,8 +14,8 @@ namespace rtl {
 		inline Rany Record::newInstance(_ctorArgs ...params) const
 		{
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
-			const auto& itr = m_functions->find(ctorName);
-			if (itr != m_functions->end()) {
+			const auto& itr = m_functions.find(ctorName);
+			if (itr != m_functions.end()) {
 				return itr->second(params...);
 			}
 			else {
