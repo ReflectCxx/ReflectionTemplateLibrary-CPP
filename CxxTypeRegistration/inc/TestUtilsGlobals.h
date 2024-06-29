@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Rany.h"
-
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
 strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
@@ -29,11 +27,4 @@ namespace test_utils {
 	static constexpr const char* str_setImaginary = "setImaginary";
 	static constexpr const char* str_getMagnitude = "getMagnitude";
 
-	template<class Type>
-	static Type getObject(const rtl::access::Rany& pInstance) {
-		if (!pInstance.isOfType<Type>()) {
-			return nullptr;
-		}
-		return std::any_cast<Type>(pInstance.get());
-	}
 }

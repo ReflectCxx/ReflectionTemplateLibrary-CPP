@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rany.h"
+#include "SmartAny.h"
 #include "Function.h"
 #include "FunctorContainer.hpp"
 
@@ -27,7 +27,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline Rany Function::operator()(_args ...params) const noexcept
+		inline SmartAny Function::operator()(_args ...params) const noexcept
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
@@ -35,12 +35,12 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectCall(hash.second, params...);
 			}
-			return Rany();
+			return SmartAny();
 		}
 
 
 		template<class ..._args>
-		inline Rany Function::operator()(const Rany& pTarget, _args ...params) const
+		inline SmartAny Function::operator()(const SmartAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
@@ -48,7 +48,7 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectCall(pTarget, hash.second, params...);
 			}
-			return Rany();
+			return SmartAny();
 		}
 	}
 }

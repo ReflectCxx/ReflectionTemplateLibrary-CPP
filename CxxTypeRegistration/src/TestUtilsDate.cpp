@@ -7,21 +7,19 @@
 
 using namespace std;
 using namespace nsdate;
-using namespace rtl::access;
 
 namespace test_utils
 {
 	const bool date::assert_zero_instance_count()
 	{
-		//Fix Me: enable destructor reflection
-		return true;// (Date::instanceCount() == 0);
+		return (Date::instanceCount() == 0);
 	}
 
 
 	template<>
-	const bool date::test_new_instance_ctor<>(const Rany& pInstance)
+	const bool date::test_new_instance_ctor<>(const any& pInstance)
 	{
-		Date* rdate = test_utils::getObject<Date*>(pInstance);
+		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {
 			return false;
 		}
@@ -30,9 +28,9 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_new_instance_ctor<string>(const Rany& pInstance)
+	const bool date::test_new_instance_ctor<string>(const any& pInstance)
 	{
-		Date* rdate = test_utils::getObject<Date*>(pInstance);
+		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {
 			return false;
 		}
@@ -41,9 +39,9 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_new_instance_ctor<unsigned, unsigned, unsigned>(const Rany& pInstance)
+	const bool date::test_new_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
 	{
-		Date* rdate = test_utils::getObject<Date*>(pInstance);
+		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {
 			return false;
 		}

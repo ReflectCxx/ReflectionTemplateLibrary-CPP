@@ -10,7 +10,7 @@ namespace rtl {
 
 	namespace access 
 	{
-		class Rany;
+		class SmartAny;
 		class Method;
 		class CxxMirror;
 
@@ -30,7 +30,7 @@ namespace rtl {
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
 			template<class ..._ctorArgs>
-			Rany newInstance(_ctorArgs ...params) const;
+			SmartAny newInstance(_ctorArgs ...params) const;
 		};
 	}
 }

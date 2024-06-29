@@ -11,7 +11,7 @@ namespace rtl {
 	namespace access 
 	{
 		template<class ..._ctorArgs>
-		inline Rany Record::newInstance(_ctorArgs ...params) const
+		inline SmartAny Record::newInstance(_ctorArgs ...params) const
 		{
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions.find(ctorName);
@@ -21,7 +21,7 @@ namespace rtl {
 			else {
 				assert(false && "Throw bad call exception");
 			}
-			return Rany();
+			return SmartAny();
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace rtl {
 
 		public:
 
-			const MethodInvoker operator()(const Rany& pTarget) const;
+			const MethodInvoker operator()(const SmartAny& pTarget) const;
 		};
 
 
@@ -27,15 +27,15 @@ namespace rtl {
 		{
 			friend Method;
 
-			const Rany& m_target;
+			const SmartAny& m_target;
 			const Function& m_function;
 
-			MethodInvoker(const Function& pFunction, const Rany& pTarget);
+			MethodInvoker(const Function& pFunction, const SmartAny& pTarget);
 
 		public:
 			
 			template<class ..._args>
-			Rany invoke(_args...params) const noexcept;
+			SmartAny invoke(_args...params) const noexcept;
 		};
 	}
 }

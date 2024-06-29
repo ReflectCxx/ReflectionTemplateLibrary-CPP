@@ -22,7 +22,7 @@ namespace rtl {
 
 	namespace access
 	{
-		class Rany;
+		class SmartAny;
 		class Record;
 		class MethodInvoker;
 
@@ -52,7 +52,7 @@ namespace rtl {
 				 const std::string& pSignature, const signatureId& pSignatureId, const functorIndex& pFunctorId);
 
 			template<class ..._args>
-			Rany operator()(const Rany& pTarget, _args...params) const;
+			SmartAny operator()(const SmartAny& pTarget, _args...params) const;
 
 		public: 
 			
@@ -67,7 +67,7 @@ namespace rtl {
 			const bool hasSignature() const;
 
 			template<class ..._args>
-			Rany operator()(_args...params) const noexcept;
+			SmartAny operator()(_args...params) const noexcept;
 		};
 	}
 }

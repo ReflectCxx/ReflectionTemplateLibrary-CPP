@@ -32,7 +32,7 @@ namespace rtl_tests {
 		const Record& classDate = record.value();
 
 		EXPECT_TRUE(date::assert_zero_instance_count());
-		Rany instance = classDate.newInstance("wrong", "args0", 10);
+		SmartAny instance = classDate.newInstance("wrong", "args0", 10);
 
 		ASSERT_FALSE(instance.get().has_value());
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -47,10 +47,10 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
-		Rany instance = classDate.newInstance();
+		SmartAny instance = classDate.newInstance();
 
 		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
+		EXPECT_TRUE(date::test_new_instance_ctor<>(instance.get()));
 	}
 
 
@@ -63,10 +63,10 @@ namespace rtl_tests {
 
 		const Record& classDate = record.value();
 		const string& dateStr = date::DATE_STR;
-		Rany instance = classDate.newInstance(dateStr);
+		SmartAny instance = classDate.newInstance(dateStr);
 
 		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(date::test_new_instance_ctor<string>(instance));
+		EXPECT_TRUE(date::test_new_instance_ctor<string>(instance.get()));
 	}
 
 
@@ -78,11 +78,11 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classDate = record.value();
-		Rany instance = classDate.newInstance(date::day, date::month, date::year);
+		SmartAny instance = classDate.newInstance(date::day, date::month, date::year);
 
 		ASSERT_TRUE(instance.get().has_value());
 
-		const bool isPassed = date::test_new_instance_ctor<unsigned, unsigned, unsigned>(instance);
+		const bool isPassed = date::test_new_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 		EXPECT_TRUE(isPassed);
 	}
 
@@ -97,9 +97,9 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
-			Rany instance = classDate.newInstance();
+			SmartAny instance = classDate.newInstance();
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_new_instance_ctor<>(instance));
+			EXPECT_TRUE(date::test_new_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -115,7 +115,7 @@ namespace rtl_tests {
 		const Record& classBook = record.value();
 		
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		Rany instance = classBook.newInstance(19.0, 87.5);
+		SmartAny instance = classBook.newInstance(19.0, 87.5);
 
 		ASSERT_FALSE(instance.get().has_value());
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -130,10 +130,10 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 
 		const Record& classBook = record.value();
-		Rany instance = classBook.newInstance();
+		SmartAny instance = classBook.newInstance();
 
 		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(book::test_new_instance_ctor(instance));
+		EXPECT_TRUE(book::test_new_instance_ctor(instance.get()));
 	}
 
 
@@ -148,10 +148,10 @@ namespace rtl_tests {
 		string title = book::TITLE;
 		const Record& classBook = record.value();
 
-		Rany instance = classBook.newInstance(price, title);
+		SmartAny instance = classBook.newInstance(price, title);
 		ASSERT_TRUE(instance.get().has_value());
 
-		const bool isPassed = book::test_new_instance_ctor<double, string>(instance);
+		const bool isPassed = book::test_new_instance_ctor<double, string>(instance.get());
 		EXPECT_TRUE(isPassed);
 	}
 
@@ -166,9 +166,9 @@ namespace rtl_tests {
 		ASSERT_TRUE(record.has_value());
 		{
 			const Record& classDate = record.value();
-			Rany instance = classDate.newInstance();
+			SmartAny instance = classDate.newInstance();
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(book::test_new_instance_ctor(instance));
+			EXPECT_TRUE(book::test_new_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}

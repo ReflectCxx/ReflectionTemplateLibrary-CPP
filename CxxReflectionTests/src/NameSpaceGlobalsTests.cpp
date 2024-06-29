@@ -65,7 +65,7 @@ TEST(FunctionInNameSpace, namespace_function_execute_return)
 	setImaginary(g_imaginary);
 
 	EXPECT_TRUE(getMagnitude.hasSignature<void>());
-	Rany retObj = getMagnitude();
+	SmartAny retObj = getMagnitude();
 	ASSERT_TRUE(retObj.get().has_value());
 	ASSERT_TRUE(retObj.isOfType<double>());
 
@@ -89,7 +89,7 @@ TEST(FunctionInNameSpace, execute_with_wrong_signature)
 	EXPECT_FALSE(setReal.hasSignature<float>());
 
 	//No op.
-	Rany retObj = setReal(float(g_real));
+	SmartAny retObj = setReal(float(g_real));
 	ASSERT_FALSE(retObj.get().has_value());
 }
 
@@ -103,7 +103,7 @@ TEST(GlobalFunction, get_function_execute_return)
 
 	const Function& getComplexNumAsString = getFunc.value();
 
-	Rany retObj = getComplexNumAsString();
+	SmartAny retObj = getComplexNumAsString();
 	ASSERT_TRUE(retObj.get().has_value());
 
 	string retVal = std::any_cast<string>(retObj.get());
@@ -122,19 +122,19 @@ TEST(GlobalFunction, overloaded_function_execute_return)
 
 	const Function& reverseString = getFunc.value();
 
-	Rany retObj0 = reverseString(string(STRA));
+	SmartAny retObj0 = reverseString(string(STRA));
 	ASSERT_TRUE(retObj0.get().has_value());
 
 	string retVal0 = std::any_cast<string>(retObj0.get());
 	EXPECT_TRUE(retVal0 == STRA_REVERSE);
 
-	Rany retObj1 = reverseString(string(STRB));
+	SmartAny retObj1 = reverseString(string(STRB));
 	ASSERT_TRUE(retObj1.get().has_value());
 
 	string retVal1 = std::any_cast<string>(retObj1.get());
 	EXPECT_TRUE(retVal1 == STRB_REVERSE);
 
-	Rany retObj2 = reverseString();
+	SmartAny retObj2 = reverseString();
 	ASSERT_TRUE(retObj2.get().has_value());
 
 	string retVal2 = std::any_cast<string>(retObj2.get());
