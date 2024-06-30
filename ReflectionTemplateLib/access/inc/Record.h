@@ -8,8 +8,10 @@
 
 namespace rtl {
 
-	namespace detail {
+	namespace detail 
+	{
 		class ReflectTypeMeta;
+		using FunctionMap = std::unordered_map <std::string, access::Function>;
 	}
 
 	namespace access 
@@ -22,11 +24,11 @@ namespace rtl {
 			friend class detail::ReflectTypeMeta;
 
 			const std::string m_recordName;
-			mutable std::unordered_map <std::string, Function> m_functions;
+			mutable std::shared_ptr<detail::FunctionMap> m_functions;
 
 			Record(const std::string& pRecordName);
 
-			std::unordered_map <std::string, Function>& getFunctionsMap() const;
+			detail::FunctionMap& getFunctionsMap() const;
 
 		public:
 
