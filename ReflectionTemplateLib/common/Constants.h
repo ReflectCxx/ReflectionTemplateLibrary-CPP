@@ -12,6 +12,11 @@ namespace rtl {
         return _var;                                      \
     }
 
+    enum class AllocType {
+        Static,
+        Dynamic
+    };
+
     template<class _typeA, class _typeB>
     using enable_if_same = typename std::enable_if< std::is_same<_typeA, _typeB>::value >::type;
 

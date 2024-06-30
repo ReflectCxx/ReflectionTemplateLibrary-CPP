@@ -10,7 +10,7 @@ Provides interface for Testing/Comparing the class "Book" objects states/returns
 */
 namespace test_utils
 {
-	struct book 
+	struct book
 	{
 		static constexpr const double PRICE = 99.923;
 		static constexpr const unsigned int PAGES = 1050;
@@ -25,7 +25,10 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		template<class ..._ctorArgs>
-		static const bool test_new_instance_ctor(const std::any& pInstance);
+		static const bool test_static_alloc_instance_ctor(const std::any& pInstance);
+
+		template<class ..._ctorArgs>
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 

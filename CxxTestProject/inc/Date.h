@@ -8,6 +8,7 @@ namespace nsdate
 	struct Date
 	{
 		Date();
+		Date(const Date& pOther);
 		Date(const std::string& pDateStr);
 		Date(unsigned dd, unsigned mm, unsigned yy);
 

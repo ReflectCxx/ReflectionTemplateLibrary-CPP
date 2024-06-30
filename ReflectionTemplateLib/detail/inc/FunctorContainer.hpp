@@ -10,15 +10,16 @@ namespace rtl {
 
 	namespace detail 
 	{
-		extern std::size_t g_containerId;
+		extern std::size_t g_signIdCounter;
 
 		template<class ..._signature>
-		const std::size_t FunctorContainer<_signature...>::m_containerId = ++g_containerId;
-
+		const std::size_t FunctorContainer<_signature...>::m_containerId = ++g_signIdCounter;
 
 		template<class ..._signature>
 		std::vector<typename FunctorContainer<_signature...>::FunctorType> FunctorContainer<_signature...>::m_functors;
 
+		template<class ..._signature>
+		std::vector<typename FunctorContainer<_signature...>::CtorFunctorType> FunctorContainer<_signature...>::m_ctorPtrs;
 
 		template<class ..._signature>
 		std::vector<typename FunctorContainer<_signature...>::MethodPtrType> FunctorContainer<_signature...>::m_methodPtrs;
@@ -33,15 +34,22 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::SmartAny FunctorContainer<_signature...>::reflectCall(std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectFunctionCall(std::size_t pFunctorId, _params ..._args)
 		{
 			return m_functors.at(pFunctorId)(_args...);
+		}
+
+		template<class ..._signature>
+		template<class ..._params>
+		inline access::SmartAny FunctorContainer<_signature...>::reflectConstructorCall(const AllocType pAllocTy, std::size_t pFunctorId, _params ..._args)
+		{
+			return m_ctorPtrs.at(pFunctorId)(pAllocTy, _args...);
 		}
 
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::SmartAny FunctorContainer<_signature...>::reflectCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectMethodCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params ..._args)
 		{
 			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
@@ -51,18 +59,24 @@ namespace rtl {
 		template<class _recordType>
 		inline int FunctorContainer<_signature...>::addConstructor()
 		{
-			const auto functor = [=](_signature...params)->access::SmartAny
+			const auto functor = [=](const AllocType pAllocTy, _signature...params)->access::SmartAny
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
-				_recordType* retObj = new _recordType(params...);
-				std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
-					_recordType* object = std::any_cast<_recordType*>(pTarget);
-					delete object;
-				};
-				return access::SmartAny(std::make_any<_recordType*>(retObj), typeId, destructor);
+				if (pAllocTy == AllocType::Dynamic)
+				{
+					_recordType* retObj = new _recordType(params...);
+					std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
+						_recordType* object = std::any_cast<_recordType*>(pTarget);
+						delete object;
+					};
+					return access::SmartAny(std::make_any<_recordType*>(retObj), typeId, destructor);
+				}
+				else {
+					return access::SmartAny(std::make_any<_recordType>(params...), typeId);
+				}
 			};
-			m_functors.push_back(functor);
-			return (m_functors.size() - 1);
+			m_ctorPtrs.push_back(functor);
+			return (m_ctorPtrs.size() - 1);
 		}
 
 

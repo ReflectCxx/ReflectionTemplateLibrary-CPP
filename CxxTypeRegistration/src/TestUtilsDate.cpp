@@ -17,7 +17,28 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_new_instance_ctor<>(const any& pInstance)
+	const bool date::test_static_alloc_instance_ctor<>(const any& pInstance)
+	{
+		return (Date() == any_cast<Date>(pInstance));
+	}
+
+
+	template<>
+	const bool date::test_static_alloc_instance_ctor<string>(const any& pInstance)
+	{
+		return (Date(DATE_STR) == any_cast<Date>(pInstance));
+	}
+
+
+	template<>
+	const bool date::test_static_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
+	{
+		return (Date(day, month, year) == any_cast<Date>(pInstance));
+	}
+
+
+	template<>
+	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
 	{
 		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {
@@ -28,7 +49,7 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_new_instance_ctor<string>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance)
 	{
 		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {
@@ -39,7 +60,7 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_new_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
 	{
 		Date* rdate = any_cast<Date*>(pInstance);
 		if (rdate == nullptr) {

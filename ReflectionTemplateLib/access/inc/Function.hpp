@@ -33,20 +33,33 @@ namespace rtl {
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash)) 
 			{
-				return detail::FunctorContainer<_args...>::reflectCall(hash.second, params...);
+				return detail::FunctorContainer<_args...>::reflectFunctionCall(hash.second, params...);
 			}
 			return SmartAny();
 		}
 
 
 		template<class ..._args>
-		inline SmartAny Function::operator()(const SmartAny& pTarget, _args ...params) const
+		inline SmartAny Function::invokeMethod(const SmartAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return detail::FunctorContainer<_args...>::reflectCall(pTarget, hash.second, params...);
+				return detail::FunctorContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
+			}
+			return SmartAny();
+		}
+
+
+		template<class ..._args>
+		inline SmartAny Function::invokeConstructor(const AllocType pAllocTy, _args ...params) const
+		{
+			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
+			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
+			if (hasSignatureId(signId, hash))
+			{
+				return detail::FunctorContainer<_args...>::reflectConstructorCall(pAllocTy, hash.second, params...);
 			}
 			return SmartAny();
 		}

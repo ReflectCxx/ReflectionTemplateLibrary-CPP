@@ -34,6 +34,13 @@ namespace nsdate
 		m_instanceCount++;
 	}
 
+	Date::Date(const Date& pOther)
+		: m_day(pOther.m_day)
+		, m_month(pOther.m_month)
+		, m_year(pOther.m_year) {
+		m_instanceCount++;
+	}
+
 	Date::Date(unsigned dd, unsigned mm, unsigned yy)
 		: m_day(dd)
 		, m_month(mm)
