@@ -55,7 +55,7 @@ namespace rtl {
 			SmartAny invokeMethod(const SmartAny& pTarget, _args...params) const;
 
 			template<class ..._args>
-			SmartAny invokeConstructor(const bool pOnHeapAlloc, _args...params) const;
+			SmartAny invokeConstructor(const AllocType pAllocTy, _args...params) const;
 
 		public: 
 			

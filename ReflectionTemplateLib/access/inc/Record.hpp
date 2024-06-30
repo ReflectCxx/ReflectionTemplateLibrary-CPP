@@ -16,7 +16,7 @@ namespace rtl {
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions.find(ctorName);
 			if (itr != m_functions.end()) {
-				return itr->second.invokeConstructor(false, params...);
+				return itr->second.invokeConstructor(AllocType::Static, params...);
 			}
 			else {
 				assert(false && "Throw bad call exception");
@@ -31,7 +31,7 @@ namespace rtl {
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions.find(ctorName);
 			if (itr != m_functions.end()) {
-				return itr->second.invokeConstructor(true, params...);
+				return itr->second.invokeConstructor(AllocType::Dynamic, params...);
 			}
 			else {
 				assert(false && "Throw bad call exception");

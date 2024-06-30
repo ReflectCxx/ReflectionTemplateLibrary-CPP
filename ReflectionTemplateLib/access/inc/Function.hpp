@@ -53,13 +53,13 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline SmartAny Function::invokeConstructor(const bool pOnHeapAlloc, _args ...params) const
+		inline SmartAny Function::invokeConstructor(const AllocType pAllocTy, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return detail::FunctorContainer<_args...>::reflectConstructorCall(pOnHeapAlloc, hash.second, params...);
+				return detail::FunctorContainer<_args...>::reflectConstructorCall(pAllocTy, hash.second, params...);
 			}
 			return SmartAny();
 		}

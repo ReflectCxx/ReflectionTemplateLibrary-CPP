@@ -17,14 +17,14 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_stack_instance_ctor<>(const any& pInstance)
+	const bool book::test_static_alloc_instance_ctor<>(const any& pInstance)
 	{
 		return (Book() == any_cast<Book>(pInstance));
 	}
 
 
 	template<>
-	const bool book::test_stack_instance_ctor<double, string>(const any& pInstance)
+	const bool book::test_static_alloc_instance_ctor<double, string>(const any& pInstance)
 	{
 		return (Book(PRICE, TITLE) == any_cast<Book>(pInstance));
 	}
@@ -38,7 +38,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_heap_instance_ctor<>(const any& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
 	{
 		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {
@@ -49,7 +49,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_heap_instance_ctor<double, string>(const any& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const any& pInstance)
 	{
 		Book* rbook = any_cast<Book*>(pInstance);
 		if (rbook == nullptr) {

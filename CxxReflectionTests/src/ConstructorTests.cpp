@@ -22,7 +22,7 @@ namespace rtl_tests {
 	}
 
 
-	TEST(HeapConstructorDate, wrong_args)
+	TEST(DynamicAllocConstructorDate, wrong_args)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -43,7 +43,7 @@ namespace rtl_tests {
 	}
 
 
-	TEST(HeapConstructorDate, args_void)
+	TEST(DynamicAllocConstructorDate, args_void)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -57,12 +57,12 @@ namespace rtl_tests {
 			SmartAny instance = classDate.newInstance();
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_heap_instance_ctor<>(instance.get()));
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 	}
 
 
-	TEST(HeapConstructorDate, args_string)
+	TEST(DynamicAllocConstructorDate, args_string)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -77,12 +77,12 @@ namespace rtl_tests {
 			SmartAny instance = classDate.newInstance(dateStr);
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_heap_instance_ctor<string>(instance.get()));
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
 	}
 
 
-	TEST(HeapConstructorDate, args_unsigned_unsigned_unsigned)
+	TEST(DynamicAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -97,13 +97,13 @@ namespace rtl_tests {
 
 			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = date::test_heap_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
+			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 	}
 
 	
-	TEST(StackConstructorDate, args_void)
+	TEST(StaticAllocConstructorDate, args_void)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -116,13 +116,13 @@ namespace rtl_tests {
 			SmartAny instance = classDate.instance();
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_stack_instance_ctor<>(instance.get()));
+			EXPECT_TRUE(date::test_static_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(StackConstructorDate, args_string)
+	TEST(StaticAllocConstructorDate, args_string)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count()); 
 		{
@@ -136,13 +136,13 @@ namespace rtl_tests {
 			SmartAny instance = classDate.instance(dateStr);
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_stack_instance_ctor<string>(instance.get()));
+			EXPECT_TRUE(date::test_static_alloc_instance_ctor<string>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(StackConstructorDate, args_unsigned_unsigned_unsigned)
+	TEST(StaticAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count()); 
 		{
@@ -156,7 +156,7 @@ namespace rtl_tests {
 
 			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = date::test_stack_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
+			const bool isPassed = date::test_static_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -175,13 +175,13 @@ namespace rtl_tests {
 			const Record& classDate = record.value();
 			SmartAny instance = classDate.newInstance();
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_heap_instance_ctor<>(instance.get()));
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(HeapConstructorBook, wrong_args)
+	TEST(DynamicAllocConstructorBook, wrong_args)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -202,7 +202,7 @@ namespace rtl_tests {
 	}
 
 
-	TEST(HeapConstructorBook, args_default)
+	TEST(DynamicAllocConstructorBook, args_default)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -215,13 +215,13 @@ namespace rtl_tests {
 			SmartAny instance = classBook.newInstance();
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(book::test_heap_instance_ctor(instance.get()));
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(HeapConstructorBook, args_double_string)
+	TEST(DynamicAllocConstructorBook, args_double_string)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -237,14 +237,14 @@ namespace rtl_tests {
 			SmartAny instance = classBook.newInstance(price, title);
 			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = book::test_heap_instance_ctor<double, string>(instance.get());
+			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(StackConstructorBook, args_default)
+	TEST(StaticAllocConstructorBook, args_default)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -257,13 +257,13 @@ namespace rtl_tests {
 			SmartAny instance = classBook.instance();
 
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(book::test_stack_instance_ctor(instance.get()));
+			EXPECT_TRUE(book::test_static_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(StackConstructorBook, args_double_string)
+	TEST(StaticAllocConstructorBook, args_double_string)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
@@ -279,7 +279,7 @@ namespace rtl_tests {
 			SmartAny instance = classBook.instance(price, title);
 			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = book::test_stack_instance_ctor<double, string>(instance.get());
+			const bool isPassed = book::test_static_alloc_instance_ctor<double, string>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -298,7 +298,7 @@ namespace rtl_tests {
 			const Record& classDate = record.value();
 			SmartAny instance = classDate.newInstance();
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(book::test_heap_instance_ctor(instance.get()));
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}

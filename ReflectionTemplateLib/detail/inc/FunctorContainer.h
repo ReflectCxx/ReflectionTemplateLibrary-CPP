@@ -36,7 +36,7 @@ namespace rtl {
 			static const std::size_t m_containerId;
 
 			using FunctorType = std::function < access::SmartAny(_signature...) >;
-			using CtorFunctorType = std::function < access::SmartAny(const bool, _signature...) >;
+			using CtorFunctorType = std::function < access::SmartAny(const AllocType pAllocTy, _signature...) >;
 			using MethodPtrType = std::function < access::SmartAny(const access::SmartAny&, _signature...) >;
 
 			static std::vector<FunctorType> m_functors;
@@ -62,7 +62,7 @@ namespace rtl {
 			static access::SmartAny reflectFunctionCall(std::size_t pFunctorId, _params..._args);
 
 			template<class ..._params>
-			static access::SmartAny reflectConstructorCall(const bool pOnHeapAlloc, std::size_t pFunctorId, _params..._args);
+			static access::SmartAny reflectConstructorCall(const AllocType pAllocTy, std::size_t pFunctorId, _params..._args);
 
 			template<class ..._params>
 			static access::SmartAny reflectMethodCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params..._args);

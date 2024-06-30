@@ -41,9 +41,9 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::SmartAny FunctorContainer<_signature...>::reflectConstructorCall(const bool pOnHeapAlloc, std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectConstructorCall(const AllocType pAllocTy, std::size_t pFunctorId, _params ..._args)
 		{
-			return m_ctorPtrs.at(pFunctorId)(pOnHeapAlloc, _args...);
+			return m_ctorPtrs.at(pFunctorId)(pAllocTy, _args...);
 		}
 
 
@@ -59,10 +59,10 @@ namespace rtl {
 		template<class _recordType>
 		inline int FunctorContainer<_signature...>::addConstructor()
 		{
-			const auto functor = [=](const bool pOnHeapAlloc, _signature...params)->access::SmartAny
+			const auto functor = [=](const AllocType pAllocTy, _signature...params)->access::SmartAny
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
-				if (pOnHeapAlloc) 
+				if (pAllocTy == AllocType::Dynamic)
 				{
 					_recordType* retObj = new _recordType(params...);
 					std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
