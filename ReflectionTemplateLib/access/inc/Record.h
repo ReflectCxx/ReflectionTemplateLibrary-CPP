@@ -4,24 +4,30 @@
 #include <optional>
 #include <unordered_map>
 
-#include "ReflectTypeMeta.h"
+#include "Function.h"
 
 namespace rtl {
 
+	namespace detail {
+		class ReflectTypeMeta;
+	}
+
 	namespace access 
 	{
-		class SmartAny;
 		class Method;
-		class CxxMirror;
+		class Function;
+		class SmartAny;
 
 		class Record
 		{
-			friend CxxMirror;
+			friend class detail::ReflectTypeMeta;
 
 			const std::string m_recordName;
-			const detail::FunctionMap& m_functions;
+			mutable std::unordered_map <std::string, Function> m_functions;
 
-			Record(const std::string& pRecordName, const detail::FunctionMap& pFunctions);
+			Record(const std::string& pRecordName);
+
+			std::unordered_map <std::string, Function>& getFunctionsMap() const;
 
 		public:
 

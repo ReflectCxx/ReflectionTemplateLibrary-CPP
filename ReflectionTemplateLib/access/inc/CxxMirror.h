@@ -4,6 +4,8 @@
 #include <optional>
 #include <unordered_map>
 
+#include "ReflectTypeMeta.h"
+
 namespace rtl {
 
 	namespace detail {

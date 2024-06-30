@@ -7,10 +7,14 @@ namespace rtl {
 
 	namespace access 
 	{
-		Record::Record(const std::string& pRecordName, const detail::FunctionMap& pFunctions)
+		Record::Record(const std::string& pRecordName)
 			: m_recordName(pRecordName)
-			, m_functions(pFunctions)
 		{
+		}
+
+		std::unordered_map <std::string, access::Function>& Record::getFunctionsMap() const
+		{
+			return m_functions;
 		}
 
 		std::optional<Method> Record::getMethod(const std::string& pMethod) const

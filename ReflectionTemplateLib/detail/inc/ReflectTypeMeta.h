@@ -5,25 +5,25 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Function.h"
 #include "Constants.h"
 
 namespace rtl {
 
 	namespace access 
 	{
+		class Record;
 		class Function;
 		class CxxMirror;
 	}
 
 	namespace detail 
 	{
+		using RecordMap = std::unordered_map <std::string, access::Record>;
 		using FunctionMap = std::unordered_map <std::string, access::Function>;
-		using RecordMap = std::unordered_map <std::string, FunctionMap>;
 
 		class ReflectTypeMeta
 		{
-			friend access::CxxMirror;
+			friend class access::CxxMirror;
 
 			std::unordered_map<std::string, RecordMap> m_nsRecordsMap;
 			std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;

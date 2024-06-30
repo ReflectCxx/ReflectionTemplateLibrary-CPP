@@ -1,4 +1,5 @@
 
+#include "Record.h"
 #include "ReflectTypeMeta.h"
 
 namespace rtl {
@@ -21,7 +22,7 @@ namespace rtl {
 			for (const auto& itr : m_nsRecordsMap)
 			{
 				for (const auto& recordItr : itr.second) {
-					for (const auto& funcItr : recordItr.second) {
+					for (const auto& funcItr : recordItr.second.getFunctionsMap()) {
 						funcItr.second.sortFunctorsHash();
 					}
 				}
@@ -34,11 +35,11 @@ namespace rtl {
 			const auto& recordName = pFunction.getRecordName();
 			const auto& itr = pRecordMap.find(recordName);
 			if (itr == pRecordMap.end()) {
-				const auto& recordItr = pRecordMap.emplace(recordName, FunctionMap());
-				addFunction(recordItr.first->second, pFunction);
+				const auto& recordItr = pRecordMap.emplace(recordName, access::Record(recordName));
+				addFunction(recordItr.first->second.getFunctionsMap(), pFunction);
 			}
 			else {
-				addFunction(itr->second, pFunction);
+				addFunction(itr->second.getFunctionsMap(), pFunction);
 			}
 		}
 
