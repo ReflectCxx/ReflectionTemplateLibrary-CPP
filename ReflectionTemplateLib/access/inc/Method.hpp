@@ -12,7 +12,7 @@ namespace rtl {
 		template<class ..._args>
 		inline SmartAny MethodInvoker::invoke(_args ...params) const noexcept
 		{
-			return m_function(m_target, params...);
+			return m_function.invokeMethod(m_target, params...);
 		}
 
 		inline const MethodInvoker Method::operator()(const SmartAny& pTarget) const

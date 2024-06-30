@@ -22,153 +22,283 @@ namespace rtl_tests {
 	}
 
 
-	TEST(ConstructorDate, wrong_args)
+	TEST(HeapConstructorDate, wrong_args)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-		ASSERT_TRUE(record.has_value());
-
-		const Record& classDate = record.value();
-
 		EXPECT_TRUE(date::assert_zero_instance_count());
-		SmartAny instance = classDate.newInstance("wrong", "args0", 10);
+		{
+			EXPECT_TRUE(date::assert_zero_instance_count());
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		ASSERT_FALSE(instance.get().has_value());
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
+
+			const Record& classDate = record.value();
+
+			EXPECT_TRUE(date::assert_zero_instance_count());
+			SmartAny instance = classDate.newInstance("wrong", "args0", 10);
+
+			ASSERT_FALSE(instance.get().has_value());
+			EXPECT_TRUE(date::assert_zero_instance_count());
+		}
+	}
+
+
+	TEST(HeapConstructorDate, args_void)
+	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			EXPECT_TRUE(date::assert_zero_instance_count());
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
+
+			const Record& classDate = record.value();
+			SmartAny instance = classDate.newInstance();
+
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_heap_instance_ctor<>(instance.get()));
+		}
 	}
 
 
-	TEST(ConstructorDate, args_void)
+	TEST(HeapConstructorDate, args_string)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			EXPECT_TRUE(date::assert_zero_instance_count());
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-		ASSERT_TRUE(record.has_value());
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
 
-		const Record& classDate = record.value();
-		SmartAny instance = classDate.newInstance();
+			const Record& classDate = record.value();
+			const string& dateStr = date::DATE_STR;
+			SmartAny instance = classDate.newInstance(dateStr);
 
-		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(date::test_new_instance_ctor<>(instance.get()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_heap_instance_ctor<string>(instance.get()));
+		}
 	}
 
 
-	TEST(ConstructorDate, args_string)
+	TEST(HeapConstructorDate, args_unsigned_unsigned_unsigned)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			EXPECT_TRUE(date::assert_zero_instance_count());
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-		ASSERT_TRUE(record.has_value());
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
 
-		const Record& classDate = record.value();
-		const string& dateStr = date::DATE_STR;
-		SmartAny instance = classDate.newInstance(dateStr);
+			const Record& classDate = record.value();
+			SmartAny instance = classDate.newInstance(date::day, date::month, date::year);
 
-		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(date::test_new_instance_ctor<string>(instance.get()));
-	}
+			ASSERT_TRUE(instance.get().has_value());
 
-
-	TEST(ConstructorDate, args_unsigned_unsigned_unsigned)
-	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-		ASSERT_TRUE(record.has_value());
-
-		const Record& classDate = record.value();
-		SmartAny instance = classDate.newInstance(date::day, date::month, date::year);
-
-		ASSERT_TRUE(instance.get().has_value());
-
-		const bool isPassed = date::test_new_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
-		EXPECT_TRUE(isPassed);
+			const bool isPassed = date::test_heap_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
+			EXPECT_TRUE(isPassed);
+		}
 	}
 
 	
-	TEST(DestructorDate, non_virtual)
+	TEST(StackConstructorDate, args_void)
 	{
 		EXPECT_TRUE(date::assert_zero_instance_count());
-
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-		ASSERT_TRUE(record.has_value());
 		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
+
 			const Record& classDate = record.value();
-			SmartAny instance = classDate.newInstance();
+			SmartAny instance = classDate.instance();
+
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(date::test_new_instance_ctor<>(instance.get()));
+			EXPECT_TRUE(date::test_stack_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstructorBook, wrong_args)
+	TEST(StackConstructorDate, args_string)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
+		EXPECT_TRUE(date::assert_zero_instance_count()); 
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(book::class_);
-		ASSERT_TRUE(record.has_value());
-		
-		const Record& classBook = record.value();
-		
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		SmartAny instance = classBook.newInstance(19.0, 87.5);
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
 
-		ASSERT_FALSE(instance.get().has_value());
-		EXPECT_TRUE(book::assert_zero_instance_count());
+			const Record& classDate = record.value();
+			const string& dateStr = date::DATE_STR;
+			SmartAny instance = classDate.instance(dateStr);
+
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_stack_instance_ctor<string>(instance.get()));
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstructorBook, args_default)
+	TEST(StackConstructorDate, args_unsigned_unsigned_unsigned)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
+		EXPECT_TRUE(date::assert_zero_instance_count()); 
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(book::class_);
-		ASSERT_TRUE(record.has_value());
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
 
-		const Record& classBook = record.value();
-		SmartAny instance = classBook.newInstance();
+			const Record& classDate = record.value();
+			SmartAny instance = classDate.instance(date::day, date::month, date::year);
 
-		ASSERT_TRUE(instance.get().has_value());
-		EXPECT_TRUE(book::test_new_instance_ctor(instance.get()));
+			ASSERT_TRUE(instance.get().has_value());
+
+			const bool isPassed = date::test_stack_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
+			EXPECT_TRUE(isPassed);
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstructorBook, args_double_string)
+	TEST(DestructorDate, non_virtual)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Record> record = cxxMirror.getRecord(book::class_);
-		ASSERT_TRUE(record.has_value());
+			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(record.has_value());
 
-		double price = book::PRICE;
-		string title = book::TITLE;
-		const Record& classBook = record.value();
+			const Record& classDate = record.value();
+			SmartAny instance = classDate.newInstance();
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_heap_instance_ctor<>(instance.get()));
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
 
-		SmartAny instance = classBook.newInstance(price, title);
-		ASSERT_TRUE(instance.get().has_value());
 
-		const bool isPassed = book::test_new_instance_ctor<double, string>(instance.get());
-		EXPECT_TRUE(isPassed);
+	TEST(HeapConstructorBook, wrong_args)
+	{
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
+			const Record& classBook = record.value();
+
+			EXPECT_TRUE(book::assert_zero_instance_count());
+			SmartAny instance = classBook.newInstance(19.0, 87.5);
+
+			ASSERT_FALSE(instance.get().has_value());
+			EXPECT_TRUE(book::assert_zero_instance_count());
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
+	TEST(HeapConstructorBook, args_default)
+	{
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
+			const Record& classBook = record.value();
+			SmartAny instance = classBook.newInstance();
+
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(book::test_heap_instance_ctor(instance.get()));
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
+	TEST(HeapConstructorBook, args_double_string)
+	{
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
+			double price = book::PRICE;
+			string title = book::TITLE;
+			const Record& classBook = record.value();
+
+			SmartAny instance = classBook.newInstance(price, title);
+			ASSERT_TRUE(instance.get().has_value());
+
+			const bool isPassed = book::test_heap_instance_ctor<double, string>(instance.get());
+			EXPECT_TRUE(isPassed);
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
+	TEST(StackConstructorBook, args_default)
+	{
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
+			const Record& classBook = record.value();
+			SmartAny instance = classBook.instance();
+
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(book::test_stack_instance_ctor(instance.get()));
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
+	}
+
+
+	TEST(StackConstructorBook, args_double_string)
+	{
+		EXPECT_TRUE(date::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
+			double price = book::PRICE;
+			string title = book::TITLE;
+			const Record& classBook = record.value();
+
+			SmartAny instance = classBook.instance(price, title);
+			ASSERT_TRUE(instance.get().has_value());
+
+			const bool isPassed = book::test_stack_instance_ctor<double, string>(instance.get());
+			EXPECT_TRUE(isPassed);
+		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
 	TEST(DestructorBook, non_virtual)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
-
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> record = cxxMirror.getRecord(book::class_);
-		ASSERT_TRUE(record.has_value());
 		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> record = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(record.has_value());
+
 			const Record& classDate = record.value();
 			SmartAny instance = classDate.newInstance();
 			ASSERT_TRUE(instance.get().has_value());
-			EXPECT_TRUE(book::test_new_instance_ctor(instance.get()));
+			EXPECT_TRUE(book::test_heap_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}

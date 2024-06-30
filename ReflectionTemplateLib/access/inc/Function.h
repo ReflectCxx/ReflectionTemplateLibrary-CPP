@@ -52,7 +52,10 @@ namespace rtl {
 				 const std::string& pSignature, const signatureId& pSignatureId, const functorIndex& pFunctorId);
 
 			template<class ..._args>
-			SmartAny operator()(const SmartAny& pTarget, _args...params) const;
+			SmartAny invokeMethod(const SmartAny& pTarget, _args...params) const;
+
+			template<class ..._args>
+			SmartAny invokeConstructor(const bool pOnHeapAlloc, _args...params) const;
 
 		public: 
 			
