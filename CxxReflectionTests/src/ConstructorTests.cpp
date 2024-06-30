@@ -38,8 +38,8 @@ namespace rtl_tests {
 			SmartAny instance = classDate.instance("wrong", "args0", 10);
 
 			ASSERT_FALSE(instance.get().has_value());
-			EXPECT_TRUE(date::assert_zero_instance_count());
 		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
@@ -59,6 +59,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(instance.get().has_value());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
@@ -79,6 +80,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(instance.get().has_value());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
@@ -100,6 +102,7 @@ namespace rtl_tests {
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
+		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
 
 
