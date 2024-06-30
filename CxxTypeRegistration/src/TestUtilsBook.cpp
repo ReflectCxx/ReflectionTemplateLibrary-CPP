@@ -16,20 +16,6 @@ namespace test_utils
 	}
 
 
-	template<>
-	const bool book::test_static_alloc_instance_ctor<>(const any& pInstance)
-	{
-		return (Book() == any_cast<Book>(pInstance));
-	}
-
-
-	template<>
-	const bool book::test_static_alloc_instance_ctor<double, string>(const any& pInstance)
-	{
-		return (Book(PRICE, TITLE) == any_cast<Book>(pInstance));
-	}
-
-
 	const bool book::test_method_getPublishedOn_return(const std::string& pRetStr)
 	{
 		Book bookObj;

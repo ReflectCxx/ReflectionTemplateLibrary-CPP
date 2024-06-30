@@ -16,22 +16,7 @@ namespace rtl {
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions.find(ctorName);
 			if (itr != m_functions.end()) {
-				return itr->second.invokeConstructor(AllocType::Static, params...);
-			}
-			else {
-				assert(false && "Throw bad call exception");
-			}
-			return SmartAny();
-		}
-
-
-		template<class ..._ctorArgs>
-		inline SmartAny Record::newInstance(_ctorArgs ...params) const
-		{
-			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
-			const auto& itr = m_functions.find(ctorName);
-			if (itr != m_functions.end()) {
-				return itr->second.invokeConstructor(AllocType::Dynamic, params...);
+				return itr->second.invokeConstructor(params...);
 			}
 			else {
 				assert(false && "Throw bad call exception");

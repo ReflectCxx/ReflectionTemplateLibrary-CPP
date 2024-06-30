@@ -49,7 +49,7 @@
 /*
 * Provides interface to access the return values obtained from calling methods/functions/constructors.
 * 'SmartAny' is a wrapper class for std::any, which adds interface to perform safe non-rtti type check. and
-* calls the destructor when goes out of scope, only for the objects created by calling newInstance() method on Record objects, 
+* calls the destructor when goes out of scope, only for the objects created by calling instance() method on Record objects, 
 * ie, the destructor will only be called for the objects that are created via reflection on the heap. It will not be called for 
 * the objects recieved as return vales from reflected method/function call.
 * - supports only move semantics.

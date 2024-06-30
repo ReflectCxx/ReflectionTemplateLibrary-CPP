@@ -23,8 +23,5 @@ namespace test_utils
 
 		template<class ..._argsType>
 		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
-
-		template<class ..._argsType>
-		static const bool test_static_alloc_instance_ctor(const std::any& pInstance);
 	};
 }

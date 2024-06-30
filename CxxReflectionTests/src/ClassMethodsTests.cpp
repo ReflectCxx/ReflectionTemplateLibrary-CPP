@@ -34,7 +34,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const char* authorStr = book::AUTHOR;
@@ -59,7 +59,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_getPublishedOn);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& getPublishedOn = methOpt.value();
@@ -84,7 +84,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		std::string authorStr = book::AUTHOR;
@@ -109,7 +109,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		const Method& updateBookInfo = methOpt.value();
@@ -132,7 +132,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;
@@ -158,7 +158,7 @@ namespace rtl_tests {
 		optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 		ASSERT_TRUE(methOpt.has_value());
 
-		SmartAny bookObj = classBook.newInstance();
+		SmartAny bookObj = classBook.instance();
 		ASSERT_TRUE(bookObj.get().has_value());
 
 		string author = book::AUTHOR;

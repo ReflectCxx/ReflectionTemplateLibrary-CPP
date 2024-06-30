@@ -41,9 +41,9 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::SmartAny FunctorContainer<_signature...>::reflectConstructorCall(const AllocType pAllocTy, std::size_t pFunctorId, _params ..._args)
+		inline access::SmartAny FunctorContainer<_signature...>::reflectConstructorCall(std::size_t pFunctorId, _params ..._args)
 		{
-			return m_ctorPtrs.at(pFunctorId)(pAllocTy, _args...);
+			return m_ctorPtrs.at(pFunctorId)(_args...);
 		}
 
 
@@ -59,21 +59,15 @@ namespace rtl {
 		template<class _recordType>
 		inline int FunctorContainer<_signature...>::addConstructor()
 		{
-			const auto functor = [=](const AllocType pAllocTy, _signature...params)->access::SmartAny
+			const auto functor = [=](_signature...params)->access::SmartAny
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
-				if (pAllocTy == AllocType::Dynamic)
-				{
-					_recordType* retObj = new _recordType(params...);
-					std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
-						_recordType* object = std::any_cast<_recordType*>(pTarget);
-						delete object;
-					};
-					return access::SmartAny(std::make_any<_recordType*>(retObj), typeId, destructor);
-				}
-				else {
-					return access::SmartAny(std::make_any<_recordType>(params...), typeId);
-				}
+				_recordType* retObj = new _recordType(params...);
+				std::function<void(const std::any&)> destructor = [](const std::any& pTarget)->void {
+					_recordType* object = std::any_cast<_recordType*>(pTarget);
+					delete object;
+				};
+				return access::SmartAny(std::make_any<_recordType*>(retObj), typeId, destructor);
 			};
 			m_ctorPtrs.push_back(functor);
 			return (m_ctorPtrs.size() - 1);
@@ -100,8 +94,8 @@ namespace rtl {
 		{
 			const auto functor = [=](_signature...params)->access::SmartAny
 			{
-				const auto& retObj = (*pFunctor)(params...);
 				const auto& typeId = TypeId<_returnType>::get();
+				const _returnType& retObj = (*pFunctor)(params...);
 				return access::SmartAny(std::make_any<_returnType>(retObj), typeId);
 			};
 			m_functors.push_back(functor);
@@ -145,7 +139,7 @@ namespace rtl {
 					if (target != nullptr) 
 					{
 						const auto& typeId = TypeId<_returnType>::get();
-						const auto& retObj = (target->*pFunctor)(params...);
+						const _returnType& retObj = (target->*pFunctor)(params...);
 						return access::SmartAny(std::make_any<_returnType>(retObj), typeId);
 					}
 					assert(false && "Throw call on bad target exception");

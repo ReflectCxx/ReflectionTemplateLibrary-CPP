@@ -34,12 +34,9 @@ namespace rtl {
 
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
+			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>
 			SmartAny instance(_ctorArgs ...params) const;
-
-			//Instance on heap, constructed via new.
-			template<class ..._ctorArgs>
-			SmartAny newInstance(_ctorArgs ...params) const;
 		};
 	}
 }

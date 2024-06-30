@@ -25,9 +25,6 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		template<class ..._ctorArgs>
-		static const bool test_static_alloc_instance_ctor(const std::any& pInstance);
-
-		template<class ..._ctorArgs>
 		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
