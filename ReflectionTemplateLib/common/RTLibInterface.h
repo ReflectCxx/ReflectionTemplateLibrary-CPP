@@ -32,7 +32,7 @@
 
 /* 
 * Provides interface to call methods on objects created via reflection of classes/structs.
-* it also overloads "operator()", but this takes the object (type 'SmartAny') instead of the method arguments and returns
+* it also overloads "operator()", but this takes the object (type 'UniqueAny') instead of the method arguments and returns
 * the obeject of class 'MethodInvoker, which provides 'invoke' function to finally call the method with arguments.
 * 
 * Difference between Method & Function class:
@@ -48,7 +48,7 @@
 
 /*
 * Provides interface to access the return values obtained from calling methods/functions/constructors.
-* 'SmartAny' is a wrapper class for std::any, which adds interface to perform safe non-rtti type check. and
+* 'UniqueAny' is a wrapper class for std::any, which adds interface to perform safe non-rtti type check. and
 * calls the destructor when goes out of scope, only for the objects created by calling instance() method on Record objects, 
 * ie, the destructor will only be called for the objects that are created via reflection on the heap. It will not be called for 
 * the objects recieved as return vales from reflected method/function call.
@@ -57,7 +57,7 @@
 *   - get(), provides the std::any object, which can be checked using has_value() if it contains any object.
 *   - isOfType<_type>(), checks of the underlying object is of '_type'.
 *   - finally, std::any_cast<_type>() can be used to obtain the actual object with '_type'
-* For example, a function returns value as 'std::string', but calling it via reflection will return the 'SmartAny'
+* For example, a function returns value as 'std::string', but calling it via reflection will return the 'UniqueAny'
 * object (suppose, retObj). it must be validated before finally applying the std::any_cast<>() to avoid exception, like,
 *    1. if(retObj.get().has_value() == true)
 *    2. if(retObj.isOfType<std::string>() == true)

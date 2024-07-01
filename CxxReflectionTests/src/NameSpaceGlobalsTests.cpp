@@ -75,7 +75,7 @@ TEST(FunctionInNameSpace, namespace_function_execute_return)
 	RStatus callRet = getMagnitude();
 	ASSERT_TRUE(callRet.didCallSucceed());
 
-	SmartAny retObj = callRet.releaseReturn();
+	UniqueAny retObj = callRet.releaseReturn();
 	ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<double>());
 
 	double retVal = std::any_cast<double>(retObj.getReturn());
@@ -99,7 +99,7 @@ TEST(FunctionInNameSpace, execute_with_wrong_signature)
 	ASSERT_FALSE(callRet.didCallSucceed());
 
 	//No op.
-	SmartAny retObj = callRet.releaseReturn();
+	UniqueAny retObj = callRet.releaseReturn();
 	ASSERT_FALSE(retObj.getReturn().has_value());
 }
 
@@ -116,7 +116,7 @@ TEST(GlobalFunction, get_function_execute_return)
 	RStatus callRet = getComplexNumAsString();
 	ASSERT_TRUE(callRet.didCallSucceed());
 
-	SmartAny retObj = callRet.releaseReturn();
+	UniqueAny retObj = callRet.releaseReturn();
 	ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
 
 	string retVal = std::any_cast<string>(retObj.getReturn());
@@ -136,7 +136,7 @@ TEST(GlobalFunction, overloaded_function_execute_return)
 		RStatus callRet = reverseString(string(STRA));
 		ASSERT_TRUE(callRet.didCallSucceed());
 
-		SmartAny retObj = callRet.releaseReturn();
+		UniqueAny retObj = callRet.releaseReturn();
 		ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
 
 		string retVal = std::any_cast<string>(retObj.getReturn());
@@ -146,7 +146,7 @@ TEST(GlobalFunction, overloaded_function_execute_return)
 		RStatus callRet = reverseString(string(STRB));
 		ASSERT_TRUE(callRet.didCallSucceed());
 
-		SmartAny retObj = callRet.releaseReturn();
+		UniqueAny retObj = callRet.releaseReturn();
 		ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
 
 		string retVal = std::any_cast<string>(retObj.getReturn());
@@ -156,7 +156,7 @@ TEST(GlobalFunction, overloaded_function_execute_return)
 		RStatus callRet = reverseString();
 		ASSERT_TRUE(callRet.didCallSucceed());
 
-		SmartAny retObj = callRet.releaseReturn();
+		UniqueAny retObj = callRet.releaseReturn();
 		ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
 
 		string retVal = std::any_cast<string>(retObj.getReturn());

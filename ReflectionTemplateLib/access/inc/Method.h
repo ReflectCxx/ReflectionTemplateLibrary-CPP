@@ -17,7 +17,7 @@ namespace rtl {
 
 		public:
 
-			const MethodInvoker operator()(const SmartAny& pTarget) const;
+			const MethodInvoker operator()(const UniqueAny& pTarget) const;
 
 			friend Record;
 		};
@@ -25,10 +25,10 @@ namespace rtl {
 
 		class MethodInvoker
 		{
-			const SmartAny& m_target;
+			const UniqueAny& m_target;
 			const Function& m_function;
 
-			MethodInvoker(const Function& pFunction, const SmartAny& pTarget);
+			MethodInvoker(const Function& pFunction, const UniqueAny& pTarget);
 
 		public:
 			

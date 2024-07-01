@@ -35,7 +35,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance("wrong", "args0", 10);
 			ASSERT_FALSE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_FALSE(instance.getReturn().has_value());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -55,7 +55,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.getReturn()));
 		}
@@ -77,7 +77,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance(dateStr);
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.getReturn()));
 		}
@@ -98,7 +98,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance(date::day, date::month, date::year);
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.getReturn());
@@ -121,7 +121,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.getReturn()));
 		}
@@ -144,7 +144,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance(19.0, 87.5);
 			ASSERT_FALSE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_FALSE(instance.getReturn().has_value());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -164,7 +164,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.getReturn()));
 		}
@@ -188,7 +188,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance(price, title);
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 
 			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.getReturn());
@@ -211,7 +211,7 @@ namespace rtl_tests {
 			RStatus retIns = classDate.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny instance = retIns.releaseReturn();
+			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_TRUE(instance.getReturn().has_value());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.getReturn()));
 		}

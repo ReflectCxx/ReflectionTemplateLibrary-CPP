@@ -37,7 +37,7 @@ namespace rtl {
 
 			using FunctorType = std::function < access::RStatus(_signature...) >;
 			using CtorFunctorType = std::function < access::RStatus(_signature...) >;
-			using MethodPtrType = std::function < access::RStatus(const access::SmartAny&, _signature...) >;
+			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
 			static std::vector<FunctorType> m_functors;
 			static std::vector<MethodPtrType> m_methodPtrs;
@@ -65,7 +65,7 @@ namespace rtl {
 			static access::RStatus reflectConstructorCall(std::size_t pFunctorId, _params..._args);
 
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params..._args);
+			static access::RStatus reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, _params..._args);
 		};
 	}
 }

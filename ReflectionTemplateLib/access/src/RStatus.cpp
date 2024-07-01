@@ -20,7 +20,7 @@ namespace rtl {
 			return m_callStatus;
 		}
 
-		SmartAny RStatus::releaseReturn()
+		UniqueAny RStatus::releaseReturn()
 		{
 			return std::move(m_returnObject);
 		}

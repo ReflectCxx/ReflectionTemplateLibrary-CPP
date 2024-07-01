@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RStatus.h"
-#include "SmartAny.h"
 #include "Function.h"
+#include "UniqueAny.h"
 #include "FunctorContainer.hpp"
 
 namespace rtl {
@@ -41,7 +41,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline RStatus Function::invokeMethod(const SmartAny& pTarget, _args ...params) const
+		inline RStatus Function::invokeMethod(const UniqueAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();

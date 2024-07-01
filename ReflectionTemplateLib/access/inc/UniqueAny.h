@@ -12,25 +12,25 @@ namespace rtl {
 	{
 		class RStatus;
 
-		class SmartAny
+		class UniqueAny
 		{
 			std::any m_anyObject;
 			std::size_t m_typeId;
 			std::function<void(const std::any&)> m_destructor;
 
-			SmartAny();
-			SmartAny(const std::any& pAnyObj, const std::size_t pTypeId,
-				 const std::function<void(const std::any&)>& pDctor = std::function<void(const std::any&)>());
+			UniqueAny();
+			UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId,
+				  const std::function<void(const std::any&)>& pDctor = std::function<void(const std::any&)>());
 
 		public:
 
-			SmartAny(const SmartAny&) = delete;
+			UniqueAny(const UniqueAny&) = delete;
 			operator std::any() const = delete;
-			SmartAny& operator=(const SmartAny&) = delete;
+			UniqueAny& operator=(const UniqueAny&) = delete;
 
-			~SmartAny();
-			SmartAny(SmartAny&& pOther) noexcept;
-			SmartAny& operator=(SmartAny&& pOther) noexcept;
+			~UniqueAny();
+			UniqueAny(UniqueAny&& pOther) noexcept;
+			UniqueAny& operator=(UniqueAny&& pOther) noexcept;
 
 			GETTER(std::any, Return, m_anyObject);
 

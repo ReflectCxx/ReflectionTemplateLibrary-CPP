@@ -39,7 +39,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			const char* authorStr = book::AUTHOR;
@@ -48,7 +48,7 @@ namespace rtl_tests {
 			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
 			ASSERT_FALSE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 
 			ASSERT_FALSE(retObj.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.getReturn()));
@@ -74,14 +74,14 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			const Method& getPublishedOn = methOpt.value();
 			RStatus callRet = getPublishedOn(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 			ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
 
 			const std::string& retStr = any_cast<string>(retObj.getReturn());
@@ -108,7 +108,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			std::string authorStr = book::AUTHOR;
@@ -117,7 +117,7 @@ namespace rtl_tests {
 			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 			ASSERT_FALSE(retObj.getReturn().has_value());
 
 			EXPECT_TRUE(book::test_method_setAuthor(bookObj.getReturn()));
@@ -145,14 +145,14 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			const Method& updateBookInfo = methOpt.value();
 			RStatus callRet = updateBookInfo(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 			ASSERT_FALSE(retObj.getReturn().has_value());
 
 			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.getReturn()));
@@ -177,7 +177,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			string author = book::AUTHOR;
@@ -186,7 +186,7 @@ namespace rtl_tests {
 			RStatus callRet = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 			ASSERT_FALSE(retObj.getReturn().has_value());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.getReturn());
@@ -213,7 +213,7 @@ namespace rtl_tests {
 			RStatus retIns = classBook.instance();
 			ASSERT_TRUE(retIns.didCallSucceed());
 
-			SmartAny bookObj = retIns.releaseReturn();
+			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.getReturn().has_value());
 
 			string author = book::AUTHOR;
@@ -222,7 +222,7 @@ namespace rtl_tests {
 			RStatus callRet = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
-			SmartAny retObj = callRet.releaseReturn();
+			UniqueAny retObj = callRet.releaseReturn();
 			ASSERT_FALSE(retObj.getReturn().has_value());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.getReturn());

@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "SmartAny.h"
+#include "RStatus.h"
 #include "TypeId.h"
 #include "FunctorContainer.h"
 
@@ -49,7 +49,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		template<class ..._params>
-		inline access::RStatus FunctorContainer<_signature...>::reflectMethodCall(const access::SmartAny& pTarget, std::size_t pFunctorId, _params ..._args)
+		inline access::RStatus FunctorContainer<_signature...>::reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, _params ..._args)
 		{
 			return m_methodPtrs.at(pFunctorId)(pTarget, _args...);
 		}
@@ -107,7 +107,7 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
-			const auto functor = [=](const access::SmartAny& pTargetObj, _signature...params)->access::RStatus
+			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (pTargetObj.getReturn().has_value() && pTargetObj.isOfType<_recordType*>())
 				{
@@ -131,7 +131,7 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline int FunctorContainer<_signature...>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
-			const auto functor = [=](const access::SmartAny& pTargetObj, _signature...params)->access::RStatus
+			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (pTargetObj.getReturn().has_value() && pTargetObj.isOfType<_recordType*>())
 				{

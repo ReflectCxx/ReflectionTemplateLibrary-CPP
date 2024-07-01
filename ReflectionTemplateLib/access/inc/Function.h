@@ -24,7 +24,7 @@ namespace rtl {
 	{
 		class Record;
 		class RStatus;
-		class SmartAny;
+		class UniqueAny;
 		class MethodInvoker;
 
 		class Function
@@ -49,7 +49,7 @@ namespace rtl {
 			RStatus invokeConstructor(_args...params) const;
 
 			template<class ..._args>
-			RStatus invokeMethod(const SmartAny& pTarget, _args...params) const;
+			RStatus invokeMethod(const UniqueAny& pTarget, _args...params) const;
 
 		public: 
 			

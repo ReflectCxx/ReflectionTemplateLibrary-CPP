@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SmartAny.h"
+#include "UniqueAny.h"
 
 namespace rtl 
 {
@@ -18,7 +18,7 @@ namespace rtl
 		class RStatus
 		{
 			const bool m_callStatus;
-			SmartAny m_returnObject;
+			UniqueAny m_returnObject;
 
 			RStatus(const bool pCallStatus);
 			RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId,
@@ -28,7 +28,7 @@ namespace rtl
 
 			RStatus() = delete;
 
-			SmartAny releaseReturn();
+			UniqueAny releaseReturn();
 			const bool didCallSucceed();
 
 			template<class ..._signature>
