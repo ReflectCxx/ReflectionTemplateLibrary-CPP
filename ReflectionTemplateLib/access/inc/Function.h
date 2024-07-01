@@ -22,19 +22,13 @@ namespace rtl {
 
 	namespace access
 	{
-		class SmartAny;
 		class Record;
+		class RStatus;
+		class SmartAny;
 		class MethodInvoker;
 
 		class Function
 		{
-			friend Record;
-			friend MethodInvoker;
-			friend detail::ReflectTypeMeta;
-
-			template<class ..._signature>
-			friend class builder::FunctionBuilder;
-
 			const std::string m_record;
 			const std::string m_function;
 			const std::string m_namespace;
@@ -52,10 +46,10 @@ namespace rtl {
 				 const std::string& pSignature, const signatureId& pSignatureId, const functorIndex& pFunctorId);
 
 			template<class ..._args>
-			SmartAny invokeConstructor(_args...params) const;
+			RStatus invokeConstructor(_args...params) const;
 
 			template<class ..._args>
-			SmartAny invokeMethod(const SmartAny& pTarget, _args...params) const;
+			RStatus invokeMethod(const SmartAny& pTarget, _args...params) const;
 
 		public: 
 			
@@ -70,7 +64,13 @@ namespace rtl {
 			const bool hasSignature() const;
 
 			template<class ..._args>
-			SmartAny operator()(_args...params) const noexcept;
+			RStatus operator()(_args...params) const noexcept;
+
+			template<class ..._signature>
+			friend class builder::FunctionBuilder;
+			friend Record;
+			friend MethodInvoker;
+			friend detail::ReflectTypeMeta;
 		};
 	}
 }

@@ -17,12 +17,10 @@ namespace rtl {
 	namespace access 
 	{
 		class Method;
-		class SmartAny;
+		class RStatus;
 
 		class Record
 		{
-			friend class detail::ReflectTypeMeta;
-
 			const std::string m_recordName;
 			mutable std::shared_ptr<detail::FunctionMap> m_functions;
 
@@ -38,7 +36,9 @@ namespace rtl {
 
 			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>
-			SmartAny instance(_ctorArgs ...params) const;
+			RStatus instance(_ctorArgs ...params) const;
+
+			friend class detail::ReflectTypeMeta;
 		};
 	}
 }

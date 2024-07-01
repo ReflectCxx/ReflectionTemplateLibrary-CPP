@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Function.h"
-#include "ConstructorBuilder.hpp"
 
 namespace rtl {
 
 	namespace builder 
 	{
+		template<class _recordType, class ..._ctorSignature>
+		class ConstructorBuilder;
+
 		template<class _recordType>
 		class RecordBuilder 
 		{

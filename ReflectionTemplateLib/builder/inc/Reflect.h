@@ -1,14 +1,18 @@
 #pragma once
 
+#include <string>
 #include "Constants.h"
-#include "RecordBuilder.hpp"
-#include "FunctionBuilder.hpp"
-#include "ConstructorBuilder.hpp"
 
 namespace rtl {
 
 	namespace builder 
 	{
+		template<class _recordType>
+		class RecordBuilder;
+
+		template<class ..._signature>
+		class FunctionBuilder;
+
 		// Builder class to encapsulate all type names, pointers.
 		class Reflect
 		{

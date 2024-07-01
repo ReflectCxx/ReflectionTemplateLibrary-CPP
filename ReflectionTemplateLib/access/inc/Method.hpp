@@ -10,7 +10,7 @@ namespace rtl {
 		}
 
 		template<class ..._args>
-		inline SmartAny MethodInvoker::invoke(_args ...params) const noexcept
+		inline RStatus MethodInvoker::invoke(_args ...params) const noexcept
 		{
 			return m_function.invokeMethod(m_target, params...);
 		}

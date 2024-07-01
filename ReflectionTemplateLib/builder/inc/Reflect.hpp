@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Reflect.h"
+#include "RecordBuilder.hpp"
+#include "FunctionBuilder.hpp"
 
 namespace rtl {
 

@@ -4,6 +4,8 @@
 
 namespace rtl {
 
+    enum class Type { NONE = 0 };
+
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 

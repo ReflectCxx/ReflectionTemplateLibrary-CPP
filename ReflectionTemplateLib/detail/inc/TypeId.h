@@ -66,9 +66,6 @@ namespace rtl {
 		extern std::size_t g_typeIdCounter;
 
 		template<class _type>
-		const std::size_t TypeId<_type>::m_typeId = ++g_typeIdCounter;
-
-		// template<class ..._rest>
-		// const std::size_t TypeId<std::string, _rest...>::m_typeId = ++g_typeIdCounter;
+		const std::size_t TypeId<_type>::m_typeId = g_typeIdCounter++ ;
 	}
 }

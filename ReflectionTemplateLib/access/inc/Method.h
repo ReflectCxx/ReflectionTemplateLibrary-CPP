@@ -11,8 +11,6 @@ namespace rtl {
 
 		class Method
 		{
-			friend Record;
-
 			const Function& m_function;
 
 			Method(const Function& pFunction);
@@ -20,13 +18,13 @@ namespace rtl {
 		public:
 
 			const MethodInvoker operator()(const SmartAny& pTarget) const;
+
+			friend Record;
 		};
 
 
 		class MethodInvoker
 		{
-			friend Method;
-
 			const SmartAny& m_target;
 			const Function& m_function;
 
@@ -35,7 +33,9 @@ namespace rtl {
 		public:
 			
 			template<class ..._args>
-			SmartAny invoke(_args...params) const noexcept;
+			RStatus invoke(_args...params) const noexcept;
+
+			friend Method;
 		};
 	}
 }
