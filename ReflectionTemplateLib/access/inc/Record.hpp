@@ -2,16 +2,16 @@
 #include <cassert>
 
 #include "Record.h"
+#include "RStatus.h"
 #include "Function.h"
 #include "Constants.h"
-#include "FunctorContainer.hpp"
 
 namespace rtl {
 
 	namespace access 
 	{
 		template<class ..._ctorArgs>
-		inline SmartAny Record::instance(_ctorArgs ...params) const
+		inline RStatus Record::instance(_ctorArgs ...params) const
 		{
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_functions->find(ctorName);
@@ -21,7 +21,7 @@ namespace rtl {
 			else {
 				assert(false && "Throw bad call exception");
 			}
-			return SmartAny();
+			return RStatus(false);
 		}
 	}
 }

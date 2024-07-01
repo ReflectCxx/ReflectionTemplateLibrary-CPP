@@ -4,7 +4,8 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/Function.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Record.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/SmartAny.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RStatus.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/UniqueAny.cpp"
 )
 
 SET(COMMON_HEADERS
@@ -20,7 +21,8 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
-	"${PROJECT_SOURCE_DIR}/access/inc/SmartAny.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/RStatus.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/UniqueAny.h"
 )
 
 # Add any additional source files if needed

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RecordBuilder.h"
+#include "ConstructorBuilder.hpp"
 
 namespace rtl {
 

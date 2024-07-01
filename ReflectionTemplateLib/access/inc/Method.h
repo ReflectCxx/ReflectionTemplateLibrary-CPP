@@ -11,31 +11,31 @@ namespace rtl {
 
 		class Method
 		{
-			friend Record;
-
 			const Function& m_function;
 
 			Method(const Function& pFunction);
 
 		public:
 
-			const MethodInvoker operator()(const SmartAny& pTarget) const;
+			const MethodInvoker operator()(const UniqueAny& pTarget) const;
+
+			friend Record;
 		};
 
 
 		class MethodInvoker
 		{
-			friend Method;
-
-			const SmartAny& m_target;
+			const UniqueAny& m_target;
 			const Function& m_function;
 
-			MethodInvoker(const Function& pFunction, const SmartAny& pTarget);
+			MethodInvoker(const Function& pFunction, const UniqueAny& pTarget);
 
 		public:
 			
 			template<class ..._args>
-			SmartAny invoke(_args...params) const noexcept;
+			RStatus invoke(_args...params) const noexcept;
+
+			friend Method;
 		};
 	}
 }

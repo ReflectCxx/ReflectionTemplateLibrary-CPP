@@ -1,7 +1,8 @@
 #pragma once
 
-#include "SmartAny.h"
+#include "RStatus.h"
 #include "Function.h"
+#include "UniqueAny.h"
 #include "FunctorContainer.hpp"
 
 namespace rtl {
@@ -27,7 +28,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline SmartAny Function::operator()(_args ...params) const noexcept
+		inline RStatus Function::operator()(_args ...params) const noexcept
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
@@ -35,12 +36,12 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectFunctionCall(hash.second, params...);
 			}
-			return SmartAny();
+			return RStatus(false);
 		}
 
 
 		template<class ..._args>
-		inline SmartAny Function::invokeMethod(const SmartAny& pTarget, _args ...params) const
+		inline RStatus Function::invokeMethod(const UniqueAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
@@ -48,12 +49,12 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
 			}
-			return SmartAny();
+			return RStatus(false);
 		}
 
 
 		template<class ..._args>
-		inline SmartAny Function::invokeConstructor(_args ...params) const
+		inline RStatus Function::invokeConstructor(_args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
@@ -61,7 +62,7 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectConstructorCall(hash.second, params...);
 			}
-			return SmartAny();
+			return RStatus(false);
 		}
 	}
 }
