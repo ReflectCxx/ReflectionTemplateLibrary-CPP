@@ -5,12 +5,12 @@
 
 #include "Constants.h"
 
-namespace rtl {
+#include "CallReflector.h"
+#include "SetupMethod.hpp"
+#include "SetupFunction.hpp"
+#include "SetupConstructor.hpp"
 
-	namespace access {
-		class RStatus;
-		class Function;
-	}
+namespace rtl {
 
 	namespace builder {
 		template<class ..._args>
@@ -20,52 +20,49 @@ namespace rtl {
 	namespace detail
 	{
 		template<class ..._signature>
-		class FunctorContainer
+		class FunctorContainer : SetupMethod<FunctorContainer<_signature...>>, 
+								 SetupFunction<FunctorContainer<_signature...>>,
+								 SetupConstructor<FunctorContainer<_signature...>>,
+								 CallReflector<FunctorContainer<_signature...>>
 		{
-			friend access::Function;
-
-			template<class ..._args>
-			friend class builder::FunctionBuilder;
-
-		public:
-
-			static const std::size_t& getContainerId();
-
-		private: 
-			
-			static const std::size_t m_containerId;
+			GETTER_STATIC_CONST_REF(std::size_t, ContainerId, m_containerId)
 
 			using FunctorType = std::function < access::RStatus(_signature...) >;
 			using CtorFunctorType = std::function < access::RStatus(_signature...) >;
 			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
+			static const std::size_t m_containerId;
+
 			static std::vector<FunctorType> m_functors;
 			static std::vector<MethodPtrType> m_methodPtrs;
 			static std::vector<CtorFunctorType> m_ctorPtrs;
 
-			template<class _recordType>
-			static int addConstructor();
+			GETTER_STATIC_REF(std::vector<FunctorType>, Functors, m_functors)
+			GETTER_STATIC_REF(std::vector<MethodPtrType>, MethodFunctors, m_methodPtrs)
+			GETTER_STATIC_REF(std::vector<CtorFunctorType>, CtorFunctors, m_ctorPtrs)
 
-			template<class _returnType>
-			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_ = nullptr);
+			friend access::Function;
+			friend class SetupMethod<FunctorContainer<_signature...>>;
+			friend class SetupFunction<FunctorContainer<_signature...>>;
+			friend class SetupConstructor<FunctorContainer<_signature...>>;
+			friend class CallReflector<FunctorContainer<_signature...>>;
 
-			template<class _returnType>
-			static int addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
-
-			template<class _recordType, class _returnType>
-			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_ = nullptr);
-
-			template<class _recordType, class _returnType>
-			static int addFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
-
-			template<class ..._params>
-			static access::RStatus reflectFunctionCall(std::size_t pFunctorId, _params..._args);
-
-			template<class ..._params>
-			static access::RStatus reflectConstructorCall(std::size_t pFunctorId, _params..._args);
-
-			template<class ..._params>
-			static access::RStatus reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, _params..._args);
+			template<class ..._args>
+			friend class builder::FunctionBuilder;
 		};
+
+		extern std::size_t g_signIdCounter;
+
+		template<class ..._signature>
+		const std::size_t FunctorContainer<_signature...>::m_containerId = g_signIdCounter++;
+
+		template<class ..._signature>
+		std::vector<typename FunctorContainer<_signature...>::FunctorType> FunctorContainer<_signature...>::m_functors;
+
+		template<class ..._signature>
+		std::vector<typename FunctorContainer<_signature...>::CtorFunctorType> FunctorContainer<_signature...>::m_ctorPtrs;
+
+		template<class ..._signature>
+		std::vector<typename FunctorContainer<_signature...>::MethodPtrType> FunctorContainer<_signature...>::m_methodPtrs;
 	}
 }

@@ -22,7 +22,7 @@ namespace rtl_tests {
 	}
 
 
-	TEST(ClassBookMethod, wrong_args)
+	TEST(ReflectionMethodCall, wrong_args)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
@@ -40,7 +40,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			const char* authorStr = book::AUTHOR;
 			const Method& setAuthor = methOpt.value();
@@ -50,14 +50,14 @@ namespace rtl_tests {
 
 			UniqueAny retObj = callRet.releaseReturn();
 
-			ASSERT_FALSE(retObj.getReturn().has_value());
-			EXPECT_FALSE(book::test_method_setAuthor(bookObj.getReturn()));
+			ASSERT_FALSE(retObj.get().has_value());
+			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
-	TEST(ClassBookMethod, ret_string_args_void)
+	TEST(ClassBookMethod, args_void)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
@@ -75,25 +75,25 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& getPublishedOn = methOpt.value();
 			RStatus callRet = getPublishedOn(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.getReturn().has_value() && retObj.isOfType<string>());
+			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
 
-			const std::string& retStr = any_cast<string>(retObj.getReturn());
+			const std::string& retStr = any_cast<string>(retObj.get());
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
-	TEST(ClassBookMethod, ret_void_args_string)
+	TEST(ClassBookMethod, args_string)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count()); 
+		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -109,7 +109,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			std::string authorStr = book::AUTHOR;
 			const Method& setAuthor = methOpt.value();
@@ -118,20 +118,18 @@ namespace rtl_tests {
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_FALSE(retObj.getReturn().has_value());
+			ASSERT_FALSE(retObj.get().has_value());
 
-			EXPECT_TRUE(book::test_method_setAuthor(bookObj.getReturn()));
+			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
-	TEST(ClassBookMethodOverload, ret_void_args_void)
+	TEST(ClassBookMethodOverload, args_void)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
-			EXPECT_TRUE(book::assert_zero_instance_count());
-
 			CxxMirror& cxxMirror = MyReflection::instance();
 
 			optional<Record> recOpt = cxxMirror.getRecord(book::class_);
@@ -146,21 +144,22 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& updateBookInfo = methOpt.value();
 			RStatus callRet = updateBookInfo(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_FALSE(retObj.getReturn().has_value());
+			ASSERT_FALSE(retObj.get().has_value());
 
-			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.getReturn()));
+			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get()));
 		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
-	TEST(ClassBookMethodOverload, ret_void_args_string_double_charPtr)
+	TEST(ClassBookMethodOverload, args_string_double_charPtr)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
@@ -178,7 +177,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
@@ -187,18 +186,18 @@ namespace rtl_tests {
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_FALSE(retObj.getReturn().has_value());
+			ASSERT_FALSE(retObj.get().has_value());
 
-			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.getReturn());
+			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.get());
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
-	TEST(ClassBookMethodOverload, ret_void_args_charPtr_double_string)
+	TEST(ClassBookMethodOverload, args_charPtr_double_string)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count()); 
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -214,7 +213,7 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.getReturn().has_value());
+			ASSERT_TRUE(bookObj.get().has_value());
 
 			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
@@ -223,9 +222,9 @@ namespace rtl_tests {
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_FALSE(retObj.getReturn().has_value());
+			ASSERT_FALSE(retObj.get().has_value());
 
-			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.getReturn());
+			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.get());
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

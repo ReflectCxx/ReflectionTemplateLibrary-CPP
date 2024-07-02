@@ -1,6 +1,5 @@
 
 #include "TestUtilsDate.h"
-#include "TestUtilsGlobals.h"
 
 //User defined types.
 #include "Date.h"
@@ -44,6 +43,6 @@ namespace test_utils
 		if (rdate == nullptr) {
 			return false;
 		}
-		return (Date(day, month, year) == *rdate);
+		return (Date(DAY, MONTH, YEAR) == *rdate);
 	}
 }
