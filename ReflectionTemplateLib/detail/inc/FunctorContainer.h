@@ -21,9 +21,9 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		class FunctorContainer : SetupMethod<FunctorContainer<_signature...>>, 
-								 SetupFunction<FunctorContainer<_signature...>>,
-								 SetupConstructor<FunctorContainer<_signature...>>,
-								 CallReflector<FunctorContainer<_signature...>>
+					 SetupFunction<FunctorContainer<_signature...>>,
+					 SetupConstructor<FunctorContainer<_signature...>>,
+					 CallReflector<FunctorContainer<_signature...>>
 		{
 			GETTER_STATIC_CONST_REF(std::size_t, ContainerId, m_containerId)
 
