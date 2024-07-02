@@ -1,11 +1,12 @@
 
 #include "Record.h"
 #include "Method.h"
+#include "RStatus.h"
 #include "Constants.h"
 
 namespace rtl {
 
-	namespace access 
+	namespace access
 	{
 		Record::Record(const std::string& pRecordName)
 			: m_recordName(pRecordName)
@@ -25,6 +26,11 @@ namespace rtl {
 				return std::optional(Method(itr->second));
 			}
 			return std::nullopt;
+		}
+
+		RStatus Record::clone(UniqueAny& pOther) const
+		{
+			return RStatus(false);
 		}
 	}
 }

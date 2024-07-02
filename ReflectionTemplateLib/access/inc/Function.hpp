@@ -3,11 +3,11 @@
 #include "RStatus.h"
 #include "Function.h"
 #include "UniqueAny.h"
-#include "FunctorContainer.hpp"
+#include "FunctorContainer.h"
 
 namespace rtl {
-	
-	namespace access 
+
+	namespace access
 	{
 		template<class _arg0, class ..._args>
 		inline const bool Function::hasSignature() const
@@ -32,9 +32,22 @@ namespace rtl {
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
 			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
-			if (hasSignatureId(signId, hash)) 
+			if (hasSignatureId(signId, hash))
 			{
 				return detail::FunctorContainer<_args...>::reflectFunctionCall(hash.second, params...);
+			}
+			return RStatus(false);
+		}
+
+
+		template<class ..._args>
+		inline RStatus Function::invokeMethod(UniqueAny& pTarget, _args ...params) const
+		{
+			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
+			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
+			if (hasSignatureId(signId, hash))
+			{
+				return detail::FunctorContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
 			}
 			return RStatus(false);
 		}

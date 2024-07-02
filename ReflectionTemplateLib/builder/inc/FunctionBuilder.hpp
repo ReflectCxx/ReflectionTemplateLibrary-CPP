@@ -43,6 +43,7 @@ namespace rtl {
 			return FunctionBuilder<>(m_namespace, m_record, m_function).build(pFunctor);
 		}
 
+
 		template<class _recordType, class ..._ctorSignature>
 		inline constexpr const access::Function FunctionBuilder<>::build() const
 		{
@@ -63,10 +64,32 @@ namespace rtl {
 			return buildMethodFunctor(m_namespace, m_record, m_function, pFunctor);
 		}
 
+		
+		template<class ..._signature>
+		template<class _recordType, class _returnType>
+		inline constexpr const access::Function FunctionBuilder<_signature...>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const 
+		{
+			return FunctionBuilder<>(m_namespace, m_record, m_function).build(pFunctor);
+		}
+
+
+		template<class _recordType, class _returnType>
+		inline constexpr const access::Function FunctionBuilder<void>::build(_returnType(_recordType::* pFunctor)() const) const
+		{
+			return FunctionBuilder<>(m_namespace, m_record, m_function).build(pFunctor);
+		}
+
+
+		template<class _recordType, class _returnType, class ..._signature>
+		inline constexpr const access::Function FunctionBuilder<>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
+		{
+			return buildMethodFunctor(m_namespace, m_record, m_function, pFunctor);
+		}
+
 
 		template<class _returnType, class ..._signature>
 		inline const access::Function FunctionBuilder<>::buildFunctor(const std::string& pNamespace, const std::string& pClassName,
-									  const std::string& pFunctionName, _returnType(*pFunctor)(_signature...)) const
+									      const std::string& pFunctionName, _returnType(*pFunctor)(_signature...)) const
 		{
 			const std::size_t signatureId = detail::FunctorContainer<_signature...>::getContainerId();
 			const std::size_t functorId = detail::FunctorContainer<_signature...>::addFunctor(pFunctor);
@@ -78,7 +101,7 @@ namespace rtl {
 
 		template<class _recordType, class _returnType, class ..._signature>
 		inline const access::Function FunctionBuilder<>::buildMethodFunctor(const std::string& pNamespace, const std::string& pClassName,
-									  const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...)) const
+										    const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...)) const
 		{
 			const std::size_t signatureId = detail::FunctorContainer<_signature...>::getContainerId();
 			const std::size_t functorId = detail::FunctorContainer<_signature...>::addMethodFunctor(pFunctor);
@@ -90,13 +113,25 @@ namespace rtl {
 
 		template<typename _recordType, class ..._ctorSignature>
 		inline const access::Function FunctionBuilder<>::buildConstructor(const std::string& pNamespace, const std::string& pRecord,
-									      const std::string& pCtor) const
+									          const std::string& pCtor) const
 		{
 			const std::size_t signatureId = detail::FunctorContainer<_ctorSignature...>::getContainerId();
 			const std::size_t functorId = detail::FunctorContainer<_ctorSignature...>::template addConstructor<_recordType, _ctorSignature...>();
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			return access::Function(pNamespace, pRecord, pCtor, signature, signatureId, functorId);
+		}
+
+
+		template<class _recordType, class _returnType, class ..._signature>
+		inline const access::Function FunctionBuilder<>::buildMethodFunctor(const std::string& pNamespace, const std::string& pClassName,
+										    const std::string& pFunctionName, _returnType(_recordType::* pFunctor)(_signature...) const) const
+		{
+			const std::size_t signatureId = detail::FunctorContainer<_signature...>::getContainerId();
+			const std::size_t functorId = detail::FunctorContainer<_signature...>::addMethodFunctor(pFunctor);
+			const std::string& typeStr = detail::TypeId<_signature...>::toString();
+			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
+			return access::Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
 		}
 	}
 }

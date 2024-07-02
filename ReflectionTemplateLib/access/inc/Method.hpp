@@ -2,22 +2,29 @@
 
 namespace rtl {
 
-	namespace access 
+	namespace access
 	{
-		inline MethodInvoker::MethodInvoker(const Function& pFunction, const UniqueAny& pTarget)
+		template<class _targetType>
+		inline MethodInvoker<_targetType>::MethodInvoker(const Function& pFunction, _targetType& pTarget)
 			: m_function(pFunction)
 			, m_target(pTarget) {
 		}
 
+		template<class _targetType>
 		template<class ..._args>
-		inline RStatus MethodInvoker::invoke(_args ...params) const noexcept
+		inline RStatus MethodInvoker<_targetType>::invoke(_args ...params) const noexcept
 		{
 			return m_function.invokeMethod(m_target, params...);
 		}
 
-		inline const MethodInvoker Method::operator()(const UniqueAny& pTarget) const
+		inline const MethodInvoker<UniqueAny> Method::operator()(UniqueAny& pTarget) const
 		{
-			return MethodInvoker(m_function, pTarget);
+			return MethodInvoker<UniqueAny>(m_function, pTarget);
+		}
+
+		inline const MethodInvoker<const UniqueAny> Method::operator()(const UniqueAny& pTarget) const
+		{
+			return MethodInvoker<const UniqueAny>(m_function, pTarget);
 		}
 	}
 }

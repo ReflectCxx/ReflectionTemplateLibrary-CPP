@@ -8,13 +8,13 @@
 
 namespace rtl {
 
-	namespace detail 
+	namespace detail
 	{
 		class ReflectTypeMeta;
 		using FunctionMap = std::unordered_map <std::string, access::Function>;
 	}
 
-	namespace access 
+	namespace access
 	{
 		class Method;
 		class RStatus;
@@ -34,9 +34,16 @@ namespace rtl {
 
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
+			//creates dynamic instance, calling copy ctor, using new.
+			RStatus clone(UniqueAny& pOther) const;
+
 			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>
 			RStatus instance(_ctorArgs ...params) const;
+
+			//creates dynamic instance, using new, returns with const qualifier.
+			template<class ..._ctorArgs>
+			RStatus instanceConst(_ctorArgs ...params) const;
 
 			friend class detail::ReflectTypeMeta;
 		};

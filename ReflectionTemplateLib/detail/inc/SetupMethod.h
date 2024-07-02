@@ -16,6 +16,12 @@ namespace rtl {
 
 			template<class _recordType, class _returnType, class ..._signature>
 			static int addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_ = nullptr);
-		};		
+
+			template<class _recordType, class _returnType, class ..._signature>
+			static int addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_same<_returnType, void> *_ = nullptr);
+
+			template<class _recordType, class _returnType, class ..._signature>
+			static int addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_notSame<_returnType, void> *_ = nullptr);
+		};
 	}
 }

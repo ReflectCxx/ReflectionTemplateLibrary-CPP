@@ -7,6 +7,8 @@ namespace rtl {
 	namespace access
 	{
 		class Record;
+
+		template<class _targetType>
 		class MethodInvoker;
 
 		class Method
@@ -17,21 +19,24 @@ namespace rtl {
 
 		public:
 
-			const MethodInvoker operator()(const UniqueAny& pTarget) const;
+			const MethodInvoker<UniqueAny> operator()(UniqueAny& pTarget) const;
+
+			const MethodInvoker<const UniqueAny> operator()(const UniqueAny& pTarget) const;
 
 			friend Record;
 		};
 
 
+		template<class _targetType>
 		class MethodInvoker
 		{
-			const UniqueAny& m_target;
+			_targetType& m_target;
 			const Function& m_function;
 
-			MethodInvoker(const Function& pFunction, const UniqueAny& pTarget);
+			MethodInvoker(const Function& pFunction, _targetType& pTarget);
 
 		public:
-			
+
 			template<class ..._args>
 			RStatus invoke(_args...params) const noexcept;
 

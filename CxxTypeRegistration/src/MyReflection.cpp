@@ -4,6 +4,7 @@
 //User defined types to be reflected.
 #include "Date.h"
 #include "Book.h"
+#include "Person.h"
 #include "Complex.h"
 
 /*
@@ -12,6 +13,7 @@ strict Types) without exposing the actual type objects to "CxxReflectionTests" p
 */
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
+#include "TestUtilsPerson.h"
 #include "TestUtilsGlobals.h"
 
 
@@ -59,8 +61,10 @@ CxxMirror& MyReflection::instance()
 		//Overloaded Methods
 		Reflect().record<Book>(book::class_).method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 		Reflect().record<Book>(book::class_).method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
-		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo)
+		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
+		Reflect().record<Person>(person::class_).constructor<std::string>().build(),
+		Reflect().record<Person>(person::class_).method(person::str_updateLastName).build(&Person::updateLastName)
 	});
 
 	return cxxMirror;
