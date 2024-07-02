@@ -36,7 +36,7 @@ namespace rtl_tests {
 			ASSERT_FALSE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_FALSE(instance.getReturn().has_value());
+			ASSERT_FALSE(instance.get().has_value());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -56,8 +56,8 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.getReturn()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -78,8 +78,8 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.getReturn()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -95,13 +95,13 @@ namespace rtl_tests {
 			ASSERT_TRUE(record.has_value());
 
 			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance(date::day, date::month, date::year);
+			RStatus retIns = classDate.instance(date::DAY, date::MONTH, date::YEAR);
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
+			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.getReturn());
+			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -122,8 +122,8 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.getReturn()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -145,7 +145,7 @@ namespace rtl_tests {
 			ASSERT_FALSE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_FALSE(instance.getReturn().has_value());
+			ASSERT_FALSE(instance.get().has_value());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -165,8 +165,8 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.getReturn()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -189,9 +189,9 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
+			ASSERT_TRUE(instance.get().has_value());
 
-			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.getReturn());
+			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -212,8 +212,8 @@ namespace rtl_tests {
 			ASSERT_TRUE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.getReturn().has_value());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.getReturn()));
+			ASSERT_TRUE(instance.get().has_value());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}

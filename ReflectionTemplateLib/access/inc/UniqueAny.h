@@ -32,7 +32,7 @@ namespace rtl {
 			UniqueAny(UniqueAny&& pOther) noexcept;
 			UniqueAny& operator=(UniqueAny&& pOther) noexcept;
 
-			GETTER(std::any, Return, m_anyObject);
+			GETTER(std::any, , m_anyObject);
 
 			template<class _type>
 			constexpr const bool isOfType() const {

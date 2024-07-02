@@ -24,6 +24,11 @@ namespace rtl {
 		{
 			return std::move(m_returnObject);
 		}
+
+		const UniqueAny RStatus::releaseReturn() const
+		{
+			return std::move(m_returnObject);
+		}
 	}
 
 }

@@ -47,8 +47,11 @@
 
 
 /*
-* Provides interface to access the return values obtained from calling methods/functions/constructors.
-* 'UniqueAny' is a wrapper class for std::any, which adds interface to perform safe non-rtti type check. and
+* RStatus, Provides interface to check if the call succeeded and to access the return values obtained 
+* from calling methods/functions/constructors if any. It contains object of UniqueAny, which may or may not have the return value.
+* UniqueAny hold resource, it is owned by RStatus, once 'reteaseReturn()' is called on RStatus, it will relieve itseld from the ownership.
+* 
+* 'UniqueAny' is a wrapper class for std::any, which adds interface to perform exception-safe non-rtti type check. and
 * calls the destructor when goes out of scope, only for the objects created by calling instance() method on Record objects, 
 * ie, the destructor will only be called for the objects that are created via reflection on the heap. It will not be called for 
 * the objects recieved as return vales from reflected method/function call.

@@ -12,12 +12,13 @@ namespace test_utils
 {
 	struct date
 	{
-		static constexpr const unsigned day = 1;
-		static constexpr const unsigned month = 1;
-		static constexpr const unsigned year = 2000;
+		static constexpr const unsigned DAY = 1;
+		static constexpr const unsigned MONTH = 1;
+		static constexpr const unsigned YEAR = 2000;
+		static constexpr const char* DATE_STR = "23/12/2024";
+
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Date";
-		static constexpr const char* DATE_STR = "23/12/2024";
 		
 		static const bool assert_zero_instance_count();
 

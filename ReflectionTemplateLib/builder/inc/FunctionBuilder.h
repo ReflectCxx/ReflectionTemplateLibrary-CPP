@@ -29,18 +29,21 @@ namespace rtl {
 			template<class _recordType, class _returnType, class ..._signature>
 			inline constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
 
+			template<class _recordType, class _returnType, class ..._signature>
+			inline constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+
 		private:
 
 			template<class _returnType, class ..._signature>
-			const access::Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
-				const std::string& pFunction, _returnType(*pFunctor)(_signature...)) const;
+			const access::Function buildFunctor(const std::string& pNamespace, const std::string& pRecord,
+				  const std::string& pFunction, _returnType(*pFunctor)(_signature...)) const;
 
 			template<class _recordType, class _returnType, class ..._signature>
-			const access::Function addFunctor(const std::string& pNamespace, const std::string& pRecord,
-				const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...)) const;
+			const access::Function buildMethodFunctor(const std::string& pNamespace, const std::string& pRecord,
+				  const std::string& pFunction, _returnType(_recordType::* pFunctor)(_signature...)) const;
 
 			template<class _recordType, class ..._ctorSignature>
-			const access::Function addConstructor(const std::string& pNamespace, const std::string& pRecord, const std::string& pCtor) const;
+			const access::Function buildConstructor(const std::string& pNamespace, const std::string& pRecord, const std::string& pCtor) const;
 		};
 
 

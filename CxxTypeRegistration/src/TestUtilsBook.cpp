@@ -1,6 +1,5 @@
 
 #include "TestUtilsBook.h"
-#include "TestUtilsGlobals.h"
 
 //User defined types.
 #include "Book.h"
