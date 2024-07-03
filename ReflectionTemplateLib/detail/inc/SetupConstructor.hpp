@@ -9,9 +9,9 @@ namespace rtl
 	{
 		template<class _derivedType>
 		template<class _recordType>
-		inline const std::size_t SetupConstructor<_derivedType>::getHashCode(const std::size_t pContainerId)
+		inline const std::size_t SetupConstructor<_derivedType>::getHashCode(const std::size_t pContainerId, const std::size_t pIndex)
 		{
-			return std::stoull(std::to_string(TypeId<_recordType>::get()) + std::to_string(pContainerId));
+			return std::stoull(std::to_string(TypeId<_recordType>::get()) + std::to_string(pContainerId) + std::to_string(pIndex));
 		}
 
 
@@ -31,9 +31,10 @@ namespace rtl
 			};
 
 			auto& ctorFunctors = _derivedType::getCtorFunctors();
-			auto hashCode = getHashCode<_recordType>(_derivedType::getContainerId());
+			const std::size_t& index = ctorFunctors.size();
+			auto hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index);
 			ctorFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(ctorFunctors.size() - 1, hashCode, _derivedType::getContainerId());
+			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 	}
 }

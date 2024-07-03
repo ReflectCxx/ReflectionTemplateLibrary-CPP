@@ -10,7 +10,7 @@ namespace rtl {
 		class SetupFunction
 		{
 			template<class _returnType>
-			static const std::size_t getHashCode(const std::size_t pContainerId);
+			static const std::size_t getHashCode(const std::size_t pContainerId, const std::size_t pIndex);
 
 		protected:
 

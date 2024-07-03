@@ -11,11 +11,12 @@ namespace rtl
 	{
 		template<class _derivedType>
 		template<class _recordType, class _returnType>
-		inline const std::size_t SetupMethod<_derivedType>::getHashCode(const std::size_t pContainerId)
+		inline const std::size_t SetupMethod<_derivedType>::getHashCode(const std::size_t pContainerId, const std::size_t pIndex)
 		{
 			return std::stoull(std::to_string(TypeId<_recordType>::get()) +
 					   std::to_string(TypeId<_returnType>::get()) +
-					   std::to_string(pContainerId));
+					   std::to_string(pContainerId) + 
+					   std::to_string(pIndex));
 		}
 
 
@@ -41,9 +42,10 @@ namespace rtl
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
-			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId());
+			const std::size_t& index = methodFunctors.size();
+			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(methodFunctors.size() - 1, hashCode, _derivedType::getContainerId());
+			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
@@ -71,9 +73,10 @@ namespace rtl
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
-			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId());
+			const std::size_t& index = methodFunctors.size();
+			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(methodFunctors.size() - 1, hashCode, _derivedType::getContainerId());
+			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
@@ -99,9 +102,10 @@ namespace rtl
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
-			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId());
+			const std::size_t& index = methodFunctors.size();
+			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(methodFunctors.size() - 1, hashCode, _derivedType::getContainerId());
+			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
@@ -128,9 +132,10 @@ namespace rtl
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
-			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId());
+			const std::size_t& index = methodFunctors.size();
+			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(methodFunctors.size() - 1, hashCode, _derivedType::getContainerId());
+			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 	}
 }
