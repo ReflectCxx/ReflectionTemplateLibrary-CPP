@@ -3,15 +3,13 @@
 #include "Function.h"
 #include "CxxMirror.h"
 #include "Constants.h"
-#include "FunctorContainer.hpp"
 
 namespace rtl {
 	
 	namespace access 
 	{
-		CxxMirror::CxxMirror(std::vector<Function> pFunctions)
-			:m_reflectTypeMeta(pFunctions)
-		{
+		CxxMirror::CxxMirror(const std::vector<Function>& pFunctions)
+			: detail::CxxReflection(pFunctions) {
 		}
 
 
@@ -29,7 +27,7 @@ namespace rtl {
 
 		std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpace, const std::string& pRecord)
 		{
-			const auto& nsRecordMap = m_reflectTypeMeta.getNamespaceRecordMap();
+			const auto& nsRecordMap = getNamespaceRecordMap();
 			const auto& itr = nsRecordMap.find(pNameSpace);
 			if (itr != nsRecordMap.end()) 
 			{
@@ -45,9 +43,9 @@ namespace rtl {
 
 		std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpace, const std::string& pFunction)
 		{
-			const auto& nsFunctionMap = m_reflectTypeMeta.getNamespaceFunctionsMap();
+			const auto& nsFunctionMap = getNamespaceFunctionsMap();
 			const auto& itr = nsFunctionMap.find(pNameSpace);
-			if (itr != nsFunctionMap.end()) 
+			if (itr != nsFunctionMap.end())
 			{
 				const auto& functionMap = itr->second;
 				const auto& itr0 = functionMap.find(pFunction);

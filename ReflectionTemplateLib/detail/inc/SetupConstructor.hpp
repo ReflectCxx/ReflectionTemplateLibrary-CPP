@@ -1,3 +1,4 @@
+#pragma once
 
 #include "RStatus.h"
 #include "SetupConstructor.h"

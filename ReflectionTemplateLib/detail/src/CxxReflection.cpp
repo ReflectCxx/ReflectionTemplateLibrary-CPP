@@ -1,12 +1,12 @@
 
 #include "Record.h"
-#include "ReflectTypeMeta.h"
+#include "CxxReflection.h"
 
 namespace rtl {
 
 	namespace detail
 	{
-		ReflectTypeMeta::ReflectTypeMeta(const std::vector<access::Function>& pFunctions)
+		CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
 		{
 			for (const auto& function : pFunctions) {
 				initTypeMetaData(function);
@@ -30,7 +30,7 @@ namespace rtl {
 		}
 
 
-		void ReflectTypeMeta::addFunction(RecordMap& pRecordMap, const access::Function& pFunction)
+		void CxxReflection::addFunction(RecordMap& pRecordMap, const access::Function& pFunction)
 		{
 			const auto& recordName = pFunction.getRecordName();
 			const auto& itr = pRecordMap.find(recordName);
@@ -44,7 +44,7 @@ namespace rtl {
 		}
 
 
-		void ReflectTypeMeta::addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction)
+		void CxxReflection::addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction)
 		{
 			const auto& fname = pFunction.getFunctionName();
 			const auto& itr = pFunctionMap.find(fname);
@@ -58,7 +58,7 @@ namespace rtl {
 		}
 
 
-		void ReflectTypeMeta::initTypeMetaData(const access::Function& pFunction)
+		void CxxReflection::initTypeMetaData(const access::Function& pFunction)
 		{
 			const auto& nameSpace = pFunction.getNamespace();
 

@@ -11,7 +11,7 @@ namespace rtl {
 	using functorIndex = std::size_t;
 
 	namespace detail {
-		class ReflectTypeMeta;
+		class CxxReflection;
 	}
 
 	namespace builder
@@ -60,24 +60,25 @@ namespace rtl {
 
 			Function() = delete;
 
-			GETTER(std::string, RecordName, m_record)
-				GETTER(std::string, FunctionName, m_function)
-				GETTER(std::string, Signatures, m_signatures)
-				GETTER(std::string, Namespace, m_namespace)
+			GETTER(std::string, RecordName, m_record, const)
+			GETTER(std::string, FunctionName, m_function, const)
+			GETTER(std::string, Signatures, m_signatures, const)
+			GETTER(std::string, Namespace, m_namespace, const)
 
-				template<class _arg0, class ..._args>
+			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
 
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept;
+
+			friend class Record;
+			friend class detail::CxxReflection;
 
 			template<class _targetType>
 			friend class MethodInvoker;
 
 			template<class ..._signature>
 			friend class builder::FunctionBuilder;
-			friend class Record;
-			friend class detail::ReflectTypeMeta;
 		};
 	}
 }

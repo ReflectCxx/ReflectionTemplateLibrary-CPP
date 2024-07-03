@@ -4,6 +4,7 @@
 #include "Function.h"
 #include "UniqueAny.h"
 #include "FunctorContainer.h"
+#include "ConstructorContainer.h"
 
 namespace rtl {
 
@@ -44,10 +45,10 @@ namespace rtl {
 		inline RStatus Function::invokeMethod(UniqueAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
-			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
+			const auto& signId = detail::MethodContainer<typeQ::Vol, _args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return detail::FunctorContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
+				return detail::MethodContainer<typeQ::Vol, _args...>::reflectMethodCall(pTarget, hash.second, params...);
 			}
 			return RStatus(false);
 		}
@@ -57,10 +58,10 @@ namespace rtl {
 		inline RStatus Function::invokeMethod(const UniqueAny& pTarget, _args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
-			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
+			const auto& signId = detail::MethodContainer<typeQ::Const, _args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return detail::FunctorContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
+				//detail::MethodContainer<_args...>::reflectMethodCall(pTarget, hash.second, params...);
 			}
 			return RStatus(false);
 		}
@@ -70,10 +71,10 @@ namespace rtl {
 		inline RStatus Function::invokeConstructor(_args ...params) const
 		{
 			auto hash = std::pair<signatureId, functorIndex>(-1, -1);
-			const auto& signId = detail::FunctorContainer<_args...>::getContainerId();
+			const auto& signId = detail::ConstructorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, hash))
 			{
-				return detail::FunctorContainer<_args...>::reflectConstructorCall(hash.second, params...);
+				return detail::ConstructorContainer<_args...>::reflectConstructorCall(hash.second, params...);
 			}
 			return RStatus(false);
 		}

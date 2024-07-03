@@ -37,10 +37,9 @@ namespace rtl
 
 			RStatus() = delete;
 
-			const bool didCallSucceed();
+			UniqueAny releaseReturn() const;
 
-			UniqueAny releaseReturn();
-			const UniqueAny releaseReturn() const;
+			const bool didCallSucceed() const;
 
 			friend class Record;
 			friend class Function;

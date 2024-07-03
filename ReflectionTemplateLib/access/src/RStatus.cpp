@@ -15,17 +15,12 @@ namespace rtl {
 			, m_returnObject(pRetObj, pTypeId, pDctor) {
 		};
 
-		const bool RStatus::didCallSucceed()
+		const bool RStatus::didCallSucceed() const
 		{
 			return m_callStatus;
 		}
 
-		UniqueAny RStatus::releaseReturn()
-		{
-			return std::move(m_returnObject);
-		}
-
-		const UniqueAny RStatus::releaseReturn() const
+		UniqueAny RStatus::releaseReturn() const
 		{
 			return std::move(m_returnObject);
 		}

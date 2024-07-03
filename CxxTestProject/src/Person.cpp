@@ -39,7 +39,7 @@ void Person::updateAddress(const std::string& pAddress) const
 	m_address = pAddress + "[__updateAddress() const]";
 }
 
-void Person::updateLastName(const std::string& pLastName) const
+void Person::updateLastName(std::string pLastName) const
 {
 	m_lastName = pLastName + "[__updateLastName() const]";
 }

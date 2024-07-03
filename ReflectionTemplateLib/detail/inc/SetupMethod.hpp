@@ -1,3 +1,4 @@
+#pragma once
 
 #include <cassert>
 
@@ -10,7 +11,7 @@ namespace rtl
 	{
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline int SetupMethod<_derivedType>::addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
+		inline int SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -36,7 +37,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline int SetupMethod<_derivedType>::addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
+		inline int SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -60,9 +61,10 @@ namespace rtl
 			return (methodFunctors.size() - 1);
 		}
 
+
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline int SetupMethod<_derivedType>::addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_same<_returnType, void> *_)
+		inline int SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -88,7 +90,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline int SetupMethod<_derivedType>::addMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_notSame<_returnType, void> *_)
+		inline int SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const, enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{

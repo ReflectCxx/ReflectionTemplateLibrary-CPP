@@ -131,7 +131,7 @@ namespace rtl_tests {
 
 	TEST(DynamicAllocConstructorBook, wrong_args)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -140,20 +140,19 @@ namespace rtl_tests {
 
 			const Record& classBook = record.value();
 
-			EXPECT_TRUE(book::assert_zero_instance_count());
 			RStatus retIns = classBook.instance(19.0, 87.5);
 			ASSERT_FALSE(retIns.didCallSucceed());
 
 			UniqueAny instance = retIns.releaseReturn();
 			ASSERT_FALSE(instance.get().has_value());
 		}
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
 	TEST(DynamicAllocConstructorBook, args_default)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -168,13 +167,13 @@ namespace rtl_tests {
 			ASSERT_TRUE(instance.get().has_value());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 
 	TEST(DynamicAllocConstructorBook, args_double_string)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -194,7 +193,7 @@ namespace rtl_tests {
 			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
-		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
 
 

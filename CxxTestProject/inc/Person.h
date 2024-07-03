@@ -17,7 +17,7 @@ public:
 
     void updateAddress(const std::string& pAddress) const;
 
-    void updateLastName(const std::string& pLastName) const;
+    void updateLastName(std::string pLastName) const;
 
     const bool operator==(const Person& pOther) const;
 

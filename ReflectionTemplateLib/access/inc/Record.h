@@ -10,7 +10,7 @@ namespace rtl {
 
 	namespace detail
 	{
-		class ReflectTypeMeta;
+		class CxxReflection;
 		using FunctionMap = std::unordered_map <std::string, access::Function>;
 	}
 
@@ -22,6 +22,7 @@ namespace rtl {
 		class Record
 		{
 			const std::string m_recordName;
+
 			mutable std::shared_ptr<detail::FunctionMap> m_functions;
 
 			Record(const std::string& pRecordName);
@@ -41,11 +42,7 @@ namespace rtl {
 			template<class ..._ctorArgs>
 			RStatus instance(_ctorArgs ...params) const;
 
-			//creates dynamic instance, using new, returns with const qualifier.
-			template<class ..._ctorArgs>
-			RStatus instanceConst(_ctorArgs ...params) const;
-
-			friend class detail::ReflectTypeMeta;
+			friend class detail::CxxReflection;
 		};
 	}
 }
