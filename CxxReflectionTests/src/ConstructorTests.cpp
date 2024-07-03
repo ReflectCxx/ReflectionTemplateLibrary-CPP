@@ -8,8 +8,8 @@ using namespace std;
 using namespace rtl::access;
 using namespace test_utils;
 
-namespace rtl_tests {
-
+namespace rtl_tests 
+{
 	TEST(RTLInterfaceCxxMirror, get_record_types_with_wrong_names)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();

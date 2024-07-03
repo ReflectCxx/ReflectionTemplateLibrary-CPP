@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Constants.h"
+#include "FunctorId.h"
 
 namespace rtl {
 
@@ -9,10 +9,13 @@ namespace rtl {
 		template<class _derivedType>
 		class SetupConstructor
 		{
+			template<class _recordType>
+			static const std::size_t getHashCode(const std::size_t pContainerId);
+
 		protected:
 
 			template<class _recordType, class ..._signature>
-			static int pushBack();
+			static const access::FunctorId pushBack();
 		};
 	}
 }

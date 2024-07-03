@@ -25,11 +25,15 @@ namespace rtl {
 			using FunctorType = std::function < access::RStatus(_signature...) >;
 
 			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, FunctorType> > m_functors;
 
-			static std::vector<FunctorType> m_functors;
+			static const std::size_t& getContainerId() {
+				return m_containerId;
+			}
 
-			static GETTER(std::size_t, ContainerId, m_containerId,)
-			static GETTER_REF(std::vector<FunctorType>, Functors, m_functors)
+			static std::vector< std::pair<std::size_t, FunctorType> >& getFunctors() {
+				return m_functors;
+			}
 
 			friend access::Function;
 			friend class SetupFunction<FunctorContainer<_signature...>>;
@@ -39,12 +43,13 @@ namespace rtl {
 			friend class builder::FunctionBuilder;
 		};
 
-		extern std::size_t g_signIdCounter;
+		extern std::size_t g_containerIdCounter;
 
 		template<class ..._signature>
-		const std::size_t FunctorContainer<_signature...>::m_containerId = g_signIdCounter++;
+		const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector<typename FunctorContainer<_signature...>::FunctorType> FunctorContainer<_signature...>::m_functors;
+		std::vector< std::pair< std::size_t, typename FunctorContainer<_signature...>::FunctorType> > 
+		FunctorContainer<_signature...>::m_functors;
 	}
 }

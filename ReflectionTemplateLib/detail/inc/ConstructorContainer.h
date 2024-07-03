@@ -24,11 +24,15 @@ namespace rtl {
 			using CtorFunctorType = std::function < access::RStatus(_signature...) >;
 
 			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, CtorFunctorType> > m_ctorPtrs;
 
-			static std::vector<CtorFunctorType> m_ctorPtrs;
+			static const std::size_t& getContainerId() {
+				return m_containerId;
+			}
 
-			static GETTER(std::size_t, ContainerId, m_containerId,)
-			static GETTER_REF(std::vector<CtorFunctorType>, CtorFunctors, m_ctorPtrs)
+			static std::vector< std::pair<std::size_t, CtorFunctorType> >& getCtorFunctors() {
+				return m_ctorPtrs;
+			}
 
 			friend access::Function;
 			friend class SetupConstructor<ConstructorContainer<_signature...>>;
@@ -38,12 +42,13 @@ namespace rtl {
 			friend class builder::FunctionBuilder;
 		};
 
-		extern std::size_t g_signIdCounter;
+		extern std::size_t g_containerIdCounter;
 
 		template<class ..._signature>
-		const std::size_t ConstructorContainer<_signature...>::m_containerId = g_signIdCounter++;
+		const std::size_t ConstructorContainer<_signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector<typename ConstructorContainer<_signature...>::CtorFunctorType> ConstructorContainer<_signature...>::m_ctorPtrs;
+		std::vector< std::pair<std::size_t, typename ConstructorContainer<_signature...>::CtorFunctorType> > 
+		ConstructorContainer<_signature...>::m_ctorPtrs;
 	}
 }

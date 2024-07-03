@@ -1,5 +1,7 @@
 
 #include <any>
+
+#include "TypeId.h"
 #include "UniqueAny.h"
 
 namespace rtl {
@@ -15,8 +17,9 @@ namespace rtl {
 
 		
 		UniqueAny::UniqueAny()
-			: m_typeId(int(Type::NONE))
-			, m_destructor(std::function<void(const std::any&)>()){
+			: m_qualifier(TypeQ::Vol)
+			, m_typeId(detail::TypeId<>::None)
+			, m_destructor(std::function< void(const std::any&) >()){
 		}
 
 
@@ -37,8 +40,10 @@ namespace rtl {
 		}
 
 
-		UniqueAny::UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const std::function<void(const std::any&)>& pDctor)
-			: m_anyObject(pAnyObj)
+		UniqueAny::UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
+				     const std::function< void(const std::any&) >& pDctor)
+			: m_qualifier(pQualifier)
+			, m_anyObject(pAnyObj)
 			, m_typeId(pTypeId)
 			, m_destructor(pDctor) {
 		}

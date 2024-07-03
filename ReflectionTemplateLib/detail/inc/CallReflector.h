@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include "Constants.h"
 #include "RStatus.h"
 
@@ -13,28 +14,46 @@ namespace rtl {
 		protected:
 
 			template<class ..._params>
-			static access::RStatus reflectFunctionCall(std::size_t pFunctorId, _params..._args) 
+			static access::RStatus reflectFunctionCall(std::size_t pFunctorId, const std::size_t pHashCode, _params..._args) 
 			{
-				return _derivedType::getFunctors().at(pFunctorId)(_args...);
+				const auto& functor = _derivedType::getFunctors().at(pFunctorId);
+				if (functor.first == pHashCode) {
+					return functor.second(_args...);
+				}
+				return access::RStatus(false);
 			}
 
-			template<class ..._params>
-			static access::RStatus reflectConstructorCall(std::size_t pFunctorId, _params..._args) 
-			{
-				return _derivedType::getCtorFunctors().at(pFunctorId)(_args...);
-			}
 
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(access::UniqueAny& pTarget, std::size_t pFunctorId, _params..._args) 
+			static access::RStatus reflectConstructorCall(std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
 			{
-				return _derivedType::getMethodFunctors().at(pFunctorId)(pTarget, _args...);
+				const auto& functor = _derivedType::getCtorFunctors().at(pFunctorId);
+				if (functor.first == pHashCode) {
+					return functor.second(_args...);
+				}
+				return access::RStatus(false);
 			}
 
+
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, _params..._args) 
+			static access::RStatus reflectMethodCall(access::UniqueAny& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
 			{
-				//FixMe: this is invalid.
-				return _derivedType::getMethodFunctors().at(pFunctorId)(pTarget, _args...);
+				const auto& functor = _derivedType::getMethodFunctors().at(pFunctorId);
+				if (functor.first == pHashCode) {
+					return functor.second(pTarget, _args...);
+				}
+				return access::RStatus(false);
+			}
+
+
+			template<class ..._params>
+			static access::RStatus reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
+			{
+				const auto& functor = _derivedType::getMethodFunctors().at(pFunctorId);
+				if (functor.first == pHashCode) {
+					return functor.second(pTarget, _args...);
+				}
+				return access::RStatus(false);
 			}
 		};
 	}

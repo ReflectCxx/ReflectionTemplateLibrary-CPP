@@ -17,64 +17,74 @@ namespace rtl {
 
 	namespace detail
 	{
-		template<typeQ, class ..._signature>
+		template<TypeQ, class ..._signature>
 		class MethodContainer;
 
 		template<class ..._signature>
-		class MethodContainer<typeQ::Vol, _signature...> : SetupMethod<MethodContainer<typeQ::Vol, _signature...>>,
-														   CallReflector<MethodContainer<typeQ::Vol, _signature...>>
-		{
-			using MethodPtrType = std::function < access::RStatus(access::UniqueAny&, _signature...) >;
-
-			static const std::size_t m_containerId;
-
-			static std::vector<MethodPtrType> m_methodPtrs;
-			
-			static GETTER(std::size_t, ContainerId, m_containerId,)
-			static GETTER_REF(std::vector<MethodPtrType>, MethodFunctors, m_methodPtrs)
-
-			friend access::Function;
-			friend class SetupMethod<MethodContainer<typeQ::Vol, _signature...>>;
-			friend class CallReflector<MethodContainer<typeQ::Vol, _signature...>>;
-
-			template<class ..._args>
-			friend class builder::FunctionBuilder;
-		};
-
-
-		template<class ..._signature>
-		class MethodContainer<typeQ::Const, _signature...> : SetupMethod<MethodContainer<typeQ::Const, _signature...>>,
-															 CallReflector<MethodContainer<typeQ::Const, _signature...>>
+		class MethodContainer<TypeQ::Vol, _signature...> : SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>,
+								   CallReflector<MethodContainer<TypeQ::Vol, _signature...>>
 		{
 			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
 			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, MethodPtrType> > m_methodPtrs;
+			
+			static const std::size_t& getContainerId() {
+				return m_containerId;
+			}
 
-			static std::vector<MethodPtrType> m_methodPtrs;
-
-			static GETTER(std::size_t, ContainerId, m_containerId, )
-			static GETTER_REF(std::vector<MethodPtrType>, MethodFunctors, m_methodPtrs)
+			static std::vector< std::pair<std::size_t, MethodPtrType> >& getMethodFunctors() {
+				return m_methodPtrs;
+			}
 
 			friend access::Function;
-			friend class SetupMethod<MethodContainer<typeQ::Const, _signature...>>;
-			friend class CallReflector<MethodContainer<typeQ::Const, _signature...>>;
+			friend class SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>;
+			friend class CallReflector<MethodContainer<TypeQ::Vol, _signature...>>;
 
 			template<class ..._args>
 			friend class builder::FunctionBuilder;
 		};
 
-		extern std::size_t g_signIdCounter;
 
 		template<class ..._signature>
-		const std::size_t MethodContainer<typeQ::Vol, _signature...>::m_containerId = g_signIdCounter++;
+		class MethodContainer<TypeQ::Const, _signature...> : SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
+								     CallReflector<MethodContainer<TypeQ::Const, _signature...>>
+		{
+			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
+
+			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, MethodPtrType> > m_methodPtrs;
+
+			static const std::size_t& getContainerId() {
+				return m_containerId;
+			}
+
+			static std::vector< std::pair<std::size_t, MethodPtrType> >& getMethodFunctors() {
+				return  m_methodPtrs;
+			}
+
+			friend access::Function;
+			friend class SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
+			friend class CallReflector<MethodContainer<TypeQ::Const, _signature...>>;
+
+			template<class ..._args>
+			friend class builder::FunctionBuilder;
+		};
+
+		extern std::size_t g_containerIdCounter;
 
 		template<class ..._signature>
-		std::vector<typename MethodContainer<typeQ::Vol, _signature...>::MethodPtrType> MethodContainer<typeQ::Vol, _signature...>::m_methodPtrs;
+		const std::size_t MethodContainer<TypeQ::Vol, _signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		const std::size_t MethodContainer<typeQ::Const, _signature...>::m_containerId = g_signIdCounter++;
+		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Vol, _signature...>::MethodPtrType> > 
+		MethodContainer<TypeQ::Vol, _signature...>::m_methodPtrs;
 
 		template<class ..._signature>
-		std::vector<typename MethodContainer<typeQ::Const, _signature...>::MethodPtrType> MethodContainer<typeQ::Const, _signature...>::m_methodPtrs;
+		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter++;
+
+		template<class ..._signature>
+		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Const, _signature...>::MethodPtrType> > 
+		MethodContainer<TypeQ::Const, _signature...>::m_methodPtrs;
 	}
 }

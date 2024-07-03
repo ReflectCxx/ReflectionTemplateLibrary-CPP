@@ -6,7 +6,7 @@ namespace rtl {
 
 	namespace detail
 	{
-		std::size_t g_signIdCounter = int(Type::NONE) + 1;
-		std::size_t g_typeIdCounter = int(Type::NONE) + 1;
+		std::size_t g_typeIdCounter = TypeId<>::None + 1;
+		std::size_t g_containerIdCounter = TypeId<>::None + 1;
 	}
 }

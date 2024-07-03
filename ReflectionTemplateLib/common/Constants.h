@@ -4,21 +4,19 @@
 
 namespace rtl {
 
-    //Type Qualifier
-    enum class typeQ
+    //type Qualifier
+    enum class TypeQ
     {
         Vol,     //Volatile
         Const,  //Const
     };
 
-    enum class Type { NONE = 0 };
-
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
-#define GETTER(_varType, _name, _var, _getType)                 \
-    inline constexpr const _varType& get##_name() _getType {    \
-        return _var;                                            \
+#define GETTER(_varType, _name, _var)                       \
+    inline constexpr const _varType& get##_name() const {   \
+        return _var;                                        \
     }
 
 #define GETTER_REF(_varType, _name, _var)       \
