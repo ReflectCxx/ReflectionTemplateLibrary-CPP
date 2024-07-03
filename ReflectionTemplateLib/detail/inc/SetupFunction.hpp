@@ -8,7 +8,7 @@ namespace rtl
 	{
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
-		inline int SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
+		inline int SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...), enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
@@ -24,7 +24,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
-		inline int SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
+		inline int SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...), enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{

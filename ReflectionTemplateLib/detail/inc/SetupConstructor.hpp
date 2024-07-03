@@ -9,7 +9,7 @@ namespace rtl
 	{
 		template<class _derivedType>
 		template<class _recordType, class ..._signature>
-		inline int SetupConstructor<_derivedType>::addConstructor()
+		inline int SetupConstructor<_derivedType>::pushBack()
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{

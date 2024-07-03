@@ -12,7 +12,7 @@ namespace rtl {
 		protected:
 
 			template<class _recordType, class ..._signature>
-			static int addConstructor();
+			static int pushBack();
 		};
 	}
 }

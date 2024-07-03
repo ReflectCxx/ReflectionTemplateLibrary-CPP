@@ -94,7 +94,7 @@ namespace rtl {
 									      const std::string& pFunctionName, _returnType(*pFunctor)(_signature...)) const
 		{
 			const std::size_t signatureId = detail::FunctorContainer<_signature...>::getContainerId();
-			const std::size_t functorId = detail::FunctorContainer<_signature...>::addFunctor(pFunctor);
+			const std::size_t functorId = detail::FunctorContainer<_signature...>::pushBack(pFunctor);
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, signatureId, functorId);
@@ -106,7 +106,7 @@ namespace rtl {
 											  const std::string& pCtor) const
 		{
 			const std::size_t signatureId = detail::ConstructorContainer<_ctorSignature...>::getContainerId();
-			const std::size_t functorId = detail::ConstructorContainer<_ctorSignature...>::template addConstructor<_recordType, _ctorSignature...>();
+			const std::size_t functorId = detail::ConstructorContainer<_ctorSignature...>::template pushBack<_recordType, _ctorSignature...>();
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			return access::Function(pNamespace, pRecord, pCtor, signature, signatureId, functorId);
