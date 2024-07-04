@@ -16,22 +16,6 @@ namespace rtl {
 			for (const auto& function : pFunctions) {
 				organizeFunctorsMetaData(function);
 			}
-
-			for (const auto& itr : m_nsFunctionsMap)
-			{
-				for (const auto& funcItr : itr.second) {
-					funcItr.second.sortFunctorsHash();
-				}
-			}
-
-			for (const auto& itr : m_nsRecordsMap)
-			{
-				for (const auto& recordItr : itr.second) {
-					for (const auto& funcItr : recordItr.second.getFunctionsMap()) {
-						funcItr.second.sortFunctorsHash();
-					}
-				}
-			}
 		}
 
 

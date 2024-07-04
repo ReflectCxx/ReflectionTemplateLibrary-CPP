@@ -18,16 +18,6 @@ namespace rtl {
 			, m_namespace(pNamespace) {
 		}
 
-
-		void Function::sortFunctorsHash() const
-		{
-			std::sort(m_functorIndex.begin(), m_functorIndex.end(),
-				[](const detail::FunctorId& a, const detail::FunctorId& b) {
-					return a.getSignatureId() < b.getSignatureId();
-				});
-		}
-
-
 		void Function::addOverload(const Function& pOtherFunc) const
 		{
 			const std::size_t& otherFuncSignId = pOtherFunc.m_functorIndex[0].getSignatureId();
@@ -46,14 +36,14 @@ namespace rtl {
 		}
 
 
-		const bool Function::hasSignatureId(const std::size_t& pSignId, std::size_t& pIndex, std::size_t& pHashCode) const
+		const bool Function::hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const
 		{
-			const auto& itr = std::lower_bound(m_functorIndex.begin(), m_functorIndex.end(), pSignId,
-				[](const detail::FunctorId& a, const std::size_t& otherSignId) {
-					return a.getSignatureId() < otherSignId;
+			auto itr = std::find_if(m_functorIndex.begin(), m_functorIndex.end(),
+				[pSignatureId](const detail::FunctorId& functorId) {
+					return (functorId.getSignatureId() == pSignatureId);
 				});
 
-			if (itr != m_functorIndex.end() && itr->getSignatureId() == pSignId) {
+			if (itr != m_functorIndex.end()) {
 				pIndex = itr->getIndex();
 				pHashCode = itr->getHashCode();
 				return true;

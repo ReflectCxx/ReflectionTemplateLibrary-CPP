@@ -32,10 +32,9 @@ namespace rtl {
 
 		protected:
 
-			void sortFunctorsHash() const;
 			void addOverload(const Function& pOtherFunc) const;
 
-			const bool hasSignatureId(const std::size_t& pSignId, std::size_t& pIndex, std::size_t& pHashCode) const;
+			const bool hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const;
 
 		public:
 
