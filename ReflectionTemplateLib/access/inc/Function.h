@@ -30,10 +30,10 @@ namespace rtl {
 			const std::string m_namespace;
 
 			mutable std::string m_signatures;
-			mutable std::vector<FunctorId> m_functorIndex;
+			mutable std::vector<detail::FunctorId> m_functorIndex;
 
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const std::string& pSignature, const FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
+				 const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
 
 		protected:
 

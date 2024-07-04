@@ -11,7 +11,7 @@ namespace rtl {
 		UniqueAny::~UniqueAny()
 		{
 			if (m_destructor) {
-				m_destructor(m_anyObject);
+				m_destructor(m_anyObject, m_qualifier);
 			}
 		}
 
@@ -26,8 +26,8 @@ namespace rtl {
 			: m_qualifier(pOther.m_qualifier)
 			, m_typeId(pOther.m_typeId)
 			, m_anyObject(pOther.m_anyObject)
-			, m_destructor(std::move(pOther.m_destructor))
-			, m_toConst(std::move(pOther.m_toConst)) {
+			, m_toConst(std::move(pOther.m_toConst))
+			, m_destructor(std::move(pOther.m_destructor)) {
 		}
 
 		
@@ -42,22 +42,22 @@ namespace rtl {
 
 
 		UniqueAny::UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				     const std::function< void(const std::any&) >& pDctor,
+				     const std::function< void(const std::any&, const TypeQ&) >& pDctor,
 				     const std::function< void(std::any&, std::size_t&) >& pToConst)
 			: m_qualifier(pQualifier)
 			, m_typeId(pTypeId)
 			, m_anyObject(pAnyObj)
-			, m_destructor(pDctor)
-			, m_toConst(pToConst) {
+			, m_toConst(pToConst)
+			, m_destructor(pDctor) {
 		}
 
 
-		const bool UniqueAny::isConst() {
+		const bool UniqueAny::isConst() const {
 			return (m_qualifier == TypeQ::Const);
 		}
 
 
-		const bool UniqueAny::makeConst()
+		const bool UniqueAny::makeConst() const
 		{
 			if (m_toConst) {
 				m_qualifier = TypeQ::Const;

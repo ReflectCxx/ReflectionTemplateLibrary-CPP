@@ -22,7 +22,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline const access::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
+		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
 										   enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
@@ -45,13 +45,13 @@ namespace rtl
 			const std::size_t& index = methodFunctors.size();
 			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline const access::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
+		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
 										   enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
@@ -76,24 +76,34 @@ namespace rtl
 			const std::size_t& index = methodFunctors.size();
 			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline const access::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
+		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
 										   enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
-				if (pTargetObj.get().has_value() && pTargetObj.isOfType<_recordType*>())
+				if (pTargetObj.get().has_value())
 				{
-					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
-					if (target != nullptr)
-					{
-						(target->*pFunctor)(params...);
-						return access::RStatus(true);
+					if (pTargetObj.isConst() && pTargetObj.isOfType<const _recordType*>()) {
+						const _recordType* target = std::any_cast<const _recordType*>(pTargetObj.get());
+						if (target != nullptr)
+						{
+							(target->*pFunctor)(params...);
+							return access::RStatus(true);
+						}
+					}
+					else if (pTargetObj.isOfType<_recordType*>()) {
+						_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+						if (target != nullptr)
+						{
+							(target->*pFunctor)(params...);
+							return access::RStatus(true);
+						}
 					}
 					assert(false && "Throw call on bad target exception");
 				}
@@ -105,13 +115,13 @@ namespace rtl
 			const std::size_t& index = methodFunctors.size();
 			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
-		inline const access::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
+		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
 										   enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
@@ -135,7 +145,7 @@ namespace rtl
 			const std::size_t& index = methodFunctors.size();
 			auto hashCode = getHashCode<_recordType, _returnType>(_derivedType::getContainerId(), index);
 			methodFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 	}
 }

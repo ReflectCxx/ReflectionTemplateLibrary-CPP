@@ -9,65 +9,72 @@ using namespace test_utils;
 
 namespace rtl_tests 
 {
-	//TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_non_const_target)
-	//{
-	//	EXPECT_TRUE(person::assert_zero_instance_count());
-	//	{
-	//		CxxMirror& cxxMirror = MyReflection::instance();
+	TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_non_const_target)
+	{
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-	//		optional<Record> recOpt = cxxMirror.getRecord(person::class_);
-	//		ASSERT_TRUE(recOpt.has_value());
+			optional<Record> recOpt = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(recOpt.has_value());
 
-	//		const Record& classPerson = recOpt.value();
-	//		optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
-	//		ASSERT_TRUE(methOpt.has_value());
+			const Record& classPerson = recOpt.value();
+			optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
+			ASSERT_TRUE(methOpt.has_value());
 
-	//		const RStatus& retIns = classPerson.instance(string(person::FIRST_NAME));
-	//		ASSERT_TRUE(retIns.didCallSucceed());
+			const RStatus& retIns = classPerson.instance(string(person::FIRST_NAME));
+			ASSERT_TRUE(retIns.didCallSucceed());
 
-	//		UniqueAny personObj = retIns.releaseReturn();
-	//		ASSERT_TRUE(personObj.get().has_value());
+			UniqueAny personObj = retIns.releaseReturn();
+			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_FALSE(personObj.isConst());
 
-	//		const Method& updateLastName = methOpt.value();
-	//		const RStatus& callRet = updateLastName(personObj).invoke(string(person::LAST_NAME));
-	//		
-	//		ASSERT_TRUE(callRet.didCallSucceed());
-	//		EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
-	//	}
-	//	EXPECT_TRUE(person::assert_zero_instance_count());
-	//}
+			const Method& updateLastName = methOpt.value();
+			ASSERT_TRUE(updateLastName.hasSignature<string>());
+
+			string lnameStr = person::LAST_NAME;
+			const RStatus& callRet = updateLastName(personObj).invoke(lnameStr);
+			
+			ASSERT_TRUE(callRet.didCallSucceed());
+			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
+		}
+		EXPECT_TRUE(person::assert_zero_instance_count());
+	}
 
 
-	//TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_const_target)
-	//{
-	//	EXPECT_TRUE(person::assert_zero_instance_count());
-	//	{
-	//		CxxMirror& cxxMirror = MyReflection::instance();
+	TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_const_target)
+	{
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
 
-	//		optional<Record> recOpt = cxxMirror.getRecord(person::class_);
-	//		ASSERT_TRUE(recOpt.has_value());
+			optional<Record> recOpt = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(recOpt.has_value());
 
-	//		const Record& classPerson = recOpt.value();
-	//		optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
-	//		ASSERT_TRUE(methOpt.has_value());
+			const Record& classPerson = recOpt.value();
+			optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
+			ASSERT_TRUE(methOpt.has_value());
 
-	//		const RStatus& retIns = classPerson.instance(string(person::FIRST_NAME));
-	//		ASSERT_TRUE(retIns.didCallSucceed());
+			string fnameStr = person::FIRST_NAME;
+			const RStatus& retIns = classPerson.instance(fnameStr);
+			ASSERT_TRUE(retIns.didCallSucceed());
 
-	//		UniqueAny personObj = retIns.releaseReturn();
-	//		ASSERT_TRUE(personObj.get().has_value());
+			UniqueAny personObj = retIns.releaseReturn();
+			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_FALSE(personObj.isConst());
 
-	//		personObj.makeConst();
-	//		auto cv = personObj.getQualifier();
+			personObj.makeConst();
+			ASSERT_TRUE(personObj.isConst());
 
-	//		//ASSERT_TRUE(personObj.getQualifier() == TypeQ::Const);
+			const Method& updateLastName = methOpt.value();
+			ASSERT_TRUE(updateLastName.hasSignature<string>());
 
-	//		const Method& updateLastName = methOpt.value();
-	//		const RStatus& callRet = updateLastName(personObj).invoke(string(person::LAST_NAME));
+			string lnameStr = person::LAST_NAME;
+			const RStatus& callRet = updateLastName(personObj).invoke(lnameStr);
 
-	//		ASSERT_TRUE(callRet.didCallSucceed());
-	//		EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
-	//	}
-	//	EXPECT_TRUE(person::assert_zero_instance_count());
-	//}
+			ASSERT_TRUE(callRet.didCallSucceed());
+			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
+		}
+		EXPECT_TRUE(person::assert_zero_instance_count());
+	}
 }

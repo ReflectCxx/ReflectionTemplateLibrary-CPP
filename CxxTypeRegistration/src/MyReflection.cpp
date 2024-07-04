@@ -64,7 +64,8 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
 		Reflect().record<Person>(person::class_).constructor<std::string>().build(),
-		Reflect().record<Person>(person::class_).method(person::str_updateLastName).build(&Person::updateLastName)
+		Reflect().record<Person>(person::class_).method(person::str_updateLastName).build(&Person::updateLastName),
+		//Reflect().record<Person>(person::class_).method(person::str_updateAddress).build(&Person::updateAddress)
 	});
 
 	return cxxMirror;

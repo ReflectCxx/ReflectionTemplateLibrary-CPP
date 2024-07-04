@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "RStatus.h"
 #include "SetupConstructor.h"
 
@@ -17,16 +19,25 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class ..._signature>
-		inline const access::FunctorId SetupConstructor<_derivedType>::pushBack()
+		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBack()
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
 				_recordType* retObj = new _recordType(params...);
 
-				std::function< void(const std::any&) > destructor = [](const std::any& pTarget)->void {
-					_recordType* object = std::any_cast<_recordType*>(pTarget);
-					delete object;
+				std::function< void(const std::any&, const TypeQ&) > destructor = [](const std::any& pTarget, const TypeQ& pQualifier)->void {
+					if (pQualifier == TypeQ::Const) {
+						const _recordType* object = std::any_cast<const _recordType*>(pTarget);
+						delete object;
+					}
+					else if(pQualifier == TypeQ::Vol){
+						_recordType* object = std::any_cast<_recordType*>(pTarget);
+						delete object;
+					}
+					else {
+						assert(false && "deleting bad target object.");
+					}
 				};
 
 				std::function< void(std::any&, std::size_t&) > toConst = [](std::any& pTarget, std::size_t& pTypeId)->void {
@@ -43,7 +54,7 @@ namespace rtl
 			const std::size_t& index = ctorFunctors.size();
 			auto hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index);
 			ctorFunctors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 	}
 }

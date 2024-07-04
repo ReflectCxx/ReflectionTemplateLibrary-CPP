@@ -15,7 +15,7 @@ namespace rtl {
 		protected:
 
 			template<class _recordType, class ..._signature>
-			static const access::FunctorId pushBack();
+			static const detail::FunctorId pushBack();
 		};
 	}
 }

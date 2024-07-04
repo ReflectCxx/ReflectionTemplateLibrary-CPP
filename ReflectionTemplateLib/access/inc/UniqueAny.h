@@ -14,17 +14,16 @@ namespace rtl {
 
 		class UniqueAny
 		{
-			TypeQ m_qualifier;
-			
-			std::size_t m_typeId;
-			std::any m_anyObject;
+			mutable TypeQ m_qualifier;
+			mutable std::size_t m_typeId;
+			mutable std::any m_anyObject;
 
-			std::function< void(const std::any&) > m_destructor;
 			std::function< void(std::any&, std::size_t&) > m_toConst;
+			std::function< void(const std::any&, const TypeQ&) > m_destructor;
 
 			UniqueAny();
 			UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				  const std::function< void(const std::any&) >& pDctor,
+				  const std::function< void(const std::any&, const TypeQ&) >& pDctor,
 				  const std::function< void(std::any&, std::size_t&) >& pToConst);
 
 		public:
@@ -37,9 +36,9 @@ namespace rtl {
 			UniqueAny(UniqueAny&& pOther) noexcept;
 			UniqueAny& operator=(UniqueAny&& pOther) noexcept;
 
-			const bool isConst();
+			const bool isConst() const;
 
-			const bool makeConst();
+			const bool makeConst() const;
 
 			template<class _type>
 			constexpr const bool isOfType() const {

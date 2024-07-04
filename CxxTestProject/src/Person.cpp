@@ -29,12 +29,12 @@ unsigned Person::getInstanceCount()
 }
 
 
-void Person::updateAddress(const std::string& pAddress)
+void Person::updateAddress(std::string pAddress)
 {
 	m_address = pAddress + "[__updateAddress()]";
 }
 
-void Person::updateAddress(const std::string& pAddress) const
+void Person::updateAddress(std::string pAddress) const
 {
 	m_address = pAddress + "[__updateAddress() const]";
 }

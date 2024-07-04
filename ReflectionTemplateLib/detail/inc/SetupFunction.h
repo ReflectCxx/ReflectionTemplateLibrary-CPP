@@ -15,11 +15,11 @@ namespace rtl {
 		protected:
 
 			template<class _returnType, class ..._signature>
-			static const access::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
+			static const detail::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
 								enable_if_same<_returnType, void> *_ = nullptr);
 
 			template<class _returnType, class ..._signature>
-			static const access::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
+			static const detail::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
 								enable_if_notSame<_returnType, void> *_ = nullptr);
 		};
 	}

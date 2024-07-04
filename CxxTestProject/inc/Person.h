@@ -13,9 +13,9 @@ public:
     Person() = delete;
     Person(const std::string& pName);
 
-    void updateAddress(const std::string& pAddress);
+    void updateAddress(std::string pAddress);
 
-    void updateAddress(const std::string& pAddress) const;
+    void updateAddress(std::string pAddress) const;
 
     void updateLastName(std::string pLastName) const;
 

@@ -9,7 +9,7 @@ namespace rtl {
 	namespace access 
 	{
 		Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction,
-				   const std::string& pSignature, const FunctorId& pFunctorId, const TypeQ pQualifier)
+				   const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier)
 			: m_qualifier(pQualifier)
 			, m_functorIndex({ pFunctorId })
 			, m_record(pRecord)
@@ -22,7 +22,7 @@ namespace rtl {
 		void Function::sortFunctorsHash() const
 		{
 			std::sort(m_functorIndex.begin(), m_functorIndex.end(),
-				[](const FunctorId& a, const FunctorId& b) {
+				[](const detail::FunctorId& a, const detail::FunctorId& b) {
 					return a.getSignatureId() < b.getSignatureId();
 				});
 		}
@@ -33,7 +33,7 @@ namespace rtl {
 			const std::size_t& otherFuncSignId = pOtherFunc.m_functorIndex[0].getSignatureId();
 
 			auto itr = std::find_if(m_functorIndex.begin(), m_functorIndex.end(),
-				[otherFuncSignId](const FunctorId& functorId) {
+				[otherFuncSignId](const detail::FunctorId& functorId) {
 					return (functorId.getSignatureId() == otherFuncSignId);
 				});
 
@@ -49,7 +49,7 @@ namespace rtl {
 		const bool Function::hasSignatureId(const std::size_t& pSignId, std::size_t& pIndex, std::size_t& pHashCode) const
 		{
 			const auto& itr = std::lower_bound(m_functorIndex.begin(), m_functorIndex.end(), pSignId,
-				[](const FunctorId& a, const std::size_t& otherSignId) {
+				[](const detail::FunctorId& a, const std::size_t& otherSignId) {
 					return a.getSignatureId() < otherSignId;
 				});
 

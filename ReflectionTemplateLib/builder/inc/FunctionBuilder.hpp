@@ -95,7 +95,7 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const access::FunctorId functorId = detail::FunctorContainer<_signature...>::pushBack(pFunctor);
+			const detail::FunctorId functorId = detail::FunctorContainer<_signature...>::pushBack(pFunctor);
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId);
 		}
 
@@ -105,7 +105,7 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const access::FunctorId functorId = detail::ConstructorContainer<_ctorSignature...>::template pushBack<_recordType, _ctorSignature...>();
+			const detail::FunctorId functorId = detail::ConstructorContainer<_ctorSignature...>::template pushBack<_recordType, _ctorSignature...>();
 			return access::Function(pNamespace, pRecord, pCtor, signature, functorId);
 		}
 
@@ -116,7 +116,7 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const access::FunctorId functorId = detail::MethodContainer<TypeQ::Vol, _signature...>::pushBack(pFunctor);
+			const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Vol, _signature...>::pushBack(pFunctor);
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId, TypeQ::Vol);
 		}
 
@@ -127,7 +127,7 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const access::FunctorId functorId = detail::MethodContainer<TypeQ::Const, _signature...>::pushBack(pFunctor);
+			const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Const, _signature...>::pushBack(pFunctor);
 			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId, TypeQ::Const);
 		}
 	}

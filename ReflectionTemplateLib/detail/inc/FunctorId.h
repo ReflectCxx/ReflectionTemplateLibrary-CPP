@@ -4,7 +4,7 @@
 
 namespace rtl 
 {
-	namespace access 
+	namespace detail 
 	{
 		class FunctorId
 		{

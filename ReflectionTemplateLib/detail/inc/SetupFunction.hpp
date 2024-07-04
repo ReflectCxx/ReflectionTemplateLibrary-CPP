@@ -16,7 +16,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
-		inline const access::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
+		inline const detail::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
 										     enable_if_same<_returnType, void> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
@@ -29,13 +29,13 @@ namespace rtl
 			const std::size_t& index = functors.size();
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index);
 			functors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 
 
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
-		inline const access::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
+		inline const detail::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
 										     enable_if_notSame<_returnType, void> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
@@ -50,7 +50,7 @@ namespace rtl
 			const std::size_t& index = functors.size();
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index);
 			functors.push_back(std::make_pair(hashCode, functor));
-			return access::FunctorId(index, hashCode, _derivedType::getContainerId());
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId());
 		}
 	}
 }

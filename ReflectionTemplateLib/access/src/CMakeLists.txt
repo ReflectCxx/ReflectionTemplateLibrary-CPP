@@ -17,7 +17,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirror.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
-	"${PROJECT_SOURCE_DIR}/access/inc/FunctorId.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"

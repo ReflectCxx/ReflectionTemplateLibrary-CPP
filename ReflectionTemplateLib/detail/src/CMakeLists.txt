@@ -10,6 +10,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/ConstructorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.hpp"

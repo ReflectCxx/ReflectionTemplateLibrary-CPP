@@ -17,10 +17,6 @@ namespace rtl {
 		{
 		public:
 
-			CxxMirror() = delete;
-			CxxMirror(CxxMirror&) = delete;
-			CxxMirror& operator=(CxxMirror&) = delete;
-
 			CxxMirror(const std::vector<Function>& pFunctions);
 
 			std::optional<Record> getRecord(const std::string& pFunction);
