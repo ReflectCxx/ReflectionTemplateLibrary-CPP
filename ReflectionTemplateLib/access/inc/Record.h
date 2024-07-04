@@ -4,7 +4,7 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Function.h"
+#include "Method.h"
 
 namespace rtl {
 
