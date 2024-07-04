@@ -11,6 +11,10 @@
 
 namespace rtl {
 
+	namespace access {
+		class Method;
+	}
+
 	namespace builder {
 		template<class ..._args>
 		class FunctionBuilder;
@@ -35,6 +39,7 @@ namespace rtl {
 				return m_functors;
 			}
 
+			friend access::Method;
 			friend access::Function;
 			friend class SetupFunction<FunctorContainer<_signature...>>;
 			friend class CallReflector<FunctorContainer<_signature...>>;

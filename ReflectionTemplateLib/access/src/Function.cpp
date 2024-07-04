@@ -9,13 +9,13 @@ namespace rtl {
 	namespace access 
 	{
 		Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction,
-				   const std::string& pSignature, const FunctorId& pFunctorId)
-			: m_functorIndex({ pFunctorId })
+				   const std::string& pSignature, const FunctorId& pFunctorId, const TypeQ pQualifier)
+			: m_qualifier(pQualifier)
+			, m_functorIndex({ pFunctorId })
 			, m_record(pRecord)
 			, m_function(pFunction)
 			, m_signatures(pSignature)
-			, m_namespace(pNamespace)
-		{
+			, m_namespace(pNamespace) {
 		}
 
 

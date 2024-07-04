@@ -117,7 +117,7 @@ namespace rtl {
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			const access::FunctorId functorId = detail::MethodContainer<TypeQ::Vol, _signature...>::pushBack(pFunctor);
-			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId);
+			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId, TypeQ::Vol);
 		}
 
 
@@ -128,7 +128,7 @@ namespace rtl {
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			const access::FunctorId functorId = detail::MethodContainer<TypeQ::Const, _signature...>::pushBack(pFunctor);
-			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId);
+			return access::Function(pNamespace, pClassName, pFunctionName, signature, functorId, TypeQ::Const);
 		}
 	}
 }

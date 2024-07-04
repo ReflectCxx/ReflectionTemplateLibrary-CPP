@@ -18,6 +18,7 @@ namespace rtl {
 	namespace detail
 	{
 		using RecordMap = std::unordered_map <std::string, access::Record>;
+		using MethodMap = std::unordered_map <std::string, access::Method>;
 		using FunctionMap = std::unordered_map <std::string, access::Function>;
 
 		class CxxReflection
@@ -26,7 +27,9 @@ namespace rtl {
 			std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;
 
 			void initTypeMetaData(const access::Function& pFunction);
-			void addFunction(RecordMap& pRecordMap, const access::Function& pFunction);
+
+			void addRecord(RecordMap& pRecordMap, const access::Function& pFunction);
+			void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
 			void addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction);
 
 		protected:

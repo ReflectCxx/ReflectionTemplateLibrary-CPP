@@ -7,7 +7,8 @@ namespace rtl {
     //type Qualifier
     enum class TypeQ
     {
-        Vol,     //Volatile
+        None,
+        Vol,    //Volatile
         Const,  //Const
     };
 

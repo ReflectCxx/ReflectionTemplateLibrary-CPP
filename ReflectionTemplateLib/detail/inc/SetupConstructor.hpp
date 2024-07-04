@@ -23,11 +23,20 @@ namespace rtl
 			{
 				const auto& typeId = TypeId<_recordType*>::get();
 				_recordType* retObj = new _recordType(params...);
+
 				std::function< void(const std::any&) > destructor = [](const std::any& pTarget)->void {
 					_recordType* object = std::any_cast<_recordType*>(pTarget);
 					delete object;
 				};
-				return access::RStatus(true, std::make_any<_recordType*>(retObj), typeId, TypeQ::Vol, destructor);
+
+				std::function< void(std::any&, std::size_t&) > toConst = [](std::any& pTarget, std::size_t& pTypeId)->void {
+					pTypeId = TypeId<const _recordType*>::get();
+					_recordType* object = std::any_cast<_recordType*>(pTarget);
+					pTarget.reset();
+					pTarget.emplace<const _recordType*>(object);
+				};
+
+				return access::RStatus(true, std::make_any<_recordType*>(retObj), typeId, TypeQ::Vol, destructor, toConst);
 			};
 
 			auto& ctorFunctors = _derivedType::getCtorFunctors();

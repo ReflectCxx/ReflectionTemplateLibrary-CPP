@@ -20,14 +20,11 @@ namespace rtl {
 
 	namespace access
 	{
-		class FunctorId;
-		class Record;
 		class RStatus;
-		class UniqueAny;
-		class MethodInvoker;
 
 		class Function
 		{
+			const TypeQ m_qualifier;
 			const std::string m_record;
 			const std::string m_function;
 			const std::string m_namespace;
@@ -35,32 +32,25 @@ namespace rtl {
 			mutable std::string m_signatures;
 			mutable std::vector<FunctorId> m_functorIndex;
 
-			void sortFunctorsHash() const;
+			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
+				 const std::string& pSignature, const FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
 
+		protected:
+
+			void sortFunctorsHash() const;
 			void addOverload(const Function& pOtherFunc) const;
 
 			const bool hasSignatureId(const std::size_t& pSignId, std::size_t& pIndex, std::size_t& pHashCode) const;
-
-			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const std::string& pSignature, const FunctorId& pFunctorId);
-
-			template<class ..._args>
-			RStatus invokeConstructor(_args...params) const;
-
-			template<class ..._args>
-			RStatus invokeMethod(const UniqueAny& pTarget, _args...params) const;
-
-			template<class ..._args>
-			RStatus invokeConstMethod(const UniqueAny& pTarget, _args...params) const;
 
 		public:
 
 			Function() = delete;
 
+			GETTER(TypeQ, Qualifier, m_qualifier)
 			GETTER(std::string, RecordName, m_record)
+			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
-			GETTER(std::string, Namespace, m_namespace)
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
@@ -68,8 +58,6 @@ namespace rtl {
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept;
 
-			friend class Record;
-			friend class MethodInvoker;
 			friend class detail::CxxReflection;
 
 			template<class ..._signature>

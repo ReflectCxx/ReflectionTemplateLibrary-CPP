@@ -37,6 +37,7 @@ namespace rtl {
 				return m_methodPtrs;
 			}
 
+			friend access::Method;
 			friend access::Function;
 			friend class SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>;
 			friend class CallReflector<MethodContainer<TypeQ::Vol, _signature...>>;
@@ -63,6 +64,7 @@ namespace rtl {
 				return  m_methodPtrs;
 			}
 
+			friend access::Method;
 			friend access::Function;
 			friend class SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
 			friend class CallReflector<MethodContainer<TypeQ::Const, _signature...>>;

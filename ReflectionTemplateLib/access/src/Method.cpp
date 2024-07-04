@@ -6,7 +6,7 @@ namespace rtl {
 	namespace access 
 	{
 		Method::Method(const Function& pFunction)
-			:m_function(pFunction) {
+			:Function(pFunction) {
 		}
 	}
 }

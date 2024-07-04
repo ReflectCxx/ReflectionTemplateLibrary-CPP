@@ -18,16 +18,16 @@ namespace rtl {
 		
 		UniqueAny::UniqueAny()
 			: m_qualifier(TypeQ::Vol)
-			, m_typeId(detail::TypeId<>::None)
-			, m_destructor(std::function< void(const std::any&) >()){
+			, m_typeId(detail::TypeId<>::None) {
 		}
 
 
 		UniqueAny::UniqueAny(UniqueAny&& pOther) noexcept
-			: m_typeId(pOther.m_typeId) 
-		{
-			m_anyObject = pOther.m_anyObject;
-			m_destructor = std::move(pOther.m_destructor);
+			: m_qualifier(pOther.m_qualifier)
+			, m_typeId(pOther.m_typeId)
+			, m_anyObject(pOther.m_anyObject)
+			, m_destructor(std::move(pOther.m_destructor))
+			, m_toConst(std::move(pOther.m_toConst)) {
 		}
 
 		
@@ -35,17 +35,36 @@ namespace rtl {
 		{
 			m_typeId = pOther.m_typeId;
 			m_anyObject = pOther.m_anyObject;
+			m_toConst = std::move(pOther.m_toConst);
 			m_destructor = std::move(pOther.m_destructor);
 			return *this;
 		}
 
 
 		UniqueAny::UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				     const std::function< void(const std::any&) >& pDctor)
+				     const std::function< void(const std::any&) >& pDctor,
+				     const std::function< void(std::any&, std::size_t&) >& pToConst)
 			: m_qualifier(pQualifier)
-			, m_anyObject(pAnyObj)
 			, m_typeId(pTypeId)
-			, m_destructor(pDctor) {
+			, m_anyObject(pAnyObj)
+			, m_destructor(pDctor)
+			, m_toConst(pToConst) {
+		}
+
+
+		const bool UniqueAny::isConst() {
+			return (m_qualifier == TypeQ::Const);
+		}
+
+
+		const bool UniqueAny::makeConst()
+		{
+			if (m_toConst) {
+				m_qualifier = TypeQ::Const;
+				m_toConst(m_anyObject, m_typeId);
+				return true;
+			}
+			return false;
 		}
 	}
 }

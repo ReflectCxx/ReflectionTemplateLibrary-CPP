@@ -34,7 +34,9 @@ namespace rtl {
 				return m_ctorPtrs;
 			}
 
+			friend access::Method;
 			friend access::Function;
+
 			friend class SetupConstructor<ConstructorContainer<_signature...>>;
 			friend class CallReflector<ConstructorContainer<_signature...>>;
 

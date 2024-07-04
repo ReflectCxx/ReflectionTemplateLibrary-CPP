@@ -8,26 +8,25 @@
 
 namespace rtl {
 
-	namespace detail
-	{
+	namespace detail {
 		class CxxReflection;
-		using FunctionMap = std::unordered_map <std::string, access::Function>;
 	}
 
 	namespace access
 	{
 		class Method;
 		class RStatus;
+		class UniqueAny;
 
 		class Record
 		{
 			const std::string m_recordName;
 
-			mutable std::shared_ptr<detail::FunctionMap> m_functions;
+			mutable std::unordered_map< std::string, access::Method > m_methods;
 
 			Record(const std::string& pRecordName);
 
-			detail::FunctionMap& getFunctionsMap() const;
+			std::unordered_map< std::string, access::Method >& getFunctionsMap() const;
 
 		public:
 

@@ -45,6 +45,8 @@ namespace rtl_tests
 			const char* authorStr = book::AUTHOR;
 			const Method& setAuthor = methOpt.value();
 
+			ASSERT_FALSE(setAuthor.hasSignature<const char*>());
+
 			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
 			ASSERT_FALSE(callRet.didCallSucceed());
 
@@ -78,6 +80,8 @@ namespace rtl_tests
 			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& getPublishedOn = methOpt.value();
+			ASSERT_TRUE(getPublishedOn.hasSignature<void>());
+
 			RStatus callRet = getPublishedOn(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
@@ -110,10 +114,11 @@ namespace rtl_tests
 
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
+			
+			const Method& setAuthor = methOpt.value();
+			ASSERT_TRUE(setAuthor.hasSignature<std::string>());
 
 			std::string authorStr = book::AUTHOR;
-			const Method& setAuthor = methOpt.value();
-
 			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
@@ -147,6 +152,8 @@ namespace rtl_tests
 			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& updateBookInfo = methOpt.value();
+			ASSERT_TRUE(updateBookInfo.hasSignature<void>());
+			
 			RStatus callRet = updateBookInfo(bookObj).invoke();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
@@ -179,9 +186,11 @@ namespace rtl_tests
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
 
-			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
+			const bool signatureValid = updateBookInfo.hasSignature<string, double, const char*>();
+			ASSERT_TRUE(signatureValid);
 
+			string author = book::AUTHOR;
 			RStatus callRet = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
@@ -215,9 +224,11 @@ namespace rtl_tests
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
 
-			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
+			const bool signatureValid = updateBookInfo.hasSignature<const char*, double, string>();
+			ASSERT_TRUE(signatureValid);
 
+			string author = book::AUTHOR;
 			RStatus callRet = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
 			ASSERT_TRUE(callRet.didCallSucceed());
 

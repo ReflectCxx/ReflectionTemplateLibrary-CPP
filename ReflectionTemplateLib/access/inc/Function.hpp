@@ -39,47 +39,5 @@ namespace rtl {
 			}
 			return RStatus(false);
 		}
-
-
-		template<class ..._args>
-		inline RStatus Function::invokeMethod(const UniqueAny& pTarget, _args ...params) const
-		{	
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::MethodContainer<TypeQ::Vol, _args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
-			{
-				return detail::MethodContainer<TypeQ::Vol, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
-			}
-			else {
-				return invokeConstMethod(pTarget, params...);
-			}
-			return RStatus(false);
-		}
-
-
-		template<class ..._args>
-		inline RStatus Function::invokeConstMethod(const UniqueAny& pTarget, _args ...params) const
-		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
-			{
-				return detail::MethodContainer<TypeQ::Const, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
-			}
-			return RStatus(false);
-		}
-
-
-		template<class ..._args>
-		inline RStatus Function::invokeConstructor(_args ...params) const
-		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::ConstructorContainer<_args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
-			{
-				return detail::ConstructorContainer<_args...>::reflectConstructorCall(index, hashCode, params...);
-			}
-			return RStatus(false);
-		}
 	}
 }
