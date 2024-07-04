@@ -1,7 +1,6 @@
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxReflection.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/TypeId.cpp"
 )
 
 

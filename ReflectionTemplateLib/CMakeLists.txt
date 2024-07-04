@@ -20,4 +20,4 @@ INCLUDE_DIRECTORIES(builder/inc)
 # Add the source directory
 INCLUDE(detail/src/CMakeLists.txt)
 INCLUDE(access/src/CMakeLists.txt)
-INCLUDE(builder/src/CMakeLists.txt)
+INCLUDE(builder/CMakeLists.txt)

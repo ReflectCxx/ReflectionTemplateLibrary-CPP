@@ -12,6 +12,11 @@ namespace rtl {
         Const,  //Const
     };
 
+    enum class Member {
+        Const,
+        Static
+    };
+
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
@@ -30,4 +35,13 @@ namespace rtl {
 
     template<class _typeA, class _typeB>
     using enable_if_notSame = typename std::enable_if< !std::is_same<_typeA, _typeB>::value >::type;
+
+    template<class _returnType, class ..._signature>
+    using Functor = _returnType(*)(_signature...);
+
+    template<class _recordType, class _returnType, class ..._signature>
+    using MethodPtr = _returnType(_recordType:: *)(_signature...);
+
+    template<class _recordType, class _returnType, class ..._signature>
+    using MethodPtrConst = _returnType(_recordType::*)(_signature...) const;
 }

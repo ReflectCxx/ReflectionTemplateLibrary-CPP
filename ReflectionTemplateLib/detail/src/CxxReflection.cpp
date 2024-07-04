@@ -1,4 +1,5 @@
 
+#include "TypeId.h"
 #include "Record.h"
 #include "Method.h"
 #include "CxxReflection.h"
@@ -7,10 +8,13 @@ namespace rtl {
 
 	namespace detail
 	{
+		std::size_t g_typeIdCounter = TypeId<>::None + 1;
+		std::size_t g_containerIdCounter = TypeId<>::None + 1;
+
 		CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
 		{
 			for (const auto& function : pFunctions) {
-				initTypeMetaData(function);
+				organizeFunctorsMetaData(function);
 			}
 
 			for (const auto& itr : m_nsFunctionsMap)
@@ -29,6 +33,7 @@ namespace rtl {
 				}
 			}
 		}
+
 
 		void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
 		{
@@ -72,7 +77,7 @@ namespace rtl {
 		}
 
 
-		void CxxReflection::initTypeMetaData(const access::Function& pFunction)
+		void CxxReflection::organizeFunctorsMetaData(const access::Function& pFunction)
 		{
 			const auto& nameSpace = pFunction.getNamespace();
 

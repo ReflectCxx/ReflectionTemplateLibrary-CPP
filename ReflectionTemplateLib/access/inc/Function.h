@@ -10,12 +10,7 @@ namespace rtl {
 
 	namespace detail {
 		class CxxReflection;
-	}
-
-	namespace builder
-	{
-		template<class ..._signature>
-		class FunctionBuilder;
+		class ReflectionBuilder;
 	}
 
 	namespace access
@@ -58,10 +53,8 @@ namespace rtl {
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept;
 
-			friend class detail::CxxReflection;
-
-			template<class ..._signature>
-			friend class builder::FunctionBuilder;
+			friend detail::CxxReflection;
+			friend detail::ReflectionBuilder;
 		};
 	}
 }

@@ -10,13 +10,11 @@
 
 namespace rtl {
 
-	namespace builder {
-		template<class ..._args>
-		class FunctionBuilder;
-	}
-
 	namespace detail
 	{
+		class ReflectionBuilder;
+		extern std::size_t g_containerIdCounter;
+
 		template<TypeQ, class ..._signature>
 		class MethodContainer;
 
@@ -24,26 +22,24 @@ namespace rtl {
 		class MethodContainer<TypeQ::Vol, _signature...> : SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>,
 								   CallReflector<MethodContainer<TypeQ::Vol, _signature...>>
 		{
-			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
 			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodPtrType> > m_methodPtrs;
+			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
 			
 			static const std::size_t& getContainerId() {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, MethodPtrType> >& getMethodFunctors() {
+			static std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
 				return m_methodPtrs;
 			}
 
 			friend access::Method;
 			friend access::Function;
-			friend class SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>;
-			friend class CallReflector<MethodContainer<TypeQ::Vol, _signature...>>;
-
-			template<class ..._args>
-			friend class builder::FunctionBuilder;
+			friend ReflectionBuilder;
+			friend SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>;
+			friend CallReflector<MethodContainer<TypeQ::Vol, _signature...>>;			
 		};
 
 
@@ -51,42 +47,39 @@ namespace rtl {
 		class MethodContainer<TypeQ::Const, _signature...> : SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
 								     CallReflector<MethodContainer<TypeQ::Const, _signature...>>
 		{
-			using MethodPtrType = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
 			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodPtrType> > m_methodPtrs;
+			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
 
 			static const std::size_t& getContainerId() {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, MethodPtrType> >& getMethodFunctors() {
+			static std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
 				return  m_methodPtrs;
 			}
 
 			friend access::Method;
 			friend access::Function;
-			friend class SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
-			friend class CallReflector<MethodContainer<TypeQ::Const, _signature...>>;
-
-			template<class ..._args>
-			friend class builder::FunctionBuilder;
+			friend ReflectionBuilder;
+			friend SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
+			friend CallReflector<MethodContainer<TypeQ::Const, _signature...>>;
 		};
 
-		extern std::size_t g_containerIdCounter;
-
+		
 		template<class ..._signature>
 		const std::size_t MethodContainer<TypeQ::Vol, _signature...>::m_containerId = g_containerIdCounter++;
-
-		template<class ..._signature>
-		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Vol, _signature...>::MethodPtrType> > 
-		MethodContainer<TypeQ::Vol, _signature...>::m_methodPtrs;
 
 		template<class ..._signature>
 		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Const, _signature...>::MethodPtrType> > 
+		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Vol, _signature...>::MethodLambda> > 
+		MethodContainer<TypeQ::Vol, _signature...>::m_methodPtrs;
+
+		template<class ..._signature>
+		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> > 
 		MethodContainer<TypeQ::Const, _signature...>::m_methodPtrs;
 	}
 }

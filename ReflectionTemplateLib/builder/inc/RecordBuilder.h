@@ -19,10 +19,10 @@ namespace rtl {
 
 			RecordBuilder(const std::string& pNamespace, const std::string& pRecord);
 
-			inline constexpr const FunctionBuilder<> method(const std::string& pFunction) const;
+			inline constexpr const Builder<> method(const std::string& pFunction) const;
 
 			template<class ..._signature>
-			inline constexpr const FunctionBuilder<_signature...> method(const std::string& pFunction) const;
+			inline constexpr const Builder<_signature...> method(const std::string& pFunction) const;
 
 			template<class ..._signature>
 			inline constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;

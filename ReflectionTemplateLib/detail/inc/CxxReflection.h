@@ -26,7 +26,7 @@ namespace rtl {
 			std::unordered_map<std::string, RecordMap> m_nsRecordsMap;
 			std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;
 
-			void initTypeMetaData(const access::Function& pFunction);
+			void organizeFunctorsMetaData(const access::Function& pFunction);
 
 			void addRecord(RecordMap& pRecordMap, const access::Function& pFunction);
 			void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
