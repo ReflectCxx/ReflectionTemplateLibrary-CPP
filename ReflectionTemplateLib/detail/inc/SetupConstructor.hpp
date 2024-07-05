@@ -23,10 +23,10 @@ namespace rtl
 		{
 			return [](std::any& pTarget, std::size_t& pTypeId)->void
 			{
-				pTypeId = TypeId<const _recordType*>::get();
 				_recordType* object = std::any_cast<_recordType*>(pTarget);
 				pTarget.reset();
 				pTarget.emplace<const _recordType*>(object);
+				pTypeId = TypeId<const _recordType*>::get();
 			};
 		}
 

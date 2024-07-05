@@ -22,7 +22,6 @@ namespace test_utils
 
 		Person person(FIRST_NAME);
 		person.updateLastName(LAST_NAME);
-
 		return (person == *rPerson);
 	}
 
@@ -36,12 +35,11 @@ namespace test_utils
 
 		const Person person(FIRST_NAME);
 		person.updateLastName(LAST_NAME);
-
 		return (person == *rPerson);
 	}
 
-
-	const bool person::test_method_updateAddress(const std::any& pInstance)
+	template<>
+	const bool person::test_method_updateAddress<string>(const std::any& pInstance)
 	{
 		Person* rPerson = any_cast<Person*>(pInstance);
 		if (rPerson == nullptr) {
@@ -50,12 +48,11 @@ namespace test_utils
 
 		Person person(FIRST_NAME);
 		person.updateAddress(ADDRESS);
-
 		return (person == *rPerson);
 	}
 
-
-	const bool person::test_method_updateAddress_const(const std::any& pInstance)
+	template<>
+	const bool person::test_method_updateAddress_const<string>(const std::any& pInstance)
 	{
 		const Person* rPerson = any_cast<const Person*>(pInstance);
 		if (rPerson == nullptr) {
@@ -64,7 +61,32 @@ namespace test_utils
 
 		const Person person(FIRST_NAME);
 		person.updateAddress(ADDRESS);
+		return (person == *rPerson);
+	}
 
+	template<>
+	const bool person::test_method_updateAddress<>(const std::any& pInstance)
+	{
+		Person* rPerson = any_cast<Person*>(pInstance);
+		if (rPerson == nullptr) {
+			return false;
+		}
+
+		Person person(FIRST_NAME);
+		person.updateAddress();
+		return (person == *rPerson);
+	}
+
+	template<>
+	const bool person::test_method_updateAddress_const<>(const std::any& pInstance)
+	{
+		const Person* rPerson = any_cast<const Person*>(pInstance);
+		if (rPerson == nullptr) {
+			return false;
+		}
+
+		const Person person(FIRST_NAME);
+		person.updateAddress();
 		return (person == *rPerson);
 	}
 }

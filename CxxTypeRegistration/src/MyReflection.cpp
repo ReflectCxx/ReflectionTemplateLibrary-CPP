@@ -66,10 +66,10 @@ CxxMirror& MyReflection::instance()
 		//Class 'Person', constructor.
 		Reflect().record<Person>(person::class_).constructor<std::string>().build(),
 
-		//unique const method. no need to specify signature as template parameters since it is unique.
+		//const method. must use 'methodConst()'. Unique method, so no need to specify signature as template params.
 		Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),
 		
-		//const based method overloads. same signatures, but one is const, so registered using 'methodConst'.
+		//const based method overloads. same signatures, but one is const, registered via 'methodConst()'.
 		Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),

@@ -22,12 +22,14 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_updateAddress(const std::any& pInstance);
-
 		static const bool test_method_updateLastName(const std::any& pInstance);
 
-		static const bool test_method_updateAddress_const(const std::any& pInstance);
-
 		static const bool test_method_updateLastName_const(const std::any& pInstance);
+
+		template<class ..._signature>
+		static const bool test_method_updateAddress(const std::any& pInstance);
+
+		template<class ..._signature>
+		static const bool test_method_updateAddress_const(const std::any& pInstance);
 	};
 }
