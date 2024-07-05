@@ -12,6 +12,10 @@ namespace test_utils
 		return (Person::getInstanceCount() == 0);
 	}
 
+	const string person::get_str_returned_on_call_getDefaults() 
+	{
+		return Person::getDefaults();
+	}
 
 	const bool person::test_method_updateLastName(const std::any& pInstance)
 	{

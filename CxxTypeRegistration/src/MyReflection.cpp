@@ -73,7 +73,10 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
-		Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress)
+		Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress),
+
+		//Static method.
+		Reflect().record<Person>(person::class_).method(person::str_getDefaults).build(&Person::getDefaults)
 	});
 
 	return cxxMirror;

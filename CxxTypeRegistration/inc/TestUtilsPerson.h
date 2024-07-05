@@ -17,10 +17,13 @@ namespace test_utils
 		static constexpr const char* ADDRESS = "221B Baker Street.";
 
 		static constexpr const char* class_ = "Person";
+		static constexpr const char* str_getDefaults = "getDefaults";
 		static constexpr const char* str_updateAddress = "updateAddress";
 		static constexpr const char* str_updateLastName = "updateLastName";
 
 		static const bool assert_zero_instance_count();
+
+		static const std::string get_str_returned_on_call_getDefaults();
 
 		static const bool test_method_updateLastName(const std::any& pInstance);
 

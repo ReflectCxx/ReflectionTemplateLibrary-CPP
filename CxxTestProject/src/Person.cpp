@@ -8,6 +8,13 @@ Person::~Person()
 	g_instanceCount--;
 }
 
+Person::Person()
+	: m_address("182 st. Westoros, Dune.")
+	, m_lastName("Doe")
+	, m_firstName("Jon")
+{
+}
+
 Person::Person(const std::string& pName)
 	: m_address("")
 	, m_lastName("")
@@ -30,6 +37,13 @@ void Person::updateAddress() const
 const bool Person::operator==(const Person& pOther) const
 {
 	return (m_address == pOther.m_address && m_firstName == pOther.m_firstName && m_lastName == pOther.m_lastName);
+}
+
+
+std::string Person::getDefaults()
+{
+	Person obj;
+	return (obj.m_firstName + " " + obj.m_lastName + "\n" + obj.m_address);
 }
 
 
