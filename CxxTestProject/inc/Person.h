@@ -13,6 +13,10 @@ public:
     Person() = delete;
     Person(const std::string& pName);
 
+    void updateAddress();
+
+    void updateAddress() const;
+
     void updateAddress(std::string pAddress);
 
     void updateAddress(std::string pAddress) const;

@@ -16,7 +16,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline RStatus MethodInvoker::invoke(_args ...params) const noexcept
+		inline RStatus MethodInvoker::operator()(_args ...params) const noexcept
 		{
 			if (m_target.getQualifier() == TypeQ::Const) {
 				return m_method.invokeConstMethod(m_target, params...);
@@ -25,8 +25,11 @@ namespace rtl {
 				return m_method.invokeMethod(m_target, params...);
 			}
 		}
+	}
 
 
+	namespace access
+	{
 		template<class ..._args>
 		inline RStatus Method::invokeConstructor(_args ...params) const
 		{
@@ -57,10 +60,10 @@ namespace rtl {
 		inline RStatus Method::invokeMethod(const UniqueAny& pTarget, _args ...params) const
 		{
 			std::size_t index, hashCode;
-			const std::size_t& signId = detail::MethodContainer<TypeQ::Vol, _args...>::getContainerId();
+			const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
 			if (hasSignatureId(signId, index, hashCode))
 			{
-				return detail::MethodContainer<TypeQ::Vol, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
+				return detail::MethodContainer<TypeQ::Mute, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
 			}
 			else {
 				return invokeConstMethod(pTarget, params...);
@@ -78,7 +81,7 @@ namespace rtl {
 				return hasSignatureId(signId, index, hashCode);
 			}
 			else {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Vol>::getContainerId();
+				const std::size_t& signId = detail::MethodContainer<TypeQ::Mute>::getContainerId();
 				return hasSignatureId(signId, index, hashCode);
 			}
 		}
@@ -93,7 +96,7 @@ namespace rtl {
 				return hasSignatureId(signId, index, hashCode);
 			}
 			else {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Vol, _arg0, _args...>::getContainerId();
+				const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId();
 				return hasSignatureId(signId, index, hashCode);
 			}
 		}

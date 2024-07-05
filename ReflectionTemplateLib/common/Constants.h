@@ -4,18 +4,24 @@
 
 namespace rtl {
 
-    //type Qualifier
+    //Qualifier type.
     enum class TypeQ
     {
         None,
-        Vol,    //Volatile
-        Const,  //Const
+        Mute,   //Mutable
+        Const,  //Constant
     };
 
-    enum class Member {
-        Const,
-        Static
+
+    //Member type.
+    enum class Member
+    {
+        NA,     //Not Applicable
+        Mute,   //Mutable
+        Const,  //Constant
+        Static  //Static
     };
+
 
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";

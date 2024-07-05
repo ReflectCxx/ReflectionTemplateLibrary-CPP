@@ -16,6 +16,16 @@ Person::Person(const std::string& pName)
 	g_instanceCount++;
 }
 
+void Person::updateAddress()
+{
+	m_address = "No Address given. non const method called. [__updateAddress()]";
+}
+
+void Person::updateAddress() const
+{
+	m_address = "No Address given. const method called. [__updateAddress() const]";
+}
+
 
 const bool Person::operator==(const Person& pOther) const
 {
@@ -31,15 +41,15 @@ unsigned Person::getInstanceCount()
 
 void Person::updateAddress(std::string pAddress)
 {
-	m_address = pAddress + "[__updateAddress()]";
+	m_address = pAddress + " [__updateAddress(std::string)]";
 }
 
 void Person::updateAddress(std::string pAddress) const
 {
-	m_address = pAddress + "[__updateAddress() const]";
+	m_address = pAddress + " [__updateAddress(std::string) const]";
 }
 
 void Person::updateLastName(std::string pLastName) const
 {
-	m_lastName = pLastName + "[__updateLastName() const]";
+	m_lastName = pLastName + " [__updateLastName(std::string) const]";
 }

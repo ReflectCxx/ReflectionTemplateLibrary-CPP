@@ -27,7 +27,7 @@ CxxMirror& MyReflection::instance()
 	static CxxMirror cxxMirror({
 
 		//Global function, not contained in any namespace.
-		//No need to specify "function<>" template types, since its the unique function, no overloads.
+		//No need to specify "function<>" template types, since its a unique function, no overloads.
 		Reflect().function(str_getComplexNumAsString).build(getComplexNumAsString),
 
 		//Overloads, Specify the overload signature as template in "function<_signature...>"
@@ -50,22 +50,30 @@ CxxMirror& MyReflection::instance()
 		//Ctor, Date(unsigned, unsigned, unsigned)
 		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),
 
-		//class Book, no namespace. constructors builds.
+		//class 'Book', no namespace. constructor overloads.
 		Reflect().record<Book>(book::class_).constructor().build(),
 		Reflect().record<Book>(book::class_).constructor<double, string>().build(),
 
-		//class Book, Methods
+		//unique methods.
 		Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
 		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
 
-		//Overloaded Methods
+		//method overloads.
 		Reflect().record<Book>(book::class_).method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 		Reflect().record<Book>(book::class_).method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
+		//Class 'Person', constructor.
 		Reflect().record<Person>(person::class_).constructor<std::string>().build(),
-		Reflect().record<Person>(person::class_).method(person::str_updateLastName).build(&Person::updateLastName),
-		//Reflect().record<Person>(person::class_).method(person::str_updateAddress).build(&Person::updateAddress)
+
+		//unique const method. no need to specify signature as template parameters since it is unique.
+		Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),
+		
+		//const based method overloads. same signatures, but one is const, so registered using 'methodConst'.
+		Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
+		Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
+		Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
+		Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress)
 	});
 
 	return cxxMirror;

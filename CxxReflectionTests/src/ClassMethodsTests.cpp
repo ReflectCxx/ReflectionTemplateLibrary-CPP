@@ -47,7 +47,7 @@ namespace rtl_tests
 
 			ASSERT_FALSE(setAuthor.hasSignature<const char*>());
 
-			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
+			RStatus callRet = setAuthor(bookObj)(authorStr);
 			ASSERT_FALSE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -82,7 +82,7 @@ namespace rtl_tests
 			const Method& getPublishedOn = methOpt.value();
 			ASSERT_TRUE(getPublishedOn.hasSignature<void>());
 
-			RStatus callRet = getPublishedOn(bookObj).invoke();
+			RStatus callRet = getPublishedOn(bookObj)();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -119,7 +119,7 @@ namespace rtl_tests
 			ASSERT_TRUE(setAuthor.hasSignature<std::string>());
 
 			std::string authorStr = book::AUTHOR;
-			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
+			RStatus callRet = setAuthor(bookObj)(authorStr);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -154,7 +154,7 @@ namespace rtl_tests
 			const Method& updateBookInfo = methOpt.value();
 			ASSERT_TRUE(updateBookInfo.hasSignature<void>());
 			
-			RStatus callRet = updateBookInfo(bookObj).invoke();
+			RStatus callRet = updateBookInfo(bookObj)();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -191,7 +191,7 @@ namespace rtl_tests
 			ASSERT_TRUE(signatureValid);
 
 			string author = book::AUTHOR;
-			RStatus callRet = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
+			RStatus callRet = updateBookInfo(bookObj)(author, book::PRICE, book::TITLE);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -229,7 +229,7 @@ namespace rtl_tests
 			ASSERT_TRUE(signatureValid);
 
 			string author = book::AUTHOR;
-			RStatus callRet = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
+			RStatus callRet = updateBookInfo(bookObj)(book::TITLE, book::PRICE, author);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();

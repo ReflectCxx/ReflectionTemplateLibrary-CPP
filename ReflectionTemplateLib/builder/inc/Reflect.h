@@ -2,14 +2,12 @@
 
 #include <string>
 #include "Constants.h"
+#include "Builder.h"
 
 namespace rtl {
 
 	namespace builder 
 	{
-		template<class ..._signature>
-		class Builder;
-
 		template<class _recordType>
 		class RecordBuilder;
 
@@ -28,10 +26,10 @@ namespace rtl {
 			Reflect& nameSpace(const std::string& pNamespace);
 
 			template<class ..._signature>
-			inline constexpr const Builder<_signature...> function(const std::string& pFunction);
+			constexpr const Builder<Member::NA, _signature...> function(const std::string& pFunction);
 
 			template<class _recordType>
-			inline constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
+			constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
 		};
 	}
 }

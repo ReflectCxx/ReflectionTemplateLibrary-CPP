@@ -41,8 +41,8 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_signature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Vol, _signature...>::pushBack(pFunctor);
-			return access::Function(m_namespace, m_record, m_function, signature, functorId, TypeQ::Vol);
+			const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Mute, _signature...>::pushBack(pFunctor);
+			return access::Function(m_namespace, m_record, m_function, signature, functorId, TypeQ::Mute);
 		}
 
 

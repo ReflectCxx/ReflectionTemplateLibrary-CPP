@@ -19,8 +19,8 @@ namespace rtl {
 		class MethodContainer;
 
 		template<class ..._signature>
-		class MethodContainer<TypeQ::Vol, _signature...> : SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>,
-								   CallReflector<MethodContainer<TypeQ::Vol, _signature...>>
+		class MethodContainer<TypeQ::Mute, _signature...> : SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
+								   CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
 		{
 			using MethodLambda = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
 
@@ -38,8 +38,8 @@ namespace rtl {
 			friend access::Method;
 			friend access::Function;
 			friend ReflectionBuilder;
-			friend SetupMethod<MethodContainer<TypeQ::Vol, _signature...>>;
-			friend CallReflector<MethodContainer<TypeQ::Vol, _signature...>>;			
+			friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;
+			friend CallReflector<MethodContainer<TypeQ::Mute, _signature...>>;			
 		};
 
 
@@ -69,14 +69,14 @@ namespace rtl {
 
 		
 		template<class ..._signature>
-		const std::size_t MethodContainer<TypeQ::Vol, _signature...>::m_containerId = g_containerIdCounter++;
+		const std::size_t MethodContainer<TypeQ::Mute, _signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
 		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Vol, _signature...>::MethodLambda> > 
-		MethodContainer<TypeQ::Vol, _signature...>::m_methodPtrs;
+		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Mute, _signature...>::MethodLambda> > 
+		MethodContainer<TypeQ::Mute, _signature...>::m_methodPtrs;
 
 		template<class ..._signature>
 		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> > 

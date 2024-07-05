@@ -24,16 +24,32 @@ namespace rtl {
 
 
 		template<class _recordType>
-		inline constexpr const Builder<> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+		inline constexpr const Builder<Member::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
 		{
-			return Builder<>(m_namespace, m_record, pFunction);
+			return Builder<Member::Mute>(m_namespace, m_record, pFunction);
+		}
+
+
+		template<class _recordType>
+		inline constexpr const Builder<Member::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+		{
+			return Builder<Member::Const>(m_namespace, m_record, pFunction);
 		}
 
 
 		template<class _recordType>
 		template<class ..._signature>
-		inline constexpr const Builder<_signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const {
-			return Builder<_signature...>(m_namespace, m_record, pFunction);
+		inline constexpr const Builder<Member::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const 
+		{
+			return Builder<Member::Mute, _signature...>(m_namespace, m_record, pFunction);
+		}
+
+
+		template<class _recordType>
+		template<class ..._signature>
+		inline constexpr const Builder<Member::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const 
+		{
+			return Builder<Member::Const, _signature...>(m_namespace, m_record, pFunction);
 		}
 	}
 }

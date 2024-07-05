@@ -33,7 +33,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName.hasSignature<string>());
 
 			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj).invoke(lnameStr);
+			const RStatus& callRet = updateLastName(personObj)(lnameStr);
 			
 			ASSERT_TRUE(callRet.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
@@ -70,7 +70,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName.hasSignature<string>());
 
 			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj).invoke(lnameStr);
+			const RStatus& callRet = updateLastName(personObj)(lnameStr);
 
 			ASSERT_TRUE(callRet.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));

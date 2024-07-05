@@ -53,7 +53,7 @@ namespace rtl {
 		public:
 
 			template<class ..._args>
-			RStatus invoke(_args...params) const noexcept;
+			RStatus operator()(_args...params) const noexcept;
 
 			friend Method;
 		};

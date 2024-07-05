@@ -17,7 +17,7 @@ namespace rtl {
 
 		
 		UniqueAny::UniqueAny()
-			: m_qualifier(TypeQ::Vol)
+			: m_qualifier(TypeQ::Mute)
 			, m_typeId(detail::TypeId<>::None) {
 		}
 

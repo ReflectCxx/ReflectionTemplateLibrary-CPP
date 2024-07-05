@@ -42,7 +42,7 @@ namespace rtl
 			{
 				const auto& typeId = TypeId<_returnType>::get();
 				const _returnType& retObj = (*pFunctor)(params...);
-				const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Vol;
+				const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
 				return access::RStatus(true, std::make_any<_returnType>(retObj), typeId, qualifier);
 			};
 

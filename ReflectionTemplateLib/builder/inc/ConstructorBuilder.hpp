@@ -20,7 +20,7 @@ namespace rtl {
 		inline constexpr const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
 		{
 			const auto& functionName = m_record + CTOR_SUFFIX;
-			return Builder<>(m_namespace, m_record, functionName).build<_recordType, _ctorSignature...>();
+			return Builder<Member::Mute>(m_namespace, m_record, functionName).build<_recordType, _ctorSignature...>();
 		}
 	}
 }
