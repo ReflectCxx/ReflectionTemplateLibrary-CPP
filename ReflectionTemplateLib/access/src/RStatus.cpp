@@ -9,26 +9,21 @@ namespace rtl {
 			: m_callStatus(pCallStatus) {
 		}
 
-		RStatus::RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId,
-						 const std::function<void(const std::any&)>& pDctor)
+		RStatus::RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier,
+				 const std::function< void(const std::any&, const TypeQ&) >& pDctor,
+				 const std::function< void(std::any&, std::size_t&) >& pToConst)
 			: m_callStatus(pCallStatus)
-			, m_returnObject(pRetObj, pTypeId, pDctor) {
-		};
+			, m_returnObject(pRetObj, pTypeId, pQualifier, pDctor, pToConst) {
+		}
 
-		const bool RStatus::didCallSucceed()
+		const bool RStatus::didCallSucceed() const
 		{
 			return m_callStatus;
 		}
 
-		UniqueAny RStatus::releaseReturn()
-		{
-			return std::move(m_returnObject);
-		}
-
-		const UniqueAny RStatus::releaseReturn() const
+		UniqueAny RStatus::releaseReturn() const
 		{
 			return std::move(m_returnObject);
 		}
 	}
-
 }

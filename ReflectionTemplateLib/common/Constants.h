@@ -4,24 +4,36 @@
 
 namespace rtl {
 
-    enum class Type { NONE = 0 };
+    //Qualifier type.
+    enum class TypeQ
+    {
+        None,
+        Mute,   //Mutable
+        Const,  //Constant
+    };
+
+
+    //Member type.
+    enum class Member
+    {
+        NA,     //Not Applicable
+        Mute,   //Mutable
+        Const,  //Constant
+        Static  //Static
+    };
+
 
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
-#define GETTER(_type, _name, _var)                        \
-    inline constexpr const _type& get##_name() const {    \
-        return _var;                                      \
-    }
-
-#define GETTER_STATIC_REF(_type, _name, _var)           \
-    inline static _type& get##_name() {                 \
-        return _var;                                    \
-    }
-
-#define GETTER_STATIC_CONST_REF(_type, _name, _var)         \
-    inline static constexpr const _type& get##_name() {     \
+#define GETTER(_varType, _name, _var)                       \
+    inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \
+    }
+
+#define GETTER_REF(_varType, _name, _var)       \
+    inline _varType& get##_name() {             \
+        return _var;                            \
     }
 
     template<class _typeA, class _typeB>
@@ -29,4 +41,13 @@ namespace rtl {
 
     template<class _typeA, class _typeB>
     using enable_if_notSame = typename std::enable_if< !std::is_same<_typeA, _typeB>::value >::type;
+
+    template<class _returnType, class ..._signature>
+    using Functor = _returnType(*)(_signature...);
+
+    template<class _recordType, class _returnType, class ..._signature>
+    using MethodPtr = _returnType(_recordType:: *)(_signature...);
+
+    template<class _recordType, class _returnType, class ..._signature>
+    using MethodPtrConst = _returnType(_recordType::*)(_signature...) const;
 }

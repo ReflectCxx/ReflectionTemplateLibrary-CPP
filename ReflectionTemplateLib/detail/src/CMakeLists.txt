@@ -1,15 +1,16 @@
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
-	"${CMAKE_CURRENT_LIST_DIR}/ReflectTypeMeta.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/TypeId.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/CxxReflection.cpp"
 )
 
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/CallReflector.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/ConstructorContainer.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
-    "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.hpp"
-	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectTypeMeta.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/MethodContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupFunction.h"

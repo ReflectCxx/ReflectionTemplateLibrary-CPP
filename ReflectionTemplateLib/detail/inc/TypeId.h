@@ -13,6 +13,8 @@ namespace rtl {
 		template<class _type>
 		struct TypeId<_type>
 		{
+			static constexpr const std::size_t None = 0;
+
 			static constexpr const std::size_t get() {
 				return m_typeId;
 			}
@@ -28,26 +30,6 @@ namespace rtl {
 		private:
 			static const std::size_t m_typeId;
 		};
-
-
-		// template<class ..._rest>
-		// struct TypeId<std::string, _rest...>
-		// {
-		// 	using TAIL = TypeId<_rest...>;
-
-		// 	static constexpr const std::size_t get() {
-		// 		return m_typeId;
-		// 	}
-
-		// 	static const std::string toString()
-		// 	{
-		// 		const std::string& tailStr = TAIL::toString();
-		// 		return ("std::string" + (tailStr.empty() ? "" : (", " + tailStr)));
-		// 	}
-
-		// private:
-		// 	static const std::size_t m_typeId;
-		// };
 
 
 		template<class _first, class ..._rest>

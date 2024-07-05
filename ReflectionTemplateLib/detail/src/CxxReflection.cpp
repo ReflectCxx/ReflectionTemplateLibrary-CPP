@@ -1,50 +1,53 @@
 
+#include "TypeId.h"
 #include "Record.h"
-#include "ReflectTypeMeta.h"
+#include "Method.h"
+#include "CxxReflection.h"
 
 namespace rtl {
 
 	namespace detail
 	{
-		ReflectTypeMeta::ReflectTypeMeta(const std::vector<access::Function>& pFunctions)
+		std::size_t g_typeIdCounter = TypeId<>::None + 1;
+		std::size_t g_containerIdCounter = TypeId<>::None + 1;
+
+		CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
 		{
 			for (const auto& function : pFunctions) {
-				initTypeMetaData(function);
-			}
-
-			for (const auto& itr : m_nsFunctionsMap)
-			{
-				for (const auto& funcItr : itr.second) {
-					funcItr.second.sortFunctorsHash();
-				}
-			}
-
-			for (const auto& itr : m_nsRecordsMap)
-			{
-				for (const auto& recordItr : itr.second) {
-					for (const auto& funcItr : recordItr.second.getFunctionsMap()) {
-						funcItr.second.sortFunctorsHash();
-					}
-				}
+				organizeFunctorsMetaData(function);
 			}
 		}
 
 
-		void ReflectTypeMeta::addFunction(RecordMap& pRecordMap, const access::Function& pFunction)
+		void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
+		{
+			const auto& fname = pFunction.getFunctionName();
+			const auto& itr = pMethodMap.find(fname);
+			if (itr == pMethodMap.end()) {
+				pMethodMap.emplace(fname, access::Method(pFunction));
+			}
+			else {
+				const auto& function = itr->second;
+				function.addOverload(pFunction);
+			}
+		}
+
+
+		void CxxReflection::addRecord(RecordMap& pRecordMap, const access::Function& pFunction)
 		{
 			const auto& recordName = pFunction.getRecordName();
 			const auto& itr = pRecordMap.find(recordName);
 			if (itr == pRecordMap.end()) {
 				const auto& recordItr = pRecordMap.emplace(recordName, access::Record(recordName));
-				addFunction(recordItr.first->second.getFunctionsMap(), pFunction);
+				addMethod(recordItr.first->second.getFunctionsMap(),pFunction);
 			}
 			else {
-				addFunction(itr->second.getFunctionsMap(), pFunction);
+				addMethod(itr->second.getFunctionsMap(), pFunction);
 			}
 		}
 
 
-		void ReflectTypeMeta::addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction)
+		void CxxReflection::addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction)
 		{
 			const auto& fname = pFunction.getFunctionName();
 			const auto& itr = pFunctionMap.find(fname);
@@ -58,7 +61,7 @@ namespace rtl {
 		}
 
 
-		void ReflectTypeMeta::initTypeMetaData(const access::Function& pFunction)
+		void CxxReflection::organizeFunctorsMetaData(const access::Function& pFunction)
 		{
 			const auto& nameSpace = pFunction.getNamespace();
 
@@ -76,10 +79,10 @@ namespace rtl {
 				const auto& itr = m_nsRecordsMap.find(nameSpace);
 				if (itr == m_nsRecordsMap.end()) {
 					const auto& recordMapItr = m_nsRecordsMap.emplace(nameSpace, RecordMap());
-					addFunction(recordMapItr.first->second, pFunction);
+					addRecord(recordMapItr.first->second, pFunction);
 				}
 				else {
-					addFunction(itr->second, pFunction);
+					addRecord(itr->second, pFunction);
 				}
 			}
 		}

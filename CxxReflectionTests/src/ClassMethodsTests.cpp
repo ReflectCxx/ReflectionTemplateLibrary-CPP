@@ -7,8 +7,8 @@ using namespace std;
 using namespace rtl::access;
 using namespace test_utils;
 
-namespace rtl_tests {
-
+namespace rtl_tests 
+{
 	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
@@ -45,7 +45,9 @@ namespace rtl_tests {
 			const char* authorStr = book::AUTHOR;
 			const Method& setAuthor = methOpt.value();
 
-			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
+			ASSERT_FALSE(setAuthor.hasSignature<const char*>());
+
+			RStatus callRet = setAuthor(bookObj)(authorStr);
 			ASSERT_FALSE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -78,7 +80,9 @@ namespace rtl_tests {
 			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& getPublishedOn = methOpt.value();
-			RStatus callRet = getPublishedOn(bookObj).invoke();
+			ASSERT_TRUE(getPublishedOn.hasSignature<void>());
+
+			RStatus callRet = getPublishedOn(bookObj)();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -110,11 +114,12 @@ namespace rtl_tests {
 
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
+			
+			const Method& setAuthor = methOpt.value();
+			ASSERT_TRUE(setAuthor.hasSignature<std::string>());
 
 			std::string authorStr = book::AUTHOR;
-			const Method& setAuthor = methOpt.value();
-
-			RStatus callRet = setAuthor(bookObj).invoke(authorStr);
+			RStatus callRet = setAuthor(bookObj)(authorStr);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -147,7 +152,9 @@ namespace rtl_tests {
 			ASSERT_TRUE(bookObj.get().has_value());
 
 			const Method& updateBookInfo = methOpt.value();
-			RStatus callRet = updateBookInfo(bookObj).invoke();
+			ASSERT_TRUE(updateBookInfo.hasSignature<void>());
+			
+			RStatus callRet = updateBookInfo(bookObj)();
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -179,10 +186,12 @@ namespace rtl_tests {
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
 
-			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
+			const bool signatureValid = updateBookInfo.hasSignature<string, double, const char*>();
+			ASSERT_TRUE(signatureValid);
 
-			RStatus callRet = updateBookInfo(bookObj).invoke(author, book::PRICE, book::TITLE);
+			string author = book::AUTHOR;
+			RStatus callRet = updateBookInfo(bookObj)(author, book::PRICE, book::TITLE);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();
@@ -215,10 +224,12 @@ namespace rtl_tests {
 			UniqueAny bookObj = retIns.releaseReturn();
 			ASSERT_TRUE(bookObj.get().has_value());
 
-			string author = book::AUTHOR;
 			const Method& updateBookInfo = methOpt.value();
+			const bool signatureValid = updateBookInfo.hasSignature<const char*, double, string>();
+			ASSERT_TRUE(signatureValid);
 
-			RStatus callRet = updateBookInfo(bookObj).invoke(book::TITLE, book::PRICE, author);
+			string author = book::AUTHOR;
+			RStatus callRet = updateBookInfo(bookObj)(book::TITLE, book::PRICE, author);
 			ASSERT_TRUE(callRet.didCallSucceed());
 
 			UniqueAny retObj = callRet.releaseReturn();

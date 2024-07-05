@@ -4,29 +4,29 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Function.h"
+#include "Method.h"
 
 namespace rtl {
 
-	namespace detail 
-	{
-		class ReflectTypeMeta;
-		using FunctionMap = std::unordered_map <std::string, access::Function>;
+	namespace detail {
+		class CxxReflection;
 	}
 
-	namespace access 
+	namespace access
 	{
 		class Method;
 		class RStatus;
+		class UniqueAny;
 
 		class Record
 		{
 			const std::string m_recordName;
-			mutable std::shared_ptr<detail::FunctionMap> m_functions;
+
+			mutable std::unordered_map< std::string, access::Method > m_methods;
 
 			Record(const std::string& pRecordName);
 
-			detail::FunctionMap& getFunctionsMap() const;
+			std::unordered_map< std::string, access::Method >& getFunctionsMap() const;
 
 		public:
 
@@ -34,11 +34,14 @@ namespace rtl {
 
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
+			//creates dynamic instance, calling copy ctor, using new.
+			RStatus clone(UniqueAny& pOther) const;
+
 			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>
 			RStatus instance(_ctorArgs ...params) const;
 
-			friend class detail::ReflectTypeMeta;
+			friend class detail::CxxReflection;
 		};
 	}
 }

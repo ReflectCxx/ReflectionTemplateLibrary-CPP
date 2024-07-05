@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Constants.h"
+#include "Builder.h"
 
 namespace rtl {
 
@@ -9,9 +10,6 @@ namespace rtl {
 	{
 		template<class _recordType>
 		class RecordBuilder;
-
-		template<class ..._signature>
-		class FunctionBuilder;
 
 		// Builder class to encapsulate all type names, pointers.
 		class Reflect
@@ -27,11 +25,11 @@ namespace rtl {
 
 			Reflect& nameSpace(const std::string& pNamespace);
 
-			template<class _recordType>
-			inline constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
-
 			template<class ..._signature>
-			inline constexpr const FunctionBuilder<_signature...> function(const std::string& pFunction);
+			constexpr const Builder<Member::NA, _signature...> function(const std::string& pFunction);
+
+			template<class _recordType>
+			constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
 		};
 	}
 }
