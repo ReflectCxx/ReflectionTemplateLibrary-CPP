@@ -11,13 +11,15 @@ namespace rtl
 			std::size_t m_index;
 			std::size_t m_hashCode;
 			std::size_t m_signatureId;
+			std::size_t m_paramsCount;
 
 		public:
 
-			FunctorId(const std::size_t pIndex, const std::size_t pHashCode, const std::size_t pSignId)
+			FunctorId(const std::size_t& pIndex, const std::size_t& pHashCode, const std::size_t& pSignId, const std::size_t& pParamsCount)
 				: m_index(pIndex)
+				, m_hashCode(pHashCode)
 				, m_signatureId(pSignId)
-				, m_hashCode(pHashCode) {
+				, m_paramsCount(pParamsCount) {
 			}
 
 			GETTER(std::size_t, Index, m_index)

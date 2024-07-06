@@ -11,6 +11,8 @@ SET(LOCAL_HEADERS
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodContainer.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectionBuilder.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectionBuilder.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupConstructor.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupFunction.h"

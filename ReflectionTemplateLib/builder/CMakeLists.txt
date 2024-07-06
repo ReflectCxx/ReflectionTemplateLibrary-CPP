@@ -13,8 +13,6 @@ SET(LOCAL_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/inc/RecordBuilder.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/inc/Reflect.h"
 	"${CMAKE_CURRENT_LIST_DIR}/inc/Reflect.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/inc/ReflectionBuilder.h"
-	"${CMAKE_CURRENT_LIST_DIR}/inc/ReflectionBuilder.hpp"
 )
 
 # Add any additional source files if needed
