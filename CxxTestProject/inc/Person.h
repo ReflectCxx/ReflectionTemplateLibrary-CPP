@@ -10,7 +10,7 @@ class Person
 public:
 
     ~Person();
-    Person() = delete;
+    Person();
     Person(const std::string& pName);
 
     void updateAddress();
@@ -24,6 +24,14 @@ public:
     void updateLastName(std::string pLastName) const;
 
     const bool operator==(const Person& pOther) const;
+
+    static std::string getDefaults();
+
+    static std::string getProfile();
+
+    static std::string getProfile(bool pNoAddress);
+
+    static std::string getProfile(std::string pOccupation, std::size_t pAge);
 
     static unsigned getInstanceCount();
 };

@@ -13,6 +13,7 @@ namespace rtl {
 		class Record;
 		class UniqueAny;
 		class MethodInvoker;
+		class StaticMethodInvoker;
 
 		class Method : public Function
 		{
@@ -27,10 +28,12 @@ namespace rtl {
 			template<class ..._args>
 			RStatus invokeConstMethod(const UniqueAny& pTarget, _args...params) const;
 
-		public:
-			
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept = delete;
+
+		public:
+			
+			const StaticMethodInvoker operator()() const;
 
 			const MethodInvoker operator()(const UniqueAny& pTarget) const;
 
@@ -48,7 +51,22 @@ namespace rtl {
 			const Method& m_method;
 			const UniqueAny& m_target;
 
-			MethodInvoker(const Method& pFunction, const UniqueAny& pTarget);
+			MethodInvoker(const Method& pMethod, const UniqueAny& pTarget);
+
+		public:
+
+			template<class ..._args>
+			RStatus operator()(_args...params) const noexcept;
+
+			friend Method;
+		};
+
+
+		class StaticMethodInvoker
+		{
+			const Function& m_function;
+
+			StaticMethodInvoker(const Function& pFunction);
 
 		public:
 

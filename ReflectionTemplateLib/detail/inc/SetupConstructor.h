@@ -16,7 +16,8 @@ namespace rtl {
 			static const std::function< void(const std::any&, const TypeQ&) > getDestructor();
 			
 			template<class _recordType>
-			static const std::size_t getHashCode(const std::size_t pContainerId, const std::size_t pIndex);
+			static const std::size_t getHashCode(const std::size_t pContainerId, const std::size_t pIndex,
+							     const std::size_t pArgsCount);
 
 		protected:
 

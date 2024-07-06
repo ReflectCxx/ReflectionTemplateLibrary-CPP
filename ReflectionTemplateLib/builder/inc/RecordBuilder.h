@@ -22,15 +22,20 @@ namespace rtl {
 			template<class ..._signature>
 			constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
 
-			constexpr const Builder<Member::Mute> method(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::Mute> method(const std::string& pFunction) const;
 
-			constexpr const Builder<Member::Const> methodConst(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::Const> methodConst(const std::string& pFunction) const;
+
+			constexpr const Builder<TypeQ::None> methodStatic(const std::string& pFunction) const;
 
 			template<class ..._signature>
-			constexpr const Builder<Member::Mute, _signature...> method(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::Mute, _signature...> method(const std::string& pFunction) const;
 
 			template<class ..._signature>
-			constexpr const Builder<Member::Const, _signature...> methodConst(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::Const, _signature...> methodConst(const std::string& pFunction) const;
+
+			template<class ..._signature>
+			constexpr const Builder<TypeQ::None, _signature...> methodStatic(const std::string& pFunction) const;
 		};
 	}
 }

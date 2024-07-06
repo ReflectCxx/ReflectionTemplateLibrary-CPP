@@ -24,32 +24,46 @@ namespace rtl {
 
 
 		template<class _recordType>
-		inline constexpr const Builder<Member::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+		inline constexpr const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
 		{
-			return Builder<Member::Mute>(m_namespace, m_record, pFunction);
-		}
-
-
-		template<class _recordType>
-		inline constexpr const Builder<Member::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
-		{
-			return Builder<Member::Const>(m_namespace, m_record, pFunction);
+			return Builder<TypeQ::None>(m_namespace, m_record, pFunction);
 		}
 
 
 		template<class _recordType>
 		template<class ..._signature>
-		inline constexpr const Builder<Member::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const 
+		inline constexpr const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const {
+			return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction);
+		}
+	
+
+		template<class _recordType>
+		inline constexpr const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
 		{
-			return Builder<Member::Mute, _signature...>(m_namespace, m_record, pFunction);
+			return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction);
+		}
+
+
+		template<class _recordType>
+		inline constexpr const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+		{
+			return Builder<TypeQ::Const>(m_namespace, m_record, pFunction);
 		}
 
 
 		template<class _recordType>
 		template<class ..._signature>
-		inline constexpr const Builder<Member::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const 
+		inline constexpr const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const 
 		{
-			return Builder<Member::Const, _signature...>(m_namespace, m_record, pFunction);
+			return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction);
+		}
+
+
+		template<class _recordType>
+		template<class ..._signature>
+		inline constexpr const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const 
+		{
+			return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction);
 		}
 	}
 }

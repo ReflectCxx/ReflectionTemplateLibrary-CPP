@@ -33,7 +33,7 @@ CxxMirror& MyReflection::instance()
 		//Overloads, Specify the overload signature as template in "function<_signature...>"
 		//if one of the function takes zero params, <void> must be used, else complie error.
 		Reflect().function<void>(str_reverseString).build(reverseString),
-		Reflect().function<std::string>(str_reverseString).build(reverseString),
+		Reflect().function<string>(str_reverseString).build(reverseString),
 		Reflect().function<const char*>(str_reverseString).build(reverseString),
 
 		//Global functions, in "complex" namespace.
@@ -64,7 +64,7 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
 		//Class 'Person', constructor.
-		Reflect().record<Person>(person::class_).constructor<std::string>().build(),
+		Reflect().record<Person>(person::class_).constructor<string>().build(),
 
 		//const method. must use 'methodConst()'. Unique method, so no need to specify signature as template params.
 		Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),
@@ -73,7 +73,15 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
-		Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress)
+		Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress),
+
+		//Static method. unique.
+		Reflect().record<Person>(person::class_).methodStatic(person::str_getDefaults).build(&Person::getDefaults),
+
+		//Static method overloads.
+		Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
+		Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
+		Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile)
 	});
 
 	return cxxMirror;

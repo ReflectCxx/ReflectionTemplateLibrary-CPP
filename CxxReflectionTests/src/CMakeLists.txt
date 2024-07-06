@@ -9,6 +9,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/ConstMethodOverloadTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/ConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/NameSpaceGlobalsTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StaticMethodTests.cpp"
 )
 
 # Add any additional source files if needed

@@ -4,14 +4,24 @@ namespace rtl {
 
 	namespace access
 	{
-		inline MethodInvoker::MethodInvoker(const Method& pFunction, const UniqueAny& pTarget)
-			: m_method(pFunction)
-			, m_target(pTarget) {
+		inline StaticMethodInvoker::StaticMethodInvoker(const Function& pFunction)
+			: m_function(pFunction) {
 		}
 
-		inline const MethodInvoker Method::operator()(const UniqueAny& pTarget) const
+
+		template<class ..._args>
+		inline RStatus StaticMethodInvoker::operator()(_args ...params) const noexcept
 		{
-			return MethodInvoker(*this, pTarget);
+			return m_function(params...);
+		}
+	}
+
+
+	namespace access
+	{
+		inline MethodInvoker::MethodInvoker(const Method& pMethod, const UniqueAny& pTarget)
+			: m_method(pMethod)
+			, m_target(pTarget) {
 		}
 
 
@@ -30,6 +40,18 @@ namespace rtl {
 
 	namespace access
 	{
+		inline const StaticMethodInvoker Method::operator()() const
+		{
+			return StaticMethodInvoker(*this);
+		}
+
+
+		inline const MethodInvoker Method::operator()(const UniqueAny& pTarget) const
+		{
+			return MethodInvoker(*this, pTarget);
+		}
+
+
 		template<class ..._args>
 		inline RStatus Method::invokeConstructor(_args ...params) const
 		{
@@ -75,14 +97,22 @@ namespace rtl {
 		template<>
 		inline const bool Method::hasSignature<void>() const
 		{
-			std::size_t index, hashCode;
-			if (getQualifier() == TypeQ::Const) {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Const>::getContainerId();
-				return hasSignatureId(signId, index, hashCode);
-			}
-			else {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Mute>::getContainerId();
-				return hasSignatureId(signId, index, hashCode);
+			switch (getQualifier())
+			{
+				case TypeQ::None: {
+					return Function::hasSignature<void>();
+				}
+				case TypeQ::Mute: {
+					std::size_t index, hashCode;
+					const std::size_t& signId = detail::MethodContainer<TypeQ::Mute>::getContainerId();
+					return hasSignatureId(signId, index, hashCode);
+				}
+				case TypeQ::Const: {
+					std::size_t index, hashCode;
+					const std::size_t& signId = detail::MethodContainer<TypeQ::Const>::getContainerId();
+					return hasSignatureId(signId, index, hashCode);
+				}
+				default: return false;
 			}
 		}
 
@@ -90,14 +120,22 @@ namespace rtl {
 		template<class _arg0, class ..._args>
 		inline const bool Method::hasSignature() const
 		{
-			std::size_t index, hashCode;
-			if (getQualifier() == TypeQ::Const) {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId();
-				return hasSignatureId(signId, index, hashCode);
-			}
-			else {
-				const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId();
-				return hasSignatureId(signId, index, hashCode);
+			switch (getQualifier())
+			{
+				case TypeQ::None: {
+					return Function::hasSignature<_arg0, _args...>();
+				}
+				case TypeQ::Mute: {
+					std::size_t index, hashCode;
+					const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId();
+					return hasSignatureId(signId, index, hashCode);
+				}
+				case TypeQ::Const: {
+					std::size_t index, hashCode;
+					const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId();
+					return hasSignatureId(signId, index, hashCode);
+				}
+				default: return false;
 			}
 		}
 	}
