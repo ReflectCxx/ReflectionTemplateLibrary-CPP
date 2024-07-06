@@ -42,6 +42,28 @@ namespace test_utils
 		return (person == *rPerson);
 	}
 
+
+	template<>
+	const std::string person::get_str_returned_on_call_getProfile(const bool pNoAddress)
+	{
+		return Person::getProfile();
+	}
+
+
+	template<>
+	const std::string person::get_str_returned_on_call_getProfile<bool>(const bool pNoAddress)
+	{
+		return Person::getProfile(pNoAddress);
+	}
+
+
+	template<>
+	const std::string person::get_str_returned_on_call_getProfile<string, size_t>(const bool pNoAddress)
+	{
+		return Person::getProfile(OCCUPATION, AGE);
+	}
+
+
 	template<>
 	const bool person::test_method_updateAddress<string>(const std::any& pInstance)
 	{

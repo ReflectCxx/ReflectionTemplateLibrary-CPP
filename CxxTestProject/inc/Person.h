@@ -27,5 +27,11 @@ public:
 
     static std::string getDefaults();
 
+    static std::string getProfile();
+
+    static std::string getProfile(bool pNoAddress);
+
+    static std::string getProfile(std::string pOccupation, std::size_t pAge);
+
     static unsigned getInstanceCount();
 };

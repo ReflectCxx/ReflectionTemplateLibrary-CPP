@@ -12,11 +12,14 @@ namespace test_utils
 {
 	struct person
 	{
+		static constexpr const std::size_t AGE = 34;
 		static constexpr const char* FIRST_NAME = "Sherlock";
 		static constexpr const char* LAST_NAME = "Holmes";
 		static constexpr const char* ADDRESS = "221B Baker Street.";
+		static constexpr const char* OCCUPATION = "Private Detective.";
 
 		static constexpr const char* class_ = "Person";
+		static constexpr const char* str_getProfile = "getProfile";
 		static constexpr const char* str_getDefaults = "getDefaults";
 		static constexpr const char* str_updateAddress = "updateAddress";
 		static constexpr const char* str_updateLastName = "updateLastName";
@@ -24,6 +27,9 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		static const std::string get_str_returned_on_call_getDefaults();
+
+		template<class ..._signature>
+		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);
 
 		static const bool test_method_updateLastName(const std::any& pInstance);
 

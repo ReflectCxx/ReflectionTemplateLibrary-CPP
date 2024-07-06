@@ -13,6 +13,7 @@ Person::Person()
 	, m_lastName("Doe")
 	, m_firstName("Jon")
 {
+	g_instanceCount++;
 }
 
 Person::Person(const std::string& pName)
@@ -23,10 +24,18 @@ Person::Person(const std::string& pName)
 	g_instanceCount++;
 }
 
+
+unsigned Person::getInstanceCount()
+{
+	return g_instanceCount;
+}
+
+
 void Person::updateAddress()
 {
 	m_address = "No Address given. non const method called. [__updateAddress()]";
 }
+
 
 void Person::updateAddress() const
 {
@@ -47,9 +56,30 @@ std::string Person::getDefaults()
 }
 
 
-unsigned Person::getInstanceCount()
+std::string Person::getProfile()
 {
-	return g_instanceCount;
+	Person obj;
+	return (obj.m_firstName + " " + obj.m_lastName + "\n" + obj.m_address + "\n[__Person::getProfile()]");
+}
+
+
+std::string Person::getProfile(std::string pOccupation, std::size_t pAge)
+{
+	Person obj;
+	return (obj.m_firstName + " " + obj.m_lastName + "\n" + obj.m_address + "\n" + pOccupation +
+		"\nAge: " + std::to_string(pAge) + "\n[__Person::getProfile(string, size_t)]");
+}
+
+
+std::string Person::getProfile(bool pNoAddress)
+{
+	Person obj;
+	if (pNoAddress) {
+		return (obj.m_firstName + " " + obj.m_lastName + "\n[__Person::getProfile(bool)__noAddress]");
+	}
+	else {
+		return (obj.m_firstName + " " + obj.m_lastName + "\n" + obj.m_address + "\n[__Person::getProfile(bool)__withAddress]");
+	}
 }
 
 
@@ -58,10 +88,12 @@ void Person::updateAddress(std::string pAddress)
 	m_address = pAddress + " [__updateAddress(std::string)]";
 }
 
+
 void Person::updateAddress(std::string pAddress) const
 {
 	m_address = pAddress + " [__updateAddress(std::string) const]";
 }
+
 
 void Person::updateLastName(std::string pLastName) const
 {

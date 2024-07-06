@@ -12,17 +12,6 @@ namespace rtl {
         Const,  //Constant
     };
 
-
-    //Member type.
-    enum class Member
-    {
-        NA,     //Not Applicable
-        Mute,   //Mutable
-        Const,  //Constant
-        Static  //Static
-    };
-
-
     constexpr const char* CTOR_SUFFIX = "::ctor";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
