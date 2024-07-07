@@ -34,13 +34,15 @@ namespace rtl {
 		template<class ..._args>
 		inline RStatus Method::invokeCtor(_args ...params) const
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::ConstructorContainer<_args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
-			{
-				return detail::ConstructorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
-			}
-			return RStatus(false);
+			return Function::operator()(params...);
+
+			//std::size_t index, hashCode;
+			//const std::size_t& signId = detail::<_args...>::getContainerId();
+			//if (hasSignatureId(signId, index, hashCode))
+			//{
+			//	return detail::ConstructorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
+			//}
+			//return RStatus(false);
 		}
 
 

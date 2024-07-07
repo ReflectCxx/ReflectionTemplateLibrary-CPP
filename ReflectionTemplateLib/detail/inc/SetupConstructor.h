@@ -22,7 +22,7 @@ namespace rtl {
 		protected:
 
 			template<class _recordType, class ..._signature>
-			static const detail::FunctorId pushBack();
+			static const detail::FunctorId pushBackCtor();
 		};
 	}
 }

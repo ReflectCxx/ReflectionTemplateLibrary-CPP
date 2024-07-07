@@ -3,7 +3,6 @@
 #include "ReflectionBuilder.h"
 #include "FunctorContainer.h"
 #include "MethodContainer.h"
-#include "ConstructorContainer.h"
 
 namespace rtl {
 	
@@ -21,7 +20,7 @@ namespace rtl {
 		{
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
-			const detail::FunctorId functorId = detail::ConstructorContainer<_ctorSignature...>::template pushBack<_recordType, _ctorSignature...>();
+			const detail::FunctorId functorId = detail::FunctorContainer<_ctorSignature...>::template pushBackCtor<_recordType, _ctorSignature...>();
 			return access::Function(m_namespace, m_record, m_function, signature, functorId);
 		}
 

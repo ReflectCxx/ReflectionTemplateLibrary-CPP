@@ -4,7 +4,6 @@
 #include "Function.h"
 #include "UniqueAny.h"
 #include "FunctorContainer.h"
-#include "ConstructorContainer.h"
 
 namespace rtl {
 
