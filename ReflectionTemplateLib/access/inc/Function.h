@@ -33,7 +33,7 @@ namespace rtl {
 		protected:
 
 			void addOverload(const Function& pOtherFunc) const;
-
+			const bool hasSignatureId(const std::size_t& pSignatureId) const;
 			const bool hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const;
 
 		public:

@@ -18,21 +18,14 @@ namespace rtl {
 			, m_namespace(pNamespace) {
 		}
 
-		void Function::addOverload(const Function& pOtherFunc) const
+
+		const bool Function::hasSignatureId(const std::size_t& pSignatureId) const
 		{
-			const std::size_t& otherFuncSignId = pOtherFunc.m_functorIndex[0].getSignatureId();
-
-			auto itr = std::find_if(m_functorIndex.begin(), m_functorIndex.end(),
-				[otherFuncSignId](const detail::FunctorId& functorId) {
-					return (functorId.getSignatureId() == otherFuncSignId);
+			const auto& itr = std::find_if(m_functorIndex.begin(), m_functorIndex.end(),
+				[pSignatureId](const detail::FunctorId& functorId) {
+					return (functorId.getSignatureId() == pSignatureId);
 				});
-
-			if (itr != m_functorIndex.end()) {
-				assert(false && "multiple registration of same function");
-			}
-
-			m_functorIndex.push_back(pOtherFunc.m_functorIndex[0]);
-			m_signatures.append("\n" + pOtherFunc.m_signatures);
+			return itr != m_functorIndex.end();
 		}
 
 
@@ -49,6 +42,24 @@ namespace rtl {
 				return true;
 			}
 			return false;
+		}
+
+
+		void Function::addOverload(const Function& pOtherFunc) const
+		{
+			const std::size_t& otherFuncSignId = pOtherFunc.m_functorIndex[0].getSignatureId();
+
+			auto itr = std::find_if(m_functorIndex.begin(), m_functorIndex.end(),
+				[otherFuncSignId](const detail::FunctorId& functorId) {
+					return (functorId.getSignatureId() == otherFuncSignId);
+				});
+
+			if (itr != m_functorIndex.end()) {
+				assert(false && "multiple registration of same function");
+			}
+
+			m_functorIndex.push_back(pOtherFunc.m_functorIndex[0]);
+			m_signatures.append("\n" + pOtherFunc.m_signatures);
 		}
 	}
 }

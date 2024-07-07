@@ -15,7 +15,7 @@ namespace rtl {
 			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
 			const auto& itr = m_methods.find(ctorName);
 			if (itr != m_methods.end()) {
-				return itr->second.invokeConstructor(params...);
+				return itr->second.invokeCtor(params...);
 			}
 			else {
 				assert(false && "constructor with the given args, not found.");

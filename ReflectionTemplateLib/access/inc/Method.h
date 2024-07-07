@@ -11,22 +11,51 @@ namespace rtl {
 	namespace access
 	{
 		class Record;
+		class Method;
 		class UniqueAny;
-		class MethodInvoker;
-		class StaticMethodInvoker;
+
+		class MethodInvoker
+		{
+			const Method& m_method;
+			const UniqueAny& m_target;
+
+			MethodInvoker(const Method& pMethod, const UniqueAny& pTarget);
+
+		public: friend Method;
+
+			template<class ..._args>
+			RStatus operator()(_args...params) const noexcept;
+		};
+
+
+		class StaticMethodInvoker
+		{
+			const Method& m_method;
+
+			StaticMethodInvoker(const Method& pFunction);
+
+		public: friend Method;
+
+			template<class ..._args>
+			RStatus operator()(_args...params) const noexcept;
+		};
+
 
 		class Method : public Function
 		{
 			Method(const Function& pFunction);
 
 			template<class ..._args>
-			RStatus invokeConstructor(_args...params) const;
+			RStatus invokeCtor(_args...params) const;
 
 			template<class ..._args>
-			RStatus invokeMethod(const UniqueAny& pTarget, _args...params) const;
+			RStatus invokeStatic(_args...params) const;
 
 			template<class ..._args>
-			RStatus invokeConstMethod(const UniqueAny& pTarget, _args...params) const;
+			RStatus invoke(const UniqueAny& pTarget, _args...params) const;
+
+			template<class ..._args>
+			RStatus invokeConst(const UniqueAny& pTarget, _args...params) const;
 
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept = delete;
@@ -42,38 +71,8 @@ namespace rtl {
 
 			friend Record;
 			friend MethodInvoker;
+			friend StaticMethodInvoker;
 			friend detail::CxxReflection;
-		};
-
-
-		class MethodInvoker
-		{
-			const Method& m_method;
-			const UniqueAny& m_target;
-
-			MethodInvoker(const Method& pMethod, const UniqueAny& pTarget);
-
-		public:
-
-			template<class ..._args>
-			RStatus operator()(_args...params) const noexcept;
-
-			friend Method;
-		};
-
-
-		class StaticMethodInvoker
-		{
-			const Function& m_function;
-
-			StaticMethodInvoker(const Function& pFunction);
-
-		public:
-
-			template<class ..._args>
-			RStatus operator()(_args...params) const noexcept;
-
-			friend Method;
 		};
 	}
 }
