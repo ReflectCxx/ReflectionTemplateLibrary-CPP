@@ -19,7 +19,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
-										     enable_if_same<_returnType, void> *_)
+										     enable_if_void<_returnType> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
@@ -39,7 +39,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
-										     enable_if_notSame<_returnType, void> *_)
+										     enable_if_non_void<_returnType> *_)
 		{
 			const auto functor = [=](_signature...params)->access::RStatus
 			{

@@ -23,7 +23,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
-										   enable_if_same<_returnType, void> *_)
+										   enable_if_void<_returnType> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -53,7 +53,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...),
-										   enable_if_notSame<_returnType, void> *_)
+										   enable_if_non_void<_returnType> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -85,7 +85,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
-										   enable_if_same<_returnType, void> *_)
+										   enable_if_void<_returnType> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{
@@ -125,7 +125,7 @@ namespace rtl
 		template<class _derivedType>
 		template<class _recordType, class _returnType, class ..._signature>
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_returnType(_recordType::* pFunctor)(_signature...) const,
-										   enable_if_notSame<_returnType, void> *_)
+										   enable_if_non_void<_returnType> *_)
 		{
 			const auto functor = [=](const access::UniqueAny& pTargetObj, _signature...params)->access::RStatus
 			{

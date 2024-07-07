@@ -28,7 +28,7 @@ namespace rtl {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, CtorFunctorType> >& getCtorFunctors() {
+			static std::vector< std::pair<std::size_t, CtorFunctorType> >& getFunctors() {
 				return m_ctorPtrs;
 			}
 

@@ -38,7 +38,7 @@ namespace rtl {
 			const std::size_t& signId = detail::ConstructorContainer<_args...>::getContainerId();
 			if (hasSignatureId(signId, index, hashCode))
 			{
-				return detail::ConstructorContainer<_args...>::reflectConstructorCall(index, hashCode, params...);
+				return detail::ConstructorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
 			}
 			return RStatus(false);
 		}

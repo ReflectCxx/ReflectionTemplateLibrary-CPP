@@ -66,7 +66,7 @@ namespace rtl
 						       getDestructor<_recordType>(), getConstConverter<_recordType>());
 			};
 
-			auto& ctorFunctors = _derivedType::getCtorFunctors();
+			auto& ctorFunctors = _derivedType::getFunctors();
 			const std::size_t& index = ctorFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index, argsCount);
