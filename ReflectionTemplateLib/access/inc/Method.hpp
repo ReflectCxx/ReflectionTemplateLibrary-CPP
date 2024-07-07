@@ -1,61 +1,33 @@
+#pragma once
 #include "Method.h"
 
 namespace rtl {
 
 	namespace access
 	{
-		inline StaticMethodInvoker::StaticMethodInvoker(const Method& pFunction)
-			: m_method(pFunction) {
-		}
-
-
-		template<class ..._args>
-		inline RStatus StaticMethodInvoker::operator()(_args ...params) const noexcept
+		template<>
+		inline const bool Method::hasSignature<void>() const
 		{
-			return m_method.invokeStatic(params...);
-		}
-	}
-
-
-	namespace access
-	{
-		inline MethodInvoker::MethodInvoker(const Method& pMethod, const UniqueAny& pTarget)
-			: m_method(pMethod)
-			, m_target(pTarget) {
-		}
-
-
-		template<class ..._args>
-		inline RStatus MethodInvoker::operator()(_args ...params) const noexcept
-		{
-			if (m_target.getQualifier() == TypeQ::Const) {
-				return m_method.invokeConst(m_target, params...);
+			switch (getQualifier())
+			{
+			case TypeQ::None: return Function::hasSignature<void>();
+			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute>::getContainerId());
+			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const>::getContainerId());
 			}
-			else {
-				return m_method.invoke(m_target, params...);
+			return false;
+		}
+
+
+		template<class _arg0, class ..._args>
+		inline const bool Method::hasSignature() const
+		{
+			switch (getQualifier())
+			{
+			case TypeQ::None: return Function::hasSignature<_arg0, _args...>();
+			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId());
+			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId());
 			}
-		}
-	}
-
-
-	namespace access
-	{
-		inline const StaticMethodInvoker Method::operator()() const
-		{
-			return StaticMethodInvoker(*this);
-		}
-
-
-		inline const MethodInvoker Method::operator()(const UniqueAny& pTarget) const
-		{
-			return MethodInvoker(*this, pTarget);
-		}
-
-
-		template<class ..._args>
-		inline RStatus Method::invokeStatic(_args ...params) const
-		{
-			return Function::operator()(params...);
+			return false;
 		}
 
 
@@ -98,32 +70,6 @@ namespace rtl {
 				return invokeConst(pTarget, params...);
 			}
 			return RStatus(false);
-		}
-
-
-		template<>
-		inline const bool Method::hasSignature<void>() const
-		{
-			switch (getQualifier())
-			{
-			case TypeQ::None: return Function::hasSignature<void>();
-			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute>::getContainerId());
-			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const>::getContainerId());
-			}
-			return false;
-		}
-
-
-		template<class _arg0, class ..._args>
-		inline const bool Method::hasSignature() const
-		{
-			switch (getQualifier())
-			{
-			case TypeQ::None: return Function::hasSignature<_arg0, _args...>();
-			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId());
-			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId());
-			}
-			return false;
 		}
 	}
 }
