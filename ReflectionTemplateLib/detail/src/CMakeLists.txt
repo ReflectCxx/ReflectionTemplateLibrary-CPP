@@ -19,6 +19,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.hpp"
 )
 
 

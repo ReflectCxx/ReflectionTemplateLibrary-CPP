@@ -10,11 +10,16 @@ namespace rtl {
 		{
 		protected:
 
+			bool& m_buildImplicitMethods;
 			const std::string& m_record;
 			const std::string& m_function;
 			const std::string& m_namespace;
 
-			ReflectionBuilder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			ReflectionBuilder(const std::string& pNamespace, const std::string& pRecord,
+					  const std::string& pFunction, bool& pBuildImplicits);
+
+			template<class _recordType>
+			void buildImplicitMethods(const access::Function& pFunction) const;
 
 			template<class _recordType, class ..._ctorSignature>
 			const access::Function buildConstructor() const;

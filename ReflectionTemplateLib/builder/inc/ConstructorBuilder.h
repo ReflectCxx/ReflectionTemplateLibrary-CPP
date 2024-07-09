@@ -9,6 +9,7 @@ namespace rtl {
 		template<class _recordType, class ..._ctorSignature>
 		class ConstructorBuilder
 		{
+			bool& m_buildImplicitMethods;
 			const std::string& m_record;
 			const std::string& m_namespace;
 
@@ -16,7 +17,7 @@ namespace rtl {
 
 		public:
 
-			ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord);
+			ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord, bool& pBuildImplicits);
 
 			inline constexpr const access::Function build() const;
 		};

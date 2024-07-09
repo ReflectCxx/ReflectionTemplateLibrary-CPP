@@ -28,7 +28,8 @@ namespace rtl {
 			return std::nullopt;
 		}
 
-		RStatus Record::clone(UniqueAny& pOther) const
+
+		RStatus Record::clone(Instance& pOther) const
 		{
 			return RStatus(false);
 		}

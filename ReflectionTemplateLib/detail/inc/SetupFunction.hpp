@@ -11,8 +11,8 @@ namespace rtl
 		inline const std::size_t SetupFunction<_derivedType>::getHashCode(const std::size_t pContainerId, const std::size_t pIndex,
 										  const std::size_t pArgsCount)
 		{
-			return std::stoull(std::to_string(pContainerId) + std::to_string(pArgsCount) +
-					   std::to_string(pIndex) + std::to_string(TypeId<_returnType>::get()));
+			return std::stoull(std::to_string(pContainerId) + std::to_string(pIndex) +
+					   std::to_string(TypeId<_returnType>::get()) + std::to_string(pArgsCount));
 		}
 
 
@@ -32,7 +32,7 @@ namespace rtl
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index, argsCount);
 			functors.push_back(std::make_pair(hashCode, functor));
-			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount);
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Function);
 		}
 
 
@@ -54,7 +54,7 @@ namespace rtl
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index, argsCount);
 			functors.push_back(std::make_pair(hashCode, functor));
-			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount);
+			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Function);
 		}
 	}
 }

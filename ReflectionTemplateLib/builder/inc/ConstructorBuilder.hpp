@@ -9,8 +9,9 @@ namespace rtl {
 	namespace builder 
 	{
 		template<class _recordType, class ..._ctorSignature>
-		inline ConstructorBuilder<_recordType, _ctorSignature...>::ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord)
-			: m_record(pRecord)
+		inline ConstructorBuilder<_recordType, _ctorSignature...>::ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord, bool& pBuildImplicits)
+			: m_buildImplicitMethods(pBuildImplicits)
+			, m_record(pRecord)
 			, m_namespace(pNamespace)
 		{
 		}
@@ -20,7 +21,7 @@ namespace rtl {
 		inline constexpr const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
 		{
 			const auto& functionName = m_record + CTOR_SUFFIX;
-			return Builder<TypeQ::Mute>(m_namespace, m_record, functionName).build<_recordType, _ctorSignature...>();
+			return Builder<TypeQ::Mute>(m_namespace, m_record, functionName, m_buildImplicitMethods).build<_recordType, _ctorSignature...>();
 		}
 	}
 }

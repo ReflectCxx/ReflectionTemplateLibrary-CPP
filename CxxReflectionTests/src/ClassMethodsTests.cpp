@@ -36,22 +36,17 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 
 			const char* authorStr = book::AUTHOR;
 			const Method& setAuthor = methOpt.value();
 
 			ASSERT_FALSE(setAuthor.hasSignature<const char*>());
 
-			RStatus callRet = setAuthor(bookObj)(authorStr);
-			ASSERT_FALSE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
-
+			RStatus retObj = setAuthor(bookObj)(authorStr);
+			ASSERT_FALSE(retObj.didCallSucceed());
 			ASSERT_FALSE(retObj.get().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
 		}
@@ -73,20 +68,17 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 
 			const Method& getPublishedOn = methOpt.value();
 			ASSERT_TRUE(getPublishedOn.hasSignature<void>());
 
-			RStatus callRet = getPublishedOn(bookObj)();
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
+			RStatus retObj = getPublishedOn(bookObj)();
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value()); 
+			ASSERT_TRUE(retObj.isOfType<string>());
 
 			const std::string& retStr = any_cast<string>(retObj.get());
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
@@ -109,20 +101,17 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_setAuthor);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 			
 			const Method& setAuthor = methOpt.value();
 			ASSERT_TRUE(setAuthor.hasSignature<std::string>());
 
 			std::string authorStr = book::AUTHOR;
-			RStatus callRet = setAuthor(bookObj)(authorStr);
-			ASSERT_TRUE(callRet.didCallSucceed());
+			RStatus retObj = setAuthor(bookObj)(authorStr);
 
-			UniqueAny retObj = callRet.releaseReturn();
+			ASSERT_TRUE(retObj.didCallSucceed());
 			ASSERT_FALSE(retObj.get().has_value());
 
 			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get()));
@@ -145,19 +134,15 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 
 			const Method& updateBookInfo = methOpt.value();
 			ASSERT_TRUE(updateBookInfo.hasSignature<void>());
 			
-			RStatus callRet = updateBookInfo(bookObj)();
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
+			RStatus retObj = updateBookInfo(bookObj)();
+			ASSERT_TRUE(retObj.didCallSucceed());
 			ASSERT_FALSE(retObj.get().has_value());
 
 			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get()));
@@ -180,21 +165,17 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 
 			const Method& updateBookInfo = methOpt.value();
 			const bool signatureValid = updateBookInfo.hasSignature<string, double, const char*>();
 			ASSERT_TRUE(signatureValid);
 
 			string author = book::AUTHOR;
-			RStatus callRet = updateBookInfo(bookObj)(author, book::PRICE, book::TITLE);
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
+			RStatus retObj = updateBookInfo(bookObj)(author, book::PRICE, book::TITLE);
+			ASSERT_TRUE(retObj.didCallSucceed());
 			ASSERT_FALSE(retObj.get().has_value());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.get());
@@ -218,21 +199,17 @@ namespace rtl_tests
 			optional<Method> methOpt = classBook.getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(methOpt.has_value());
 
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny bookObj = retIns.releaseReturn();
-			ASSERT_TRUE(bookObj.get().has_value());
+			auto [status, bookObj] = classBook.instance();
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(bookObj.isEmpty());
 
 			const Method& updateBookInfo = methOpt.value();
 			const bool signatureValid = updateBookInfo.hasSignature<const char*, double, string>();
 			ASSERT_TRUE(signatureValid);
 
 			string author = book::AUTHOR;
-			RStatus callRet = updateBookInfo(bookObj)(book::TITLE, book::PRICE, author);
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
+			RStatus retObj = updateBookInfo(bookObj)(book::TITLE, book::PRICE, author);
+			ASSERT_TRUE(retObj.didCallSucceed());
 			ASSERT_FALSE(retObj.get().has_value());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.get());

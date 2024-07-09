@@ -35,19 +35,11 @@ namespace rtl {
 		inline RStatus Method::invokeCtor(_args ...params) const
 		{
 			return Function::operator()(params...);
-
-			//std::size_t index, hashCode;
-			//const std::size_t& signId = detail::<_args...>::getContainerId();
-			//if (hasSignatureId(signId, index, hashCode))
-			//{
-			//	return detail::ConstructorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
-			//}
-			//return RStatus(false);
 		}
 
 
 		template<class ..._args>
-		inline RStatus Method::invokeConst(const UniqueAny& pTarget, _args ...params) const
+		inline RStatus Method::invokeConst(const Instance& pTarget, _args ...params) const
 		{
 			std::size_t index, hashCode;
 			const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _args...>::getContainerId();
@@ -60,7 +52,7 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline RStatus Method::invoke(const UniqueAny& pTarget, _args ...params) const
+		inline RStatus Method::invoke(const Instance& pTarget, _args ...params) const
 		{
 			std::size_t index, hashCode;
 			const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();

@@ -17,7 +17,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::None, void> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _returnType>
 			constexpr const access::Function build(_returnType(*pFunctor)()) const;
@@ -27,7 +28,8 @@ namespace rtl {
 		template<class ..._signature>
 		struct Builder<TypeQ::None, _signature...> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _returnType>
 			constexpr const access::Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -37,7 +39,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::None> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _returnType, class ..._signature>
 			constexpr const access::Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -50,7 +53,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::Const, void> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class _returnType>
 			constexpr const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
@@ -60,7 +64,8 @@ namespace rtl {
 		template<class ..._signature>
 		struct Builder<TypeQ::Const, _signature...> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class _returnType>
 			constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
@@ -70,7 +75,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::Const> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class _returnType>
 			constexpr const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
@@ -86,7 +92,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::Mute, void> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class _returnType>
 			constexpr const access::Function build(_returnType(_recordType::* pFunctor)()) const;
@@ -96,7 +103,8 @@ namespace rtl {
 		template<class ..._signature>
 		struct Builder<TypeQ::Mute, _signature...> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class _returnType>
 			constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
@@ -106,7 +114,8 @@ namespace rtl {
 		template<>
 		struct Builder<TypeQ::Mute> : protected detail::ReflectionBuilder
 		{
-			Builder(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction);
+			Builder(const std::string& pNamespace, const std::string& pRecord,
+				const std::string& pFunction, bool& pBuildImplicits);
 
 			template<class _recordType, class ..._signature>
 			constexpr const access::Function build() const;

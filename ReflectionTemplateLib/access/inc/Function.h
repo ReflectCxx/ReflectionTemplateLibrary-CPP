@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "FunctorId.h"
 #include "Constants.h"
@@ -16,6 +17,7 @@ namespace rtl {
 	namespace access
 	{
 		class RStatus;
+		class Instance;
 
 		class Function
 		{
@@ -25,26 +27,33 @@ namespace rtl {
 			const std::string m_namespace;
 
 			mutable std::string m_signatures;
-			mutable std::vector<detail::FunctorId> m_functorIndex;
+			mutable std::vector<detail::FunctorId> m_functorIds;
 
+			Function();
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
 				 const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
 
+			void addOverload(const Function& pOtherFunc) const;
+			void addImplicitId(const detail::FunctorId& pOtherFunc) const;
+			void removeImplicitIds() const;
+
 		protected:
 
-			void addOverload(const Function& pOtherFunc) const;
+			Function(const Function& pOther, const detail::FunctorId& pFunctorId,
+				 const std::function<std::string()>& pGetName);
+
 			const bool hasSignatureId(const std::size_t& pSignatureId) const;
 			const bool hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const;
 
 		public:
-
-			Function() = delete;
 
 			GETTER(TypeQ, Qualifier, m_qualifier)
 			GETTER(std::string, RecordName, m_record)
 			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
+			GETTER(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
+			GETTER(FunctorType, FunctorType, m_functorIds[0].getFunctorType())
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
@@ -52,6 +61,7 @@ namespace rtl {
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept;
 
+			friend Instance;
 			friend detail::CxxReflection;
 			friend detail::ReflectionBuilder;
 		};

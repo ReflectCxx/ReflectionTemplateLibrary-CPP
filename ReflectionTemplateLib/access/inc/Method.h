@@ -6,41 +6,39 @@
 
 namespace rtl {
 
-	namespace detail {
-		class CxxReflection;
-	}
-
 	namespace access
 	{
 		class Record;
-		class UniqueAny;
+		class Instance;
 
 		class Method : public Function
 		{
 			Method(const Function& pFunction);
 
+			Method(const Function& pFunction, const detail::FunctorId& pFunctorId);
+
 			template<class ..._args>
 			RStatus invokeCtor(_args...params) const;
 
 			template<class ..._args>
-			RStatus invoke(const UniqueAny& pTarget, _args...params) const;
+			RStatus invoke(const Instance& pTarget, _args...params) const;
 
 			template<class ..._args>
-			RStatus invokeConst(const UniqueAny& pTarget, _args...params) const;
+			RStatus invokeConst(const Instance& pTarget, _args...params) const;
 
 		public:
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
 
-			auto operator()() const
+			constexpr auto operator()() const
 			{
 				return [this](auto...params) {
 					return Function::operator()(params...);
 				};
 			}
 
-			auto operator()(const UniqueAny& pTarget) const
+			constexpr auto operator()(const Instance& pTarget) const
 			{
 				return [&](auto...params)->RStatus
 				{
@@ -57,7 +55,7 @@ namespace rtl {
 			friend detail::CxxReflection;
 
 			template<class ..._args>
-			RStatus operator()(_args...params) const noexcept = delete;
+			RStatus operator()(_args...) const noexcept = delete;
 		};
 	}
 }

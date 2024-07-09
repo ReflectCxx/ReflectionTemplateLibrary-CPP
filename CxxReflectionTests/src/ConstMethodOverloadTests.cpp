@@ -22,20 +22,18 @@ namespace rtl_tests
 			optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
 			ASSERT_TRUE(methOpt.has_value());
 
-			const RStatus& retIns = classPerson.instance(string(person::FIRST_NAME));
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			const Method& updateLastName = methOpt.value();
 			ASSERT_TRUE(updateLastName.hasSignature<string>());
 
 			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj)(lnameStr);
+			const RStatus& retObj = updateLastName(personObj)(lnameStr);
 			
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -56,11 +54,9 @@ namespace rtl_tests
 			ASSERT_TRUE(methOpt.has_value());
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(fnameStr);
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			personObj.makeConst();
@@ -70,9 +66,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName.hasSignature<string>());
 
 			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj)(lnameStr);
+			const RStatus& retObj = updateLastName(personObj)(lnameStr);
 
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -93,11 +89,9 @@ namespace rtl_tests
 			ASSERT_TRUE(methOpt.has_value());
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(fnameStr);
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			personObj.makeConst();
@@ -107,9 +101,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress.hasSignature<string>());
 
 			string address = person::ADDRESS;
-			const RStatus& callRet = updateAddress(personObj)(address);
+			const RStatus& retObj = updateAddress(personObj)(address);
 
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -130,20 +124,18 @@ namespace rtl_tests
 			ASSERT_TRUE(methOpt.has_value());
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(fnameStr);
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			const Method& updateAddress = methOpt.value();
 			ASSERT_TRUE(updateAddress.hasSignature<string>());
 
 			string address = person::ADDRESS;
-			const RStatus& callRet = updateAddress(personObj)(address);
+			const RStatus& retObj = updateAddress(personObj)(address);
 
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -164,11 +156,9 @@ namespace rtl_tests
 			ASSERT_TRUE(methOpt.has_value());
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(fnameStr);
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			personObj.makeConst();
@@ -177,9 +167,9 @@ namespace rtl_tests
 			const Method& updateAddress = methOpt.value();
 			ASSERT_TRUE(updateAddress.hasSignature<string>());
 
-			const RStatus& callRet = updateAddress(personObj)();
+			const RStatus& retObj = updateAddress(personObj)();
 
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateAddress_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -200,19 +190,17 @@ namespace rtl_tests
 			ASSERT_TRUE(methOpt.has_value());
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			auto [status, personObj] = classPerson.instance(fnameStr);
+			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			const Method& updateAddress = methOpt.value();
 			ASSERT_TRUE(updateAddress.hasSignature<string>());
 
-			const RStatus& callRet = updateAddress(personObj)();
+			const RStatus& retObj = updateAddress(personObj)();
 
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(retObj.didCallSucceed());
 			EXPECT_TRUE(person::test_method_updateAddress(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());

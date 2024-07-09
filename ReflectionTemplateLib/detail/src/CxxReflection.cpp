@@ -19,11 +19,28 @@ namespace rtl {
 		}
 
 
+		void CxxReflection::addImplicitMethods(MethodMap& pMethodMap, const access::Function& pFunctor)
+		{
+			const auto& functorIds = pFunctor.getFunctorIds();
+			for (const auto& funcId : functorIds) {
+				if (funcId.getFunctorType() != FunctorType::Ctor) {
+					access::Method method(pFunctor, funcId);
+					pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
+				}
+			}
+		}
+
+
 		void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
 		{
 			const auto& fname = pFunction.getFunctionName();
 			const auto& itr = pMethodMap.find(fname);
-			if (itr == pMethodMap.end()) {
+			if (itr == pMethodMap.end()) 
+			{
+				if (pFunction.getFunctorType() == FunctorType::Ctor) {
+					addImplicitMethods(pMethodMap, pFunction);
+				}
+				pFunction.removeImplicitIds();
 				pMethodMap.emplace(fname, access::Method(pFunction));
 			}
 			else {

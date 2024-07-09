@@ -73,11 +73,11 @@ namespace rtl_tests
 
 		EXPECT_TRUE(getMagnitude.hasSignature<void>());
 
-		RStatus callRet = getMagnitude();
-		ASSERT_TRUE(callRet.didCallSucceed());
+		RStatus retObj = getMagnitude();
 
-		UniqueAny retObj = callRet.releaseReturn();
-		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<double>());
+		ASSERT_TRUE(retObj.didCallSucceed());
+		ASSERT_TRUE(retObj.get().has_value());
+		ASSERT_TRUE(retObj.isOfType<double>());
 
 		double retVal = std::any_cast<double>(retObj.get());
 		double magnitude = abs(complex(g_real, g_imaginary));
@@ -96,11 +96,9 @@ namespace rtl_tests
 		EXPECT_TRUE(setReal.hasSignature<double>());
 		EXPECT_FALSE(setReal.hasSignature<float>());
 
-		RStatus callRet = setReal(float(g_real));
-		ASSERT_FALSE(callRet.didCallSucceed());
+		RStatus retObj = setReal(float(g_real));
 
-		//No op.
-		UniqueAny retObj = callRet.releaseReturn();
+		ASSERT_FALSE(retObj.didCallSucceed());
 		ASSERT_FALSE(retObj.get().has_value());
 	}
 
@@ -114,11 +112,10 @@ namespace rtl_tests
 
 		const Function& getComplexNumAsString = getFunc.value();
 
-		RStatus callRet = getComplexNumAsString();
-		ASSERT_TRUE(callRet.didCallSucceed());
-
-		UniqueAny retObj = callRet.releaseReturn();
-		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
+		RStatus retObj = getComplexNumAsString();
+		ASSERT_TRUE(retObj.didCallSucceed());
+		ASSERT_TRUE(retObj.get().has_value()); 
+		ASSERT_TRUE(retObj.isOfType<string>());
 
 		string retVal = std::any_cast<string>(retObj.get());
 		string comlexNumStr = to_string(g_real) + "i" + to_string(g_imaginary);
@@ -134,31 +131,28 @@ namespace rtl_tests
 		ASSERT_TRUE(getFunc.has_value());
 		const Function& reverseString = getFunc.value();
 		{
-			RStatus callRet = reverseString(string(STRA));
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
+			RStatus retObj = reverseString(string(STRA));
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value()); 
+			ASSERT_TRUE(retObj.isOfType<string>());
 
 			string retVal = std::any_cast<string>(retObj.get());
 			EXPECT_TRUE(retVal == STRA_REVERSE);
 		}
 		{
-			RStatus callRet = reverseString(string(STRB));
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
+			RStatus retObj = reverseString(string(STRB));
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value()); 
+			ASSERT_TRUE(retObj.isOfType<string>());
 
 			string retVal = std::any_cast<string>(retObj.get());
 			EXPECT_TRUE(retVal == STRB_REVERSE);
 		}
 		{
-			RStatus callRet = reverseString();
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
+			RStatus retObj = reverseString();
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value()); 
+			ASSERT_TRUE(retObj.isOfType<string>());
 
 			string retVal = std::any_cast<string>(retObj.get());
 			EXPECT_TRUE(retVal == REV_STR_VOID_RET);

@@ -12,7 +12,21 @@ namespace rtl {
         Const,  //Constant
     };
 
+    //Qualifier type.
+    enum class FunctorType
+    {
+        None,
+        Ctor,
+        CopyCtor,
+        DCtor,
+        Method,
+        Function,
+        ConstConverter
+    };
+
     constexpr const char* CTOR_SUFFIX = "::ctor";
+    constexpr const char* DCTOR_SUFFIX = "::~dctor";
+    constexpr const char* CONST_CONVERTER_SUFFIX = "::toConst";
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
 #define GETTER(_varType, _name, _var)                       \

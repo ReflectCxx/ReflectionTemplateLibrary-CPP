@@ -1,67 +1,68 @@
 
 #include <any>
 
-#include "TypeId.h"
+#include "TypeId.hpp"
+#include "RStatus.h"
 #include "UniqueAny.h"
+#include "Function.hpp"
+
+namespace {
+
+	static std::size_t g_instanceCount = 0;
+}
 
 namespace rtl {
 
-	namespace access 
+	namespace access
 	{
-		UniqueAny::~UniqueAny()
-		{
-			if (m_destructor) {
-				m_destructor(m_anyObject, m_qualifier);
-			}
-		}
-
-		
-		UniqueAny::UniqueAny()
-			: m_qualifier(TypeQ::Mute)
+		Instance::Instance()
+			: m_qualifier(TypeQ::None)
 			, m_typeId(detail::TypeId<>::None) {
 		}
 
 
-		UniqueAny::UniqueAny(UniqueAny&& pOther) noexcept
+		Instance::Instance(const Instance& pOther)
 			: m_qualifier(pOther.m_qualifier)
 			, m_typeId(pOther.m_typeId)
 			, m_anyObject(pOther.m_anyObject)
-			, m_toConst(std::move(pOther.m_toConst))
-			, m_destructor(std::move(pOther.m_destructor)) {
-		}
-
-		
-		UniqueAny& UniqueAny::operator=(UniqueAny&& pOther) noexcept
-		{
-			m_typeId = pOther.m_typeId;
-			m_anyObject = pOther.m_anyObject;
-			m_toConst = std::move(pOther.m_toConst);
-			m_destructor = std::move(pOther.m_destructor);
-			return *this;
+			, m_toConst(pOther.m_toConst)
+			, m_destructor(pOther.m_destructor) {
 		}
 
 
-		UniqueAny::UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				     const std::function< void(const std::any&, const TypeQ&) >& pDctor,
-				     const std::function< void(std::any&, std::size_t&) >& pToConst)
+		Instance::Instance(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
+			const Function& pDctor, const Function& pConstConverter)
 			: m_qualifier(pQualifier)
 			, m_typeId(pTypeId)
 			, m_anyObject(pAnyObj)
-			, m_toConst(pToConst)
-			, m_destructor(pDctor) {
+			, m_toConst(pConstConverter)
+			, m_destructor(&g_instanceCount, [=](void* ptr) 
+			{
+				pDctor(pAnyObj, pQualifier);
+				(*static_cast<std::size_t*>(ptr))--;
+			})
+		{
+			g_instanceCount++;
 		}
 
 
-		const bool UniqueAny::isConst() const {
+		const bool Instance::isEmpty() const {
+			return (!m_anyObject.has_value());
+		}
+
+
+		const bool Instance::isConst() const {
 			return (m_qualifier == TypeQ::Const);
 		}
 
 
-		const bool UniqueAny::makeConst() const
+		const bool Instance::makeConst() const
 		{
-			if (m_toConst) {
+			const RStatus& ret = m_toConst(m_anyObject);
+			if (ret.didCallSucceed()) {
 				m_qualifier = TypeQ::Const;
-				m_toConst(m_anyObject, m_typeId);
+				m_typeId = ret.getTypeId();
+				m_anyObject = ret.get();
 				return true;
 			}
 			return false;

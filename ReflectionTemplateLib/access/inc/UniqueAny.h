@@ -1,40 +1,39 @@
 #pragma once
 
 #include <any>
-#include <functional>
+#include <memory>
 
 #include "TypeId.h"
 #include "Constants.h"
+#include "Function.h"
 
 namespace rtl {
 
 	namespace access
 	{
-		class RStatus;
+		class Record;
 
-		class UniqueAny
+		class Instance
 		{
 			mutable TypeQ m_qualifier;
 			mutable std::size_t m_typeId;
 			mutable std::any m_anyObject;
 
-			std::function< void(std::any&, std::size_t&) > m_toConst;
-			std::function< void(const std::any&, const TypeQ&) > m_destructor;
+			const Function m_toConst;
+			const std::shared_ptr<void> m_destructor;
 
-			UniqueAny();
-			UniqueAny(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				  const std::function< void(const std::any&, const TypeQ&) >& pDctor,
-				  const std::function< void(std::any&, std::size_t&) >& pToConst);
-
+			explicit Instance();
+			explicit Instance(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
+						   const Function& pDctor, const Function& pConstConverter);
 		public:
 
-			UniqueAny(const UniqueAny&) = delete;
-			operator std::any() const = delete;
-			UniqueAny& operator=(const UniqueAny&) = delete;
+			Instance(const Instance&);
 
-			~UniqueAny();
-			UniqueAny(UniqueAny&& pOther) noexcept;
-			UniqueAny& operator=(UniqueAny&& pOther) noexcept;
+			GETTER(std::any, , m_anyObject);
+			GETTER(std::size_t, TypeId, m_typeId);
+			GETTER(TypeQ, Qualifier, m_qualifier);
+
+			const bool isEmpty() const;
 
 			const bool isConst() const;
 
@@ -45,10 +44,7 @@ namespace rtl {
 				return (detail::TypeId<_type>::get() == m_typeId);
 			}
 
-			GETTER(std::any, , m_anyObject);
-			GETTER(TypeQ, Qualifier, m_qualifier);
-
-			friend RStatus;
+			friend Record;
 		};
 	}
 }

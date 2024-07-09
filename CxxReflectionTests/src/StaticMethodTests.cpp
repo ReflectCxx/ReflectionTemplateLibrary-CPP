@@ -1,3 +1,4 @@
+
 #include <gtest/gtest.h>
 
 #include "MyReflection.h"
@@ -25,13 +26,12 @@ namespace rtl_tests
 			const Method& getDefaults = methOpt.value();
 			ASSERT_TRUE(getDefaults.hasSignature<void>());
 
-			const RStatus& callRet = getDefaults()();
-			ASSERT_TRUE(callRet.didCallSucceed());
+			const RStatus& retObj = getDefaults()();
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value());
+			ASSERT_TRUE(retObj.isOfType<string>());
 
-			const UniqueAny& retVal = callRet.releaseReturn();
-			ASSERT_TRUE(retVal.get().has_value() && retVal.isOfType<string>());
-
-			const string& retStr = any_cast<string>(retVal.get());
+			const string& retStr = any_cast<string>(retObj.get());
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -54,13 +54,12 @@ namespace rtl_tests
 			const Method& getProfile = methOpt.value();
 			ASSERT_TRUE(getProfile.hasSignature<void>());
 
-			const RStatus& callRet = getProfile()();
-			ASSERT_TRUE(callRet.didCallSucceed());
+			const RStatus& retObj = getProfile()();
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value());
+			ASSERT_TRUE(retObj.isOfType<string>());
 
-			const UniqueAny& retVal = callRet.releaseReturn();
-			ASSERT_TRUE(retVal.get().has_value() && retVal.isOfType<string>());
-
-			const string& retStr = any_cast<string>(retVal.get());
+			const string& retStr = any_cast<string>(retObj.get());
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile());
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -84,24 +83,22 @@ namespace rtl_tests
 			ASSERT_TRUE(getProfile.hasSignature<bool>());
 
 			{
-				const RStatus& callRet = getProfile()(true);
-				ASSERT_TRUE(callRet.didCallSucceed());
+				const RStatus& retObj = getProfile()(true);
+				ASSERT_TRUE(retObj.didCallSucceed());
+				ASSERT_TRUE(retObj.get().has_value());
+				ASSERT_TRUE(retObj.isOfType<string>());
 
-				const UniqueAny& retVal = callRet.releaseReturn();
-				ASSERT_TRUE(retVal.get().has_value() && retVal.isOfType<string>());
-
-				const string& retStr = any_cast<string>(retVal.get());
+				const string& retStr = any_cast<string>(retObj.get());
 				EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 
 			}
 			{
-				const RStatus& callRet = getProfile()(false);
-				ASSERT_TRUE(callRet.didCallSucceed());
+				const RStatus& retObj = getProfile()(false);
+				ASSERT_TRUE(retObj.didCallSucceed());
+				ASSERT_TRUE(retObj.get().has_value());
+				ASSERT_TRUE(retObj.isOfType<string>());
 
-				const UniqueAny& retVal = callRet.releaseReturn();
-				ASSERT_TRUE(retVal.get().has_value() && retVal.isOfType<string>());
-
-				const string& retStr = any_cast<string>(retVal.get());
+				const string& retStr = any_cast<string>(retObj.get());
 				EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(false));
 			}
 		}
@@ -129,14 +126,12 @@ namespace rtl_tests
 			size_t age = person::AGE;
 			string occupStr = person::OCCUPATION;
 
-			const RStatus& callRet = getProfile()(occupStr, age);
+			const RStatus& retObj = getProfile()(occupStr, age);
+			ASSERT_TRUE(retObj.didCallSucceed());
+			ASSERT_TRUE(retObj.get().has_value());
+			ASSERT_TRUE(retObj.isOfType<string>());
 
-			ASSERT_TRUE(callRet.didCallSucceed());
-
-			const UniqueAny& retVal = callRet.releaseReturn();
-			ASSERT_TRUE(retVal.get().has_value() && retVal.isOfType<string>());
-
-			const string& retStr = any_cast<string>(retVal.get());
+			const string& retStr = any_cast<string>(retObj.get());
 			const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
 
 			EXPECT_EQ(retStr, checkStr);

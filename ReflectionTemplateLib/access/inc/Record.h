@@ -16,7 +16,7 @@ namespace rtl {
 	{
 		class Method;
 		class RStatus;
-		class UniqueAny;
+		class Instance;
 
 		class Record
 		{
@@ -35,11 +35,11 @@ namespace rtl {
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
 			//creates dynamic instance, calling copy ctor, using new.
-			RStatus clone(UniqueAny& pOther) const;
+			RStatus clone(Instance& pOther) const;
 
 			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>
-			RStatus instance(_ctorArgs ...params) const;
+			const std::pair<RStatus, Instance> instance(_ctorArgs ...params) const;
 
 			friend class detail::CxxReflection;
 		};

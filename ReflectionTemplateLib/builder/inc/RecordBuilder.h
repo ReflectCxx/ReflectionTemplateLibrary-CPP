@@ -10,10 +10,12 @@ namespace rtl {
 		class ConstructorBuilder;
 
 		template<class _recordType>
-		class RecordBuilder 
+		class RecordBuilder
 		{
 			const std::string& m_record;
 			const std::string& m_namespace;
+
+			static bool m_buildImplicitMethods;
 
 		public:
 
@@ -24,18 +26,18 @@ namespace rtl {
 
 			constexpr const Builder<TypeQ::Mute> method(const std::string& pFunction) const;
 
-			constexpr const Builder<TypeQ::Const> methodConst(const std::string& pFunction) const;
-
 			constexpr const Builder<TypeQ::None> methodStatic(const std::string& pFunction) const;
+
+			constexpr const Builder<TypeQ::Const> methodConst(const std::string& pFunction) const;
 
 			template<class ..._signature>
 			constexpr const Builder<TypeQ::Mute, _signature...> method(const std::string& pFunction) const;
 
 			template<class ..._signature>
-			constexpr const Builder<TypeQ::Const, _signature...> methodConst(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::None, _signature...> methodStatic(const std::string& pFunction) const;
 
 			template<class ..._signature>
-			constexpr const Builder<TypeQ::None, _signature...> methodStatic(const std::string& pFunction) const;
+			constexpr const Builder<TypeQ::Const, _signature...> methodConst(const std::string& pFunction) const;
 		};
 	}
 }

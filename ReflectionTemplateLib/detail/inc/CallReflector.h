@@ -3,6 +3,7 @@
 #include <optional>
 #include "Constants.h"
 #include "RStatus.h"
+#include "UniqueAny.h"
 
 namespace rtl {
 
@@ -25,7 +26,7 @@ namespace rtl {
 
 
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(const access::UniqueAny& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
+			static access::RStatus reflectMethodCall(const access::Instance& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
 			{
 				const auto& functor = _derivedType::getMethodFunctors().at(pFunctorId);
 				if (functor.first == pHashCode) {

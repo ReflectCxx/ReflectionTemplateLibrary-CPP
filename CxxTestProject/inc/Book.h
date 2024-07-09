@@ -17,12 +17,15 @@ class Book
 public:
 
 	Book();
+	Book(const Book& pOther);
 	Book(double pPrice, std::string pTitle);
 	~Book();
 
 	std::string getPublishedOn();
 
+
 	void setAuthor(std::string pAuthor);
+	void setDescription(std::string pDesc);
 
 	void updateBookInfo();
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);

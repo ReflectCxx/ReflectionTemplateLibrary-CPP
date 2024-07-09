@@ -15,7 +15,7 @@ namespace rtl {
 		{
 			static constexpr const std::size_t None = 0;
 
-			static constexpr const std::size_t get() {
+			static const std::size_t get() {
 				return m_typeId;
 			}
 
@@ -44,10 +44,5 @@ namespace rtl {
 				return (std::string(typeid(HEAD).name()) + ", " + tailStr);
 			}
 		};
-
-		extern std::size_t g_typeIdCounter;
-
-		template<class _type>
-		const std::size_t TypeId<_type>::m_typeId = g_typeIdCounter++ ;
 	}
 }
