@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 
+#include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
 
@@ -16,7 +17,6 @@ namespace rtl {
 
 	namespace access
 	{
-		class RStatus;
 		class Instance;
 
 		class Function

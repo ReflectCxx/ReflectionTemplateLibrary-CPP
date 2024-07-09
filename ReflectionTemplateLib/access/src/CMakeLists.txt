@@ -2,10 +2,10 @@
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirror.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Function.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Instance.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Record.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RStatus.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/UniqueAny.cpp"
 )
 
 SET(COMMON_HEADERS
@@ -17,12 +17,12 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirror.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
+	"${PROJECT_SOURCE_DIR}/access/inc/Instance.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/RStatus.h"
-	"${PROJECT_SOURCE_DIR}/access/inc/UniqueAny.h"
 )
 
 # Add any additional source files if needed
