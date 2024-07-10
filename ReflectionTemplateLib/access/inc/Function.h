@@ -7,6 +7,7 @@
 #include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
+#include "Instance.h"
 
 namespace rtl {
 
@@ -17,8 +18,6 @@ namespace rtl {
 
 	namespace access
 	{
-		class Instance;
-
 		class Function
 		{
 			const TypeQ m_qualifier;
@@ -52,7 +51,10 @@ namespace rtl {
 			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
-			GETTER(FunctorType, FunctorType, m_functorIds[0].getFunctorType())
+
+			const FunctorType& getFunctorType() const {
+				return m_functorIds[0].getFunctorType();
+			}
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;

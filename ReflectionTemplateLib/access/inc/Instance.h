@@ -6,7 +6,6 @@
 
 #include "TypeId.h"
 #include "Constants.h"
-#include "Function.h"
 
 namespace rtl {
 
@@ -14,7 +13,8 @@ namespace rtl {
 	{
 		class Record;
 		class RStatus;
-
+		class Function;
+		
 		class Instance
 		{
 			mutable TypeQ m_qualifier;
