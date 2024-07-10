@@ -31,7 +31,6 @@ namespace rtl {
 			void addRecord(RecordMap& pRecordMap, const access::Function& pFunction);
 			void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
 			void addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction);
-			void addImplicitMethods(MethodMap& pMethodMap, const access::Function& pFunctor);
 
 		protected:
 

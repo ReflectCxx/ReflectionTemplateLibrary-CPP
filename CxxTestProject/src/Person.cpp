@@ -17,13 +17,26 @@ Person::Person()
 }
 
 Person::Person(const std::string& pName)
-	: m_address("")
-	, m_lastName("")
+	: m_address("__ctor_Person(const string&)")
+	, m_lastName("__ctor_Person(const string&)")
 	, m_firstName(pName)
 {
 	g_instanceCount++;
 }
 
+Person::Person(Person& pOther)
+	: m_address(pOther.m_address + ".__Person::Person(Person&)")
+	, m_lastName(pOther.m_lastName + ".__Person::Person(Person&)")
+	, m_firstName(pOther.m_firstName + ".__Person::Person(Person&)")
+{
+}
+
+Person::Person(const Person& pOther)
+	: m_address(pOther.m_address + ".__Person::Person(const Person&)")
+	, m_lastName(pOther.m_lastName + ".__Person::Person(const Person&)")
+	, m_firstName(pOther.m_firstName + ".__Person::Person(const Person&)")
+{
+}
 
 unsigned Person::getInstanceCount()
 {
@@ -33,13 +46,13 @@ unsigned Person::getInstanceCount()
 
 void Person::updateAddress()
 {
-	m_address = "No Address given. non const method called. [__updateAddress()]";
+	m_address = "No Address given. non const method called. [__Person::updateAddress()]";
 }
 
 
 void Person::updateAddress() const
 {
-	m_address = "No Address given. const method called. [__updateAddress() const]";
+	m_address = "No Address given. const method called. [__Person::updateAddress() const]";
 }
 
 
@@ -85,17 +98,17 @@ std::string Person::getProfile(bool pNoAddress)
 
 void Person::updateAddress(std::string pAddress)
 {
-	m_address = pAddress + " [__updateAddress(std::string)]";
+	m_address = pAddress + " [__Person::updateAddress(std::string)]";
 }
 
 
 void Person::updateAddress(std::string pAddress) const
 {
-	m_address = pAddress + " [__updateAddress(std::string) const]";
+	m_address = pAddress + " [__Person::updateAddress(std::string) const]";
 }
 
 
 void Person::updateLastName(std::string pLastName) const
 {
-	m_lastName = pLastName + " [__updateLastName(std::string) const]";
+	m_lastName = pLastName + " [__Person::updateLastName(std::string) const]";
 }

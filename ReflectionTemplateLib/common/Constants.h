@@ -18,15 +18,19 @@ namespace rtl {
         None,
         Ctor,
         CopyCtor,
+        CopyCtorConst,
         DCtor,
         Method,
-        Function,
-        ConstConverter
+        Function
     };
 
-    constexpr const char* CTOR_SUFFIX = "::ctor";
-    constexpr const char* DCTOR_SUFFIX = "::~dctor";
-    constexpr const char* CONST_CONVERTER_SUFFIX = "::toConst";
+    struct Member {
+        static constexpr const char* CTOR = "::ctor()";
+        static constexpr const char* DCTOR = "::~dctor()";
+        static constexpr const char* CTOR_COPY = "::ctor(&)";
+        static constexpr const char* CTOR_CONST_COPY = "::ctor(const&)";
+    };
+
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
 #define GETTER(_varType, _name, _var)                       \
@@ -35,7 +39,7 @@ namespace rtl {
     }
 
 #define GETTER_REF(_varType, _name, _var)       \
-    inline _varType& get##_name() {             \
+    inline _varType& get##_name() const {       \
         return _var;                            \
     }
 
@@ -44,4 +48,10 @@ namespace rtl {
 
     template<class _type>
     using enable_if_non_void = typename std::enable_if< !std::is_same<_type, void>::value >::type;
+
+    template<class _typeA, class _typeB>
+    using enable_if_same = typename std::enable_if< std::is_same<_typeA, _typeB>::value >::type;
+
+    template<class _type, class _typeB>
+    using enable_if_not_same = typename std::enable_if< !std::is_same<_type, _typeB>::value >::type;
 }

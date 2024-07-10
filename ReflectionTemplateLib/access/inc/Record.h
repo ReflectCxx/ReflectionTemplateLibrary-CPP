@@ -35,7 +35,7 @@ namespace rtl {
 			std::optional<Method> getMethod(const std::string& pMethod) const;
 
 			//creates dynamic instance, calling copy ctor, using new.
-			RStatus clone(Instance& pOther) const;
+			std::optional<Instance> clone(Instance& pOther) const;
 
 			//creates dynamic instance, using new.
 			template<class ..._ctorArgs>

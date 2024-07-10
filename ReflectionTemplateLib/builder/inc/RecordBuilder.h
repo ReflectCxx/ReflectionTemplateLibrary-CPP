@@ -15,7 +15,7 @@ namespace rtl {
 			const std::string& m_record;
 			const std::string& m_namespace;
 
-			static bool m_buildImplicitMethods;
+			static bool m_buildDestructor;
 
 		public:
 

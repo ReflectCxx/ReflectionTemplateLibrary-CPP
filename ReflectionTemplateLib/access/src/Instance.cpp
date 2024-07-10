@@ -15,37 +15,6 @@ namespace rtl {
 
 	namespace access
 	{
-		Instance::Instance()
-			: m_qualifier(TypeQ::None)
-			, m_typeId(detail::TypeId<>::None) {
-		}
-
-
-		Instance::Instance(const Instance& pOther)
-			: m_qualifier(pOther.m_qualifier)
-			, m_typeId(pOther.m_typeId)
-			, m_anyObject(pOther.m_anyObject)
-			, m_toConst(pOther.m_toConst)
-			, m_destructor(pOther.m_destructor) {
-		}
-
-
-		Instance::Instance(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-			const Function& pDctor, const Function& pConstConverter)
-			: m_qualifier(pQualifier)
-			, m_typeId(pTypeId)
-			, m_anyObject(pAnyObj)
-			, m_toConst(pConstConverter)
-			, m_destructor(&g_instanceCount, [=](void* ptr) 
-			{
-				pDctor(pAnyObj, pQualifier);
-				(*static_cast<std::size_t*>(ptr))--;
-			})
-		{
-			g_instanceCount++;
-		}
-
-
 		const bool Instance::isEmpty() const {
 			return (!m_anyObject.has_value());
 		}
@@ -56,16 +25,39 @@ namespace rtl {
 		}
 
 
-		const bool Instance::makeConst() const
+		void Instance::makeConst(const bool& pCastAway) {
+			m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
+		}
+
+
+		Instance::Instance()
+			: m_qualifier(TypeQ::None)
+			, m_typeId(detail::TypeId<>::None)
+			, m_constTypeId(detail::TypeId<>::None) {
+		}
+
+
+		Instance::Instance(const Instance& pOther)
+			: m_qualifier(pOther.m_qualifier)
+			, m_typeId(pOther.m_typeId)
+			, m_constTypeId(pOther.m_constTypeId)
+			, m_anyObject(pOther.m_anyObject)
+			, m_destructor(pOther.m_destructor) {
+		}
+
+
+		Instance::Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
+			: m_qualifier(TypeQ::Mute)
+			, m_typeId(pStatus.getTypeId())
+			, m_constTypeId(pStatus.getTypeId())
+			, m_anyObject(pRetObj)
+			, m_destructor(&g_instanceCount, [=](void* ptr)
+			{
+				pDctor(pRetObj);
+				(*static_cast<std::size_t*>(ptr))--;
+			})
 		{
-			const RStatus& ret = m_toConst(m_anyObject);
-			if (ret.didCallSucceed()) {
-				m_qualifier = TypeQ::Const;
-				m_typeId = ret.getTypeId();
-				m_anyObject = ret.get();
-				return true;
-			}
-			return false;
+			g_instanceCount++;
 		}
 	}
 }

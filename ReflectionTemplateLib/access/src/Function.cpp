@@ -40,20 +40,6 @@ namespace rtl {
 		}
 
 
-		void Function::addImplicitId(const detail::FunctorId& pFunctorId) const
-		{
-			m_functorIds.push_back(pFunctorId);
-		}
-
-		
-		void Function::removeImplicitIds() const
-		{
-			if (m_functorIds.size() > 1) {
-				m_functorIds.erase(m_functorIds.begin() + 1, m_functorIds.end());
-			}
-		}
-
-
 		const bool Function::hasSignatureId(const std::size_t& pSignatureId) const
 		{
 			const auto& itr = std::find_if(m_functorIds.begin(), m_functorIds.end(),

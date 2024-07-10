@@ -41,12 +41,13 @@ namespace rtl
 		inline const detail::FunctorId SetupFunction<_derivedType>::pushBack(_returnType(*pFunctor)(_signature...),
 										     enable_if_non_void<_returnType> *_)
 		{
+			const auto& typeId = TypeId<_returnType>::get();
+			const auto& constTypeId = TypeId<const _returnType>::get();
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
-				const auto& typeId = TypeId<_returnType>::get();
 				const _returnType& retObj = (*pFunctor)(params...);
 				const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-				return access::RStatus(true, std::make_any<_returnType>(retObj), typeId, qualifier);
+				return access::RStatus(true, std::make_any<_returnType>(retObj), typeId, constTypeId, qualifier);
 			};
 
 			auto& functors = _derivedType::getFunctors();

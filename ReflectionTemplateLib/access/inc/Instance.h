@@ -2,6 +2,7 @@
 
 #include <any>
 #include <memory>
+#include <unordered_map>
 
 #include "TypeId.h"
 #include "Constants.h"
@@ -12,19 +13,21 @@ namespace rtl {
 	namespace access
 	{
 		class Record;
+		class RStatus;
 
 		class Instance
 		{
 			mutable TypeQ m_qualifier;
-			mutable std::size_t m_typeId;
-			mutable std::any m_anyObject;
 
-			const Function m_toConst;
+			const std::size_t m_typeId;
+			const std::size_t m_constTypeId;
+
+			const std::any m_anyObject;
 			const std::shared_ptr<void> m_destructor;
 
 			explicit Instance();
-			explicit Instance(const std::any& pAnyObj, const std::size_t pTypeId, const TypeQ pQualifier,
-						   const Function& pDctor, const Function& pConstConverter);
+			explicit Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
+
 		public:
 
 			Instance(const Instance&);
@@ -34,15 +37,9 @@ namespace rtl {
 			GETTER(TypeQ, Qualifier, m_qualifier);
 
 			const bool isEmpty() const;
-
 			const bool isConst() const;
 
-			const bool makeConst() const;
-
-			template<class _type>
-			constexpr const bool isOfType() const {
-				return (detail::TypeId<_type>::get() == m_typeId);
-			}
+			void makeConst(const bool& pCastAway = false);
 
 			friend Record;
 		};

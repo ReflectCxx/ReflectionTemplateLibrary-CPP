@@ -13,6 +13,10 @@ public:
     Person();
     Person(const std::string& pName);
 
+    Person(Person& pOther);
+    
+    Person(const Person& pOther);
+
     void updateAddress();
 
     void updateAddress() const;

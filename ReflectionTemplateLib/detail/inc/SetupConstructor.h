@@ -18,10 +18,13 @@ namespace rtl {
 			static const detail::FunctorId pushBackCtor();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackDCtor();
+			static const detail::FunctorId pushBackCopyCtor();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackConstConverter();
+			static const detail::FunctorId pushBackCopyCtorConst();
+
+			template<class _recordType>
+			static const detail::FunctorId pushBackDCtor();
 		};
 	}
 }

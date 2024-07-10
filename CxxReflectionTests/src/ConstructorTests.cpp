@@ -28,14 +28,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			
-			auto [status, instance] = classDate.instance("wrong", "args0", 10);
+			auto [status, instance] = classDate->instance("wrong", "args0", 10);
 
-			ASSERT_FALSE(status.didCallSucceed());
+			ASSERT_FALSE(status);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -48,13 +46,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			auto [status, instance] = classDate.instance();
+			auto [status, instance] = classDate->instance();
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
@@ -68,14 +65,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
 			const string& dateStr = date::DATE_STR;
-			auto [status, instance] = classDate.instance(dateStr);
+			auto [status, instance] = classDate->instance(dateStr);
 			
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
@@ -89,13 +85,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			auto [status, instance] = classDate.instance(date::DAY, date::MONTH, date::YEAR);
+			auto [status, instance] = classDate->instance(date::DAY, date::MONTH, date::YEAR);
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
@@ -111,13 +106,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			auto [status, instance] = classDate.instance();
+			auto [status, instance] = classDate->instance();
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
@@ -131,13 +125,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classBook = record.value();
-			auto [status, instance] = classBook.instance(19.0, 87.5);
+			auto [status, instance] = classBook->instance(19.0, 87.5);
 
-			ASSERT_FALSE(status.didCallSucceed());
+			ASSERT_FALSE(status);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -150,13 +143,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classBook = record.value();
-			auto [status, instance] = classBook.instance();
+			auto [status, instance] = classBook->instance();
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
@@ -170,15 +162,14 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
 			double price = book::PRICE;
 			string title = book::TITLE;
-			const Record& classBook = record.value();
-			auto [status, instance] = classBook.instance(price, title);
+			auto [status, instance] = classBook->instance(price, title);
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			
 			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.get());
@@ -194,13 +185,12 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classDate = record.value();
-			auto [status, instance] = classDate.instance();
+			auto [status, instance] = classBook->instance();
 
-			ASSERT_TRUE(status.didCallSucceed());
+			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}

@@ -34,8 +34,8 @@ namespace rtl {
 				 const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
 
 			void addOverload(const Function& pOtherFunc) const;
-			void addImplicitId(const detail::FunctorId& pOtherFunc) const;
-			void removeImplicitIds() const;
+
+			GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
 		protected:
 
@@ -52,7 +52,6 @@ namespace rtl {
 			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
-			GETTER(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 			GETTER(FunctorType, FunctorType, m_functorIds[0].getFunctorType())
 
 			template<class _arg0, class ..._args>

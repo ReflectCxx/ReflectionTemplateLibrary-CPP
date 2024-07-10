@@ -20,11 +20,11 @@ Book::Book()
 }
 
 Book::Book(const Book& pOther)
-	: m_price(pOther.m_price)
-	, m_title(pOther.m_title)
+	: m_price(pOther.m_price * 2.0)
+	, m_title(pOther.m_title + ".__const_Book&")
 	, m_date(pOther.m_date)
-	, m_author(pOther.m_author)
-	, m_description(pOther.m_description) {
+	, m_author(pOther.m_author + ".__const_Book&")
+	, m_description(pOther.m_description + ".__const_Book&") {
 	m_instanceCount++;
 }
 

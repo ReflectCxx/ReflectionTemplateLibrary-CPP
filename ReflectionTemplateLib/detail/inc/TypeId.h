@@ -13,6 +13,8 @@ namespace rtl {
 		template<class _type>
 		struct TypeId<_type>
 		{
+			using HEAD = _type;
+
 			static constexpr const std::size_t None = 0;
 
 			static const std::size_t get() {

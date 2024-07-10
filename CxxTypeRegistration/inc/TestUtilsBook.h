@@ -36,6 +36,6 @@ namespace test_utils
 		template<class ..._ctorArgs>
 		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
 
-		static const bool test_dynamic_alloc_instance_copy_ctor_const_ref(const std::any& pInstance);
+		static const bool test_unique_copy_ctor_const_ref(const std::any& pInstance);
 	};
 }

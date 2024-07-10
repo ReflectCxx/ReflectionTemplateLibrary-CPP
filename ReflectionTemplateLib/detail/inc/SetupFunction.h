@@ -17,11 +17,11 @@ namespace rtl {
 
 			template<class _returnType, class ..._signature>
 			static const detail::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
-								enable_if_void<_returnType> *_ = nullptr);
+								enable_if_void<_returnType> *_= nullptr);
 
 			template<class _returnType, class ..._signature>
 			static const detail::FunctorId pushBack(_returnType(*pFunctor)(_signature...),
-								enable_if_non_void<_returnType> *_ = nullptr);
+								enable_if_non_void<_returnType> *_= nullptr);
 		};
 	}
 }
