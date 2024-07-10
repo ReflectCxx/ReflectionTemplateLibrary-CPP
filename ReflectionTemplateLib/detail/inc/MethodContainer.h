@@ -22,7 +22,7 @@ namespace rtl {
 		class MethodContainer<TypeQ::Mute, _signature...> : SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
 								   CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
 		{
-			using MethodLambda = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(const access::Instance&, _signature...) >;
 
 			static const std::size_t m_containerId;
 			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
@@ -47,7 +47,7 @@ namespace rtl {
 		class MethodContainer<TypeQ::Const, _signature...> : SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
 								     CallReflector<MethodContainer<TypeQ::Const, _signature...>>
 		{
-			using MethodLambda = std::function < access::RStatus(const access::UniqueAny&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(const access::Instance&, _signature...) >;
 
 			static const std::size_t m_containerId;
 			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;

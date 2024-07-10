@@ -10,17 +10,21 @@ namespace rtl {
 	namespace access
 	{
 		template<class ..._ctorArgs>
-		inline RStatus Record::instance(_ctorArgs ...params) const
+		inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs ...params) const
 		{
-			const auto& ctorName = (m_recordName + CTOR_SUFFIX);
-			const auto& itr = m_methods.find(ctorName);
+			const std::string& ctor = (m_recordName + Member::CTOR);
+			const auto& itr = m_methods.find(ctor);
 			if (itr != m_methods.end()) {
-				return itr->second.invokeCtor(params...);
+				const RStatus& status = itr->second.invokeCtor(params...);
+				if (status) {
+					const std::string& dctor = (m_recordName + Member::DCTOR);
+					return std::make_pair(status, Instance(status.getReturn(), status, *getMethod(dctor)));
+				}
 			}
 			else {
 				assert(false && "constructor with the given args, not found.");
 			}
-			return RStatus(false);
+			return std::make_pair(RStatus(false), Instance());
 		}
 	}
 }

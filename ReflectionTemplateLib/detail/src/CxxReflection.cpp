@@ -19,20 +19,6 @@ namespace rtl {
 		}
 
 
-		void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
-		{
-			const auto& fname = pFunction.getFunctionName();
-			const auto& itr = pMethodMap.find(fname);
-			if (itr == pMethodMap.end()) {
-				pMethodMap.emplace(fname, access::Method(pFunction));
-			}
-			else {
-				const auto& function = itr->second;
-				function.addOverload(pFunction);
-			}
-		}
-
-
 		void CxxReflection::addRecord(RecordMap& pRecordMap, const access::Function& pFunction)
 		{
 			const auto& recordName = pFunction.getRecordName();
@@ -53,6 +39,32 @@ namespace rtl {
 			const auto& itr = pFunctionMap.find(fname);
 			if (itr == pFunctionMap.end()) {
 				pFunctionMap.emplace(fname, pFunction);
+			}
+			else {
+				const auto& function = itr->second;
+				function.addOverload(pFunction);
+			}
+		}
+
+
+		void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
+		{
+			const auto& fname = pFunction.getFunctionName();
+			const auto& itr = pMethodMap.find(fname);
+			if (itr == pMethodMap.end())
+			{
+				if (pFunction.getFunctorType() == FunctorType::Ctor ||
+					pFunction.getFunctorType() == FunctorType::CopyCtor ||
+					pFunction.getFunctorType() == FunctorType::CopyCtorConst)
+				{
+					auto& functorIds = pFunction.getFunctorIds();
+					if (functorIds.size() > 1) {
+						access::Method method = access::Method(pFunction, functorIds[1]);
+						pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
+						functorIds.pop_back();
+					}
+				}
+				pMethodMap.emplace(fname, access::Method(pFunction));
 			}
 			else {
 				const auto& function = itr->second;

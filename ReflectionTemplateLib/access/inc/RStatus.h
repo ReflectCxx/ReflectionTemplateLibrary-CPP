@@ -1,29 +1,41 @@
 #pragma once
 
-#include "UniqueAny.h"
+#include <any>
+#include "Constants.h"
+#include "TypeId.h"
 
-namespace rtl 
+namespace rtl
 {
-	namespace access 
+	namespace access
 	{
 		class RStatus
 		{
 			const bool m_callStatus;
-			mutable UniqueAny m_returnObject;
+			const std::any m_returnObj;
+			const std::size_t m_typeId;
+			const std::size_t m_typeIdConst;
+			const TypeQ m_typeQualifier;
 
 		public:
 
-			RStatus() = delete;
-
 			RStatus(const bool pCallStatus);
 
-			RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				const std::function< void(const std::any&, const TypeQ&) >& pDctor = std::function< void(const std::any&, const TypeQ&) >(),
-				const std::function< void(std::any&, std::size_t&) >& pToConst = std::function< void(std::any&, std::size_t&) >());
+			RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId,
+				const std::size_t pConstTypeId, const TypeQ pQualifier);
 
-			UniqueAny releaseReturn() const;
+			GETTER(std::any, Return, m_returnObj)
+			GETTER(std::size_t, TypeId, m_typeId)
+			GETTER(TypeQ, Qualifier, m_typeQualifier)
 
-			const bool didCallSucceed() const;
+			operator bool() const {
+				return m_callStatus;
+			}
+
+			template<class _type>
+			constexpr const bool isOfType() const {
+				return (m_typeQualifier == TypeQ::Mute && detail::TypeId<_type>::get() == m_typeId) ||
+				       (m_typeQualifier == TypeQ::Const && detail::TypeId<_type>::get() == m_typeIdConst);
+			}
 		};
 	}
 }

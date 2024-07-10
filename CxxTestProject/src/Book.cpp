@@ -19,6 +19,15 @@ Book::Book()
 	m_instanceCount++;
 }
 
+Book::Book(const Book& pOther)
+	: m_price(pOther.m_price * 2.0)
+	, m_title(pOther.m_title + ".__const_Book&")
+	, m_date(pOther.m_date)
+	, m_author(pOther.m_author + ".__const_Book&")
+	, m_description(pOther.m_description + ".__const_Book&") {
+	m_instanceCount++;
+}
+
 
 Book::Book(double pPrice, string pTitle)
 	: m_price(pPrice)
@@ -32,6 +41,12 @@ Book::Book(double pPrice, string pTitle)
 
 void Book::setAuthor(string pAuthor) {
 	m_author = pAuthor;
+}
+
+
+void Book::setDescription(std::string pDesc)
+{
+	m_description = pDesc;
 }
 
 

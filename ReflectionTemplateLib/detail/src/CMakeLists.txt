@@ -6,7 +6,6 @@ set(LOCAL_SOURCES
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/CallReflector.h"
-	"${PROJECT_SOURCE_DIR}/detail/inc/ConstructorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
@@ -20,6 +19,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.hpp"
 )
 
 

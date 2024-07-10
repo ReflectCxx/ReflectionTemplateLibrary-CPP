@@ -53,9 +53,12 @@ CxxMirror& MyReflection::instance()
 		//class 'Book', no namespace. constructor overloads.
 		Reflect().record<Book>(book::class_).constructor().build(),
 		Reflect().record<Book>(book::class_).constructor<double, string>().build(),
+		//copy constructor with const ref
+		Reflect().record<Book>(book::class_).constructor<const Book&>().build(),
 
 		//unique methods.
 		Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
+		Reflect().record<Book>(book::class_).method(book::str_setDecription).build(&Book::setDescription),
 		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
 
 		//method overloads.
@@ -64,7 +67,12 @@ CxxMirror& MyReflection::instance()
 		Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
 		//Class 'Person', constructor.
+		Reflect().record<Person>(person::class_).constructor().build(),
 		Reflect().record<Person>(person::class_).constructor<string>().build(),
+
+		//Copy constructor overload based on const argument
+		Reflect().record<Person>(person::class_).constructor<Person&>().build(),
+		Reflect().record<Person>(person::class_).constructor<const Person&>().build(),
 
 		//const method. must use 'methodConst()'. Unique method, so no need to specify signature as template params.
 		Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),

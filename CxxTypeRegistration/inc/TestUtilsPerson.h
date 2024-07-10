@@ -40,5 +40,9 @@ namespace test_utils
 
 		template<class ..._signature>
 		static const bool test_method_updateAddress_const(const std::any& pInstance);
+
+		static const bool test_copy_constructor_overload_src_const_obj(const std::any& pInstance);
+
+		static const bool test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance);
 	};
 }

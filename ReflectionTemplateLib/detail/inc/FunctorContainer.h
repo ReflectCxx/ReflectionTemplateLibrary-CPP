@@ -22,6 +22,7 @@ namespace rtl {
 
 		template<class ..._signature>
 		class FunctorContainer : SetupFunction<FunctorContainer<_signature...>>,
+					 SetupConstructor<FunctorContainer<_signature...>>,
 					 CallReflector<FunctorContainer<_signature...>>
 		{
 			using FunctionLambda = std::function < access::RStatus(_signature...) >;
@@ -40,8 +41,9 @@ namespace rtl {
 			friend access::Method;
 			friend access::Function;
 			friend ReflectionBuilder;
-			friend SetupFunction<FunctorContainer<_signature...>>;
 			friend CallReflector<FunctorContainer<_signature...>>;
+			friend SetupFunction<FunctorContainer<_signature...>>;
+			friend SetupConstructor<FunctorContainer<_signature...>>;
 		};
 
 

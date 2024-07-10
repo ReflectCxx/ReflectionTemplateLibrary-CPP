@@ -17,12 +17,12 @@ namespace rtl {
 
 	namespace detail
 	{
-		using RecordMap = std::unordered_map <std::string, access::Record>;
-		using MethodMap = std::unordered_map <std::string, access::Method>;
-		using FunctionMap = std::unordered_map <std::string, access::Function>;
-
 		class CxxReflection
 		{
+			using RecordMap = std::unordered_map <std::string, access::Record>;
+			using MethodMap = std::unordered_map <std::string, access::Method>;
+			using FunctionMap = std::unordered_map <std::string, access::Function>;
+
 			std::unordered_map<std::string, RecordMap> m_nsRecordsMap;
 			std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;
 

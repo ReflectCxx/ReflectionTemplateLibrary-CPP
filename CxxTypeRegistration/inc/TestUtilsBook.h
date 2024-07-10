@@ -13,7 +13,6 @@ namespace test_utils
 	struct book
 	{
 		static constexpr const double PRICE = 99.923;
-		static constexpr const unsigned int PAGES = 1050;
 		static constexpr const char* TITLE = "Somehow, I manage.";
 		static constexpr const char* AUTHOR = "Micheal G. Scott";
 		static constexpr const char* DESCRIPTION = "World's greatest boss Michael G. Scott, Regional Manager, shares his wisdom with you.";
@@ -36,5 +35,7 @@ namespace test_utils
 
 		template<class ..._ctorArgs>
 		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
+
+		static const bool test_unique_copy_ctor_const_ref(const std::any& pInstance);
 	};
 }

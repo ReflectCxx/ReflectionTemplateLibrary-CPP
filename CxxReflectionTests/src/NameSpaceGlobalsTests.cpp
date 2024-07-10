@@ -16,15 +16,15 @@ namespace rtl_tests
 		CxxMirror& cxxMirror = MyReflection::instance();
 		{
 			optional<Function> badFunc = cxxMirror.getFunction("wrong_namespace", "wrong_function");
-			EXPECT_FALSE(badFunc.has_value());
+			EXPECT_FALSE(badFunc);
 		}
 		{
 			optional<Function> badFunc = cxxMirror.getFunction(str_complex, "wrong_function");
-			EXPECT_FALSE(badFunc.has_value());
+			EXPECT_FALSE(badFunc);
 		}
 		{
 			optional<Function> badFunc = cxxMirror.getFunction("wrong_getComplexNumAsString");
-			EXPECT_FALSE(badFunc.has_value());
+			EXPECT_FALSE(badFunc);
 		}
 	}
 
@@ -33,18 +33,16 @@ namespace rtl_tests
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Function> rfunc = cxxMirror.getFunction(str_complex, str_setReal);
-		ASSERT_TRUE(rfunc.has_value());
-		optional<Function> ifunc = cxxMirror.getFunction(str_complex, str_setImaginary);
-		ASSERT_TRUE(ifunc.has_value());
+		optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+		ASSERT_TRUE(setReal);
 
-		const Function& setReal = rfunc.value();
-		const Function& setImaginary = ifunc.value();
+		optional<Function> setImaginary = cxxMirror.getFunction(str_complex, str_setImaginary);
+		ASSERT_TRUE(setImaginary);
 
-		EXPECT_TRUE(setReal.getNamespace() == str_complex);
-		EXPECT_TRUE(setReal.getFunctionName() == str_setReal);
-		EXPECT_TRUE(setImaginary.getNamespace() == str_complex);
-		EXPECT_TRUE(setImaginary.getFunctionName() == str_setImaginary);
+		EXPECT_TRUE(setReal->getNamespace() == str_complex);
+		EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
+		EXPECT_TRUE(setImaginary->getNamespace() == str_complex);
+		EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
 	}
 
 
@@ -52,34 +50,30 @@ namespace rtl_tests
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Function> magFunc = cxxMirror.getFunction(str_complex, str_getMagnitude);
-		ASSERT_TRUE(magFunc.has_value());
+		optional<Function> getMagnitude = cxxMirror.getFunction(str_complex, str_getMagnitude);
+		ASSERT_TRUE(getMagnitude);
 
-		optional<Function> rfunc = cxxMirror.getFunction(str_complex, str_setReal);
-		ASSERT_TRUE(rfunc.has_value());
+		optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+		ASSERT_TRUE(setReal);
 
-		optional<Function> ifunc = cxxMirror.getFunction(str_complex, str_setImaginary);
-		ASSERT_TRUE(ifunc.has_value());
+		optional<Function> setImaginary = cxxMirror.getFunction(str_complex, str_setImaginary);
+		ASSERT_TRUE(setImaginary);
 
-		const Function& setReal = rfunc.value();
-		const Function& setImaginary = ifunc.value();
-		const Function& getMagnitude = magFunc.value();
+		EXPECT_TRUE(setReal->hasSignature<double>());
+		(*setReal)(g_real);
 
-		EXPECT_TRUE(setReal.hasSignature<double>());
-		setReal(g_real);
+		EXPECT_TRUE(setImaginary->hasSignature<double>());
+		(*setImaginary)(g_imaginary);
 
-		EXPECT_TRUE(setImaginary.hasSignature<double>());
-		setImaginary(g_imaginary);
+		EXPECT_TRUE(getMagnitude->hasSignature<void>());
 
-		EXPECT_TRUE(getMagnitude.hasSignature<void>());
+		RStatus status = (*getMagnitude)();
 
-		RStatus callRet = getMagnitude();
-		ASSERT_TRUE(callRet.didCallSucceed());
+		ASSERT_TRUE(status);
+		ASSERT_TRUE(status.getReturn().has_value());
+		ASSERT_TRUE(status.isOfType<double>());
 
-		UniqueAny retObj = callRet.releaseReturn();
-		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<double>());
-
-		double retVal = std::any_cast<double>(retObj.get());
+		double retVal = std::any_cast<double>(status.getReturn());
 		double magnitude = abs(complex(g_real, g_imaginary));
 		EXPECT_DOUBLE_EQ(magnitude, retVal);
 	}
@@ -89,19 +83,15 @@ namespace rtl_tests
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Function> rfunc = cxxMirror.getFunction(str_complex, str_setReal);
-		ASSERT_TRUE(rfunc.has_value());
+		optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+		ASSERT_TRUE(setReal);
+		EXPECT_TRUE(setReal->hasSignature<double>());
 
-		const Function& setReal = rfunc.value();
-		EXPECT_TRUE(setReal.hasSignature<double>());
-		EXPECT_FALSE(setReal.hasSignature<float>());
+		EXPECT_FALSE(setReal->hasSignature<float>());
+		RStatus status = (*setReal)(float(g_real));
 
-		RStatus callRet = setReal(float(g_real));
-		ASSERT_FALSE(callRet.didCallSucceed());
-
-		//No op.
-		UniqueAny retObj = callRet.releaseReturn();
-		ASSERT_FALSE(retObj.get().has_value());
+		ASSERT_FALSE(status);
+		ASSERT_FALSE(status.getReturn().has_value());
 	}
 
 
@@ -109,18 +99,16 @@ namespace rtl_tests
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Function> getFunc = cxxMirror.getFunction(str_getComplexNumAsString);
-		ASSERT_TRUE(getFunc.has_value());
+		optional<Function> getComplexNumAsString = cxxMirror.getFunction(str_getComplexNumAsString);
+		ASSERT_TRUE(getComplexNumAsString);
 
-		const Function& getComplexNumAsString = getFunc.value();
+		RStatus status = (*getComplexNumAsString)();
 
-		RStatus callRet = getComplexNumAsString();
-		ASSERT_TRUE(callRet.didCallSucceed());
+		ASSERT_TRUE(status);
+		ASSERT_TRUE(status.getReturn().has_value()); 
+		ASSERT_TRUE(status.isOfType<string>());
 
-		UniqueAny retObj = callRet.releaseReturn();
-		ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
-
-		string retVal = std::any_cast<string>(retObj.get());
+		string retVal = std::any_cast<string>(status.getReturn());
 		string comlexNumStr = to_string(g_real) + "i" + to_string(g_imaginary);
 		EXPECT_TRUE(comlexNumStr == retVal);
 	}
@@ -130,37 +118,33 @@ namespace rtl_tests
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
-		optional<Function> getFunc = cxxMirror.getFunction(str_reverseString);
-		ASSERT_TRUE(getFunc.has_value());
-		const Function& reverseString = getFunc.value();
+		optional<Function> reverseString = cxxMirror.getFunction(str_reverseString);
+		ASSERT_TRUE(reverseString);
 		{
-			RStatus callRet = reverseString(string(STRA));
-			ASSERT_TRUE(callRet.didCallSucceed());
+			RStatus status = (*reverseString)(string(STRA));
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.getReturn().has_value());
+			ASSERT_TRUE(status.isOfType<string>());
 
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
-
-			string retVal = std::any_cast<string>(retObj.get());
+			string retVal = std::any_cast<string>(status.getReturn());
 			EXPECT_TRUE(retVal == STRA_REVERSE);
 		}
 		{
-			RStatus callRet = reverseString(string(STRB));
-			ASSERT_TRUE(callRet.didCallSucceed());
+			RStatus status = (*reverseString)(string(STRB));
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.getReturn().has_value());
+			ASSERT_TRUE(status.isOfType<string>());
 
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
-
-			string retVal = std::any_cast<string>(retObj.get());
+			string retVal = std::any_cast<string>(status.getReturn());
 			EXPECT_TRUE(retVal == STRB_REVERSE);
 		}
 		{
-			RStatus callRet = reverseString();
-			ASSERT_TRUE(callRet.didCallSucceed());
+			RStatus status = (*reverseString)();
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.getReturn().has_value());
+			ASSERT_TRUE(status.isOfType<string>());
 
-			UniqueAny retObj = callRet.releaseReturn();
-			ASSERT_TRUE(retObj.get().has_value() && retObj.isOfType<string>());
-
-			string retVal = std::any_cast<string>(retObj.get());
+			string retVal = std::any_cast<string>(status.getReturn());
 			EXPECT_TRUE(retVal == REV_STR_VOID_RET);
 		}
 	}

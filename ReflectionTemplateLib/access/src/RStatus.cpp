@@ -4,26 +4,22 @@
 namespace rtl {
 
 	namespace access {
-
-		RStatus::RStatus(const bool pCallStatus) 
-			: m_callStatus(pCallStatus) {
-		}
-
-		RStatus::RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier,
-				 const std::function< void(const std::any&, const TypeQ&) >& pDctor,
-				 const std::function< void(std::any&, std::size_t&) >& pToConst)
+				
+		RStatus::RStatus(const bool pCallStatus)
 			: m_callStatus(pCallStatus)
-			, m_returnObject(pRetObj, pTypeId, pQualifier, pDctor, pToConst) {
+			, m_typeId(detail::TypeId<>::None)
+			, m_typeIdConst(detail::TypeId<>::None)
+			, m_typeQualifier(TypeQ::None) {
 		}
 
-		const bool RStatus::didCallSucceed() const
-		{
-			return m_callStatus;
-		}
-
-		UniqueAny RStatus::releaseReturn() const
-		{
-			return std::move(m_returnObject);
+		
+		RStatus::RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId,
+				   const std::size_t pConstTypeId, const TypeQ pQualifier)
+			: m_callStatus(pCallStatus)
+			, m_returnObj(pRetObj)
+			, m_typeId(pTypeId)
+			, m_typeIdConst(pConstTypeId)
+			, m_typeQualifier(pQualifier) {
 		}
 	}
 }

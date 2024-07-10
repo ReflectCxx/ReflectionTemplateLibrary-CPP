@@ -9,7 +9,7 @@ using namespace test_utils;
 
 namespace rtl_tests 
 {
-	TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_non_const_target)
+	TEST(ConstMethodOverload, const_method_no_overload_call_on_non_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
@@ -19,30 +19,26 @@ namespace rtl_tests
 			ASSERT_TRUE(recOpt.has_value());
 
 			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateLastName = classPerson.getMethod(person::str_updateLastName);
+			ASSERT_TRUE(updateLastName);
 
-			const RStatus& retIns = classPerson.instance(string(person::FIRST_NAME));
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
+			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
-			const Method& updateLastName = methOpt.value();
-			ASSERT_TRUE(updateLastName.hasSignature<string>());
-
-			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj)(lnameStr);
+			const RStatus& rStatus = (*updateLastName)(personObj)(string(person::LAST_NAME));
 			
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstMethodOverloadTest, const_method_no_overload_call_on_const_target)
+	TEST(ConstMethodOverload, const_method_no_overload_call_on_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
@@ -52,105 +48,87 @@ namespace rtl_tests
 			ASSERT_TRUE(recOpt.has_value());
 
 			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateLastName);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateLastName = classPerson.getMethod(person::str_updateLastName);
+			ASSERT_TRUE(updateLastName);
 
-			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
-			ASSERT_FALSE(personObj.isConst());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 
 			personObj.makeConst();
 			ASSERT_TRUE(personObj.isConst());
+			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
-			const Method& updateLastName = methOpt.value();
-			ASSERT_TRUE(updateLastName.hasSignature<string>());
+			const RStatus& rStatus = (*updateLastName)(personObj)(string(person::LAST_NAME));
 
-			string lnameStr = person::LAST_NAME;
-			const RStatus& callRet = updateLastName(personObj)(lnameStr);
-
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstMethodOverloadTest, const_method_string_call_on_const_target)
+	TEST(ConstMethodOverload, const_method_string_call_on_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> recOpt = cxxMirror.getRecord(person::class_);
-			ASSERT_TRUE(recOpt.has_value());
+			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
 
-			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateAddress);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
+			ASSERT_TRUE(updateAddress);
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson->instance(fnameStr);
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
-			ASSERT_FALSE(personObj.isConst());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 
 			personObj.makeConst();
 			ASSERT_TRUE(personObj.isConst());
+			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const Method& updateAddress = methOpt.value();
-			ASSERT_TRUE(updateAddress.hasSignature<string>());
+			const RStatus& rStatus = (*updateAddress)(personObj)(string(person::ADDRESS));
 
-			string address = person::ADDRESS;
-			const RStatus& callRet = updateAddress(personObj)(address);
-
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstMethodOverloadTest, const_method_string_call_on_non_const_target)
+	TEST(ConstMethodOverload, const_method_string_call_on_non_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> recOpt = cxxMirror.getRecord(person::class_);
-			ASSERT_TRUE(recOpt.has_value());
+			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
 
-			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateAddress);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
+			ASSERT_TRUE(updateAddress);
 
-			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson->instance(string(person::FIRST_NAME));
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
+			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const Method& updateAddress = methOpt.value();
-			ASSERT_TRUE(updateAddress.hasSignature<string>());
+			const RStatus& rStatus = (*updateAddress)(personObj)(string(person::ADDRESS));
 
-			string address = person::ADDRESS;
-			const RStatus& callRet = updateAddress(personObj)(address);
-
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstMethodOverloadTest, const_method_no_args_call_on_const_target)
+	TEST(ConstMethodOverload, const_method_no_args_call_on_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
@@ -160,59 +138,51 @@ namespace rtl_tests
 			ASSERT_TRUE(recOpt.has_value());
 
 			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateAddress);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateAddress = classPerson.getMethod(person::str_updateAddress);
+			ASSERT_TRUE(updateAddress);
 
-			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 
 			personObj.makeConst();
 			ASSERT_TRUE(personObj.isConst());
+			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const Method& updateAddress = methOpt.value();
-			ASSERT_TRUE(updateAddress.hasSignature<string>());
+			const RStatus& rStatus = (*updateAddress)(personObj)();
 
-			const RStatus& callRet = updateAddress(personObj)();
-
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 	}
 
 
-	TEST(ConstMethodOverloadTest, const_method_no_args_call_on_non_const_target)
+	TEST(ConstMethodOverload, const_method_no_args_call_on_non_const_target)
 	{
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> recOpt = cxxMirror.getRecord(person::class_);
-			ASSERT_TRUE(recOpt.has_value());
+			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
 
-			const Record& classPerson = recOpt.value();
-			optional<Method> methOpt = classPerson.getMethod(person::str_updateAddress);
-			ASSERT_TRUE(methOpt.has_value());
+			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
+			ASSERT_TRUE(updateAddress);
 
 			string fnameStr = person::FIRST_NAME;
-			const RStatus& retIns = classPerson.instance(fnameStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, personObj] = classPerson->instance(fnameStr);
 
-			UniqueAny personObj = retIns.releaseReturn();
-			ASSERT_TRUE(personObj.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
+			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const Method& updateAddress = methOpt.value();
-			ASSERT_TRUE(updateAddress.hasSignature<string>());
+			const RStatus& rStatus = (*updateAddress)(personObj)();
 
-			const RStatus& callRet = updateAddress(personObj)();
-
-			ASSERT_TRUE(callRet.didCallSucceed());
+			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());

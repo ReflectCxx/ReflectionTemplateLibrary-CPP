@@ -97,4 +97,20 @@ namespace test_utils
 		book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
 		return (book == *rbook);
 	}
+
+
+	const bool book::test_unique_copy_ctor_const_ref(const std::any& pInstance)
+	{
+		Book* rbook = any_cast<Book*>(pInstance);
+		if (rbook == nullptr) {
+			return false;
+		}
+
+		Book obj(PRICE, TITLE);
+		obj.setAuthor(AUTHOR);
+		obj.setDescription(DESCRIPTION);
+
+		Book copyObj(obj);
+		return (copyObj == *rbook);
+	}
 }

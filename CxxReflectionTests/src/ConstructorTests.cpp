@@ -28,15 +28,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance("wrong", "args0", 10);
-			ASSERT_FALSE(retIns.didCallSucceed());
+			auto [status, instance] = classDate->instance("wrong", "args0", 10);
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_FALSE(instance.get().has_value());
+			ASSERT_FALSE(status);
+			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
 	}
@@ -48,15 +46,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, instance] = classDate->instance();
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -69,16 +65,14 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
 			const string& dateStr = date::DATE_STR;
-			RStatus retIns = classDate.instance(dateStr);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			auto [status, instance] = classDate->instance(dateStr);
+			
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -91,15 +85,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance(date::DAY, date::MONTH, date::YEAR);
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, instance] = classDate->instance(date::DAY, date::MONTH, date::YEAR);
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(instance.get());
 			EXPECT_TRUE(isPassed);
@@ -114,15 +106,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
 
-			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, instance] = classDate->instance();
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -135,16 +125,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classBook = record.value();
+			auto [status, instance] = classBook->instance(19.0, 87.5);
 
-			RStatus retIns = classBook.instance(19.0, 87.5);
-			ASSERT_FALSE(retIns.didCallSucceed());
-
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_FALSE(instance.get().has_value());
+			ASSERT_FALSE(status);
+			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}
@@ -156,15 +143,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classBook = record.value();
-			RStatus retIns = classBook.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, instance] = classBook->instance();
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -177,19 +162,16 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
 			double price = book::PRICE;
 			string title = book::TITLE;
-			const Record& classBook = record.value();
+			auto [status, instance] = classBook->instance(price, title);
 
-			RStatus retIns = classBook.instance(price, title);
-			ASSERT_TRUE(retIns.didCallSucceed());
-
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
-
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
+			
 			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(instance.get());
 			EXPECT_TRUE(isPassed);
 		}
@@ -203,15 +185,13 @@ namespace rtl_tests
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> record = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(record.has_value());
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-			const Record& classDate = record.value();
-			RStatus retIns = classDate.instance();
-			ASSERT_TRUE(retIns.didCallSucceed());
+			auto [status, instance] = classBook->instance();
 
-			UniqueAny instance = retIns.releaseReturn();
-			ASSERT_TRUE(instance.get().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(instance.isEmpty());
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
