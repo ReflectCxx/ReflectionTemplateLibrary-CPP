@@ -4,6 +4,7 @@
 #include "TestUtilsBook.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
@@ -41,7 +42,7 @@ namespace rtl_tests
 
 			RStatus rStatus = (*setAuthor)(bookObj)(book::AUTHOR);
 
-			ASSERT_FALSE(rStatus);
+			ASSERT_TRUE(rStatus == rtl::Error::SignatureMismatch);
 			ASSERT_FALSE(rStatus.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
 		}

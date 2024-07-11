@@ -8,8 +8,42 @@ namespace rtl {
 
 	namespace access
 	{
+		class Method;
 		class Record;
 		class Instance;
+
+		template<FunctorType _type>
+		class MethodInvoker
+		{
+			const Method& m_method;
+			const Instance& m_target;
+			
+			MethodInvoker(const Method& pMethod, const Instance& pTarget);
+
+		public:
+
+			template<class ..._args>
+			RStatus call(_args...) const noexcept;
+
+			friend Method;
+		};
+
+
+		template<>
+		class MethodInvoker<FunctorType::Static>
+		{
+			const Method& m_method;
+
+			MethodInvoker(const Method& pMethod);
+
+		public:
+
+			template<class ..._args>
+			RStatus call(_args...) const noexcept;
+
+			friend Method;
+		};
+
 
 		class Method : public Function
 		{
@@ -26,10 +60,16 @@ namespace rtl {
 			template<class ..._args>
 			RStatus invokeConst(const Instance& pTarget, _args...params) const;
 
+			template<class ..._args>
+			RStatus invokeStatic(_args...params) const;
+
 		public:
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
+
+			const MethodInvoker<FunctorType::Static> on() const;
+			const MethodInvoker<FunctorType::Method> on(const Instance& pTarget) const;
 
 			constexpr auto operator()() const
 			{
@@ -47,7 +87,7 @@ namespace rtl {
 					case TypeQ::Mute: return invoke(pTarget, params...);
 					case TypeQ::Const: return invokeConst(pTarget, params...);
 					}
-					return RStatus(false);
+					return RStatus(Error::EmptyInstance);
 				};
 			}
 
@@ -56,6 +96,12 @@ namespace rtl {
 
 			template<class ..._args>
 			RStatus operator()(_args...) const noexcept = delete;
+
+			template<class ..._args>
+			RStatus call(_args...) const noexcept = delete;
+
+			template<FunctorType _type>
+			friend class MethodInvoker;
 		};
 	}
 }

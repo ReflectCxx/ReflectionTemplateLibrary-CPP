@@ -10,17 +10,18 @@ namespace rtl
 	{
 		class RStatus
 		{
-			const bool m_callStatus;
+			const Error m_callStatus;
+			const TypeQ m_typeQualifier;
+
 			const std::any m_returnObj;
 			const std::size_t m_typeId;
 			const std::size_t m_typeIdConst;
-			const TypeQ m_typeQualifier;
 
 		public:
 
-			RStatus(const bool pCallStatus);
+			RStatus(const Error pCallStatus);
 
-			RStatus(const bool pCallStatus, const std::any& pRetObj, const std::size_t pTypeId,
+			RStatus(const std::any& pRetObj, const std::size_t pTypeId,
 				const std::size_t pConstTypeId, const TypeQ pQualifier);
 
 			GETTER(std::any, Return, m_returnObj)
@@ -28,7 +29,11 @@ namespace rtl
 			GETTER(TypeQ, Qualifier, m_typeQualifier)
 
 			operator bool() const {
-				return m_callStatus;
+				return (m_callStatus == Error::None);
+			}
+
+			const bool operator==(const Error pError) const {
+				return (m_callStatus == pError);
 			}
 
 			template<class _type>

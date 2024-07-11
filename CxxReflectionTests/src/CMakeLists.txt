@@ -10,6 +10,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/ConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/CopyConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/NameSpaceGlobalsTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/ReflectedCallStatusErrTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StaticMethodTests.cpp"
 )
 

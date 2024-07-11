@@ -35,3 +35,12 @@ public:
 
 	static unsigned getInstanceCount();
 };
+
+
+class Library
+{
+public:
+	//for testing 'no constructor found' only.
+	Library() { }
+	static void addBook(Book pBook) { }
+};

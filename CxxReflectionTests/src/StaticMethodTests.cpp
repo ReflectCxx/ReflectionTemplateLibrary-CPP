@@ -42,7 +42,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		ASSERT_TRUE(getProfile->hasSignature<void>());
 
-		const RStatus& status = (*getProfile)()();
+		const RStatus& status = getProfile->on().call();
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());
 		ASSERT_TRUE(status.isOfType<string>());
@@ -72,7 +72,9 @@ namespace rtl_tests
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 		}
 		{
-			const RStatus& status = (*getProfile)()(false);
+			//different syntax of calling.
+			const RStatus& status = getProfile->on().call(false);
+
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());
 			ASSERT_TRUE(status.isOfType<string>());
@@ -98,7 +100,7 @@ namespace rtl_tests
 		const bool& signValid = getProfile.hasSignature<string, size_t>();
 		ASSERT_TRUE(signValid);
 
-		const RStatus& status = getProfile()(string(person::OCCUPATION), person::AGE);
+		const RStatus& status = getProfile.on().call(string(person::OCCUPATION), person::AGE);
 
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());

@@ -62,6 +62,9 @@ namespace rtl {
 			template<class ..._args>
 			RStatus operator()(_args...params) const noexcept;
 
+			template<class ..._args>
+			RStatus call(_args...params) const noexcept;
+
 			friend Instance;
 			friend detail::CxxReflection;
 			friend detail::ReflectionBuilder;

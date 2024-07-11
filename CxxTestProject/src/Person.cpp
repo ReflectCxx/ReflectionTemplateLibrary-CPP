@@ -1,11 +1,15 @@
-
+#include <iostream>
+#include <cassert>
 #include "Person.h"
 
-static unsigned g_instanceCount = 0;
+static long g_instanceCount = 0;
 
 Person::~Person()
 {
 	g_instanceCount--;
+	if (g_instanceCount < 0) {
+		assert(false && "Memory leak");
+	}
 }
 
 Person::Person()
@@ -29,6 +33,7 @@ Person::Person(Person& pOther)
 	, m_lastName(pOther.m_lastName + ".__Person::Person(Person&)")
 	, m_firstName(pOther.m_firstName + ".__Person::Person(Person&)")
 {
+	g_instanceCount++;
 }
 
 Person::Person(const Person& pOther)
@@ -36,6 +41,7 @@ Person::Person(const Person& pOther)
 	, m_lastName(pOther.m_lastName + ".__Person::Person(const Person&)")
 	, m_firstName(pOther.m_firstName + ".__Person::Person(const Person&)")
 {
+	g_instanceCount++;
 }
 
 unsigned Person::getInstanceCount()

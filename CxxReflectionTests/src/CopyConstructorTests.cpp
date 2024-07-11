@@ -5,11 +5,36 @@
 #include "TestUtilsPerson.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
 namespace rtl_tests
 {
+
+	TEST(CopyConstructor, call_copy_ctor_of_PERSON_with_BOOK_instance)
+	{
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		{
+			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
+
+			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			//auto [status, bookObj] = classBook->instance();
+			//ASSERT_TRUE(status);
+			//ASSERT_FALSE(bookObj.isEmpty());
+
+//			auto [retStatus, badObj] = classPerson->clone(bookObj);
+
+			//ASSERT_TRUE(retStatus == Error::SignatureMismatch);
+			ASSERT_TRUE(false);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+	}
+
+
 	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_non_const)
 	{
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -37,11 +62,11 @@ namespace rtl_tests
 			(*setAuthor)(srcObj)(author);
 			(*setDecription)(srcObj)(description);
 
-			optional<Instance> copyObj = classBook->clone(srcObj);
-			ASSERT_TRUE(copyObj.has_value());
-			ASSERT_FALSE(copyObj->isEmpty());
+			auto [ret, copyObj] = classBook->clone(srcObj);
+			ASSERT_TRUE(ret);
+			ASSERT_FALSE(copyObj.isEmpty());
 
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj->get());
+			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -78,11 +103,11 @@ namespace rtl_tests
 			//make this instance const.
 			srcObj.makeConst();
 
-			optional<Instance> copyObj = classBook->clone(srcObj);
-			ASSERT_TRUE(copyObj);
-			ASSERT_FALSE(copyObj->isEmpty());
+			auto [ret, copyObj] = classBook->clone(srcObj);
+			ASSERT_TRUE(ret);
+			ASSERT_FALSE(copyObj.isEmpty());
 
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj->get());
+			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -98,18 +123,17 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-
 			auto [status, srcObj] = classPerson->instance();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
 			srcObj.makeConst();
 
-			optional<Instance> copyObj = classPerson->clone(srcObj);
-			ASSERT_TRUE(copyObj.has_value());
-			ASSERT_FALSE(copyObj->isEmpty());
+			auto [ret, copyObj] = classPerson->clone(srcObj);
+			ASSERT_TRUE(ret);
+			ASSERT_FALSE(copyObj.isEmpty());
 
-			const bool isPassed = person::test_copy_constructor_overload_src_const_obj(copyObj->get());
+			const bool isPassed = person::test_copy_constructor_overload_src_const_obj(copyObj.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -129,11 +153,11 @@ namespace rtl_tests
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
-			optional<Instance> copyObj = classPerson->clone(srcObj);
-			ASSERT_TRUE(copyObj.has_value());
-			ASSERT_FALSE(copyObj->isEmpty());
+			auto [ret, copyObj] = classPerson->clone(srcObj);
+			ASSERT_TRUE(ret);
+			ASSERT_FALSE(copyObj.isEmpty());
 
-			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(copyObj->get());
+			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(copyObj.get());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

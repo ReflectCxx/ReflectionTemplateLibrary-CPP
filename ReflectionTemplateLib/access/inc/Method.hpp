@@ -1,10 +1,71 @@
 #pragma once
 #include "Method.h"
 
-namespace rtl {
+namespace rtl 
+{
+	namespace access 
+	{
+		template<FunctorType _type>
+		inline MethodInvoker<_type>::MethodInvoker(const Method& pMethod, const Instance& pTarget) 
+			:m_method(pMethod)
+			, m_target(pTarget) {
+		}
+
+
+		template<FunctorType _type>
+		template<class ..._args>
+		inline RStatus MethodInvoker<_type>::call(_args ...params) const noexcept
+		{
+			switch (m_target.getQualifier())
+			{
+			case TypeQ::Mute: return m_method.invoke(m_target, params...);
+			case TypeQ::Const: return m_method.invokeConst(m_target, params...);
+			}
+			return RStatus(Error::EmptyInstance);
+		}
+
+
+		inline MethodInvoker<FunctorType::Static>::MethodInvoker(const Method& pMethod)
+			:m_method(pMethod) {
+		}
+
+
+		template<class ..._args>
+		inline RStatus MethodInvoker<FunctorType::Static>::call(_args ...params) const noexcept
+		{
+			return m_method.invokeStatic(params...);
+		}
+	}
+
 
 	namespace access
 	{
+		inline const MethodInvoker<FunctorType::Static> Method::on() const
+		{
+			return MethodInvoker<FunctorType::Static>(*this);
+		}
+
+
+		inline const MethodInvoker<FunctorType::Method> Method::on(const Instance& pTarget) const
+		{
+			return MethodInvoker<FunctorType::Method>(*this, pTarget);
+		}
+
+
+		template<class ..._args>
+		inline RStatus Method::invokeCtor(_args ...params) const
+		{
+			return Function::operator()(params...);
+		}
+
+
+		template<class ..._args>
+		inline RStatus Method::invokeStatic(_args ...params) const
+		{
+			return Function::operator()(params...);
+		}
+
+
 		template<>
 		inline const bool Method::hasSignature<void>() const
 		{
@@ -32,13 +93,6 @@ namespace rtl {
 
 
 		template<class ..._args>
-		inline RStatus Method::invokeCtor(_args ...params) const
-		{
-			return Function::operator()(params...);
-		}
-
-
-		template<class ..._args>
 		inline RStatus Method::invokeConst(const Instance& pTarget, _args ...params) const
 		{
 			std::size_t index, hashCode;
@@ -47,7 +101,13 @@ namespace rtl {
 			{
 				return detail::MethodContainer<TypeQ::Const, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
 			}
-			return RStatus(false);
+			else {
+				const std::size_t& nonConstSignId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
+				if (hasSignatureId(nonConstSignId, index, hashCode)) {
+					return RStatus(Error::InstanceConstMismatch);
+				}
+			}
+			return RStatus(Error::SignatureMismatch);
 		}
 
 
@@ -63,7 +123,7 @@ namespace rtl {
 			else {
 				return invokeConst(pTarget, params...);
 			}
-			return RStatus(false);
+			return RStatus(Error::SignatureMismatch);
 		}
 	}
 }

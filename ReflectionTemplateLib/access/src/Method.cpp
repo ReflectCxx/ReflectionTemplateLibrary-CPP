@@ -15,7 +15,7 @@ namespace rtl {
 			{
 				if (pFunctorId.getFunctorType() == FunctorType::DCtor)
 				{
-					return (pFunction.getRecordName() + Member::DCTOR);
+					return (pFunction.getRecordName() + Ctor::DCTOR);
 				}
 				return pFunction.getFunctionName();
 			}) 

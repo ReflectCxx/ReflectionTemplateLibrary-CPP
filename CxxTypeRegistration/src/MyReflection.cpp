@@ -56,6 +56,8 @@ CxxMirror& MyReflection::instance()
 		//copy constructor with const ref
 		Reflect().record<Book>(book::class_).constructor<const Book&>().build(),
 
+		Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),
+
 		//unique methods.
 		Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
 		Reflect().record<Book>(book::class_).method(book::str_setDecription).build(&Book::setDescription),
@@ -76,7 +78,7 @@ CxxMirror& MyReflection::instance()
 
 		//const method. must use 'methodConst()'. Unique method, so no need to specify signature as template params.
 		Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),
-		
+
 		//const based method overloads. same signatures, but one is const, registered via 'methodConst()'.
 		Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
 		Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
@@ -89,7 +91,9 @@ CxxMirror& MyReflection::instance()
 		//Static method overloads.
 		Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
 		Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
-		Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile)
+		Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
+
+		Reflect().nameSpace("std").record<string>("string").constructor().build()
 	});
 
 	return cxxMirror;

@@ -20,11 +20,25 @@ namespace rtl {
         CopyCtor,
         CopyCtorConst,
         DCtor,
+        Static,
         Method,
         Function
     };
 
-    struct Member {
+
+    enum class Error
+    {
+        None,
+        EmptyInstance,
+        SignatureMismatch,
+        InstanceTypeMismatch,
+        InstanceConstMismatch,
+        ConstructorNotFound,
+        CopyConstructorNotFound
+    };
+
+
+    struct Ctor {
         static constexpr const char* CTOR = "::ctor()";
         static constexpr const char* DCTOR = "::~dctor()";
         static constexpr const char* CTOR_COPY = "::ctor(&)";

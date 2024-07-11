@@ -24,7 +24,7 @@ namespace rtl
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
 				(*pFunctor)(params...);
-				return access::RStatus(true);
+				return access::RStatus(Error::None);
 			};
 
 			auto& functors = _derivedType::getFunctors();
@@ -47,7 +47,7 @@ namespace rtl
 			{
 				const _returnType& retObj = (*pFunctor)(params...);
 				const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-				return access::RStatus(true, std::make_any<_returnType>(retObj), typeId, constTypeId, qualifier);
+				return access::RStatus(std::make_any<_returnType>(retObj), typeId, constTypeId, qualifier);
 			};
 
 			auto& functors = _derivedType::getFunctors();

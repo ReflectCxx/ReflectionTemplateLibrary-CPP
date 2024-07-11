@@ -4,11 +4,9 @@
 
 namespace rtl {
 
-	class Function;
-
 	namespace builder 
 	{
-		template<class _recordType, class ..._ctorSignature>
+		template<class _recordType = void, class ..._ctorSignature>
 		class ConstructorBuilder
 		{
 			
@@ -25,6 +23,34 @@ namespace rtl {
 					   bool& pBuildDctor, const FunctorType& pCtorType);
 
 			inline constexpr const access::Function build() const;
+		};
+	}
+
+
+	namespace builder
+	{
+		template<>
+		class ConstructorBuilder<>
+		{
+		public:
+
+			template<class _recordType, class ..._signature>
+			static constexpr const ConstructorBuilder<_recordType, _signature...>
+				select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+					enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr);
+
+
+			template<class _recordType, class ..._signature>
+			static constexpr const ConstructorBuilder<_recordType, _signature...>
+				select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+					enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr);
+
+
+			template<class _recordType, class ..._signature>
+			static constexpr const ConstructorBuilder<_recordType, _signature...>
+				select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+					enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr,
+					enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__= nullptr);
 		};
 	}
 }

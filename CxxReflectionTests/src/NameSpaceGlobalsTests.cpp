@@ -88,7 +88,9 @@ namespace rtl_tests
 		EXPECT_TRUE(setReal->hasSignature<double>());
 
 		EXPECT_FALSE(setReal->hasSignature<float>());
-		RStatus status = (*setReal)(float(g_real));
+
+		//different syntax, other than (*setReal)(float(g_real))
+		RStatus status = setReal->call(float(g_real));
 
 		ASSERT_FALSE(status);
 		ASSERT_FALSE(status.getReturn().has_value());
@@ -130,7 +132,7 @@ namespace rtl_tests
 			EXPECT_TRUE(retVal == STRA_REVERSE);
 		}
 		{
-			RStatus status = (*reverseString)(string(STRB));
+			RStatus status = reverseString->call(string(STRB));
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());
 			ASSERT_TRUE(status.isOfType<string>());

@@ -30,21 +30,18 @@ namespace rtl
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (!pTargetObj.get().has_value()) {
-					assert(false && "Throw call on bad target exception");
-					return access::RStatus(false);
+					return access::RStatus(Error::EmptyInstance);
+				}
+				if (pTargetObj.getTypeId() != objTypeId) {
+					return access::RStatus(Error::InstanceTypeMismatch);
+				}
+				if (pTargetObj.isConst()) {
+					return access::RStatus(Error::InstanceConstMismatch);
 				}
 
-				if (pTargetObj.getTypeId() == objTypeId && !pTargetObj.isConst())
-				{
-					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
-					if (target != nullptr)
-					{
-						(target->*pFunctor)(params...);
-						return access::RStatus(true);
-					}
-					assert(false && "Throw call on bad target exception");
-				}
-				return access::RStatus(false);
+				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+				(target->*pFunctor)(params...);
+				return access::RStatus(Error::None);
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
@@ -67,22 +64,19 @@ namespace rtl
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (!pTargetObj.get().has_value()) {
-					assert(false && "Throw call on bad target exception");
-					return access::RStatus(false);
+					return access::RStatus(Error::EmptyInstance);
+				}
+				if (pTargetObj.getTypeId() != objTypeId) {
+					return access::RStatus(Error::InstanceTypeMismatch);
+				}
+				if (pTargetObj.isConst()) {
+					return access::RStatus(Error::InstanceConstMismatch);
 				}
 
-				if (pTargetObj.getTypeId() == objTypeId && !pTargetObj.isConst())
-				{
-					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
-					if (target != nullptr)
-					{
-						const _retType& retObj = (target->*pFunctor)(params...);
-						const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-						return access::RStatus(true, std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
-					}
-					assert(false && "Throw call on bad target exception");
-				}
-				return access::RStatus(false);
+				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+				const _retType& retObj = (target->*pFunctor)(params...);
+				const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
@@ -103,21 +97,15 @@ namespace rtl
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (!pTargetObj.get().has_value()) {
-					assert(false && "Throw call on bad target exception");
-					return access::RStatus(false);
+					return access::RStatus(Error::EmptyInstance);
+				}
+				if (pTargetObj.getTypeId() != objTypeId) {
+					return access::RStatus(Error::InstanceTypeMismatch);
 				}
 
-				if (pTargetObj.getTypeId() == objTypeId)
-				{
-					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
-					if (target != nullptr)
-					{
-						((static_cast<const _recordType*>(target))->*pFunctor)(params...); 
-						return access::RStatus(true);
-					}
-					assert(false && "Throw call on bad target exception");
-				}
-				return access::RStatus(false);
+				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+				((static_cast<const _recordType*>(target))->*pFunctor)(params...);
+				return access::RStatus(Error::None);
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
@@ -140,22 +128,16 @@ namespace rtl
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
 				if (!pTargetObj.get().has_value()) {
-					assert(false && "Throw call on bad target exception");
-					return access::RStatus(false);
+					return access::RStatus(Error::EmptyInstance);
+				}
+				if (pTargetObj.getTypeId() != objTypeId) {
+					return access::RStatus(Error::InstanceTypeMismatch);
 				}
 
-				if (pTargetObj.getTypeId() == objTypeId)
-				{
-					_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
-					if (target != nullptr)
-					{
-						const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-						const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(params...);
-						return access::RStatus(true, std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
-					}
-					assert(false && "Throw call on bad target exception");
-				}
-				return access::RStatus(false);
+				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+				const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+				const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(params...);
+				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();

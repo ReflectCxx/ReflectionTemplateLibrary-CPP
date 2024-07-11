@@ -5,6 +5,7 @@
 #include "TestUtilsDate.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
@@ -15,10 +16,10 @@ namespace rtl_tests
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Function> badFunc = cxxMirror.getFunction(date::ns, "wrong_date_struct");
-		EXPECT_FALSE(badFunc.has_value());
+		EXPECT_FALSE(badFunc);
 
 		optional<Record> badRec = cxxMirror.getRecord(date::ns, "wrong" + std::string(date::struct_));
-		EXPECT_FALSE(badRec.has_value());
+		EXPECT_FALSE(badRec);
 	}
 
 
@@ -33,7 +34,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classDate->instance("wrong", "args0", 10);
 
-			ASSERT_FALSE(status);
+			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -130,7 +131,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classBook->instance(19.0, 87.5);
 
-			ASSERT_FALSE(status);
+			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

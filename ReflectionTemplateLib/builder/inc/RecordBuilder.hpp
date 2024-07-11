@@ -21,7 +21,7 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
 		{
-			return getCtorBuilder<_recordType, _signature...>(m_namespace, m_record, m_buildDestructor);
+			return ConstructorBuilder<>::select<_recordType, _signature...>(m_namespace, m_record, m_buildDestructor);
 		}
 
 

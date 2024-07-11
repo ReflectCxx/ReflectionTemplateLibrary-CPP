@@ -36,7 +36,20 @@ namespace rtl {
 			{
 				return detail::FunctorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
 			}
-			return RStatus(false);
+			return RStatus(Error::SignatureMismatch);
+		}
+
+
+		template<class ..._args>
+		inline RStatus Function::call(_args ...params) const noexcept
+		{
+			std::size_t index, hashCode;
+			const std::size_t& signId = detail::FunctorContainer<_args...>::getContainerId();
+			if (hasSignatureId(signId, index, hashCode))
+			{
+				return detail::FunctorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
+			}
+			return RStatus(Error::SignatureMismatch);
 		}
 	}
 }

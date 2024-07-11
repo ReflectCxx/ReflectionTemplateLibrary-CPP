@@ -10,6 +10,12 @@ Provides interface for Testing/Comparing the class "Book" objects states/returns
 */
 namespace test_utils
 {
+	struct library
+	{
+		static constexpr const char* class_ = "Library";
+		static constexpr const char* str_addBook = "addBook";
+	};
+
 	struct book
 	{
 		static constexpr const double PRICE = 99.923;

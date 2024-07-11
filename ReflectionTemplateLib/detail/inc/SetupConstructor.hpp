@@ -27,7 +27,7 @@ namespace rtl
 			{
 				_recordType* object = std::any_cast<_recordType*>(pTarget);
 				delete object;
-				return access::RStatus(true);
+				return access::RStatus(Error::None);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();
@@ -47,7 +47,7 @@ namespace rtl
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
 				_recordType* retObj = new _recordType(params...);
-				return access::RStatus(true, std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();
@@ -69,7 +69,7 @@ namespace rtl
 			{
 				_recordType* srcObj = std::any_cast<_recordType*>(pOther);
 				_recordType* retObj = new _recordType(*srcObj);
-				return access::RStatus(true, std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();
@@ -90,7 +90,7 @@ namespace rtl
 			{
 				const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
 				_recordType* retObj = new _recordType(*srcObj);
-				return access::RStatus(true, std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();

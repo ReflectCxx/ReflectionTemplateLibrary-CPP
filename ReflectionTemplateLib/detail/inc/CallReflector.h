@@ -21,7 +21,7 @@ namespace rtl {
 				if (functor.first == pHashCode) {
 					return functor.second(_args...);
 				}
-				return access::RStatus(false);
+				return access::RStatus(Error::SignatureMismatch);
 			}
 
 
@@ -32,7 +32,7 @@ namespace rtl {
 				if (functor.first == pHashCode) {
 					return functor.second(pTarget, _args...);
 				}
-				return access::RStatus(false);
+				return access::RStatus(Error::SignatureMismatch);
 			}
 		};
 	}

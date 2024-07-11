@@ -32,11 +32,15 @@ namespace rtl {
 		}
 
 
-		std::optional<Instance> Record::clone(Instance& pOther) const
+		const std::pair<RStatus, Instance> Record::clone(Instance& pOther) const
 		{
-			const std::string& dctor = (m_recordName + Member::DCTOR);
-			const std::string& copyStr = (m_recordName + Member::CTOR_COPY);
-			const std::string& constCopyStr = (m_recordName + Member::CTOR_CONST_COPY);
+			if (pOther.isEmpty()) {
+				return std::make_pair(RStatus(Error::EmptyInstance), pOther);
+			}
+
+			const std::string& dctor = (m_recordName + Ctor::DCTOR);
+			const std::string& copyStr = (m_recordName + Ctor::CTOR_COPY);
+			const std::string& constCopyStr = (m_recordName + Ctor::CTOR_CONST_COPY);
 
 			std::optional<Function> destructor = getMethod(dctor);
 			std::optional<Function> constCopyCtor = getMethod(constCopyStr);
@@ -45,25 +49,21 @@ namespace rtl {
 			{
 				if (constCopyCtor) {
 					RStatus status = (*constCopyCtor)(pOther.get());
-					return std::make_optional(Instance(status.getReturn(), status, *destructor));
+					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
 				}
 			}
 			else {
 				std::optional<Function> copyCtor = getMethod(copyStr);
 				if (copyCtor) {
 					RStatus status = (*copyCtor)(pOther.get());
-					if (status) {
-						return std::make_optional(Instance(status.getReturn(), status, *destructor));
-					}
+					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
 				}
 				else if (constCopyCtor) {
 					RStatus status = (*constCopyCtor)(pOther.get());
-					if (status) {
-						return std::make_optional(Instance(status.getReturn(), status, *destructor));
-					}
+					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
 				}
 			}
-			return std::nullopt;
+			return std::make_pair(RStatus(Error::CopyConstructorNotFound), Instance());
 		}
 	}
 }
