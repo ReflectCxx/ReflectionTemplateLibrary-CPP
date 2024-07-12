@@ -34,7 +34,8 @@ namespace rtl {
         InstanceTypeMismatch,
         InstanceConstMismatch,
         ConstructorNotFound,
-        CopyConstructorNotFound
+        CopyConstructorNotFound,
+        ConstCopyConstructorNotFound
     };
 
 

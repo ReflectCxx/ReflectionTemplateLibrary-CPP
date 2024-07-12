@@ -27,15 +27,15 @@ namespace rtl {
 			default:
 			case FunctorType::Ctor: {
 				const auto& ctorName = (m_record + Ctor::CTOR);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>(m_ctorType);
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtor: {
 				const auto& ctorName = (m_record + Ctor::CTOR_COPY);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>(m_ctorType);
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtorConst: {
 				const auto& ctorName = (m_record + Ctor::CTOR_CONST_COPY);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>(m_ctorType);
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
 			}
 			}
 		}

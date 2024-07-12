@@ -22,14 +22,13 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			//auto [status, bookObj] = classBook->instance();
-			//ASSERT_TRUE(status);
-			//ASSERT_FALSE(bookObj.isEmpty());
+			auto [status, bookObj] = classBook->instance();
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
 
-//			auto [retStatus, badObj] = classPerson->clone(bookObj);
+			auto [retStatus, badObj] = classPerson->clone(bookObj);
 
-			//ASSERT_TRUE(retStatus == Error::SignatureMismatch);
-			ASSERT_TRUE(false);
+			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 	}

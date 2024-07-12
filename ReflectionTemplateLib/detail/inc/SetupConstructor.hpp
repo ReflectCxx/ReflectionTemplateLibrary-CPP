@@ -42,12 +42,11 @@ namespace rtl
 		template<class _recordType, class ..._signature>
 		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCtor()
 		{
-			const auto& typeId = TypeId<_recordType*>::get();
-			const auto& constTypeId = TypeId<const _recordType*>::get();
+			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
 				_recordType* retObj = new _recordType(params...);
-				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();
@@ -63,13 +62,12 @@ namespace rtl
 		template<class _recordType>
 		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCopyCtor()
 		{
-			const auto& typeId = TypeId<_recordType*>::get();
-			const auto& constTypeId = TypeId<const _recordType*>::get();
+			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pOther)->access::RStatus
 			{
 				_recordType* srcObj = std::any_cast<_recordType*>(pOther);
 				_recordType* retObj = new _recordType(*srcObj);
-				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();
@@ -84,13 +82,12 @@ namespace rtl
 		template<class _recordType>
 		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCopyCtorConst()
 		{
-			const auto& typeId = TypeId<_recordType*>::get();
-			const auto& constTypeId = TypeId<const _recordType*>::get();
+			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pOther)->access::RStatus
 			{
 				const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
 				_recordType* retObj = new _recordType(*srcObj);
-				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, constTypeId, TypeQ::Mute);
+				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
 			auto& ctorFunctors = _derivedType::getFunctors();

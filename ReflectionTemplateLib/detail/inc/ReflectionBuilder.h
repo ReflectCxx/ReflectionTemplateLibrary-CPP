@@ -19,7 +19,13 @@ namespace rtl {
 					  const std::string& pFunction, bool& pBuildDctor);
 
 			template<class _recordType, class ..._ctorSignature>
-			const access::Function buildConstructor(const FunctorType& pCtorType) const;
+			const access::Function buildConstructor() const;
+
+			template<class _recordType, class ..._ctorSignature>
+			const access::Function buildCopyConstructor() const;
+
+			template<class _recordType, class ..._ctorSignature>
+			const access::Function buildConstCopyConstructor() const;
 
 			template<class _returnType, class ..._signature>
 			const access::Function buildFunctor(_returnType(*pFunctor)(_signature...)) const;

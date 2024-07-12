@@ -82,6 +82,14 @@ namespace rtl {
 			{
 				return [&](auto...params)->RStatus
 				{
+					if (pTarget.isEmpty()) {
+						return RStatus(Error::EmptyInstance);
+					}
+
+					if (pTarget.getTypeId() != getRecordTypeId()) {
+						return RStatus(Error::InstanceTypeMismatch);
+					}
+
 					switch (pTarget.getQualifier())
 					{
 					case TypeQ::Mute: return invoke(pTarget, params...);

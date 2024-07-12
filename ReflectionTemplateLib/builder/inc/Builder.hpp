@@ -111,14 +111,32 @@ namespace rtl {
 			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
 		}
 
-		
-		template<class _recordType, class ..._ctorSignature>
-		inline constexpr const access::Function Builder<TypeQ::Mute>::build(const FunctorType& pCtorType) const
+
+		template<class _recordType, class ..._signature>
+		inline constexpr const access::Function
+		Builder<TypeQ::Mute>::build(enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
 		{
-			return buildConstructor<_recordType, _ctorSignature...>(pCtorType);
+			return buildCopyConstructor<_recordType, _signature...>();
 		}
 
-		
+
+		template<class _recordType, class ..._signature>
+		inline constexpr const access::Function
+		Builder<TypeQ::Mute>::build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
+		{
+			return buildConstCopyConstructor<_recordType, _signature...>();
+		}
+
+
+		template<class _recordType, class ..._signature>
+		inline constexpr const access::Function
+			Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
+						    enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
+		{
+			return buildConstructor<_recordType, _signature...>();
+		}
+
+
 		template<class _recordType, class _returnType, class ..._signature>
 		inline constexpr const access::Function Builder<TypeQ::Mute>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
 		{

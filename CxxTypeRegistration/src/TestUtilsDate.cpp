@@ -9,6 +9,11 @@ using namespace nsdate;
 
 namespace test_utils
 {
+	const bool calender::assert_zero_instance_count()
+	{
+		return (Calender::instanceCount() == 0);
+	}
+
 	const bool date::assert_zero_instance_count()
 	{
 		return (Date::instanceCount() == 0);

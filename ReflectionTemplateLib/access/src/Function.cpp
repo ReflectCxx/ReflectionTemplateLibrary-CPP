@@ -10,6 +10,7 @@ namespace rtl {
 	{
 		Function::Function()
 			: m_qualifier(TypeQ::None)
+			, m_recordTypeId(detail::TypeId<>::None)
 			, m_record("")
 			, m_function("")
 			, m_signatures("")
@@ -19,8 +20,10 @@ namespace rtl {
 
 
 		Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction,
-				   const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier)
+				   const std::string& pSignature, const detail::FunctorId& pFunctorId,
+				   std::size_t pRecordTypeId, const TypeQ pQualifier)
 			: m_qualifier(pQualifier)
+			, m_recordTypeId(pRecordTypeId)
 			, m_functorIds({ pFunctorId })
 			, m_record(pRecord)
 			, m_function(pFunction)
@@ -32,6 +35,7 @@ namespace rtl {
 		Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
 				   const std::function<std::string()>& pGetName)
 			: m_qualifier(pOther.m_qualifier)
+			, m_recordTypeId(pOther.m_recordTypeId)
 			, m_functorIds({ pFunctorId })
 			, m_record(pOther.m_record)
 			, m_function(pGetName())

@@ -10,6 +10,13 @@ Provides interface for Testing/Comparing the class "Date" objects states/returns
 */
 namespace test_utils
 {
+	struct calender 
+	{
+		static constexpr const char* ns = "nsdate";
+		static constexpr const char* struct_ = "Calender";
+		static const bool assert_zero_instance_count();
+	};
+
 	struct date
 	{
 		static constexpr const unsigned DAY = 1;

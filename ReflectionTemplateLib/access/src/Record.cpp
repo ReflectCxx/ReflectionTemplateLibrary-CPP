@@ -35,7 +35,7 @@ namespace rtl {
 		const std::pair<RStatus, Instance> Record::clone(Instance& pOther) const
 		{
 			if (pOther.isEmpty()) {
-				return std::make_pair(RStatus(Error::EmptyInstance), pOther);
+				return std::make_pair(RStatus(Error::EmptyInstance), Instance());
 			}
 
 			const std::string& dctor = (m_recordName + Ctor::DCTOR);
@@ -47,18 +47,33 @@ namespace rtl {
 			
 			if (pOther.isConst()) 
 			{
-				if (constCopyCtor) {
+				if (constCopyCtor) 
+				{
+					if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
+						return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
+					}
 					RStatus status = (*constCopyCtor)(pOther.get());
 					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
+				}
+				else {
+					return std::make_pair(RStatus(Error::ConstCopyConstructorNotFound), Instance());
 				}
 			}
 			else {
 				std::optional<Function> copyCtor = getMethod(copyStr);
-				if (copyCtor) {
+				if (copyCtor) 
+				{
+					if (copyCtor->getRecordTypeId() != pOther.getTypeId()) {
+						return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
+					}
 					RStatus status = (*copyCtor)(pOther.get());
 					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
 				}
-				else if (constCopyCtor) {
+				else if (constCopyCtor) 
+				{
+					if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
+						return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
+					}
 					RStatus status = (*constCopyCtor)(pOther.get());
 					return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
 				}

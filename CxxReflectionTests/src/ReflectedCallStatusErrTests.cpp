@@ -25,6 +25,26 @@ namespace rtl_tests
 	}
 
 
+	TEST(ReflectedCallStatusError, unregistered_constructor___error_CopyConstructorNotFound)
+	{
+		EXPECT_TRUE(calender::assert_zero_instance_count());
+		{
+			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+			ASSERT_TRUE(classCalender);
+
+			auto [ret, srcObj] = classCalender->instance();
+			ASSERT_TRUE(ret);
+			ASSERT_FALSE(srcObj.isEmpty());
+
+			auto [status, instance] = classCalender->clone(srcObj);
+
+			ASSERT_TRUE(status == Error::CopyConstructorNotFound);
+			ASSERT_TRUE(instance.isEmpty());
+		}
+		EXPECT_TRUE(calender::assert_zero_instance_count());
+	}
+
+
 	TEST(ReflectedCallStatusError, static_method_call_wrong_args___error_SignatureMismatch)
 	{
 		optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -77,9 +97,9 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, unregistered_constructor___error_CopyConstructorNotFound)
+	TEST(ReflectedCallStatusError, unregistered_constructor___error_ConstCopyConstructorNotFound)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count()); 
+		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
@@ -88,9 +108,11 @@ namespace rtl_tests
 			ASSERT_TRUE(ret);
 			ASSERT_FALSE(srcObj.isEmpty());
 
+			srcObj.makeConst();
+
 			auto [status, instance] = classDate->clone(srcObj);
 
-			ASSERT_TRUE(status == Error::CopyConstructorNotFound);
+			ASSERT_TRUE(status == Error::ConstCopyConstructorNotFound);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());

@@ -21,6 +21,8 @@ namespace rtl {
 		class Function
 		{
 			const TypeQ m_qualifier;
+			const std::size_t m_recordTypeId;
+
 			const std::string m_record;
 			const std::string m_function;
 			const std::string m_namespace;
@@ -30,7 +32,8 @@ namespace rtl {
 
 			Function();
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const std::string& pSignature, const detail::FunctorId& pFunctorId, const TypeQ pQualifier = TypeQ::None);
+				 const std::string& pSignature, const detail::FunctorId& pFunctorId,
+				 std::size_t pRecordTypeId, const TypeQ pQualifier);
 
 			void addOverload(const Function& pOtherFunc) const;
 
@@ -51,6 +54,7 @@ namespace rtl {
 			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
+			GETTER(std::size_t, RecordTypeId, m_recordTypeId)
 
 			const FunctorType& getFunctorType() const {
 				return m_functorIds[0].getFunctorType();

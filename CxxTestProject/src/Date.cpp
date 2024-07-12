@@ -5,11 +5,29 @@
 
 using namespace std;
 
-static int objectCount = 0;
+static int g_dateObjCount = 0;
+static int g_calenderObjCount = 0;
 
 namespace nsdate
 {
 	unsigned int Date::m_instanceCount = 0;
+	unsigned int Calender::m_instanceCount = 0;
+
+	Calender::Calender()
+	{
+		m_instanceCount++;
+	}
+
+	Calender::~Calender()
+	{
+		m_instanceCount--;
+	}
+
+	unsigned Calender::instanceCount()
+	{
+		return g_calenderObjCount;
+	}
+
 
 	Date::~Date() {
 		m_instanceCount--;
@@ -34,7 +52,7 @@ namespace nsdate
 		m_instanceCount++;
 	}
 
-	Date::Date(const Date& pOther)
+	Date::Date(Date& pOther)
 		: m_day(pOther.m_day)
 		, m_month(pOther.m_month)
 		, m_year(pOther.m_year) {

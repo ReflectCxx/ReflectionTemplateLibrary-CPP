@@ -42,12 +42,11 @@ namespace rtl
 										     enable_if_non_void<_returnType> *_)
 		{
 			const auto& typeId = TypeId<_returnType>::get();
-			const auto& constTypeId = TypeId<const _returnType>::get();
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
 				const _returnType& retObj = (*pFunctor)(params...);
 				const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-				return access::RStatus(std::make_any<_returnType>(retObj), typeId, constTypeId, qualifier);
+				return access::RStatus(std::make_any<_returnType>(retObj), typeId, qualifier);
 			};
 
 			auto& functors = _derivedType::getFunctors();

@@ -41,14 +41,16 @@ CxxMirror& MyReflection::instance()
 		Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
 		Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
 
-		//date::record struct, in nsdate namespace. Ctor, Date()
+		//Date struct, in nsdate namespace. Ctors, Date()
 		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),
-
-		//Ctor, Date(std::string)
 		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),
-
-		//Ctor, Date(unsigned, unsigned, unsigned)
 		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),
+
+		//Copy Ctor with non-const ref, Date()
+		Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<nsdate::Date&>().build(),
+
+		//Calender, in nsdate namespace. Ctor only.
+		Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
 
 		//class 'Book', no namespace. constructor overloads.
 		Reflect().record<Book>(book::class_).constructor().build(),
@@ -56,6 +58,7 @@ CxxMirror& MyReflection::instance()
 		//copy constructor with const ref
 		Reflect().record<Book>(book::class_).constructor<const Book&>().build(),
 
+		//Library class, no constructors.
 		Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),
 
 		//unique methods.

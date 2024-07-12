@@ -16,6 +16,14 @@ namespace rtl
 		template<class ..._args>
 		inline RStatus MethodInvoker<_type>::call(_args ...params) const noexcept
 		{
+			if (m_target.isEmpty()) {
+				return RStatus(Error::EmptyInstance);
+			}
+
+			if (m_target.getTypeId() != m_method.getRecordTypeId()) {
+				return RStatus(Error::InstanceTypeMismatch);
+			}
+
 			switch (m_target.getQualifier())
 			{
 			case TypeQ::Mute: return m_method.invoke(m_target, params...);

@@ -26,19 +26,9 @@ namespace rtl
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...),
 										   enable_if_void<_retType> *_)
 		{
-			const std::size_t objTypeId = TypeId<_recordType*>::get();
+			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
-				if (!pTargetObj.get().has_value()) {
-					return access::RStatus(Error::EmptyInstance);
-				}
-				if (pTargetObj.getTypeId() != objTypeId) {
-					return access::RStatus(Error::InstanceTypeMismatch);
-				}
-				if (pTargetObj.isConst()) {
-					return access::RStatus(Error::InstanceConstMismatch);
-				}
-
 				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
 				(target->*pFunctor)(params...);
 				return access::RStatus(Error::None);
@@ -59,24 +49,13 @@ namespace rtl
 										   enable_if_non_void<_retType> *_)
 		{
 			const std::size_t retTypeId = TypeId<_retType>::get();
-			const std::size_t constRetTypeId = TypeId<const _retType>::get();
-			const std::size_t objTypeId = TypeId<_recordType*>::get();
+			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
-				if (!pTargetObj.get().has_value()) {
-					return access::RStatus(Error::EmptyInstance);
-				}
-				if (pTargetObj.getTypeId() != objTypeId) {
-					return access::RStatus(Error::InstanceTypeMismatch);
-				}
-				if (pTargetObj.isConst()) {
-					return access::RStatus(Error::InstanceConstMismatch);
-				}
-
 				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
 				const _retType& retObj = (target->*pFunctor)(params...);
 				const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
+				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
 			};
 
 			auto& methodFunctors = _derivedType::getMethodFunctors();
@@ -93,16 +72,9 @@ namespace rtl
 		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...) const,
 										   enable_if_void<_retType> *_)
 		{
-			const std::size_t objTypeId = TypeId<_recordType*>::get();
+			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
-				if (!pTargetObj.get().has_value()) {
-					return access::RStatus(Error::EmptyInstance);
-				}
-				if (pTargetObj.getTypeId() != objTypeId) {
-					return access::RStatus(Error::InstanceTypeMismatch);
-				}
-
 				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
 				((static_cast<const _recordType*>(target))->*pFunctor)(params...);
 				return access::RStatus(Error::None);
@@ -124,16 +96,9 @@ namespace rtl
 		{
 			const std::size_t retTypeId = TypeId<_retType>::get();
 			const std::size_t constRetTypeId = TypeId<const _retType>::get();
-			const std::size_t objTypeId = TypeId<_recordType*>::get();
+			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const access::Instance& pTargetObj, _signature...params)->access::RStatus
 			{
-				if (!pTargetObj.get().has_value()) {
-					return access::RStatus(Error::EmptyInstance);
-				}
-				if (pTargetObj.getTypeId() != objTypeId) {
-					return access::RStatus(Error::InstanceTypeMismatch);
-				}
-
 				_recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
 				const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
 				const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(params...);
