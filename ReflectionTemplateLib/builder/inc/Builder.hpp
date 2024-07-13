@@ -61,7 +61,6 @@ namespace rtl {
 		template<class _recordType, class _returnType>
 		inline constexpr const access::Function Builder<TypeQ::Const>::build(_returnType(_recordType::* pFunctor)() const) const
 		{
-			static_assert(false);
 			return buildMethodFunctor(pFunctor);
 		}
 
