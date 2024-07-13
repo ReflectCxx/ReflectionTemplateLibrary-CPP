@@ -15,16 +15,16 @@ namespace rtl {
 		protected:
 
 			template<class _recordType, class ..._signature>
-			static const detail::FunctorId pushBackCtor();
+			static const detail::FunctorId addConstructor();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackCopyCtor();
+			static const detail::FunctorId addCopyConstructor();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackCopyCtorConst();
+			static const detail::FunctorId addConstCopyConstructor();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackDCtor(int& pDctorIndex);
+			static const detail::FunctorId addDestructor(int& pDctorIndex);
 		};
 	}
 }

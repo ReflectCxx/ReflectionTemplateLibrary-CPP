@@ -25,8 +25,8 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class _retType, class ..._signature>
-		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...),
-										   enable_if_void<_retType> *_)
+		inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...),
+										     enable_if_void<_retType> *_)
 		{
 			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pTargetObj, _signature...params)->access::RStatus
@@ -36,19 +36,19 @@ namespace rtl
 				return access::RStatus(Error::None);
 			};
 
-			auto& methodFunctors = _derivedType::getContainer();
+			auto& methodFunctors = _derivedType::getMethodFunctors();
 			const std::size_t& index = methodFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType, _retType>(_derivedType::getContainerId(), index, argsCount);
-			methodFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Method);
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _retType, class ..._signature>
-		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...),
-										   enable_if_non_void<_retType> *_)
+		inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...),
+										     enable_if_non_void<_retType> *_)
 		{
 			const std::size_t retTypeId = TypeId<_retType>::get();
 			const std::size_t objTypeId = TypeId<_recordType>::get();
@@ -60,19 +60,19 @@ namespace rtl
 				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
 			};
 
-			auto& methodFunctors = _derivedType::getContainer();
+			auto& methodFunctors = _derivedType::getMethodFunctors();
 			const std::size_t& index = methodFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType, _retType>(_derivedType::getContainerId(), index, argsCount);
-			methodFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Method);
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _retType, class ..._signature>
-		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...) const,
-										   enable_if_void<_retType> *_)
+		inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...) const,
+										     enable_if_void<_retType> *_)
 		{
 			const std::size_t objTypeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pTargetObj, _signature...params)->access::RStatus
@@ -82,19 +82,19 @@ namespace rtl
 				return access::RStatus(Error::None);
 			};
 
-			auto& methodFunctors = _derivedType::getContainer();
+			auto& methodFunctors = _derivedType::getMethodFunctors();
 			const std::size_t& index = methodFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType, _retType>(_derivedType::getContainerId(), index, argsCount);
-			methodFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Method);
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType, class _retType, class ..._signature>
-		inline const detail::FunctorId SetupMethod<_derivedType>::pushBack(_retType(_recordType::* pFunctor)(_signature...) const,
-										   enable_if_non_void<_retType> *_)
+		inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...) const,
+										     enable_if_non_void<_retType> *_)
 		{
 			const std::size_t retTypeId = TypeId<_retType>::get();
 			const std::size_t constRetTypeId = TypeId<const _retType>::get();
@@ -107,11 +107,11 @@ namespace rtl
 				return access::RStatus(std::make_any<_retType>(retObj), retTypeId, constRetTypeId, qualifier);
 			};
 
-			auto& methodFunctors = _derivedType::getContainer();
+			auto& methodFunctors = _derivedType::getMethodFunctors();
 			const std::size_t& index = methodFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType, _retType>(_derivedType::getContainerId(), index, argsCount);
-			methodFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Method);
 		}
 	}

@@ -37,8 +37,8 @@ namespace rtl {
 			static const std::size_t m_containerId;
 			static std::vector< std::pair<std::size_t, FunctionLambda> > m_functors;
 
-			static std::vector< std::pair<std::size_t, FunctionLambda> >& getContainer() {
-				return m_functors;
+			static void pushBack(const std::size_t& pHashCode, const FunctionLambda& pFunctor) {
+				m_functors.emplace_back(pHashCode, pFunctor);
 			}
 
 			friend ReflectionBuilder;

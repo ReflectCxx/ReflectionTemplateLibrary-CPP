@@ -23,7 +23,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType>
-		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackDCtor(int& pDctorIndex)
+		inline const detail::FunctorId SetupConstructor<_derivedType>::addDestructor(int& pDctorIndex)
 		{
 			if (pDctorIndex == -1) {
 				const auto functor = [](const std::any& pTarget)->access::RStatus
@@ -32,10 +32,10 @@ namespace rtl
 					delete object;
 					return access::RStatus(Error::None);
 				};
-				auto& ctorFunctors = _derivedType::getContainer();
+				auto& ctorFunctors = _derivedType::getFunctors();
 				pDctorIndex = ctorFunctors.size();
 				const std::size_t& hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), pDctorIndex, 1);
-				ctorFunctors.push_back(std::make_pair(hashCode, functor));
+				_derivedType::pushBack(hashCode, functor);
 				return detail::FunctorId(pDctorIndex, hashCode, _derivedType::getContainerId(), 1, FunctorType::DCtor);
 			}
 			else 
@@ -48,7 +48,7 @@ namespace rtl
 
 		template<class _derivedType>
 		template<class _recordType, class ..._signature>
-		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCtor()
+		inline const detail::FunctorId SetupConstructor<_derivedType>::addConstructor()
 		{
 			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](_signature...params)->access::RStatus
@@ -57,18 +57,18 @@ namespace rtl
 				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
-			auto& ctorFunctors = _derivedType::getContainer();
+			auto& ctorFunctors = _derivedType::getFunctors();
 			const std::size_t& index = ctorFunctors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index, argsCount);
-			ctorFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), argsCount, FunctorType::Ctor);
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType>
-		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCopyCtor()
+		inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
 		{
 			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pOther)->access::RStatus
@@ -78,17 +78,17 @@ namespace rtl
 				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
-			auto& ctorFunctors = _derivedType::getContainer();
+			auto& ctorFunctors = _derivedType::getFunctors();
 			const std::size_t& index = ctorFunctors.size();
 			const std::size_t& hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index, 1);
-			ctorFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), 1, FunctorType::CopyCtor);
 		}
 
 
 		template<class _derivedType>
 		template<class _recordType>
-		inline const detail::FunctorId SetupConstructor<_derivedType>::pushBackCopyCtorConst()
+		inline const detail::FunctorId SetupConstructor<_derivedType>::addConstCopyConstructor()
 		{
 			const auto& typeId = TypeId<_recordType>::get();
 			const auto functor = [=](const std::any& pOther)->access::RStatus
@@ -98,10 +98,10 @@ namespace rtl
 				return access::RStatus(std::make_any<_recordType*>(retObj), typeId, TypeQ::Mute);
 			};
 
-			auto& ctorFunctors = _derivedType::getContainer();
+			auto& ctorFunctors = _derivedType::getFunctors();
 			const std::size_t& index = ctorFunctors.size();
 			const std::size_t& hashCode = getHashCode<_recordType>(_derivedType::getContainerId(), index, 1);
-			ctorFunctors.push_back(std::make_pair(hashCode, functor));
+			_derivedType::pushBack(hashCode, functor);
 			return detail::FunctorId(index, hashCode, _derivedType::getContainerId(), 1, FunctorType::CopyCtorConst);
 		}
 	}
