@@ -24,8 +24,7 @@ namespace rtl {
 		template<>
 		inline const Builder<TypeQ::None> Reflect::function(const std::string& pFunction)
 		{
-			bool dummyRef;
-			return Builder<TypeQ::None>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::None>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 		
@@ -39,8 +38,7 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const Builder<TypeQ::None, _signature...> Reflect::function(const std::string& pFunction) 
 		{
-			bool dummyRef;
-			return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 	}
 }

@@ -7,8 +7,10 @@ namespace rtl {
 
 	namespace builder
 	{
+		static int g_dummyRef = 0;
+
 		template<class _recordType>
-		bool RecordBuilder<_recordType>::m_buildDestructor = true;
+		int RecordBuilder<_recordType>::m_dctorIndex = -1;
 
 		template<class _recordType>
 		inline RecordBuilder<_recordType>::RecordBuilder(const std::string& pNamespace, const std::string& pRecord)
@@ -21,15 +23,14 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
 		{
-			return ConstructorBuilder<>::select<_recordType, _signature...>(m_namespace, m_record, m_buildDestructor);
+			return ConstructorBuilder<>::select<_recordType, _signature...>(m_namespace, m_record, m_dctorIndex);
 		}
 
 
 		template<class _recordType>
 		inline constexpr const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
 		{
-			bool dummyRef;
-			return Builder<TypeQ::None>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::None>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 
@@ -37,24 +38,21 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const 
 		{
-			bool dummyRef;
-			return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 
 		template<class _recordType>
 		inline constexpr const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
 		{
-			bool dummyRef;
-			return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 
 		template<class _recordType>
 		inline constexpr const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
 		{
-			bool dummyRef;
-			return Builder<TypeQ::Const>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::Const>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 
@@ -62,8 +60,7 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const 
 		{
-			bool dummyRef;
-			return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 
 
@@ -71,8 +68,7 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const 
 		{
-			bool dummyRef;
-			return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction, dummyRef);
+			return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction, g_dummyRef);
 		}
 	}
 }

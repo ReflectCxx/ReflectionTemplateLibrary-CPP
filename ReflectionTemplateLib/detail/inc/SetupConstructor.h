@@ -24,7 +24,7 @@ namespace rtl {
 			static const detail::FunctorId pushBackCopyCtorConst();
 
 			template<class _recordType>
-			static const detail::FunctorId pushBackDCtor();
+			static const detail::FunctorId pushBackDCtor(int& pDctorIndex);
 		};
 	}
 }

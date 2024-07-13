@@ -3,6 +3,7 @@
 #include "RStatus.h"
 #include "Method.h"
 #include "Constants.h"
+#include "Instance.h"
 
 namespace rtl {
 

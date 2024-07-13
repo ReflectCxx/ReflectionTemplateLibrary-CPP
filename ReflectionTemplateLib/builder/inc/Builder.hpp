@@ -7,8 +7,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						     const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+						     const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class _returnType, class ..._signature>
@@ -22,8 +22,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							   const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+							   const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class _returnType>
@@ -38,8 +38,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::None, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								    const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+								    const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class ..._signature>
@@ -54,13 +54,14 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Const>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						      const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+						      const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class _recordType, class _returnType>
 		inline constexpr const access::Function Builder<TypeQ::Const>::build(_returnType(_recordType::* pFunctor)() const) const
 		{
+			static_assert(false);
 			return buildMethodFunctor(pFunctor);
 		}
 
@@ -75,8 +76,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Const, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							    const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+							    const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class _recordType, class _returnType>
@@ -91,8 +92,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::Const, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								     const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+								     const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class ..._signature>
@@ -107,8 +108,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Mute>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						     const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+						     const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 
@@ -130,8 +131,8 @@ namespace rtl {
 
 		template<class _recordType, class ..._signature>
 		inline constexpr const access::Function
-			Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
-						    enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
+		Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
+					    enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
 		{
 			return buildConstructor<_recordType, _signature...>();
 		}
@@ -148,8 +149,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Mute, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							   const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+							   const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 
 		template<class _recordType, class _returnType>
@@ -164,8 +165,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::Mute, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								    const std::string& pFunction, bool& pBuildDctor)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pBuildDctor) {
+								    const std::string& pFunction, int& pDctorIndex)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
 		}
 		
 		template<class ..._signature>

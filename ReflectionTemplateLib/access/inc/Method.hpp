@@ -107,7 +107,7 @@ namespace rtl
 			const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _args...>::getContainerId();
 			if (hasSignatureId(signId, index, hashCode))
 			{
-				return detail::MethodContainer<TypeQ::Const, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
+				return detail::MethodContainer<TypeQ::Const, _args...>::reflectMethodCall(pTarget.get(), index, hashCode, params...);
 			}
 			else {
 				const std::size_t& nonConstSignId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
@@ -126,7 +126,7 @@ namespace rtl
 			const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
 			if (hasSignatureId(signId, index, hashCode))
 			{
-				return detail::MethodContainer<TypeQ::Mute, _args...>::reflectMethodCall(pTarget, index, hashCode, params...);
+				return detail::MethodContainer<TypeQ::Mute, _args...>::reflectMethodCall(pTarget.get(), index, hashCode, params...);
 			}
 			else {
 				return invokeConst(pTarget, params...);

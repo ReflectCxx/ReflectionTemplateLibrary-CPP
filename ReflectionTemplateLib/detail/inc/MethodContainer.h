@@ -19,52 +19,62 @@ namespace rtl {
 		class MethodContainer;
 
 		template<class ..._signature>
-		class MethodContainer<TypeQ::Mute, _signature...> : SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
-								   CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
+		class MethodContainer<TypeQ::Mute, _signature...> : public SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
+								   public CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
 		{
-			using MethodLambda = std::function < access::RStatus(const access::Instance&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(std::any, _signature...) >;
 
-			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
-			
+		public:
+
 			static const std::size_t& getContainerId() {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
+			static const std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
 				return m_methodPtrs;
 			}
 
-			friend access::Method;
-			friend access::Function;
+		private:
+
+			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
+
+			static std::vector< std::pair<std::size_t, MethodLambda> >& getContainer() {
+				return  m_methodPtrs;
+			}
+
 			friend ReflectionBuilder;
-			friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;
-			friend CallReflector<MethodContainer<TypeQ::Mute, _signature...>>;			
+			friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;		
 		};
 
 
 		template<class ..._signature>
-		class MethodContainer<TypeQ::Const, _signature...> : SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
-								     CallReflector<MethodContainer<TypeQ::Const, _signature...>>
+		class MethodContainer<TypeQ::Const, _signature...> : public SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
+								     public CallReflector<MethodContainer<TypeQ::Const, _signature...>>
 		{
-			using MethodLambda = std::function < access::RStatus(const access::Instance&, _signature...) >;
+			using MethodLambda = std::function < access::RStatus(std::any, _signature...) >;
 
-			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
+		public:
 
 			static const std::size_t& getContainerId() {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
+			static const std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
 				return  m_methodPtrs;
 			}
 
-			friend access::Method;
-			friend access::Function;
+		private:
+
+			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
+
+			static std::vector< std::pair<std::size_t, MethodLambda> >& getContainer() {
+				return  m_methodPtrs;
+			}
+
 			friend ReflectionBuilder;
 			friend SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
-			friend CallReflector<MethodContainer<TypeQ::Const, _signature...>>;
 		};
 
 		

@@ -10,13 +10,13 @@ namespace rtl {
 		{
 		protected:
 
-			bool& m_buildDestructor;
+			int& m_dctorIndex;
 			const std::string& m_record;
 			const std::string& m_function;
 			const std::string& m_namespace;
 
 			ReflectionBuilder(const std::string& pNamespace, const std::string& pRecord,
-					  const std::string& pFunction, bool& pBuildDctor);
+					  const std::string& pFunction, int& pDctorIndex);
 
 			template<class _recordType, class ..._ctorSignature>
 			const access::Function buildConstructor() const;

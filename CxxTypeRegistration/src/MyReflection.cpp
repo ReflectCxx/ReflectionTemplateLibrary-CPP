@@ -24,7 +24,7 @@ using namespace rtl::builder;
 
 CxxMirror& MyReflection::instance()
 {
-	static CxxMirror cxxMirror({
+	static CxxMirror cxxMirror = CxxMirror({
 
 		//Global function, not contained in any namespace.
 		//No need to specify "function<>" template types, since its a unique function, no overloads.
@@ -94,9 +94,7 @@ CxxMirror& MyReflection::instance()
 		//Static method overloads.
 		Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
 		Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
-		Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
-
-		Reflect().nameSpace("std").record<string>("string").constructor().build()
+		Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile)
 	});
 
 	return cxxMirror;

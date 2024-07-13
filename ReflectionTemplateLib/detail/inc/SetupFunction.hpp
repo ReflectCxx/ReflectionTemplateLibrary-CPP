@@ -11,8 +11,10 @@ namespace rtl
 		inline const std::size_t SetupFunction<_derivedType>::getHashCode(const std::size_t pContainerId, const std::size_t pIndex,
 										  const std::size_t pArgsCount)
 		{
-			return std::stoull(std::to_string(pContainerId) + std::to_string(pIndex) +
-					   std::to_string(TypeId<_returnType>::get()) + std::to_string(pArgsCount));
+			return std::stoull(std::to_string(pContainerId) +
+					   std::to_string(pIndex) +
+					   std::to_string(TypeId<_returnType>::get()) +
+					   std::to_string(pArgsCount));
 		}
 
 
@@ -27,7 +29,7 @@ namespace rtl
 				return access::RStatus(Error::None);
 			};
 
-			auto& functors = _derivedType::getFunctors();
+			auto& functors = _derivedType::getContainer();
 			const std::size_t& index = functors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index, argsCount);
@@ -49,7 +51,7 @@ namespace rtl
 				return access::RStatus(std::make_any<_returnType>(retObj), typeId, qualifier);
 			};
 
-			auto& functors = _derivedType::getFunctors();
+			auto& functors = _derivedType::getContainer();
 			const std::size_t& index = functors.size();
 			const std::size_t& argsCount = sizeof...(_signature);
 			const std::size_t& hashCode = getHashCode<_returnType>(_derivedType::getContainerId(), index, argsCount);

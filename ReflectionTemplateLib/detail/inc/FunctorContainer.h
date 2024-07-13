@@ -11,37 +11,37 @@
 
 namespace rtl {
 
-	namespace access {
-		class Method;
-	}
-
 	namespace detail
 	{
 		class ReflectionBuilder;
 		extern std::size_t g_containerIdCounter;
 
 		template<class ..._signature>
-		class FunctorContainer : SetupFunction<FunctorContainer<_signature...>>,
-					 SetupConstructor<FunctorContainer<_signature...>>,
-					 CallReflector<FunctorContainer<_signature...>>
+		class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
+					 public SetupConstructor<FunctorContainer<_signature...>>,
+					 public CallReflector<FunctorContainer<_signature...>>
 		{
 			using FunctionLambda = std::function < access::RStatus(_signature...) >;
-
-			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, FunctionLambda> > m_functors;
+		public:
 
 			static const std::size_t& getContainerId() {
 				return m_containerId;
 			}
 
-			static std::vector< std::pair<std::size_t, FunctionLambda> >& getFunctors() {
+			const static std::vector< std::pair<std::size_t, FunctionLambda> >& getFunctors() {
 				return m_functors;
 			}
 
-			friend access::Method;
-			friend access::Function;
+		private:
+			
+			static const std::size_t m_containerId;
+			static std::vector< std::pair<std::size_t, FunctionLambda> > m_functors;
+
+			static std::vector< std::pair<std::size_t, FunctionLambda> >& getContainer() {
+				return m_functors;
+			}
+
 			friend ReflectionBuilder;
-			friend CallReflector<FunctorContainer<_signature...>>;
 			friend SetupFunction<FunctorContainer<_signature...>>;
 			friend SetupConstructor<FunctorContainer<_signature...>>;
 		};

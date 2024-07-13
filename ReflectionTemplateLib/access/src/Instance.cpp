@@ -25,6 +25,11 @@ namespace rtl {
 		}
 
 
+		std::size_t Instance::getInstanceCount() {
+			return g_instanceCount;
+		}
+
+
 		void Instance::makeConst(const bool& pCastAway) {
 			m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
 		}

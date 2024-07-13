@@ -33,13 +33,13 @@ namespace rtl {
 
 
 		Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-				   const std::function<std::string()>& pGetName)
+				   const std::string& pFunctorName, const std::string& pSignatureStr)
 			: m_qualifier(pOther.m_qualifier)
 			, m_recordTypeId(pOther.m_recordTypeId)
 			, m_functorIds({ pFunctorId })
 			, m_record(pOther.m_record)
-			, m_function(pGetName())
-			, m_signatures("")			//No need to keep this info for implicitly generated functions.
+			, m_function(pFunctorName)
+			, m_signatures(pSignatureStr)
 			, m_namespace(pOther.m_namespace) {
 		}
 

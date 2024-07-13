@@ -8,9 +8,6 @@ namespace rtl {
 
 	namespace detail
 	{
-		std::size_t g_typeIdCounter = TypeId<>::None + 1;
-		std::size_t g_containerIdCounter = TypeId<>::None + 1;
-
 		CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
 		{
 			for (const auto& function : pFunctions) {
@@ -59,8 +56,12 @@ namespace rtl {
 				{
 					auto& functorIds = pFunction.getFunctorIds();
 					if (functorIds.size() > 1) {
-						access::Method method = access::Method(pFunction, functorIds[1]);
-						pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
+
+						const auto& dctorName = pFunction.getRecordName() + Ctor::DCTOR;
+						if(pMethodMap.find(dctorName) == pMethodMap.end()){
+							access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
+							pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
+						}
 						functorIds.pop_back();
 					}
 				}

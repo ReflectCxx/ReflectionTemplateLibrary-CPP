@@ -2,18 +2,18 @@
 
 #include <optional>
 #include "Constants.h"
-#include "RStatus.h"
-#include "Instance.h"
 
 namespace rtl {
+
+	namespace access {
+		class RStatus;
+	}
 
 	namespace detail
 	{
 		template<class _derivedType>
-		class CallReflector
+		struct CallReflector
 		{
-		protected:
-
 			template<class ..._params>
 			static access::RStatus reflectFunctionCall(std::size_t pFunctorId, const std::size_t pHashCode, _params..._args) 
 			{
@@ -26,7 +26,7 @@ namespace rtl {
 
 
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(const access::Instance& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
+			static access::RStatus reflectMethodCall(const std::any& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
 			{
 				const auto& functor = _derivedType::getMethodFunctors().at(pFunctorId);
 				if (functor.first == pHashCode) {

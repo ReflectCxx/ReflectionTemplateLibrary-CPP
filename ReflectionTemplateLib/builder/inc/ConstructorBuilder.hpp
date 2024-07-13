@@ -10,8 +10,8 @@ namespace rtl {
 	{
 		template<class _recordType, class ..._ctorSignature>
 		inline ConstructorBuilder<_recordType, _ctorSignature...>::ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord,
-											      bool& pBuildDctor, const FunctorType& pCtorType)
-			: m_buildDestructor(pBuildDctor)
+											      int& pDctorIndex, const FunctorType& pCtorType)
+			: m_dctorIndex(pDctorIndex)
 			, m_record(pRecord)
 			, m_namespace(pNamespace)
 			, m_ctorType(pCtorType)
@@ -27,15 +27,15 @@ namespace rtl {
 			default:
 			case FunctorType::Ctor: {
 				const auto& ctorName = (m_record + Ctor::CTOR);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_dctorIndex).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtor: {
 				const auto& ctorName = (m_record + Ctor::CTOR_COPY);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_dctorIndex).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtorConst: {
 				const auto& ctorName = (m_record + Ctor::CTOR_CONST_COPY);
-				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_buildDestructor).build<_recordType, _ctorSignature...>();
+				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, m_dctorIndex).build<_recordType, _ctorSignature...>();
 			}
 			}
 		}
@@ -46,29 +46,29 @@ namespace rtl {
 	{
 		template<class _recordType, class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...>
-			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, int& pDctorIndex,
 				enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_)
 		{
-			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pBuildDctor, FunctorType::CopyCtor);
+			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pDctorIndex, FunctorType::CopyCtor);
 		}
 
 
 		template<class _recordType, class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...>
-			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, int& pDctorIndex,
 				enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_)
 		{
-			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pBuildDctor, FunctorType::CopyCtorConst);
+			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pDctorIndex, FunctorType::CopyCtorConst);
 		}
 
 
 		template<class _recordType, class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...>
-			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, bool& pBuildDctor,
+			ConstructorBuilder<>::select(const std::string& pNamespace, const std::string& pRecord, int& pDctorIndex,
 				enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
 				enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__)
 		{
-			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pBuildDctor, FunctorType::Ctor);
+			return ConstructorBuilder<_recordType, _signature...>(pNamespace, pRecord, pDctorIndex, FunctorType::Ctor);
 		}
 	}
 }

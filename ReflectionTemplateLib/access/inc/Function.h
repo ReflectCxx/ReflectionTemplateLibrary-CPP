@@ -7,7 +7,6 @@
 #include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
-#include "Instance.h"
 
 namespace rtl {
 
@@ -42,7 +41,7 @@ namespace rtl {
 		protected:
 
 			Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-				 const std::function<std::string()>& pGetName);
+				 const std::string& pFunctorName, const std::string& pSignatureStr);
 
 			const bool hasSignatureId(const std::size_t& pSignatureId) const;
 			const bool hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const;
@@ -69,7 +68,6 @@ namespace rtl {
 			template<class ..._args>
 			RStatus call(_args...params) const noexcept;
 
-			friend Instance;
 			friend detail::CxxReflection;
 			friend detail::ReflectionBuilder;
 		};

@@ -49,7 +49,8 @@ namespace rtl {
 		{
 			Method(const Function& pFunction);
 
-			Method(const Function& pFunction, const detail::FunctorId& pFunctorId);
+			Method(const Function& pFunction, const detail::FunctorId& pFunctorId,
+				const std::string& pFunctorName, const std::string& pSignatureStr);
 
 			template<class ..._args>
 			RStatus invokeCtor(_args...params) const;
@@ -62,6 +63,8 @@ namespace rtl {
 
 			template<class ..._args>
 			RStatus invokeStatic(_args...params) const;
+
+			static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
 
 		public:
 
@@ -99,9 +102,6 @@ namespace rtl {
 				};
 			}
 
-			friend Record;
-			friend detail::CxxReflection;
-
 			template<class ..._args>
 			RStatus operator()(_args...) const noexcept = delete;
 
@@ -110,6 +110,8 @@ namespace rtl {
 
 			template<FunctorType _type>
 			friend class MethodInvoker;
+			friend detail::CxxReflection; 
+			friend Record;
 		};
 	}
 }

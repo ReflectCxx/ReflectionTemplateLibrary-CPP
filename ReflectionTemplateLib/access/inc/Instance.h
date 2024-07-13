@@ -41,6 +41,8 @@ namespace rtl {
 
 			void makeConst(const bool& pCastAway = false);
 
+			static std::size_t getInstanceCount();
+
 			friend Record;
 		};
 	}
