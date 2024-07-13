@@ -16,10 +16,10 @@ namespace rtl
 										const std::size_t pArgsCount)
 		{
 			return std::stoull(std::to_string(pContainerId) +
-				"0" + std::to_string(pIndex) +
-				"0" + std::to_string(TypeId<_recordType>::get()) +
-				"0" + std::to_string(TypeId<_retType>::get()) +
-				"0" + std::to_string(pArgsCount));
+					   std::to_string(pIndex) +
+					   std::to_string(TypeId<_recordType>::get()) +
+					   std::to_string(TypeId<_retType>::get()) +
+					   std::to_string(pArgsCount));
 		}
 
 
