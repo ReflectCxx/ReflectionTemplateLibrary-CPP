@@ -44,29 +44,13 @@ namespace rtl {
 		}
 
 
-		const bool Function::hasSignatureId(const std::size_t& pSignatureId) const
+		const std::size_t Function::hasSignatureId(const std::size_t& pSignatureId) const
 		{
 			const auto& itr = std::find_if(m_functorIds.begin(), m_functorIds.end(),
 				[pSignatureId](const detail::FunctorId& functorId) {
 					return (functorId.getSignatureId() == pSignatureId);
 				});
-			return itr != m_functorIds.end();
-		}
-
-
-		const bool Function::hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const
-		{
-			auto itr = std::find_if(m_functorIds.begin(), m_functorIds.end(),
-				[pSignatureId](const detail::FunctorId& functorId) {
-					return (functorId.getSignatureId() == pSignatureId);
-				});
-
-			if (itr != m_functorIds.end()) {
-				pIndex = itr->getIndex();
-				pHashCode = itr->getHashCode();
-				return true;
-			}
-			return false;
+			return (itr == m_functorIds.end() ? -1 : itr->getIndex());
 		}
 
 

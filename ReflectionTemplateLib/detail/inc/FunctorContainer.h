@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <vector>
 #include <functional>
 
@@ -14,7 +15,7 @@ namespace rtl {
 	namespace detail
 	{
 		class ReflectionBuilder;
-		extern std::size_t g_containerIdCounter;
+		extern std::atomic<std::size_t> g_containerIdCounter;
 
 		template<class ..._signature>
 		class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
@@ -28,17 +29,21 @@ namespace rtl {
 				return m_containerId;
 			}
 
-			const static std::vector< std::pair<std::size_t, FunctionLambda> >& getFunctors() {
+			const static std::vector<FunctionLambda>& getFunctors() {
 				return m_functors;
 			}
 
 		private:
 			
 			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, FunctionLambda> > m_functors;
+			static std::vector<FunctionLambda> m_functors;
 
-			static void pushBack(const std::size_t& pHashCode, const FunctionLambda& pFunctor) {
-				m_functors.emplace_back(pHashCode, pFunctor);
+			static const std::size_t pushBack(const FunctionLambda& pFunctor) 
+			{
+				static std::mutex mtx;
+				std::lock_guard<std::mutex> lock(mtx);
+				m_functors.push_back(pFunctor);
+				return (m_functors.size() - 1);
 			}
 
 			friend ReflectionBuilder;
@@ -46,12 +51,10 @@ namespace rtl {
 			friend SetupConstructor<FunctorContainer<_signature...>>;
 		};
 
-
 		template<class ..._signature>
 		const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector< std::pair< std::size_t, typename FunctorContainer<_signature...>::FunctionLambda> > 
-		FunctorContainer<_signature...>::m_functors;
+		std::vector<typename FunctorContainer<_signature...>::FunctionLambda> FunctorContainer<_signature...>::m_functors;
 	}
 }

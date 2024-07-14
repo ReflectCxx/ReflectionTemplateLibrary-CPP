@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TypeId.h"
 #include "Constants.h"
 
 namespace rtl 
@@ -8,35 +9,32 @@ namespace rtl
 	{
 		class FunctorId
 		{
-			std::size_t m_index;
-			std::size_t m_hashCode;
-			std::size_t m_signatureId;
-			std::size_t m_paramsCount;
-			FunctorType m_functorType;
+			const std::size_t m_index;
+			const std::size_t m_returnId;
+			const std::size_t m_recordId;
+			const std::size_t m_containerId;
 
 		public:
 
 			FunctorId() 
 				: m_index(-1)
-				, m_hashCode(-1)
-				, m_signatureId(0)
-				, m_paramsCount(-1)
-				, m_functorType(FunctorType::None) {
+				, m_returnId(TypeId<>::None)
+				, m_recordId(TypeId<>::None)
+				, m_containerId(TypeId<>::None) {
 			}
 
-			FunctorId(const std::size_t& pIndex, const std::size_t& pHashCode, const std::size_t& pSignId, 
-				  const std::size_t& pParamsCount, const FunctorType& pFunctorType)
+			FunctorId(const std::size_t& pIndex, const std::size_t& pReturnId,
+				  const std::size_t& pRecordId, const std::size_t& pContainerId)
 				: m_index(pIndex)
-				, m_hashCode(pHashCode)
-				, m_signatureId(pSignId)
-				, m_paramsCount(pParamsCount)
-				, m_functorType(pFunctorType) {
+				, m_returnId(pReturnId)
+				, m_recordId(pRecordId)
+				, m_containerId(pContainerId) {
 			}
 
 			GETTER(std::size_t, Index, m_index)
-			GETTER(std::size_t, HashCode, m_hashCode)
-			GETTER(std::size_t, SignatureId, m_signatureId)
-			GETTER(FunctorType, FunctorType, m_functorType)
+			GETTER(std::size_t, SignatureId, m_containerId)
+			
+			std::size_t getHashCode() const;
 		};
 	}
 }

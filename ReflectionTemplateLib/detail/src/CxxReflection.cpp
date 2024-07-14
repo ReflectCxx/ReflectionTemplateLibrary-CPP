@@ -50,20 +50,15 @@ namespace rtl {
 			const auto& itr = pMethodMap.find(fname);
 			if (itr == pMethodMap.end())
 			{
-				if (pFunction.getFunctorType() == FunctorType::Ctor ||
-					pFunction.getFunctorType() == FunctorType::CopyCtor ||
-					pFunction.getFunctorType() == FunctorType::CopyCtorConst)
+				auto& functorIds = pFunction.getFunctorIds();
+				if (functorIds.size() > 1) 
 				{
-					auto& functorIds = pFunction.getFunctorIds();
-					if (functorIds.size() > 1) {
-
-						const auto& dctorName = pFunction.getRecordName() + Ctor::DCTOR;
-						if(pMethodMap.find(dctorName) == pMethodMap.end()){
-							access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
-							pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
-						}
-						functorIds.pop_back();
+					const auto& dctorName = pFunction.getRecordName() + Ctor::DCTOR;
+					if (pMethodMap.find(dctorName) == pMethodMap.end()) {
+						access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
+						pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
 					}
+					functorIds.pop_back();
 				}
 				pMethodMap.emplace(fname, access::Method(pFunction));
 			}

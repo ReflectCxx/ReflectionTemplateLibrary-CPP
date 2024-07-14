@@ -7,7 +7,7 @@ namespace rtl
 	{
 		template<FunctorType _type>
 		inline MethodInvoker<_type>::MethodInvoker(const Method& pMethod, const Instance& pTarget) 
-			:m_method(pMethod)
+			: m_method(pMethod)
 			, m_target(pTarget) {
 		}
 
@@ -80,8 +80,8 @@ namespace rtl
 			switch (getQualifier())
 			{
 			case TypeQ::None: return Function::hasSignature<void>();
-			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute>::getContainerId());
-			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const>::getContainerId());
+			case TypeQ::Mute: return (hasSignatureId(detail::MethodContainer<TypeQ::Mute>::getContainerId()) != -1);
+			case TypeQ::Const: return (hasSignatureId(detail::MethodContainer<TypeQ::Const>::getContainerId()) != -1);
 			}
 			return false;
 		}
@@ -93,8 +93,8 @@ namespace rtl
 			switch (getQualifier())
 			{
 			case TypeQ::None: return Function::hasSignature<_arg0, _args...>();
-			case TypeQ::Mute: return hasSignatureId(detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId());
-			case TypeQ::Const: return hasSignatureId(detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId());
+			case TypeQ::Mute: return (hasSignatureId(detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId()) != -1);
+			case TypeQ::Const: return (hasSignatureId(detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId()) != -1);
 			}
 			return false;
 		}
@@ -103,15 +103,14 @@ namespace rtl
 		template<class ..._args>
 		inline RStatus Method::invokeConst(const Instance& pTarget, _args ...params) const
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::MethodContainer<TypeQ::Const, _args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
+			const std::size_t& index = hasSignatureId(detail::MethodContainer<TypeQ::Const, _args...>::getContainerId());
+			if (index != -1)
 			{
-				return detail::MethodContainer<TypeQ::Const, _args...>::reflectMethodCall(pTarget.get(), index, hashCode, params...);
+				return detail::MethodContainer<TypeQ::Const, _args...>::forwardCall(pTarget.get(), index, params...);
 			}
 			else {
-				const std::size_t& nonConstSignId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
-				if (hasSignatureId(nonConstSignId, index, hashCode)) {
+				const std::size_t& index = hasSignatureId(detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId());
+				if (index != -1) {
 					return RStatus(Error::InstanceConstMismatch);
 				}
 			}
@@ -122,11 +121,10 @@ namespace rtl
 		template<class ..._args>
 		inline RStatus Method::invoke(const Instance& pTarget, _args ...params) const
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
+			const std::size_t& index = hasSignatureId(detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId());
+			if (index != -1)
 			{
-				return detail::MethodContainer<TypeQ::Mute, _args...>::reflectMethodCall(pTarget.get(), index, hashCode, params...);
+				return detail::MethodContainer<TypeQ::Mute, _args...>::forwardCall(pTarget.get(), index, params...);
 			}
 			else {
 				return invokeConst(pTarget, params...);

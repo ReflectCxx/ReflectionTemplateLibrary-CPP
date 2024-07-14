@@ -9,10 +9,6 @@ namespace rtl {
 		template<class _derivedType>
 		class SetupMethod 
 		{
-			template<class _recordType, class _retType>
-			static const std::size_t getHashCode(const std::size_t pContainerId, const std::size_t pIndex,
-							     const std::size_t pArgsCount);
-
 		protected:
 
 			template<class _recordType, class _retType, class ..._signature>

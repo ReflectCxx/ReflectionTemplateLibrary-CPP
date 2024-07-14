@@ -15,24 +15,16 @@ namespace rtl {
 		struct CallReflector
 		{
 			template<class ..._params>
-			static access::RStatus reflectFunctionCall(std::size_t pFunctorId, const std::size_t pHashCode, _params..._args) 
+			static access::RStatus forwardCall(std::size_t pFunctorIndex, _params..._args) 
 			{
-				const auto& functor = _derivedType::getFunctors().at(pFunctorId);
-				if (functor.first == pHashCode) {
-					return functor.second(_args...);
-				}
-				return access::RStatus(Error::SignatureMismatch);
+				return _derivedType::getFunctors().at(pFunctorIndex)(_args...);
 			}
 
 
 			template<class ..._params>
-			static access::RStatus reflectMethodCall(const std::any& pTarget, std::size_t pFunctorId, const std::size_t pHashCode, _params..._args)
+			static access::RStatus forwardCall(const std::any& pTarget, std::size_t pFunctorIndex, _params..._args)
 			{
-				const auto& functor = _derivedType::getMethodFunctors().at(pFunctorId);
-				if (functor.first == pHashCode) {
-					return functor.second(pTarget, _args...);
-				}
-				return access::RStatus(Error::SignatureMismatch);
+				return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, _args...);
 			}
 		};
 	}

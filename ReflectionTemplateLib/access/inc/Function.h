@@ -43,8 +43,7 @@ namespace rtl {
 			Function(const Function& pOther, const detail::FunctorId& pFunctorId,
 				 const std::string& pFunctorName, const std::string& pSignatureStr);
 
-			const bool hasSignatureId(const std::size_t& pSignatureId) const;
-			const bool hasSignatureId(const std::size_t& pSignatureId, std::size_t& pIndex, std::size_t& pHashCode) const;
+			const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
 
 		public:
 
@@ -54,10 +53,6 @@ namespace rtl {
 			GETTER(std::string, FunctionName, m_function)
 			GETTER(std::string, Signatures, m_signatures)
 			GETTER(std::size_t, RecordTypeId, m_recordTypeId)
-
-			const FunctorType& getFunctorType() const {
-				return m_functorIds[0].getFunctorType();
-			}
 
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;

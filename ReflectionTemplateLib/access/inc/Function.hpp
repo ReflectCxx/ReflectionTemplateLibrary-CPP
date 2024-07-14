@@ -12,29 +12,24 @@ namespace rtl {
 		template<class _arg0, class ..._args>
 		inline const bool Function::hasSignature() const
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::FunctorContainer<_arg0, _args...>::getContainerId();
-			return hasSignatureId(signId, index, hashCode);
+			return (hasSignatureId(detail::FunctorContainer<_arg0, _args...>::getContainerId()) != -1);
 		}
 
 
 		template<>
 		inline const bool Function::hasSignature<void>() const
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::FunctorContainer<>::getContainerId();
-			return hasSignatureId(signId, index, hashCode);
+			return (hasSignatureId(detail::FunctorContainer<>::getContainerId()) != -1);
 		}
 
 
 		template<class ..._args>
 		inline RStatus Function::operator()(_args ...params) const noexcept
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::FunctorContainer<_args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
+			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
+			if (index != -1)
 			{
-				return detail::FunctorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
+				return detail::FunctorContainer<_args...>::forwardCall(index, params...);
 			}
 			return RStatus(Error::SignatureMismatch);
 		}
@@ -43,11 +38,10 @@ namespace rtl {
 		template<class ..._args>
 		inline RStatus Function::call(_args ...params) const noexcept
 		{
-			std::size_t index, hashCode;
-			const std::size_t& signId = detail::FunctorContainer<_args...>::getContainerId();
-			if (hasSignatureId(signId, index, hashCode))
+			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
+			if (index != -1)
 			{
-				return detail::FunctorContainer<_args...>::reflectFunctionCall(index, hashCode, params...);
+				return detail::FunctorContainer<_args...>::forwardCall(index, params...);
 			}
 			return RStatus(Error::SignatureMismatch);
 		}

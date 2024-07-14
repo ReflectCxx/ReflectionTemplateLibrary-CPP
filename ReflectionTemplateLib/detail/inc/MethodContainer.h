@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <vector>
 #include <functional>
 
@@ -13,7 +14,7 @@ namespace rtl {
 	namespace detail
 	{
 		class ReflectionBuilder;
-		extern std::size_t g_containerIdCounter;
+		extern std::atomic<std::size_t> g_containerIdCounter;
 
 		template<TypeQ, class ..._signature>
 		class MethodContainer;
@@ -30,21 +31,25 @@ namespace rtl {
 				return m_containerId;
 			}
 
-			static const std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
+			static const std::vector<MethodLambda>& getMethodFunctors() {
 				return m_methodPtrs;
 			}
 
 		private:
 
 			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
+			static std::vector<MethodLambda> m_methodPtrs;
 
-			static void pushBack(const std::size_t& pHashCode, const MethodLambda& pFunctor) {
-				m_methodPtrs.emplace_back(pHashCode, pFunctor);
+			static const std::size_t pushBack(const MethodLambda& pFunctor)
+			{
+				static std::mutex mtx;
+				std::lock_guard<std::mutex> lock(mtx);
+				m_methodPtrs.push_back(pFunctor);
+				return (m_methodPtrs.size() - 1);
 			}
 
 			friend ReflectionBuilder;
-			friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;		
+			friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;
 		};
 
 
@@ -60,17 +65,21 @@ namespace rtl {
 				return m_containerId;
 			}
 
-			static const std::vector< std::pair<std::size_t, MethodLambda> >& getMethodFunctors() {
+			static const std::vector<MethodLambda>& getMethodFunctors() {
 				return  m_methodPtrs;
 			}
 
 		private:
 
 			static const std::size_t m_containerId;
-			static std::vector< std::pair<std::size_t, MethodLambda> > m_methodPtrs;
+			static std::vector<MethodLambda> m_methodPtrs;
 
-			static void pushBack(const std::size_t& pHashCode, const MethodLambda& pFunctor) {
-				m_methodPtrs.emplace_back(pHashCode, pFunctor);
+			static const std::size_t pushBack(const MethodLambda& pFunctor)
+			{
+				static std::mutex mtx;
+				std::lock_guard<std::mutex> lock(mtx);
+				m_methodPtrs.push_back(pFunctor);
+				return (m_methodPtrs.size() - 1);
 			}
 
 			friend ReflectionBuilder;
@@ -85,11 +94,11 @@ namespace rtl {
 		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter++;
 
 		template<class ..._signature>
-		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Mute, _signature...>::MethodLambda> > 
+		std::vector<typename MethodContainer<TypeQ::Mute, _signature...>::MethodLambda> 
 		MethodContainer<TypeQ::Mute, _signature...>::m_methodPtrs;
 
 		template<class ..._signature>
-		std::vector< std::pair <std::size_t, typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> > 
+		std::vector<typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> 
 		MethodContainer<TypeQ::Const, _signature...>::m_methodPtrs;
 	}
 }
