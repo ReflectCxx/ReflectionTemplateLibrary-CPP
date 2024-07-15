@@ -9,9 +9,8 @@ namespace rtl {
 	namespace detail 
 	{	
 		inline ReflectionBuilder::ReflectionBuilder(const std::string& pNamespace, const std::string& pRecord, 
-							    const std::string& pFunction, int& pDctorIndex)
-			: m_dctorIndex(pDctorIndex)
-			, m_record(pRecord)
+							    const std::string& pFunction)
+			: m_record(pRecord)
 			, m_function(pFunction)
 			, m_namespace(pNamespace) {
 		}
@@ -54,7 +53,7 @@ namespace rtl {
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			const access::Function constructor = access::Function(m_namespace, m_record, m_function, signature, functorId, TypeId<_recordType>::get(), TypeQ::None);
-			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>(m_dctorIndex));
+			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
 			return constructor;
 		}
 
@@ -66,7 +65,7 @@ namespace rtl {
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			const access::Function constructor = access::Function(m_namespace, m_record, m_function, signature, functorId, TypeId<_recordType>::get(), TypeQ::None);
-			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>(m_dctorIndex));
+			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
 			return constructor;
 		}
 		
@@ -78,7 +77,7 @@ namespace rtl {
 			const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
 			const std::string& signature = "(" + (typeStr.empty() ? "void" : typeStr) + ")";
 			const access::Function constructor = access::Function(m_namespace, m_record, m_function, signature, functorId, TypeId<_recordType>::get(), TypeQ::None);
-			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>(m_dctorIndex));
+			constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
 			return constructor;
 		}
 	}

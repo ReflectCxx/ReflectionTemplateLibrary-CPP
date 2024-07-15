@@ -11,6 +11,9 @@ namespace rtl {
 		{	
 		protected:
 
+			template<class _recordType>
+			static const detail::FunctorId addDestructor();
+
 			template<class _recordType, class ..._signature>
 			static const detail::FunctorId addConstructor();
 
@@ -19,9 +22,6 @@ namespace rtl {
 
 			template<class _recordType>
 			static const detail::FunctorId addConstCopyConstructor();
-
-			template<class _recordType>
-			static const detail::FunctorId addDestructor(int& pDctorIndex);
 		};
 	}
 }

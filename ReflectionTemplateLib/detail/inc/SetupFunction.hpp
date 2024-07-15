@@ -11,13 +11,26 @@ namespace rtl
 		inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...),
 										       enable_if_void<_returnType> *_)
 		{
-			const auto functor = [=](_signature...params)->access::RStatus
+			static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
+			const auto& updateIndex = [&](const std::size_t& pIndex) {
+				functorSet.emplace_back(pFunctor, pIndex);
+			};
+			const auto& getIndex = [&]()->const std::size_t {
+				for (const auto& fptr : functorSet) {
+					if (fptr.first == pFunctor) {
+						return fptr.second;
+					}
+				}
+				return -1;
+			};
+
+			const auto& functor = [=](_signature...params)->access::RStatus
 			{
 				(*pFunctor)(params...);
 				return access::RStatus(Error::None);
 			};
 
-			const std::size_t& index = _derivedType::pushBack(functor);
+			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
 			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId());
 		}
 
@@ -27,6 +40,19 @@ namespace rtl
 		inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...),
 										       enable_if_non_void<_returnType> *_)
 		{
+			static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
+			const auto& updateIndex = [&](const std::size_t& pIndex) {
+				functorSet.emplace_back(pFunctor, pIndex);
+			};
+			const auto& getIndex = [&]()->const std::size_t {
+				for (const auto& fptr : functorSet) {
+					if (fptr.first == pFunctor) {
+						return fptr.second;
+					}
+				}
+				return -1;
+			};
+
 			const auto& typeId = TypeId<_returnType>::get();
 			const auto functor = [=](_signature...params)->access::RStatus
 			{
@@ -35,7 +61,7 @@ namespace rtl
 				return access::RStatus(std::make_any<_returnType>(retObj), typeId, qualifier);
 			};
 
-			const std::size_t& index = _derivedType::pushBack(functor);
+			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
 			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId());
 		}
 	}

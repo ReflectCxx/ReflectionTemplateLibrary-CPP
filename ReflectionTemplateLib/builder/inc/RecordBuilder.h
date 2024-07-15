@@ -15,8 +15,6 @@ namespace rtl {
 			const std::string& m_record;
 			const std::string& m_namespace;
 
-			static int m_dctorIndex;
-
 		public:
 
 			RecordBuilder(const std::string& pNamespace, const std::string& pRecord);

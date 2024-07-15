@@ -54,6 +54,8 @@ namespace rtl {
 			GETTER(std::string, Signatures, m_signatures)
 			GETTER(std::size_t, RecordTypeId, m_recordTypeId)
 
+			const std::string getHashCode() const;
+
 			template<class _arg0, class ..._args>
 			const bool hasSignature() const;
 

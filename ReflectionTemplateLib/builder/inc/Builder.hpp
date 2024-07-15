@@ -7,8 +7,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						     const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+						     const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class _returnType, class ..._signature>
@@ -22,8 +22,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							   const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+							   const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class _returnType>
@@ -38,8 +38,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::None, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								    const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+								    const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class ..._signature>
@@ -54,8 +54,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Const>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						      const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+						      const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class _recordType, class _returnType>
@@ -75,8 +75,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Const, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							    const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+							    const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class _recordType, class _returnType>
@@ -91,8 +91,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::Const, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								     const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+								     const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class ..._signature>
@@ -107,8 +107,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Mute>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						     const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+						     const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 
@@ -148,8 +148,8 @@ namespace rtl {
 	namespace builder
 	{
 		inline Builder<TypeQ::Mute, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-							   const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+							   const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
 		template<class _recordType, class _returnType>
@@ -164,8 +164,8 @@ namespace rtl {
 	{
 		template<class ..._signature>
 		inline Builder<TypeQ::Mute, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-								    const std::string& pFunction, int& pDctorIndex)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction, pDctorIndex) {
+								    const std::string& pFunction)
+			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 		
 		template<class ..._signature>

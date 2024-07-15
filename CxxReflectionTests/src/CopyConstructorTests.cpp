@@ -46,7 +46,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			optional<Method> setDecription = classBook->getMethod(book::str_setDecription);
+			optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
 			ASSERT_TRUE(setDecription);
 
 			double price = book::PRICE;
@@ -84,7 +84,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			optional<Method> setDecription = classBook->getMethod(book::str_setDecription);
+			optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
 			ASSERT_TRUE(setDecription);
 
 			double price = book::PRICE;

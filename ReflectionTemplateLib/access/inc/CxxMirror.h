@@ -19,6 +19,8 @@ namespace rtl {
 
 			CxxMirror(const std::vector<Function>& pFunctions);
 
+			void dumpReflectionJson(const std::string& pFilePath);
+
 			std::optional<Record> getRecord(const std::string& pFunction);
 
 			std::optional<Function> getFunction(const std::string& pFunction);

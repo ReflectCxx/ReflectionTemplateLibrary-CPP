@@ -22,6 +22,12 @@ namespace rtl {
 		}
 
 
+		const std::unordered_map<std::string, access::Method>& Record::getMethodMap() const
+		{
+			return m_methods;
+		}
+
+
 		std::optional<Method> Record::getMethod(const std::string& pMethod) const
 		{
 			const auto& itr = m_methods.find(pMethod);

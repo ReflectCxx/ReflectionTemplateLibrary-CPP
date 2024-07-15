@@ -44,6 +44,18 @@ namespace rtl {
 		}
 
 
+		const std::string Function::getHashCode() const 
+		{
+			std::string hashCode;
+			for (const auto& funcId : m_functorIds) {
+				hashCode += std::to_string(funcId.getHashCode()) + ", ";
+			}
+			hashCode.pop_back();
+			hashCode.pop_back();
+			return hashCode;
+		}
+
+
 		const std::size_t Function::hasSignatureId(const std::size_t& pSignatureId) const
 		{
 			const auto& itr = std::find_if(m_functorIds.begin(), m_functorIds.end(),

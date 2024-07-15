@@ -5,7 +5,6 @@
 #include <functional>
 
 #include "Constants.h"
-
 #include "CallReflector.h"
 #include "SetupFunction.hpp"
 #include "SetupConstructor.hpp"
@@ -38,12 +37,20 @@ namespace rtl {
 			static const std::size_t m_containerId;
 			static std::vector<FunctionLambda> m_functors;
 
-			static const std::size_t pushBack(const FunctionLambda& pFunctor) 
+			static const std::size_t pushBack(const FunctionLambda& pFunctor, 
+							  std::function<const std::size_t()> pGetIndex,
+							  std::function<void(const std::size_t&)> pUpdate)
 			{
 				static std::mutex mtx;
 				std::lock_guard<std::mutex> lock(mtx);
-				m_functors.push_back(pFunctor);
-				return (m_functors.size() - 1);
+
+				std::size_t index = pGetIndex();
+				if (index == -1) {
+					index = m_functors.size();
+					pUpdate(index);
+					m_functors.push_back(pFunctor);
+				}
+				return index;
 			}
 
 			friend ReflectionBuilder;
