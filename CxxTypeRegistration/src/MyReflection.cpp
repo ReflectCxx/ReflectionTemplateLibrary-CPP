@@ -63,7 +63,7 @@ CxxMirror& MyReflection::instance()
 
 		//unique methods.
 		Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
-		Reflect().record<Book>(book::class_).method(book::str_setDecription).build(&Book::setDescription),
+		Reflect().record<Book>(book::class_).method(book::str_setDescription).build(&Book::setDescription),
 		Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
 
 		//method overloads.

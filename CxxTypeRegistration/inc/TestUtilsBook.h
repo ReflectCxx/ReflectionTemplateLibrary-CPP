@@ -25,7 +25,7 @@ namespace test_utils
 
 		static constexpr const char* class_ = "Book";
 		static constexpr const char* str_setAuthor = "setAuthor";
-		static constexpr const char* str_setDecription = "setDecription";
+		static constexpr const char* str_setDescription = "setDescription";
 		static constexpr const char* str_getPublishedOn = "getPublishedOn";
 		static constexpr const char* str_setPublishedOn = "setPublishedOn";
 		static constexpr const char* str_updateBookInfo = "updateBookInfo";
