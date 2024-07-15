@@ -59,7 +59,7 @@ namespace rtl {
 		};
 
 		template<class ..._signature>
-		const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerIdCounter++;
+		const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
 
 		template<class ..._signature>
 		std::vector<typename FunctorContainer<_signature...>::FunctionLambda> FunctorContainer<_signature...>::m_functors;

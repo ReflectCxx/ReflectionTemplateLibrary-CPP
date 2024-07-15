@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "Function.h"
+#include "Instance.h"
 
 namespace rtl {
 
@@ -10,7 +11,6 @@ namespace rtl {
 	{
 		class Method;
 		class Record;
-		class Instance;
 
 		template<FunctorType _type>
 		class MethodInvoker

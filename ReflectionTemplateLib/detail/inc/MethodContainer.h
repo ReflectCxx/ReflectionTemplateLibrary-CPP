@@ -61,7 +61,7 @@ namespace rtl {
 		};
 
 		template<class ..._signature>
-		const std::size_t MethodContainer<TypeQ::Mute, _signature...>::m_containerId = g_containerIdCounter++;
+		const std::size_t MethodContainer<TypeQ::Mute, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
 
 		template<class ..._signature>
 		std::vector<typename MethodContainer<TypeQ::Mute, _signature...>::MethodLambda>
@@ -113,7 +113,7 @@ namespace rtl {
 		};
 
 		template<class ..._signature>
-		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter++;
+		const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
 
 		template<class ..._signature>
 		std::vector<typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> 
