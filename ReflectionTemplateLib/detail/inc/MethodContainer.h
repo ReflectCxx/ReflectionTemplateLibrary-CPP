@@ -36,6 +36,11 @@ namespace rtl {
 				return m_methodPtrs;
 			}
 
+			template<class _recordType, class _returnType>
+			static const std::string getSignatureStr() {
+				return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + "::(" + TypeId<_signature...>::toString() + ")");
+			}
+
 		private:
 
 			static const std::size_t m_containerId;
@@ -86,6 +91,11 @@ namespace rtl {
 
 			static const std::vector<MethodLambda>& getMethodFunctors() {
 				return  m_methodPtrs;
+			}
+
+			template<class _recordType, class _returnType>
+			static const std::string getSignatureStr() {
+				return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + "::(" + TypeId<_signature...>::toString() + ") const");
 			}
 
 		private:

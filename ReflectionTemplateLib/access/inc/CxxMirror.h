@@ -13,13 +13,11 @@ namespace rtl {
 		class Record;
 		class Function;
 
-		class CxxMirror : detail::CxxReflection 
+		class CxxMirror : public detail::CxxReflection 
 		{
 		public:
 
 			CxxMirror(const std::vector<Function>& pFunctions);
-
-			void dumpReflectionJson(const std::string& pFilePath);
 
 			std::optional<Record> getRecord(const std::string& pFunction);
 

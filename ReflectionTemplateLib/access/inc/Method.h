@@ -49,8 +49,7 @@ namespace rtl {
 		{
 			Method(const Function& pFunction);
 
-			Method(const Function& pFunction, const detail::FunctorId& pFunctorId,
-				const std::string& pFunctorName, const std::string& pSignatureStr);
+			Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
 
 			template<class ..._args>
 			RStatus invokeCtor(_args...params) const;

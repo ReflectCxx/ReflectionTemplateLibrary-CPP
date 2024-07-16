@@ -44,9 +44,9 @@ namespace rtl {
 				return std::make_pair(RStatus(Error::EmptyInstance), Instance());
 			}
 
-			const std::string& dctor = (m_recordName + Ctor::DCTOR);
-			const std::string& copyStr = (m_recordName + Ctor::CTOR_COPY);
-			const std::string& constCopyStr = (m_recordName + Ctor::CTOR_CONST_COPY);
+			const std::string& dctor = CtorName::dctor(m_recordName);
+			const std::string& copyStr = CtorName::copy(m_recordName);
+			const std::string& constCopyStr = CtorName::constCopy(m_recordName);
 
 			std::optional<Function> destructor = getMethod(dctor);
 			std::optional<Function> constCopyCtor = getMethod(constCopyStr);

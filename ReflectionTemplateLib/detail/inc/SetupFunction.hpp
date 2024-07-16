@@ -31,7 +31,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId());
+			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId(),
+						 _derivedType::template getSignatureStr<_returnType>());
 		}
 
 
@@ -62,7 +63,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId());
+			return detail::FunctorId(index, TypeId<_returnType>::get(), TypeId<>::None, _derivedType::getContainerId(), 
+						 _derivedType::template getSignatureStr<_returnType>());
 		}
 	}
 }

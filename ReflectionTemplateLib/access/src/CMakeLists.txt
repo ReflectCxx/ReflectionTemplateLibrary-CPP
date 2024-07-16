@@ -1,6 +1,7 @@
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirror.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorToJson.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Function.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Instance.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
@@ -15,6 +16,7 @@ SET(COMMON_HEADERS
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirror.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirrorToJson.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Instance.h"

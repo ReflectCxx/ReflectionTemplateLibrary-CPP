@@ -26,13 +26,11 @@ namespace rtl {
 			const std::string m_function;
 			const std::string m_namespace;
 
-			mutable std::string m_signatures;
 			mutable std::vector<detail::FunctorId> m_functorIds;
 
 			Function();
 			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const std::string& pSignature, const detail::FunctorId& pFunctorId,
-				 std::size_t pRecordTypeId, const TypeQ pQualifier);
+				 const detail::FunctorId& pFunctorId, std::size_t pRecordTypeId, const TypeQ pQualifier);
 
 			void addOverload(const Function& pOtherFunc) const;
 
@@ -41,7 +39,7 @@ namespace rtl {
 		protected:
 
 			Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-				 const std::string& pFunctorName, const std::string& pSignatureStr);
+				 const std::string& pFunctorName);
 
 			const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
 
@@ -51,8 +49,8 @@ namespace rtl {
 			GETTER(std::string, RecordName, m_record)
 			GETTER(std::string, Namespace, m_namespace)
 			GETTER(std::string, FunctionName, m_function)
-			GETTER(std::string, Signatures, m_signatures)
 			GETTER(std::size_t, RecordTypeId, m_recordTypeId)
+			GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
 
 			const std::string getHashCode() const;
 

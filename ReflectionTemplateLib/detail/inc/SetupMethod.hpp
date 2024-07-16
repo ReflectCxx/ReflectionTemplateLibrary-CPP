@@ -34,7 +34,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, TypeId<_retType>::get(), TypeId<_recordType>::get(), _derivedType::getContainerId());
+			return detail::FunctorId(index, TypeId<_retType>::get(), TypeId<_recordType>::get(), _derivedType::getContainerId(),
+						 _derivedType::template getSignatureStr<_recordType, _retType>());
 		}
 
 
@@ -66,7 +67,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId());
+			return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+						 _derivedType::template getSignatureStr<_recordType, _retType>());
 		}
 
 
@@ -96,7 +98,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, TypeId<_retType>::get(), TypeId<_recordType>::get(), _derivedType::getContainerId());
+			return detail::FunctorId(index, TypeId<_retType>::get(), TypeId<_recordType>::get(), _derivedType::getContainerId(),
+						 _derivedType::template getSignatureStr<_recordType, _retType>());
 		}
 
 
@@ -129,7 +132,8 @@ namespace rtl
 			};
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-			return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId());
+			return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+						 _derivedType::template getSignatureStr<_recordType, _retType>());
 		}
 	}
 }

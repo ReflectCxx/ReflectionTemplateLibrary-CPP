@@ -13,6 +13,7 @@ namespace rtl
 			const std::size_t m_returnId;
 			const std::size_t m_recordId;
 			const std::size_t m_containerId;
+			const std::string m_signature;
 
 		public:
 
@@ -20,19 +21,22 @@ namespace rtl
 				: m_index(-1)
 				, m_returnId(TypeId<>::None)
 				, m_recordId(TypeId<>::None)
-				, m_containerId(TypeId<>::None) {
+				, m_containerId(TypeId<>::None)
+				, m_signature("") {
 			}
 
 			FunctorId(const std::size_t& pIndex, const std::size_t& pReturnId,
-				  const std::size_t& pRecordId, const std::size_t& pContainerId)
+				  const std::size_t& pRecordId, const std::size_t& pContainerId, const std::string& pSignature)
 				: m_index(pIndex)
 				, m_returnId(pReturnId)
 				, m_recordId(pRecordId)
-				, m_containerId(pContainerId) {
+				, m_containerId(pContainerId)
+				, m_signature(pSignature) {
 			}
 
 			GETTER(std::size_t, Index, m_index)
 			GETTER(std::size_t, SignatureId, m_containerId)
+			GETTER(std::string, SignatureStr, m_signature)
 			
 			std::size_t getHashCode() const;
 		};

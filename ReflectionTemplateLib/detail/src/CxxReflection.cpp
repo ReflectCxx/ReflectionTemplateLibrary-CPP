@@ -53,7 +53,7 @@ namespace rtl {
 				auto& functorIds = pFunction.getFunctorIds();
 				if (functorIds.size() > 1) 
 				{
-					const auto& dctorName = pFunction.getRecordName() + Ctor::DCTOR;
+					const auto& dctorName = CtorName::dctor(pFunction.getRecordName());
 					if (pMethodMap.find(dctorName) == pMethodMap.end()) {
 						access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
 						pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
