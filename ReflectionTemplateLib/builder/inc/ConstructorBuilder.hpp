@@ -2,6 +2,7 @@
 
 #include "Function.h"
 #include "Builder.hpp"
+#include "Constants.hpp"
 #include "ConstructorBuilder.h"
 
 namespace rtl {
@@ -25,15 +26,15 @@ namespace rtl {
 			{
 			default:
 			case FunctorType::Ctor: {
-				const auto& ctorName = (m_record + Ctor::CTOR);
+				const auto& ctorName = getCtorName(m_record);
 				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtor: {
-				const auto& ctorName = (m_record + Ctor::CTOR_COPY);
+				const auto& ctorName = getCopyCtorName(m_record);
 				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
 			}
 			case FunctorType::CopyCtorConst: {
-				const auto& ctorName = (m_record + Ctor::CTOR_CONST_COPY);
+				const auto& ctorName = getConstCopyCtorName(m_record);
 				return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
 			}
 			}

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <optional>
 #include <unordered_map>
 
@@ -12,6 +11,7 @@ namespace rtl {
 	namespace access 
 	{
 		class Record;
+		class Method;
 		class Function;
 	}
 
@@ -39,6 +39,8 @@ namespace rtl {
 			CxxReflection& operator=(CxxReflection&) = delete;
 
 			CxxReflection(const std::vector<access::Function>& pFunctions);
+
+		public:
 
 			constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() {
 				return m_nsRecordsMap;

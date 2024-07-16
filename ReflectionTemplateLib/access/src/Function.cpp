@@ -13,33 +13,29 @@ namespace rtl {
 			, m_recordTypeId(detail::TypeId<>::None)
 			, m_record("")
 			, m_function("")
-			, m_signatures("")
 			, m_namespace("")
 		{
 		}
 
 
 		Function::Function(const std::string& pNamespace, const std::string& pRecord, const std::string& pFunction,
-				   const std::string& pSignature, const detail::FunctorId& pFunctorId,
-				   std::size_t pRecordTypeId, const TypeQ pQualifier)
+				   const detail::FunctorId& pFunctorId, std::size_t pRecordTypeId, const TypeQ pQualifier)
 			: m_qualifier(pQualifier)
 			, m_recordTypeId(pRecordTypeId)
 			, m_functorIds({ pFunctorId })
 			, m_record(pRecord)
 			, m_function(pFunction)
-			, m_signatures(pSignature)
 			, m_namespace(pNamespace) {
 		}
 
 
 		Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-				   const std::string& pFunctorName, const std::string& pSignatureStr)
+				   const std::string& pFunctorName)
 			: m_qualifier(pOther.m_qualifier)
 			, m_recordTypeId(pOther.m_recordTypeId)
 			, m_functorIds({ pFunctorId })
 			, m_record(pOther.m_record)
 			, m_function(pFunctorName)
-			, m_signatures(pSignatureStr)
 			, m_namespace(pOther.m_namespace) {
 		}
 
@@ -80,7 +76,6 @@ namespace rtl {
 			}
 
 			m_functorIds.push_back(pOtherFunc.m_functorIds[0]);
-			m_signatures.append("\n" + pOtherFunc.m_signatures);
 		}
 	}
 }

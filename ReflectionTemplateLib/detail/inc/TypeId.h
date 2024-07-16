@@ -23,6 +23,12 @@ namespace rtl {
 
 			static const std::string toString()
 			{
+				if (std::is_same<_type, void>::value) {
+					return std::string("void");
+				}
+				if (std::is_same<_type, std::string>::value) {
+					return std::string("std::string");
+				}
 				if (!std::is_same<_type, std::nullptr_t>::value) {
 					return std::string(typeid(_type).name());
 				}
@@ -43,6 +49,9 @@ namespace rtl {
 			static const std::string toString() {
 
 				const std::string& tailStr = TAIL::toString();
+				if (std::is_same<HEAD, std::string>::value) {
+					return std::string("std::string") + ", " + tailStr;
+				}
 				return (std::string(typeid(HEAD).name()) + ", " + tailStr);
 			}
 		};

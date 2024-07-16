@@ -2,6 +2,7 @@
 
 SET(COMMON_HEADERS
 	"${PROJECT_SOURCE_DIR}/common/Constants.h"
+	"${PROJECT_SOURCE_DIR}/common/Constants.hpp"
 )
 
 SET(LOCAL_HEADERS

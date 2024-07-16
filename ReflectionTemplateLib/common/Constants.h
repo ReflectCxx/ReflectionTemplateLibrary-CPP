@@ -38,14 +38,6 @@ namespace rtl {
         ConstCopyConstructorNotFound
     };
 
-
-    struct Ctor {
-        static constexpr const char* CTOR = "::ctor()";
-        static constexpr const char* DCTOR = "::~dctor()";
-        static constexpr const char* CTOR_COPY = "::ctor(&)";
-        static constexpr const char* CTOR_CONST_COPY = "::ctor(const&)";
-    };
-
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
 #define GETTER(_varType, _name, _var)                       \

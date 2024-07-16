@@ -33,6 +33,12 @@ namespace rtl {
 				return m_functors;
 			}
 
+			template<class _returnType>
+			static const std::string getSignatureStr(const bool pIsMember = false) {
+				const std::string& retStr = TypeId<_returnType>::toString();
+				return (retStr + (pIsMember ? "::" : " ") + "(" + TypeId<_signature...>::toString() + ")");
+			}
+
 		private:
 			
 			static const std::size_t m_containerId;

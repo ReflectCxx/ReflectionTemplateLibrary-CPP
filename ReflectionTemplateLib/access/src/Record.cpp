@@ -4,6 +4,7 @@
 #include "RStatus.h"
 #include "Instance.h"
 #include "Constants.h"
+#include "Constants.hpp"
 #include "Function.hpp"
 
 namespace rtl {
@@ -44,9 +45,9 @@ namespace rtl {
 				return std::make_pair(RStatus(Error::EmptyInstance), Instance());
 			}
 
-			const std::string& dctor = (m_recordName + Ctor::DCTOR);
-			const std::string& copyStr = (m_recordName + Ctor::CTOR_COPY);
-			const std::string& constCopyStr = (m_recordName + Ctor::CTOR_CONST_COPY);
+			const std::string& dctor = getDctorName(m_recordName);
+			const std::string& copyStr = getCopyCtorName(m_recordName);
+			const std::string& constCopyStr = getConstCopyCtorName(m_recordName);
 
 			std::optional<Function> destructor = getMethod(dctor);
 			std::optional<Function> constCopyCtor = getMethod(constCopyStr);
