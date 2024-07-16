@@ -11,7 +11,6 @@ set(LOCAL_SOURCES
 
 SET(COMMON_HEADERS
 	"${PROJECT_SOURCE_DIR}/common/Constants.h"
-	"${PROJECT_SOURCE_DIR}/common/Constants.hpp"
 	"${PROJECT_SOURCE_DIR}/common/RTLibInterface.h"
 )
 

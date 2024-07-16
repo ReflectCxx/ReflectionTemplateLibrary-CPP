@@ -3,7 +3,6 @@
 #include "RStatus.h"
 #include "Method.h"
 #include "Constants.h"
-#include "Constants.hpp"
 #include "Instance.h"
 
 namespace rtl {
@@ -13,12 +12,12 @@ namespace rtl {
 		template<class ..._ctorArgs>
 		inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs ...params) const
 		{
-			const std::string& ctor = getCtorName(m_recordName);
+			const std::string& ctor = CtorName::ctor(m_recordName);
 			const auto& itr = m_methods.find(ctor);
 			if (itr != m_methods.end()) {
 				const RStatus& status = itr->second.invokeCtor(params...);
 				if (status) {
-					const std::string& dctor = getDctorName(m_recordName);
+					const std::string& dctor = CtorName::dctor(m_recordName);
 					return std::make_pair(status, Instance(status.getReturn(), status, *getMethod(dctor)));
 				}
 				return std::make_pair(status, Instance());

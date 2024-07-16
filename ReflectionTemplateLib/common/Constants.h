@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <type_traits>
 
 namespace rtl {
@@ -61,4 +62,23 @@ namespace rtl {
 
     template<class _type, class _typeB>
     using enable_if_not_same = typename std::enable_if< !std::is_same<_type, _typeB>::value >::type;
+
+    struct CtorName
+    {
+        static const std::string ctor(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "()");
+        }
+
+        static const std::string dctor(const std::string& pRecordName) {
+            return (pRecordName + "::~" + pRecordName + "()");
+        }
+
+        static const std::string copy(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
+        }
+
+        static const std::string constCopy(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
+        }
+    };
 }
