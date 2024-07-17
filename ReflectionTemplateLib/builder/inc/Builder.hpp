@@ -4,14 +4,16 @@
 
 namespace rtl {
 
-	namespace builder
-	{
-		inline Builder<TypeQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
-						     const std::string& pFunction)
-			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
-		}
+    namespace builder
+    {
+        inline Builder<TypeQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
+                                             const std::string& pFunction)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+        }
 
-		template<class _returnType, class ..._signature>
+    /* this build() will accept all non-member function pointer, even the ones with zero args (only
+       in absence of any other overloaded function)
+    */	template<class _returnType, class ..._signature>
 		inline constexpr const access::Function Builder<TypeQ::None>::build(_returnType(*pFunctor)(_signature...)) const
 		{
 			return buildFunctor(pFunctor);
@@ -26,7 +28,11 @@ namespace rtl {
 			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
-		template<class _returnType>
+    /* This build() only accepts a function pointer with no arguments. If there is an overloaded function with
+       zero arguments, the compiler will not be able to auto deduce which function pointer to pick.
+       In those cases <void> must be expicitly specified (ie, function<void>().build()) to make the compiler to
+       pick the function pointer taking zero arguments.
+    */	template<class _returnType>
 		inline constexpr const access::Function Builder<TypeQ::None, void>::build(_returnType(*pFunctor)()) const
 		{
 			return buildFunctor(pFunctor);
@@ -42,6 +48,7 @@ namespace rtl {
 			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
+    /*  this build() accepts function pointer with signature that is explicitly specified by 'function<..>()' template params. */
 		template<class ..._signature>
 		template<class _returnType>
 		inline constexpr const access::Function Builder<TypeQ::None, _signature...>::build(_returnType(*pFunctor)(_signature...)) const
@@ -58,11 +65,6 @@ namespace rtl {
 			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
-		template<class _recordType, class _returnType>
-		inline constexpr const access::Function Builder<TypeQ::Const>::build(_returnType(_recordType::* pFunctor)() const) const
-		{
-			return buildMethodFunctor(pFunctor);
-		}
 
 		template<class _recordType, class _returnType, class ..._signature>
 		inline constexpr const access::Function Builder<TypeQ::Const>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
@@ -79,7 +81,11 @@ namespace rtl {
 			: ReflectionBuilder(pNamespace, pRecord, pFunction) {
 		}
 
-		template<class _recordType, class _returnType>
+    /* This build() only accepts a const-member-function pointer with no arguments. If there is an overloaded
+       const-member-function with zero arguments, the compiler will not be able to auto deduce which function pointer to pick.
+       In those cases <void> must be expicitly specified (ie, methodConst<void>().build()) to make the compiler to
+       pick the const-member-function pointer taking zero arguments.
+    */	template<class _recordType, class _returnType>
 		inline constexpr const access::Function Builder<TypeQ::Const, void>::build(_returnType(_recordType::* pFunctor)() const) const
 		{
 			return buildMethodFunctor(pFunctor);
