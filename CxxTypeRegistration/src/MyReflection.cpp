@@ -34,7 +34,9 @@ CxxMirror& MyReflection::instance()
 		Reflect().function<const char*>(str_reverseString).build(reverseString),	//overloaded function, takes 'const char*' arguments.
 		Reflect().function(str_getComplexNumAsString).build(getComplexNumAsString),		//unique function, no overloads, no need to specify signature as template parameters.
 
-		//Grouping functions under a namespace, which is optional. they can be registered without it as well.
+		/*Grouping functions under a namespace, which is optional.they can be registered without it as well.
+		  but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
+		  ex - cxxMirror.getFunction("namespace_name", "function_name") & cxxMirror.getRecord("namespace_name", "record_name")*/
 		Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
 		Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
 		Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),

@@ -11,8 +11,11 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-    /* this build() will accept all non-member and static-member function pointer, even the ones with zero args (only
-       in absence of any other overloaded function)
+    /*  @method: build()
+        @param: _returnType(*)(_signature...)
+        * accepts all non-member and static-member function pointer.
+        * called on the objects returned by 'Reflect::function()' & 'RecordBuilder<_recordType>::methodStatic(..)'.
+        * template params are auto deduced from the function pointer passed.
     */	template<class _returnType, class ..._signature>
         inline constexpr const access::Function Builder<TypeQ::None>::build(_returnType(*pFunctor)(_signature...)) const
         {
@@ -28,10 +31,11 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-    /* This build() only accepts a function pointer with no arguments. If there is an overloaded function with
-       zero arguments, the compiler will not be able to auto deduce which function pointer to pick.
-       In those cases <void> must be expicitly specified (ie, function<void>().build()) to make the compiler to
-       pick the function pointer taking zero arguments.
+    /*  @method: build()
+        @param: _returnType(*)()
+        * accepts a non-member or static-member function pointer with no arguments.
+        * called on objects returned by 'Reflect::function<void>(..)' & 'RecordBuilder<_recordType>::methodStatic<void>(..)'
+        * template param 'void' is explicitly specified.
     */  template<class _returnType>
         inline constexpr const access::Function Builder<TypeQ::None, void>::build(_returnType(*pFunctor)()) const
         {
@@ -48,8 +52,13 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-    /*  this build() accepts function pointer with signature that is explicitly specified by 'function<..>()' template params. */
-        template<class ..._signature>
+
+    /*  @method: build()
+        @param: _returnType(*)(_signature...)
+        * it accepts a non-member or static-member function pointer.
+        * called on objects returned by 'Reflect::function<...>(..)' & 'RecordBuilder<_recordType>::methodStatic<...>(..)'.
+        * template params are explicitly specified.
+    */  template<class ..._signature>
         template<class _returnType>
         inline constexpr const access::Function Builder<TypeQ::None, _signature...>::build(_returnType(*pFunctor)(_signature...)) const
         {
@@ -65,8 +74,12 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-
-        template<class _recordType, class _returnType, class ..._signature>
+    /*  @method: build()
+        @param: _returnType(_recordType::*)(_signature...) const.
+        * accepts function pointer of a const-member-function with any signature. 
+        * called on object returned by 'RecordBuilder<_recordType>::methodConst()'
+        * template params will be auto deduced from the function pointer passed.
+    */  template<class _recordType, class _returnType, class ..._signature>
         inline constexpr const access::Function Builder<TypeQ::Const>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
             return buildMethodFunctor(pFunctor);
@@ -81,10 +94,11 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-    /* This build() only accepts a const-member-function pointer with no arguments. If there is an overloaded
-       const-member-function with zero arguments, the compiler will not be able to auto deduce which function pointer to pick.
-       In those cases <void> must be expicitly specified (ie, methodConst<void>().build()) to make the compiler to
-       pick the const-member-function pointer taking zero arguments.
+    /*  @method: build()
+        @param: _returnType(_recordType::*)() const.
+        * accepts a const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::methodConst<void>()'
+        * template param 'void' is explicitly specified.
     */  template<class _recordType, class _returnType>
         inline constexpr const access::Function Builder<TypeQ::Const, void>::build(_returnType(_recordType::* pFunctor)() const) const
         {
@@ -101,7 +115,12 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-        template<class ..._signature>
+    /*  @method: build()
+        @param: _returnType(_recordType::*)(_signature...) const.
+        * accepts a const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::methodConst<...>()'
+        * template param are explicitly specified.
+    */  template<class ..._signature>
         template<class _recordType, class _returnType>
         inline constexpr const access::Function Builder<TypeQ::Const, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
@@ -118,7 +137,12 @@ namespace rtl {
         }
 
 
-        template<class _recordType, class ..._signature>
+    /*  @method: build()
+        @param: '_' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
+        * builds copy constructor which takes non-const object source ref, accepts no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::constructor<_recordType&>()'
+        * template params <_recordType&>, explicitly specified.
+    */  template<class _recordType, class ..._signature>
         inline constexpr const access::Function
         Builder<TypeQ::Mute>::build(enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
         {
@@ -126,7 +150,12 @@ namespace rtl {
         }
 
 
-        template<class _recordType, class ..._signature>
+    /*  @method: build()
+        @param: '_' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
+        * builds copy constructor which takes const object source ref, accepts no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::constructor<const _recordType&>()'
+        * template params <const _recordType&>, explicitly specified.
+    */  template<class _recordType, class ..._signature>
         inline constexpr const access::Function
         Builder<TypeQ::Mute>::build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
         {
@@ -134,7 +163,13 @@ namespace rtl {
         }
 
 
-        template<class _recordType, class ..._signature>
+    /*  @method: build()
+        @param: '_' & '__' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
+        * builds copy constructor which takes const object source, accepts no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::constructor<...>()'
+        * template params <...>, explicitly specified.
+        * calling with zero template params will build the default constructor ie, 'RecordBuilder<_recordType>::constructor()'
+    */  template<class _recordType, class ..._signature>
         inline constexpr const access::Function
         Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
                                     enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
@@ -143,7 +178,12 @@ namespace rtl {
         }
 
 
-        template<class _recordType, class _returnType, class ..._signature>
+    /*  @method: build()
+        @param: _returnType(_recordType::*)(_signature...)
+        * accepts a non-const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::method()'
+        * template params are auto deduced from the pointer passed.
+    */  template<class _recordType, class _returnType, class ..._signature>
         inline constexpr const access::Function Builder<TypeQ::Mute>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
             return buildMethodFunctor(pFunctor);
@@ -158,7 +198,13 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 
-        template<class _recordType, class _returnType>
+
+    /*  @method: build()
+        @param: _returnType(_recordType::*)()
+        * accepts a non-const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::method<void>()'
+        * template param 'void' is explicitly specified.
+    */  template<class _recordType, class _returnType>
         inline constexpr const access::Function Builder<TypeQ::Mute, void>::build(_returnType(_recordType::* pFunctor)()) const
         {
             return buildMethodFunctor(pFunctor);
@@ -174,7 +220,12 @@ namespace rtl {
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
         }
 		
-        template<class ..._signature>
+    /*  @method: build()
+        @param: _returnType(_recordType::*)(_signature...)
+        * accepts a non-const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::method<...>()'
+        * template params are explicitly specified.
+    */  template<class ..._signature>
         template<class _recordType, class _returnType>
         inline constexpr const access::Function Builder<TypeQ::Mute, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
