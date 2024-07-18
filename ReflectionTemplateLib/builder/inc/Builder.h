@@ -85,7 +85,7 @@ namespace rtl {
 
             template<class _recordType, class _returnType>
             constexpr const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
-		};
+        };
 
 
     /*  specialized specifically to register overloaded const-member-functions with any arguments.
@@ -167,12 +167,12 @@ namespace rtl {
 
             template<class _recordType, class ..._signature>
             constexpr const access::Function
-                build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr) const;
+            build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr) const;
 
             template<class _recordType, class ..._signature>
             constexpr const access::Function
-                build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr,
-                      enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__= nullptr) const;
+            build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_= nullptr,
+                  enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__= nullptr) const;
 
             template<class _recordType, class _returnType, class ..._signature>
             constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
