@@ -138,43 +138,27 @@ namespace rtl {
 
 
     /*  @method: build()
-        @param: '_' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
-        * builds copy constructor which takes non-const object source ref, accepts no arguments.
-        * called on object returned by 'RecordBuilder<_recordType>::constructor<_recordType&>()'
-        * template params <_recordType&>, explicitly specified.
-    */  template<class _recordType, class ..._signature>
-        inline constexpr const access::Function
-        Builder<TypeQ::Mute>::build(enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
-        {
-            return buildCopyConstructor<_recordType, _signature...>();
-        }
-
-
-    /*  @method: build()
-        @param: '_' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
-        * builds copy constructor which takes const object source ref, accepts no arguments.
-        * called on object returned by 'RecordBuilder<_recordType>::constructor<const _recordType&>()'
-        * template params <const _recordType&>, explicitly specified.
-    */  template<class _recordType, class ..._signature>
-        inline constexpr const access::Function
-        Builder<TypeQ::Mute>::build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
-        {
-            return buildConstCopyConstructor<_recordType, _signature...>();
-        }
-
-
-    /*  @method: build()
-        @param: '_' & '__' defaulted to nullptr to enable SFINAE. (params have no significance after compilation)
-        * builds copy constructor which takes const object source, accepts no arguments.
+        @param: none
+        * accepts no arguments, builds copy constructor which takes const object source.
         * called on object returned by 'RecordBuilder<_recordType>::constructor<...>()'
         * template params <...>, explicitly specified.
         * calling with zero template params will build the default constructor ie, 'RecordBuilder<_recordType>::constructor()'
     */  template<class _recordType, class ..._signature>
         inline constexpr const access::Function
-        Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
-                                    enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
+        Builder<TypeQ::Mute>::build() const
         {
-            return buildConstructor<_recordType, _signature...>();
+            if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>)
+            {
+                return buildCopyConstructor<_recordType, _signature...>();
+            }
+            else if constexpr (std::is_same_v<const _recordType&, typename detail::TypeId<_signature...>::HEAD>)
+            {
+                return buildConstCopyConstructor<_recordType, _signature...>();
+            }
+            else 
+            {
+                return buildConstructor<_recordType, _signature...>();
+            }
         }
 
 
