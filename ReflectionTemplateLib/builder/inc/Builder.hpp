@@ -113,27 +113,19 @@ namespace rtl {
 
 
 		template<class _recordType, class ..._signature>
-		inline constexpr const access::Function
-		Builder<TypeQ::Mute>::build(enable_if_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
+		inline constexpr const access::Function Builder<TypeQ::Mute>::build() const
 		{
-			return buildCopyConstructor<_recordType, _signature...>();
-		}
-
-
-		template<class _recordType, class ..._signature>
-		inline constexpr const access::Function
-		Builder<TypeQ::Mute>::build(enable_if_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *_) const
-		{
-			return buildConstCopyConstructor<_recordType, _signature...>();
-		}
-
-
-		template<class _recordType, class ..._signature>
-		inline constexpr const access::Function
-		Builder<TypeQ::Mute>::build(enable_if_not_same<_recordType&, typename detail::TypeId<_signature...>::HEAD > *_,
-					    enable_if_not_same<const _recordType&, typename detail::TypeId<_signature...>::HEAD > *__) const
-		{
-			return buildConstructor<_recordType, _signature...>();
+			if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>) 
+			{
+				return buildCopyConstructor<_recordType, _signature...>();
+			}
+			else if constexpr (std::is_same_v<const _recordType&, typename detail::TypeId<_signature...>::HEAD>) 
+			{
+				return buildConstCopyConstructor<_recordType, _signature...>();
+			}
+			else {
+				return buildConstructor<_recordType, _signature...>();
+			}
 		}
 
 
