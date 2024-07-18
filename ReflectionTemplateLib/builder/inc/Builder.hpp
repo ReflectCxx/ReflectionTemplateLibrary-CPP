@@ -173,8 +173,8 @@ namespace rtl {
             return buildMethodFunctor(pFunctor);
         }
     }
-	
 
+  
     namespace builder
     {
         inline Builder<TypeQ::Mute, void>::Builder(const std::string& pNamespace, const std::string& pRecord,

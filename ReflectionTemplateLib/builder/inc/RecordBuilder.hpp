@@ -21,7 +21,7 @@ namespace rtl {
             if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>) 
             {
                 return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, FunctorType::CopyCtor);
-			}
+			      }
             else if constexpr (std::is_same_v<const _recordType&, typename detail::TypeId<_signature...>::HEAD>) 
             {
                 return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, FunctorType::CopyCtorConst);
