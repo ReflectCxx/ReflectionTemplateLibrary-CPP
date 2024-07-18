@@ -18,7 +18,15 @@ namespace rtl {
 		template<class ..._signature>
 		inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
 		{
-			return ConstructorBuilder<>::select<_recordType, _signature...>(m_namespace, m_record);
+			if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>) {
+				return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, FunctorType::CopyCtor);
+			}
+			else if constexpr (std::is_same_v<const _recordType&, typename detail::TypeId<_signature...>::HEAD>) {
+				return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, FunctorType::CopyCtorConst);
+			}
+			else {
+				return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, FunctorType::Ctor);
+			}
 		}
 
 
