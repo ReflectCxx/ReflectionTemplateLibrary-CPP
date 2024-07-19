@@ -18,28 +18,18 @@ namespace rtl {
         }
 
 
-        template<class _recordType, class ..._ctorSignature>
+    /*  @method: build()
+        @param: none
+        @return: 'Function' object.
+        * constructs temparory object of class Builder<TypeQ::Mute> with given class/struct, namespace name & constructor type.
+        * forwards the call to Builder<TypeQ::Mute>::build().
+    */  template<class _recordType, class ..._ctorSignature>
         inline constexpr const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
         {
-            switch (m_ctorType)
-            {
-                default:
-                case FunctorType::Ctor: 
-                {
-                    const auto& ctorName = CtorName::ctor(m_record);
-                    return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
-                }
-                case FunctorType::CopyCtor: 
-                {
-                    const auto& ctorName = CtorName::copy(m_record);
-                    return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
-                }
-                case FunctorType::CopyCtorConst: 
-                {
-                    const auto& ctorName = CtorName::constCopy(m_record);
-                    return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
-                }
-            }
+            const auto& ctorName = (m_ctorType == FunctorType::CopyCtor ? CtorName::copy(m_record) : 
+                                   (m_ctorType == FunctorType::CopyCtorConst ? CtorName::constCopy(m_record) : CtorName::ctor(m_record)));
+
+            return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
         }
     }
 }

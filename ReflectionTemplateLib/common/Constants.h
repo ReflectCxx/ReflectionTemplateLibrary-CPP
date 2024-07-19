@@ -65,19 +65,19 @@ namespace rtl {
 
     struct CtorName
     {
-        static const std::string ctor(const std::string& pRecordName) {
+        static constexpr const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
 
-        static const std::string dctor(const std::string& pRecordName) {
+        static constexpr const std::string dctor(const std::string& pRecordName) {
             return (pRecordName + "::~" + pRecordName + "()");
         }
 
-        static const std::string copy(const std::string& pRecordName) {
+        static constexpr const std::string copy(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
         }
 
-        static const std::string constCopy(const std::string& pRecordName) {
+        static constexpr const std::string constCopy(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
         }
     };

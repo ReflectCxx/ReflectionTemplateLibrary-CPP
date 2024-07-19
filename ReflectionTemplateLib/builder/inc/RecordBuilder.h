@@ -9,7 +9,10 @@ namespace rtl {
         template<class _recordType, class ..._ctorSignature>
         class ConstructorBuilder;
 
-        template<class _recordType>
+    /*  @class: RecordBuilder
+        @param: <_recordType>, a struct/class type.
+        * provides interface to register member-function & constructors/destructor of a class/struct.
+    */  template<class _recordType>
         class RecordBuilder
         {
             const std::string& m_record;
