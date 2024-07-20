@@ -39,7 +39,7 @@ namespace rtl
 
 			const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
 			return detail::FunctorId(index, retTypeId, TypeId<>::None, _derivedType::getContainerId(),
-				_derivedType::template getSignatureStr<_returnType>());
+						 _derivedType::template getSignatureStr<_returnType>());
 		}
 	}
 }
