@@ -37,15 +37,13 @@ namespace rtl {
 
 		Instance::Instance()
 			: m_qualifier(TypeQ::None)
-			, m_typeId(detail::TypeId<>::None)
-			, m_constTypeId(detail::TypeId<>::None) {
+			, m_typeId(detail::TypeId<>::None) {
 		}
 
 
 		Instance::Instance(const Instance& pOther)
 			: m_qualifier(pOther.m_qualifier)
 			, m_typeId(pOther.m_typeId)
-			, m_constTypeId(pOther.m_constTypeId)
 			, m_anyObject(pOther.m_anyObject)
 			, m_destructor(pOther.m_destructor) {
 		}
@@ -54,7 +52,6 @@ namespace rtl {
 		Instance::Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
 			: m_qualifier(TypeQ::Mute)
 			, m_typeId(pStatus.getTypeId())
-			, m_constTypeId(pStatus.getTypeId())
 			, m_anyObject(pRetObj)
 			, m_destructor(&g_instanceCount, [=](void* ptr)
 			{

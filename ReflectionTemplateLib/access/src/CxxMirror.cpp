@@ -12,10 +12,10 @@ namespace rtl {
     /*  @Constructor: CxxMirror
         @params: 'const std::vector<Function>&'
         * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
-		* the only constructor to construct 'CxxMirror' object.
-		* Syntax for constructing - CxxMirror({ Reflect().function("func_name").build(), ..., ... })
-		* '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
-		* the vector is simply forwarded to the base class constructor.
+        * the only constructor to construct 'CxxMirror' object.
+        * Syntax for constructing - CxxMirror({ Reflect().function("func_name").build(), ..., ... })
+        * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
+        * the vector is simply forwarded to the base class constructor.
     */  CxxMirror::CxxMirror(const std::vector<Function>& pFunctions)
             : detail::CxxReflection(pFunctions) {
         }
@@ -26,7 +26,7 @@ namespace rtl {
         @return: std::optional<Record>
         * if the class/struct isn't found by the given name, std::nullopt is returned.
         * every class/struct's is grouped under a namespace.
-		* if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
+        * if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
     */  std::optional<Record> CxxMirror::getRecord(const std::string& pRecord) const
         {
             return getRecord(NAMESPACE_GLOBAL, pRecord);
@@ -48,7 +48,7 @@ namespace rtl {
     /*  @method: getRecord
         @param: std::string (namespace name), std::string (class/struct name)
         @return: std::optional<Record>
-	    * retrieves the class/struct (as Record) registered under the given namespace.
+        * retrieves the class/struct (as Record) registered under the given namespace.
         * if the class/struct isn't found by the given name, std::nullopt is returned.
     */  std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpace, const std::string& pRecord) const
         {

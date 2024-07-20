@@ -78,7 +78,7 @@ namespace rtl {
             {
                 if (constCopyCtor) 
                 {
-                /*  type of the object wrapped inder source 'Instance' should match with type of the class/struct
+                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
                     associated by constructor ('Function')object.
                 */  if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
                         //if source instance & ctor type didn't match, return empty instance with error status.
@@ -98,7 +98,7 @@ namespace rtl {
                 std::optional<Function> copyCtor = getMethod(copyStr);
                 if (copyCtor)
                 {
-                /*  type of the object wrapped inder source 'Instance' should match with type of the class/struct
+                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
                     associated by constructor ('Function')object.
                 */  if (copyCtor->getRecordTypeId() != pOther.getTypeId()) {
                         //if source instance & ctor type didn't match, return empty instance with error status.
@@ -111,7 +111,7 @@ namespace rtl {
                 //if copy-constructor taking non-const ref not found, and with const-ref found, use that copy constructor.
                 else if (constCopyCtor)
                 {
-                /*  type of the object wrapped inder source 'Instance' should match with type of the class/struct
+                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
                     associated by constructor ('Function')object.
                 */  if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
                         //if source instance & ctor type didn't match, return empty instance with error status.

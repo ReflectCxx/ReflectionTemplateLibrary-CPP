@@ -20,7 +20,6 @@ namespace rtl {
 			mutable TypeQ m_qualifier;
 
 			const std::size_t m_typeId;
-			const std::size_t m_constTypeId;
 
 			const std::any m_anyObject;
 			const std::shared_ptr<void> m_destructor;

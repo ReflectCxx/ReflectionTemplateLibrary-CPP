@@ -11,7 +11,7 @@ namespace rtl {
     /*  @Constructor: CxxMirror
         @params: 'const std::vector<Function>&'
         * recieves vector of 'Function' objects, forwarded from 'CxxMirror' constructor.
-		* initiates grouping of each 'Function' object under namespace, class/struct.
+        * initiates grouping of each 'Function' object under namespace, class/struct.
     */  CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
         {
             for (const auto& function : pFunctions) {
@@ -100,6 +100,7 @@ namespace rtl {
         {
             const auto& nameSpace = pFunction.getNamespace();
 
+            //if the record-name is empty, 'Function' object is considered as non-member function.
             if (pFunction.getRecordName().empty()) {
                 const auto& itr = m_nsFunctionsMap.find(nameSpace);
                 if (itr == m_nsFunctionsMap.end()) {
@@ -110,6 +111,7 @@ namespace rtl {
                     addFunction(itr->second, pFunction);
                 }
             }
+            //if the record-name is not-empty, 'Function' object is considered as member function, a 'Method'.
             else {
                 const auto& itr = m_nsRecordsMap.find(nameSpace);
                 if (itr == m_nsRecordsMap.end()) {
