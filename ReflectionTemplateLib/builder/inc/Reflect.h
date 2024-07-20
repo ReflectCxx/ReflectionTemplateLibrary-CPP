@@ -18,7 +18,7 @@ namespace rtl {
             //name of the class, struct being registered as string.
             std::string m_record;
 
-			//name of the namespace being registered as string.
+            //name of the namespace being registered as string.
             std::string m_namespace;
 
         public:

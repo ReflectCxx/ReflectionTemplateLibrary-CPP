@@ -4,28 +4,18 @@
 
 namespace rtl {
 
-	namespace detail 
+	namespace detail
 	{
 		template<class _derivedType>
-		class SetupMethod 
+		class SetupMethod
 		{
 		protected:
 
 			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...),
-								  enable_if_void<_retType> *_= nullptr);
+			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...));
 
 			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...),
-								  enable_if_non_void<_retType> *_= nullptr);
-
-			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const,
-								  enable_if_void<_retType> *_= nullptr);
-
-			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const,
-								  enable_if_non_void<_retType> *_= nullptr);
+			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const);
 		};
 	}
 }
