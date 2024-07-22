@@ -14,7 +14,6 @@ namespace rtl_tests
 
 	TEST(CopyConstructor, call_copy_ctor_of_PERSON_with_BOOK_instance)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
@@ -31,12 +30,12 @@ namespace rtl_tests
 			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_non_const)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -69,12 +68,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_const)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -110,12 +109,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(CopyConstructor, copy_ctor_arg_const_ref_overload___src_instance_const)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -136,12 +135,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(CopyConstructor, copy_ctor_arg_non_const_ref_overload___src_instance_non_const)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -160,5 +159,6 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 }

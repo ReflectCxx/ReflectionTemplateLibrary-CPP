@@ -17,12 +17,10 @@ namespace rtl_tests
 		{
 			optional<Function> badFunc = cxxMirror.getFunction("wrong_namespace", "wrong_function");
 			EXPECT_FALSE(badFunc);
-		}
-		{
+		} {
 			optional<Function> badFunc = cxxMirror.getFunction(str_complex, "wrong_function");
 			EXPECT_FALSE(badFunc);
-		}
-		{
+		} {
 			optional<Function> badFunc = cxxMirror.getFunction("wrong_getComplexNumAsString");
 			EXPECT_FALSE(badFunc);
 		}
@@ -130,8 +128,7 @@ namespace rtl_tests
 
 			string retVal = std::any_cast<string>(status.getReturn());
 			EXPECT_TRUE(retVal == STRA_REVERSE);
-		}
-		{
+		} {
 			RStatus status = reverseString->call(string(STRB));
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());
@@ -139,8 +136,7 @@ namespace rtl_tests
 
 			string retVal = std::any_cast<string>(status.getReturn());
 			EXPECT_TRUE(retVal == STRB_REVERSE);
-		}
-		{
+		} {
 			RStatus status = (*reverseString)();
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());

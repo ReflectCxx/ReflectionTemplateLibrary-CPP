@@ -11,7 +11,6 @@ namespace rtl_tests
 {
 	TEST(ConstMethodOverload, const_method_no_overload_call_on_non_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -35,12 +34,12 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ConstMethodOverload, const_method_no_overload_call_on_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -66,12 +65,12 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ConstMethodOverload, const_method_string_call_on_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -97,12 +96,12 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ConstMethodOverload, const_method_string_call_on_non_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -125,12 +124,12 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ConstMethodOverload, const_method_no_args_call_on_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -157,12 +156,12 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateAddress_const(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ConstMethodOverload, const_method_no_args_call_on_non_const_target)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -186,5 +185,6 @@ namespace rtl_tests
 			EXPECT_TRUE(person::test_method_updateAddress(personObj.get()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 }

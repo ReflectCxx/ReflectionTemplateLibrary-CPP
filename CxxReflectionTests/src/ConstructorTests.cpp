@@ -25,7 +25,6 @@ namespace rtl_tests
 
 	TEST(DynamicAllocConstructorDate, wrong_args)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -38,12 +37,12 @@ namespace rtl_tests
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorDate, args_void)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -57,12 +56,12 @@ namespace rtl_tests
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorDate, args_string)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -77,12 +76,12 @@ namespace rtl_tests
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -98,12 +97,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DestructorDate, non_virtual)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -117,12 +116,12 @@ namespace rtl_tests
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(instance.get()));
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorBook, wrong_args)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -135,12 +134,12 @@ namespace rtl_tests
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorBook, args_default)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -154,12 +153,12 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DynamicAllocConstructorBook, args_double_string)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -177,12 +176,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(DestructorBook, non_virtual)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -196,5 +195,6 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(instance.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 }

@@ -7,110 +7,167 @@
 
 namespace rtl {
 
-	namespace access
-	{
-		class Method;
-		class Record;
+    namespace access
+    {
+        //forward decls
+        class Method;
+        class Record;
 
-		template<FunctorType _type>
-		class MethodInvoker
-		{
-			const Method& m_method;
-			const Instance& m_target;
+    /*  @class: MethodInvoker
+        @param: <FunctorType _type>, can be any 'FunctorType' other than FunctorType::Static.
+        * invokes the assigned method on the assigned object.
+        * invokes only non-static member function via reflection.
+        * its objects are only cretaed and returned by 'Method::on()' method.
+        * purpose of this class is only to provide method call syntax like, 'method.on(target).call(params...)'
+    */  template<FunctorType _type>
+        class MethodInvoker
+        {
+            //the method to be called.
+            const Method& m_method;
+
+            //the object on which, the method needs to be called.
+            const Instance& m_target;
 			
-			MethodInvoker(const Method& pMethod, const Instance& pTarget);
+            MethodInvoker(const Method& pMethod, const Instance& pTarget);
 
-		public:
+        public:
 
-			template<class ..._args>
-			RStatus call(_args...) const noexcept;
+            template<class ..._args>
+            RStatus call(_args...) const noexcept;
 
-			friend Method;
-		};
-
-
-		template<>
-		class MethodInvoker<FunctorType::Static>
-		{
-			const Method& m_method;
-
-			MethodInvoker(const Method& pMethod);
-
-		public:
-
-			template<class ..._args>
-			RStatus call(_args...) const noexcept;
-
-			friend Method;
-		};
+            friend Method;
+        };
 
 
-		class Method : public Function
-		{
-			Method(const Function& pFunction);
+    /*  @class: MethodInvoker
+        @param: FunctorType::Static (explicitly specialized)
+        * invokes the assigned method on the assigned object.
+        * invokes only static member function via reflection.
+        * its objects are only cretaed and returned by 'Method::on()' method.
+        * purpose of this class is only to provide method call syntax like, 'method.on().call(params...)'
+        * 'on()' will take no target as parameter, since the method being called is 'static'.
+    */  template<>
+        class MethodInvoker<FunctorType::Static>
+        {
+            const Method& m_method;
 
-			Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
+            MethodInvoker(const Method& pMethod);
 
-			template<class ..._args>
-			RStatus invokeCtor(_args...params) const;
+        public:
 
-			template<class ..._args>
-			RStatus invoke(const Instance& pTarget, _args...params) const;
+            template<class ..._args>
+            RStatus call(_args...) const noexcept;
 
-			template<class ..._args>
-			RStatus invokeConst(const Instance& pTarget, _args...params) const;
+            friend Method;
+        };
 
-			template<class ..._args>
-			RStatus invokeStatic(_args...params) const;
 
-			static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
+    /*  @class: Method
+        * extends 'Function' class and adds interfaces to call member function.
+        * invokes only static & non-static member functions via reflection.
+        * deletes the base's 'operator()()'.
+        * redefines 'operator()()', to accept only target object and returns lambda.
+        * the returned lambda is then called with the arguments corresponding to the functor associated with it.
+    */  class Method : public Function
+        {
+            //private ctor, called by 'Record' class.
+            Method(const Function& pFunction);
 
-		public:
+            //private ctor, called by 'Record' class.
+            Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
 
-			template<class _arg0, class ..._args>
-			const bool hasSignature() const;
+            //invokes the constructor associated with this 'Method'
+            template<class ..._args>
+            RStatus invokeCtor(_args...params) const;
 
-			const MethodInvoker<FunctorType::Static> on() const;
-			const MethodInvoker<FunctorType::Method> on(const Instance& pTarget) const;
+            //invokes the member-function associated with this 'Method'
+            template<class ..._args>
+            RStatus invoke(const Instance& pTarget, _args...params) const;
 
-			constexpr auto operator()() const
-			{
-				return [this](auto...params) {
-					return Function::operator()(params...);
-				};
-			}
+            //invokes only const member-function associated with this 'Method'
+            template<class ..._args>
+            RStatus invokeConst(const Instance& pTarget, _args...params) const;
+            
+            //invokes only static member-function associated with this 'Method'
+            template<class ..._args>
+            RStatus invokeStatic(_args...params) const;
 
-			constexpr auto operator()(const Instance& pTarget) const
-			{
-				return [&](auto...params)->RStatus
-				{
-					if (pTarget.isEmpty()) {
-						return RStatus(Error::EmptyInstance);
-					}
+            //called from class 'Record', creates a 'Method' object for destructor.
+            static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
 
-					if (pTarget.getTypeId() != getRecordTypeId()) {
-						return RStatus(Error::InstanceTypeMismatch);
-					}
+        public:
 
-					switch (pTarget.getQualifier())
-					{
-					case TypeQ::Mute: return invoke(pTarget, params...);
-					case TypeQ::Const: return invokeConst(pTarget, params...);
-					}
-					return RStatus(Error::EmptyInstance);
-				};
-			}
+            //indicates if a particular set of arguments accepted by the functor associated with it.
+            template<class _arg0, class ..._args>
+            const bool hasSignature() const;
 
-			template<class ..._args>
-			RStatus operator()(_args...) const noexcept = delete;
+            //set 'no' object to call static method. (takes no parameter)
+            const MethodInvoker<FunctorType::Static> on() const;
 
-			template<class ..._args>
-			RStatus call(_args...) const noexcept = delete;
+            //set 'target' object on which the functor associated with this will be called.
+            const MethodInvoker<FunctorType::Method> on(const Instance& pTarget) const;
 
-			template<FunctorType _type>
-			friend class MethodInvoker;
-			friend detail::CxxReflection; 
-			friend Record;
-		};
-	}
+            
+        /*  @method: operator()()
+            @return: lambda
+            * accepts no arguments for 'target', since associated functor is static-member-functions.
+            * returns a lambda, which forwards the call to finally call the associated static-member-function functor.
+            * provides syntax like,'method()(params...)', first'()' is empty & second'()' takes the actual params.
+        */  constexpr auto operator()() const
+            {
+                return [this](auto...params) {
+                    return Function::operator()(params...);
+                };
+            }
+
+
+        /*  @method: operator()(const Instance&)
+            @param: const Instance& (target object)
+            @return: lambda
+            * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
+            * returns a lambda, which forwards the call to finally call the associated non-static-member-function functor.
+            * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
+        */  constexpr auto operator()(const Instance& pTarget) const
+            {
+                return [&](auto...params)->RStatus
+                {
+                    if (pTarget.isEmpty()) {
+                        //if the target is empty.
+                        return RStatus(Error::EmptyInstance);
+                    }
+
+                    if (pTarget.getTypeId() != getRecordTypeId()) {
+                        //if the target type-id & type-id of the 'class/struct' owner of the associated functor do not match.
+                        return RStatus(Error::InstanceTypeMismatch);
+                    }
+
+                    switch (pTarget.getQualifier())
+                    {
+                        //if the target is non-const, const & non-const member function can be invoked on it.
+                        case TypeQ::Mute: return invoke(pTarget, params...);
+
+                        //if the target is const, only const member function can be invoked on it.
+                        case TypeQ::Const: return invokeConst(pTarget, params...);
+                    }
+
+                    //only an empty 'Instance' will have TypeQ::None.
+                    return RStatus(Error::EmptyInstance);
+                };
+            }
+
+            //deletes base class 'operator()()'
+            template<class ..._args>
+            RStatus operator()(_args...) const noexcept = delete;
+
+            //deletes base class 'call()'
+            template<class ..._args>
+            RStatus call(_args...) const noexcept = delete;
+
+            //friends :)
+            template<FunctorType _type>
+            friend class MethodInvoker;
+            friend detail::CxxReflection;
+            friend Record;
+        };
+    }
 }

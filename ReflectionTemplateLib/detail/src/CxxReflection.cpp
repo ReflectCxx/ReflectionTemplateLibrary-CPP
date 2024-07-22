@@ -58,8 +58,8 @@ namespace rtl {
 
     /*  @method: addMethod
         @params: MethodMap, Function
-        * adds the 'Function' object as 'Method' object the the method map contained by 'Record' object.
-        * if the function name already exists in the map, then 'FunctorId' from the source 'Function' object is added to already existing 'Function' object.
+        * adds the 'Function' object as 'Method' object in MethodMap, contained by 'Record' object.
+        * if the function name already exists in the map, then 'FunctorId' from the param 'pFunction' is added to already existing 'Function'.
         * if a 'Function' object represents a Constructor, it might have the destructor 'FunctorId' as well.
         * if destructor 'FunctorId' is found, destructor 'Function' object is created and added to the 'MethodMap'.
     */  void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
@@ -70,7 +70,7 @@ namespace rtl {
             {
                 auto& functorIds = pFunction.getFunctorIds();
             /*  This condition will be true only in case that 'Function' object represents a constructor
-                and has more that one 'FunctorId'. every other function registered will have only one 'FunctorId'.
+                and has more than one 'FunctorId'. every other function registered will have only one 'FunctorId'.
             */  if (functorIds.size() > 1) 
                 {
                     const auto& dctorName = CtorName::dctor(pFunction.getRecordName());
@@ -82,7 +82,7 @@ namespace rtl {
                     //remove the destructor 'FunctorId' from the constructor's 'FunctorId' vector.
                     functorIds.pop_back();
                 }
-                //construct 'Method' obejct from 'Function' object and add.
+                //construct 'Method' obejct and add.
                 pMethodMap.emplace(fname, access::Method(pFunction));
             }
             else {
