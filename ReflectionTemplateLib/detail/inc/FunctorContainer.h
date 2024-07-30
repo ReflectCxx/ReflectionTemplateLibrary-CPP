@@ -63,7 +63,7 @@ namespace rtl {
             @return: index of newly added or already existing lambda in vector 'm_functors'.
         */  static const std::size_t pushBack(const FunctionLambda& pFunctor,
                                               std::function<const std::size_t()> pGetIndex,
-							                  std::function<void(const std::size_t&)> pUpdate)
+                                              std::function<void(const std::size_t&)> pUpdate)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
