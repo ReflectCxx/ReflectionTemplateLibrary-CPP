@@ -27,7 +27,6 @@ namespace rtl_tests
 
 	TEST(ReflectedCallStatusError, unregistered_constructor___error_CopyConstructorNotFound)
 	{
-		EXPECT_TRUE(calender::assert_zero_instance_count());
 		{
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
 			ASSERT_TRUE(classCalender);
@@ -42,6 +41,7 @@ namespace rtl_tests
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(calender::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
@@ -76,6 +76,7 @@ namespace rtl_tests
 		auto [retStatus, personObj] = classPerson->clone(emptyObj);
 
 		ASSERT_TRUE(retStatus == Error::EmptyInstance);
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
@@ -94,12 +95,12 @@ namespace rtl_tests
 
 		RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->on(emptyObj).call();
 		ASSERT_TRUE(retStatus == Error::EmptyInstance);
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ReflectedCallStatusError, unregistered_constructor___error_ConstCopyConstructorNotFound)
 	{
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		{
 			optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
@@ -116,12 +117,12 @@ namespace rtl_tests
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ReflectedCallStatusError, method_on_wrong_instance___error_InstanceTypeMismatch)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{
 			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
@@ -140,12 +141,12 @@ namespace rtl_tests
 			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance__error_InstanceConstMismatch)
 	{
-		EXPECT_TRUE(person::assert_zero_instance_count());
 		{	
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
@@ -163,5 +164,6 @@ namespace rtl_tests
 			ASSERT_TRUE(retStatus == Error::InstanceConstMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 }

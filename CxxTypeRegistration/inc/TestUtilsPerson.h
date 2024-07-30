@@ -21,6 +21,7 @@ namespace test_utils
 		static constexpr const char* class_ = "Person";
 		static constexpr const char* str_getProfile = "getProfile";
 		static constexpr const char* str_getDefaults = "getDefaults";
+		static constexpr const char* str_getFirstName = "getFirstName";
 		static constexpr const char* str_updateAddress = "updateAddress";
 		static constexpr const char* str_updateLastName = "updateLastName";
 

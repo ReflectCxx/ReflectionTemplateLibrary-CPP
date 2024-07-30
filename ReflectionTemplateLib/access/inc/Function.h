@@ -10,61 +10,75 @@
 
 namespace rtl {
 
-	namespace detail {
-		class CxxReflection;
+    namespace detail {
+		//forward decls
+        class CxxReflection;
 		class ReflectionBuilder;
 	}
 
-	namespace access
+    namespace access
 	{
-		class Function
-		{
-			const TypeQ m_qualifier;
-			const std::size_t m_recordTypeId;
+    /*  @class: Function, (callable object)
+        * every functor (function/method pointer), constructor, destructor registered will produce a 'Function' object
+        * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
+        * once the Function object is obtained, it can be called with the correct set of arguments, which will finally 
+          perform call on the functor represented by this object.
+    */  class Function
+        {
+            //TypeQ::Const/Mute represents the const/non-const member-function, Type::None for non-member functions.
+            const TypeQ m_qualifier;
 
-			const std::string m_record;
-			const std::string m_function;
-			const std::string m_namespace;
+            //type id of class/struct (if it represents a member-function, else always '0')
+            const std::size_t m_recordTypeId;
 
-			mutable std::vector<detail::FunctorId> m_functorIds;
+            //name of the class/struct it belongs to, empty for non-member function.
+            const std::string m_record;
 
-			Function();
-			Function(const std::string& pNamespace, const std::string& pClassName, const std::string& pFuncName,
-				 const detail::FunctorId& pFunctorId, std::size_t pRecordTypeId, const TypeQ pQualifier);
+            //name of the function as supplied by the user.
+            const std::string m_function;
 
-			void addOverload(const Function& pOtherFunc) const;
+            //name of the namespace as supplied by the user.
+            const std::string m_namespace;
 
-			GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
+            //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
+            mutable std::vector<detail::FunctorId> m_functorIds;
 
-		protected:
+            Function(const std::string& pNamespace, const std::string& pClassName, 
+                     const std::string& pFuncName, const detail::FunctorId& pFunctorId,
+                     const std::size_t pRecordTypeId, const TypeQ pQualifier);
 
-			Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-				 const std::string& pFunctorName);
+            void addOverload(const Function& pOtherFunc) const;
 
-			const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
+            GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
-		public:
+        protected:
 
-			GETTER(TypeQ, Qualifier, m_qualifier)
-			GETTER(std::string, RecordName, m_record)
-			GETTER(std::string, Namespace, m_namespace)
-			GETTER(std::string, FunctionName, m_function)
-			GETTER(std::size_t, RecordTypeId, m_recordTypeId)
-			GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
+            Function(const Function& pOther, const detail::FunctorId& pFunctorId,
+                     const std::string& pFunctorName);
 
-			const std::string getHashCode() const;
+            const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
 
-			template<class _arg0, class ..._args>
-			const bool hasSignature() const;
+        public:
 
-			template<class ..._args>
-			RStatus operator()(_args...params) const noexcept;
+            //simple inlined getters.
+            GETTER(TypeQ, Qualifier, m_qualifier)
+            GETTER(std::string, RecordName, m_record)
+            GETTER(std::string, Namespace, m_namespace)
+            GETTER(std::string, FunctionName, m_function)
+            GETTER(std::size_t, RecordTypeId, m_recordTypeId)
+            GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
 
-			template<class ..._args>
-			RStatus call(_args...params) const noexcept;
+            template<class _arg0, class ..._args>
+            const bool hasSignature() const;
 
-			friend detail::CxxReflection;
-			friend detail::ReflectionBuilder;
-		};
-	}
+            template<class ..._args>
+            RStatus operator()(_args...params) const noexcept;
+
+            template<class ..._args>
+            RStatus call(_args...params) const noexcept;
+
+            friend detail::CxxReflection;
+            friend detail::ReflectionBuilder;
+        };
+    }
 }

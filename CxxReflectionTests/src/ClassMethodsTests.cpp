@@ -24,7 +24,6 @@ namespace rtl_tests
 
 	TEST(ReflectionMethodCall, wrong_args)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -47,12 +46,12 @@ namespace rtl_tests
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ClassBookMethod, args_void)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -78,12 +77,12 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ClassBookMethod, args_string)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -107,12 +106,12 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ClassBookMethodOverload, args_void)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -135,12 +134,12 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ClassBookMethodOverload, args_string_double_charPtr)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count());
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -165,12 +164,12 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ClassBookMethodOverload, args_charPtr_double_string)
 	{
-		EXPECT_TRUE(book::assert_zero_instance_count()); 
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -195,5 +194,6 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 }

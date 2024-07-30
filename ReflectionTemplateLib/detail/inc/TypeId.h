@@ -5,55 +5,65 @@
 
 namespace rtl {
 
-	namespace detail 
-	{
-		template<class _type = std::nullptr_t, class ..._rest>
-		struct TypeId;
+    namespace detail 
+    {
+        //class to generate unique type-id for a type or combination of types.
+        template<class _type = std::nullptr_t, class ..._rest>
+        struct TypeId;
 
-		template<class _type>
-		struct TypeId<_type>
-		{
-			using HEAD = _type;
+        //class to generate unique type-id a type.
+        template<class _type>
+        struct TypeId<_type>
+        {
+            //represents '_type' or 'std::nullptr_t' for TypeId<> (empty).
+            using HEAD = _type;
 
-			static constexpr const std::size_t None = 0;
+            //'0' represents no type.
+            static constexpr const std::size_t None = 0;
 
-			static const std::size_t get() {
-				return m_typeId;
-			}
+            static const std::size_t get() {
+                return m_typeId;
+            }
 
-			static const std::string toString()
-			{
-				if (std::is_same<_type, void>::value) {
-					return std::string("void");
-				}
-				if (std::is_same<_type, std::string>::value) {
-					return std::string("std::string");
-				}
-				if (!std::is_same<_type, std::nullptr_t>::value) {
-					return std::string(typeid(_type).name());
-				}
-				else return std::string();
-			}
+            //returns the type-list as string.
+            static const std::string toString()
+            {
+                if constexpr (std::is_same_v<_type, void>) {
+                    return std::string("void");
+                }
+                if constexpr (std::is_same_v<_type, std::string>) {
+                    return std::string("std::string");
+                }
+                if constexpr (!std::is_same_v<_type, std::nullptr_t>) {
+                    return std::string(typeid(_type).name());
+                }
+                else return std::string();
+            }
 
-		private:
-			static const std::size_t m_typeId;
-		};
+        private:
+            static const std::size_t m_typeId;
+        };
 
 
-		template<class _first, class ..._rest>
-		struct TypeId
-		{
-			using HEAD = _first;
-			using TAIL = TypeId<_rest...>;
+        //class to generate unique type-id for a combination of types.
+        template<class _first, class ..._rest>
+        struct TypeId
+        {
+            //represents the first type in given list.
+            using HEAD = _first;
 
-			static const std::string toString() {
+            //represents a new list created excluding '_first'.
+            using TAIL = TypeId<_rest...>;
 
-				const std::string& tailStr = TAIL::toString();
-				if (std::is_same<HEAD, std::string>::value) {
-					return std::string("std::string") + ", " + tailStr;
-				}
-				return (std::string(typeid(HEAD).name()) + ", " + tailStr);
-			}
-		};
-	}
+            //returns the type-list as string.
+            static const std::string toString() 
+            {
+                const std::string& tailStr = TAIL::toString();
+                if (std::is_same<HEAD, std::string>::value) {
+                    return std::string("std::string") + ", " + tailStr;
+                }
+                return (std::string(typeid(HEAD).name()) + ", " + tailStr);
+            }
+        };
+    }
 }

@@ -70,8 +70,7 @@ namespace rtl_tests
 
 			const string& retStr = any_cast<string>(status.getReturn());
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
-		}
-		{
+		} {
 			//different syntax of calling.
 			const RStatus& status = getProfile->on().call(false);
 
@@ -110,5 +109,27 @@ namespace rtl_tests
 		const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
 
 		EXPECT_EQ(retStr, checkStr);
+	}
+
+
+	TEST(StaticMethods, static_method_call_on_target_instance)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		ASSERT_TRUE(classPerson);
+
+		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
+		ASSERT_TRUE(getDefaults);
+		ASSERT_TRUE(getDefaults->hasSignature<void>());
+
+		auto [isSuccess, personObj] = classPerson->instance();
+
+		ASSERT_TRUE(isSuccess);
+		ASSERT_FALSE(personObj.isEmpty());
+
+		//TODO: handle this test case with appropriate error or make successful call as its valid to call static method on objects.
+		const RStatus& status = (*getDefaults)(personObj)();
+		ASSERT_TRUE(status == rtl::Error::InstanceTypeMismatch);
 	}
 }
