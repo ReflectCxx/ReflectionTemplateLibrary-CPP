@@ -22,8 +22,7 @@ namespace rtl {
     */  template<class ..._ctorArgs>
         inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs ...params) const
         {
-            const std::string& ctor = CtorName::ctor(m_recordName);
-            const auto& itr = m_methods.find(ctor);
+            const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
 
             //if registered constructor is found for the class/struct represented by this 'Record' object.
             if (itr != m_methods.end()) {
@@ -34,11 +33,11 @@ namespace rtl {
                 //if status is 'true', object construction is successful.
                 if (status) {
 
-                    //get the destructor method, which is gauranteed to be present, if at least one constructor is registered.
-                    const std::string& dctor = CtorName::dctor(m_recordName);
+                    //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
+                    const Function dctor = *getMethod(CtorName::dctor(m_recordName));
 
-                    //construct the 'Instance' object, assigning the destructor, its lifetime is managed via std::shared_ptr.
-                    return std::make_pair(status, Instance(status.getReturn(), status, *getMethod(dctor)));
+                    //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
+                    return std::make_pair(status, Instance(status.getReturn(), status, dctor));
                 }
                 //if reflected call fails, return with empty 'Instance'.
                 return std::make_pair(status, Instance());

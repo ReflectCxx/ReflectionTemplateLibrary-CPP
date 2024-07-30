@@ -22,6 +22,8 @@ public:
 
     void updateAddress() const;
 
+    std::string getFirstName() const;
+
     void updateAddress(std::string pAddress);
 
     void updateAddress(std::string pAddress) const;

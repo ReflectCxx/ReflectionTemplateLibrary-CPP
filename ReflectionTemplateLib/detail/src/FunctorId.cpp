@@ -13,7 +13,7 @@ namespace rtl
             - whether it is const or non-const
             - class/struct type
           'm_containerId' will be same for functors with same above attributes.
-        * every functor will have a distinct index in the functor table.
+        * every functor will have a distinct index in the functor-wrapped-lambda-table.
         * so, combination of m_containerId & m_index is unique for every functor.
     */  std::size_t FunctorId::getHashCode() const
         {

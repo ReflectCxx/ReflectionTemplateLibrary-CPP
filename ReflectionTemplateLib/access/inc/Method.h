@@ -71,10 +71,10 @@ namespace rtl {
     */  class Method : public Function
         {
             //private ctor, called by 'Record' class.
-            Method(const Function& pFunction);
+            explicit Method(const Function& pFunction);
 
             //private ctor, called by 'Record' class.
-            Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
+            explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>

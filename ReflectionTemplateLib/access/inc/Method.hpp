@@ -17,7 +17,7 @@ namespace rtl
         @params: params... (corresponding to functor associated with 'm_method')
         @return: RStatus, indicating success of the reflected call.
         * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-	*/  template<FunctorType _type>
+    */  template<FunctorType _type>
         template<class ..._args>
         inline RStatus MethodInvoker<_type>::call(_args ...params) const noexcept
         {
@@ -27,7 +27,7 @@ namespace rtl
             }
 
             if (m_target.getTypeId() != m_method.getRecordTypeId()) {
-			//if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
+            //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
                 return RStatus(Error::InstanceTypeMismatch);
             }
 
@@ -40,7 +40,7 @@ namespace rtl
                 case TypeQ::Const: return m_method.invokeConst(m_target, params...);
             }
 
-			//only an empty 'Instance' will have TypeQ::None.
+            //only an empty 'Instance' will have TypeQ::None.
             return RStatus(Error::EmptyInstance);
         }
 
@@ -60,7 +60,7 @@ namespace rtl
 
 
     namespace access
-	{
+    {
     /*  @method: on()
         @return: MethodInvoker<FunctorType::Static>
         * accepts no arguments for 'target', since associated functor is static-member-functions.
@@ -70,7 +70,10 @@ namespace rtl
         }
 
 
-        inline const MethodInvoker<FunctorType::Method> Method::on(const Instance& pTarget) const
+    /*  @method: on()
+        @return: MethodInvoker<FunctorType::Method>
+        * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
+    */  inline const MethodInvoker<FunctorType::Method> Method::on(const Instance& pTarget) const
         {
             return MethodInvoker<FunctorType::Method>(*this, pTarget);
         }
@@ -88,9 +91,9 @@ namespace rtl
 
 
     /*  @method: invokeStatic()
-	    @params: variable arguments.
-	    @return: RStatus
-	    * with given arguments, calls the static-member-function functor associated with this 'Method'.
+        @params: variable arguments.
+        @return: RStatus
+        * with given arguments, calls the static-member-function functor associated with this 'Method'.
     */  template<class ..._args>
         inline RStatus Method::invokeStatic(_args ...params) const
         {
@@ -173,7 +176,7 @@ namespace rtl
                 return detail::MethodContainer<TypeQ::Mute, _args...>::forwardCall(pTarget.get(), index, params...);
             }
             else {
-                //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer.
+                //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.
                 return invokeConst(pTarget, params...);
             }
         }

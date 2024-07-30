@@ -15,10 +15,10 @@ namespace rtl {
         * provides interface to register all kinds of functions (member/non-member).
     */  class Reflect
         {
-            //name of the class, struct being registered as string.
+            //name of the class, struct being registered.
             std::string m_record;
 
-            //name of the namespace being registered as string.
+            //name of the namespace being registered.
             std::string m_namespace;
 
         public:

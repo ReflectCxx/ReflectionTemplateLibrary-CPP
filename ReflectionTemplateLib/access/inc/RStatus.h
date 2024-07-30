@@ -32,7 +32,7 @@ namespace rtl
             //used when the reflected call doesn't have any return value, or in case of call failure.
             RStatus(const Error pCallStatus);
 
-            //used when the reflected call returns a value, always in case of no call failure.
+            //used when the reflected call returns a value, called only in case of no call failure.
             RStatus(const std::any& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier);
 
             GETTER(std::any, Return, m_returnObj)

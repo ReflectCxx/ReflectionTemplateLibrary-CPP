@@ -28,7 +28,7 @@ namespace rtl
             //containerId of the functor-table.
             const std::size_t m_containerId;
 
-            //signature(types/count) of functor as string. platform dependent, may not be very much readable format.
+            //signature of functor as string. platform dependent, may not be very much readable format.
             const std::string m_signature;
 
         public:

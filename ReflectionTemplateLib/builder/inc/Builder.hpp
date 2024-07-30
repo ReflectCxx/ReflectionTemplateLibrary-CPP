@@ -151,8 +151,7 @@ namespace rtl {
         * template params <...>, explicitly specified.
         * calling with zero template params will build the default constructor ie, 'RecordBuilder<_recordType>::constructor()'
     */  template<class _recordType, class ..._signature>
-        inline constexpr const access::Function
-        Builder<TypeQ::Mute>::build() const
+        inline constexpr const access::Function Builder<TypeQ::Mute>::build() const
         {
             //this code-block is retained by compiler, if copy constructor with non-const ref('_recordType&') is being registered.
             if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>)

@@ -62,6 +62,12 @@ void Person::updateAddress() const
 }
 
 
+std::string Person::getFirstName() const
+{
+	return m_firstName;
+}
+
+
 const bool Person::operator==(const Person& pOther) const
 {
 	return (m_address == pOther.m_address && m_firstName == pOther.m_firstName && m_lastName == pOther.m_lastName);

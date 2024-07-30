@@ -17,7 +17,7 @@ namespace rtl {
     */  template<class _arg0, class ..._args>
 		inline const bool Function::hasSignature() const
 		{
-			//hasSignatureId() returns the index of functor in functor table, which cannot be '-1'.
+			//hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
 			return (hasSignatureId(detail::FunctorContainer<_arg0, _args...>::getContainerId()) != -1);
 		}
 
@@ -28,7 +28,7 @@ namespace rtl {
     */  template<>
 		inline const bool Function::hasSignature<void>() const
 		{
-			//hasSignatureId() returns the index of functor in functor table, which cannot be '-1'.
+			//hasSignatureId() returns the index of 'lambda' in functor-container, which cannot be '-1'.
 			return (hasSignatureId(detail::FunctorContainer<>::getContainerId()) != -1);
 		}
 

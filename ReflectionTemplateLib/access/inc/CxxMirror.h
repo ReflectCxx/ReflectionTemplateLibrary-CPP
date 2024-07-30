@@ -20,13 +20,13 @@ namespace rtl {
         * all the type registration is done while constructing its object.
         * its objects can be createed locally and will be destroyed as regular object, at scope's end.
         * deleted copy constructor and assignment operator, can only be passed around as reference or wrapped in a smart pointer.
-        * the inherited data members are freed upon destruction, except the functors (function/method pointer) tables, they have static lifetime.
-        * functor tables are not member of this or base class, this class contains 'Function' objects which is a hash-key for looking up a particular functor.
-        * creating multiple objects of CxxMirror and registring the same functor will not increase the functor tables size.
-        * once a functor is registered, no entry will be added to the functor table for the same functor, it acts as a set.
-        * registring the same functor will create duplicate hash-key 'Function' object, which will be ignored if in the same 'CxxMirror' object.
-          if two different 'CxxMirror' objects are created and registering the same functor, the functor table will have only one entry for the functor
-          but two duplicate 'Function' objects will be created, held by respective 'CxxMirror' object.
+        * the inherited data members are freed upon destruction, except the 'functor-containers', they have static lifetime.
+        * 'functor-containers' are not member of this or base class, base only contains 'Function' objects which is a hash-key for looking up a particular functor.
+        * creating multiple objects of CxxMirror and registring the same functor will not increase the 'functor-container' size.
+        * once a functor is registered, no entry will be added to the 'functor-container' for the same functor.
+        * registering the same functor will create duplicate hash-key 'Function' object, which will be ignored if in the same 'CxxMirror' object.
+          if two different 'CxxMirror' objects are created and registering the same functor, the functor-container will have only one entry for the functor
+          but two identical 'Function' objects will be created, held by respective 'CxxMirror' object.
     */  class CxxMirror : public detail::CxxReflection 
         {
         public:
