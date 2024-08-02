@@ -101,8 +101,8 @@ int main()
     // Create an instance of 'Person' via reflection using the default constructor
     auto [status, personObj] = classPerson->instance(); // Returns 'RStatus' and 'Instance' objects
 ```
-- **RStatus** contains error-code *(rtl::Error)* indicating reflection call success/failure and return value*(wrapped in std::any)* of call, if any.
-- **Instance** contains the object created (with type erased) on heap, managed with *std::shared_ptr*.
+- **`RStatus`** contains error-code **`rtl::Error`** indicating reflection call success/failure and return value *(wrapped in std::any)* of call, if any.
+- **`Instance`** contains the object created (with type erased) on heap, managed with *std::shared_ptr*.
 ```c++
     // Create an instance via reflection using a parameterized constructor
     auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));  // Argument types/order must match
