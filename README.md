@@ -12,8 +12,9 @@ Static library, the core design maintains several tables of function pointers(re
   ```c++
   rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
   ```
-- The 'cxxReflection' object provides an interface to query and instantiate registered types.
-- Automatic Code Generation: To generate manual registration code automatically, clang-reflect can be used. It is a work-in-progress tool available here: https://github.com/ReflectCxx/clang-reflect. This tool will generate registration code for any large project without requiring changes to your project’s code.
+  The *cxxReflection* object provides an interface to query and instantiate registered types.
+- **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
+- **Automatic Code Generation**: To generate manual registration code automatically, *clang-reflect* can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
 
 ## How To build (Windows/Linux),
 
@@ -29,9 +30,9 @@ to build, any IDE applicable to the generator can be used or you can also just b
 ```sh
     cmake --build .
 ```
-Run **CxxReflectionTests** binary, generated in ../bin folder. *(currently tested on windows and Ubuntu-20 only)*
+Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested on windows and Ubuntu-20)*
 ## How To Use,
-- Class to reflect - **Person.h** *(Independent of any code related to reflection)*
+- Class to reflect - **Person.h**
 ```c++
 #pragma once
 #include <string>
@@ -40,20 +41,23 @@ class Person
 {
     int age;
     std::string name;
+	
 public:
-    Person() :name("NULLSTR"), age(-1) {}
-    Person(std::string pName, int pAge) : name(pName), age(pAge) {}
 
-    int getAge() { return age; }
-    void setAge(int pAge) { age = pAge; }
-    std::string getName() { return name; }
-    void setName(std::string pName) { name = pName; }
+    Person();
+    Person(std::string, int);
+
+    void setAge(int);
+    void setName(std::string);
+	
+	int getAge();
+    std::string getName();
 };
 ```
-- Do manual registration while creating **CxxMirror** object.   *(..somwhere in some far far away .cpp file..)*
+- Do manual registration while creating **CxxMirror** object.
 ```c++
 
-#include "CxxMirrorBuilder.h"	//Provides interface to RTL
+#include "CxxMirrorBuilder.h"	//provides registration interface.
 
 //User defined types, to be reflected.
 #include "Person.h"
@@ -62,82 +66,86 @@ using namespace rtl;
 
 const CxxMirror& MyReflection() 
 {
-    static const CxxMirror cxxMirror(
-    {
-	//Function registration
-	Reflect().record("Person").function("setAge").build(&Person::setAge),
-	Reflect().record("Person").function("getAge").build(&Person::getAge),
-	Reflect().record("Person").function("setName").build(&Person::setName),
-	Reflect().record("Person").function("getName").build(&Person::getName),
+    static const CxxMirror cxxMirror({
 	
-	//Constructor registration
-	Reflect().record("Person").constructor<Person>().build(),		//ctor taking zero arguments
-	Reflect().record("Person").constructor<Person>().build<string, int>()		//ctor with arguments, Person(string, int)
+        //Member functions registration
+        Reflect().record("Person").method("setAge").build(&Person::setAge),
+        Reflect().record("Person").method("getAge").build(&Person::getAge),
+        Reflect().record("Person").method("setName").build(&Person::setName),
+        Reflect().record("Person").method("getName").build(&Person::getName),
+	
+        //Constructor registration
+        Reflect().record("Person").constructor<Person>().build(),	//ctor taking zero arguments
+        Reflect().record("Person").constructor<Person>().build<string, int>()	//ctor with arguments, Person(string, int)
     });
+
     return cxxMirror;
 }
 ```
-Registration syntax is simple **Builder Pattern**,
+Registration syntax,
 ```c++
-  
-Reflect().nameSpace("..")	//use if type is enclosed in a namespace, pass namespace as string.
-	 .record("..")		//pass class/struct name as string.
-	 .function("..")	//pass function name as string.
-	 .build(*);		//pass function pointer.
 
-Reflect().nameSpace("..")		
-	 .record("..")			
-	 .constructor<..>()	//pass struct/class type as template parameter.
-	 .build<..>();		//zero args for constructors, register constructor signature as template params.
+Reflect().nameSpace("..")   //use if type is enclosed in a namespace, pass namespace as string.
+         .record<..>("..")  //pass class/struct type as template parameter and name as string.
+         .function("..")    //pass function name as string.
+         .build(*);         //pass function pointer.
+
+Reflect().nameSpace("..")
+         .record<..>("..")
+         .constructor<..>()	//constructor signature as template params.
+         .build<..>();		//no function-pointer to pass for constructors.
 ```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
-(*New underlying access-mechanism is in progress. These will not work currenty but final design will stay the same as below.*)
 ```c++
 #include <iostream>
-#include "CxxMirror.h"
+#include "RTLibInterface.h"		//single header that includes reflection-access-interface.
 
-using namespace std;
 extern const rtl::CxxMirror& MyReflection();
 
 int main()
 {
 ```
-Get Class & Method objects from reflection as **ReflClass** & **ReflMethod**,
+Get Class object (type 'Record'),
 ```c++
-  auto classPerson = MyReflection().getClass("Person");   //(returns instance of ReflClass)
-  auto getAge = classPerson.getMethod("getAge");          //(returns instance of ReflMethod)
-  auto getName = classPerson.getMethod("getName");
-  auto setAge = classPerson.getMethod("setAge");
-  auto setName = classPerson.getMethod("setName");
+  std::optional<Record> classPerson = MyReflection().getClass("Person");   //returns 'Record' object associated with 'class Person'
 ```
-Create Instance using default constructor *(the one registered as **ctor::VOID**)*,
+Create instance of class 'Person' via reflection using default constructor,
 ```c++
-  //returns instance of Person wrapped in ReflObject<> which extends std::unique_ptr<>
-  auto personObj1 = classPerson.instance();
+  auto [status, personObj] = classPerson->instance();	//returns 'RStatus' and 'Instance' type objects respectively.
 ```
-Method Call Syntax : **ReflMethod(ReflObject<>).invoke<RETURN_TYPE>()**,
+**RStatus** contains error-code *(rtl::Error)* indicating reflection call success/failure and return value*(wrapped in std::any)* of call, if any.
+**Instance** contains the object created (with type erased) on heap, managed with *std::shared_ptr*.
+Create instance via reflection using parametrized constructor,
 ```c++
-  int age = getAge(personObj1).invoke<int>();
-  string name = getName(personObj1).invoke<string>();
-  cout << "Person : { name : " << name << ", age: " << age << " }";   //Outs- Person : { name : NULLSTR, age: -1 }
+  auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));	//argument types/order must match else call will fail.
 ```
-No need to specify RETURN_TYPE if its void,
+calling methods of 'Person',
 ```c++
-  setAge(personObj1).invoke(23);
-  setName(personObj1).invoke(string("Scott"));
-  age = getAge(personObj1).invoke<int>();
-  name = getName(personObj1).invoke<string>();
-  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : Scott, age: 23 }
+  std::optional<Method> setAge = classPerson.getMethod("setAge");	//(returns a callable 'Method' object)
+  RStatus rst = setAge->on(personObj).call(int(42));	//returns 'RStatus', with no return value since 'setAge' is void.
 ```
-Create instance using overloaded constructor *(the one registered as **ctorArgs<string, int>**)*,
+or
 ```c++
-  auto personObj2 = classPerson.instance(string("John Doe"), 37);
-  age = getAge(personObj2).invoke<int>();
-  name = getName(personObj2).invoke<string>();
-  cout << "Person : { name : " << name << ", age: " << age << " }";     //Outs- Person : { name : John Doe, age: 37 }
-}
+  RStatus rst = (*setAge)(personObj)(int(42));
 ```
-## Reflection Features,
+calling method that returns,
+```c++
+  std::optional<Method> getName = classPerson.getMethod("getName");
+  RStatus retName = getName->on(personObj).call();	//returns 'RStatus', with value of type 'std::string'.
+```
+or
+```c++
+  RStatus retName = (*getName)(personObj)();
+```
+extract the return value,
+```c++
+  std::string nameStr = any_cast<string>(retName.getReturn());
+```
+Note- *std::any_cast* will throw exception if correct type is not specified.
+Check- *CxxTypeRegistration/src/MyReflection.cpp* for all sort of type registrations.
+Check- *CxxReflectionTests/src* for test cases.
+
+## Reflection Features List (status),
 - Create instances & call methods in complete absence of its type.
 - Supports default & copy constructor along with all kinds of overloads.
 - Supports all kinds of member function overloading, including constant function overloads(WIP) for *const objects*.
@@ -152,6 +160,4 @@ Create instance using overloaded constructor *(the one registered as **ctorArgs<
 - Unit test cases (WIP)
 - Class/Struct's Field reflection (Currently only methods are supported).
 - Enum Class reflection.
-- Exception handling (WIP)
 - Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
-- Light weight JSON Serialization/Deserialization feature.
