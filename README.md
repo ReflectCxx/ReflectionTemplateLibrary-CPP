@@ -35,9 +35,6 @@ Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested on windo
 ## How To Use,
 - Class to reflect - **Person.h**
 ```c++
-#pragma once
-#include <string>
-
 class Person
 {
     int age;
@@ -51,17 +48,15 @@ public:
     void setAge(int);
     void setName(std::string);
 	
-	int getAge();
+    int getAge();
     std::string getName();
 };
 ```
 - Do manual registration while creating **CxxMirror** object.
 ```c++
 
-#include "CxxMirrorBuilder.h"	//provides registration interface.
-
-//User defined types, to be reflected.
-#include "Person.h"
+#include "CxxMirrorBuilder.h"    //provides registration interface.
+#include "Person.h"    //User defined types, to be reflected.
 
 using namespace rtl;
 
@@ -98,53 +93,44 @@ Reflect().nameSpace("..")
 ```
 - In main.cpp, Use **Person** class via Reflection without exposing the **Person Type**.
 ```c++
-#include <iostream>
 #include "RTLibInterface.h"		//single header that includes reflection-access-interface.
-
 extern const rtl::CxxMirror& MyReflection();
 
 int main()
 {
-```
-Get Class object (type 'Record'),
-```c++
+  //get Class object,
   std::optional<Record> classPerson = MyReflection().getClass("Person");   //returns 'Record' object associated with 'class Person'
-```
-Create instance of class 'Person' via reflection using default constructor,
-```c++
+
+  //create instance of class 'Person' via reflection using default constructor,
   auto [status, personObj] = classPerson->instance();	//returns 'RStatus' and 'Instance' type objects respectively.
 ```
-**RStatus** contains error-code *(rtl::Error)* indicating reflection call success/failure and return value*(wrapped in std::any)* of call, if any.
-**Instance** contains the object created (with type erased) on heap, managed with *std::shared_ptr*.
-Create instance via reflection using parametrized constructor,
+- **RStatus** contains error-code *(rtl::Error)* indicating reflection call success/failure and return value*(wrapped in std::any)* of call, if any.
+- **Instance** contains the object created (with type erased) on heap, managed with *std::shared_ptr*.
 ```c++
+  //create instance via reflection using parametrized constructor,
   auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));	//argument types/order must match else call will fail.
-```
-calling methods of 'Person',
-```c++
+
+  //calling methods of 'Person',
   std::optional<Method> setAge = classPerson.getMethod("setAge");	//(returns a callable 'Method' object)
+
   RStatus rst = setAge->on(personObj).call(int(42));	//returns 'RStatus', with no return value since 'setAge' is void.
-```
-or
-```c++
+  //or
   RStatus rst = (*setAge)(personObj)(int(42));
-```
-calling method that returns,
-```c++
+
+  //calling method that returns,
   std::optional<Method> getName = classPerson.getMethod("getName");
+  
   RStatus retName = getName->on(personObj).call();	//returns 'RStatus', with value of type 'std::string'.
-```
-or
-```c++
+  //or
   RStatus retName = (*getName)(personObj)();
-```
-extract the return value,
-```c++
+  
+  //extract the return value,
   std::string nameStr = any_cast<string>(retName.getReturn());
+}
 ```
-Note- *std::any_cast* will throw exception if correct type is not specified.
-Check- *CxxTypeRegistration/src/MyReflection.cpp* for all sort of type registrations.
-Check- *CxxReflectionTests/src* for test cases.
+- *std::any_cast* will throw exception if correct type is not specified.
+- Check, *CxxTypeRegistration/src/MyReflection.cpp* for all sort of type registrations.
+- Check, *CxxReflectionTests/src* for test cases.
 
 ## Reflection Features List (status),
 - Create instances & call methods in complete absence of its type.
