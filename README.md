@@ -1,20 +1,19 @@
 # Reflection Template Library C++
-###### (in development...)
-Reflection Template Library for Modern C++
-- Introspect a (user defined) class/struct/type, modify objects at run time without dealing with its type at "Compile Time".
-- **Static Library**, core design is to maintain several tables of function/variable pointers, collected at compile time and providing a mechanism to access them in complete absence of their types at run time.
-## Exclusive Features,
-- Pure **Builder Pattern** for manual registration of types, super-easy to understand, No use of any "Mysterious MACROS" at all.</br>Thats Right- **NO MACROS!!**
-- No need to add any bit of a code to any class/struct/type (to be reflected) declaration or to its implementation.</br>Yes, **No Code Littering, Keep it clean!**
-- Manage all the manual registration of any required type in one single implementation unit, away from rest of the code in project.</br>Or in a **Class with Single Responsibility!**
-- Create an Object of **"CxxMirror"**, pass all type information to reflect as constructor parameter and you're good to GO!
+
+The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
+Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
+
+## Key Features
+
+- **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious macros involved.
+- **Clean Code**: No reflection-related code needs to be added to class, struct, or function declarations or implementations— keeping your codebase clean and free of clutter.
+- **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
+- **Simple Integration**: Just create an instance of **`CxxMirror`**, pass all type information to reflect as a constructor parameter, and you’re done!
   ```c++
-  const rtl::CxxMirror myReflection({/*.. Pass all type information ..*/});
+  rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
   ```
-- Wrap that powerful object in a singleton and use C++ Reflection with similar features as in Java or C#.
-- *To generate this boilerplate code automatically, can be used **clang-reflect**
-  https://github.com/neeraj31285/clang-reflect
-  which is under development right now. Once completed, this boilerplate code can be generated automatically for any large projects.*
+- The 'cxxReflection' object provides an interface to query and instantiate registered types.
+- Automatic Code Generation: To generate manual registration code automatically, clang-reflect can be used. It is a work-in-progress tool available here: https://github.com/ReflectCxx/clang-reflect. This tool will generate registration code for any large project without requiring changes to your project’s code.
 
 ## How To build (Windows/Linux),
 
