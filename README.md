@@ -99,8 +99,8 @@ int main()
     std::optional<Record> classPerson = MyReflection().getClass("Person");
 
  /* Create an instance of 'class Person' via reflection using the default constructor.
-    Returns 'RStatus' and 'Instance' objects. */
-    auto [status, personObj] = classPerson->instance();
+    Returns 'RStatus' and 'Instance' objects.
+ */ auto [status, personObj] = classPerson->instance();
 	
 ```
 - `RStatus` contains error-code (`rtl::Error`) indicating reflection call success/failure and return value wrapped in `std::any` of call, if any.
@@ -109,7 +109,7 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));
+ */ auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
