@@ -9,13 +9,13 @@ Static library, the core design maintains several tables of function pointers(re
 - **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious macros involved.
 - **Clean Code**: No reflection-related code needs to be added to class, struct, or function declarations or implementations— keeping your codebase clean and free of clutter.
 - **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
-- **Simple Integration**: Just create an instance of **`CxxMirror`**, pass all type information to reflect as a constructor parameter, and you’re done!
+- **Simple Integration**: Just create an instance of `CxxMirror`, pass all type information to reflect as a constructor parameter, and you’re done!
   ```c++
   rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
   ```
   The *cxxReflection* object provides interface to query and instantiate registered types.
 - **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
-- **Automatic Code Generation**: To generate manual registration code automatically, **`clang-reflect`** can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
+- **Automatic Code Generation**: To generate manual registration code automatically, `clang-reflect` can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
 
 ## How To build (Windows/Linux),
 
@@ -33,7 +33,7 @@ to build, any IDE applicable to the generator can be used or you can also just b
 ```
 Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested on windows and Ubuntu-20)*
 ## How To Use,
-In this example, we'll reflect a simple Person class. **`Person.h`**,
+In this example, we'll reflect a simple Person class. `Person.h`,
 ```c++
 class Person {
     int age;
@@ -136,8 +136,8 @@ int main()
 - Check, `CxxReflectionTests/src` for test cases.
 
 ## Reflection Features,
-[x] Register and invoke functions, supporting all overloads.
-[x] Register classes/structs and reflect their methods, constructors, and destructors.
+-[x] Register and invoke functions, supporting all overloads.
+-[x] Register classes/structs and reflect their methods, constructors, and destructors.
 [x] Invoke the default constructor.
 [x] Invoke the copy constructor with a non-const reference argument.
 [x] Invoke the copy constructor with a const reference argument.
