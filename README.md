@@ -135,22 +135,22 @@ int main()
 - Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
 - Check, `CxxReflectionTests/src` for test cases.
 
-## Reflection Features,
-- [x] Register and invoke functions, supporting all overloads.
-- [x] Register classes/structs and reflect their methods, constructors, and destructors.
-- [x] Invoke the default constructor.
-- [x] Invoke the copy constructor with a non-const reference argument.
-- [x] Invoke the copy constructor with a const reference argument.
-- [x] Invoke any overloaded constructor.
-- [x] Invoke non-const member functions.
-- [x] Invoke const member functions.
-- [x] Invoke static member functions.
-- [x] Automatically invoke destructors for objects created on the heap.
-- [ ] Reflect properties of classes/structs, providing getter/setter methods.
-- [ ] Invoke functions with perfect forwarding.
-- [ ] Reflect enums.
-- [ ] Reflect classes with composite types that are also reflected.
-- [ ] Support single, multiple, multilevel, and virtual inheritance.
+## Reflection Features
+- ✅ Register and invoke functions, supporting all overloads.
+- ✅ Register classes/structs and reflect their methods, constructors, and destructors.
+- ✅ Invoke the default constructor.
+- ✅ Invoke the copy constructor with a non-const reference argument.
+- ✅ Invoke the copy constructor with a const reference argument.
+- ✅ Invoke any overloaded constructor.
+- ✅ Invoke non-const member functions.
+- ✅ Invoke const member functions.
+- ✅ Invoke static member functions.
+- ✅ Automatically invokes destructor for objects created on the heap via reflection.
+- ❌ Reflect properties of classes/structs, providing getter/setter methods.
+- ❌ Invoke functions with perfect forwarding.
+- ❌ Reflect enums.
+- ❌ Reflect classes with composite types that are also reflected.
+- ❌ Support single, multiple, multilevel, and virtual inheritance.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
