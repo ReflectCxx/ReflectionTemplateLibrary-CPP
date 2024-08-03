@@ -103,8 +103,8 @@ int main()
  */ auto [status, personObj] = classPerson->instance();
 	
 ```
-- `RStatus` contains error-code (`rtl::Error`) indicating reflection call success/failure and return value wrapped in `std::any` of call, if any.
-- `Instance` contains the object created (with type erased) on heap, managed with `std::shared_ptr`.
+- `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
+- `Instance` holds the created object (with its type erased), managed on the heap using `std::shared_ptr`.
 ```c++
 
  /* Create an instance via reflection using a parameterized constructor. 
@@ -131,23 +131,32 @@ int main()
     std::string nameStr = std::any_cast<std::string>(retName.getReturn());
 }
 ```
-- `std::any_cast` will throw exception if correct type is not specified.
+- `std::any_cast` will throw an exception if correct type is not specified.
 - Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
 - Check, `CxxReflectionTests/src` for test cases.
 
-## Reflection Features List (status),
-- Create instances & call methods in complete absence of its type.
-- Supports default & copy constructor along with all kinds of overloads.
-- Supports all kinds of member function overloading, including constant function overloads(WIP) for *const objects*.
-- Supports single, multiple, multilevel & virtual inheritance (WIP).
-- Query a class for its super classes & for all its derived classes (vice-versa) (WIP).
-- Resolves *Inheritance- Diamond Problem* (WIP).
-- Supports *virtual methods - Overriding*.
-- No need of any 3rd party dependencies.
-- Manual registration with **NO MACROS**.
+## Reflection Features,
+[x] Register and invoke functions, supporting all overloads.
+[x] Register classes/structs and reflect their methods, constructors, and destructors.
+[x] Invoke the default constructor.
+[x] Invoke the copy constructor with a non-const reference argument.
+[x] Invoke the copy constructor with a const reference argument.
+[x] Invoke any overloaded constructor.
+[x] Invoke non-const member functions.
+[x] Invoke const member functions.
+[x] Invoke static member functions.
+[x] Automatically invoke destructors for objects created on the heap.
+[ ] Reflect properties of classes/structs, providing getter/setter methods.
+[ ] Invoke functions with perfect forwarding.
+[ ] Reflect enums.
+[ ] Reflect classes with composite types that are also reflected.
+[ ] Support single, multiple, multilevel, and virtual inheritance.
 
-## TODO,
-- Unit test cases (WIP)
-- Class/Struct's Field reflection (Currently only methods are supported).
-- Enum Class reflection.
-- Access specifiers for reflection *(presently any Method/Field registerd is considered as public)*
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+## Contributions
+Contributions are welcome! If you find a bug, have a feature request, or want to contribute to the project, feel free to open an issue or submit a pull request on GitHub.
+
+## Contact
+For any questions, suggestions, or feedback, you can reach out via GitHub or email at `neeraj.singh31285@outlook.com`.
