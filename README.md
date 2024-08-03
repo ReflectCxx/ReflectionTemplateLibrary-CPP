@@ -121,6 +121,7 @@ int main()
 
  // Get method of 'class Person' that returns a value.
     std::optional<Method> getName = classPerson->getMethod("getName");
+
  // Call method, returns 'RStatus' containing return value.
     RStatus retName = getName->on(personObj).call();
  // or with different syntax,
