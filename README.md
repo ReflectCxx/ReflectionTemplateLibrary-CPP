@@ -136,21 +136,21 @@ int main()
 - Check, `CxxReflectionTests/src` for test cases.
 
 ## Reflection Features,
--[x] Register and invoke functions, supporting all overloads.
--[x] Register classes/structs and reflect their methods, constructors, and destructors.
-[x] Invoke the default constructor.
-[x] Invoke the copy constructor with a non-const reference argument.
-[x] Invoke the copy constructor with a const reference argument.
-[x] Invoke any overloaded constructor.
-[x] Invoke non-const member functions.
-[x] Invoke const member functions.
-[x] Invoke static member functions.
-[x] Automatically invoke destructors for objects created on the heap.
-[ ] Reflect properties of classes/structs, providing getter/setter methods.
-[ ] Invoke functions with perfect forwarding.
-[ ] Reflect enums.
-[ ] Reflect classes with composite types that are also reflected.
-[ ] Support single, multiple, multilevel, and virtual inheritance.
+- [x] Register and invoke functions, supporting all overloads.
+- [x] Register classes/structs and reflect their methods, constructors, and destructors.
+- [x] Invoke the default constructor.
+- [x] Invoke the copy constructor with a non-const reference argument.
+- [x] Invoke the copy constructor with a const reference argument.
+- [x] Invoke any overloaded constructor.
+- [x] Invoke non-const member functions.
+- [x] Invoke const member functions.
+- [x] Invoke static member functions.
+- [x] Automatically invoke destructors for objects created on the heap.
+- [ ] Reflect properties of classes/structs, providing getter/setter methods.
+- [ ] Invoke functions with perfect forwarding.
+- [ ] Reflect enums.
+- [ ] Reflect classes with composite types that are also reflected.
+- [ ] Support single, multiple, multilevel, and virtual inheritance.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
