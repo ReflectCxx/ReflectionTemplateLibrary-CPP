@@ -6,6 +6,7 @@ project(CxxReflectionProject)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 # Add the subdirectories
-# add_subdirectory(CxxReflectionTemplates)
-# add_subdirectory(CxxReflectionTests)
-add_subdirectory(clang-reflect)
+add_subdirectory(CxxTestProject)
+add_subdirectory(ReflectionTemplateLib)
+add_subdirectory(CxxTypeRegistration)
+add_subdirectory(CxxReflectionTests)
