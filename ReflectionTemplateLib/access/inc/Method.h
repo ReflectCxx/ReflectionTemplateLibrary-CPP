@@ -98,7 +98,7 @@ namespace rtl {
         public:
 
             //indicates if a particular set of arguments accepted by the functor associated with it.
-            template<class _arg0, class ..._args>
+            template<class ..._args>
             const bool hasSignature() const;
 
             //set 'no' object to call static method. (takes no parameter)

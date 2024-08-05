@@ -65,7 +65,7 @@ namespace rtl_tests
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
-			ASSERT_TRUE(getPublishedOn->hasSignature<void>());
+			ASSERT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
 			RStatus rStatus = (*getPublishedOn)(bookObj)();
 
@@ -125,7 +125,7 @@ namespace rtl_tests
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
-			ASSERT_TRUE(updateBookInfo->hasSignature<void>());
+			ASSERT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
 			RStatus rStatus = (*updateBookInfo)(bookObj)();
 

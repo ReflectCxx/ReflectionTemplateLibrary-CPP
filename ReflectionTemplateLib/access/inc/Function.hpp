@@ -14,22 +14,11 @@ namespace rtl {
         @return: bool, if the functor associated with this object is of certain signature or not.
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
-    */  template<class _arg0, class ..._args>
+    */  template<class ..._args>
 		inline const bool Function::hasSignature() const
 		{
 			//hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
-			return (hasSignatureId(detail::FunctorContainer<_arg0, _args...>::getContainerId()) != -1);
-		}
-
-
-    /*  @method: hasSignature<void>()
-        @param: set of arguments, explicitly specified as template parameter. 
-        @return: bool, if the functor associated with this object doesn't takes any argument.
-    */  template<>
-		inline const bool Function::hasSignature<void>() const
-		{
-			//hasSignatureId() returns the index of 'lambda' in functor-container, which cannot be '-1'.
-			return (hasSignatureId(detail::FunctorContainer<>::getContainerId()) != -1);
+			return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);
 		}
 
 

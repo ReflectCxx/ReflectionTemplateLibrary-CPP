@@ -52,7 +52,7 @@ namespace rtl_tests
 
 		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
 		ASSERT_TRUE(getProfile);
-		ASSERT_TRUE(getProfile->hasSignature<void>());
+		ASSERT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
 		const RStatus& status = getProfile->on().call(std::string());
 

@@ -101,34 +101,18 @@ namespace rtl
         }
 
 
-    /*  @method: hasSignature<void>()
-        @return: bool
-        * checks if the member-function functor associated with this 'Method', takes zero arguments or not.
-    */  template<>
-        inline const bool Method::hasSignature<void>() const
-        {
-            switch (getQualifier())
-            {
-                case TypeQ::None: return Function::hasSignature<void>();
-                case TypeQ::Mute: return (hasSignatureId(detail::MethodContainer<TypeQ::Mute>::getContainerId()) != -1);
-                case TypeQ::Const: return (hasSignatureId(detail::MethodContainer<TypeQ::Const>::getContainerId()) != -1);
-            }
-            return false;
-        }
-
-
     /*  @method: hasSignature<...>()
         @params: template params, <_arg0, ..._args> (expects at least one args- _args0)
         @return: bool
         * checks if the member-function functor associated with this 'Method', takes template specified arguments set or not.
-    */  template<class _arg0, class ..._args>
+    */  template<class ..._args>
         inline const bool Method::hasSignature() const
         {
             switch (getQualifier())
             {
-                case TypeQ::None: return Function::hasSignature<_arg0, _args...>();
-                case TypeQ::Mute: return (hasSignatureId(detail::MethodContainer<TypeQ::Mute, _arg0, _args...>::getContainerId()) != -1);
-                case TypeQ::Const: return (hasSignatureId(detail::MethodContainer<TypeQ::Const, _arg0, _args...>::getContainerId()) != -1);
+                case TypeQ::None: return Function::hasSignature<_args...>();
+                case TypeQ::Mute: return (hasSignatureId(detail::MethodContainer<TypeQ::Mute, _args...>::getContainerId()) != -1);
+                case TypeQ::Const: return (hasSignatureId(detail::MethodContainer<TypeQ::Const, _args...>::getContainerId()) != -1);
             }
             return false;
         }
