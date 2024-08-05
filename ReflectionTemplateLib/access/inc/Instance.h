@@ -28,24 +28,29 @@ namespace rtl {
             mutable TypeQ m_qualifier;
 
             //type id of the containd object.
-            const std::size_t m_typeId;
+            mutable std::size_t m_typeId;
 
             //allocated object, stored without type info.
-            const std::any m_anyObject;
+            mutable std::any m_anyObject;
 
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
             does not holds the objcet constructed via reflection.
             it only contains a custom deleter to be called on the underlying object.
-        */  const std::shared_ptr<void> m_destructor;
+        */  mutable std::shared_ptr<void> m_destructor;
 
             //private constructors, only class 'Record' can access.
-            explicit Instance();
             explicit Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
 
         public:
 
-            //creating copies is allowed.
+            //create empty instance.
+            explicit Instance();
+
+            //creating copies.
             Instance(const Instance&);
+
+            //assignment
+            Instance& operator=(const Instance&);
 
             //simple inlined getters.
             GETTER(std::any, , m_anyObject);

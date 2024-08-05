@@ -62,12 +62,7 @@ namespace rtl_tests
 
 	TEST(ReflectedCallStatusError, copy_ctor_on_empty_instance___error_EmptyInstance)
 	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
-
-		auto [status, emptyObj] = classLibrary->instance();
-
-		ASSERT_TRUE(status == Error::ConstructorNotFound);
+		Instance emptyObj;
 		ASSERT_TRUE(emptyObj.isEmpty());
 
 		optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -82,12 +77,7 @@ namespace rtl_tests
 
 	TEST(ReflectedCallStatusError, method_call_on_empty_instance___error_EmptyInstance)
 	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
-
-		auto [ret, emptyObj] = classLibrary->instance();
-
-		ASSERT_TRUE(ret == Error::ConstructorNotFound);
+		Instance emptyObj;
 		ASSERT_TRUE(emptyObj.isEmpty());
 
 		optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
