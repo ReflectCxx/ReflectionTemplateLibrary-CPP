@@ -73,6 +73,16 @@ namespace rtl {
             , m_destructor(pOther.m_destructor) {
         }
 
+        //assignment.
+        Instance& Instance::operator=(const Instance& pOther)
+        {
+            m_qualifier = pOther.m_qualifier;
+            m_typeId = pOther.m_typeId;
+            m_anyObject = std::move(pOther.m_anyObject);
+            m_destructor = pOther.m_destructor;
+            return *this;
+        }
+
 
     /*  @constructor: Instance()
         @params: 'const std::any&', contains pointer to the allocated object via reflection constructor call.

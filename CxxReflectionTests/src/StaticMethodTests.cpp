@@ -19,7 +19,7 @@ namespace rtl_tests
 
 		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
 		ASSERT_TRUE(getDefaults);
-		ASSERT_TRUE(getDefaults->hasSignature<void>());
+		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
 		const RStatus& status = (*getDefaults)()();
 		ASSERT_TRUE(status);
@@ -40,7 +40,7 @@ namespace rtl_tests
 
 		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
 		ASSERT_TRUE(getProfile);
-		ASSERT_TRUE(getProfile->hasSignature<void>());
+		ASSERT_TRUE(getProfile->hasSignature<>());	//empty template params checks for zero arguments.
 
 		const RStatus& status = getProfile->on().call();
 		ASSERT_TRUE(status);
@@ -121,7 +121,7 @@ namespace rtl_tests
 
 		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
 		ASSERT_TRUE(getDefaults);
-		ASSERT_TRUE(getDefaults->hasSignature<void>());
+		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
 		auto [isSuccess, personObj] = classPerson->instance();
 

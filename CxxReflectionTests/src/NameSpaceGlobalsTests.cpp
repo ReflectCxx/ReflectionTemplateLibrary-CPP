@@ -63,7 +63,7 @@ namespace rtl_tests
 		EXPECT_TRUE(setImaginary->hasSignature<double>());
 		(*setImaginary)(g_imaginary);
 
-		EXPECT_TRUE(getMagnitude->hasSignature<void>());
+		EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
 		RStatus status = (*getMagnitude)();
 

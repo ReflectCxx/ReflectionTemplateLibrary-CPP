@@ -68,7 +68,10 @@ namespace rtl {
             GETTER(std::size_t, RecordTypeId, m_recordTypeId)
             GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
 
-            template<class _arg0, class ..._args>
+            //indicates if a functor associated with it takes zero arguments.
+            const bool hasSignature() const;
+
+            template<class ..._args>
             const bool hasSignature() const;
 
             template<class ..._args>
