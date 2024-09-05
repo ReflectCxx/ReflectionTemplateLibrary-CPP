@@ -1,5 +1,6 @@
 
 #include <complex>
+#include <algorithm>
 
 #include "Complex.h"
 
