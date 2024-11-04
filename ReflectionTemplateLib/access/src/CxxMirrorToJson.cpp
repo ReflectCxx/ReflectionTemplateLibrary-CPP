@@ -1,7 +1,7 @@
 
 #include <fstream>
 #include <filesystem>
-
+#include <algorithm>
 #include "Method.h"
 #include "Record.h"
 #include "Function.h"
