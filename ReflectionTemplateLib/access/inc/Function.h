@@ -26,22 +26,24 @@ namespace rtl {
     */  class Function
         {
             //TypeQ::Const/Mute represents the const/non-const member-function, Type::None for non-member functions.
-            const TypeQ m_qualifier;
+            TypeQ m_qualifier;
 
             //type id of class/struct (if it represents a member-function, else always '0')
-            const std::size_t m_recordTypeId;
+            std::size_t m_recordTypeId;
 
             //name of the class/struct it belongs to, empty for non-member function.
-            const std::string m_record;
+            std::string m_record;
 
             //name of the function as supplied by the user.
-            const std::string m_function;
+            std::string m_function;
 
             //name of the namespace as supplied by the user.
-            const std::string m_namespace;
+            std::string m_namespace;
 
             //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
             mutable std::vector<detail::FunctorId> m_functorIds;
+
+        private:
 
             Function(const std::string& pNamespace, const std::string& pClassName, 
                      const std::string& pFuncName, const detail::FunctorId& pFunctorId,
@@ -67,6 +69,8 @@ namespace rtl {
             GETTER(std::string, FunctionName, m_function)
             GETTER(std::size_t, RecordTypeId, m_recordTypeId)
             GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
+
+            Function& operator=(const Function& pOther);
 
             //indicates if a functor associated with it takes zero arguments.
             const bool hasSignature() const;
