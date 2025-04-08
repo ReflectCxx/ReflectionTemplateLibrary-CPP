@@ -27,9 +27,11 @@ namespace rtl {
         * provides interface to construct instances of the class/struct using the registered constructors.
     */  class Record
         {
-            const std::string m_recordName;
+            mutable std::string m_recordName;
 
             mutable std::unordered_map< std::string, access::Method > m_methods;
+
+        private:
 
             Record(const std::string& pRecordName);
 
@@ -38,6 +40,8 @@ namespace rtl {
         public:
 
             Record() = delete;
+
+            Record& operator=(const Record& pOther);
 
             std::optional<Method> getMethod(const std::string& pMethod) const;
 
