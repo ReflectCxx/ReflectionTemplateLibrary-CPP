@@ -17,19 +17,19 @@ namespace rtl
     */  class FunctorId
         {
             //index of the functor in the functor-table.
-            const std::size_t m_index;
+            std::size_t m_index;
 
             //return type-id of the functor registered.
-            const std::size_t m_returnId;
+            std::size_t m_returnId;
 
             //if functor is a member-function, type id of class/struct it belongs to.
-            const std::size_t m_recordId;
+            std::size_t m_recordId;
 
             //containerId of the functor-table.
-            const std::size_t m_containerId;
+            std::size_t m_containerId;
 
             //signature of functor as string. platform dependent, may not be very much readable format.
-            const std::string m_signature;
+            std::string m_signature;
 
         public:
 
@@ -50,6 +50,8 @@ namespace rtl
                 , m_containerId(pContainerId)
                 , m_signature(pSignature) {
             }
+
+            FunctorId& operator=(const FunctorId& pOther);
 
             GETTER(std::size_t, Index, m_index)
             GETTER(std::size_t, SignatureId, m_containerId)

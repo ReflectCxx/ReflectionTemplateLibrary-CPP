@@ -70,6 +70,8 @@ namespace rtl {
         * the returned lambda is then called with the arguments corresponding to the functor associated with it.
     */  class Method : public Function
         {
+        private:
+
             //private ctor, called by 'Record' class.
             explicit Method(const Function& pFunction);
 
@@ -120,6 +122,21 @@ namespace rtl {
                 };
             }
 
+        //deletes base class 'operator()()'
+        template<class ..._args>
+        RStatus operator()(_args...) const noexcept = delete;
+
+        //deletes base class 'call()'
+        template<class ..._args>
+        RStatus call(_args...) const noexcept = delete;
+
+
+        //friends :)
+        template<FunctorType _type>
+        friend class MethodInvoker;
+        friend detail::CxxReflection;
+        friend Record;
+
 
         /*  @method: operator()(const Instance&)
             @param: const Instance& (target object)
@@ -154,20 +171,6 @@ namespace rtl {
                     return RStatus(Error::EmptyInstance);
                 };
             }
-
-            //deletes base class 'operator()()'
-            template<class ..._args>
-            RStatus operator()(_args...) const noexcept = delete;
-
-            //deletes base class 'call()'
-            template<class ..._args>
-            RStatus call(_args...) const noexcept = delete;
-
-            //friends :)
-            template<FunctorType _type>
-            friend class MethodInvoker;
-            friend detail::CxxReflection;
-            friend Record;
         };
     }
 }

@@ -22,5 +22,21 @@ namespace rtl
                                std::to_string(m_recordId) +
                                std::to_string(m_returnId));
         }
+
+
+        FunctorId& FunctorId::operator=(const FunctorId& pOther)
+        {
+            if (this == &pOther) {
+                return *this;
+            }
+
+            m_index = pOther.m_index;
+            m_returnId = pOther.m_returnId;
+            m_recordId = pOther.m_recordId;
+            m_containerId = pOther.m_containerId;
+            m_signature = pOther.m_signature;
+
+            return *this;
+        }
     }
 }

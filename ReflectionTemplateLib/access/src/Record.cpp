@@ -16,6 +16,18 @@ namespace rtl {
         }
 
 
+        Record& Record::operator=(const Record& pOther)
+        {
+            if (this == &pOther) {
+                return *this;  // Return *this to handle self-assignment
+            }
+
+            m_recordName = pOther.m_recordName;
+            m_methods = pOther.m_methods;
+            return *this;
+        }
+
+
     /*  @method: getFunctionsMap
         @param: none
         @return: std::unordered_map< std::string, access::Method >&
