@@ -4,7 +4,7 @@
 
 namespace proxy_test {
 
-    unsigned int Original::m_instanceCount = 0;
+    int Original::m_instanceCount = 0;
 
     /**
      * @brief Constructs a new Original object.
@@ -17,7 +17,7 @@ namespace proxy_test {
         , m_className("Original")
     {
         m_instanceCount++;
-        std::cout << "\"Original\" constructor called, instance count: " << m_instanceCount << "\n";
+        std::cout << "\t\"Original\" constructor called, instance count: " << m_instanceCount << "\n";
     }
 
     /**
@@ -28,7 +28,7 @@ namespace proxy_test {
     Original::~Original()
     {
         m_instanceCount--;
-        std::cout << "\"Original\" destructor called, instance count: " << m_instanceCount << "\n";
+        std::cout << "\t\"Original\" destructor called, instance count: " << m_instanceCount << "\n";
     }
 
     /**

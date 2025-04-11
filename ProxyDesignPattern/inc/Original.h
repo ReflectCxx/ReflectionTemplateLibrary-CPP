@@ -9,7 +9,7 @@ namespace proxy_test {
         std::string m_nodeName; ///< The name of the node.
         const std::string m_className; ///< The name of the class.
 
-        static unsigned int m_instanceCount; ///< The count of instances created.
+        static int m_instanceCount; ///< The count of instances created.
 
     public:
 
