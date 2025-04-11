@@ -23,22 +23,22 @@ namespace rtl {
             RecordBuilder(const std::string& pNamespace, const std::string& pRecord);
 
             template<class ..._signature>
-            constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
+            const ConstructorBuilder<_recordType, _signature...> constructor() const;
 
-            constexpr const Builder<TypeQ::Mute> method(const std::string& pFunction) const;
+            const Builder<TypeQ::Mute> method(const std::string& pFunction) const;
 
-            constexpr const Builder<TypeQ::None> methodStatic(const std::string& pFunction) const;
+            const Builder<TypeQ::None> methodStatic(const std::string& pFunction) const;
 
-            constexpr const Builder<TypeQ::Const> methodConst(const std::string& pFunction) const;
-
-            template<class ..._signature>
-            constexpr const Builder<TypeQ::Mute, _signature...> method(const std::string& pFunction) const;
+            const Builder<TypeQ::Const> methodConst(const std::string& pFunction) const;
 
             template<class ..._signature>
-            constexpr const Builder<TypeQ::None, _signature...> methodStatic(const std::string& pFunction) const;
+            const Builder<TypeQ::Mute, _signature...> method(const std::string& pFunction) const;
 
             template<class ..._signature>
-            constexpr const Builder<TypeQ::Const, _signature...> methodConst(const std::string& pFunction) const;
+            const Builder<TypeQ::None, _signature...> methodStatic(const std::string& pFunction) const;
+
+            template<class ..._signature>
+            const Builder<TypeQ::Const, _signature...> methodConst(const std::string& pFunction) const;
         };
     }
 }

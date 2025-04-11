@@ -1,6 +1,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 #include <algorithm>
 
 #include "Method.h"

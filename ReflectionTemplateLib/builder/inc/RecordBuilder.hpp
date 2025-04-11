@@ -22,7 +22,7 @@ namespace rtl {
         * the 'build(..)' called on return object will accepts static member function pointer only.
         * compiler error on 'build(..)' if non-static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline constexpr const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
+        inline const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
             return Builder<TypeQ::None>(m_namespace, m_record, pFunction);
         }
@@ -38,7 +38,7 @@ namespace rtl {
         * compiler error on 'build(..)' if const member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline constexpr const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
+        inline const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
             return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction);
         }
@@ -51,7 +51,7 @@ namespace rtl {
         * the 'build(..)' called on return object will accepts non-const, non-static member-function-pointer only.
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline constexpr const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+        inline const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
             return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction);
         }
@@ -66,7 +66,7 @@ namespace rtl {
         * the 'build(..)' called on return object will accepts non-const member-function-pointer only.
         * compiler error 'build(..)' if non-const, static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline constexpr const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+        inline const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
             return Builder<TypeQ::Const>(m_namespace, m_record, pFunction);
         }
@@ -82,7 +82,7 @@ namespace rtl {
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline constexpr const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+        inline const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
             return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction);
         }
@@ -98,7 +98,7 @@ namespace rtl {
         * compiler error on 'build(..)' if non-const, static member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline constexpr const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+        inline const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
             return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction);
         }
@@ -111,7 +111,7 @@ namespace rtl {
         * template params <...> - any combination of parameters.
     */  template<class _recordType>
         template<class ..._signature>
-        inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
+        inline const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
         {
             //this code-block is retained by compiler, if copy constructor with non-const ref('_recordType&') is being registered.
             if constexpr (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>) 
