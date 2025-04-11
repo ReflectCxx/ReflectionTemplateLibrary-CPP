@@ -8,10 +8,13 @@ namespace proxy_test {
 	{
 		std::string m_nodeName;
 		const std::string m_className;
-		
+
+		static unsigned int m_instanceCount;
+
 	public:
 
 		Original();
+		~Original();
 
 		std::string getClassName();
 
@@ -20,5 +23,7 @@ namespace proxy_test {
 		void setNodeName(std::string pName);
 
 		const std::string& getNodeName();
+
+		static const int& getInstanceCount();
 	};
 }
