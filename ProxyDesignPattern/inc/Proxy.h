@@ -12,7 +12,6 @@ namespace proxy_test {
 		OrgReflection m_reflection;
 		std::optional<rtl::access::Record> m_originalClass;
 		rtl::access::Instance m_originalObj;
-
 	public:
 
 		Proxy();

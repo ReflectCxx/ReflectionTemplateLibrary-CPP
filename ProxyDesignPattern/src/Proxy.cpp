@@ -2,7 +2,8 @@
 
 namespace proxy_test 
 {
-	Proxy::Proxy(): m_originalClass(m_reflection.getRecord("Original"))
+	Proxy::Proxy()
+		: m_originalClass(m_reflection.getRecord("Original"))
 	{
 		if (m_originalClass) 
 		{
