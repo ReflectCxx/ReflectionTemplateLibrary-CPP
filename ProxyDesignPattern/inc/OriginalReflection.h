@@ -5,43 +5,48 @@
 namespace proxy_test {
 
     /**
-     * @brief The OriginalReflection class provides reflection capabilities for the "Original" class.
+     * @brief The OriginalReflection struct provides reflection capabilities for the "Original" class.
      *
-     * This class inherits from rtl::access::CxxMirror and uses the singleton pattern to ensure
-     * only one instance exists. It holds optional reflection data for the "Original" class.
+     * This struct is designed as a monostate class, meaning it provides shared functionality
+     * without requiring instantiation. It uses the reflection system to dynamically register
+     * and retrieve metadata for the "Original" class, including its methods and constructor.
      */
-    class OriginalReflection : rtl::access::CxxMirror
+    struct OriginalReflection
     {
-        std::optional<rtl::access::Record> reflectedClass;
+        /**
+         * @brief Deleted default constructor to prevent instantiation.
+         *
+         * The OriginalReflection struct is designed to be used statically, so no instances
+         * of this struct should be created.
+         */
+        OriginalReflection() = delete;
 
         /**
-         * @brief Private constructor to enforce singleton pattern.
+         * @brief Deleted copy constructor to prevent copying.
+         *
+         * Ensures that the struct cannot be copied, maintaining its monostate design.
          */
-        OriginalReflection();
-
-    public:
-
-        // Delete copy constructor and assignment operator to enforce singleton pattern
         OriginalReflection(const OriginalReflection&) = delete;
+
+        /**
+         * @brief Deleted copy assignment operator to prevent assignment.
+         *
+         * Ensures that the struct cannot be assigned, maintaining its monostate design.
+         */
         OriginalReflection& operator=(const OriginalReflection&) = delete;
 
         /**
-         * @brief Get the reflection data for the "Original" class.
+         * @brief Retrieves the reflection data for the "Original" class.
          *
-         * @return const std::optional<rtl::access::Record>& Reference to the optional reflection data.
-         */
-        const std::optional<rtl::access::Record>& rclass() const {
-            return reflectedClass;
-        }
-
-        /**
-         * @brief Get the singleton instance of OriginalReflection.
+         * This method uses the reflection system to dynamically register and retrieve
+         * metadata for the "Original" class, including its constructor, instance methods,
+         * and static methods. The reflection data is stored as a static optional object
+         * to ensure it is initialized only once and reused across multiple calls.
          *
-         * @return OriginalReflection& Reference to the singleton instance.
+         * @return A constant reference to an optional containing the reflection data
+         * for the "Original" class. If the reflection data is unavailable, the optional
+         * will be empty.
          */
-        static OriginalReflection& obj() {
-            static OriginalReflection instance;
-            return instance;
-        }
+        static const std::optional<rtl::access::Record>& getClass();
     };
 }
