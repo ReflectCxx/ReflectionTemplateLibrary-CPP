@@ -12,6 +12,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/NameSpaceGlobalsTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/ReflectedCallStatusErrTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StaticMethodTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/PerfectForwardingTests.cpp"
 )
 
 # Add any additional source files if needed

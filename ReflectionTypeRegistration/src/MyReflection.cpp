@@ -9,6 +9,7 @@
 #include "Book.h"
 #include "Person.h"
 #include "Complex.h"
+#include "Animal.h"
 
 /*
 TestUtils, provides the interface to test/compare reflected type objects with actual objects (created via strict typing)
@@ -16,6 +17,7 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
+#include "TestUtilsAnimal.h"
 #include "TestUtilsGlobals.h"
 
 
@@ -76,7 +78,12 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Person>(person::class_).methodStatic(person::str_getDefaults).build(&Person::getDefaults),
         Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
         Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
-        Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile)
+        Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
+
+        //class 'Animal', methods & constructors.
+		Reflect().record<Animal>(animal::class_).constructor().build(),  //default constructor.
+		//Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+		Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName)  //overloaded method, taking const-ref as argument.
     });
 
 
