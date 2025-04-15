@@ -19,15 +19,17 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 include_directories(inc)
-include_directories("${CMAKE_SOURCE_DIR}/CxxTypeRegistration/inc")
+include_directories("${CMAKE_SOURCE_DIR}/CxxTestUtils/inc")
+include_directories("${CMAKE_SOURCE_DIR}/ReflectionTypeRegistration/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
 include_directories("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc")
 
+target_link_libraries(${CXX_EXE_NAME} CxxTestUtils)
 target_link_libraries(${CXX_EXE_NAME} GTest::gtest_main)
-target_link_libraries(${CXX_EXE_NAME} CxxTypeRegistration)
 target_link_libraries(${CXX_EXE_NAME} ReflectionTemplateLib)
+target_link_libraries(${CXX_EXE_NAME} ReflectionTypeRegistration)
 
 # Add the source directory
 include(src/CMakeLists.txt)
