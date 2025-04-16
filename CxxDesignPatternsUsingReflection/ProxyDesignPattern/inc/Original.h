@@ -52,6 +52,6 @@ namespace proxy_test {
          * @brief Gets the instance count.
          * @return The instance count as a constant reference to an integer.
          */
-        static const int& getInstanceCount();
+        static const unsigned int& getInstanceCount();
     };
 }

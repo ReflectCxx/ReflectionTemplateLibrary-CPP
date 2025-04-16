@@ -35,7 +35,7 @@ namespace proxy_test {
      * @brief Gets the instance count.
      * @return The instance count as a constant reference to an integer.
      */
-    const int& Original::getInstanceCount()
+    const unsigned int& Original::getInstanceCount()
     {
         return m_instanceCount;
     }

@@ -20,8 +20,7 @@ INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc")
 
-#TARGET_LINK_LIBRARIES(${CXX_EXE_NAME} CxxTestProject)
-TARGET_LINK_LIBRARIES(${CXX_EXE_NAME} ReflectionTemplateLib)
+TARGET_LINK_LIBRARIES(${CXX_LIB_NAME} ReflectionTemplateLib)
 
 # Add the source directory
 INCLUDE(src/CMakeLists.txt)

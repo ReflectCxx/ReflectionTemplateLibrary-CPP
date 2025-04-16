@@ -8,6 +8,12 @@ project(ProxyDesignPattern)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Set the build type to Debug
+set(CMAKE_BUILD_TYPE Debug)
+
+# Enable debug symbols
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
 set(CXX_EXE_NAME ProxyDesignPattern)
 add_executable(${CXX_EXE_NAME} "")
 
