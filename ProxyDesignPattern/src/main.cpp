@@ -7,7 +7,7 @@ int main() {
 
     // Call a static method of "Original" dynamically using the Proxy class
     const auto& iret = Proxy::forwardStaticCall("getInstanceCount");
-    const auto& icount = std::any_cast<int>(iret);
+    const auto& icount = std::any_cast<unsigned int>(iret);
     std::cout << "proxy static-call, getInstanceCount() return: " << icount << "\n";
 
     {
@@ -34,7 +34,7 @@ int main() {
 
     // Call the static method of "Original" again to get the updated instance count
     const auto& oret = Proxy::forwardStaticCall("getInstanceCount");
-    const auto& ocount = std::any_cast<int>(oret);
+    const auto& ocount = std::any_cast<unsigned int>(oret);
     std::cout << "proxy static-call, getInstanceCount() return: " << ocount << "\n";
 
     return 0;
