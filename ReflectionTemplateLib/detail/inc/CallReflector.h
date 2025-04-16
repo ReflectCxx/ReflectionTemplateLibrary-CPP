@@ -27,7 +27,7 @@ namespace rtl {
             static access::RStatus forwardCall(std::size_t pFunctorIndex, _params..._args)
             {
                 //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-                return _derivedType::getFunctors().at(pFunctorIndex)(_args...);
+                return _derivedType::getFunctors().at(pFunctorIndex)(std::forward<_params>(_args)...);
             }
 
 
@@ -39,7 +39,7 @@ namespace rtl {
             static access::RStatus forwardCall(const std::any& pTarget, std::size_t pFunctorIndex, _params..._args)
             {
                 //'getMethodFunctors()' is implemented by _derivedType (MethodContainer)
-                return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, _args...);
+                return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, std::forward<_params>(_args)...);
             }
         };
     }

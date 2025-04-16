@@ -23,5 +23,9 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		static const bool test_method_setAnimalName_rvalue_args(const std::any& pInstance);
+
+		static const bool test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance);
+
+		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance);
 	};
 }

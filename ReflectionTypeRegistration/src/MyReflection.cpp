@@ -82,7 +82,8 @@ CxxMirror& MyReflection::instance()
 
         //class 'Animal', methods & constructors.
         Reflect().record<Animal>(animal::class_).constructor().build(),  //default constructor.
-        //Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+		Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
+        Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
         Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName)  //overloaded method, taking const-ref as argument.
     });
 

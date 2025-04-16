@@ -146,7 +146,7 @@ int main()
 - ✅ Invoke const member functions.
 - ✅ Invoke static member functions.
 - ✅ Automatically invokes destructor for objects created on the heap via reflection.
-- 🔄 Perfect Forwarding: Invoke method with rvalue/lvalue reference as argument. *(In progress)*
+- 🔄 Perfect-Forwarding: Invoke method with correct rvalue & lvalue binding/overloads. *(In progress)*
 - ❌ Reflect properties of classes/structs, providing getter/setter methods.
 - ❌ Reflect enums.
 - ❌ Reflect classes with composite types that are also reflected.

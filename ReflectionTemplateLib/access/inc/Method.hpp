@@ -34,10 +34,10 @@ namespace rtl
             switch (m_target.getQualifier())
             {
                 //if the target is non-const, const & non-const both type member-function can be invoked on it.
-                case TypeQ::Mute: return m_method.invoke(m_target, params...);
+                case TypeQ::Mute: return m_method.invoke<_args...>(m_target, std::forward<_args>(params)...);
 
                 //if the m_target is const, only const member function can be invoked on it.
-                case TypeQ::Const: return m_method.invokeConst(m_target, params...);
+                case TypeQ::Const: return m_method.invokeConst<_args...>(m_target, std::forward<_args>(params)...);
             }
 
             //only an empty 'Instance' will have TypeQ::None.
@@ -54,7 +54,7 @@ namespace rtl
         inline RStatus MethodInvoker<FunctorType::Static>::call(_args ...params) const noexcept
         {
             //invokes the static-member-function functor associated with 'm_method'. no need of 'm_target' as other 'MethodInvoker'.
-            return m_method.invokeStatic(params...);
+            return m_method.invokeStatic<_args...>(std::forward<_args>(params)...);
         }
     }
 
@@ -86,7 +86,7 @@ namespace rtl
     */  template<class ..._args>
         inline RStatus Method::invokeCtor(_args ...params) const
         {
-            return Function::operator()(params...);
+            return Function::operator()<_args...>(std::forward<_args>(params)...);
         }
 
 
@@ -97,7 +97,7 @@ namespace rtl
     */  template<class ..._args>
         inline RStatus Method::invokeStatic(_args ...params) const
         {
-            return Function::operator()(params...);
+            return Function::operator()<_args...>(std::forward<_args>(params)...);
         }
 
 
@@ -130,7 +130,7 @@ namespace rtl
             if (index != -1)
             {
                 //make the call.
-                return detail::MethodContainer<TypeQ::Const, _args...>::forwardCall(pTarget.get(), index, params...);
+                return detail::MethodContainer<TypeQ::Const, _args...>::forwardCall(pTarget.get(), index, std::forward<_args>(params)...);
             }
             else {
                 //if the associated MethodContainer contains no such member-functor, check if such functor is present in container holding non-const functors.
@@ -157,11 +157,11 @@ namespace rtl
             if (index != -1)
             {
                 //make the call.
-                return detail::MethodContainer<TypeQ::Mute, _args...>::forwardCall(pTarget.get(), index, params...);
+                return detail::MethodContainer<TypeQ::Mute, _args...>::forwardCall(pTarget.get(), index, std::forward<_args>(params)...);
             }
             else {
                 //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.
-                return invokeConst(pTarget, params...);
+                return invokeConst<_args...>(pTarget, std::forward<_args>(params)...);
             }
         }
     }
