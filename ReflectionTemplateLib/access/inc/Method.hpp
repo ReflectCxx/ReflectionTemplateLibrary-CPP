@@ -130,7 +130,7 @@ namespace rtl
             if (index != -1)
             {
                 //make the call.
-                return detail::MethodContainer<TypeQ::Const, _args...>::forwardCall(pTarget.get(), index, std::forward<_args>(params)...);
+                return detail::MethodContainer<TypeQ::Const, _args...>::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
             }
             else {
                 //if the associated MethodContainer contains no such member-functor, check if such functor is present in container holding non-const functors.
@@ -157,7 +157,7 @@ namespace rtl
             if (index != -1)
             {
                 //make the call.
-                return detail::MethodContainer<TypeQ::Mute, _args...>::forwardCall(pTarget.get(), index, std::forward<_args>(params)...);
+                return detail::MethodContainer<TypeQ::Mute, _args...>::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
             }
             else {
                 //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.

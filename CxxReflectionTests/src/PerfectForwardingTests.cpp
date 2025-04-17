@@ -9,7 +9,7 @@ using namespace rtl::access;
 using namespace test_utils;
 
 namespace rtl_tests
-{/*
+{
 	TEST(PerfectForwardingTest, non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
 	{
 		{
@@ -41,7 +41,7 @@ namespace rtl_tests
 		EXPECT_TRUE(animal::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
-	*/
+	
 
 	TEST(PerfectForwardingTest, rvalue_ref_only_binds_to_rvalue_ref_overload)
 	{
