@@ -9,6 +9,7 @@
 #include "Book.h"
 #include "Person.h"
 #include "Complex.h"
+#include "Animal.h"
 
 /*
 TestUtils, provides the interface to test/compare reflected type objects with actual objects (created via strict typing)
@@ -16,6 +17,7 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
+#include "TestUtilsAnimal.h"
 #include "TestUtilsGlobals.h"
 
 
@@ -76,7 +78,21 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Person>(person::class_).methodStatic(person::str_getDefaults).build(&Person::getDefaults),
         Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
         Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
-        Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile)
+        Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
+
+        //class 'Animal', methods & constructors.
+        Reflect().record<Animal>(animal::class_).constructor().build(),  //default constructor.
+        #if defined(__GNUC__) && !defined(__clang__)
+            //GCC fails to deduce the correct template arguments for the overloaded method, taking non-const lvalue reference as argument.
+            //It is a known issue with GCC, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100885
+            //The workaround is to use the 'build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName))' instead of 'build(&Animal::setAnimalName)'.
+		    Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+        #else
+		    Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+        #endif
+        Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName)  //overloaded method, taking const-ref as argument.
     });
 
 

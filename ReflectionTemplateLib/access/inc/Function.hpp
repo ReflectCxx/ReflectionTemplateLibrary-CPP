@@ -33,7 +33,7 @@ namespace rtl {
 			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
 			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
 			{
-				return detail::FunctorContainer<_args...>::forwardCall(index, params...);
+				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
 			}
 			//else return with Error::SignatureMismatch.
 			return RStatus(Error::SignatureMismatch);
@@ -51,7 +51,7 @@ namespace rtl {
 			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
 			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
 			{
-				return detail::FunctorContainer<_args...>::forwardCall(index, params...);
+				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
 			}
 			//else return with Error::SignatureMismatch.
 			return RStatus(Error::SignatureMismatch);

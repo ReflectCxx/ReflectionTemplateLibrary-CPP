@@ -23,7 +23,6 @@ public:
 
 	std::string getPublishedOn();
 
-
 	void setAuthor(std::string pAuthor);
 	void setDescription(std::string pDesc);
 
