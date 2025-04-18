@@ -13,7 +13,7 @@ Static library, the core design maintains several tables of function pointers(re
   ```c++
   rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
   ```
-  The *cxxReflection* object provides interface to query and instantiate registered types.
+  The *cxxReflection* object (of type rtl::CxxMirror) provides interface to query and instantiate registered types.
 - **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
 - **Automatic Code Generation**: To generate manual registration code automatically, `clang-reflect` can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
 
@@ -53,8 +53,8 @@ public:
 ### Step 1: Register the Class with 'CxxMirror'
 Manually register the class and its members when creating a **`CxxMirror`** object.
 ```c++
-#include "CxxMirrorBuilder.h"    // Provides registration interface.
-#include "Person.h"              // User-defined types to be reflected.
+#include "RTLibInterface.h"	// Single header, provides all registration & access interfaces.
+#include "Person.h"	// User-defined types to be reflected.
 
 using namespace rtl;
 
