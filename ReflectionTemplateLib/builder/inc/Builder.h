@@ -37,7 +37,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _returnType>
-            constexpr const access::Function build(_returnType(*pFunctor)()) const;
+            const access::Function build(_returnType(*pFunctor)()) const;
         };
 
 
@@ -54,7 +54,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _returnType>
-            constexpr const access::Function build(_returnType(*pFunctor)(_signature...)) const;
+            const access::Function build(_returnType(*pFunctor)(_signature...)) const;
         };
 
 
@@ -71,7 +71,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _returnType, class ..._signature>
-            constexpr const access::Function build(_returnType(*pFunctor)(_signature...)) const;
+            const access::Function build(_returnType(*pFunctor)(_signature...)) const;
         };
     }
 
@@ -90,7 +90,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class _returnType>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
         };
 
 
@@ -106,7 +106,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class _returnType>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
         };
 
 
@@ -122,7 +122,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class _returnType, class ..._signature>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
         };
     }
 
@@ -141,7 +141,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class _returnType>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)()) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)()) const;
         };
 
 
@@ -157,7 +157,7 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class _returnType>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
         };
 
 
@@ -173,10 +173,10 @@ namespace rtl {
                     const std::string& pFunction);
 
             template<class _recordType, class ..._signature>
-            constexpr const access::Function build() const;
+            const access::Function build() const;
 
             template<class _recordType, class _returnType, class ..._signature>
-            constexpr const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
         };
     }
 }
