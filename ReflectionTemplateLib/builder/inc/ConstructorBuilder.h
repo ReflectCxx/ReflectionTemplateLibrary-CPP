@@ -36,7 +36,7 @@ namespace rtl {
             ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord,
                                const FunctorType& pCtorType);
           
-            inline const access::Function build() const;
+            inline constexpr const access::Function build() const;
 		};
 	}
 }
