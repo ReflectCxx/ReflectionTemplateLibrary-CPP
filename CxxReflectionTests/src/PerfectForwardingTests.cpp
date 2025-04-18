@@ -1,3 +1,22 @@
+/**
+ * @file PerfectForwardingTests.cpp
+ * @brief This file contains unit tests to validate the behavior of perfect forwarding in the reflection system.
+ *
+ * Perfect forwarding ensures that arguments are forwarded to the correct method overload while preserving their
+ * value category (L-value, R-value, or const L-value). The tests use the reflection system to dynamically retrieve
+ * and invoke methods, ensuring that the correct overload is called based on the argument type and value category.
+ *
+ * Note: The explicitly provided template types (e.g., `std::string&`, `std::string&&`, `const std::string&`) are
+ * required by the design of the Reflection Template Library (RTL) to match the method signatures during invocation.
+ *
+ * Key Components:
+ * - `CxxMirror`: The main reflection interface that provides access to class metadata (`Record`) and methods (`Method`).
+ * - `Record`: Represents a reflected class/struct and provides access to its methods and constructors.
+ * - `Method`: Represents a reflected method and provides interfaces to invoke it dynamically.
+ * - `Instance`: A type-erased wrapper for objects created via reflection, ensuring proper memory management.
+ * - `RStatus`: Represents the result of a reflection call, including the return value and error status.
+ */
+
 #include <gtest/gtest.h>
 
 #include "MyReflection.h"
@@ -10,100 +29,134 @@ using namespace test_utils;
 
 namespace rtl_tests
 {
-	TEST(PerfectForwardingTest, non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
+    /**
+     * @brief Test that a non-const L-value reference binds only to the corresponding overload.
+     *
+     * This test verifies that the reflection system correctly identifies and invokes the method
+     * overload that accepts a non-const L-value reference (`std::string&`).
+     */
+    TEST(PerfectForwardingTest, non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
 
-			optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
-			ASSERT_TRUE(classAnimal);
+            // Retrieve the metadata for the "Animal" class.
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
 
-			optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-			ASSERT_TRUE(setAnimalName);
+            // Retrieve the "setAnimalName" method.
+            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(setAnimalName);
 
-			auto [status, animalObj] = classAnimal->instance();
+            // Create an instance of the "Animal" class.
+            auto [status, animalObj] = classAnimal->instance();
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(animalObj.isEmpty());
 
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(animalObj.isEmpty());
+            // Verify that the method has the correct signature for a non-const L-value reference.
+            const auto& isValid = setAnimalName->hasSignature<std::string&>();
+            ASSERT_TRUE(isValid);
 
-			const auto& isValid = setAnimalName->hasSignature<std::string&>();
-			ASSERT_TRUE(isValid);
+            // Invoke the method with a non-const L-value reference.
+            auto nameStr = std::string(animal::NAME);
+            RStatus rStatus = setAnimalName->on(animalObj).call<std::string&>(nameStr);
 
-			auto nameStr = std::string(animal::NAME);
-			RStatus rStatus = setAnimalName->on(animalObj).call<std::string&>(nameStr);
+            ASSERT_TRUE(rStatus);
+            ASSERT_FALSE(rStatus.getReturn().has_value());
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+            // Validate the behavior of the method.
+            EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animalObj.get()));
+        }
 
-			EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animalObj.get()));
-		}
+        // Ensure that all instances are cleaned up.
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
 
-		EXPECT_TRUE(animal::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-	
+    /**
+     * @brief Test that an R-value reference binds only to the corresponding overload.
+     *
+     * This test verifies that the reflection system correctly identifies and invokes the method
+     * overload that accepts an R-value reference (`std::string&&`).
+     */
+    TEST(PerfectForwardingTest, rvalue_ref_only_binds_to_rvalue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
 
-	TEST(PerfectForwardingTest, rvalue_ref_only_binds_to_rvalue_ref_overload)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
+            // Retrieve the metadata for the "Animal" class.
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
 
-			optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
-			ASSERT_TRUE(classAnimal);
+            // Retrieve the "setAnimalName" method.
+            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(setAnimalName);
 
-			optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-			ASSERT_TRUE(setAnimalName);
+            // Create an instance of the "Animal" class.
+            auto [status, animalObj] = classAnimal->instance();
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(animalObj.isEmpty());
 
-			auto [status, animalObj] = classAnimal->instance();
+            // Verify that the method has the correct signature for an R-value reference.
+            const auto& isValid = setAnimalName->hasSignature<std::string&&>();
+            ASSERT_TRUE(isValid);
 
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(animalObj.isEmpty());
+            // Invoke the method with an R-value reference.
+            RStatus rStatus = setAnimalName->on(animalObj).call<std::string&&>(animal::NAME);
 
-			const auto& isValid = setAnimalName->hasSignature<std::string&&>();
-			ASSERT_TRUE(isValid);
+            ASSERT_TRUE(rStatus);
+            ASSERT_FALSE(rStatus.getReturn().has_value());
 
-			RStatus rStatus = setAnimalName->on(animalObj).call<std::string&&>(animal::NAME);
+            // Validate the behavior of the method.
+            EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animalObj.get()));
+        }
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+        // Ensure that all instances are cleaned up.
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
 
-			EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animalObj.get()));
-		}
+    /**
+     * @brief Test that a const L-value reference binds only to the corresponding overload.
+     *
+     * This test verifies that the reflection system correctly identifies and invokes the method
+     * overload that accepts a const L-value reference (`const std::string&`).
+     */
+    TEST(PerfectForwardingTest, const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
 
-		EXPECT_TRUE(animal::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+            // Retrieve the metadata for the "Animal" class.
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(setAnimalName);
 
-	TEST(PerfectForwardingTest, const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
+            // Create an instance of the "Animal" class.
+            auto [status, animalObj] = classAnimal->instance();
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(animalObj.isEmpty());
 
-			optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
-			ASSERT_TRUE(classAnimal);
+            // Verify that the method has the correct signature for a const L-value reference.
+            const auto& isValid = setAnimalName->hasSignature<const std::string&>();
+            ASSERT_TRUE(isValid);
 
-			optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-			ASSERT_TRUE(setAnimalName);
+            // Invoke the method with a const L-value reference.
+            auto nameStr = std::string(animal::NAME);
+            RStatus rStatus = setAnimalName->on(animalObj).call<const std::string&>(nameStr);
 
-			auto [status, animalObj] = classAnimal->instance();
+            ASSERT_TRUE(rStatus);
+            ASSERT_FALSE(rStatus.getReturn().has_value());
 
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(animalObj.isEmpty());
+            // Validate the behavior of the method.
+            EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animalObj.get()));
+        }
 
-			const auto& isValid = setAnimalName->hasSignature<const std::string&>();
-			ASSERT_TRUE(isValid);
-			
-			auto nameStr = std::string(animal::NAME);
-			RStatus rStatus = setAnimalName->on(animalObj).call<const std::string&>(nameStr);
-
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
-
-			EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animalObj.get()));
-		}
-
-		EXPECT_TRUE(animal::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+        // Ensure that all instances are cleaned up.
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
 }
