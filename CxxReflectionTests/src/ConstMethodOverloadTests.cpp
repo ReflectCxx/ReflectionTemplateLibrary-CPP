@@ -97,7 +97,7 @@ namespace rtl_tests
 			optional<Method> getFirstName = classPerson.getMethod(person::str_getFirstName);
 			ASSERT_TRUE(getFirstName);
 
-			const RStatus& rstatus = getFirstName->on(personObj).call();
+			const RStatus& rstatus = getFirstName->bind(personObj).call();
 			ASSERT_TRUE(rstatus);
 			ASSERT_TRUE(rstatus.isOfType<std::string>());
 
@@ -130,7 +130,8 @@ namespace rtl_tests
 			ASSERT_TRUE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)(string(person::ADDRESS));
+			auto address = string(person::ADDRESS);
+			const RStatus& rStatus = (*updateAddress)(personObj)(address);
 
 			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get()));

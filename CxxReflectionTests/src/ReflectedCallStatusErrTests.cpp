@@ -54,7 +54,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		ASSERT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
-		const RStatus& status = getProfile->on().call(std::string());
+		const RStatus& status = getProfile->bind().call(std::string());
 
 		ASSERT_TRUE(status == Error::SignatureMismatch);
 	}
@@ -83,7 +83,7 @@ namespace rtl_tests
 		optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 		ASSERT_TRUE(classBook);
 
-		RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->on(emptyObj).call();
+		RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
 		ASSERT_TRUE(retStatus == Error::EmptyInstance);
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
@@ -127,7 +127,7 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			RStatus retStatus = getPublishedOn->on(personObj).call();
+			RStatus retStatus = getPublishedOn->bind(personObj).call();
 			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -149,7 +149,7 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			bookObj.makeConst();
-			RStatus retStatus = getPublishedOn->on(bookObj).call();
+			RStatus retStatus = getPublishedOn->bind(bookObj).call();
 
 			ASSERT_TRUE(retStatus == Error::InstanceConstMismatch);
 		}

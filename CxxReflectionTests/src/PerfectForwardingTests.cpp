@@ -59,7 +59,7 @@ namespace rtl_tests
 
             // Invoke the method with a non-const L-value reference.
             auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->on(animalObj).call<std::string&>(nameStr);
+            RStatus rStatus = setAnimalName->bind<std::string&>(animalObj).call(nameStr);
 
             ASSERT_TRUE(rStatus);
             ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -102,7 +102,7 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             // Invoke the method with an R-value reference.
-            RStatus rStatus = setAnimalName->on(animalObj)/*.sign<std::string&&>()*/.call(animal::NAME);
+            RStatus rStatus = setAnimalName->bind<std::string&&>(animalObj).call(animal::NAME);
 
             ASSERT_TRUE(rStatus);
             ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -146,7 +146,7 @@ namespace rtl_tests
 
             // Invoke the method with a const L-value reference.
             const auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->on(animalObj).call(nameStr);
+            RStatus rStatus = setAnimalName->bind<const std::string&>(animalObj).call(nameStr);
 
             ASSERT_TRUE(rStatus);
             ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -159,4 +159,34 @@ namespace rtl_tests
         EXPECT_TRUE(animal::assert_zero_instance_count());
         EXPECT_TRUE(Instance::getInstanceCount() == 0);
     }
+
+
+    //TEST(PerfectForwardingTest, static_fn_const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
+    //{
+    //    {
+    //        CxxMirror& cxxMirror = MyReflection::instance();
+
+    //        optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+    //        ASSERT_TRUE(classAnimal);
+
+    //        optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+    //        ASSERT_TRUE(updateZooKeeper);
+
+    //        const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
+    //        ASSERT_TRUE(isValid);
+
+    //        const auto nameStr = std::string(animal::NAME);
+    //        RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(nameStr);
+
+    //        ASSERT_TRUE(rStatus);
+    //        ASSERT_TRUE(rStatus.getReturn().has_value());
+    //        ASSERT_TRUE(rStatus.isOfType<string>());
+
+    //        const string& retStr = any_cast<string>(rStatus.getReturn());
+    //        //EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
+    //    }
+
+    //    EXPECT_TRUE(animal::assert_zero_instance_count());
+    //    EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    //}
 }

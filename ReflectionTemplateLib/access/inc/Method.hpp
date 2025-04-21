@@ -6,6 +6,37 @@ namespace rtl
 {
     namespace access
     {
+
+    /*  @method: on()
+        @return: MethodInvoker<FunctorType::Static>
+        * accepts no arguments for 'target', since associated functor is static-member-functions.
+    */  inline const MethodInvoker<FunctorType::Static> Method::bind() const
+        {
+            return MethodInvoker<FunctorType::Static>(*this);
+        }
+
+
+    /*  @method: on()
+        @return: MethodInvoker<FunctorType::Method>
+        * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
+    */  inline const MethodInvoker<FunctorType::Method> Method::bind(const Instance& pTarget) const
+        {
+            return MethodInvoker<FunctorType::Method>(*this, pTarget);
+        }
+
+        template<class ..._signature>
+        inline const MethodInvoker<FunctorType::Static, _signature...> Method::bind() const
+        {
+            return MethodInvoker<FunctorType::Static, _signature...>(*this);
+        }
+
+        template<class ..._signature>
+        inline const MethodInvoker<FunctorType::Method, _signature...> Method::bind(const Instance& pTarget) const
+        {
+            return MethodInvoker<FunctorType::Method, _signature...>(*this, pTarget);
+        }
+
+
     /*  @method: invokeCtor()
         @params: variable arguments.
         @return: RStatus
@@ -56,23 +87,39 @@ namespace rtl
     /*  @method: invokeConst()
         @params: 'pTarget' (on which the method to be invoked), 'params...' (method arguments)
         @return: 'RStatus', indicating the success of reflected method call.
-        * invokes only a const-member-function functor.
-    */  template<class ..._args>
-        inline RStatus Method::invokeConst(const Instance& pTarget, _args&& ...params) const
+        * can invoke a 'const' or non-const-member-function functor.
+    */  template<class _containerMute, class _containerConst, class ..._args>
+        inline RStatus Method::invoke(const Instance& pTarget, _args&& ...params) const
         {
-            using Container_ = detail::MethodContainer<TypeQ::Const, std::remove_reference_t<_args>...>;
-
             //if the given argument's associated MethodContainer contains such member-functor, then make the call.
-            const std::size_t& index = hasSignatureId(Container_::getContainerId());
-            if (index != -1)
-            {
+            const std::size_t& index = hasSignatureId(_containerMute::getContainerId());
+            if (index != -1) {
                 //make the call.
-                return Container_::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
+                return _containerMute::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
             }
             else {
-                using Container = detail::MethodContainer<TypeQ::Mute, std::remove_reference_t<_args>...>;
+                //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.
+                return invokeConst<_containerMute, _containerConst, _args...>(pTarget, std::forward<_args>(params)...);
+            }
+        }
+
+
+    /*  @method: invokeConst()
+        @params: 'pTarget' (on which the method to be invoked), 'params...' (method arguments)
+        @return: 'RStatus', indicating the success of reflected method call.
+        * invokes only a const-member-function functor.
+    */  template<class _containerMute, class _containerConst, class ..._args>
+        inline RStatus Method::invokeConst(const Instance& pTarget, _args&& ...params) const
+        {
+            //if the given argument's associated MethodContainer contains such member-functor, then make the call.
+            const std::size_t& index = hasSignatureId(_containerConst::getContainerId());
+            if (index != -1) {
+                //make the call.
+                return _containerConst::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
+            }
+            else {
                 //if the associated MethodContainer contains no such member-functor, check if such functor is present in container holding non-const functors.
-                const std::size_t& index = hasSignatureId(Container::getContainerId());
+                const std::size_t& index = hasSignatureId(_containerMute::getContainerId());
                 if (index != -1) {
                     //if yes, then return error indicating such 'functor' is present but can be called on only non-const 'Instance'.
                     return RStatus(Error::InstanceConstMismatch);
@@ -80,29 +127,6 @@ namespace rtl
             }
             //return this error if the given argument's associated MethodContainer not found (const/non-const both).
             return RStatus(Error::SignatureMismatch);
-        }
-
-
-    /*  @method: invokeConst()
-        @params: 'pTarget' (on which the method to be invoked), 'params...' (method arguments)
-        @return: 'RStatus', indicating the success of reflected method call.
-        * can invoke a 'const' or non-const-member-function functor.
-    */  template<class ..._args>
-        inline RStatus Method::invoke(const Instance& pTarget, _args&& ...params) const
-        {
-            using Container = detail::MethodContainer<TypeQ::Mute, std::remove_reference_t<_args>...>;
-
-            //if the given argument's associated MethodContainer contains such member-functor, then make the call.
-            const std::size_t& index = hasSignatureId(Container::getContainerId());
-            if (index != -1)
-            {
-                //make the call.
-                return Container::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
-            }
-            else {
-                //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.
-                return invokeConst<_args...>(pTarget, std::forward<_args>(params)...);
-            }
         }
     }
 }

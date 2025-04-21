@@ -10,7 +10,7 @@ namespace rtl {
     namespace access
     {
     /*  @method: hasSignature<...>()
-        @param: set of arguments, explicitly specified as template parameter. 
+        @param: set of arguments, explicitly specified as template parameter.
         @return: bool, if the functor associated with this object is of certain signature or not.
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
@@ -30,13 +30,7 @@ namespace rtl {
     */  template<class ..._args>
 		inline RStatus Function::operator()(_args&& ...params) const noexcept
 		{
-			using Container = detail::FunctorContainer<std::remove_reference_t<_args>...>;
-			const std::size_t& index = hasSignatureId(Container::getContainerId());
-			if (index != -1) { //true, if the arguments sent matches the functor signature associated with this 'Function' object
-				return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
-			}
-			//else return with Error::SignatureMismatch.
-			return RStatus(Error::SignatureMismatch);
+			return call(std::forward<_args>(params)...);
 		}
 
 

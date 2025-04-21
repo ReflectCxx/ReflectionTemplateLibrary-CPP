@@ -16,8 +16,10 @@ namespace test_utils
 		static constexpr const float WEIGHT = 0.0;
 		static constexpr const bool IS_MAMMAL = false;
 		static constexpr const char* NAME = "Orangutan";
+		static constexpr const char* ZOO_KEEPER = "Donald Trump";
 
 		static constexpr const char* class_ = "Animal";
+		static constexpr const char* str_updateZooKeeper = "updateZooKeeper";
 		static constexpr const char* str_setAnimalName = "setAnimalName";
 
 		static const bool assert_zero_instance_count();
@@ -27,5 +29,8 @@ namespace test_utils
 		static const bool test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance);
 
 		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance);
+
+		template<class ..._signature>
+		static const bool test_method_updateZooKeeper(const std::string& pZooKeeper);
 	};
 }

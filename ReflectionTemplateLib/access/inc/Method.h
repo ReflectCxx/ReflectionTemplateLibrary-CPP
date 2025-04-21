@@ -31,11 +31,11 @@ namespace rtl {
             RStatus invokeCtor(_args&&...params) const;
 
             //invokes the member-function associated with this 'Method'
-            template<class ..._args>
+            template<class _containerMute, class _containerConst, class ..._args>
             RStatus invoke(const Instance& pTarget, _args&&...params) const;
 
             //invokes only const member-function associated with this 'Method'
-            template<class ..._args>
+            template<class _containerMute, class _containerConst, class ..._args>
             RStatus invokeConst(const Instance& pTarget, _args&&...params) const;
             
             //invokes only static member-function associated with this 'Method'
@@ -52,13 +52,21 @@ namespace rtl {
             const bool hasSignature() const;
 
             //set 'no' object to call static method. (takes no parameter)
-            const MethodInvoker<FunctorType::Static> on() const;
+            const MethodInvoker<FunctorType::Static> bind() const;
 
             //set 'target' object on which the functor associated with this will be called.
-            const MethodInvoker<FunctorType::Method> on(const Instance& pTarget) const;
+            const MethodInvoker<FunctorType::Method> bind(const Instance& pTarget) const;
+
+            
+            template<class ..._signature>
+            const MethodInvoker<FunctorType::Static, _signature...> bind() const;
+
+            
+            template<class ..._signature>
+            const MethodInvoker<FunctorType::Method, _signature...> bind(const Instance& pTarget) const;
 
             //friends :)
-            template<FunctorType _type>
+            template<FunctorType _type, class ..._signature>
             friend class MethodInvoker;
             friend detail::CxxReflection;
             friend Record;
@@ -87,7 +95,7 @@ namespace rtl {
         */  constexpr auto operator()(const Instance& pTarget) const
             {
                 return [&](auto&&...params)->RStatus {
-                    return on(pTarget).call(std::forward<decltype(params)>(params)...);
+                    return bind(pTarget).call(std::forward<decltype(params)>(params)...);
                 };
             }
         };

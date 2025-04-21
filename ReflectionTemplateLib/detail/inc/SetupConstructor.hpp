@@ -79,7 +79,7 @@ namespace rtl
             //lambda containing constructor call.
             const auto& functor = [=](_signature&&...params)->access::RStatus
             {
-                _recordType* retObj = new _recordType(params...);
+                _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
                 return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
             };
 

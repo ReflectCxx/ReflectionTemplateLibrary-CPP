@@ -8,6 +8,30 @@ const bool test_utils::animal::assert_zero_instance_count()
 	return (Animal::getInstanceCount() == 0);
 }
 
+
+template<>
+inline const bool test_utils::animal::test_method_updateZooKeeper<std::string&>(const std::string& pZooKeeper)
+{
+	std::string zooKeeper = ZOO_KEEPER;
+	return (pZooKeeper == Animal::updateZooKeeper(zooKeeper));
+}
+
+
+template<>
+inline const bool test_utils::animal::test_method_updateZooKeeper<std::string&&>(const std::string& pZooKeeper)
+{
+	return (pZooKeeper == Animal::updateZooKeeper(ZOO_KEEPER));
+}
+
+
+template<>
+inline const bool test_utils::animal::test_method_updateZooKeeper<const std::string&>(const std::string& pZooKeeper)
+{
+	const std::string zooKeeper = ZOO_KEEPER;
+	return (pZooKeeper == Animal::updateZooKeeper(zooKeeper));
+}
+
+
 const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::any& pInstance)
 {
 	Animal* rAnimal = std::any_cast<Animal*>(pInstance);

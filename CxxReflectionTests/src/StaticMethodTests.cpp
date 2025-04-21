@@ -42,7 +42,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		ASSERT_TRUE(getProfile->hasSignature<>());	//empty template params checks for zero arguments.
 
-		const RStatus& status = getProfile->on().call();
+		const RStatus& status = getProfile->bind().call();
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());
 		ASSERT_TRUE(status.isOfType<string>());
@@ -72,7 +72,7 @@ namespace rtl_tests
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 		} {
 			//different syntax of calling.
-			const RStatus& status = getProfile->on().call(false);
+			const RStatus& status = getProfile->bind().call(false);
 
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());
@@ -101,7 +101,7 @@ namespace rtl_tests
 
 		size_t age = person::AGE;
 		string occupation = person::OCCUPATION;
-		const RStatus& status = getProfile.on().call(occupation, age);
+		const RStatus& status = getProfile.bind().call(occupation, age);
 
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());

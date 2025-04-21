@@ -99,7 +99,7 @@ namespace rtl_tests
 			ASSERT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
-			RStatus rStatus = setAuthor->on(bookObj).call(author);
+			RStatus rStatus = setAuthor->bind(bookObj).call(author);
 
 			ASSERT_TRUE(rStatus);
 			ASSERT_FALSE(rStatus.getReturn().has_value());

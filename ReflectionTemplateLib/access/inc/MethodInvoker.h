@@ -18,7 +18,7 @@ namespace rtl {
         * invokes only non-static member function via reflection.
         * its objects are only cretaed and returned by 'Method::on()' method.
         * purpose of this class is only to provide method call syntax like, 'method.on(target).call(params...)'
-    */  template<FunctorType _type>
+    */  template<FunctorType _type, class ..._signature>
         class MethodInvoker
         {
             //the method to be called.
@@ -45,8 +45,8 @@ namespace rtl {
         * its objects are only cretaed and returned by 'Method::on()' method.
         * purpose of this class is only to provide method call syntax like, 'method.on().call(params...)'
         * 'on()' will take no target as parameter, since the method being called is 'static'.
-    */  template<>
-        class MethodInvoker<FunctorType::Static>
+    */  template<class ..._signature>
+        class MethodInvoker<FunctorType::Static, _signature...>
         {
             const Method& m_method;
 

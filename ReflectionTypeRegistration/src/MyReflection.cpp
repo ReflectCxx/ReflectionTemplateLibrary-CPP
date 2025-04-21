@@ -88,11 +88,16 @@ CxxMirror& MyReflection::instance()
             //The workaround is to use the 'build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName))' instead of 'build(&Animal::setAnimalName)'.
 		    Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
             Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
         #else
 		    Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
             Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+			Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
+			Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
         #endif
-        Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName)  //overloaded method, taking const-ref as argument.
+        Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking const-ref as argument.
+		Reflect().record<Animal>(animal::class_).methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking const-ref as argument.
     });
 
 

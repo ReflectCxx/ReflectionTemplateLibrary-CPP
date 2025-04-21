@@ -19,7 +19,7 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (orgMethod.has_value() && orgMethod->hasSignature<_args...>()) {
-            const auto& retVal = orgMethod->on(m_originalObj).call(std::forward<_args>(params)...);
+            const auto& retVal = orgMethod->bind(m_originalObj).call(std::forward<_args>(params)...);
             return retVal.getReturn();
         }
         return std::any();
@@ -41,7 +41,7 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (orgMethod.has_value() && orgMethod->hasSignature<_args...>()) {
-            const auto& retVal = orgMethod->on().call(std::forward<_args>(params)...);
+            const auto& retVal = orgMethod->bind().call(std::forward<_args>(params)...);
             return retVal.getReturn();
         }
         return std::any();
