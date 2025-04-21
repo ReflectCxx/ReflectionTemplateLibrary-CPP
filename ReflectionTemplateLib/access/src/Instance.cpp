@@ -91,7 +91,7 @@ namespace rtl {
         * creates 'Instance' containing pointer to the allocated object via reflection constructor call.
         * this constructor is called only on successful object creation on heap via reflected constructor call.
         * 'm_destructor' (shared_ptr) is given a custom deleter, which calls destructor on the allocated(via reflection) object.
-        * 'm_destructor' holds a dummy void* pointer (address of 'g_instanceCount'), for which is a primitive type.
+        * 'm_destructor' holds a dummy void* pointer (address of 'g_instanceCount'), which is a primitive type.
         * this is done to avoid dynamic allocation of 'Instance' object to manage it with 'shared_ptr'.
         * shared_ptr('m_destructor') holds the dummy void* but calls the actual destructor which destroys the object constructed(via reflection).
     */  Instance::Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
@@ -100,7 +100,7 @@ namespace rtl {
             , m_anyObject(pRetObj)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
-                pDctor(pRetObj);
+                pDctor.call(pRetObj);
                 (*static_cast<std::size_t*>(ptr))--;
             })
         {

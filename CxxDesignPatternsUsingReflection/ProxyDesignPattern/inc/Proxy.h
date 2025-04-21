@@ -30,7 +30,7 @@ namespace proxy_test {
          * @return The result of the function call as a std::any object.
          */
         template<class ..._args>
-        std::any forwardCall(const std::string& pFunctionName, _args ...params);
+        std::any forwardCall(const std::string& pFunctionName, _args&& ...params);
 
         /**
          * @brief Forwards a call to a static method of the "Original" class.
@@ -41,6 +41,6 @@ namespace proxy_test {
          * @return The result of the function call as a std::any object.
          */
         template<class ..._args>
-        static std::any forwardStaticCall(const std::string& pFunctionName, _args ...params);
+        static std::any forwardStaticCall(const std::string& pFunctionName, _args&& ...params);
     };
 }

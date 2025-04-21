@@ -34,7 +34,7 @@ namespace rtl {
             mutable std::any m_anyObject;
 
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
-            does not holds the objcet constructed via reflection.
+            does not hold the object constructed via reflection.
             it only contains a custom deleter to be called on the underlying object.
         */  mutable std::shared_ptr<void> m_destructor;
 

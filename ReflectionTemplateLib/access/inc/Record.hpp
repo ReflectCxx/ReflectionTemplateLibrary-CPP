@@ -20,7 +20,7 @@ namespace rtl {
         * in case of reflected call failure, empty 'Instance' will be returned.
         * on success Error::None will be returned along with the newly constructed object wrapped under 'Instance' (type erased).
     */  template<class ..._ctorArgs>
-        inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs ...params) const
+        inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
         {
             const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
 
@@ -28,7 +28,7 @@ namespace rtl {
             if (itr != m_methods.end()) {
 
                 //invoke the constructor, forwarding the arguments.
-                const RStatus& status = itr->second.invokeCtor(params...);
+                const RStatus& status = itr->second.invokeCtor(std::forward<_ctorArgs>(params)...);
 
                 //if status is 'true', object construction is successful.
                 if (status) {

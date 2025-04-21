@@ -79,10 +79,10 @@ namespace rtl {
             const bool hasSignature() const;
 
             template<class ..._args>
-            RStatus operator()(_args...params) const noexcept;
+            RStatus operator()(_args&&...params) const noexcept;
 
             template<class ..._args>
-            RStatus call(_args...params) const noexcept;
+            RStatus call(_args&&...params) const noexcept;
 
             friend detail::CxxReflection;
             friend detail::ReflectionBuilder;

@@ -22,6 +22,8 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/Instance.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"
+	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/RStatus.h"

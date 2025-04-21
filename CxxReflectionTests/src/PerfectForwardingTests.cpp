@@ -102,7 +102,7 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             // Invoke the method with an R-value reference.
-            RStatus rStatus = setAnimalName->on(animalObj).call<std::string&&>(animal::NAME);
+            RStatus rStatus = setAnimalName->on(animalObj)/*.sign<std::string&&>()*/.call(animal::NAME);
 
             ASSERT_TRUE(rStatus);
             ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -145,8 +145,8 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             // Invoke the method with a const L-value reference.
-            auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->on(animalObj).call<const std::string&>(nameStr);
+            const auto nameStr = std::string(animal::NAME);
+            RStatus rStatus = setAnimalName->on(animalObj).call(nameStr);
 
             ASSERT_TRUE(rStatus);
             ASSERT_FALSE(rStatus.getReturn().has_value());

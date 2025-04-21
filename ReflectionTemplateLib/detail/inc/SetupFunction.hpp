@@ -50,7 +50,7 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  const auto functor = [=](_signature...params)->access::RStatus
+        */  const auto functor = [=](_signature&&...params)->access::RStatus
             {
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>) {

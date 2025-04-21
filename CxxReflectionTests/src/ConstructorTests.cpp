@@ -68,7 +68,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			const string& dateStr = date::DATE_STR;
+			string dateStr = date::DATE_STR;
 			auto [status, instance] = classDate->instance(dateStr);
 			
 			ASSERT_TRUE(status);
@@ -88,7 +88,11 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance(date::DAY, date::MONTH, date::YEAR);
+			unsigned day = date::DAY;
+			unsigned month = date::MONTH;
+			unsigned year = date::YEAR;
+
+			auto [status, instance] = classDate->instance(day, month, year);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());

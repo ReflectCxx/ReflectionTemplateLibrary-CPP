@@ -28,12 +28,12 @@ namespace rtl {
         * if the arguments did not match with any overload, returns RStatus with Error::SignatureMismatch
 		* providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
-		inline RStatus Function::operator()(_args ...params) const noexcept
+		inline RStatus Function::operator()(_args&& ...params) const noexcept
 		{
-			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
-			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
-			{
-				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
+			using Container = detail::FunctorContainer<std::remove_reference_t<_args>...>;
+			const std::size_t& index = hasSignatureId(Container::getContainerId());
+			if (index != -1) { //true, if the arguments sent matches the functor signature associated with this 'Function' object
+				return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
 			}
 			//else return with Error::SignatureMismatch.
 			return RStatus(Error::SignatureMismatch);
@@ -46,12 +46,12 @@ namespace rtl {
         * if the arguments did not match with any overload, returns RStatus with Error::SignatureMismatch.
         * providing optional syntax, Function::operator()() does the exact same thing.
     */  template<class ..._args>
-		inline RStatus Function::call(_args ...params) const noexcept
+		inline RStatus Function::call(_args&& ...params) const noexcept
 		{
-			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
-			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
-			{
-				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
+			using Container = detail::FunctorContainer<std::remove_reference_t<_args>...>;
+			const std::size_t& index = hasSignatureId(Container::getContainerId());
+			if (index != -1) { //true, if the arguments sent matches the functor signature associated with this 'Function' object
+				return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
 			}
 			//else return with Error::SignatureMismatch.
 			return RStatus(Error::SignatureMismatch);

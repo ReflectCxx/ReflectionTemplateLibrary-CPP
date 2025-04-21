@@ -99,7 +99,9 @@ namespace rtl_tests
 		const bool& signValid = getProfile.hasSignature<string, size_t>();
 		ASSERT_TRUE(signValid);
 
-		const RStatus& status = getProfile.on().call(string(person::OCCUPATION), person::AGE);
+		size_t age = person::AGE;
+		string occupation = person::OCCUPATION;
+		const RStatus& status = getProfile.on().call(occupation, age);
 
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());
