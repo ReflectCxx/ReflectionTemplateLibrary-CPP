@@ -17,7 +17,13 @@ namespace
 	const std::string toJson(const FunctorId& pFunctorId)
 	{
 		std::stringstream sout;
-		sout << "{\"hash_code\": \"" << std::to_string(pFunctorId.getHashCode()) << "\",";
+		sout << "{\"containerId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
+		sout << "\"index\": \"" << std::to_string(pFunctorId.getIndex()) << "\",";
+		if (pFunctorId.getRecordId() != TypeId<>::None) {
+			sout << "\"classId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
+		}
+		sout << "\"returnId\": \"" << std::to_string(pFunctorId.getReturnId()) << "\",";
+		sout << "\"hash_code\": \"" << std::to_string(pFunctorId.getHashCode()) << "\",";
 		sout << "\"signature\": \"" << pFunctorId.getSignatureStr() << "\"}";
 		return sout.str();
 	}

@@ -21,14 +21,16 @@ namespace rtl_tests
 			optional<Method> updateLastName = classPerson.getMethod(person::str_updateLastName);
 			ASSERT_TRUE(updateLastName);
 
-			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson.instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateLastName)(personObj)(string(person::LAST_NAME));
+			string lastName = person::LAST_NAME;
+			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
 			
 			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get()));
@@ -50,7 +52,8 @@ namespace rtl_tests
 			optional<Method> updateLastName = classPerson.getMethod(person::str_updateLastName);
 			ASSERT_TRUE(updateLastName);
 
-			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson.instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -59,7 +62,8 @@ namespace rtl_tests
 			ASSERT_TRUE(personObj.isConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateLastName)(personObj)(string(person::LAST_NAME));
+			string lastName = person::LAST_NAME;
+			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
 
 			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get()));
@@ -81,7 +85,7 @@ namespace rtl_tests
 			optional<Method> updateLastName = classPerson.getMethod(person::str_updateLastName);
 			ASSERT_TRUE(updateLastName);
 
-			const std::string firstName = person::FIRST_NAME;
+			std::string firstName = person::FIRST_NAME;
 			auto [status, personObj] = classPerson.instance(firstName);
 
 			ASSERT_TRUE(status);
@@ -93,7 +97,7 @@ namespace rtl_tests
 			optional<Method> getFirstName = classPerson.getMethod(person::str_getFirstName);
 			ASSERT_TRUE(getFirstName);
 
-			const RStatus& rstatus = getFirstName->on(personObj).call();
+			const RStatus& rstatus = getFirstName->bind(personObj).call();
 			ASSERT_TRUE(rstatus);
 			ASSERT_TRUE(rstatus.isOfType<std::string>());
 
@@ -116,8 +120,8 @@ namespace rtl_tests
 			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
 			ASSERT_TRUE(updateAddress);
 
-			string fnameStr = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance(fnameStr);
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson->instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -126,7 +130,8 @@ namespace rtl_tests
 			ASSERT_TRUE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)(string(person::ADDRESS));
+			auto address = string(person::ADDRESS);
+			const RStatus& rStatus = (*updateAddress)(personObj)(address);
 
 			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get()));
@@ -147,14 +152,16 @@ namespace rtl_tests
 			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
 			ASSERT_TRUE(updateAddress);
 
-			auto [status, personObj] = classPerson->instance(string(person::FIRST_NAME));
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson->instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
 			ASSERT_FALSE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)(string(person::ADDRESS));
+			string address = person::ADDRESS;
+			const RStatus& rStatus = (*updateAddress)(personObj)(address);
 
 			ASSERT_TRUE(rStatus);
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get()));
@@ -176,7 +183,8 @@ namespace rtl_tests
 			optional<Method> updateAddress = classPerson.getMethod(person::str_updateAddress);
 			ASSERT_TRUE(updateAddress);
 
-			auto [status, personObj] = classPerson.instance(string(person::FIRST_NAME));
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson.instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -207,8 +215,8 @@ namespace rtl_tests
 			optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
 			ASSERT_TRUE(updateAddress);
 
-			string fnameStr = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance(fnameStr);
+			string firstName = person::FIRST_NAME;
+			auto [status, personObj] = classPerson->instance(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());

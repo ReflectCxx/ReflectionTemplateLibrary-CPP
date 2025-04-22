@@ -34,6 +34,18 @@ namespace rtl {
                 if constexpr (std::is_same_v<_type, std::string>) {
                     return std::string("std::string");
                 }
+                if constexpr (std::is_same_v<_type, const std::string>) {
+                    return std::string("const std::string");
+                }
+                if constexpr (std::is_same_v<_type, std::string&>) {
+                    return std::string("std::string&");
+                }
+                if constexpr (std::is_same_v<_type, const std::string&>) {
+                    return std::string("const std::string&");
+                }
+                if constexpr (std::is_same_v<_type, std::string&&>) {
+                    return std::string("const std::string&&");
+                }
                 if constexpr (!std::is_same_v<_type, std::nullptr_t>) {
                     return std::string(typeid(_type).name());
                 }

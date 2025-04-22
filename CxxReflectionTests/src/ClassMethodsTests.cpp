@@ -98,7 +98,8 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_TRUE(setAuthor->hasSignature<std::string>());
 
-			RStatus rStatus = (*setAuthor)(bookObj)(std::string(book::AUTHOR));
+			auto author = std::string(book::AUTHOR);
+			RStatus rStatus = setAuthor->bind(bookObj).call(author);
 
 			ASSERT_TRUE(rStatus);
 			ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -156,7 +157,11 @@ namespace rtl_tests
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			ASSERT_TRUE(signatureValid);
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(string(book::AUTHOR), book::PRICE, book::TITLE);
+			double price = book::PRICE;
+			std::string author = book::AUTHOR;
+			const char* title = book::TITLE;
+
+			RStatus rStatus = (*updateBookInfo)(bookObj)(author, price, title);
 
 			ASSERT_TRUE(rStatus);
 			ASSERT_FALSE(rStatus.getReturn().has_value());
@@ -186,7 +191,11 @@ namespace rtl_tests
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			ASSERT_TRUE(signatureValid);
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(book::TITLE, book::PRICE, string(book::AUTHOR));
+			double price = book::PRICE;
+			std::string author = book::AUTHOR;
+			const char* title = book::TITLE;
+
+			RStatus rStatus = (*updateBookInfo)(bookObj)(title, price, author);
 
 			ASSERT_TRUE(rStatus);
 			ASSERT_FALSE(rStatus.getReturn().has_value());

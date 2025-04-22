@@ -1,3 +1,6 @@
+  ```c++
+  using modern.C++; //C++20 features, no RTTI.
+  ```
 # Reflection Template Library C++
 
 The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
@@ -115,7 +118,7 @@ int main()
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
  // Call methods on the 'Person' object. returns 'RStatus'.
-    RStatus rst = setAge->on(personObj).call(int(42));
+    RStatus rst = setAge->bind(personObj).call(int(42));
  // or with different syntax,
     RStatus rst = (*setAge)(personObj)(int(42));
 
@@ -123,7 +126,7 @@ int main()
     std::optional<Method> getName = classPerson->getMethod("getName");
 
  // Call method, returns 'RStatus' containing return value.
-    RStatus retName = getName->on(personObj).call();
+    RStatus retName = getName->bind(personObj).call();
  // or with different syntax,
     RStatus retName = (*getName)(personObj)();
   
@@ -146,8 +149,8 @@ int main()
 - ✅ Invoke const member functions.
 - ✅ Invoke static member functions.
 - ✅ Automatically invokes destructor for objects created on the heap via reflection.
-- 🔄 Perfect-Forwarding: accurate lvalue & rvalue bindings when invoking a method. *(In progress)*
-- 🔄 No temporary variable gets created while forwarding the arguments of method invoked. *(In progress)*
+- ✅ Perfect Forwarding: Ensures precise binding of lvalues and rvalues to the correct method overload during invocation.
+- ✅ Zero Overhead Forwarding: Prevents the creation of temporary variables while forwarding arguments to methods.
 - ❌ Reflect properties of classes/structs, providing getter/setter methods.
 - ❌ Reflect enums.
 - ❌ Reflect classes with composite types that are also reflected.

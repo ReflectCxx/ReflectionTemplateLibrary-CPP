@@ -15,11 +15,11 @@ namespace proxy_test
      * @return The result of the function call as a std::any object. If the method does not exist or the signature does not match, returns an empty std::any object.
      */
     template<class ..._args>
-    inline std::any Proxy::forwardCall(const std::string& pFunctionName, _args ...params)
+    inline std::any Proxy::forwardCall(const std::string& pFunctionName, _args&& ...params)
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (orgMethod.has_value() && orgMethod->hasSignature<_args...>()) {
-            const auto& retVal = orgMethod->on(m_originalObj).call(params...);
+            const auto& retVal = orgMethod->bind(m_originalObj).call(std::forward<_args>(params)...);
             return retVal.getReturn();
         }
         return std::any();
@@ -37,11 +37,11 @@ namespace proxy_test
      * @return The result of the function call as a std::any object. If the method does not exist or the signature does not match, returns an empty std::any object.
      */
     template<class ..._args>
-    inline std::any Proxy::forwardStaticCall(const std::string& pFunctionName, _args ...params)
+    inline std::any Proxy::forwardStaticCall(const std::string& pFunctionName, _args&& ...params)
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (orgMethod.has_value() && orgMethod->hasSignature<_args...>()) {
-            const auto& retVal = orgMethod->on().call(params...);
+            const auto& retVal = orgMethod->bind().call(std::forward<_args>(params)...);
             return retVal.getReturn();
         }
         return std::any();

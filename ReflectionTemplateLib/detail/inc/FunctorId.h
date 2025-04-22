@@ -54,6 +54,8 @@ namespace rtl
             FunctorId& operator=(const FunctorId& pOther);
 
             GETTER(std::size_t, Index, m_index)
+            GETTER(std::size_t, ReturnId, m_returnId);
+            GETTER(std::size_t, RecordId, m_recordId);
             GETTER(std::size_t, SignatureId, m_containerId)
             GETTER(std::string, SignatureStr, m_signature)
 			

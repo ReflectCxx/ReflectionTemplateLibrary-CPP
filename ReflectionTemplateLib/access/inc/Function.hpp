@@ -3,14 +3,20 @@
 #include "RStatus.h"
 #include "Function.h"
 #include "Instance.h"
-#include "FunctorContainer.h"
+#include "FunctionCaller.hpp"
 
 namespace rtl {
 
     namespace access
     {
+		template<class ..._signature>
+		inline const FunctionCaller<_signature...> Function::bind() const
+		{
+			return FunctionCaller<_signature...>(*this);
+		}
+
     /*  @method: hasSignature<...>()
-        @param: set of arguments, explicitly specified as template parameter. 
+        @param: set of arguments, explicitly specified as template parameter.
         @return: bool, if the functor associated with this object is of certain signature or not.
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
@@ -28,33 +34,9 @@ namespace rtl {
         * if the arguments did not match with any overload, returns RStatus with Error::SignatureMismatch
 		* providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
-		inline RStatus Function::operator()(_args ...params) const noexcept
+		inline RStatus Function::operator()(_args&& ...params) const noexcept
 		{
-			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
-			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
-			{
-				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
-			}
-			//else return with Error::SignatureMismatch.
-			return RStatus(Error::SignatureMismatch);
-		}
-
-
-    /*  @method: call()
-        @param: variadic arguments.
-        @return: RStatus, containing the call status & return value of from the reflected call.
-        * if the arguments did not match with any overload, returns RStatus with Error::SignatureMismatch.
-        * providing optional syntax, Function::operator()() does the exact same thing.
-    */  template<class ..._args>
-		inline RStatus Function::call(_args ...params) const noexcept
-		{
-			const std::size_t& index = hasSignatureId(detail::FunctorContainer<_args...>::getContainerId());
-			if (index != -1) //true, if the arguments sent matches the functor signature associated with this 'Function' object
-			{
-				return detail::FunctorContainer<_args...>::template forwardCall<_args...>(index, params...);
-			}
-			//else return with Error::SignatureMismatch.
-			return RStatus(Error::SignatureMismatch);
+			return bind().call(std::forward<_args>(params)...);
 		}
 	}
 }

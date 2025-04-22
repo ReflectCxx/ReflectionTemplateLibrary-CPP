@@ -25,9 +25,19 @@ namespace rtl {
     */  template<class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
         {
-            const std::string& typeStr = detail::TypeId<_signature...>::toString();
-            const detail::FunctorId functorId = detail::FunctorContainer<_signature...>::addFunctor(pFunctor);
-            return access::Function(m_namespace, m_record, m_function, functorId, TypeId<>::None, TypeQ::None);
+            //true, if the types (_signature...) are auto deduced,hence can't figure out if any param actually has reference type.
+            if constexpr ((std::is_same_v<_signature, std::remove_reference_t<_signature>> && ...))
+            {
+                using Container = detail::FunctorContainer<std::remove_reference_t<_signature>...>;
+                const detail::FunctorId functorId = Container::addFunctor(pFunctor);
+                return access::Function(m_namespace, m_record, m_function, functorId, TypeId<>::None, TypeQ::None);
+            }
+            else //else the types are explicitly specified and has at least one reference types.
+            {
+                using Container = detail::FunctorContainer<_signature...>;
+                const detail::FunctorId functorId = Container::addFunctor(pFunctor);
+                return access::Function(m_namespace, m_record, m_function, functorId, TypeId<>::None, TypeQ::None);
+            }
         }
 
 
@@ -41,9 +51,19 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
-            const std::string& typeStr = detail::TypeId<_signature...>::toString();
-            const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Mute, _signature...>::addFunctor(pFunctor);
-            return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
+			//true, if the types (_signature...) are auto deduced,hence can't figure out if any param actually has reference type.
+            if constexpr ((std::is_same_v<_signature, std::remove_reference_t<_signature>> && ...))
+            {
+                using Container = detail::MethodContainer<TypeQ::Mute, std::remove_reference_t<_signature>...>;
+                const detail::FunctorId functorId = Container::addFunctor(pFunctor);
+                return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
+            }
+			else //else the types are explicitly specified and has at least one reference types.
+            {
+                using Container = detail::MethodContainer<TypeQ::Mute, _signature...>;
+                const detail::FunctorId functorId = Container::addFunctor(pFunctor);
+                return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
+            }
         }
 
 
@@ -57,8 +77,8 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
-            const std::string& typeStr = detail::TypeId<_signature...>::toString();
-            const detail::FunctorId functorId = detail::MethodContainer<TypeQ::Const, _signature...>::addFunctor(pFunctor);
+            using Container = detail::MethodContainer<TypeQ::Const, std::remove_reference_t<_signature>...>;
+            const detail::FunctorId functorId = Container::addFunctor(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Const);
         }
 
@@ -72,11 +92,11 @@ namespace rtl {
     */  template<typename _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstructor() const
         {
-            const detail::FunctorId functorId = detail::FunctorContainer<_ctorSignature...>::template addConstructor<_recordType, _ctorSignature...>();
-            const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
+            using Container = detail::FunctorContainer<std::remove_reference_t<_ctorSignature>...>;
+            const detail::FunctorId functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
+            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<const std::any>::addDestructor<_recordType>());
             return constructor;
         }
 
@@ -90,11 +110,10 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildCopyConstructor() const
         {
-            const detail::FunctorId functorId = detail::FunctorContainer<std::any>::addCopyConstructor<_recordType>();
-            const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
+            const detail::FunctorId functorId = detail::FunctorContainer<const std::any>::addCopyConstructor<_recordType>();
             const access::Function constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
+            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<const std::any>::addDestructor<_recordType>());
             return constructor;
         }
 		
@@ -108,11 +127,11 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstCopyConstructor() const
         {
-            const detail::FunctorId functorId = detail::FunctorContainer<std::any>::addConstCopyConstructor<_recordType>();
+            const detail::FunctorId functorId = detail::FunctorContainer<const std::any>::addConstCopyConstructor<_recordType>();
             const std::string& typeStr = detail::TypeId<_ctorSignature...>::toString();
             const access::Function constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
+            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<const std::any>::addDestructor<_recordType>());
             return constructor;
         }
     }
