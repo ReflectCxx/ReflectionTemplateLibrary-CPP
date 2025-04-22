@@ -1,5 +1,5 @@
   ```c++
-  using modernC++;
+  using modern.C++;	//C++20 features, no RTTI.
   ```
 # Reflection Template Library C++
 
