@@ -1,5 +1,7 @@
 # Reflection Template Library C++
-
+  ```c++
+  using modernC++;
+  ```
 The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
 
 Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
@@ -115,7 +117,7 @@ int main()
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
  // Call methods on the 'Person' object. returns 'RStatus'.
-    RStatus rst = setAge->on(personObj).call(int(42));
+    RStatus rst = setAge->bind(personObj).call(int(42));
  // or with different syntax,
     RStatus rst = (*setAge)(personObj)(int(42));
 
@@ -123,7 +125,7 @@ int main()
     std::optional<Method> getName = classPerson->getMethod("getName");
 
  // Call method, returns 'RStatus' containing return value.
-    RStatus retName = getName->on(personObj).call();
+    RStatus retName = getName->bind(personObj).call();
  // or with different syntax,
     RStatus retName = (*getName)(personObj)();
   

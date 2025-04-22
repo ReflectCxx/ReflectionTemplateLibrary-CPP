@@ -43,6 +43,8 @@ namespace rtl {
 
         public:
 
+            using Function::bind;
+
             //indicates if a particular set of arguments accepted by the functor associated with it.
             template<class ..._args>
             const bool hasSignature() const;
@@ -57,11 +59,6 @@ namespace rtl {
             friend Record;
 
         public:
-
-            template<class ..._signature>
-            const FunctionCaller<_signature...> bind() const {
-				return Function::bind<_signature...>();
-            }
 
         /*  @method: operator()()
             @return: lambda

@@ -175,8 +175,8 @@ namespace rtl_tests
             const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
             ASSERT_TRUE(isValid);
 
-            const auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(nameStr);
+            const auto zookeeper = std::string(animal::ZOO_KEEPER);
+            RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(zookeeper);
 
             ASSERT_TRUE(rStatus);
             ASSERT_TRUE(rStatus.getReturn().has_value());
@@ -184,6 +184,65 @@ namespace rtl_tests
 
             const string& retStr = any_cast<string>(rStatus.getReturn());
             EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
+        }
+
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
+
+
+    TEST(PerfectForwardingTest, static_fn_rvalue_ref_only_binds_to_rvalue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
+
+            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(updateZooKeeper);
+
+            const auto& isValid = updateZooKeeper->hasSignature<std::string&&>();
+            ASSERT_TRUE(isValid);
+
+            RStatus rStatus = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
+
+            ASSERT_TRUE(rStatus);
+            ASSERT_TRUE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(rStatus.isOfType<string>());
+
+            const string& retStr = any_cast<string>(rStatus.getReturn());
+            EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&&>(retStr));
+        }
+
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
+
+
+    TEST(PerfectForwardingTest, static_fn_non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
+
+            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(updateZooKeeper);
+
+            const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
+            ASSERT_TRUE(isValid);
+
+            auto zookeeper = std::string(animal::ZOO_KEEPER);
+            RStatus rStatus = updateZooKeeper->bind<std::string&>().call(zookeeper);
+
+            ASSERT_TRUE(rStatus);
+            ASSERT_TRUE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(rStatus.isOfType<string>());
+
+            const string& retStr = any_cast<string>(rStatus.getReturn());
+            EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&>(retStr));
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
