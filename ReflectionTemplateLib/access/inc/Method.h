@@ -37,10 +37,6 @@ namespace rtl {
             //invokes only const member-function associated with this 'Method'
             template<class _containerMute, class _containerConst, class ..._args>
             RStatus invokeConst(const Instance& pTarget, _args&&...params) const;
-            
-            //invokes only static member-function associated with this 'Method'
-            template<class ..._args>
-            RStatus invokeStatic(_args&&...params) const;
 
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
@@ -51,27 +47,21 @@ namespace rtl {
             template<class ..._args>
             const bool hasSignature() const;
 
-            //set 'no' object to call static method. (takes no parameter)
-            const MethodInvoker<FunctorType::Static> bind() const;
-
-            //set 'target' object on which the functor associated with this will be called.
-            const MethodInvoker<FunctorType::Method> bind(const Instance& pTarget) const;
-
-            
             template<class ..._signature>
-            const MethodInvoker<FunctorType::Static, _signature...> bind() const;
-
-            
-            template<class ..._signature>
-            const MethodInvoker<FunctorType::Method, _signature...> bind(const Instance& pTarget) const;
+            const MethodInvoker<_signature...> bind(const Instance& pTarget) const;
 
             //friends :)
-            template<FunctorType _type, class ..._signature>
+            template<class ..._signature>
             friend class MethodInvoker;
             friend detail::CxxReflection;
             friend Record;
 
         public:
+
+            template<class ..._signature>
+            const FunctionCaller<_signature...> bind() const {
+				return Function::bind<_signature...>();
+            }
 
         /*  @method: operator()()
             @return: lambda

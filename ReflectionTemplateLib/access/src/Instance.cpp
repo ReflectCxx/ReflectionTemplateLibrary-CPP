@@ -100,7 +100,7 @@ namespace rtl {
             , m_anyObject(pRetObj)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
-                pDctor.call(pRetObj);
+                pDctor(pRetObj);
                 (*static_cast<std::size_t*>(ptr))--;
             })
         {

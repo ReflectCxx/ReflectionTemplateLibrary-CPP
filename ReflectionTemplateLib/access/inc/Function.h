@@ -7,6 +7,7 @@
 #include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
+#include "FunctionCaller.h"
 
 namespace rtl {
 
@@ -81,9 +82,11 @@ namespace rtl {
             template<class ..._args>
             RStatus operator()(_args&&...params) const noexcept;
 
-            template<class ..._args>
-            RStatus call(_args&&...params) const noexcept;
+            template<class ..._signature>
+            const FunctionCaller<_signature...> bind() const;
 
+            template<class ..._signature>
+            friend class FunctionCaller;
             friend detail::CxxReflection;
             friend detail::ReflectionBuilder;
         };

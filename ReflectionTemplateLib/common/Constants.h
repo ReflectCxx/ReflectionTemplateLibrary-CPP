@@ -14,16 +14,12 @@ namespace rtl {
     };
 
     //Qualifier type.
-    enum class FunctorType
+    enum class ConstructorType
     {
         None,
         Ctor,
-        CopyCtor,
-        CopyCtorConst,
-        DCtor,
-        Static,
-        Method,
-        Function
+        Copy,
+        ConstCopy
     };
 
 

@@ -19,6 +19,8 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirrorToJson.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
+	"${PROJECT_SOURCE_DIR}/access/inc/FunctionCaller.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/FunctionCaller.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Instance.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"

@@ -161,32 +161,32 @@ namespace rtl_tests
     }
 
 
-    //TEST(PerfectForwardingTest, static_fn_const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
-    //{
-    //    {
-    //        CxxMirror& cxxMirror = MyReflection::instance();
+    TEST(PerfectForwardingTest, static_fn_const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
+    {
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
 
-    //        optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
-    //        ASSERT_TRUE(classAnimal);
+            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
 
-    //        optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-    //        ASSERT_TRUE(updateZooKeeper);
+            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(updateZooKeeper);
 
-    //        const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
-    //        ASSERT_TRUE(isValid);
+            const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
+            ASSERT_TRUE(isValid);
 
-    //        const auto nameStr = std::string(animal::NAME);
-    //        RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(nameStr);
+            const auto nameStr = std::string(animal::NAME);
+            RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(nameStr);
 
-    //        ASSERT_TRUE(rStatus);
-    //        ASSERT_TRUE(rStatus.getReturn().has_value());
-    //        ASSERT_TRUE(rStatus.isOfType<string>());
+            ASSERT_TRUE(rStatus);
+            ASSERT_TRUE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(rStatus.isOfType<string>());
 
-    //        const string& retStr = any_cast<string>(rStatus.getReturn());
-    //        //EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
-    //    }
+            const string& retStr = any_cast<string>(rStatus.getReturn());
+            EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
+        }
 
-    //    EXPECT_TRUE(animal::assert_zero_instance_count());
-    //    EXPECT_TRUE(Instance::getInstanceCount() == 0);
-    //}
+        EXPECT_TRUE(animal::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+    }
 }

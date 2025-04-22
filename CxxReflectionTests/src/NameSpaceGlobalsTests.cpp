@@ -99,8 +99,8 @@ namespace rtl_tests
 		//g_real's type is "const double", so can't be passed directly to setReal.
 		//Instead we can explicitly specify the types as template parameter,
 		//like, (*setReal).operator()<float>(g_real);
-		//or we can use the call() method specifying type as template param, like,
-		RStatus status = setReal->call<float>(g_real);
+		//or we can use the bind<...>().call(), specifying type as template param, like,
+		RStatus status = setReal->bind<float>().call(g_real);
 
 		ASSERT_FALSE(status);
 		ASSERT_FALSE(status.getReturn().has_value());
@@ -144,8 +144,9 @@ namespace rtl_tests
 			EXPECT_TRUE(retVal == STRA_REVERSE);
 		} {
 			//STRB's type is 'consexpr const char*', function accepts 'string',
-			//so explicitly spicifying type in template to interpret the sent argument as 'string'.
-			RStatus status = reverseString->call<string>(STRB);
+			//so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
+			RStatus status = reverseString->bind<string>().call(STRB);
+
 			ASSERT_TRUE(status);
 			ASSERT_TRUE(status.getReturn().has_value());
 			ASSERT_TRUE(status.isOfType<string>());

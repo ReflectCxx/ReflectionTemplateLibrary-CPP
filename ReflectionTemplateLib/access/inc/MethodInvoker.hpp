@@ -8,27 +8,9 @@ namespace rtl
 {
     namespace access
     {
-        template<class ..._signature>
-        //MethodInvoker, holds only 'Method' associated with a static-member-function.
-        inline MethodInvoker<FunctorType::Static, _signature...>::MethodInvoker(const Method& pMethod)
-            :m_method(pMethod) {
-        }
-
-        template<class ..._signature>
-        template<class ..._args>
-        inline RStatus MethodInvoker<FunctorType::Static, _signature...>::call(_args&& ...params) const noexcept
-        {
-            //invokes the static-member-function functor associated with 'm_method'. no need of 'm_target' as other 'MethodInvoker'.
-            return m_method.invokeStatic<_args...>(std::forward<_args>(params)...);
-        }
-    }
-
-
-    namespace access
-    {
         //MethodInvoker, holds const-ref of the 'Method' and 'Instance' on which it will be invoked.
-        template<FunctorType _type, class ..._signature>
-        inline MethodInvoker<_type, _signature...>::MethodInvoker(const Method& pMethod, const Instance& pTarget)
+        template<class ..._signature>
+        inline MethodInvoker<_signature...>::MethodInvoker(const Method& pMethod, const Instance& pTarget)
             : m_method(pMethod)
             , m_target(pTarget) {
         }
@@ -38,9 +20,9 @@ namespace rtl
         @params: params... (corresponding to functor associated with 'm_method')
         @return: RStatus, indicating success of the reflected call.
         * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-    */  template<FunctorType _type, class ..._signature>
+    */  template<class ..._signature>
         template<class ..._args>
-        inline RStatus MethodInvoker<_type, _signature...>::call(_args&& ...params) const noexcept
+        inline RStatus MethodInvoker<_signature...>::call(_args&& ...params) const noexcept
         {
             if (m_target.isEmpty()) {
                 //if the target is empty.

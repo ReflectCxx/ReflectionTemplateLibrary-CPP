@@ -27,14 +27,14 @@ namespace rtl {
             FunctorType::Ctor - default/parametrized constructor.
             FunctorType::CopyCtor - copy constructor args, '_recordType&'
             FunctorType::CopyCtorConst - copy constructor args, 'const _recordType&'
-        */  const FunctorType m_ctorType;
+        */  const ConstructorType m_ctorType;
 
             ConstructorBuilder() = delete;
 
         public:
 
             ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord,
-                               const FunctorType& pCtorType);
+                               const ConstructorType& pCtorType);
           
             inline const access::Function build() const;
 		};
