@@ -30,14 +30,6 @@ namespace rtl {
             template<class ..._args>
             RStatus invokeCtor(_args&&...params) const;
 
-            //invokes the member-function associated with this 'Method'
-            template<class _containerMute, class _containerConst, class ..._args>
-            RStatus invoke(const Instance& pTarget, _args&&...params) const;
-
-            //invokes only const member-function associated with this 'Method'
-            template<class _containerMute, class _containerConst, class ..._args>
-            RStatus invokeConst(const Instance& pTarget, _args&&...params) const;
-
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
 

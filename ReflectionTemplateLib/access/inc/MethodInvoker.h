@@ -19,6 +19,13 @@ namespace rtl {
 
             MethodInvoker(const Method& pMethod, const Instance& pTarget);
 
+            template<class ..._finalSignature>
+            struct Invoker {
+
+                template<class ..._args>
+                static RStatus invoke(const Method& pMethod, const Instance& pTarget, _args&&...);
+            };
+
         public:
 
             template<class ..._args>

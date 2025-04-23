@@ -47,51 +47,5 @@ namespace rtl
             }
             return false;
         }
-
-
-    /*  @method: invokeConst()
-        @params: 'pTarget' (on which the method to be invoked), 'params...' (method arguments)
-        @return: 'RStatus', indicating the success of reflected method call.
-        * can invoke a 'const' or non-const-member-function functor.
-    */  template<class _containerMute, class _containerConst, class ..._args>
-        inline RStatus Method::invoke(const Instance& pTarget, _args&& ...params) const
-        {
-            //if the given argument's associated MethodContainer contains such member-functor, then make the call.
-            const std::size_t& index = hasSignatureId(_containerMute::getContainerId());
-            if (index != -1) {
-                //make the call.
-                return _containerMute::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
-            }
-            else {
-                //if no such member-functor is found in non-const MethodContainer, check if such functor is present in const MethodContainer and call.
-                return invokeConst<_containerMute, _containerConst, _args...>(pTarget, std::forward<_args>(params)...);
-            }
-        }
-
-
-    /*  @method: invokeConst()
-        @params: 'pTarget' (on which the method to be invoked), 'params...' (method arguments)
-        @return: 'RStatus', indicating the success of reflected method call.
-        * invokes only a const-member-function functor.
-    */  template<class _containerMute, class _containerConst, class ..._args>
-        inline RStatus Method::invokeConst(const Instance& pTarget, _args&& ...params) const
-        {
-            //if the given argument's associated MethodContainer contains such member-functor, then make the call.
-            const std::size_t& index = hasSignatureId(_containerConst::getContainerId());
-            if (index != -1) {
-                //make the call.
-                return _containerConst::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
-            }
-            else {
-                //if the associated MethodContainer contains no such member-functor, check if such functor is present in container holding non-const functors.
-                const std::size_t& index = hasSignatureId(_containerMute::getContainerId());
-                if (index != -1) {
-                    //if yes, then return error indicating such 'functor' is present but can be called on only non-const 'Instance'.
-                    return RStatus(Error::InstanceConstMismatch);
-                }
-            }
-            //return this error if the given argument's associated MethodContainer not found (const/non-const both).
-            return RStatus(Error::SignatureMismatch);
-        }
     }
 }
