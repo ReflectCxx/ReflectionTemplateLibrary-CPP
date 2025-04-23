@@ -62,29 +62,33 @@ namespace rtl_tests
 
 	TEST(ReflectedCallStatusError, copy_ctor_on_empty_instance___error_EmptyInstance)
 	{
-		Instance emptyObj;
-		ASSERT_TRUE(emptyObj.isEmpty());
+		{
+			Instance emptyObj;
+			ASSERT_TRUE(emptyObj.isEmpty());
 
-		optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-		ASSERT_TRUE(classPerson);
+			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
 
-		auto [retStatus, personObj] = classPerson->clone(emptyObj);
+			auto [retStatus, personObj] = classPerson->clone(emptyObj);
 
-		ASSERT_TRUE(retStatus == Error::EmptyInstance);
+			ASSERT_TRUE(retStatus == Error::EmptyInstance);
+		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
 
 	TEST(ReflectedCallStatusError, method_call_on_empty_instance___error_EmptyInstance)
 	{
-		Instance emptyObj;
-		ASSERT_TRUE(emptyObj.isEmpty());
+		{
+			Instance emptyObj;
+			ASSERT_TRUE(emptyObj.isEmpty());
 
-		optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-		ASSERT_TRUE(classBook);
+			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+			ASSERT_TRUE(classBook);
 
-		RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
-		ASSERT_TRUE(retStatus == Error::EmptyInstance);
+			RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
+			ASSERT_TRUE(retStatus == Error::EmptyInstance);
+		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 
