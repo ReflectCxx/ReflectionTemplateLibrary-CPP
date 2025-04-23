@@ -139,25 +139,26 @@ int main()
 - Check, `CxxReflectionTests/src` for test cases.
 
 ## Reflection Features
-•	✅ **Function Reflection**: Register and invoke functions, including support for all overloads.
-•	✅ **Class and Struct Reflection**: Register classes/structs and dynamically reflect their methods, constructors, and destructors.
-•	✅ **Constructor Invocation**:
-    		• Invoke the default constructor.
-    		• Invoke copy constructors with both non-const and const reference arguments.
-    		• Invoke any overloaded constructor.
-•	✅ **Member Function Invocation**:
-    		• Dynamically invoke non-const member functions.
-    		• Dynamically invoke const member functions.
-    		• Dynamically invoke static member functions.
-•	✅ **Automatic Resource Management**: Automatically invokes destructors for objects created on the heap via reflection.
-•	✅ **Perfect Forwarding**: Precisely binds lvalues and rvalues to the correct method overload during invocation.
-•	✅ **Zero Overhead Forwarding**: Eliminates the creation of temporary variables while forwarding arguments to methods.
-•	✅ **Namespace Support**: Group and reflect classes, structs, and global functions under namespaces for better organization.
-•	❌ **Property Reflection**: Reflect properties of classes/structs, providing getter/setter methods.
-•	❌ **Enum Reflection**: Add support for reflecting enums.
-•	❌ **Composite Type Reflection**: Reflect classes with composite types that are also reflected.
-•	❌ **Inheritance Support**: Add support for single, multiple, multilevel, and virtual inheritance.
 
+- ✅ **Function Reflection**: Register and invoke functions, including support for all overloads.
+- ✅ **Class and Struct Reflection**: Register classes/structs and dynamically reflect their methods, constructors, and destructors.
+- ✅ **Constructor Invocation**:
+  - Invoke the default constructor.
+  - Invoke copy constructors with both non-const and const reference arguments.
+  - Invoke any overloaded constructor.
+- ✅ **Member Function Invocation**:
+  - Dynamically invoke non-const member functions.
+  - Dynamically invoke const member functions.
+  - Dynamically invoke static member functions.
+- ✅ **Automatic Resource Management**: Automatically invokes destructors for objects created on the heap via reflection.
+- ✅ **Perfect Forwarding**: Precisely binds lvalues and rvalues to the correct method overload during invocation.
+- ✅ **Zero Overhead Forwarding**: Eliminates the creation of temporary variables while forwarding arguments to methods.
+- ✅ **Namespace Support**: Group and reflect classes, structs, and global functions under namespaces for better organization.
+- ❌ **Property Reflection**: Reflect properties of classes/structs, providing getter/setter methods.
+- ❌ **Enum Reflection**: Add support for reflecting enums.
+- ❌ **Composite Type Reflection**: Reflect classes with composite types that are also reflected.
+- ❌ **Inheritance Support**: Add support for single, multiple, multilevel, and virtual inheritance.
+  
 ## License
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
