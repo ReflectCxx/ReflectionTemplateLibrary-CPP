@@ -34,7 +34,7 @@ to build, any IDE applicable to the generator can be used or you can also just b
 ```sh
     cmake --build .
 ```
-Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested on windows and Ubuntu-20)*
+Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested with msvc, gnu(14) & clang(19))*
 ## How To Use,
 In this example, we'll reflect a simple Person class. `Person.h`,
 ```c++

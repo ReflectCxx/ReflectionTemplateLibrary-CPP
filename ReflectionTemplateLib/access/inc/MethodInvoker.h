@@ -6,7 +6,6 @@ namespace rtl {
     {
         //forward decls
         class Method;
-        class Record;
 
         template<class ..._signature>
         class MethodInvoker
