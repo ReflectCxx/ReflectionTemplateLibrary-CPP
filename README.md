@@ -152,7 +152,7 @@ int main()
   - Dynamically invoke static member functions.
 - ✅ **Automatic Resource Management**: Automatically invokes destructors for objects created on the heap via reflection.
 - ✅ **Perfect Forwarding**: Precisely binds lvalues and rvalues to the correct method overload during invocation.
-- ✅ **Zero Overhead Forwarding**: Eliminates the creation of temporary variables while forwarding arguments to methods.
+- ✅ **Zero Overhead Forwarding**: doesn't create any temporary variables/copies while forwarding arguments to methods.
 - ✅ **Namespace Support**: Group and reflect classes, structs, and global functions under namespaces for better organization.
 - ❌ **Property Reflection**: Reflect properties of classes/structs, providing getter/setter methods.
 - ❌ **Enum Reflection**: Add support for reflecting enums.
