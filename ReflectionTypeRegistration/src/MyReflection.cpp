@@ -83,7 +83,7 @@ CxxMirror& MyReflection::instance()
         //class 'Animal', methods & constructors.
         Reflect().record<Animal>(animal::class_).constructor().build(),  //default constructor.
         #if defined(__GNUC__) && !defined(__clang__)
-            /*  GCC fails to automatically identify the correct overloaded functor (method), taking non-const lvalue & rvalue reference as argument.
+            /*  GCC fails to automatically identify the correct overloaded functor (method) to pick. (non-const lvalue & rvalue reference as argument)
 		we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
 	    */	Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
             	Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
