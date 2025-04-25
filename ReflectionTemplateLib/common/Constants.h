@@ -5,6 +5,20 @@
 
 namespace rtl {
 
+    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
+
+#define GETTER(_varType, _name, _var)                       \
+    inline constexpr const _varType& get##_name() const {   \
+        return _var;                                        \
+    }
+
+
+#define GETTER_REF(_varType, _name, _var)       \
+    inline _varType& get##_name() const {       \
+        return _var;                            \
+    }
+
+
     //Qualifier type.
     enum class TypeQ
     {
@@ -12,6 +26,17 @@ namespace rtl {
         Mute,   //Mutable
         Const,  //Constant
     };
+
+    namespace access 
+    {
+        //Qualifier type.
+        enum class AllocOn
+        {
+            None,
+            Heap,
+            Stack
+        };
+    }
 
     //Qualifier type.
     enum class ConstructorType
@@ -35,36 +60,44 @@ namespace rtl {
         ConstCopyConstructorNotFound
     };
 
-    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
+    template<access::AllocOn _alloc>
     struct CtorName
     {
         static const std::string ctor(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "()");
-        }
 
-        static const std::string dctor(const std::string& pRecordName) {
-            return (pRecordName + "::~" + pRecordName + "()");
+			if constexpr (_alloc == access::AllocOn::Heap) {
+				return ("new " + pRecordName + "::" + pRecordName + "()");
+			}
+			else if constexpr (_alloc == access::AllocOn::Stack) {
+				return (pRecordName + "::" + pRecordName + "()");
+			}
         }
 
         static const std::string copy(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
+            if constexpr (_alloc == access::AllocOn::Heap) {
+                return ("new " + pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
+            }
+            else if constexpr (_alloc == access::AllocOn::Stack) {
+                return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
+            }
         }
 
         static const std::string constCopy(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
+            if constexpr (_alloc == access::AllocOn::Heap) {
+                return ("new " + pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
+            }
+            else if constexpr (_alloc == access::AllocOn::Stack) {
+                return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
+            }
         }
     };
 
-
-#define GETTER(_varType, _name, _var)                       \
-    inline constexpr const _varType& get##_name() const {   \
-        return _var;                                        \
-    }
-
-
-#define GETTER_REF(_varType, _name, _var)       \
-    inline _varType& get##_name() const {       \
-        return _var;                            \
-    }
+    template<>
+    struct  CtorName<access::AllocOn::None>
+    {
+        static const std::string dctor(const std::string& pRecordName) {
+            return (pRecordName + "::~" + pRecordName + "()");
+        }
+    };
 }

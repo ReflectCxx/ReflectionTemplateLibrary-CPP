@@ -31,7 +31,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance("wrong", "args0", 10);
+			auto [status, instance] = classDate->instance<AllocOn::Heap>("wrong", "args0", 10);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -49,7 +49,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance();
+			auto [status, instance] = classDate->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -69,7 +69,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classDate);
 
 			string dateStr = date::DATE_STR;
-			auto [status, instance] = classDate->instance(dateStr);
+			auto [status, instance] = classDate->instance<AllocOn::Heap>(dateStr);
 			
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -92,7 +92,7 @@ namespace rtl_tests
 			unsigned month = date::MONTH;
 			unsigned year = date::YEAR;
 
-			auto [status, instance] = classDate->instance(day, month, year);
+			auto [status, instance] = classDate->instance<AllocOn::Heap>(day, month, year);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -113,7 +113,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance();
+			auto [status, instance] = classDate->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -132,7 +132,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance(19.0, 87.5);
+			auto [status, instance] = classBook->instance<AllocOn::Heap>(19.0, 87.5);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -150,7 +150,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance();
+			auto [status, instance] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -171,7 +171,7 @@ namespace rtl_tests
 
 			double price = book::PRICE;
 			string title = book::TITLE;
-			auto [status, instance] = classBook->instance(price, title);
+			auto [status, instance] = classBook->instance<AllocOn::Heap>(price, title);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -192,7 +192,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance();
+			auto [status, instance] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());

@@ -49,7 +49,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance();
+            auto [status, animalObj] = classAnimal->instance<AllocOn::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -93,7 +93,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance();
+            auto [status, animalObj] = classAnimal->instance<AllocOn::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -136,7 +136,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance();
+            auto [status, animalObj] = classAnimal->instance<AllocOn::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 

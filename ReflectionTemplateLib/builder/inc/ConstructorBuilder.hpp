@@ -26,8 +26,9 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
         {
-            const auto& ctorName = (m_ctorType == ConstructorType::Copy ? CtorName::copy(m_record) : 
-                                   (m_ctorType == ConstructorType::ConstCopy ? CtorName::constCopy(m_record) : CtorName::ctor(m_record)));
+            constexpr auto allocOn = rtl::access::AllocOn::Heap;
+            const auto& ctorName = (m_ctorType == ConstructorType::Copy ? CtorName<allocOn>::copy(m_record) :
+                                   (m_ctorType == ConstructorType::ConstCopy ? CtorName<allocOn>::constCopy(m_record) : CtorName<allocOn>::ctor(m_record)));
 
             return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
         }

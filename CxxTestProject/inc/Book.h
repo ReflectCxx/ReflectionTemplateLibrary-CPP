@@ -1,3 +1,4 @@
+#pragma once
 
 #include <string>
 #include "Date.h"
@@ -21,6 +22,7 @@ public:
 	Book(double pPrice, std::string pTitle);
 	~Book();
 
+	std::string getTitle() const;
 	std::string getPublishedOn();
 
 	void setAuthor(std::string pAuthor);
@@ -33,13 +35,4 @@ public:
 	const bool operator==(const Book& pOther) const;
 
 	static unsigned getInstanceCount();
-};
-
-
-class Library
-{
-public:
-	//for testing 'no constructor found' only.
-	Library() { }
-	static void addBook(Book pBook) { }
 };

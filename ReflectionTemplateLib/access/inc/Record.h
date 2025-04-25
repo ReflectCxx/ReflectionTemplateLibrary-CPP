@@ -49,7 +49,7 @@ namespace rtl {
             const std::pair<RStatus, Instance> clone(Instance& pOther) const;
 
             //creates dynamic instance, using new.
-            template<class ..._ctorArgs>
+            template<AllocOn _allocon, class ..._ctorArgs>
             const std::pair<RStatus, Instance> instance(_ctorArgs&& ...params) const;
 
             const std::unordered_map< std::string, access::Method >& getMethodMap() const;

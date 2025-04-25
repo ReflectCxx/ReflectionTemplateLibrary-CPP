@@ -33,7 +33,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
@@ -61,7 +61,7 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
@@ -92,7 +92,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
@@ -122,7 +122,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
@@ -150,7 +150,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
@@ -184,7 +184,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [status, bookObj] = classBook->instance();
+			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
