@@ -18,7 +18,7 @@ namespace rtl_tests
 		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
 		ASSERT_TRUE(classLibrary);
 
-		auto [status, instance] = classLibrary->instance<AllocOn::Heap>();
+		auto [status, instance] = classLibrary->instance<alloc::Heap>();
 
 		ASSERT_TRUE(status == Error::ConstructorNotFound);
 		ASSERT_TRUE(instance.isEmpty());
@@ -31,7 +31,7 @@ namespace rtl_tests
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
 			ASSERT_TRUE(classCalender);
 
-			auto [ret, srcObj] = classCalender->instance<AllocOn::Heap>();
+			auto [ret, srcObj] = classCalender->instance<alloc::Heap>();
 			ASSERT_TRUE(ret);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -99,7 +99,7 @@ namespace rtl_tests
 			optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [ret, srcObj] = classDate->instance<AllocOn::Heap>();
+			auto [ret, srcObj] = classDate->instance<alloc::Heap>();
 			ASSERT_TRUE(ret);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -124,7 +124,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, personObj] = classPerson->instance<AllocOn::Heap>();
+			auto [status, personObj] = classPerson->instance<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
 
@@ -145,7 +145,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
+			auto [status, bookObj] = classBook->instance<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 

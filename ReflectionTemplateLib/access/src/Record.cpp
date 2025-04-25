@@ -78,9 +78,9 @@ namespace rtl {
                 return std::make_pair(RStatus(Error::EmptyInstance), Instance());
             }
 
-            const std::string& dctor = CtorName<AllocOn::None>::dctor(m_recordName);
-            const std::string& copyStr = CtorName<AllocOn::Heap>::copy(m_recordName);
-            const std::string& constCopyStr = CtorName<AllocOn::Heap>::constCopy(m_recordName);
+            const std::string& dctor = CtorName<alloc::None>::dctor(m_recordName);
+            const std::string& copyStr = CtorName<alloc::Heap>::copy(m_recordName);
+            const std::string& constCopyStr = CtorName<alloc::Heap>::constCopy(m_recordName);
 
             std::optional<Function> destructor = getMethod(dctor);
             std::optional<Function> constCopyCtor = getMethod(constCopyStr);
@@ -98,7 +98,7 @@ namespace rtl {
                     }
                     //object and type validated. call the const-copy-constructor.
                     RStatus status = (*constCopyCtor)(pOther.get());
-                    return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
+                    return std::make_pair(status, Instance(pOther.m_allocatedOn, status.getReturn(), status, *destructor));
                 }
                 else {
                     //if the object is 'const' and no constructor found accepting 'const&'
@@ -118,7 +118,7 @@ namespace rtl {
                     }
                     //object and type validated. call the non-const-copy-constructor.
                     RStatus status = (*copyCtor)(pOther.get());
-                    return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
+                    return std::make_pair(status, Instance(pOther.m_allocatedOn, status.getReturn(), status, *destructor));
                 }
                 //if copy-constructor taking non-const ref not found, and with const-ref found, use that copy constructor.
                 else if (constCopyCtor)
@@ -131,7 +131,7 @@ namespace rtl {
                     }
                     //object and type validated. call the const-copy-constructor.
                     RStatus status = (*constCopyCtor)(pOther.get());
-                    return std::make_pair(status, Instance(status.getReturn(), status, *destructor));
+                    return std::make_pair(status, Instance(pOther.m_allocatedOn, status.getReturn(), status, *destructor));
                 }
             }
             //if no registered copy constructor found, return empty instance with error status.

@@ -62,7 +62,8 @@ namespace rtl {
         * this constructor is called only when reflected constructor call fails.
     */  Instance::Instance()
             : m_qualifier(TypeQ::None)
-            , m_typeId(detail::TypeId<>::None) {
+            , m_typeId(detail::TypeId<>::None)
+            , m_allocatedOn(alloc::None) {
         }
 
         //copy-constructor, public access.
@@ -70,6 +71,7 @@ namespace rtl {
             : m_qualifier(pOther.m_qualifier)
             , m_typeId(pOther.m_typeId)
             , m_anyObject(pOther.m_anyObject)
+            , m_allocatedOn(pOther.m_allocatedOn)
             , m_destructor(pOther.m_destructor) {
         }
 
@@ -78,6 +80,7 @@ namespace rtl {
         {
             m_qualifier = pOther.m_qualifier;
             m_typeId = pOther.m_typeId;
+			m_allocatedOn = pOther.m_allocatedOn;
             m_anyObject = std::move(pOther.m_anyObject);
             m_destructor = pOther.m_destructor;
             return *this;
@@ -94,9 +97,10 @@ namespace rtl {
         * 'm_destructor' holds a dummy void* pointer (address of 'g_instanceCount'), which is a primitive type.
         * this is done to avoid dynamic allocation of 'Instance' object to manage it with 'shared_ptr'.
         * shared_ptr('m_destructor') holds the dummy void* but calls the actual destructor which destroys the object constructed(via reflection).
-    */  Instance::Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
+    */  Instance::Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
+            , m_allocatedOn(pAlloc)
             , m_anyObject(pRetObj)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {

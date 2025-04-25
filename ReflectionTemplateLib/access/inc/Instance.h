@@ -33,13 +33,15 @@ namespace rtl {
             //allocated object, stored without type info.
             mutable std::any m_anyObject;
 
+			mutable alloc m_allocatedOn;
+
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
             does not hold the object constructed via reflection.
             it only contains a custom deleter to be called on the underlying object.
         */  mutable std::shared_ptr<void> m_destructor;
 
             //private constructors, only class 'Record' can access.
-            explicit Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
+            explicit Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
 
         public:
 

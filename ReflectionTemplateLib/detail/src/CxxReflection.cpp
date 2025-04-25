@@ -73,7 +73,7 @@ namespace rtl {
                 and has more than one 'FunctorId'. every other function registered will have only one 'FunctorId'.
             */  if (functorIds.size() > 1) 
                 {
-                    const auto& dctorName = CtorName<rtl::access::AllocOn::None>::dctor(pFunction.getRecordName());
+                    const auto& dctorName = CtorName<rtl::access::alloc::None>::dctor(pFunction.getRecordName());
                     if (pMethodMap.find(dctorName) == pMethodMap.end()) {
                         //destructor 'FunctorId' will always be the second in the constructor's FunctorId's vector.
                         access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);

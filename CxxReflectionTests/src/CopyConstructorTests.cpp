@@ -21,7 +21,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<AllocOn::Heap>();
+			auto [status, bookObj] = classBook->instance<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 
@@ -53,7 +53,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<AllocOn::Heap>(price, title);
+			auto [status, srcObj] = classBook->instance<alloc::Heap>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -91,7 +91,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<AllocOn::Heap>(price, title);
+			auto [status, srcObj] = classBook->instance<alloc::Heap>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -121,7 +121,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<AllocOn::Heap>();
+			auto [status, srcObj] = classPerson->instance<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -147,7 +147,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<AllocOn::Heap>();
+			auto [status, srcObj] = classPerson->instance<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 

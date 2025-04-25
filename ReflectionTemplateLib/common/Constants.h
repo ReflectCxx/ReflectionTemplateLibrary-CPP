@@ -29,8 +29,8 @@ namespace rtl {
 
     namespace access 
     {
-        //Qualifier type.
-        enum class AllocOn
+        //Allocation type.
+        enum class alloc
         {
             None,
             Heap,
@@ -61,40 +61,39 @@ namespace rtl {
     };
 
 
-    template<access::AllocOn _alloc>
+    template<access::alloc _alloc>
     struct CtorName
     {
         static const std::string ctor(const std::string& pRecordName) {
-
-			if constexpr (_alloc == access::AllocOn::Heap) {
-				return ("new " + pRecordName + "::" + pRecordName + "()");
-			}
-			else if constexpr (_alloc == access::AllocOn::Stack) {
-				return (pRecordName + "::" + pRecordName + "()");
-			}
+            if constexpr (_alloc == access::alloc::Heap) {
+                return ("new " + pRecordName + "::" + pRecordName + "()");
+            }
+            else if constexpr (_alloc == access::alloc::Stack) {
+                return (pRecordName + "::" + pRecordName + "()");
+            }
         }
 
         static const std::string copy(const std::string& pRecordName) {
-            if constexpr (_alloc == access::AllocOn::Heap) {
+            if constexpr (_alloc == access::alloc::Heap) {
                 return ("new " + pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
             }
-            else if constexpr (_alloc == access::AllocOn::Stack) {
+            else if constexpr (_alloc == access::alloc::Stack) {
                 return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
             }
         }
 
         static const std::string constCopy(const std::string& pRecordName) {
-            if constexpr (_alloc == access::AllocOn::Heap) {
+            if constexpr (_alloc == access::alloc::Heap) {
                 return ("new " + pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
             }
-            else if constexpr (_alloc == access::AllocOn::Stack) {
+            else if constexpr (_alloc == access::alloc::Stack) {
                 return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
             }
         }
     };
 
     template<>
-    struct  CtorName<access::AllocOn::None>
+    struct  CtorName<access::alloc::None>
     {
         static const std::string dctor(const std::string& pRecordName) {
             return (pRecordName + "::~" + pRecordName + "()");

@@ -26,7 +26,7 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
         {
-            constexpr auto allocOn = rtl::access::AllocOn::Heap;
+            constexpr auto allocOn = rtl::access::alloc::Heap;
             const auto& ctorName = (m_ctorType == ConstructorType::Copy ? CtorName<allocOn>::copy(m_record) :
                                    (m_ctorType == ConstructorType::ConstCopy ? CtorName<allocOn>::constCopy(m_record) : CtorName<allocOn>::ctor(m_record)));
 
