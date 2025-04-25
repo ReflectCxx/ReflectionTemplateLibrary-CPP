@@ -22,7 +22,7 @@ namespace rtl {
     */  template<alloc _alloc, class ..._ctorArgs>
         inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
         {
-            static_assert(_alloc == alloc::None, "Instance cannot be created with 'alloc::None' option.");
+            static_assert(_alloc != alloc::None, "Instance cannot be created with 'alloc::None' option.");
 
             const auto& itr = m_methods.find(CtorName<_alloc>::ctor(m_recordName));
 
