@@ -41,6 +41,9 @@ namespace rtl {
         */  mutable std::shared_ptr<void> m_destructor;
 
             //private constructors, only class 'Record' can access.
+            explicit Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus);
+
+            //private constructors, only class 'Record' can access.
             explicit Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
 
         public:

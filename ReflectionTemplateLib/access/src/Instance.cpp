@@ -87,6 +87,15 @@ namespace rtl {
         }
 
 
+        Instance::Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus)
+            : m_qualifier(TypeQ::Mute)
+            , m_typeId(pStatus.getTypeId())
+            , m_allocatedOn(pAlloc)
+            , m_anyObject(pRetObj)
+            , m_destructor(nullptr) {
+        }
+
+
     /*  @constructor: Instance()
         @params: 'const std::any&', contains pointer to the allocated object via reflection constructor call.
         *        'const RStatus&', status returned via reflection constructor call.
