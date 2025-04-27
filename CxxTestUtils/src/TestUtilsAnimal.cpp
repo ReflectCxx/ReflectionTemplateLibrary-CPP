@@ -2,6 +2,9 @@
 
 #include "TestUtilsAnimal.h"
 #include "Animal.h"
+#include "Library.h"
+
+static auto _= Library::getBooksCount();
 
 const bool test_utils::animal::assert_zero_instance_count()
 {

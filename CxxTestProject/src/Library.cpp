@@ -1,10 +1,16 @@
 
+#include "Book.h"
 #include "Library.h"
 
 std::unordered_map<std::string, Book> Library::m_booksByTitle;
 
 Library::Library()
 {
+}
+
+int Library::getBooksCount()
+{
+    return m_booksByTitle.size();
 }
 
 void Library::addBook(const Book& pBook)

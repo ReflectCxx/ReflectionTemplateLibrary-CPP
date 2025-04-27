@@ -2,7 +2,7 @@
 #pragma once
 #include <unordered_map>
 
-#include "Book.h"
+class Book;
 
 class Library
 {
@@ -11,6 +11,8 @@ class Library
 public:
 	
 	Library();
+
+	static int getBooksCount();
 
 	static void addBook(const Book& pBook);
 
