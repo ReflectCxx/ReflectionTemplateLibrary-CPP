@@ -77,16 +77,23 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](_signature&&...params)->access::RStatus
+            const auto& functor = [=](rtl::access::alloc pAllocType, _signature&&...params)->access::RStatus
             {
-                _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
-                return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+                if (pAllocType == rtl::access::alloc::Heap) {
+                    _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
+                    return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+                }
+                else if (pAllocType == rtl::access::alloc::Stack) {
+                    return access::RStatus( std::make_any<_recordType>(std::forward<_signature>(params)...),
+                                            recordId, TypeQ::Mute);
+				}
+                return access::RStatus(Error::InvalidAllocType);
             };
 
             //add the lambda in 'FunctorContainer'.
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-            return detail::FunctorId(index, recordId, recordId, containerId,
-                                     _derivedType::template getSignatureStr<_recordType>(true));
+            const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
+            return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
         }
 
 
@@ -126,8 +133,8 @@ namespace rtl
 
             //add the lambda in 'FunctorContainer'.
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-            return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType>(true));
+            const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
+            return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(), signatureStr);
         }
 
 
@@ -167,8 +174,8 @@ namespace rtl
 
             //add the lambda in 'FunctorContainer'.
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-            return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType>(true));
+            const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
+            return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(), signatureStr);
         }
     }
 }

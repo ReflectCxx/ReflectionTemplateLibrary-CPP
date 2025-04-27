@@ -24,22 +24,28 @@ namespace rtl {
         {
             static_assert(_alloc != alloc::None, "Instance cannot be created with 'alloc::None' option.");
 
-            const auto& itr = m_methods.find(CtorName<_alloc>::ctor(m_recordName));
+            const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
 
             //if registered constructor is found for the class/struct represented by this 'Record' object.
             if (itr != m_methods.end()) {
 
                 //invoke the constructor, forwarding the arguments.
-                const RStatus& status = itr->second.invokeCtor(std::forward<_ctorArgs>(params)...);
+                const RStatus& status = itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
 
                 //if status is 'true', object construction is successful.
                 if (status) {
 
-                    //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
-                    const Function dctor = *getMethod(CtorName<alloc::None>::dctor(m_recordName));
+                    if constexpr (_alloc == alloc::Stack) {
+                        //construct the 'Instance' object, no custom deleter needed.
+                        return std::make_pair(status, Instance(_alloc, status.getReturn(), status));
+                    }
+                    else if constexpr (_alloc == alloc::Heap) {
 
-                    //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
-                    return std::make_pair(status, Instance(_alloc, status.getReturn(), status, dctor));
+                        //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
+                        const Function dctor = *getMethod(CtorName::dctor(m_recordName));
+                        //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
+                        return std::make_pair(status, Instance(_alloc, status.getReturn(), status, dctor));
+                    }
                 }
                 //if reflected call fails, return with empty 'Instance'.
                 return std::make_pair(status, Instance());

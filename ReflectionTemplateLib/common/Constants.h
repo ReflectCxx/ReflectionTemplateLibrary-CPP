@@ -19,6 +19,13 @@ namespace rtl {
     }
 
 
+    enum FunctorIdx
+    {
+        ZERO = 0,   //heap constructor index
+		ONE,    //destructor index
+        TWO
+    };
+
     //Qualifier type.
     enum class TypeQ
     {
@@ -52,6 +59,7 @@ namespace rtl {
     {
         None,
         EmptyInstance,
+		InvalidAllocType,
         SignatureMismatch,
         InstanceTypeMismatch,
         InstanceConstMismatch,
@@ -61,42 +69,22 @@ namespace rtl {
     };
 
 
-    template<access::alloc _alloc>
     struct CtorName
-    {
-        static const std::string ctor(const std::string& pRecordName) {
-            if constexpr (_alloc == access::alloc::Heap) {
-                return ("new " + pRecordName + "::" + pRecordName + "()");
-            }
-            else if constexpr (_alloc == access::alloc::Stack) {
-                return (pRecordName + "::" + pRecordName + "()");
-            }
-        }
-
-        static const std::string copy(const std::string& pRecordName) {
-            if constexpr (_alloc == access::alloc::Heap) {
-                return ("new " + pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
-            }
-            else if constexpr (_alloc == access::alloc::Stack) {
-                return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
-            }
-        }
-
-        static const std::string constCopy(const std::string& pRecordName) {
-            if constexpr (_alloc == access::alloc::Heap) {
-                return ("new " + pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
-            }
-            else if constexpr (_alloc == access::alloc::Stack) {
-                return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
-            }
-        }
-    };
-
-    template<>
-    struct  CtorName<access::alloc::None>
     {
         static const std::string dctor(const std::string& pRecordName) {
             return (pRecordName + "::~" + pRecordName + "()");
+        }
+
+        static const std::string ctor(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "()");
+        }
+
+        static const std::string copy(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
+        }
+
+        static const std::string constCopy(const std::string& pRecordName) {
+            return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
         }
     };
 }

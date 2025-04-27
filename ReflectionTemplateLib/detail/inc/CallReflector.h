@@ -31,6 +31,13 @@ namespace rtl {
             }
 
 
+            template<class ..._params>
+            static access::RStatus forwardCall(rtl::access::alloc&& pAllocType, std::size_t pFunctorIndex, _params&&..._args)
+            {
+                //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
+                return _derivedType::getFunctors().at(pFunctorIndex)(std::forward<rtl::access::alloc>(pAllocType), std::forward<_params>(_args)...);
+            }
+
         /*  @method: forwardCall
             @param: pFunctorIndex (index of the lambda), _args...(arguments to be passed to that lambda)
             * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.

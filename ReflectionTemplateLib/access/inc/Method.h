@@ -28,7 +28,7 @@ namespace rtl {
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>
-            RStatus invokeCtor(_args&&...params) const;
+            RStatus invokeCtor(alloc&& pAllocType, _args&&...params) const;
 
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);

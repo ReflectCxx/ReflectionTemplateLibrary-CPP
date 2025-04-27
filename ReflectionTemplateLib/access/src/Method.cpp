@@ -17,7 +17,7 @@ namespace rtl {
 
 		Method Method::getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId)
 		{
-			const std::string dctorStr = CtorName<alloc::None>::dctor(pFunction.getRecordName());
+			const std::string dctorStr = CtorName::dctor(pFunction.getRecordName());
 			return Method(pFunction, pFunctorId, dctorStr);
 		}
 	}

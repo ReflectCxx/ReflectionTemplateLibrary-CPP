@@ -71,17 +71,18 @@ namespace rtl {
                 auto& functorIds = pFunction.getFunctorIds();
             /*  This condition will be true only in case that 'Function' object represents a constructor
                 and has more than one 'FunctorId'. every other function registered will have only one 'FunctorId'.
-            */  if (functorIds.size() > 1) 
+            */  if (functorIds.size() == FunctorIdx::TWO)
                 {
-                    const auto& dctorName = CtorName<rtl::access::alloc::None>::dctor(pFunction.getRecordName());
+                    const auto& dctorName = CtorName::dctor(pFunction.getRecordName());
                     if (pMethodMap.find(dctorName) == pMethodMap.end()) {
                         //destructor 'FunctorId' will always be the second in the constructor's FunctorId's vector.
-                        access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
+                        access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[FunctorIdx::ONE]);
                         pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
                     }
                     //remove the destructor 'FunctorId' from the constructor's 'FunctorId' vector.
                     functorIds.pop_back();
                 }
+
                 //construct 'Method' obejct and add.
                 pMethodMap.emplace(fname, access::Method(pFunction));
             }

@@ -9,6 +9,7 @@ namespace nsdate
 	{
 		Date();
 		Date(Date& pOther);
+		Date(const Date& pOther);
 		Date(const std::string& pDateStr);
 		Date(unsigned dd, unsigned mm, unsigned yy);
 
@@ -18,7 +19,7 @@ namespace nsdate
 
 		static unsigned instanceCount();
 
-		std::string getAsString();
+		std::string getAsString() const;
 
 	private:
 
