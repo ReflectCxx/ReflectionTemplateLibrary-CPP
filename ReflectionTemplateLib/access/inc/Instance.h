@@ -62,12 +62,15 @@ namespace rtl {
             GETTER(std::size_t, TypeId, m_typeId);
             GETTER(TypeQ, Qualifier, m_qualifier);
 
+            //checks if object constructed via reflection on heap or stack.
+			GETTER_BOOL(OnHeap, ((bool) m_allocatedOn));
+            
             //checks if it contains object constructed via reflection.
-            const bool isEmpty() const;
-
+            GETTER_BOOL(Empty, (!m_anyObject.has_value()));
+            
             //check the contained object is const or not.
-            const bool isConst() const;
-
+            GETTER_BOOL(Const, (m_qualifier == TypeQ::Const));
+            
             //treat the object constructed via reflection as const or non-const.
             void makeConst(const bool& pCastAway = false);
 

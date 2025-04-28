@@ -59,11 +59,11 @@ namespace rtl
                 //if the target is non-const, then const & non-const both type of member-function can be invoked on it.
                 const std::size_t& index = pMethod.hasSignatureId(containerMute::getContainerId());
                 if (index != -1) {
-                    return containerMute::template forwardCall<_args...>(pTarget.get(), index, std::forward<_args>(params)...);
+                    return containerMute::template forwardCall<_args...>(pTarget, index, std::forward<_args>(params)...);
                 }
                 const std::size_t& indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
                 if (indexConst != -1) {
-                    return containerConst::template forwardCall<_args...>(pTarget.get(), indexConst, std::forward<_args>(params)...);
+                    return containerConst::template forwardCall<_args...>(pTarget, indexConst, std::forward<_args>(params)...);
                 }
                 break;
             }
@@ -72,7 +72,7 @@ namespace rtl
                 //if the pTarget is const, only const member function can be invoked on it.
                 const std::size_t& indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
                 if (indexConst != -1) {
-                    return containerConst::template forwardCall<_args...>(pTarget.get(), indexConst, std::forward<_args>(params)...);
+                    return containerConst::template forwardCall<_args...>(pTarget, indexConst, std::forward<_args>(params)...);
                 }
                 const std::size_t& index = pMethod.hasSignatureId(containerMute::getContainerId());
                 if (index != -1) {

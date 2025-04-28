@@ -44,16 +44,21 @@ namespace test_utils
 	}
 
 
-	const bool book::test_method_setAuthor(const any& pInstance)
+	const bool book::test_method_setAuthor(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
-		}
-
 		Book book;
 		book.setAuthor(AUTHOR);
-		return (book == *rbook);
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			const auto& rbook = any_cast<Book>(pInstance);
+			return (book == rbook);
+		}
 	}
 
 

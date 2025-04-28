@@ -8,6 +8,7 @@ namespace rtl {
     namespace access {
         //forward decl.
         class RStatus;
+        class Instance;
     }
 
     namespace detail
@@ -43,7 +44,7 @@ namespace rtl {
             * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
             * this 'forwardCall' is for calling lambda containing member-function functors.
         */  template<class ..._params>
-            static access::RStatus forwardCall(const std::any& pTarget, std::size_t pFunctorIndex, _params&&..._args)
+            static access::RStatus forwardCall(const rtl::access::Instance& pTarget, std::size_t pFunctorIndex, _params&&..._args)
             {
                 //'getMethodFunctors()' is implemented by _derivedType (MethodContainer)
                 return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, std::forward<_params>(_args)...);

@@ -22,7 +22,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectionMethodCall, wrong_args)
+	TEST(ReflectionMethodCall_heapInstance, wrong_args)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
@@ -43,7 +43,35 @@ namespace rtl_tests
 
 			ASSERT_TRUE(rStatus == rtl::Error::SignatureMismatch);
 			ASSERT_FALSE(rStatus.getReturn().has_value());
-			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get()));
+			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ReflectionMethodCall_stackInstance, wrong_args)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
+			ASSERT_TRUE(setAuthor);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+			ASSERT_FALSE(setAuthor->hasSignature<const char*>());
+
+			RStatus rStatus = (*setAuthor)(bookObj)(book::AUTHOR);
+
+			ASSERT_TRUE(rStatus == rtl::Error::SignatureMismatch);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -81,7 +109,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(ClassBookMethod, args_string)
+	TEST(ClassBookMethod_heapInstance, args_string)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
@@ -104,7 +132,37 @@ namespace rtl_tests
 			ASSERT_TRUE(rStatus);
 			ASSERT_FALSE(rStatus.getReturn().has_value());
 
-			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get()));
+			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ClassBookMethod_stackInstance, args_string)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
+			ASSERT_TRUE(setAuthor);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+			ASSERT_TRUE(setAuthor->hasSignature<std::string>());
+
+			auto author = std::string(book::AUTHOR);
+			RStatus rStatus = setAuthor->bind(bookObj).call(author);
+
+			ASSERT_TRUE(rStatus);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+
+			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);

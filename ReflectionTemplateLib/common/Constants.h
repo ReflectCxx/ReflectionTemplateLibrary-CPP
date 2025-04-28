@@ -18,6 +18,10 @@ namespace rtl {
         return _var;                            \
     }
 
+#define GETTER_BOOL(_name, _var)                        \
+    inline const bool is##_name() const {     \
+        return _var;                                    \
+    }
 
     enum FunctorIdx
     {
@@ -39,9 +43,9 @@ namespace rtl {
         //Allocation type.
         enum class alloc
         {
-            None,
-            Heap,
-            Stack
+            None = -1,
+            Stack = 0,  //false
+            Heap = 1,   //true
         };
     }
 

@@ -3,6 +3,7 @@
 #include "RStatus.h"
 #include "TypeId.hpp"
 #include "SetupMethod.h"
+#include "Instance.h"
 
 namespace rtl
 {
@@ -51,26 +52,46 @@ namespace rtl
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](const std::any& pTargetObj, _signature&&...params)->access::RStatus
+        */  const auto functor = [=](const rtl::access::Instance& pTargetObj, _signature&&...params)->access::RStatus
             {
-                //cast would not fail, since the type has already been validated.
-                _recordType* target = std::any_cast<_recordType*>(pTargetObj);
-
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) {
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                if constexpr (std::is_same_v<_retType, void>) 
+                {
+                    if (pTargetObj.isOnHeap()) {
+                        //cast would not fail, since the type has already been validated.
+                        _recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        (target->*pFunctor)(std::forward<_signature>(params)...);
+                    }
+                    else {
+                        //cast would not fail, since the type has already been validated.
+                        const _recordType& target = std::any_cast<_recordType>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        (const_cast<_recordType&>(target).*pFunctor)(std::forward<_signature>(params)...);
+                    }
                     return access::RStatus(Error::None);
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                else {
-                    
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-
-                    //return 'RStatus' with return value wrapped in it as std::any.
-                    return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                else 
+                {
+                    if (pTargetObj.isOnHeap()) {
+                        //cast would not fail, since the type has already been validated.
+                        _recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                        const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+                        //return 'RStatus' with return value wrapped in it as std::any.
+                        return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    }
+                    else {
+                        //cast would not fail, since the type has already been validated.
+                        const _recordType& target = std::any_cast<_recordType>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        const _retType& retObj = (const_cast<_recordType&>(target).*pFunctor)(std::forward<_signature>(params)...);
+                        const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+                        //return 'RStatus' with return value wrapped in it as std::any.
+                        return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    }
                 }
             };
 
@@ -123,26 +144,44 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](const std::any& pTargetObj, _signature&&...params)->access::RStatus
+        */  const auto functor = [=](const rtl::access::Instance& pTargetObj, _signature&&...params)->access::RStatus
             {
-                //cast would not fail, since the type has already been validated.
-                _recordType* target = std::any_cast<_recordType*>(pTargetObj);
-
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) {
-
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
+                if constexpr (std::is_same_v<_retType, void>) 
+                {
+                    if (pTargetObj.isOnHeap()) {
+                        //cast would not fail, since the type has already been validated.
+                        _recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
+                    }
+                    else {
+                        //cast would not fail, since the type has already been validated.
+                        const _recordType& target = std::any_cast<_recordType>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        (target.*pFunctor)(std::forward<_signature>(params)...);
+                    }
                     return access::RStatus(Error::None);
                 }
-                else {
+                else 
+                {
                     const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
-
-                    //return 'RStatus' with return value wrapped in it as std::any.
-                    return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    if (pTargetObj.isOnHeap()) {
+                        //cast would not fail, since the type has already been validated.
+                        _recordType* target = std::any_cast<_recordType*>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
+                        //return 'RStatus' with return value wrapped in it as std::any.
+                        return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    }
+                    else {
+                        //cast would not fail, since the type has already been validated.
+                        const _recordType& target = std::any_cast<_recordType>(pTargetObj.get());
+                        //call will definitely be successful, since the object type, signature type has already been validated.
+                        const _retType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                        //return 'RStatus' with return value wrapped in it as std::any.
+                        return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    }
                 }
             };
 

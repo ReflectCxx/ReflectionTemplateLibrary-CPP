@@ -33,7 +33,7 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAuthor(const std::any& pInstance);
+		static const bool test_method_setAuthor(const std::any& pInstance, bool pIsOnHeap);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 

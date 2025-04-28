@@ -19,6 +19,7 @@ public:
 
 	Book();
 	Book(const Book& pOther);
+	Book(const Book&& pOther) noexcept;
 	Book(double pPrice, std::string pTitle);
 	~Book();
 
@@ -32,6 +33,7 @@ public:
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);
 	void updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle);
 
+	Book& operator=(const Book& pOther) = default;
 	const bool operator==(const Book& pOther) const;
 
 	static unsigned getInstanceCount();

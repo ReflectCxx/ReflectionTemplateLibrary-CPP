@@ -16,25 +16,6 @@ namespace rtl {
 
     namespace access
     {
-    /*  @method: isEmpty()
-        @return: bool
-        * checks if std::any object has value or not.
-        * objects constructed via reflection is held by std::any (instead of void*)
-        * if reflected constructor call fails, 'Insatnce' object returned with empty 'm_anyObject'.
-    */  const bool Instance::isEmpty() const {
-            return (!m_anyObject.has_value());
-        }
-
-
-    /*  @method: isConst()
-        @return: bool
-        * tells how the object held by 'm_anyObject' should be treated.
-        * every object constructed via reflected constructor call is a non-const object pointer.
-        * it can be made to treated as const by calling Instance::makeConst().
-    */  const bool Instance::isConst() const {
-            return (m_qualifier == TypeQ::Const);
-        }
-
 
     /*  @method: getInstanceCount()
         @return: std::size_t (g_instanceCount).
