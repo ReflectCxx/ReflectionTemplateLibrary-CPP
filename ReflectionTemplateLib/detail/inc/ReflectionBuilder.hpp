@@ -96,7 +96,7 @@ namespace rtl {
             const detail::FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            const auto& dctorFunctorId = detail::FunctorContainer<const std::any>::addDestructor<_recordType>();
+            const auto& dctorFunctorId = detail::FunctorContainer<std::any>::addDestructor<_recordType>();
             constructor.getFunctorIds().emplace_back(dctorFunctorId);
             return constructor;
         }
@@ -111,10 +111,10 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildCopyConstructor() const
         {
-            const detail::FunctorId& functorId = detail::FunctorContainer<const std::any>::addCopyConstructor<_recordType>();
+            const detail::FunctorId& functorId = detail::FunctorContainer<std::any>::addCopyConstructor<_recordType>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<const std::any>::addDestructor<_recordType>());
+            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
             return constructor;
         }
 		
@@ -128,10 +128,10 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstCopyConstructor() const
         {
-            const detail::FunctorId& functorId = detail::FunctorContainer<const std::any>::addConstCopyConstructor<_recordType>();
+            const detail::FunctorId& functorId = detail::FunctorContainer<std::any>::addConstCopyConstructor<_recordType>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<const std::any>::addDestructor<_recordType>());
+            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
             return constructor;
         }
     }

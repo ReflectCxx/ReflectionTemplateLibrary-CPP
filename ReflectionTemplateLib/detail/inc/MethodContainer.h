@@ -34,7 +34,7 @@ namespace rtl {
         class MethodContainer<TypeQ::Mute, _signature...> : public SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
                                                             public CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
         {
-            using MethodLambda = std::function < access::RStatus(rtl::access::Instance, _signature...) >;
+            using MethodLambda = std::function < void (access::RStatus&, const rtl::access::Instance&, _signature...) >;
 
         public:
 
@@ -108,7 +108,7 @@ namespace rtl {
         class MethodContainer<TypeQ::Const, _signature...> : public SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
                                                              public CallReflector<MethodContainer<TypeQ::Const, _signature...>>
         {
-            using MethodLambda = std::function < access::RStatus(rtl::access::Instance, _signature...) >;
+            using MethodLambda = std::function < void (access::RStatus&, const rtl::access::Instance&, _signature...) >;
 
         public:
 

@@ -71,6 +71,10 @@ namespace rtl {
             GETTER(std::size_t, RecordTypeId, m_recordTypeId)
             GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
 
+            Function(Function&& pOther) = default;
+
+            Function(const Function& pOther) = default;
+
             Function& operator=(const Function& pOther);
 
             //indicates if a functor associated with it takes zero arguments.

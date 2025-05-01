@@ -22,14 +22,18 @@ namespace rtl
                 using Container = detail::FunctorContainer<std::remove_reference_t<_args>...>;
                 const std::size_t& index = m_function.hasSignatureId(Container::getContainerId());
                 if (index != -1) { //true, if the arguments sent matches the functor signature associated with this 'Function' object
-                    return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
+                    RStatus retStatus;
+                    Container::template forwardCall<_args...>(retStatus, index, std::forward<_args>(params)...);
+                    return retStatus;
                 }
             }
             else {
                 using Container = detail::FunctorContainer<_signature...>;
                 const std::size_t& index = m_function.hasSignatureId(Container::getContainerId());
                 if (index != -1) { //true, if the arguments sent matches the functor signature associated with this 'Function' object
-                    return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
+                    RStatus retStatus;
+                    Container::template forwardCall<_args...>(retStatus, index, std::forward<_args>(params)...);
+                    return retStatus;
                 }
             }
             //else return with Error::SignatureMismatch.

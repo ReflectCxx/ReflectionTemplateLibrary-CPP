@@ -56,8 +56,8 @@ namespace test_utils
 			return (book == *rbook);
 		}
 		else {
-			const auto& rbook = any_cast<Book>(pInstance);
-			return (book == rbook);
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
 		}
 	}
 

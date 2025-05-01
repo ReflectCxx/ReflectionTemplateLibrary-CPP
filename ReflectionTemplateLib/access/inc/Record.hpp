@@ -30,25 +30,25 @@ namespace rtl {
             if (itr != m_methods.end()) {
 
                 //invoke the constructor, forwarding the arguments.
-                const RStatus& status = itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
+                RStatus&& status = itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
 
                 //if status is 'true', object construction is successful.
                 if (status) {
 
                     if constexpr (_alloc == alloc::Stack) {
                         //construct the 'Instance' object, no custom deleter needed.
-                        return std::make_pair(status, Instance(_alloc, status.getReturn(), status));
+                        return std::make_pair(std::move(status), Instance(std::move(status.m_returnObj), status));
                     }
                     else if constexpr (_alloc == alloc::Heap) {
 
                         //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
                         const Function dctor = *getMethod(CtorName::dctor(m_recordName));
                         //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
-                        return std::make_pair(status, Instance(_alloc, status.getReturn(), status, dctor));
+                        return std::make_pair(status, Instance(std::move(status.m_returnObj), status, dctor));
                     }
                 }
                 //if reflected call fails, return with empty 'Instance'.
-                return std::make_pair(status, Instance());
+                return std::make_pair(std::move(status), Instance());
             }
             else {
 

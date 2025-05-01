@@ -32,12 +32,12 @@ namespace rtl
             };
 
             //destructor lambda.
-            const auto& functor = [](const std::any& pTarget)->access::RStatus
+            const auto& functor = [](access::RStatus& pRStatus, std::any&& pTarget)-> void
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 _recordType* object = std::any_cast<_recordType*>(pTarget);
                 delete object;
-                return access::RStatus(Error::None);
+                pRStatus.init(Error::None);
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -77,17 +77,15 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](rtl::access::alloc pAllocType, _signature&&...params)->access::RStatus
+            const auto& functor = [=](access::RStatus& pRStatus, rtl::access::alloc pAllocType, _signature&&...params)-> void
             {
                 if (pAllocType == rtl::access::alloc::Heap) {
                     _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
-                    return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+                    pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
                 }
                 else if (pAllocType == rtl::access::alloc::Stack) {
-                    return access::RStatus( std::make_any<_recordType>(std::forward<_signature>(params)...),
-                                            recordId, TypeQ::Mute);
+                    pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
 				}
-                return access::RStatus(Error::InvalidAllocType);
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -123,12 +121,12 @@ namespace rtl
 
             const auto& recordId = TypeId<_recordType>::get();
             //lambda containing constructor call.
-            const auto& functor = [=](const std::any& pOther)->access::RStatus
+            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> void
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 _recordType* srcObj = std::any_cast<_recordType*>(pOther);
                 _recordType* retObj = new _recordType(*srcObj);
-                return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+                pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -164,12 +162,12 @@ namespace rtl
 
             const auto& recordId = TypeId<_recordType>::get();
             //lambda containing constructor call.
-            const auto& functor = [=](const std::any& pOther)->access::RStatus
+            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> void
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
                 _recordType* retObj = new _recordType(*srcObj);
-                return access::RStatus(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+                pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
             };
 
             //add the lambda in 'FunctorContainer'.

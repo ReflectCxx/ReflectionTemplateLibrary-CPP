@@ -51,7 +51,7 @@ namespace rtl {
         Instance::Instance(const Instance& pOther)
             : m_qualifier(pOther.m_qualifier)
             , m_typeId(pOther.m_typeId)
-            , m_anyObject(pOther.m_anyObject)
+            , m_anyObject(std::move(pOther.m_anyObject))
             , m_allocatedOn(pOther.m_allocatedOn)
             , m_destructor(pOther.m_destructor) {
         }
@@ -68,11 +68,11 @@ namespace rtl {
         }
 
 
-        Instance::Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus)
+        Instance::Instance(std::any&& pRetObj, const RStatus& pStatus)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
-            , m_allocatedOn(pAlloc)
-            , m_anyObject(pRetObj)
+            , m_allocatedOn(alloc::Stack)
+            , m_anyObject(std::move(pRetObj))
             , m_destructor(nullptr) {
         }
 
@@ -87,18 +87,19 @@ namespace rtl {
         * 'm_destructor' holds a dummy void* pointer (address of 'g_instanceCount'), which is a primitive type.
         * this is done to avoid dynamic allocation of 'Instance' object to manage it with 'shared_ptr'.
         * shared_ptr('m_destructor') holds the dummy void* but calls the actual destructor which destroys the object constructed(via reflection).
-    */  Instance::Instance(alloc pAlloc, const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
+    */  Instance::Instance(std::any&& pRetObj, const RStatus& pStatus, const Function& pDctor)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
-            , m_allocatedOn(pAlloc)
-            , m_anyObject(pRetObj)
+            , m_allocatedOn(alloc::Heap)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
-                pDctor(pRetObj);
+                const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
+				_ASSERT(retStaus == rtl::Error::None && "dctor not called. memory leak.");
                 (*static_cast<std::size_t*>(ptr))--;
             })
         {
             g_instanceCount++;
+            m_anyObject = std::move(pRetObj);
         }
     }
 }
