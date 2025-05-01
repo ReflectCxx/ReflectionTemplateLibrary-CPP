@@ -1,6 +1,6 @@
 
 #include <any>
-
+#include <cassert>
 #include "TypeId.hpp"
 #include "RStatus.h"
 #include "Instance.h"
@@ -94,7 +94,7 @@ namespace rtl {
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
                 const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
-				_ASSERT(retStaus == rtl::Error::None && "dctor not called. memory leak.");
+				assert(retStaus == rtl::Error::None && "dctor not called. memory leak.");
                 (*static_cast<std::size_t*>(ptr))--;
             })
         {

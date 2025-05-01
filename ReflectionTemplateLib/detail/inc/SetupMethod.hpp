@@ -141,7 +141,7 @@ namespace rtl
                 }
                 else 
                 {
-                    constexpr const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+                    const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
                     //return 'RStatus' with return value wrapped in it as std::any.
