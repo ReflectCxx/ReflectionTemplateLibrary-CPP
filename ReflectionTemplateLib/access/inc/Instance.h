@@ -33,7 +33,7 @@ namespace rtl {
             //allocated object, stored without type info.
             mutable std::any m_anyObject;
 
-			mutable alloc m_allocatedOn;
+            mutable alloc m_allocatedOn;
 
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
             does not hold the object constructed via reflection.
@@ -65,14 +65,14 @@ namespace rtl {
             GETTER(TypeQ, Qualifier, m_qualifier);
 
             //checks if object constructed via reflection on heap or stack.
-			GETTER_BOOL(OnHeap, ((bool) m_allocatedOn));
-            
+            GETTER_BOOL(OnHeap, ((bool) m_allocatedOn));
+
             //checks if it contains object constructed via reflection.
             GETTER_BOOL(Empty, (!m_anyObject.has_value()));
-            
+
             //check the contained object is const or not.
             GETTER_BOOL(Const, (m_qualifier == TypeQ::Const));
-            
+
             //treat the object constructed via reflection as const or non-const.
             void makeConst(const bool& pCastAway = false);
 

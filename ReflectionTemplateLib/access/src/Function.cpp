@@ -84,7 +84,7 @@ namespace rtl {
         * for overloads, registered with the same name, the 'FunctorId' from the 'pOtherFunc' object will be added to this.
         * if the same functor is registered again with the same name, it will be ignored.
     */	void Function::addOverload(const Function& pOtherFunc) const
-		{
+        {
             const std::size_t& otherFuncSignId = pOtherFunc.m_functorIds[0].getSignatureId();
             //simple linear-search, efficient for small set of elements.
             for (const auto& functorId : m_functorIds) {

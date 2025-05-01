@@ -103,7 +103,7 @@ namespace rtl
         */  static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
             const auto& updateIndex = [&](const std::size_t& pIndex) {
                 functorSet.emplace_back(pFunctor, pIndex);
-			};
+            };
 
         /*  adds the generated functor index to the 'functorSet'. (thread safe).
             called from '_derivedType' (MethodContainer<TypeQ::Const, _signature...>)

@@ -56,6 +56,6 @@ namespace rtl {
 
             //only class which can create objects of this class & manipulates 'm_methods'.
             friend class detail::CxxReflection;
-		};
-	}
+        };
+    }
 }

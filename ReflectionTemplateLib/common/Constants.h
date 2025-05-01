@@ -18,9 +18,9 @@ namespace rtl {
         return _var;                            \
     }
 
-#define GETTER_BOOL(_name, _var)                        \
+#define GETTER_BOOL(_name, _var)              \
     inline const bool is##_name() const {     \
-        return _var;                                    \
+        return _var;                          \
     }
 
     enum FunctorIdx

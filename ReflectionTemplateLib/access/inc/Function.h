@@ -12,10 +12,10 @@
 namespace rtl {
 
     namespace detail {
-		//forward decls
+        //forward decls
         class CxxReflection;
-		class ReflectionBuilder;
-	}
+        class ReflectionBuilder;
+    }
 
     namespace access
 	{

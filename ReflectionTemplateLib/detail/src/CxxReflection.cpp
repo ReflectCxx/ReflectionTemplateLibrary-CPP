@@ -16,8 +16,8 @@ namespace rtl {
         {
             for (const auto& function : pFunctions) {
                 organizeFunctorsMetaData(function);
-			}
-		}
+            }
+        }
 
 
     /*  @method: addRecord

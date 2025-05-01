@@ -26,7 +26,7 @@ namespace rtl {
 
 
     namespace builder
-	{
+    {
         inline Builder<TypeQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
                                                    const std::string& pFunction)
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
