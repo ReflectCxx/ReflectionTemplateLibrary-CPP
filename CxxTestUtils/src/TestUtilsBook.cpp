@@ -63,44 +63,59 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<>(const any& pInstance) 
+	const bool book::test_method_updateBookInfo<>(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
-		}
-
 		Book book;
 		book.updateBookInfo();
-		return (book == *rbook);
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
+		}
 	}
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<const char*, double, string>(const any& pInstance)
+	const bool book::test_method_updateBookInfo<const char*, double, string>(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
-		}
-
 		Book book;
 		book.updateBookInfo(TITLE, PRICE, string(AUTHOR));
-		return (book == *rbook);
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
+		}
 	}
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<string, double, const char*>(const any& pInstance)
+	const bool book::test_method_updateBookInfo<string, double, const char*>(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
-		}
-
 		Book book;
 		book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
-		return (book == *rbook);
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
+		}
 	}
 
 
