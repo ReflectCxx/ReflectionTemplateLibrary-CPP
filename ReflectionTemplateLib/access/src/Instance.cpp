@@ -16,6 +16,13 @@ namespace rtl {
 
     namespace access
     {
+        Instance::~Instance()
+        {
+            if (m_allocatedOn != alloc::Heap) {
+                g_instanceCount--;
+            }
+        }
+
 
     /*  @method: getInstanceCount()
         @return: std::size_t (g_instanceCount).
@@ -37,6 +44,7 @@ namespace rtl {
             m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
         }
 
+
     /*  @constructor: Instance()
         * creates 'Instance' with empty 'm_anyObject'.
         * 'm_typeId' will be zero which indicates no-type.
@@ -45,26 +53,7 @@ namespace rtl {
             : m_qualifier(TypeQ::None)
             , m_typeId(detail::TypeId<>::None)
             , m_allocatedOn(alloc::None) {
-        }
-
-        //copy-constructor, public access.
-        Instance::Instance(const Instance& pOther)
-            : m_qualifier(pOther.m_qualifier)
-            , m_typeId(pOther.m_typeId)
-            , m_anyObject(std::move(pOther.m_anyObject))
-            , m_allocatedOn(pOther.m_allocatedOn)
-            , m_destructor(pOther.m_destructor) {
-        }
-
-        //assignment.
-        Instance& Instance::operator=(const Instance& pOther)
-        {
-            m_qualifier = pOther.m_qualifier;
-            m_typeId = pOther.m_typeId;
-			m_allocatedOn = pOther.m_allocatedOn;
-            m_anyObject = std::move(pOther.m_anyObject);
-            m_destructor = pOther.m_destructor;
-            return *this;
+            g_instanceCount++;
         }
 
 
@@ -74,6 +63,65 @@ namespace rtl {
             , m_allocatedOn(alloc::Stack)
             , m_anyObject(std::move(pRetObj))
             , m_destructor(nullptr) {
+            g_instanceCount++;
+        }
+
+
+        //copy-constructor, public access.
+        Instance::Instance(const Instance& pOther)
+            : m_qualifier(pOther.m_qualifier)
+            , m_typeId(pOther.m_typeId)
+            , m_anyObject(std::move(pOther.m_anyObject))
+            , m_allocatedOn(pOther.m_allocatedOn)
+            , m_destructor(pOther.m_destructor) {
+            g_instanceCount++;
+        }
+
+
+        //assignment.
+        Instance& Instance::operator=(const Instance& pOther)
+        {
+            m_qualifier = pOther.m_qualifier;
+            m_typeId = pOther.m_typeId;
+			m_allocatedOn = pOther.m_allocatedOn;
+            m_anyObject = pOther.m_anyObject;
+            m_destructor = pOther.m_destructor;
+            return *this;
+        }
+
+
+        Instance& Instance::operator=(const Instance&& pOther) noexcept
+        {
+            if (this == &pOther) return *this; // self-assignment check
+
+            m_qualifier = pOther.m_qualifier;
+            m_typeId = pOther.m_typeId;
+            m_allocatedOn = pOther.m_allocatedOn;
+            m_anyObject = std::move(pOther.m_anyObject);
+            m_destructor = std::move(pOther.m_destructor);
+
+            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_anyObject.reset(); // reset the moved-from instance
+            pOther.m_destructor.reset(); // reset the moved-from instance
+            pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
+            pOther.m_typeId = detail::TypeId<>::None; // reset the moved-from instance
+            return *this;
+        }
+
+
+        Instance::Instance(Instance&& pOther) noexcept
+            : m_qualifier(pOther.m_qualifier)
+            , m_typeId(pOther.m_typeId)
+            , m_anyObject(std::move(pOther.m_anyObject))
+            , m_allocatedOn(pOther.m_allocatedOn)
+            , m_destructor(std::move(pOther.m_destructor))
+        {
+            g_instanceCount++;
+            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_anyObject.reset(); // reset the moved-from instance
+            pOther.m_destructor.reset(); // reset the moved-from instance
+            pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
+            pOther.m_typeId = detail::TypeId<>::None; // reset the moved-from instance
         }
 
 
@@ -94,8 +142,9 @@ namespace rtl {
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
                 const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
-				assert(retStaus == rtl::Error::None && "dctor not called. memory leak.");
-                (*static_cast<std::size_t*>(ptr))--;
+                assert(retStaus == rtl::Error::None && "dctor not called. memory leak!");
+                const auto& instanceCount = --(*static_cast<std::size_t*>(ptr));
+                assert(instanceCount >= 0 && "instance count can't be less than zero. memory leak!");
             })
         {
             g_instanceCount++;
