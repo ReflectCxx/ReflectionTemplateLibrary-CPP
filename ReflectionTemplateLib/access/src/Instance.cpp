@@ -7,7 +7,6 @@
 #include "Function.hpp"
 
 namespace {
-
 	//global, used to assign to shared pointer with custom deleter.
 	static std::size_t g_instanceCount = 0;
 }
@@ -83,7 +82,7 @@ namespace rtl {
         {
             m_qualifier = pOther.m_qualifier;
             m_typeId = pOther.m_typeId;
-			m_allocatedOn = pOther.m_allocatedOn;
+	    m_allocatedOn = pOther.m_allocatedOn;
             m_anyObject = pOther.m_anyObject;
             m_destructor = pOther.m_destructor;
             return *this;
