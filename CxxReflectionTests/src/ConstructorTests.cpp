@@ -68,7 +68,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			string dateStr = date::DATE_STR;
+			string dateStr = date::DATE_STR0;
 			auto [status, instance] = classDate->instance<alloc::Heap>(dateStr);
 			
 			ASSERT_TRUE(status);

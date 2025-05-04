@@ -14,10 +14,27 @@ namespace test_utils
 		return (Calender::instanceCount() == 0);
 	}
 
+
 	const bool date::assert_zero_instance_count()
 	{
 		return (Date::instanceCount() == 0);
 	}
+
+
+	const bool date::test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap)
+	{
+		if (pIsOnHeap) {
+			auto rdate0 = any_cast<Date*>(pInstance0);
+			auto rdate1 = any_cast<Date*>(pInstance1);
+			return (*rdate0 == *rdate1);
+		}
+		else {
+			auto rdate0 = any_cast<Date>(&pInstance0);
+			auto rdate1 = any_cast<Date>(&pInstance1);
+			return (*rdate0 == *rdate1);
+		}
+	}
+
 
 	template<>
 	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
@@ -37,7 +54,7 @@ namespace test_utils
 		if (rdate == nullptr) {
 			return false;
 		}
-		return (Date(DATE_STR) == *rdate);
+		return (Date(DATE_STR0) == *rdate);
 	}
 
 

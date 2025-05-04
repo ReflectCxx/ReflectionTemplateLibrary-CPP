@@ -21,6 +21,8 @@ namespace nsdate
 
 		std::string getAsString() const;
 
+		void updateDate(std::string pDateStr);
+
 	private:
 
 		unsigned m_day;

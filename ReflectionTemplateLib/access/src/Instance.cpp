@@ -17,7 +17,7 @@ namespace rtl {
     {
         Instance::~Instance()
         {
-            if (m_allocatedOn != alloc::Heap) {
+            if (m_allocatedOn != alloc::Heap || m_destructor.use_count() != 1) {
                 g_instanceCount--;
             }
         }
@@ -38,7 +38,7 @@ namespace rtl {
         * objects constructed via reflected constructor call, held by 'm_anyObject' as a non-const object pointer.
         * 'm_qualifier' indicates how the object should be treated- as const or non-const.
         * if 'm_qualifier' is TypeQ::Const, only const member function will be called on the object held by 'm_anyObject'
-        * if 'm_qualifier' is TypeQ::Mute,, only non-const member function will be called on the objject held by 'm_anyObject'
+        * if 'm_qualifier' is TypeQ::Mute, only non-const member function will be called on the objject held by 'm_anyObject'
     */  void Instance::makeConst(const bool& pCastAway) {
             m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
         }
@@ -70,7 +70,7 @@ namespace rtl {
         Instance::Instance(const Instance& pOther)
             : m_qualifier(pOther.m_qualifier)
             , m_typeId(pOther.m_typeId)
-            , m_anyObject(std::move(pOther.m_anyObject))
+            , m_anyObject(pOther.m_anyObject)
             , m_allocatedOn(pOther.m_allocatedOn)
             , m_destructor(pOther.m_destructor) {
             g_instanceCount++;
@@ -80,9 +80,14 @@ namespace rtl {
         //assignment.
         Instance& Instance::operator=(const Instance& pOther)
         {
+            if (this == &pOther) return *this; // self-assignment check
+            if (m_allocatedOn == alloc::Heap && m_destructor.use_count() == 1) {
+                g_instanceCount++;
+            }
+
             m_qualifier = pOther.m_qualifier;
             m_typeId = pOther.m_typeId;
-	    m_allocatedOn = pOther.m_allocatedOn;
+            m_allocatedOn = pOther.m_allocatedOn;
             m_anyObject = pOther.m_anyObject;
             m_destructor = pOther.m_destructor;
             return *this;

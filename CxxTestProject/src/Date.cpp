@@ -44,6 +44,26 @@ namespace nsdate
 	}
 
 
+	void Date::updateDate(std::string pDateStr)
+	{
+		string strBuf;
+		vector<string> date;
+		for (size_t i = 0; i < pDateStr.length(); i++)
+		{
+			if (pDateStr.at(i) == '/') {
+				date.push_back(strBuf);
+				strBuf.clear();
+			}
+			else {
+				strBuf.push_back(pDateStr.at(i));
+			}
+		}
+		m_day = stoi(date[0]);
+		m_month = stoi(date[1]);
+		m_year = stoi(strBuf);
+	}
+
+
 	Date::Date()
 		: m_day(1)
 		, m_month(1)
