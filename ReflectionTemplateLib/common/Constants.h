@@ -44,8 +44,8 @@ namespace rtl {
         enum class alloc
         {
             None = -1,
-            Stack = 0,  //false
-            Heap = 1,   //true
+            Stack = 0,
+            Heap = 1,
         };
     }
 
