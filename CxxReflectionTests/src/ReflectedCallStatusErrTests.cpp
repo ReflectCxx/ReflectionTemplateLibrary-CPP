@@ -13,7 +13,7 @@ using namespace test_utils;
 
 namespace rtl_tests
 {
-	TEST(ReflectedCallStatusError, unregistered_constructor___error_ConstructorNotFound)
+	TEST(ReflectedCallStatusError, construct_on_heap___error_ConstructorNotFound)
 	{
 		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
 		ASSERT_TRUE(classLibrary);
@@ -25,7 +25,19 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, unregistered_constructor___error_CopyConstructorNotFound)
+	TEST(ReflectedCallStatusError, construct_on_stack___error_ConstructorNotFound)
+	{
+		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+		ASSERT_TRUE(classLibrary);
+
+		auto [status, instance] = classLibrary->instance<alloc::Stack>();
+
+		ASSERT_TRUE(status == Error::ConstructorNotFound);
+		ASSERT_TRUE(instance.isEmpty());
+	}
+
+
+	TEST(ReflectedCallStatusError, copy_construct_on_heap___error_CopyConstructorDeleted)
 	{
 		{
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
@@ -37,8 +49,23 @@ namespace rtl_tests
 
 			auto [status, instance] = classCalender->clone(srcObj);
 
-			ASSERT_TRUE(status == Error::CopyConstructorNotFound);
+			ASSERT_TRUE(status == Error::CopyConstructorDisabled);
 			ASSERT_TRUE(instance.isEmpty());
+		}
+		EXPECT_TRUE(calender::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ReflectedCallStatusError, copy_construct_on_stack___error_InstanceOnStackDisabledNoCopyCtor)
+	{
+		{
+			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+			ASSERT_TRUE(classCalender);
+
+			auto [status, srcObj] = classCalender->instance<alloc::Stack>();
+			ASSERT_TRUE(status == Error::InstanceOnStackDisabledNoCopyCtor);
+			ASSERT_TRUE(srcObj.isEmpty());
 		}
 		EXPECT_TRUE(calender::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -89,28 +116,6 @@ namespace rtl_tests
 			RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
 			ASSERT_TRUE(retStatus == Error::EmptyInstance);
 		}
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(ReflectedCallStatusError, unregistered_constructor___error_ConstCopyConstructorNotFound)
-	{
-		{
-			optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
-			ASSERT_TRUE(classDate);
-
-			auto [ret, srcObj] = classDate->instance<alloc::Heap>();
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			srcObj.makeConst();
-
-			auto [status, instance] = classDate->clone(srcObj);
-
-			ASSERT_TRUE(status == Error::ConstCopyConstructorNotFound);
-			ASSERT_TRUE(instance.isEmpty());
-		}
-		EXPECT_TRUE(date::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
 

@@ -33,6 +33,9 @@ namespace rtl {
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
 
+            //called from class 'Record', creates a 'Method' object for copy-constructor.
+            static Method getCopyConstructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
+
         public:
 
             using Function::bind;

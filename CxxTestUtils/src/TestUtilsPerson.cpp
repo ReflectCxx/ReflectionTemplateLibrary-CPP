@@ -66,30 +66,44 @@ namespace test_utils
 		return (person == *rPerson);
 	}
 
-	const bool person::test_copy_constructor_overload_src_const_obj(const std::any& pInstance)
-	{
-		//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-		Person* rPerson = any_cast<Person*>(pInstance);
-		if (rPerson == nullptr) {
-			return false;
-		}
 
+	const bool test_utils::person::test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pOnHeap)
+	{
 		const Person personSrc;
 		Person person(personSrc);
-		return (person == *rPerson);
+
+		if (pOnHeap) {
+			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			Person* rPerson = any_cast<Person*>(pInstance);
+			if (rPerson == nullptr) {
+				return false;
+			}
+			return (person == *rPerson);
+		}
+		else {
+			auto rPerson = any_cast<Person>(&pInstance);
+			return (person == *rPerson);
+		}
 	}
 
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance)
-	{
-		//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-		Person* rPerson = any_cast<Person*>(pInstance);
-		if (rPerson == nullptr) {
-			return false;
-		}
 
+	const bool test_utils::person::test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pOnHeap)
+	{
 		Person personSrc;
 		Person person(personSrc);
-		return (person == *rPerson);
+
+		if (pOnHeap) {
+			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			Person* rPerson = any_cast<Person*>(pInstance);
+			if (rPerson == nullptr) {
+				return false;
+			}
+			return (person == *rPerson);
+		}
+		else {
+			auto rPerson = any_cast<Person>(&pInstance);
+			return (person == *rPerson);
+		}
 	}
 
 

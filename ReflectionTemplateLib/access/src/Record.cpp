@@ -10,8 +10,9 @@ namespace rtl {
 
     namespace access
     {
-        Record::Record(const std::string& pRecordName)
+        Record::Record(const std::string& pRecordName, const std::size_t& pRecordId)
             : m_recordName(pRecordName)
+			, m_recordId(pRecordId)
         {
         }
 
@@ -78,64 +79,33 @@ namespace rtl {
                 return std::make_pair(RStatus(Error::EmptyInstance), Instance());
             }
 
+            //type of the object wrapped under source 'Instance' should match with type of this class/struct.
+            if (m_recordId != pOther.getTypeId()) {
+                //if source instance & ctor type didn't match, return empty instance with error status.
+                return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
+            }
+
+            if (!pOther.isOnHeap()) {
+                RStatus status;
+				status.init(std::any(), m_recordId, pOther.getQualifier());
+                return std::make_pair(status, pOther);
+            }
+
             const std::string& dctor = CtorName::dctor(m_recordName);
-            const std::string& copyStr = CtorName::copy(m_recordName);
-            const std::string& constCopyStr = CtorName::constCopy(m_recordName);
+            const std::string& constCopyStr = CtorName::copyCtor(m_recordName);
 
             std::optional<Function> destructor = getMethod(dctor);
             std::optional<Function> constCopyCtor = getMethod(constCopyStr);
 			
             //if the object is const, only copy constructor with 'const&' can be called on it.
-            if (pOther.isConst())
-            {
-                if (constCopyCtor) 
-                {
-                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
-                    associated by constructor ('Function')object.
-                */  if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
-                        //if source instance & ctor type didn't match, return empty instance with error status.
-                        return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
-                    }
-                    //object and type validated. call the const-copy-constructor.
-                    RStatus status = (*constCopyCtor).bind<std::any>().call(pOther.get());
-                    return std::make_pair(status, Instance(std::move(status.m_returnObj), status, *destructor));
-                }
-                else {
-                    //if the object is 'const' and no constructor found accepting 'const&'
-                    return std::make_pair(RStatus(Error::ConstCopyConstructorNotFound), Instance());
-                }
+            if (constCopyCtor) {
+                //object and type validated. call the const-copy-constructor.
+                RStatus status = (*constCopyCtor).bind<std::any>().call(pOther.get());
+                return std::make_pair(status, Instance(std::move(status.m_returnObj), status, *destructor));
             }
-            else {
-                //if the source 'Instance' is non-const, find copy-constructor taking non-const ref.
-                std::optional<Function> copyCtor = getMethod(copyStr);
-                if (copyCtor)
-                {
-                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
-                    associated by constructor ('Function')object.
-                */  if (copyCtor->getRecordTypeId() != pOther.getTypeId()) {
-                        //if source instance & ctor type didn't match, return empty instance with error status.
-                        return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
-                    }
-                    //object and type validated. call the non-const-copy-constructor.
-                    RStatus status = (*copyCtor).bind<std::any>().call(pOther.get());
-                    return std::make_pair(status, Instance(std::move(status.m_returnObj), status, *destructor));
-                }
-                //if copy-constructor taking non-const ref not found, and with const-ref found, use that copy constructor.
-                else if (constCopyCtor)
-                {
-                /*  type of the object wrapped under source 'Instance' should match with type of the class/struct
-                    associated by constructor ('Function')object.
-                */  if (constCopyCtor->getRecordTypeId() != pOther.getTypeId()) {
-                        //if source instance & ctor type didn't match, return empty instance with error status.
-                        return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
-                    }
-                    //object and type validated. call the const-copy-constructor.
-                    RStatus status = (*constCopyCtor).bind<std::any>().call(pOther.get());
-                    return std::make_pair(status, Instance(std::move(status.m_returnObj), status, *destructor));
-                }
-            }
+
             //if no registered copy constructor found, return empty instance with error status.
-            return std::make_pair(RStatus(Error::CopyConstructorNotFound), Instance());
+            return std::make_pair(RStatus(Error::CopyConstructorDisabled), Instance());
         }
     }
 }

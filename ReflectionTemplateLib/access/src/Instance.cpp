@@ -39,7 +39,7 @@ namespace rtl {
         * 'm_qualifier' indicates how the object should be treated- as const or non-const.
         * if 'm_qualifier' is TypeQ::Const, only const member function will be called on the object held by 'm_anyObject'
         * if 'm_qualifier' is TypeQ::Mute, only non-const member function will be called on the objject held by 'm_anyObject'
-    */  void Instance::makeConst(const bool& pCastAway) {
+    */  void Instance::makeConst(const bool& pCastAway) const {
             m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
         }
 
@@ -66,8 +66,12 @@ namespace rtl {
         }
 
 
-        //copy-constructor, public access.
-        Instance::Instance(const Instance& pOther)
+    /*  @copy_constructor: Instance(const Instance& pOther)
+        * creates shallow copy of 'Instance'.
+        * calls the copy-constructor of the wrapped (inside 'm_anyObject') object if its allocated on Stack.
+        * does not calls the copy-constructor of the wrapped (inside 'm_anyObject') object if its allocated on Heap.
+        * heap allocated object that is wrapped inside 'm_anyObject' is shared between copies via 'shared_ptr'.
+    */  Instance::Instance(const Instance& pOther)
             : m_qualifier(pOther.m_qualifier)
             , m_typeId(pOther.m_typeId)
             , m_anyObject(pOther.m_anyObject)

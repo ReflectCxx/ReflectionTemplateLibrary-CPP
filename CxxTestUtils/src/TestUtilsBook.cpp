@@ -119,18 +119,23 @@ namespace test_utils
 	}
 
 
-	const bool book::test_unique_copy_ctor_const_ref(const std::any& pInstance)
+	const bool test_utils::book::test_unique_copy_ctor_const_ref(const std::any& pInstance, bool pOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
-		}
-
 		Book obj(PRICE, TITLE);
 		obj.setAuthor(AUTHOR);
 		obj.setDescription(DESCRIPTION);
-
 		Book copyObj(obj);
-		return (copyObj == *rbook);
+
+		if (pOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (copyObj == *rbook);
+		}
+		else {
+			const Book* rbook = any_cast<Book>(&pInstance);
+			return (copyObj == *rbook);
+		}
 	}
 }

@@ -18,17 +18,21 @@ namespace rtl {
         return _var;                            \
     }
 
+
 #define GETTER_BOOL(_name, _var)              \
     inline const bool is##_name() const {     \
         return _var;                          \
     }
 
+
     enum FunctorIdx
     {
         ZERO = 0,   //heap constructor index
 		ONE,    //destructor index
-        TWO
+		TWO,    //copy constructor index
+        MAX_SIZE
     };
+
 
     //Qualifier type.
     enum class TypeQ
@@ -37,6 +41,7 @@ namespace rtl {
         Mute,   //Mutable
         Const,  //Constant
     };
+
 
     namespace access 
     {
@@ -49,13 +54,13 @@ namespace rtl {
         };
     }
 
+
     //Qualifier type.
     enum class ConstructorType
     {
         None,
         Ctor,
-        Copy,
-        ConstCopy
+        CopyCtor
     };
 
 
@@ -68,8 +73,8 @@ namespace rtl {
         InstanceTypeMismatch,
         InstanceConstMismatch,
         ConstructorNotFound,
-        CopyConstructorNotFound,
-        ConstCopyConstructorNotFound
+        CopyConstructorDisabled,
+        InstanceOnStackDisabledNoCopyCtor
     };
 
 
@@ -83,11 +88,7 @@ namespace rtl {
             return (pRecordName + "::" + pRecordName + "()");
         }
 
-        static const std::string copy(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "(" + pRecordName + "&)");
-        }
-
-        static const std::string constCopy(const std::string& pRecordName) {
+        static const std::string copyCtor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
         }
     };

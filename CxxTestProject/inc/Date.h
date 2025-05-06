@@ -8,7 +8,6 @@ namespace nsdate
 	struct Date
 	{
 		Date();
-		Date(Date& pOther);
 		Date(const Date& pOther);
 		Date(const std::string& pDateStr);
 		Date(unsigned dd, unsigned mm, unsigned yy);
@@ -32,11 +31,13 @@ namespace nsdate
 	};
 
 
-	//for testing 'copy constructor found'
+	//for testing 'copy constructor not defined/disabled'
 	struct Calender 
 	{
 		Calender();
 		~Calender();
+
+		Calender(const Calender& pOther) = delete;
 
 		static unsigned instanceCount();
 

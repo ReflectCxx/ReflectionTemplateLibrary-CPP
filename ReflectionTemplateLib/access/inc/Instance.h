@@ -32,7 +32,8 @@ namespace rtl {
 
             //allocated object, stored without type info.
             mutable std::any m_anyObject;
-
+            
+            //indicates if the object inside 'm_anyObject' is created on heap or stack.
             mutable alloc m_allocatedOn;
 
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
@@ -80,7 +81,7 @@ namespace rtl {
             GETTER_BOOL(Const, (m_qualifier == TypeQ::Const));
 
             //treat the object constructed via reflection as const or non-const.
-            void makeConst(const bool& pCastAway = false);
+            void makeConst(const bool& pCastAway = false) const;
 
             //get the current number of objects constructed via reflection.
             static std::size_t getInstanceCount();

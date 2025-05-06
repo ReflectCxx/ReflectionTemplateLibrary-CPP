@@ -79,12 +79,19 @@ namespace rtl
             //lambda containing constructor call.
             const auto& functor = [=](access::RStatus& pRStatus, rtl::access::alloc pAllocType, _signature&&...params)-> void
             {
-                if (pAllocType == rtl::access::alloc::Heap) {
+                if (pAllocType == rtl::access::alloc::Stack) 
+                {
+                    if constexpr (std::is_copy_constructible_v<_recordType>) {
+                        pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
+                    }
+                    else {
+                        pRStatus.init(rtl::Error::InstanceOnStackDisabledNoCopyCtor);
+                    }
+                }
+                else if (pAllocType == rtl::access::alloc::Heap) 
+                {
                     _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
                     pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
-                }
-                else if (pAllocType == rtl::access::alloc::Stack) {
-                    pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
                 }
             };
 
@@ -92,47 +99,6 @@ namespace rtl
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
             const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
             return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
-        }
-
-
-    /*  @method: addCopyConstructor()
-        @param: '_derivedType' (FunctorContainer), '_recordType' (class/struct).
-        @return: 'FunctorId' object, a hash-key to lookup the lambda in the _derivedType's lambda-table.
-        * adds lambda (wrapping copy-constructor call) in '_derivedType' (FunctorContainer).
-        * maintains a static map to check for already registered constructor for a particular class/struct type.
-        * thread safe, this method is uniquely generated for each '_recordType' (class/struct type).
-        * adds copy constructor with argument '_recordType&'.
-    */  template<class _derivedType>
-        template<class _recordType>
-        inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
-        {
-            //no copy-constructor is registered yet for type '_recordType' if 'copyCtorIndex' is -1.
-            static std::size_t copyCtorIndex = -1;
-            
-            //will be called from '_derivedType' if the copy-constructor not already registered.
-            const auto& updateIndex = [&](const std::size_t& pIndex) {
-                copyCtorIndex = pIndex;
-            };
-
-            //will be called from '_derivedType' to check if the constructor already registered.
-            const auto& getIndex = [&]()->const std::size_t {
-                return copyCtorIndex;
-            };
-
-            const auto& recordId = TypeId<_recordType>::get();
-            //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> void
-            {
-                //cast will definitely succeed, will not throw since the object type is already validated.
-                _recordType* srcObj = std::any_cast<_recordType*>(pOther);
-                _recordType* retObj = new _recordType(*srcObj);
-                pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
-            };
-
-            //add the lambda in 'FunctorContainer'.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-            const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
-            return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(), signatureStr);
         }
 
 
@@ -145,7 +111,7 @@ namespace rtl
         * adds copy constructor with argument 'const _recordType&'.
     */  template<class _derivedType>
         template<class _recordType>
-        inline const detail::FunctorId SetupConstructor<_derivedType>::addConstCopyConstructor()
+        inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
         {
             //no copy constructor with const-ref is registered yet for type '_recordType' if 'constCopyCtorIndex' is -1.
             static std::size_t constCopyCtorIndex = -1;

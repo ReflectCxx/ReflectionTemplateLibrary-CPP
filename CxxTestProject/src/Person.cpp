@@ -28,13 +28,6 @@ Person::Person(const std::string& pName)
 	g_instanceCount++;
 }
 
-Person::Person(Person& pOther)
-	: m_address(pOther.m_address + ".__Person::Person(Person&)")
-	, m_lastName(pOther.m_lastName + ".__Person::Person(Person&)")
-	, m_firstName(pOther.m_firstName + ".__Person::Person(Person&)")
-{
-	g_instanceCount++;
-}
 
 Person::Person(const Person& pOther)
 	: m_address(pOther.m_address + ".__Person::Person(const Person&)")

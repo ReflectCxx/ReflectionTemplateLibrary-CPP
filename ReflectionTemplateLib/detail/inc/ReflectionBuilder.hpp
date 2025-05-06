@@ -58,7 +58,7 @@ namespace rtl {
                 const detail::FunctorId& functorId = Container::addFunctor(pFunctor);
                 return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
             }
-	    else //else the types are explicitly specified and has at least one reference types.
+            else //else the types are explicitly specified and has at least one reference types.
             {
                 using Container = detail::MethodContainer<TypeQ::Mute, _signature...>;
                 const detail::FunctorId& functorId = Container::addFunctor(pFunctor);
@@ -95,43 +95,17 @@ namespace rtl {
             using Container = detail::FunctorContainer<rtl::access::alloc, std::remove_reference_t<_ctorSignature>...>;
             const detail::FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
-            //add the destructor's 'FunctorId' to the constructor's functorIds list.
+            //add the destructor's 'FunctorId' to the constructor's functorIds list, at index FunctorIdx::ONE.
             const auto& dctorFunctorId = detail::FunctorContainer<std::any>::addDestructor<_recordType>();
             constructor.getFunctorIds().emplace_back(dctorFunctorId);
-            return constructor;
-        }
 
+            //if the _recordType has valid copy constructor.
+            if constexpr (std::is_copy_constructible_v<_recordType>) {
+                //Construct and add the copy constructor's functorId at index FunctorIdx::TWO.
+                const detail::FunctorId& copyCtorFunctorId = detail::FunctorContainer<std::any>::addCopyConstructor<_recordType>();
+                constructor.getFunctorIds().emplace_back(copyCtorFunctorId);
+            }
 
-    /*  @method: buildCopyConstructor()
-        @return: 'Function', object associated with the copy constructor.
-        @param: '_recordType'(class/struct type) & '_ctorSignature...' ('_recordType&', explicitlly specified internally),
-        * adds the lambda invoking copy constructor (type-erased) in 'FunctorContainer'
-        * builds the 'Function' object containing hash-key & meta-data for the copy constructor.
-        * also adds the lambda for invoking the destructor and returns its hash-key with the constructor's 'Function'.
-    */  template<class _recordType, class ..._ctorSignature>
-        inline const access::Function ReflectionBuilder::buildCopyConstructor() const
-        {
-            const detail::FunctorId& functorId = detail::FunctorContainer<std::any>::addCopyConstructor<_recordType>();
-            const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
-            //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
-            return constructor;
-        }
-		
-		
-    /*  @method: buildConstCopyConstructor()
-        @return: 'Function', object associated with the copy constructor.
-        @param: '_recordType'(class/struct type) & '_ctorSignature...' ('const _recordType&', explicitlly specified internally),
-        * adds the lambda invoking copy constructor (type-erased) taking const-ref in 'FunctorContainer'
-        * builds the 'Function' object containing hash-key & meta-data for the const-copy constructor.
-        * also adds the lambda for invoking the destructor and returns its hash-key with the constructor's 'Function'.
-    */  template<class _recordType, class ..._ctorSignature>
-        inline const access::Function ReflectionBuilder::buildConstCopyConstructor() const
-        {
-            const detail::FunctorId& functorId = detail::FunctorContainer<std::any>::addConstCopyConstructor<_recordType>();
-            const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
-            //add the destructor's 'FunctorId' to the constructor's functorIds list.
-            constructor.getFunctorIds().emplace_back(detail::FunctorContainer<std::any>::addDestructor<_recordType>());
             return constructor;
         }
     }

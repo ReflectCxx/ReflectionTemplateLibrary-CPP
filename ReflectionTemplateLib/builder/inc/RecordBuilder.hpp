@@ -113,15 +113,9 @@ namespace rtl {
         template<class ..._signature>
         inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
         {
-            //this code-block is retained by compiler, if copy constructor with non-const ref('_recordType&') is being registered.
-            if constexpr (std::is_same_v<_recordType, typename detail::TypeId<_signature...>::HEAD>) 
+            if constexpr (std::is_same_v<const _recordType, typename detail::TypeId<_signature...>::HEAD>) 
             {
-                return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, ConstructorType::Copy);
-            }
-            //this code-block is retained by compiler, if copy constructor with const-ref('const _recordType&') is being registered.
-            else if constexpr (std::is_same_v<const _recordType, typename detail::TypeId<_signature...>::HEAD>) 
-            {
-                return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, ConstructorType::ConstCopy);
+                return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, ConstructorType::CopyCtor);
             }
             //if any other constructor except, copy constructor is being registered, this code-block will be retained.
             else 
