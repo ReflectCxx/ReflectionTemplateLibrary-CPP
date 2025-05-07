@@ -41,7 +41,7 @@ namespace test_utils
 		static const bool test_method_updateBookInfo(const std::any& pInstance, bool pIsOnHeap);
 
 		template<class ..._ctorArgs>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pIsOnHeap);
 
 		static const bool test_unique_copy_ctor_const_ref(const std::any& pInstance, bool pOnHeap);
 	};

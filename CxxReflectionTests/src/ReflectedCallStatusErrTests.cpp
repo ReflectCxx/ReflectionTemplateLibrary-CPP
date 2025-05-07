@@ -120,7 +120,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, method_on_wrong_instance___error_InstanceTypeMismatch)
+	TEST(ReflectedCallStatusError, method_on_wrong_heap_instance___error_InstanceTypeMismatch)
 	{
 		{
 			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -144,13 +144,60 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance__error_InstanceConstMismatch)
+	TEST(ReflectedCallStatusError, method_on_wrong_stack_instance___error_InstanceTypeMismatch)
+	{
+		{
+			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
+
+			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			auto [status, personObj] = classPerson->instance<alloc::Stack>();
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(personObj.isEmpty());
+
+			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+			ASSERT_TRUE(getPublishedOn);
+
+			RStatus retStatus = getPublishedOn->bind(personObj).call();
+			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+		}
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_heap__error_InstanceConstMismatch)
 	{
 		{	
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [status, bookObj] = classBook->instance<alloc::Heap>();
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+
+			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+			ASSERT_TRUE(getPublishedOn);
+
+			bookObj.makeConst();
+			RStatus retStatus = getPublishedOn->bind(bookObj).call();
+
+			ASSERT_TRUE(retStatus == Error::InstanceConstMismatch);
+		}
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_stack__error_InstanceConstMismatch)
+	{
+		{
+			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 

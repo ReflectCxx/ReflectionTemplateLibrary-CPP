@@ -32,15 +32,15 @@ namespace test_utils
 		template<class ..._signature>
 		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);
 
-		static const bool test_method_updateLastName(const std::any& pInstance);
+		static const bool test_method_updateLastName(const std::any& pInstance, bool pOnHeap);
 
-		static const bool test_method_updateLastName_const(const std::any& pInstance);
-
-		template<class ..._signature>
-		static const bool test_method_updateAddress(const std::any& pInstance);
+		static const bool test_method_updateLastName_const(const std::any& pInstance, bool pOnHeap);
 
 		template<class ..._signature>
-		static const bool test_method_updateAddress_const(const std::any& pInstance);
+		static const bool test_method_updateAddress(const std::any& pInstance, bool pOnHeap);
+
+		template<class ..._signature>
+		static const bool test_method_updateAddress_const(const std::any& pInstance, bool pOnHeap);
 
 		static const bool test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pOnHeap);
 

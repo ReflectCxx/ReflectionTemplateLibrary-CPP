@@ -35,6 +35,6 @@ namespace test_utils
 		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap);
 
 		template<class ..._argsType>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pOnHeap);
 	};
 }

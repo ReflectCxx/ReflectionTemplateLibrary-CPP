@@ -12,7 +12,7 @@ using namespace test_utils;
 namespace rtl_tests
 {
 
-	TEST(CopyConstructor, call_copy_ctor_of_PERSON_with_BOOK_instance)
+	TEST(CopyConstructor, call_copy_ctor_of_PERSON_with_BOOK_instance_on_heap)
 	{
 		{
 			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -34,7 +34,29 @@ namespace rtl_tests
 	}
 
 
-	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_non_const)
+	TEST(CopyConstructor, call_copy_ctor_of_PERSON_with_BOOK_instance_on_stack)
+	{
+		{
+			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
+
+			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+
+			auto [retStatus, badObj] = classPerson->clone(bookObj);
+
+			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_non_const_on_heap)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
@@ -116,7 +138,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_const)
+	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_const_on_heap)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
@@ -204,7 +226,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(CopyConstructor, copy_ctor_arg_const_ref_overload___src_instance_const)
+	TEST(CopyConstructor, copy_ctor_arg_const_ref_overload___src_instance_const_on_heap)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();
@@ -256,7 +278,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(CopyConstructor, copy_ctor_arg_non_const_ref_overload___src_instance_non_const)
+	TEST(CopyConstructor, copy_ctor_arg_non_const_ref_overload___src_instance_non_const_on_heap)
 	{
 		{
 			CxxMirror& cxxMirror = MyReflection::instance();

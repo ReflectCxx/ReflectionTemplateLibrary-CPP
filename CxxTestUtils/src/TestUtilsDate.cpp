@@ -37,34 +37,53 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date() == *rdate);
 		}
-		return (Date() == *rdate);
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date() == *rdate);
+		}
 	}
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance, bool pOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date(DATE_STR0) == *rdate);
 		}
-		return (Date(DATE_STR0) == *rdate);
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date(DATE_STR0) == *rdate);
+		}
 	}
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance, bool pOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date(DAY, MONTH, YEAR) == *rdate);
 		}
-		return (Date(DAY, MONTH, YEAR) == *rdate);
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date(DAY, MONTH, YEAR) == *rdate);
+		}
+		
 	}
 }

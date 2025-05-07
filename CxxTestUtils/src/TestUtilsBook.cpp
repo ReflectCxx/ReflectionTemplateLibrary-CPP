@@ -23,24 +23,36 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (Book() == *rbook);
 		}
-		return (Book() == *rbook);
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (Book() == *rbook);
+		}
 	}
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const any& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const any& pInstance, bool pIsOnHeap)
 	{
-		Book* rbook = any_cast<Book*>(pInstance);
-		if (rbook == nullptr) {
-			return false;
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (Book(PRICE, TITLE) == *rbook);
 		}
-		return (Book(PRICE, TITLE) == *rbook);
+		else {
+			const Book* rbook = any_cast<Book>(&pInstance);
+			return (Book(PRICE, TITLE) == *rbook);
+		}
 	}
 
 
