@@ -28,8 +28,8 @@ namespace rtl {
     enum FunctorIdx
     {
         ZERO = 0,   //heap constructor index
-		ONE,    //destructor index
-		TWO,    //copy constructor index
+        ONE,    //destructor index
+        TWO,    //copy constructor index
         MAX_SIZE
     };
 
@@ -68,7 +68,7 @@ namespace rtl {
     {
         None,
         EmptyInstance,
-		InvalidAllocType,
+        InvalidAllocType,
         SignatureMismatch,
         InstanceTypeMismatch,
         InstanceConstMismatch,

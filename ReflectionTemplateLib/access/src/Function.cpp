@@ -25,21 +25,21 @@ namespace rtl {
         }
 
 
-    Function& Function::operator=(const Function& pOther) 
-    {
-        if (this == &pOther) {
+        Function& Function::operator=(const Function& pOther) 
+        {
+            if (this == &pOther) {
+                return *this;
+            }
+
+            m_qualifier = pOther.m_qualifier;
+            m_recordTypeId = pOther.m_recordTypeId;
+            m_record = pOther.m_record;
+            m_function = pOther.m_function;
+            m_namespace = pOther.m_namespace;
+            m_functorIds = pOther.m_functorIds;
+
             return *this;
         }
-
-        m_qualifier = pOther.m_qualifier;
-        m_recordTypeId = pOther.m_recordTypeId;
-        m_record = pOther.m_record;
-        m_function = pOther.m_function;
-        m_namespace = pOther.m_namespace;
-        m_functorIds = pOther.m_functorIds;
-
-        return *this;
-    }
 
     /*  @constructor: Function()
         @params: pOther - 'Function' object associated with a constructor.

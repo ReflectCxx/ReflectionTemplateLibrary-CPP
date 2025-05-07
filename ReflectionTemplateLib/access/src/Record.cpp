@@ -12,7 +12,7 @@ namespace rtl {
     {
         Record::Record(const std::string& pRecordName, const std::size_t& pRecordId)
             : m_recordName(pRecordName)
-			, m_recordId(pRecordId)
+            , m_recordId(pRecordId)
         {
         }
 
@@ -87,7 +87,7 @@ namespace rtl {
 
             if (!pOther.isOnHeap()) {
                 RStatus status;
-				status.init(std::any(), m_recordId, pOther.getQualifier());
+                status.init(std::any(), m_recordId, pOther.getQualifier());
                 return std::make_pair(status, pOther);
             }
 

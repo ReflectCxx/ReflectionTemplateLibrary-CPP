@@ -25,16 +25,15 @@ namespace rtl {
             static_assert(_alloc != alloc::None, "Instance cannot be created with 'alloc::None' option.");
 
             const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
-
             //if registered constructor is found for the class/struct represented by this 'Record' object.
-            if (itr != m_methods.end()) {
-
+            if (itr != m_methods.end()) 
+            {
                 //invoke the constructor, forwarding the arguments.
                 RStatus&& status = itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
 
                 //if status is 'true', object construction is successful.
-                if (status) {
-
+                if (status) 
+                {
                     if constexpr (_alloc == alloc::Stack) {
                         //construct the 'Instance' object, no custom deleter needed.
                         return std::make_pair(std::move(status), Instance(std::move(status.m_returnObj), status));
@@ -50,8 +49,8 @@ namespace rtl {
                 //if reflected call fails, return with empty 'Instance'.
                 return std::make_pair(std::move(status), Instance());
             }
-            else {
-
+            else 
+            {
                 //if no constructor found, return with empty 'Instance'.
                 return std::make_pair(RStatus(Error::ConstructorNotFound), Instance());
             }
