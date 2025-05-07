@@ -28,7 +28,7 @@ namespace rtl {
                                  public SetupConstructor<FunctorContainer<_signature...>>,
                                  public CallReflector<FunctorContainer<_signature...>>
         {
-            using FunctionLambda = std::function < access::RStatus(_signature...) >;
+            using FunctionLambda = std::function < void (access::RStatus&, _signature...) >;
         public:
 
             //every FunctorContainer<...> will have a unique-id.

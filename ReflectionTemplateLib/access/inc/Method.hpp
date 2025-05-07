@@ -18,9 +18,9 @@ namespace rtl
         @return: RStatus
         * calls the constructor with given arguments.
     */  template<class ..._args>
-        inline RStatus Method::invokeCtor(_args&& ...params) const
+        inline RStatus Method::invokeCtor(alloc&& pAllocType, _args&& ...params) const
         {
-            return Function::operator()<_args...>(std::forward<_args>(params)...);
+            return Function::bind().call<alloc, _args...>(std::forward<alloc>(pAllocType), std::forward<_args>(params)...);
         }
 
 

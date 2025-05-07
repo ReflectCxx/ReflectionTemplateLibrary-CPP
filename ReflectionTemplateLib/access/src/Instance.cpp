@@ -1,13 +1,12 @@
 
 #include <any>
-
+#include <cassert>
 #include "TypeId.hpp"
 #include "RStatus.h"
 #include "Instance.h"
 #include "Function.hpp"
 
 namespace {
-
 	//global, used to assign to shared pointer with custom deleter.
 	static std::size_t g_instanceCount = 0;
 }
@@ -16,23 +15,11 @@ namespace rtl {
 
     namespace access
     {
-    /*  @method: isEmpty()
-        @return: bool
-        * checks if std::any object has value or not.
-        * objects constructed via reflection is held by std::any (instead of void*)
-        * if reflected constructor call fails, 'Insatnce' object returned with empty 'm_anyObject'.
-    */  const bool Instance::isEmpty() const {
-            return (!m_anyObject.has_value());
-        }
-
-
-    /*  @method: isConst()
-        @return: bool
-        * tells how the object held by 'm_anyObject' should be treated.
-        * every object constructed via reflected constructor call is a non-const object pointer.
-        * it can be made to treated as const by calling Instance::makeConst().
-    */  const bool Instance::isConst() const {
-            return (m_qualifier == TypeQ::Const);
+        Instance::~Instance()
+        {
+            if (m_allocatedOn != alloc::Heap || m_destructor.use_count() != 1) {
+                g_instanceCount--;
+            }
         }
 
 
@@ -51,10 +38,11 @@ namespace rtl {
         * objects constructed via reflected constructor call, held by 'm_anyObject' as a non-const object pointer.
         * 'm_qualifier' indicates how the object should be treated- as const or non-const.
         * if 'm_qualifier' is TypeQ::Const, only const member function will be called on the object held by 'm_anyObject'
-        * if 'm_qualifier' is TypeQ::Mute,, only non-const member function will be called on the objject held by 'm_anyObject'
-    */  void Instance::makeConst(const bool& pCastAway) {
+        * if 'm_qualifier' is TypeQ::Mute, only non-const member function will be called on the objject held by 'm_anyObject'
+    */  void Instance::makeConst(const bool& pCastAway) const {
             m_qualifier = (pCastAway ? TypeQ::Mute : TypeQ::Const);
         }
+
 
     /*  @constructor: Instance()
         * creates 'Instance' with empty 'm_anyObject'.
@@ -62,25 +50,86 @@ namespace rtl {
         * this constructor is called only when reflected constructor call fails.
     */  Instance::Instance()
             : m_qualifier(TypeQ::None)
-            , m_typeId(detail::TypeId<>::None) {
+            , m_typeId(detail::TypeId<>::None)
+            , m_allocatedOn(alloc::None) {
+            g_instanceCount++;
         }
 
-        //copy-constructor, public access.
-        Instance::Instance(const Instance& pOther)
+
+        Instance::Instance(std::any&& pRetObj, const RStatus& pStatus)
+            : m_qualifier(TypeQ::Mute)
+            , m_typeId(pStatus.getTypeId())
+            , m_allocatedOn(alloc::Stack)
+            , m_anyObject(std::move(pRetObj))
+            , m_destructor(nullptr) {
+            g_instanceCount++;
+        }
+
+
+    /*  @copy_constructor: Instance(const Instance& pOther)
+        * creates shallow copy of 'Instance'.
+        * calls the copy-constructor of the wrapped (inside 'm_anyObject') object if its allocated on Stack.
+        * does not calls the copy-constructor of the wrapped (inside 'm_anyObject') object if its allocated on Heap.
+        * heap allocated object that is wrapped inside 'm_anyObject' is shared between copies via 'shared_ptr'.
+    */  Instance::Instance(const Instance& pOther)
             : m_qualifier(pOther.m_qualifier)
             , m_typeId(pOther.m_typeId)
             , m_anyObject(pOther.m_anyObject)
+            , m_allocatedOn(pOther.m_allocatedOn)
             , m_destructor(pOther.m_destructor) {
+            g_instanceCount++;
         }
+
 
         //assignment.
         Instance& Instance::operator=(const Instance& pOther)
         {
+            if (this == &pOther) return *this; // self-assignment check
+            if (m_allocatedOn == alloc::Heap && m_destructor.use_count() == 1) {
+                g_instanceCount++;
+            }
+
             m_qualifier = pOther.m_qualifier;
             m_typeId = pOther.m_typeId;
-            m_anyObject = std::move(pOther.m_anyObject);
+            m_allocatedOn = pOther.m_allocatedOn;
+            m_anyObject = pOther.m_anyObject;
             m_destructor = pOther.m_destructor;
             return *this;
+        }
+
+
+        Instance& Instance::operator=(const Instance&& pOther) noexcept
+        {
+            if (this == &pOther) return *this; // self-assignment check
+
+            m_qualifier = pOther.m_qualifier;
+            m_typeId = pOther.m_typeId;
+            m_allocatedOn = pOther.m_allocatedOn;
+            m_anyObject = std::move(pOther.m_anyObject);
+            m_destructor = std::move(pOther.m_destructor);
+
+            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_anyObject.reset(); // reset the moved-from instance
+            pOther.m_destructor.reset(); // reset the moved-from instance
+            pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
+            pOther.m_typeId = detail::TypeId<>::None; // reset the moved-from instance
+            return *this;
+        }
+
+
+        Instance::Instance(Instance&& pOther) noexcept
+            : m_qualifier(pOther.m_qualifier)
+            , m_typeId(pOther.m_typeId)
+            , m_anyObject(std::move(pOther.m_anyObject))
+            , m_allocatedOn(pOther.m_allocatedOn)
+            , m_destructor(std::move(pOther.m_destructor))
+        {
+            g_instanceCount++;
+            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_anyObject.reset(); // reset the moved-from instance
+            pOther.m_destructor.reset(); // reset the moved-from instance
+            pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
+            pOther.m_typeId = detail::TypeId<>::None; // reset the moved-from instance
         }
 
 
@@ -94,17 +143,20 @@ namespace rtl {
         * 'm_destructor' holds a dummy void* pointer (address of 'g_instanceCount'), which is a primitive type.
         * this is done to avoid dynamic allocation of 'Instance' object to manage it with 'shared_ptr'.
         * shared_ptr('m_destructor') holds the dummy void* but calls the actual destructor which destroys the object constructed(via reflection).
-    */  Instance::Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor)
+    */  Instance::Instance(std::any&& pRetObj, const RStatus& pStatus, const Function& pDctor)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
-            , m_anyObject(pRetObj)
+            , m_allocatedOn(alloc::Heap)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
-                pDctor(pRetObj);
-                (*static_cast<std::size_t*>(ptr))--;
+                const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
+                assert(retStaus == rtl::Error::None && "dctor not called. memory leak!");
+                const auto& instanceCount = --(*static_cast<std::size_t*>(ptr));
+                assert(instanceCount >= 0 && "instance count can't be less than zero. memory leak!");
             })
         {
             g_instanceCount++;
+            m_anyObject = std::move(pRetObj);
         }
     }
 }

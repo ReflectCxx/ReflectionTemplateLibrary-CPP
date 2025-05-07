@@ -19,31 +19,38 @@ namespace rtl {
         * if no constructor found, Error::ConstructorNotFound is returned as RStatus.
         * in case of reflected call failure, empty 'Instance' will be returned.
         * on success Error::None will be returned along with the newly constructed object wrapped under 'Instance' (type erased).
-    */  template<class ..._ctorArgs>
+    */  template<alloc _alloc, class ..._ctorArgs>
         inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
         {
+            static_assert(_alloc != alloc::None, "Instance cannot be created with 'alloc::None' option.");
+
             const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
-
             //if registered constructor is found for the class/struct represented by this 'Record' object.
-            if (itr != m_methods.end()) {
-
+            if (itr != m_methods.end()) 
+            {
                 //invoke the constructor, forwarding the arguments.
-                const RStatus& status = itr->second.invokeCtor(std::forward<_ctorArgs>(params)...);
+                RStatus&& status = itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
 
                 //if status is 'true', object construction is successful.
-                if (status) {
+                if (status) 
+                {
+                    if constexpr (_alloc == alloc::Stack) {
+                        //construct the 'Instance' object, no custom deleter needed.
+                        return std::make_pair(std::move(status), Instance(std::move(status.m_returnObj), status));
+                    }
+                    else if constexpr (_alloc == alloc::Heap) {
 
-                    //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
-                    const Function dctor = *getMethod(CtorName::dctor(m_recordName));
-
-                    //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
-                    return std::make_pair(status, Instance(status.getReturn(), status, dctor));
+                        //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
+                        const Function dctor = *getMethod(CtorName::dctor(m_recordName));
+                        //construct the 'Instance' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
+                        return std::make_pair(status, Instance(std::move(status.m_returnObj), status, dctor));
+                    }
                 }
                 //if reflected call fails, return with empty 'Instance'.
-                return std::make_pair(status, Instance());
+                return std::make_pair(std::move(status), Instance());
             }
-            else {
-
+            else 
+            {
                 //if no constructor found, return with empty 'Instance'.
                 return std::make_pair(RStatus(Error::ConstructorNotFound), Instance());
             }

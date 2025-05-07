@@ -25,21 +25,21 @@ namespace rtl {
         }
 
 
-    Function& Function::operator=(const Function& pOther) 
-    {
-        if (this == &pOther) {
+        Function& Function::operator=(const Function& pOther) 
+        {
+            if (this == &pOther) {
+                return *this;
+            }
+
+            m_qualifier = pOther.m_qualifier;
+            m_recordTypeId = pOther.m_recordTypeId;
+            m_record = pOther.m_record;
+            m_function = pOther.m_function;
+            m_namespace = pOther.m_namespace;
+            m_functorIds = pOther.m_functorIds;
+
             return *this;
         }
-
-        m_qualifier = pOther.m_qualifier;
-        m_recordTypeId = pOther.m_recordTypeId;
-        m_record = pOther.m_record;
-        m_function = pOther.m_function;
-        m_namespace = pOther.m_namespace;
-        m_functorIds = pOther.m_functorIds;
-
-        return *this;
-    }
 
     /*  @constructor: Function()
         @params: pOther - 'Function' object associated with a constructor.
@@ -84,7 +84,7 @@ namespace rtl {
         * for overloads, registered with the same name, the 'FunctorId' from the 'pOtherFunc' object will be added to this.
         * if the same functor is registered again with the same name, it will be ignored.
     */	void Function::addOverload(const Function& pOtherFunc) const
-		{
+        {
             const std::size_t& otherFuncSignId = pOtherFunc.m_functorIds[0].getSignatureId();
             //simple linear-search, efficient for small set of elements.
             for (const auto& functorId : m_functorIds) {

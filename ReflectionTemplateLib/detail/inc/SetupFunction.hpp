@@ -50,14 +50,14 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  const auto functor = [=](_signature&&...params)->access::RStatus
+        */  const auto functor = [=](access::RStatus& pRStatus, _signature&&...params)-> void
             {
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>) {
 
                     //call will definitely be successful, since the signature type has alrady been validated.
                     (*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RStatus(Error::None);
+                    pRStatus.init(Error::None);
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else {
@@ -65,7 +65,7 @@ namespace rtl
                     const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
                     const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //return 'RStatus' with return value wrapped in it as std::any.
-                    return access::RStatus(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
                 }
             };
 

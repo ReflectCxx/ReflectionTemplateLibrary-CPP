@@ -26,7 +26,7 @@ namespace rtl {
 
 
     namespace builder
-	{
+    {
         inline Builder<TypeQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
                                                    const std::string& pFunction)
             : ReflectionBuilder(pNamespace, pRecord, pFunction) {
@@ -153,21 +153,11 @@ namespace rtl {
     */  template<class _recordType, class ..._signature>
         inline const access::Function Builder<TypeQ::Mute>::build() const
         {
-            //this code-block is retained by compiler, if copy constructor with non-const ref('_recordType&') is being registered.
-            if constexpr (std::is_same_v<_recordType, typename detail::TypeId<_signature...>::HEAD>)
-            {
-                return buildCopyConstructor<_recordType, _signature...>();
-            }
-            //this code-block is retained by compiler, if copy constructor with const-ref('const _recordType&') is being registered.
-            else if constexpr (std::is_same_v<const _recordType, typename detail::TypeId<_signature...>::HEAD>)
-            {
-                return buildConstCopyConstructor<_recordType, _signature...>();
-            }
-            //if any other constructor except, copy constructor is being registered, this code-block will be retained.
-            else 
-            {
-                return buildConstructor<_recordType, _signature...>();
-            }
+            constexpr bool isCopyCtorSignature =(sizeof...(_signature) == 1 &&
+                                                (std::is_same_v<_recordType, typename detail::TypeId<_signature...>::HEAD>) ||
+				                                (std::is_same_v<const _recordType, typename detail::TypeId<_signature...>::HEAD>));
+			static_assert(!isCopyCtorSignature, "Copy-constructor registration detected! It is implicitly registered with other constructors.");
+            return buildConstructor<_recordType, _signature...>();
         }
 
 

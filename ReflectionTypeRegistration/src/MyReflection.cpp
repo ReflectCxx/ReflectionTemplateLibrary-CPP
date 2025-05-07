@@ -10,6 +10,7 @@
 #include "Person.h"
 #include "Complex.h"
 #include "Animal.h"
+#include "Library.h"
 
 /*
 TestUtils, provides the interface to test/compare reflected type objects with actual objects (created via strict typing)
@@ -37,25 +38,27 @@ CxxMirror& MyReflection::instance()
         Reflect().function(str_getComplexNumAsString).build(getComplexNumAsString),  //unique function, no overloads, no need to specify signature as template parameters.
 
     /*  Grouping functions under a namespace, which is optional. they can be registered without it as well.
-	but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
-	ex - cxxMirror.getFunction("namespace_name", "function_name") & cxxMirror.getRecord("namespace_name", "record_name")
+        but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
+        ex - cxxMirror.getFunction("namespace_name", "function_name") & cxxMirror.getRecord("namespace_name", "record_name")
     */  Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
         Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
         Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
 
         //Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
-        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),  //default constructor. Destructor gets registered automatically if any constructor is registered.
+        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),  //registers default constructor, copy constructor & destructor.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),  //overloaded constructor, taking 'string' as argument, must be specified as template param.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),  //again, the overloaded constructor.
-        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<nsdate::Date>().build(),  //Copy constructor, taking non-const ref as argument.
+        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_updateDate).build(&nsdate::Date::updateDate),  //unique method, no overloads.
+        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),  //const method registration, 'methodConst()' function must be used. compiler error otherwise.
 
         //class Calender, default constructor. Instances will always be created on heap and managed using shared_ptr.
-        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
+        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(), //registers default constructor, copy constructor & destructor.
+
         Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),  //Static method registration, 'methodStatic()' function must be used. compiler error otherwise.
+        Reflect().record<Library>(library::class_).methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle),
 
         //class 'Book', methods & constructors.
-        Reflect().record<Book>(book::class_).constructor().build(),
-        Reflect().record<Book>(book::class_).constructor<const Book>().build(),  //copy constructor, taking const-ref.
+        Reflect().record<Book>(book::class_).constructor().build(),     //registers default constructor, copy constructor & destructor.
         Reflect().record<Book>(book::class_).constructor<double, string>().build(),
         Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),  //unique methods, no overloads.
         Reflect().record<Book>(book::class_).method(book::str_setDescription).build(&Book::setDescription),
@@ -65,10 +68,8 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
         //class 'Person', methods & constructors.
-        Reflect().record<Person>(person::class_).constructor().build(),
+        Reflect().record<Person>(person::class_).constructor().build(),     //registers default constructor, copy constructor & destructor.
         Reflect().record<Person>(person::class_).constructor<string>().build(),
-        Reflect().record<Person>(person::class_).constructor<Person>().build(),  //copy constructor taking non-const ref argument.
-        Reflect().record<Person>(person::class_).constructor<const Person>().build(),  //copy constructor taking const ref argument.
         Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).methodConst(person::str_getFirstName).build(&Person::getFirstName),
@@ -81,22 +82,23 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
 
         //class 'Animal', methods & constructors.
-        Reflect().record<Animal>(animal::class_).constructor().build(),  //default constructor.
-        #if defined(__GNUC__) && !defined(__clang__)
-            /*  GCC fails to automatically identify the correct overloaded functor (method) to pick. (non-const lvalue & rvalue reference as argument)
-		we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
-	    */	Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
-            	Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
-            	Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
-            	Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
-        #else
-		Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
-            	Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
-		Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
-		Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
-        #endif
+        Reflect().record<Animal>(animal::class_).constructor().build(),  //registers default constructor, copy constructor & destructor.
         Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking const-ref as argument.
-	Reflect().record<Animal>(animal::class_).methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking const-ref as argument.
+        Reflect().record<Animal>(animal::class_).methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking const-ref as argument.
+
+        #if defined(__GNUC__) && !defined(__clang__)
+        /*  GCC fails to automatically identify the correct overloaded functor (method) to pick. (non-const-lvalue-ref & rvalue as argument)
+            we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
+        */  Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
+        #else
+            Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
+            Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
+        #endif
     });
 
 

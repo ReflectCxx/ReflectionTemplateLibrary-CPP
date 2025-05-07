@@ -14,40 +14,76 @@ namespace test_utils
 		return (Calender::instanceCount() == 0);
 	}
 
+
 	const bool date::assert_zero_instance_count()
 	{
 		return (Date::instanceCount() == 0);
 	}
 
-	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance)
+
+	const bool date::test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pIsOnHeap) {
+			auto rdate0 = any_cast<Date*>(pInstance0);
+			auto rdate1 = any_cast<Date*>(pInstance1);
+			return (*rdate0 == *rdate1);
 		}
-		return (Date() == *rdate);
+		else {
+			auto rdate0 = any_cast<Date>(&pInstance0);
+			auto rdate1 = any_cast<Date>(&pInstance1);
+			return (*rdate0 == *rdate1);
+		}
 	}
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date() == *rdate);
 		}
-		return (Date(DATE_STR) == *rdate);
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date() == *rdate);
+		}
 	}
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance, bool pOnHeap)
 	{
-		Date* rdate = any_cast<Date*>(pInstance);
-		if (rdate == nullptr) {
-			return false;
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date(DATE_STR0) == *rdate);
 		}
-		return (Date(DAY, MONTH, YEAR) == *rdate);
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date(DATE_STR0) == *rdate);
+		}
+	}
+
+
+	template<>
+	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance, bool pOnHeap)
+	{
+		if (pOnHeap) {
+			Date* rdate = any_cast<Date*>(pInstance);
+			if (rdate == nullptr) {
+				return false;
+			}
+			return (Date(DAY, MONTH, YEAR) == *rdate);
+		}
+		else {
+			auto rdate = any_cast<Date>(&pInstance);
+			return (Date(DAY, MONTH, YEAR) == *rdate);
+		}
+		
 	}
 }

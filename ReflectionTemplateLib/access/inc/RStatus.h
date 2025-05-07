@@ -8,6 +8,14 @@ namespace rtl
 {
     namespace access
     {
+        //forward decls
+        class Record;
+        class Instance;
+        template<class ..._signature>
+        class FunctionCaller;
+        template<class ..._signature>
+        class MethodInvoker;
+
     /*  @class: RStatus
         * Every reflection call made, returns a RStatus object.
         * it contains the error status of the call, defined by enum rtl::Error (in Constants.h)
@@ -16,28 +24,36 @@ namespace rtl
     */  class RStatus
         {
             //indicates the reflection call status error
-            const Error m_callStatus;
+            Error m_callStatus;
 
             //indicates whether the returned value from reflected call is const/non-const.
-            const TypeQ m_typeQualifier;
+            TypeQ m_typeQualifier;
 
             //contains the return value of the from reflected call. Type erased.
-            const std::any m_returnObj;
+            std::any m_returnObj;
 
             //type-id of the return value.
-            const std::size_t m_typeId;
+            std::size_t m_typeId;
+            
+            explicit RStatus();
+            
+            explicit RStatus(const Error pCallStatus);
 
         public:
 
             //used when the reflected call doesn't have any return value, or in case of call failure.
-            RStatus(const Error pCallStatus);
+            void init(const Error pCallStatus);
 
             //used when the reflected call returns a value, called only in case of no call failure.
-            RStatus(const std::any& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier);
+            void init(std::any&& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier);
 
             GETTER(std::any, Return, m_returnObj)
             GETTER(std::size_t, TypeId, m_typeId)
             GETTER(TypeQ, Qualifier, m_typeQualifier)
+
+            RStatus(const RStatus&) = default;
+            
+            RStatus(RStatus&&) = default;
 
             //RStatus object converted to bool based on call succes or not.
             operator bool() const {
@@ -45,7 +61,7 @@ namespace rtl
                 return (m_callStatus == Error::None);
             }
 
-            //RStatus object can be directly checked agains any error-code.
+            //RStatus object can be directly checked against any error-code.
             const bool operator==(const Error pError) const {
                 return (m_callStatus == pError);
             }
@@ -56,6 +72,14 @@ namespace rtl
             constexpr const bool isOfType() const {
                 return (detail::TypeId<_type>::get() == m_typeId);
             }
+
+            //friends :)
+            friend Record;
+            friend Instance;
+            template<class ..._signature>
+            friend class FunctionCaller;
+            template<class ..._signature>
+            friend class MethodInvoker;
         };
     }
 }

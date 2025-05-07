@@ -12,18 +12,18 @@
 namespace rtl {
 
     namespace detail {
-		//forward decls
+        //forward decls
         class CxxReflection;
-		class ReflectionBuilder;
-	}
+        class ReflectionBuilder;
+    }
 
     namespace access
-	{
+    {
     /*  @class: Function, (callable object)
         * every functor (function/method pointer), constructor, destructor registered will produce a 'Function' object
         * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
         * once the Function object is obtained, it can be called with the correct set of arguments, which will finally 
-          perform call on the functor represented by this object.
+        * perform call on the functor represented by this object.
     */  class Function
         {
             //TypeQ::Const/Mute represents the const/non-const member-function, Type::None for non-member functions.
@@ -70,6 +70,10 @@ namespace rtl {
             GETTER(std::string, FunctionName, m_function)
             GETTER(std::size_t, RecordTypeId, m_recordTypeId)
             GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
+
+            Function(Function&& pOther) = default;
+
+            Function(const Function& pOther) = default;
 
             Function& operator=(const Function& pOther);
 

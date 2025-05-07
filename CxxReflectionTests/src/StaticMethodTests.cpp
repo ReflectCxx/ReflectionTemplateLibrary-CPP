@@ -125,7 +125,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [isSuccess, personObj] = classPerson->instance();
+		auto [isSuccess, personObj] = classPerson->instance<alloc::Heap>();
 
 		ASSERT_TRUE(isSuccess);
 		ASSERT_FALSE(personObj.isEmpty());

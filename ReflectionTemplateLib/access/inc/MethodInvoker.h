@@ -22,7 +22,7 @@ namespace rtl {
             struct Invoker {
 
                 template<class ..._args>
-                static RStatus invoke(const Method& pMethod, const Instance& pTarget, _args&&...);
+                static void invoke(RStatus& pRStatus, const Method& pMethod, const Instance& pTarget, _args&&...);
             };
 
         public:
