@@ -34,7 +34,7 @@ public:
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);
 	void updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle);
 
-	void addPreface(std::string pAcknowledgements, const std::string& pPreface);
+	void addPreface(const std::string pAcknowledgements, const std::string& pPreface);
 
 	Book& operator=(const Book& pOther) = default;
 	const bool operator==(const Book& pOther) const;
