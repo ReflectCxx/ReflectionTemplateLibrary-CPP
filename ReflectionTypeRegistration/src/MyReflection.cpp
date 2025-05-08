@@ -61,8 +61,10 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Book>(book::class_).constructor().build(),     //registers default constructor, copy constructor & destructor.
         Reflect().record<Book>(book::class_).constructor<double, string>().build(),
         Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),  //unique methods, no overloads.
+        Reflect().record<Book>(book::class_).method(book::str_addPreface).build(&Book::addPreface),  //method, taking 'std::string' & 'const std::string&' as argument.
         Reflect().record<Book>(book::class_).method(book::str_setDescription).build(&Book::setDescription),
         Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
+        Reflect().record<Book>(book::class_).method(book::str_addCopyrightTag).build(&Book::addCopyrightTag),  //method, taking 'const std::string' as argument.
         Reflect().record<Book>(book::class_).method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),  //method overloading, '<void>' must be specified since other overloads exists.
         Reflect().record<Book>(book::class_).method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),	
         Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
@@ -83,6 +85,9 @@ CxxMirror& MyReflection::instance()
 
         //class 'Animal', methods & constructors.
         Reflect().record<Animal>(animal::class_).constructor().build(),  //registers default constructor, copy constructor & destructor.
+        Reflect().record<Animal>(animal::class_).constructor<string>().build(),  //overloaded constructor, taking 'string' as argument.
+        Reflect().record<Animal>(animal::class_).method(animal::str_setFamilyName).build(&Animal::setFamilyName),  //unique method, no overloads.
+        Reflect().record<Animal>(animal::class_).methodConst(animal::str_getFamilyName).build(&Animal::getFamilyName),  //unique const-method, no overloads.
         Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking const-ref as argument.
         Reflect().record<Animal>(animal::class_).methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking const-ref as argument.
 

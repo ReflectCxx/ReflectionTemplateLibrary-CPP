@@ -56,6 +56,11 @@ void Book::setDescription(std::string pDesc)
 	m_description = pDesc;
 }
 
+void Book::addCopyrightTag(const std::string pPubInfo)
+{
+	m_description += pPubInfo;
+}
+
 
 const bool Book::operator==(const Book& pOther) const {
 	return (m_price == pOther.m_price && m_author == pOther.m_author && m_date == pOther.m_date && 
@@ -102,4 +107,9 @@ void Book::updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle
 	m_date = nsdate::Date(6, 12, 1999);
 	m_title = std::string(pTitle) + "[BestSeller]";
 	m_author = pAuthor + " (Independent)";
+}
+
+void Book::addPreface(std::string pAcknowledgements, const std::string& pPreface)
+{
+	m_description += pPreface + " " + pAcknowledgements;
 }

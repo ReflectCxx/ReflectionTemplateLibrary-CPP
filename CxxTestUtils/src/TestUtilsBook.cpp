@@ -73,6 +73,43 @@ namespace test_utils
 		}
 	}
 
+	const bool book::test_method_addCopyrightTag(const std::any& pInstance, bool pIsOnHeap)
+	{
+		Book book;
+		book.addCopyrightTag(COPYRIGHT_TAG);
+
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
+		}
+	}
+
+
+	const bool book::test_method_addPreface(const std::any& pInstance, bool pIsOnHeap)
+	{
+		Book book;
+		book.addPreface(ACKNOWLEDGEMENTS, PREFACE);
+
+		if (pIsOnHeap) {
+			Book* rbook = any_cast<Book*>(pInstance);
+			if (rbook == nullptr) {
+				return false;
+			}
+			return (book == *rbook);
+		}
+		else {
+			auto rbook = any_cast<Book>(&pInstance);
+			return (book == *rbook);
+		}
+	}
+
 
 	template<>
 	const bool book::test_method_updateBookInfo<>(const any& pInstance, bool pIsOnHeap)

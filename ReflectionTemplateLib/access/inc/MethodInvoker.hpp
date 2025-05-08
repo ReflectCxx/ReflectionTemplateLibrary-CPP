@@ -34,7 +34,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 RStatus retStatus;
-                Invoker<std::remove_reference_t<_args>...>::invoke(retStatus, m_method, m_target, std::forward<_args>(params)...);
+                Invoker<remove_const_and_reference<_args>...>::invoke(retStatus, m_method, m_target, std::forward<_args>(params)...);
 				return std::move(retStatus);
             }
             else {
