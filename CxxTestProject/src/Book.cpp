@@ -109,7 +109,7 @@ void Book::updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle
 	m_author = pAuthor + " (Independent)";
 }
 
-void Book::addPreface(std::string pAcknowledgements, const std::string& pPreface)
+void Book::addPreface(const std::string pAcknowledgements, const std::string& pPreface)
 {
 	m_description += pPreface + " " + pAcknowledgements;
 }

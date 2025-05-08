@@ -34,15 +34,15 @@ namespace rtl_tests
                 ASSERT_FALSE(instance.isOnHeap() && dateObj.isOnHeap());
                 ASSERT_TRUE(instance.getTypeId() == dateObj.getTypeId());
                 ASSERT_TRUE(date::test_if_obejcts_are_equal(instance.get(), dateObj.get(), false));
-
-				optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-				ASSERT_TRUE(updateDate);
-
-				string dateStr = date::DATE_STR1;
-				auto status = updateDate->bind(dateObj).call(dateStr);
-				ASSERT_TRUE(status);
+                
+                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
+                ASSERT_TRUE(updateDate);
+                
+                string dateStr = date::DATE_STR1;
+                auto status = updateDate->bind(dateObj).call(dateStr);
+                ASSERT_TRUE(status);
                 ASSERT_FALSE(date::test_if_obejcts_are_equal(instance.get(), dateObj.get(), false));
-
+                
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);

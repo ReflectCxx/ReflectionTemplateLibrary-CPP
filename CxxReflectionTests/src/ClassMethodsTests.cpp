@@ -481,14 +481,15 @@ namespace rtl_tests
 			invalidSignature = addPreface->hasSignature<string, string>();
 			ASSERT_FALSE(invalidSignature);
 
-			//if reference is involved , then const-qualifier must be same as in signature for all types in parameter pack.
+			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
 			const bool signatureValid = addPreface->hasSignature<string, const string&>();
 			ASSERT_TRUE(signatureValid);
 
 			const auto& preface = std::string(book::PREFACE);
 			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
 
-			//if the signature has any one type as reference, then all types in parameter pack must be explicitly specified with exact qualifiers.
+			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
+			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
 			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
 
 			ASSERT_TRUE(rStatus);
@@ -526,14 +527,15 @@ namespace rtl_tests
 			invalidSignature = addPreface->hasSignature<string, string>();
 			ASSERT_FALSE(invalidSignature);
 
-			//if reference is involved , then const-qualifier must be same as in signature for all types in parameter pack.
+			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
 			const bool signatureValid = addPreface->hasSignature<string, const string&>();
 			ASSERT_TRUE(signatureValid);
 
 			const auto& preface = std::string(book::PREFACE);
 			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
 
-			//if the signature has any one type as reference, then all types in parameter pack must be explicitly specified with exact qualifiers.
+			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
+			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
 			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
 
 			ASSERT_TRUE(rStatus);
