@@ -47,7 +47,7 @@ Animal& Animal::operator=(const Animal& pOther)
 
 Animal::Animal(Animal&& pOther) noexcept
 	: m_name(pOther.m_name + "__move_ctor")
-	, m_familyName(m_familyName + "__move_ctor")
+	, m_familyName(pOther.m_familyName + "__move_ctor")
 {
 	m_instanceCount++;
 	pOther.m_name.clear();
