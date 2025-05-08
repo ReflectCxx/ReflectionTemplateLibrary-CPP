@@ -23,17 +23,26 @@ namespace test_utils
 		static constexpr const char* TITLE = "Somehow, I manage.";
 		static constexpr const char* AUTHOR = "Micheal G. Scott";
 		static constexpr const char* DESCRIPTION = "World's greatest boss Michael G. Scott, Regional Manager, shares his wisdom with you.";
+		static constexpr const char* COPYRIGHT_TAG = "Copyright (c) Micheal Scott Paper Company Pvt. Ltd.";
+		static constexpr const char* PREFACE = "This is a preface.";
+		static constexpr const char* ACKNOWLEDGEMENTS = "This is an acknowledgement.";
 
 		static constexpr const char* class_ = "Book";
 		static constexpr const char* str_setAuthor = "setAuthor";
+		static constexpr const char* str_addPreface = "addPreface";
 		static constexpr const char* str_setDescription = "setDescription";
 		static constexpr const char* str_getPublishedOn = "getPublishedOn";
 		static constexpr const char* str_setPublishedOn = "setPublishedOn";
 		static constexpr const char* str_updateBookInfo = "updateBookInfo";
+		static constexpr const char* str_addCopyrightTag = "addCopyrightTag";
 
 		static const bool assert_zero_instance_count();
 
 		static const bool test_method_setAuthor(const std::any& pInstance, bool pIsOnHeap);
+
+		static const bool test_method_addPreface(const std::any& pInstance, bool pIsOnHeap);
+
+		static const bool test_method_addCopyrightTag(const std::any& pInstance, bool pIsOnHeap);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 

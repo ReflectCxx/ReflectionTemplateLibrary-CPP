@@ -7,6 +7,15 @@ namespace rtl {
 
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
+
+    template <typename T>
+    using remove_const_and_reference = std::remove_const_t<std::remove_reference_t<T>>;
+
+
+    template <typename T>
+    using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
+
+
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \

@@ -390,4 +390,158 @@ namespace rtl_tests
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
+
+
+	TEST(ClassBookMethodOverload_stackInstance, method_args_const_string___call_with_non_const_string)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
+			ASSERT_TRUE(addCopyrightTag);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+			const bool signatureValid = addCopyrightTag->hasSignature<string>();
+			ASSERT_TRUE(signatureValid);
+
+			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
+			//as long as any param_type in signature is not reference, const-qualifier do not matter.
+			RStatus rStatus = (*addCopyrightTag)(bookObj)(std::string(book::COPYRIGHT_TAG));
+
+			ASSERT_TRUE(rStatus);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+			const bool isSuccess = book::test_method_addCopyrightTag(bookObj.get(), bookObj.isOnHeap());
+			EXPECT_TRUE(isSuccess);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ClassBookMethodOverload_heapInstance, method_args_const_string___call_with_non_const_string)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
+			ASSERT_TRUE(addCopyrightTag);
+
+			auto [status, bookObj] = classBook->instance<alloc::Heap>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+			const bool signatureValid = addCopyrightTag->hasSignature<string>();
+			ASSERT_TRUE(signatureValid);
+
+			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
+			//as long as any param_type in signature is not reference, const-qualifier do not matter.
+			RStatus rStatus = addCopyrightTag->bind(bookObj).call(std::string(book::COPYRIGHT_TAG));
+
+			ASSERT_TRUE(rStatus);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+			const bool isSuccess = book::test_method_addCopyrightTag(bookObj.get(), bookObj.isOnHeap());
+			EXPECT_TRUE(isSuccess);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ClassBookMethodOverload_stackInstance, method_taking_args_const_string_and_const_string_ref)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
+			ASSERT_TRUE(addPreface);
+
+			auto [status, bookObj] = classBook->instance<alloc::Stack>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+
+			bool invalidSignature = addPreface->hasSignature<string, string&>();
+			ASSERT_FALSE(invalidSignature);
+
+			invalidSignature = addPreface->hasSignature<string, const string>();
+			ASSERT_FALSE(invalidSignature);
+
+			invalidSignature = addPreface->hasSignature<string, string>();
+			ASSERT_FALSE(invalidSignature);
+
+			//if reference is involved , then const-qualifier must be same as in signature for all types in parameter pack.
+			const bool signatureValid = addPreface->hasSignature<string, const string&>();
+			ASSERT_TRUE(signatureValid);
+
+			const auto& preface = std::string(book::PREFACE);
+			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
+
+			//if the signature has any one type as reference, then all types in parameter pack must be explicitly specified with exact qualifiers.
+			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
+
+			ASSERT_TRUE(rStatus);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+			const bool isSuccess = book::test_method_addPreface(bookObj.get(), bookObj.isOnHeap());
+			EXPECT_TRUE(isSuccess);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
+
+
+	TEST(ClassBookMethodOverload_heapInstance, method_taking_args_const_string_and_const_string_ref)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			ASSERT_TRUE(classBook);
+
+			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
+			ASSERT_TRUE(addPreface);
+
+			auto [status, bookObj] = classBook->instance<alloc::Heap>();
+
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(bookObj.isEmpty());
+
+			bool invalidSignature = addPreface->hasSignature<string, string&>();
+			ASSERT_FALSE(invalidSignature);
+
+			invalidSignature = addPreface->hasSignature<string, const string>();
+			ASSERT_FALSE(invalidSignature);
+
+			invalidSignature = addPreface->hasSignature<string, string>();
+			ASSERT_FALSE(invalidSignature);
+
+			//if reference is involved , then const-qualifier must be same as in signature for all types in parameter pack.
+			const bool signatureValid = addPreface->hasSignature<string, const string&>();
+			ASSERT_TRUE(signatureValid);
+
+			const auto& preface = std::string(book::PREFACE);
+			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
+
+			//if the signature has any one type as reference, then all types in parameter pack must be explicitly specified with exact qualifiers.
+			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
+
+			ASSERT_TRUE(rStatus);
+			ASSERT_FALSE(rStatus.getReturn().has_value());
+			const bool isSuccess = book::test_method_addPreface(bookObj.get(), bookObj.isOnHeap());
+			EXPECT_TRUE(isSuccess);
+		}
+		EXPECT_TRUE(book::assert_zero_instance_count());
+		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+	}
 }

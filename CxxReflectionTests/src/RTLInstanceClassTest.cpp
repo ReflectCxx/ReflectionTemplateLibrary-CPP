@@ -3,6 +3,7 @@
 
 #include "MyReflection.h"
 #include "TestUtilsDate.h"
+#include "TestUtilsAnimal.h"
 
 using namespace std;
 using namespace rtl;
@@ -369,6 +370,216 @@ namespace rtl_tests
                 string dateStr = date::DATE_STR1;
                 ASSERT_TRUE(updateDate->bind(instance).call(dateStr));
                 ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == rtl::Error::EmptyInstance);
+                EXPECT_TRUE(Instance::getInstanceCount() == 2);
+            }
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+        }
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        EXPECT_TRUE(date::assert_zero_instance_count());
+    }
+
+
+    TEST(rtl_InstanceClassTest, std_any_large_heap_object_deep_move_or_copy___move_or_copy_ctor_must_not_be_called)
+    {
+        EXPECT_TRUE(date::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> animal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(animal);
+
+            auto [status, animalObj] = animal->instance<alloc::Heap>();
+            ASSERT_TRUE(status);
+
+            ASSERT_FALSE(animalObj.isEmpty());
+            ASSERT_FALSE(animalObj.isConst());
+            ASSERT_TRUE(animalObj.isOnHeap());
+
+            optional<Method> setFamilyName = animal->getMethod(animal::str_setFamilyName);
+            ASSERT_TRUE(setFamilyName);
+
+			const auto& familyName = std::string(animal::FAMILY_NAME);
+            ASSERT_TRUE((*setFamilyName)(animalObj)(familyName));
+
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+            {
+                Instance movedToObj = std::move(animalObj);
+
+                ASSERT_TRUE(animalObj.isEmpty());
+                ASSERT_FALSE(movedToObj.isEmpty());
+                ASSERT_FALSE(movedToObj.getTypeId() == animalObj.getTypeId());
+
+                optional<Method> getFamilyName = animal->getMethod(animal::str_getFamilyName);
+                ASSERT_TRUE(getFamilyName);
+
+                const auto& status = (*getFamilyName)(movedToObj)();
+                ASSERT_TRUE(status);
+
+                ASSERT_TRUE(status.getReturn().has_value());
+                ASSERT_TRUE(status.isOfType<string>());
+
+                const std::string& retStr = any_cast<string>(status.getReturn());
+                ASSERT_EQ(retStr, familyName);
+
+                EXPECT_TRUE(Instance::getInstanceCount() == 2);
+            }
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+        }
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        EXPECT_TRUE(date::assert_zero_instance_count());
+    }
+
+
+    TEST(rtl_InstanceClassTest, std_any_large_stack_object_deep_move_or_copy___move_or_copy_ctor_must_not_be_called)
+    {
+        EXPECT_TRUE(date::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> animal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(animal);
+
+            auto [status, animalObj] = animal->instance<alloc::Stack>();
+            ASSERT_TRUE(status);
+
+            ASSERT_FALSE(animalObj.isEmpty());
+            ASSERT_FALSE(animalObj.isConst());
+            ASSERT_FALSE(animalObj.isOnHeap());
+
+            optional<Method> setFamilyName = animal->getMethod(animal::str_setFamilyName);
+            ASSERT_TRUE(setFamilyName);
+
+            const auto& familyName = std::string(animal::FAMILY_NAME);
+            ASSERT_TRUE((*setFamilyName)(animalObj)(familyName));
+
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+            {
+                Instance movedToObj = std::move(animalObj);
+
+                ASSERT_TRUE(animalObj.isEmpty());
+                ASSERT_FALSE(movedToObj.isEmpty());
+                ASSERT_FALSE(movedToObj.getTypeId() == animalObj.getTypeId());
+
+                optional<Method> getFamilyName = animal->getMethod(animal::str_getFamilyName);
+                ASSERT_TRUE(getFamilyName);
+
+                const auto& status = (*getFamilyName)(movedToObj)();
+                ASSERT_TRUE(status);
+
+                ASSERT_TRUE(status.getReturn().has_value());
+                ASSERT_TRUE(status.isOfType<string>());
+
+                const std::string& retStr = any_cast<string>(status.getReturn());
+                ASSERT_EQ(retStr, familyName);
+
+                EXPECT_TRUE(Instance::getInstanceCount() == 2);
+            }
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+        }
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        EXPECT_TRUE(date::assert_zero_instance_count());
+    }
+
+
+    TEST(rtl_InstanceClassTest, std_any_large_heap_object_deep_move___move_assignemt_must_not_be_called)
+    {
+        EXPECT_TRUE(date::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> animal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(animal);
+
+            auto [status, animalObj] = animal->instance<alloc::Heap>();
+            ASSERT_TRUE(status);
+
+            ASSERT_FALSE(animalObj.isEmpty());
+            ASSERT_FALSE(animalObj.isConst());
+            ASSERT_TRUE(animalObj.isOnHeap());
+
+            optional<Method> setFamilyName = animal->getMethod(animal::str_setFamilyName);
+            ASSERT_TRUE(setFamilyName);
+
+            const auto& familyName = std::string(animal::FAMILY_NAME);
+            ASSERT_TRUE((*setFamilyName)(animalObj)(familyName));
+
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+            {
+                Instance movedToObj;
+                movedToObj = std::move(animalObj);
+
+                ASSERT_TRUE(animalObj.isEmpty());
+                ASSERT_FALSE(movedToObj.isEmpty());
+                ASSERT_FALSE(movedToObj.getTypeId() == animalObj.getTypeId());
+
+                optional<Method> getFamilyName = animal->getMethod(animal::str_getFamilyName);
+                ASSERT_TRUE(getFamilyName);
+
+                const auto& status = (*getFamilyName)(movedToObj)();
+                ASSERT_TRUE(status);
+
+                ASSERT_TRUE(status.getReturn().has_value());
+                ASSERT_TRUE(status.isOfType<string>());
+
+                const std::string& retStr = any_cast<string>(status.getReturn());
+                ASSERT_EQ(retStr, familyName);
+
+                EXPECT_TRUE(Instance::getInstanceCount() == 2);
+            }
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+        }
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        EXPECT_TRUE(date::assert_zero_instance_count());
+    }
+
+
+    TEST(rtl_InstanceClassTest, std_any_large_stack_object_deep_move___move_or_copy_assignemt_must_not_be_called)
+    {
+        EXPECT_TRUE(date::assert_zero_instance_count());
+        EXPECT_TRUE(Instance::getInstanceCount() == 0);
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            optional<Record> animal = cxxMirror.getRecord(animal::class_);
+            ASSERT_TRUE(animal);
+
+            auto [status, animalObj] = animal->instance<alloc::Stack>();
+            ASSERT_TRUE(status);
+
+            ASSERT_FALSE(animalObj.isEmpty());
+            ASSERT_FALSE(animalObj.isConst());
+            ASSERT_FALSE(animalObj.isOnHeap());
+
+            optional<Method> setFamilyName = animal->getMethod(animal::str_setFamilyName);
+            ASSERT_TRUE(setFamilyName);
+
+            const auto& familyName = std::string(animal::FAMILY_NAME);
+            ASSERT_TRUE((*setFamilyName)(animalObj)(familyName));
+
+            EXPECT_TRUE(Instance::getInstanceCount() == 1);
+            {
+                Instance movedToObj;
+                movedToObj = std::move(animalObj);
+
+                ASSERT_TRUE(animalObj.isEmpty());
+                ASSERT_FALSE(movedToObj.isEmpty());
+                ASSERT_FALSE(movedToObj.getTypeId() == animalObj.getTypeId());
+
+                optional<Method> getFamilyName = animal->getMethod(animal::str_getFamilyName);
+                ASSERT_TRUE(getFamilyName);
+
+                const auto& status = (*getFamilyName)(movedToObj)();
+                ASSERT_TRUE(status);
+
+                ASSERT_TRUE(status.getReturn().has_value());
+                ASSERT_TRUE(status.isOfType<string>());
+
+                const std::string& retStr = any_cast<string>(status.getReturn());
+                ASSERT_EQ(retStr, familyName);
+
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);

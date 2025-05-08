@@ -168,7 +168,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_heap__error_InstanceConstMismatch)
+	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_heap___error_InstanceConstMismatch)
 	{
 		{	
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
@@ -191,7 +191,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_stack__error_InstanceConstMismatch)
+	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_stack___error_InstanceConstMismatch)
 	{
 		{
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);

@@ -28,10 +28,13 @@ public:
 
 	void setAuthor(std::string pAuthor);
 	void setDescription(std::string pDesc);
+	void addCopyrightTag(const std::string pPubInfo);
 
 	void updateBookInfo();
 	void updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor);
 	void updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle);
+
+	void addPreface(std::string pAcknowledgements, const std::string& pPreface);
 
 	Book& operator=(const Book& pOther) = default;
 	const bool operator==(const Book& pOther) const;
