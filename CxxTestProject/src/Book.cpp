@@ -1,7 +1,6 @@
 
 #include "Book.h"
 
-using namespace std;
 using namespace nsdate;
 
 unsigned Book::m_instanceCount = 0;
@@ -28,8 +27,16 @@ Book::Book(const Book& pOther)
 	m_instanceCount++;
 }
 
+Book::Book(const Book&& pOther) noexcept
+	: m_price(pOther.m_price)
+	, m_title(pOther.m_title)
+	, m_date(pOther.m_date)
+	, m_author(pOther.m_author)
+	, m_description(pOther.m_description) {
+}
 
-Book::Book(double pPrice, string pTitle)
+
+Book::Book(double pPrice, std::string pTitle)
 	: m_price(pPrice)
 	, m_title(pTitle)
 	, m_author("no_author_ctor_double_string")
@@ -39,7 +46,7 @@ Book::Book(double pPrice, string pTitle)
 }
 
 
-void Book::setAuthor(string pAuthor) {
+void Book::setAuthor(std::string pAuthor) {
 	m_author = pAuthor;
 }
 
@@ -49,6 +56,11 @@ void Book::setDescription(std::string pDesc)
 	m_description = pDesc;
 }
 
+void Book::addCopyrightTag(const std::string pPubInfo)
+{
+	m_description += pPubInfo;
+}
+
 
 const bool Book::operator==(const Book& pOther) const {
 	return (m_price == pOther.m_price && m_author == pOther.m_author && m_date == pOther.m_date && 
@@ -56,7 +68,12 @@ const bool Book::operator==(const Book& pOther) const {
 }
 
 
-string Book::getPublishedOn() {
+std::string Book::getTitle() const
+{
+	return m_title;
+}
+
+std::string Book::getPublishedOn() {
 
 	return m_date.getAsString();
 }
@@ -79,7 +96,7 @@ void Book::updateBookInfo(const char* pTitle, double pPrice, std::string pAuthor
 {
 	m_price = pPrice;
 	m_date = nsdate::Date(9, 10, 2020);
-	m_title = string(pTitle) + "[Discontinued]";
+	m_title = std::string(pTitle) + "[Discontinued]";
 	m_author = pAuthor + " (Retired)";
 }
 
@@ -88,6 +105,11 @@ void Book::updateBookInfo(std::string pAuthor, double pPrice, const char* pTitle
 {
 	m_price = pPrice;
 	m_date = nsdate::Date(6, 12, 1999);
-	m_title = string(pTitle) + "[BestSeller]";
+	m_title = std::string(pTitle) + "[BestSeller]";
 	m_author = pAuthor + " (Independent)";
+}
+
+void Book::addPreface(const std::string pAcknowledgements, const std::string& pPreface)
+{
+	m_description += pPreface + " " + pAcknowledgements;
 }

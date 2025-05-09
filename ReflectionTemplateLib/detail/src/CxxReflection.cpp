@@ -16,8 +16,8 @@ namespace rtl {
         {
             for (const auto& function : pFunctions) {
                 organizeFunctorsMetaData(function);
-			}
-		}
+            }
+        }
 
 
     /*  @method: addRecord
@@ -29,7 +29,7 @@ namespace rtl {
             const auto& recordName = pFunction.getRecordName();
             const auto& itr = pRecordMap.find(recordName);
             if (itr == pRecordMap.end()) {
-                const auto& recordItr = pRecordMap.emplace(recordName, access::Record(recordName));
+                const auto& recordItr = pRecordMap.emplace(recordName, access::Record(recordName, pFunction.getRecordTypeId()));
                 addMethod(recordItr.first->second.getFunctionsMap(),pFunction);
             }
             else {
@@ -69,14 +69,26 @@ namespace rtl {
             if (itr == pMethodMap.end())
             {
                 auto& functorIds = pFunction.getFunctorIds();
-            /*  This condition will be true only in case that 'Function' object represents a constructor
+            /*  Below These conditions will be true only in case that 'Function' object represents a constructor
                 and has more than one 'FunctorId'. every other function registered will have only one 'FunctorId'.
-            */  if (functorIds.size() > 1) 
+            */  if (functorIds.size() == FunctorIdx::MAX_SIZE)
+                {
+                    const auto& ctorName = CtorName::copyCtor(pFunction.getRecordName());
+                    if (pMethodMap.find(ctorName) == pMethodMap.end()) {
+                        //copy-constructor's 'FunctorId' will always be the second in the constructor's FunctorId's vector.
+                        access::Method method = access::Method::getCopyConstructorMethod(pFunction, functorIds[FunctorIdx::TWO]);
+                        pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
+                    }
+                    //remove the copy-constructor's 'FunctorId' from the constructor's 'FunctorId' vector.
+                    functorIds.pop_back();
+                }
+
+                if (functorIds.size() == FunctorIdx::TWO)
                 {
                     const auto& dctorName = CtorName::dctor(pFunction.getRecordName());
                     if (pMethodMap.find(dctorName) == pMethodMap.end()) {
                         //destructor 'FunctorId' will always be the second in the constructor's FunctorId's vector.
-                        access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[1]);
+                        access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[FunctorIdx::ONE]);
                         pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
                     }
                     //remove the destructor 'FunctorId' from the constructor's 'FunctorId' vector.

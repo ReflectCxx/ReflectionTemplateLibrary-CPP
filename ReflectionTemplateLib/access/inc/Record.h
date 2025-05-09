@@ -27,13 +27,15 @@ namespace rtl {
         * provides interface to construct instances of the class/struct using the registered constructors.
     */  class Record
         {
+            mutable std::size_t m_recordId;
+
             mutable std::string m_recordName;
 
             mutable std::unordered_map< std::string, access::Method > m_methods;
 
         private:
 
-            Record(const std::string& pRecordName);
+            explicit Record(const std::string& pRecordName, const std::size_t& pRecordId);
 
             std::unordered_map< std::string, access::Method >& getFunctionsMap() const;
 
@@ -45,17 +47,17 @@ namespace rtl {
 
             std::optional<Method> getMethod(const std::string& pMethod) const;
 
-            //creates dynamic instance, calling copy ctor, using new.
+            //creates dynamic, deep-copy instance, calling copy ctor, using new.
             const std::pair<RStatus, Instance> clone(Instance& pOther) const;
 
             //creates dynamic instance, using new.
-            template<class ..._ctorArgs>
+            template<alloc _alloc, class ..._ctorArgs>
             const std::pair<RStatus, Instance> instance(_ctorArgs&& ...params) const;
 
             const std::unordered_map< std::string, access::Method >& getMethodMap() const;
 
             //only class which can create objects of this class & manipulates 'm_methods'.
             friend class detail::CxxReflection;
-		};
-	}
+        };
+    }
 }

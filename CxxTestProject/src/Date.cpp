@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include <vector>
 #include "Date.h"
 
@@ -39,9 +38,29 @@ namespace nsdate
 	}
 
 
-	std::string Date::getAsString()
+	std::string Date::getAsString() const
 	{
 		return (to_string(m_day) + "/" + to_string(m_month) + "/" + to_string(m_year));
+	}
+
+
+	void Date::updateDate(std::string pDateStr)
+	{
+		string strBuf;
+		vector<string> date;
+		for (size_t i = 0; i < pDateStr.length(); i++)
+		{
+			if (pDateStr.at(i) == '/') {
+				date.push_back(strBuf);
+				strBuf.clear();
+			}
+			else {
+				strBuf.push_back(pDateStr.at(i));
+			}
+		}
+		m_day = stoi(date[0]);
+		m_month = stoi(date[1]);
+		m_year = stoi(strBuf);
 	}
 
 
@@ -52,12 +71,14 @@ namespace nsdate
 		m_instanceCount++;
 	}
 
-	Date::Date(Date& pOther)
+
+	Date::Date(const Date& pOther)
 		: m_day(pOther.m_day)
 		, m_month(pOther.m_month)
 		, m_year(pOther.m_year) {
 		m_instanceCount++;
 	}
+
 
 	Date::Date(unsigned dd, unsigned mm, unsigned yy)
 		: m_day(dd)
@@ -66,10 +87,12 @@ namespace nsdate
 		m_instanceCount++;
 	}
 
+
 	const bool Date::operator==(const Date& pOther) const
 	{
 		return (m_day == pOther.m_day && m_month == pOther.m_month && m_year == pOther.m_year);
 	}
+
 
 	Date::Date(const string& pDateStr)
 	{

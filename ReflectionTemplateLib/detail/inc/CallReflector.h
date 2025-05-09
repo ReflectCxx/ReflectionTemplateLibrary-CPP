@@ -8,6 +8,7 @@ namespace rtl {
     namespace access {
         //forward decl.
         class RStatus;
+        class Instance;
     }
 
     namespace detail
@@ -24,22 +25,33 @@ namespace rtl {
             * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
             * this 'forwardCall' is for calling lambda containing non-member-function and static-member-function functors.
         */  template<class ..._params>
-            static access::RStatus forwardCall(std::size_t pFunctorIndex, _params&&..._args)
+            static void forwardCall(access::RStatus& pRStatus, std::size_t pFunctorIndex, _params&&..._args)
             {
                 //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-                return _derivedType::getFunctors().at(pFunctorIndex)(std::forward<_params>(_args)...);
+                _derivedType::getFunctors().at(pFunctorIndex)(pRStatus, std::forward<_params>(_args)...);
             }
 
 
         /*  @method: forwardCall
             @param: pFunctorIndex (index of the lambda), _args...(arguments to be passed to that lambda)
             * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
+            * this 'forwardCall' is for calling lambda containing constructors.
+        */  template<class ..._params>
+            static void forwardCall(access::RStatus& pRStatus, rtl::access::alloc&& pAllocType, std::size_t pFunctorIndex, _params&&..._args)
+            {
+                //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
+                _derivedType::getFunctors().at(pFunctorIndex)(pRStatus, std::forward<rtl::access::alloc>(pAllocType), std::forward<_params>(_args)...);
+            }
+
+        /*  @method: forwardCall
+            @param: pFunctorIndex (index of the lambda), _args...(arguments to be passed to that lambda)
+            * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
             * this 'forwardCall' is for calling lambda containing member-function functors.
         */  template<class ..._params>
-            static access::RStatus forwardCall(const std::any& pTarget, std::size_t pFunctorIndex, _params&&..._args)
+            static void forwardCall(access::RStatus& pRStatus, const rtl::access::Instance& pTarget, std::size_t pFunctorIndex, _params&&..._args)
             {
                 //'getMethodFunctors()' is implemented by _derivedType (MethodContainer)
-                return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, std::forward<_params>(_args)...);
+                _derivedType::getMethodFunctors().at(pFunctorIndex)(pRStatus, pTarget, std::forward<_params>(_args)...);
             }
         };
     }

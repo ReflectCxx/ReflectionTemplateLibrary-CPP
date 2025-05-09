@@ -22,14 +22,19 @@ namespace test_utils
 		static constexpr const unsigned DAY = 1;
 		static constexpr const unsigned MONTH = 1;
 		static constexpr const unsigned YEAR = 2000;
-		static constexpr const char* DATE_STR = "23/12/2024";
+		static constexpr const char* DATE_STR0 = "23/12/2024";
+		static constexpr const char* DATE_STR1 = "04/05/2025";
 
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Date";
-		
+		static constexpr const char* str_updateDate = "updateDate";
+		static constexpr const char* str_getAsString = "getAsString";
+
 		static const bool assert_zero_instance_count();
 
+		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap);
+
 		template<class ..._argsType>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance);
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pOnHeap);
 	};
 }

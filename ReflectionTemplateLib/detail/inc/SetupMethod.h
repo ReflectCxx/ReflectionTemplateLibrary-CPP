@@ -20,15 +20,15 @@ namespace rtl {
         * sets up only non-static-member-function functors in lambda table.
         * called from 'ReflectionBuilder', as _derivedType member.
     */  template<class _derivedType>
-		class SetupMethod
-		{
-		protected:
+        class SetupMethod
+        {
+        protected:
 
-			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...));
+            template<class _recordType, class _retType, class ..._signature>
+            static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...));
 
-			template<class _recordType, class _retType, class ..._signature>
-			static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const);
-		};
-	}
+            template<class _recordType, class _retType, class ..._signature>
+            static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const);
+        };
+    }
 }

@@ -37,6 +37,6 @@ namespace rtl {
                                const ConstructorType& pCtorType);
           
             inline const access::Function build() const;
-		};
-	}
+        };
+    }
 }

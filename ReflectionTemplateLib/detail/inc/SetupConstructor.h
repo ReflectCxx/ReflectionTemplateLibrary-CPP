@@ -24,13 +24,9 @@ namespace rtl {
             template<class _recordType, class ..._signature>
             static const detail::FunctorId addConstructor();
 
-            //adds the lambda, wrapping constructor call, _recordType(_recordType&') to '_derivedType' (FunctorContainer)
-            template<class _recordType>
-            static const detail::FunctorId addCopyConstructor();
-
             //adds the lambda, wrapping constructor call, _recordType(const _recordType&'), to '_derivedType' (FunctorContainer)
             template<class _recordType>
-            static const detail::FunctorId addConstCopyConstructor();
+            static const detail::FunctorId addCopyConstructor();
         };
     }
 }

@@ -32,6 +32,9 @@ namespace rtl {
 
             //allocated object, stored without type info.
             mutable std::any m_anyObject;
+            
+            //indicates if the object inside 'm_anyObject' is created on heap or stack.
+            mutable alloc m_allocatedOn;
 
         /*  shared_ptr, wil be shared between the copies of the 'Instance'.
             does not hold the object constructed via reflection.
@@ -39,36 +42,51 @@ namespace rtl {
         */  mutable std::shared_ptr<void> m_destructor;
 
             //private constructors, only class 'Record' can access.
-            explicit Instance(const std::any& pRetObj, const RStatus& pStatus, const Function& pDctor);
+            explicit Instance(std::any&& pRetObj, const RStatus& pStatus);
+
+            //private constructors, only class 'Record' can access.
+            explicit Instance(std::any&& pRetObj, const RStatus& pStatus, const Function& pDctor);
 
         public:
+            
+            ~Instance();
 
             //create empty instance.
             explicit Instance();
 
             //creating copies.
-            Instance(const Instance&);
+            Instance(const Instance& pOther);
 
             //assignment
-            Instance& operator=(const Instance&);
+            Instance& operator=(const Instance& pOther);
+
+            //move constructor.
+            Instance(Instance&& pOther) noexcept;
+            
+            //move assignment
+            Instance& operator=(const Instance&& pOther) noexcept;
 
             //simple inlined getters.
             GETTER(std::any, , m_anyObject);
             GETTER(std::size_t, TypeId, m_typeId);
             GETTER(TypeQ, Qualifier, m_qualifier);
 
+            //checks if object constructed via reflection on heap or stack.
+            GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::access::alloc::Heap));
+
             //checks if it contains object constructed via reflection.
-            const bool isEmpty() const;
+            GETTER_BOOL(Empty, (!m_anyObject.has_value()));
 
             //check the contained object is const or not.
-            const bool isConst() const;
+            GETTER_BOOL(Const, (m_qualifier == TypeQ::Const));
 
             //treat the object constructed via reflection as const or non-const.
-            void makeConst(const bool& pCastAway = false);
+            void makeConst(const bool& pCastAway = false) const;
 
             //get the current number of objects constructed via reflection.
             static std::size_t getInstanceCount();
 
+            //friends :)
             friend Record;
         };
     }

@@ -154,7 +154,7 @@ int main()
 - ✅ **Perfect Forwarding**: Precisely binds lvalues and rvalues to the correct method overload during invocation.
 - ✅ **Zero Overhead Forwarding**: doesn't create any temporary variables/copies while forwarding arguments to methods.
 - ✅ **Namespace Support**: Group and reflect classes, structs, and global functions under namespaces for better organization.
-- 🚧 Access Unknown Return Types: Reflect and access return types registered to the system without compile-time knowledge.
+- 🚧 Reflected Return Types: Access return types registered to the system without compile-time knowledge. `//In progress.`
 - ❌ **Property Reflection**: Reflect properties of classes/structs, providing getter/setter methods.
 - ❌ **Enum Reflection**: Add support for reflecting enums.
 - ❌ **Composite Type Reflection**: Reflect classes with composite types that are also reflected.

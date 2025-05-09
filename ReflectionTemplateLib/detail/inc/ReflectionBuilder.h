@@ -25,14 +25,6 @@ namespace rtl {
             template<class _recordType, class ..._ctorSignature>
             const access::Function buildConstructor() const;
 
-            //adds copy constructor to the 'FunctorContainer'.
-            template<class _recordType, class ..._ctorSignature>
-            const access::Function buildCopyConstructor() const;
-
-            //adds const-copy constructor to the 'FunctorContainer'.
-            template<class _recordType, class ..._ctorSignature>
-            const access::Function buildConstCopyConstructor() const;
-
             //adds 'pFunctor' to the 'FunctorContainer'.
             template<class _returnType, class ..._signature>
             const access::Function buildFunctor(_returnType(*pFunctor)(_signature...)) const;

@@ -3,6 +3,7 @@
 #include "RStatus.h"
 #include "TypeId.hpp"
 #include "SetupMethod.h"
+#include "Instance.h"
 
 namespace rtl
 {
@@ -51,32 +52,33 @@ namespace rtl
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](const std::any& pTargetObj, _signature&&...params)->access::RStatus
+        */  const auto functor = [=](access::RStatus& pRStatus, const rtl::access::Instance& pTargetObj, _signature&&...params)-> void
             {
+                const std::any& anyRef = pTargetObj.get();
                 //cast would not fail, since the type has already been validated.
-                _recordType* target = std::any_cast<_recordType*>(pTargetObj);
+                const _recordType* target = pTargetObj.isOnHeap() ? (std::any_cast<_recordType*>(anyRef))
+                                                                  : (std::any_cast<_recordType>(&anyRef));
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) {
+                if constexpr (std::is_same_v<_retType, void>) 
+                {
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    (target->*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RStatus(Error::None);
+                    (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
+                    pRStatus.init(Error::None);
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                else {
-                    
+                else
+                {
+                    constexpr const TypeQ qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-
+                    const _retType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
                     //return 'RStatus' with return value wrapped in it as std::any.
-                    return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    pRStatus.init(std::make_any<_retType>(retObj), retTypeId, qualifier);
                 }
             };
 
             //finally add the lambda 'functor' in 'MethodContainer<TypeQ::Mute, _signature...>' lambda vector and get the index.
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _retType>());
@@ -101,7 +103,7 @@ namespace rtl
         */  static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
             const auto& updateIndex = [&](const std::size_t& pIndex) {
                 functorSet.emplace_back(pFunctor, pIndex);
-			};
+            };
 
         /*  adds the generated functor index to the 'functorSet'. (thread safe).
             called from '_derivedType' (MethodContainer<TypeQ::Const, _signature...>)
@@ -123,32 +125,32 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](const std::any& pTargetObj, _signature&&...params)->access::RStatus
+        */  const auto functor = [=](access::RStatus& pRStatus, const rtl::access::Instance& pTargetObj, _signature&&...params)-> void
             {
+                const std::any& anyRef = pTargetObj.get();
                 //cast would not fail, since the type has already been validated.
-                _recordType* target = std::any_cast<_recordType*>(pTargetObj);
+                const _recordType* target = pTargetObj.isOnHeap() ? (std::any_cast<_recordType*>(anyRef))
+                                                                  : (std::any_cast<_recordType>(&anyRef));
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) {
-
+                if constexpr (std::is_same_v<_retType, void>) 
+                {
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RStatus(Error::None);
+                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                    pRStatus.init(Error::None);
                 }
-                else {
+                else 
+                {
                     const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
-
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = ((static_cast<const _recordType*>(target))->*pFunctor)(std::forward<_signature>(params)...);
-
+                    const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
                     //return 'RStatus' with return value wrapped in it as std::any.
-                    return access::RStatus(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    pRStatus.init(std::make_any<_retType>(retObj), retTypeId, qualifier);
                 }
             };
 
             //finally add the lambda 'functor' in 'MethodContainer<TypeQ::Const, _signature...>' lambda vector and get the index.
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _retType>());
