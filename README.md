@@ -102,8 +102,9 @@ int main()
     std::optional<Record> classPerson = MyReflection().getClass("Person");
 
  /* Create an instance of 'class Person' via reflection using the default constructor.
+    Use 'rtl::access::alloc::Heap' or 'rtl::access::alloc::Stack' to define the allocation type.
     Returns 'RStatus' and 'Instance' objects.
- */ auto [status, personObj] = classPerson->instance<alloc::Stack>();
+ */ auto [status, personObj] = classPerson->instance<alloc::Heap>();
 	
 ```
 - `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
@@ -112,9 +113,8 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    No need to pass 'string' as 'const' if the function accepts parameters by value.
-    Use 'rtl::access::alloc::Heap' or 'rtl::access::alloc::Stack' to define the allocation type.
- */ auto [status, personObj] = classPerson->instance<alloc::Heap>(std::string("John Doe"), int(42));
+    No need to pass 'string' as 'const' if the function accepts parameters by value. Instance created on 'Stack'.
+ */ auto [status, personObj] = classPerson->instance<alloc::Stack>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
