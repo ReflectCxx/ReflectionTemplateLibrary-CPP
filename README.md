@@ -1,5 +1,5 @@
   ```c++
-  using modern.C++; //and templates only, no RTTI.
+  using modern.C++; //and templates only, no RTTI, no Macros.
   ```
 # Reflection Template Library C++
 
@@ -14,7 +14,7 @@ Static library, the core design maintains several tables of function pointers(re
 - **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
 - **Simple Integration**: Just create an instance of `CxxMirror`, pass all type information to reflect as a constructor parameter, and you’re done!
   ```c++
-  rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
+  rtl::CxxMirror cxxReflection({/*.. Pass all type information to register..*/});
   ```
   The *cxxReflection* object (of type rtl::CxxMirror) provides interface to query and instantiate registered types.
 - **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
@@ -44,10 +44,10 @@ class Person {
 	
 public:
     Person();
-    Person(std::string, int);
+    Person(const std::string, int);
 
     void setAge(int);
-    void setName(std::string);
+    void setName(const std::string, const std::string&);
 
     int getAge() const;
     std::string getName() const;
@@ -70,7 +70,7 @@ const CxxMirror& MyReflection()
         Reflect().record<Person>("Person").method("setName").build(&Person::setName),
         Reflect().record<Person>("Person").method("getName").build(&Person::getName),
 	
-        // Register constructors
+        // Registering a constructor (default or overload) also implicitly registers the copy constructor (if accessible) and the destructor.
         Reflect().record<Person>("Person").constructor<Person>().build(),  // Default constructor
         Reflect().record<Person>("Person").constructor<Person>().build<std::string, int>()  // Constructor with parameters
     });
@@ -112,22 +112,32 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
- */ auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));
+    No need to pass 'string' as 'const' if the function accepts parameters by value.
+    Use 'rtl::access::alloc::Heap' or 'rtl::access::alloc::Stack' to define the allocation type.
+ */ auto [status, personObj] = classPerson->instance<alloc::Heap>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
  // Call methods on the 'Person' object. returns 'RStatus'.
-    RStatus rst = setAge->bind(personObj).call(int(42));
- // or with different syntax,
-    RStatus rst = (*setAge)(personObj)(int(42));
+    RStatus status = (*setAge)(personObj)(int(42));
+ // Alternatively, use the bind-call syntax for clarity.
+    status = setAge->bind<int>(personObj).call(42);
+
+ // Get method of 'class Person'. Returns a callable 'Method' object.
+    std::optional<Method> setName = classPerson->getMethod("setName");
+
+ /* No need to pass 'string' as 'const' for the first parameter since it is accepted by value,
+    but the second reference parameter must match the function's expected type exactly.
+    Use 'bind<...>()' to explicitly specify the types to be forwarded to the function.
+ */ status = setName->bind<string, const string&>(personObj).call("Todd", "Packer");
 
  // Get method of 'class Person' that returns a value.
     std::optional<Method> getName = classPerson->getMethod("getName");
 
  // Call method, returns 'RStatus' containing return value.
     RStatus retName = getName->bind(personObj).call();
- // or with different syntax,
+ // Alternatively, use the bind-call syntax for clarity.
     RStatus retName = (*getName)(personObj)();
   
  // Extract the return value.
@@ -144,17 +154,21 @@ int main()
 - ✅ **Class and Struct Reflection**: Register classes/structs and dynamically reflect their methods, constructors, and destructors.
 - ✅ **Constructor Invocation**:
   - Invoke the default constructor.
-  - Invoke copy constructors with both non-const and const reference arguments.
+  - Invoke copy constructors.
   - Invoke any overloaded constructor.
+  - Allocate object on Heap or Stack.
 - ✅ **Member Function Invocation**:
   - Dynamically invoke non-const member functions.
   - Dynamically invoke const member functions.
   - Dynamically invoke static member functions.
+- ✅ **Supports Move Semantics**: `(powered by std::any)`
+  - Implicitly invokes the move constructor when necessary.
+  - Implicitly invokes the move assignment operator when necessary.
 - ✅ **Automatic Resource Management**: Automatically invokes destructors for objects created on the heap via reflection.
 - ✅ **Perfect Forwarding**: Precisely binds lvalues and rvalues to the correct method overload during invocation.
 - ✅ **Zero Overhead Forwarding**: doesn't create any temporary variables/copies while forwarding arguments to methods.
 - ✅ **Namespace Support**: Group and reflect classes, structs, and global functions under namespaces for better organization.
-- 🚧 Reflected Return Types: Access return types registered to the system without compile-time knowledge. `//In progress.`
+- 🚧 **Reflected Returns**: Access return values with types unknown at compile time but registered in the reflection system. `//In progress.`
 - ❌ **Property Reflection**: Reflect properties of classes/structs, providing getter/setter methods.
 - ❌ **Enum Reflection**: Add support for reflecting enums.
 - ❌ **Composite Type Reflection**: Reflect classes with composite types that are also reflected.
