@@ -113,7 +113,8 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    No need to pass 'string' as 'const' if the function accepts parameters by value. Instance created on 'Stack'.
+    No need to pass 'string' as 'const' if the function accepts parameters by value.
+    Instance created on 'Stack'.
  */ auto [status, personObj] = classPerson->instance<alloc::Stack>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
