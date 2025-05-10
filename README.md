@@ -139,10 +139,10 @@ int main()
     std::optional<Method> getName = classPerson->getMethod("getName");
 
  // Call method, returns 'RStatus' containing return value.
-    RStatus retName = getName->bind(personObj).call();
- // Alternatively, use the bind-call syntax for clarity.
     RStatus retName = (*getName)(personObj)();
-  
+ // Alternatively, use the bind-call syntax for clarity.
+    RStatus retName = getName->bind(personObj).call();
+
  // Extract the return value.
     std::string nameStr = std::any_cast<std::string>(retName.getReturn());
 }
