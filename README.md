@@ -103,7 +103,7 @@ int main()
 
  /* Create an instance of 'class Person' via reflection using the default constructor.
     Returns 'RStatus' and 'Instance' objects.
- */ auto [status, personObj] = classPerson->instance();
+ */ auto [status, personObj] = classPerson->instance<alloc::Stack>();
 	
 ```
 - `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
