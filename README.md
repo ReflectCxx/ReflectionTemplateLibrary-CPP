@@ -59,7 +59,8 @@ Manually register the class and its members when creating a **`CxxMirror`** obje
 #include "RTLibInterface.h"	// Single header, provides all registration & access interfaces.
 #include "Person.h"	// User-defined types to be reflected.
 
-using namespace rtl;
+using namespace rtl::access;
+using namespace rtl::builder;
 
 const CxxMirror& MyReflection() 
 {
@@ -95,6 +96,7 @@ In main.cpp, use the **`Person`** class without directly exposing its type.
 ```c++
 #include "RTLibInterface.h"  // Single header including reflection access interface.
 extern const rtl::CxxMirror& MyReflection();
+using namespace rtl::access;
 
 int main() 
 {
