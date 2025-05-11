@@ -59,7 +59,8 @@ Manually register the class and its members when creating a **`CxxMirror`** obje
 #include "RTLibInterface.h"	// Single header, provides all registration & access interfaces.
 #include "Person.h"	// User-defined types to be reflected.
 
-using namespace rtl;
+using namespace rtl::access;
+using namespace rtl::builder;
 
 const CxxMirror& MyReflection() 
 {
@@ -95,6 +96,7 @@ In main.cpp, use the **`Person`** class without directly exposing its type.
 ```c++
 #include "RTLibInterface.h"  // Single header including reflection access interface.
 extern const rtl::CxxMirror& MyReflection();
+using namespace rtl::access;
 
 int main() 
 {
@@ -113,7 +115,8 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    No need to pass 'string' as 'const' if the function accepts parameters by value. Instance created on 'Stack'.
+    No need to pass 'string' as 'const' if the function accepts parameters by value.
+    Instance created on 'Stack'.
  */ auto [status, personObj] = classPerson->instance<alloc::Stack>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
@@ -136,10 +139,10 @@ int main()
     std::optional<Method> getName = classPerson->getMethod("getName");
 
  // Call method, returns 'RStatus' containing return value.
-    RStatus retName = getName->bind(personObj).call();
- // Alternatively, use the bind-call syntax for clarity.
     RStatus retName = (*getName)(personObj)();
-  
+ // Alternatively, use the bind-call syntax for clarity.
+    RStatus retName = getName->bind(personObj).call();
+
  // Extract the return value.
     std::string nameStr = std::any_cast<std::string>(retName.getReturn());
 }
