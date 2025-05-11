@@ -61,19 +61,19 @@ namespace rtl_tests
 
 		double real = g_real;	//g_real's type is "const double", so can't be passed directly to setReal else,
 								//its type will be inferred 'const double' instead of 'double'.
-		RStatus statusR = (*setReal)(real);
-		ASSERT_TRUE(statusR);
+		RStatus status = (*setReal)(real);
+		ASSERT_TRUE(status);
 
 		EXPECT_TRUE(setImaginary->hasSignature<double>());
 
 		double imaginary = g_imaginary;	//g_imaginary's type is "const double", so can't be passed directly to setImaginary else,
 										//its type will be inferred 'const double' instead of 'double'.
-		RStatus statusI = (*setImaginary)(imaginary);
-		ASSERT_TRUE(statusI);
+		status = (*setImaginary)(imaginary);
+		ASSERT_TRUE(status);
 
 		EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-		RStatus status = (*getMagnitude)();
+		status = (*getMagnitude)();
 
 		ASSERT_TRUE(status);
 		ASSERT_TRUE(status.getReturn().has_value());

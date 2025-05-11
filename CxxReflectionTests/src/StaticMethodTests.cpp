@@ -71,7 +71,7 @@ namespace rtl_tests
 			const string& retStr = any_cast<string>(status.getReturn());
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 		} {
-			//different syntax of calling.
+			//use the bind-call syntax.
 			const RStatus& status = getProfile->bind().call(false);
 
 			ASSERT_TRUE(status);

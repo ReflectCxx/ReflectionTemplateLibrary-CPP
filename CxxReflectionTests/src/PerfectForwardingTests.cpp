@@ -59,10 +59,10 @@ namespace rtl_tests
 
             // Invoke the method with a non-const L-value reference.
             auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->bind<std::string&>(animalObj).call(nameStr);
+            status = setAnimalName->bind<std::string&>(animalObj).call(nameStr);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             // Validate the behavior of the method.
             EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animalObj.get(), animalObj.isOnHeap()));
@@ -93,10 +93,10 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->bind<std::string&>(animalObj).call(nameStr);
+            status = setAnimalName->bind<std::string&>(animalObj).call(nameStr);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animalObj.get(), animalObj.isOnHeap()));
         }
@@ -134,10 +134,10 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             // Invoke the method with an R-value reference.
-            RStatus rStatus = setAnimalName->bind<std::string&&>(animalObj).call(animal::NAME);
+            status = setAnimalName->bind<std::string&&>(animalObj).call(animal::NAME);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             // Validate the behavior of the method.
             EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animalObj.get(), animalObj.isOnHeap()));
@@ -167,10 +167,10 @@ namespace rtl_tests
             const auto& isValid = setAnimalName->hasSignature<std::string&&>();
             ASSERT_TRUE(isValid);
 
-            RStatus rStatus = setAnimalName->bind<std::string&&>(animalObj).call(animal::NAME);
+            status = setAnimalName->bind<std::string&&>(animalObj).call(animal::NAME);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animalObj.get(), animalObj.isOnHeap()));
         }
@@ -208,10 +208,10 @@ namespace rtl_tests
 
             // Invoke the method with a const L-value reference.
             const auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->bind<const std::string&>(animalObj).call(nameStr);
+            status = setAnimalName->bind<const std::string&>(animalObj).call(nameStr);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             // Validate the behavior of the method.
             EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animalObj.get(), animalObj.isOnHeap()));
@@ -242,10 +242,10 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             const auto nameStr = std::string(animal::NAME);
-            RStatus rStatus = setAnimalName->bind<const std::string&>(animalObj).call(nameStr);
+            status = setAnimalName->bind<const std::string&>(animalObj).call(nameStr);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_FALSE(rStatus.getReturn().has_value());
+            ASSERT_TRUE(status);
+            ASSERT_FALSE(status.getReturn().has_value());
 
             EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animalObj.get(), animalObj.isOnHeap()));
         }
@@ -269,13 +269,13 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             const auto zookeeper = std::string(animal::ZOO_KEEPER);
-            RStatus rStatus = updateZooKeeper->bind<const std::string&>().call(zookeeper);
+            RStatus status = updateZooKeeper->bind<const std::string&>().call(zookeeper);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_TRUE(rStatus.getReturn().has_value());
-            ASSERT_TRUE(rStatus.isOfType<string>());
+            ASSERT_TRUE(status);
+            ASSERT_TRUE(status.getReturn().has_value());
+            ASSERT_TRUE(status.isOfType<string>());
 
-            const string& retStr = any_cast<string>(rStatus.getReturn());
+            const string& retStr = any_cast<string>(status.getReturn());
             EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
         }
 
@@ -298,13 +298,13 @@ namespace rtl_tests
             const auto& isValid = updateZooKeeper->hasSignature<std::string&&>();
             ASSERT_TRUE(isValid);
 
-            RStatus rStatus = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
+            RStatus status = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_TRUE(rStatus.getReturn().has_value());
-            ASSERT_TRUE(rStatus.isOfType<string>());
+            ASSERT_TRUE(status);
+            ASSERT_TRUE(status.getReturn().has_value());
+            ASSERT_TRUE(status.isOfType<string>());
 
-            const string& retStr = any_cast<string>(rStatus.getReturn());
+            const string& retStr = any_cast<string>(status.getReturn());
             EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&&>(retStr));
         }
 
@@ -328,13 +328,13 @@ namespace rtl_tests
             ASSERT_TRUE(isValid);
 
             auto zookeeper = std::string(animal::ZOO_KEEPER);
-            RStatus rStatus = updateZooKeeper->bind<std::string&>().call(zookeeper);
+            RStatus status = updateZooKeeper->bind<std::string&>().call(zookeeper);
 
-            ASSERT_TRUE(rStatus);
-            ASSERT_TRUE(rStatus.getReturn().has_value());
-            ASSERT_TRUE(rStatus.isOfType<string>());
+            ASSERT_TRUE(status);
+            ASSERT_TRUE(status.getReturn().has_value());
+            ASSERT_TRUE(status.isOfType<string>());
 
-            const string& retStr = any_cast<string>(rStatus.getReturn());
+            const string& retStr = any_cast<string>(status.getReturn());
             EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&>(retStr));
         }
 

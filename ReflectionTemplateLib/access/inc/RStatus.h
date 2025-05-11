@@ -51,9 +51,13 @@ namespace rtl
             GETTER(std::size_t, TypeId, m_typeId)
             GETTER(TypeQ, Qualifier, m_typeQualifier)
 
+            RStatus(RStatus&&) = default;
+            
             RStatus(const RStatus&) = default;
             
-            RStatus(RStatus&&) = default;
+            RStatus& operator=(RStatus&&) = default;
+
+            RStatus& operator=(const RStatus&) = default;
 
             //RStatus object converted to bool based on call succes or not.
             operator bool() const {

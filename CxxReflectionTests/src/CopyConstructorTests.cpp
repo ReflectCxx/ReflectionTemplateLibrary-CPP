@@ -79,11 +79,11 @@ namespace rtl_tests
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
-			const auto& status0 = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status0);
+			status = (*setAuthor)(srcObj)(author);
+			ASSERT_TRUE(status);
 
-			const auto& status1 = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status1);
+			status = (*setDecription)(srcObj)(description);
+			ASSERT_TRUE(status);
 
 			auto [ret, copyObj] = classBook->clone(srcObj);
 			ASSERT_TRUE(ret);
@@ -120,11 +120,11 @@ namespace rtl_tests
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
-			const auto& status0 = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status0);
+			status = (*setAuthor)(srcObj)(author);
+			ASSERT_TRUE(status);
 
-			const auto& status1 = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status1);
+			status = (*setDecription)(srcObj)(description);
+			ASSERT_TRUE(status);
 
 			auto [ret, copyObj] = classBook->clone(srcObj);
 			ASSERT_TRUE(ret);
@@ -161,11 +161,11 @@ namespace rtl_tests
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
-			const auto& status0 = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status0);
+			status = (*setAuthor)(srcObj)(author);
+			ASSERT_TRUE(status);
 
-			const auto& status1 = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status1);
+			status = (*setDecription)(srcObj)(description);
+			ASSERT_TRUE(status);
 
 			//make this instance const.
 			srcObj.makeConst();
@@ -205,11 +205,11 @@ namespace rtl_tests
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
-			const auto& status0 = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status0);
+			status = (*setAuthor)(srcObj)(author);
+			ASSERT_TRUE(status);
 
-			const auto& status1 = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status1);
+			status = (*setDecription)(srcObj)(description);
+			ASSERT_TRUE(status);
 
 			//make this instance const.
 			srcObj.makeConst();

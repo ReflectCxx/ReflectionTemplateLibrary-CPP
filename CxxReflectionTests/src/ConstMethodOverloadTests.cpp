@@ -30,9 +30,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
 			string lastName = person::LAST_NAME;
-			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
+			status = (*updateLastName)(personObj)(lastName);
 			
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -61,9 +61,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
 			string lastName = person::LAST_NAME;
-			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
+			status = (*updateLastName)(personObj)(lastName);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateLastName(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -94,9 +94,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
 			string lastName = person::LAST_NAME;
-			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
+			status = (*updateLastName)(personObj)(lastName);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -127,9 +127,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 
 			string lastName = person::LAST_NAME;
-			const RStatus& rStatus = (*updateLastName)(personObj)(lastName);
+			status = (*updateLastName)(personObj)(lastName);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateLastName_const(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -161,11 +161,11 @@ namespace rtl_tests
 			optional<Method> getFirstName = classPerson.getMethod(person::str_getFirstName);
 			ASSERT_TRUE(getFirstName);
 
-			const RStatus& rstatus = getFirstName->bind(personObj).call();
-			ASSERT_TRUE(rstatus);
-			ASSERT_TRUE(rstatus.isOfType<std::string>());
+			status = getFirstName->bind(personObj).call();
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.isOfType<std::string>());
 
-			const std::string retStr = std::any_cast<std::string>(rstatus.getReturn());
+			const std::string retStr = std::any_cast<std::string>(status.getReturn());
 			ASSERT_EQ(retStr, firstName);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -197,11 +197,11 @@ namespace rtl_tests
 			optional<Method> getFirstName = classPerson.getMethod(person::str_getFirstName);
 			ASSERT_TRUE(getFirstName);
 
-			const RStatus& rstatus = getFirstName->bind(personObj).call();
-			ASSERT_TRUE(rstatus);
-			ASSERT_TRUE(rstatus.isOfType<std::string>());
+			status = getFirstName->bind(personObj).call();
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.isOfType<std::string>());
 
-			const std::string retStr = std::any_cast<std::string>(rstatus.getReturn());
+			const std::string retStr = std::any_cast<std::string>(status.getReturn());
 			ASSERT_EQ(retStr, firstName);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -231,9 +231,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
 			auto address = string(person::ADDRESS);
-			const RStatus& rStatus = (*updateAddress)(personObj)(address);
+			status = (*updateAddress)(personObj)(address);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -263,9 +263,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
 			auto address = string(person::ADDRESS);
-			const RStatus& rStatus = (*updateAddress)(personObj)(address);
+			status = (*updateAddress)(personObj)(address);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress_const<string>(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -293,9 +293,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
 			string address = person::ADDRESS;
-			const RStatus& rStatus = (*updateAddress)(personObj)(address);
+			status = (*updateAddress)(personObj)(address);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -323,9 +323,9 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
 			string address = person::ADDRESS;
-			const RStatus& rStatus = (*updateAddress)(personObj)(address);
+			status = (*updateAddress)(personObj)(address);
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress<string>(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -356,9 +356,9 @@ namespace rtl_tests
 			ASSERT_TRUE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)();
+			status = (*updateAddress)(personObj)();
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress_const(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -389,9 +389,9 @@ namespace rtl_tests
 			ASSERT_TRUE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)();
+			status = (*updateAddress)(personObj)();
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress_const(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -418,9 +418,9 @@ namespace rtl_tests
 			ASSERT_FALSE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)();
+			status = (*updateAddress)(personObj)();
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -447,9 +447,9 @@ namespace rtl_tests
 			ASSERT_FALSE(personObj.isConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 
-			const RStatus& rStatus = (*updateAddress)(personObj)();
+			status = (*updateAddress)(personObj)();
 
-			ASSERT_TRUE(rStatus);
+			ASSERT_TRUE(status);
 			EXPECT_TRUE(person::test_method_updateAddress(personObj.get(), personObj.isOnHeap()));
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());

@@ -96,9 +96,9 @@ namespace rtl_tests
 			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [retStatus, personObj] = classPerson->clone(emptyObj);
+			auto [status, personObj] = classPerson->clone(emptyObj);
 
-			ASSERT_TRUE(retStatus == Error::EmptyInstance);
+			ASSERT_TRUE(status == Error::EmptyInstance);
 		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
@@ -113,8 +113,8 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			RStatus retStatus = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
-			ASSERT_TRUE(retStatus == Error::EmptyInstance);
+			RStatus status = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
+			ASSERT_TRUE(status == Error::EmptyInstance);
 		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
@@ -136,8 +136,8 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			RStatus retStatus = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+			status = getPublishedOn->bind(personObj).call();
+			ASSERT_TRUE(status == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -160,8 +160,8 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			RStatus retStatus = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+			status = getPublishedOn->bind(personObj).call();
+			ASSERT_TRUE(status == Error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -182,9 +182,9 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			bookObj.makeConst();
-			RStatus retStatus = getPublishedOn->bind(bookObj).call();
+			status = getPublishedOn->bind(bookObj).call();
 
-			ASSERT_TRUE(retStatus == Error::InstanceConstMismatch);
+			ASSERT_TRUE(status == Error::InstanceConstMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -205,9 +205,9 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			bookObj.makeConst();
-			RStatus retStatus = getPublishedOn->bind(bookObj).call();
+			status = getPublishedOn->bind(bookObj).call();
 
-			ASSERT_TRUE(retStatus == Error::InstanceConstMismatch);
+			ASSERT_TRUE(status == Error::InstanceConstMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);

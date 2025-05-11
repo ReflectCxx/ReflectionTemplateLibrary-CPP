@@ -39,10 +39,10 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_FALSE(setAuthor->hasSignature<const char*>());
 
-			RStatus rStatus = (*setAuthor)(bookObj)(book::AUTHOR);
+			status = (*setAuthor)(bookObj)(book::AUTHOR);
 
-			ASSERT_TRUE(rStatus == rtl::Error::SignatureMismatch);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status == rtl::Error::SignatureMismatch);
+			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -67,10 +67,10 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_FALSE(setAuthor->hasSignature<const char*>());
 
-			RStatus rStatus = (*setAuthor)(bookObj)(book::AUTHOR);
+			status = (*setAuthor)(bookObj)(book::AUTHOR);
 
-			ASSERT_TRUE(rStatus == rtl::Error::SignatureMismatch);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status == rtl::Error::SignatureMismatch);
+			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -95,13 +95,13 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
-			RStatus rStatus = (*getPublishedOn)(bookObj)();
+			status = (*getPublishedOn)(bookObj)();
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_TRUE(rStatus.getReturn().has_value()); 
-			ASSERT_TRUE(rStatus.isOfType<string>());
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.getReturn().has_value());
+			ASSERT_TRUE(status.isOfType<string>());
 
-			const std::string& retStr = any_cast<string>(rStatus.getReturn());
+			const std::string& retStr = any_cast<string>(status.getReturn());
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -126,13 +126,13 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
-			RStatus rStatus = (*getPublishedOn)(bookObj)();
+			status = (*getPublishedOn)(bookObj)();
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_TRUE(rStatus.getReturn().has_value());
-			ASSERT_TRUE(rStatus.isOfType<string>());
+			ASSERT_TRUE(status);
+			ASSERT_TRUE(status.getReturn().has_value());
+			ASSERT_TRUE(status.isOfType<string>());
 
-			const std::string& retStr = any_cast<string>(rStatus.getReturn());
+			const std::string& retStr = any_cast<string>(status.getReturn());
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -158,10 +158,10 @@ namespace rtl_tests
 			ASSERT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
-			RStatus rStatus = setAuthor->bind(bookObj).call(author);
+			status = setAuthor->bind(bookObj).call(author);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 
 			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
@@ -188,10 +188,10 @@ namespace rtl_tests
 			ASSERT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
-			RStatus rStatus = setAuthor->bind(bookObj).call(author);
+			status = setAuthor->bind(bookObj).call(author);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 
 			EXPECT_TRUE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
@@ -217,10 +217,10 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
-			RStatus rStatus = (*updateBookInfo)(bookObj)();
+			status = (*updateBookInfo)(bookObj)();
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -245,10 +245,10 @@ namespace rtl_tests
 			ASSERT_FALSE(bookObj.isEmpty());
 			ASSERT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)();
+			status = (*updateBookInfo)(bookObj)();
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_TRUE(book::test_method_updateBookInfo(bookObj.get(), bookObj.isOnHeap()));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -278,10 +278,10 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(author, price, title);
+			status = (*updateBookInfo)(bookObj)(author, price, title);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -312,10 +312,10 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(author, price, title);
+			status = (*updateBookInfo)(bookObj)(author, price, title);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -346,10 +346,10 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(title, price, author);
+			status = (*updateBookInfo)(bookObj)(title, price, author);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -380,10 +380,10 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			RStatus rStatus = (*updateBookInfo)(bookObj)(title, price, author);
+			status = (*updateBookInfo)(bookObj)(title, price, author);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -412,10 +412,10 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			RStatus rStatus = (*addCopyrightTag)(bookObj)(std::string(book::COPYRIGHT_TAG));
+			status = (*addCopyrightTag)(bookObj)(std::string(book::COPYRIGHT_TAG));
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_addCopyrightTag(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -444,10 +444,10 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			RStatus rStatus = addCopyrightTag->bind(bookObj).call(std::string(book::COPYRIGHT_TAG));
+			status = addCopyrightTag->bind(bookObj).call(std::string(book::COPYRIGHT_TAG));
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_addCopyrightTag(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -490,10 +490,10 @@ namespace rtl_tests
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
+			status = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_addPreface(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
@@ -536,10 +536,10 @@ namespace rtl_tests
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			RStatus rStatus = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
+			status = addPreface->bind<string, const string&>(bookObj).call(acknowledgements, preface);
 
-			ASSERT_TRUE(rStatus);
-			ASSERT_FALSE(rStatus.getReturn().has_value());
+			ASSERT_TRUE(status);
+			ASSERT_FALSE(status.getReturn().has_value());
 			const bool isSuccess = book::test_method_addPreface(bookObj.get(), bookObj.isOnHeap());
 			EXPECT_TRUE(isSuccess);
 		}
