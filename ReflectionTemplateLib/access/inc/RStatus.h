@@ -59,6 +59,10 @@ namespace rtl
 
             RStatus& operator=(const RStatus&) = default;
 
+            operator Error() const {
+                return m_callStatus;
+            }
+
             //RStatus object converted to bool based on call succes or not.
             operator bool() const {
                 //Error::None, reflected call successful.

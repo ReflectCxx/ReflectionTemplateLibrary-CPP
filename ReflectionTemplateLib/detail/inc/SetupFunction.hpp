@@ -46,7 +46,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const auto& retTypeId = TypeId<_returnType>::get();
+            const auto& retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
@@ -61,11 +61,34 @@ namespace rtl
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else {
-                    //call will definitely be successful, since the signature type has alrady been validated.
-                    const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                    const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                    //return 'RStatus' with return value wrapped in it as std::any.
-                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+
+                    if constexpr (std::is_reference_v<_returnType>)
+                    {
+                        if constexpr (std::is_const_v<std::remove_reference_t<_returnType>>) 
+                        {
+                            //call will definitely be successful, since the signature type has alrady been validated.
+                            const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                            const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
+                            //return 'RStatus' with return value-const-reference wrapped in it as std::any.
+                            pRStatus.init(std::any(std::cref(retObj)), retTypeId, qualifier);
+                        }
+                        else
+                        {
+                            //call will definitely be successful, since the signature type has alrady been validated.
+                            const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                            const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
+                            //return 'RStatus' with return value reference wrapped in it as std::any.
+                            pRStatus.init(std::any(std::ref(retObj)), retTypeId, qualifier);
+                        }
+                    }
+                    else
+                    {
+                        //call will definitely be successful, since the signature type has alrady been validated.
+                        const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                        const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
+                        //return 'RStatus' with return value wrapped in it as std::any.
+                        pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+                    }
                 }
             };
 

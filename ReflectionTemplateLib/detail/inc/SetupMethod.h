@@ -24,11 +24,11 @@ namespace rtl {
         {
         protected:
 
-            template<class _recordType, class _retType, class ..._signature>
-            static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...));
+            template<class _recordType, class _returnType, class ..._signature>
+            static const detail::FunctorId addFunctor(_returnType(_recordType::* pFunctor)(_signature...));
 
-            template<class _recordType, class _retType, class ..._signature>
-            static const detail::FunctorId addFunctor(_retType(_recordType::* pFunctor)(_signature...) const);
+            template<class _recordType, class _returnType, class ..._signature>
+            static const detail::FunctorId addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const);
         };
     }
 }
