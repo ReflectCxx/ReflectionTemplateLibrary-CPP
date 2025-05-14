@@ -115,16 +115,16 @@ int main()
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    This Instance created on 'Stack'.
- */ auto [status, personObj] = classPerson->instance<alloc::Stack>(std::string("John Doe"), int(42));
+    This instance is created on the heap.
+ */ auto [status, personObj] = classPerson->instance<alloc::Heap>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
- /* Call methods on the 'Person' object. returns 'RStatus'.
+ // Call methods on the 'Person' object. returns 'RStatus'.
     RStatus status = (*setAge)(personObj)(int(42));
-    Alternatively, use the bind-call syntax for clarity.
- */ status = setAge->bind<int>(personObj).call(42);
+ // Alternatively, use the bind-call syntax for clarity.
+    status = setAge->bind<int>(personObj).call(42);
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setName = classPerson->getMethod("setName");
@@ -137,13 +137,14 @@ int main()
  /* Get method of 'class Person' that returns a value.
  */ std::optional<Method> getName = classPerson->getMethod("getName");
 
- /* Call method, returns 'RStatus' containing return value.
+ // Call method, returns 'RStatus' containing return value.
     RStatus retName = (*getName)(personObj)();
-    or, using bind-call syntax..
- */ RStatus retName = getName->bind(personObj).call();
+ // or, using bind-call syntax..
+    RStatus retName = getName->bind(personObj).call();
 
  // Extract the return value.
     std::string nameStr = std::any_cast<std::string>(retName.getReturn());
+ // Destructor of 'Person' will get called for object creted on heap, once out of scape.
 }
 ```
 - `std::any_cast` will throw an exception if correct type is not specified.
