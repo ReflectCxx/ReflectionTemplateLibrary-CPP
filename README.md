@@ -110,38 +110,37 @@ int main()
 	
 ```
 - `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
-- `Instance` holds the created object (with its type erased), managed on the heap using `std::shared_ptr`.
+- `Instance` holds the created object, on stack or on the heap managed using `std::shared_ptr`.
 ```c++
 
  /* Create an instance via reflection using a parameterized constructor. 
     Argument types/order must match else call will fail, returning error-code in 'status'.
-    No need to pass 'string' as 'const' if the function accepts parameters by value.
-    Instance created on 'Stack'.
+    This Instance created on 'Stack'.
  */ auto [status, personObj] = classPerson->instance<alloc::Stack>(std::string("John Doe"), int(42));
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
- // Call methods on the 'Person' object. returns 'RStatus'.
+ /* Call methods on the 'Person' object. returns 'RStatus'.
     RStatus status = (*setAge)(personObj)(int(42));
- // Alternatively, use the bind-call syntax for clarity.
-    status = setAge->bind<int>(personObj).call(42);
+    Alternatively, use the bind-call syntax for clarity.
+ */ status = setAge->bind<int>(personObj).call(42);
 
  // Get method of 'class Person'. Returns a callable 'Method' object.
     std::optional<Method> setName = classPerson->getMethod("setName");
 
- /* No need to pass 'string' as 'const' for the first parameter since it is accepted by value,
-    but the second reference parameter must match the function's expected type exactly.
+ /* No need to pass 'string' as 'const' even if the function expects a const parameter, 
+    as long as it is passed by value. For reference parameters, the type must match exactly.
     Use 'bind<...>()' to explicitly specify the types to be forwarded to the function.
  */ status = setName->bind<string, const string&>(personObj).call("Todd", "Packer");
 
- // Get method of 'class Person' that returns a value.
-    std::optional<Method> getName = classPerson->getMethod("getName");
+ /* Get method of 'class Person' that returns a value.
+ */ std::optional<Method> getName = classPerson->getMethod("getName");
 
- // Call method, returns 'RStatus' containing return value.
+ /* Call method, returns 'RStatus' containing return value.
     RStatus retName = (*getName)(personObj)();
- // Alternatively, use the bind-call syntax for clarity.
-    RStatus retName = getName->bind(personObj).call();
+    or, using bind-call syntax..
+ */ RStatus retName = getName->bind(personObj).call();
 
  // Extract the return value.
     std::string nameStr = std::any_cast<std::string>(retName.getReturn());
