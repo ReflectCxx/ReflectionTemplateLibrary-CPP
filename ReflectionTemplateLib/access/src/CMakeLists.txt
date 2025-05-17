@@ -6,6 +6,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/Instance.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Record.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObject.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RStatus.cpp"
 )
 
@@ -28,6 +29,8 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
+	"${PROJECT_SOURCE_DIR}/access/inc/RObject.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/RObject.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/RStatus.h"
 )
 
