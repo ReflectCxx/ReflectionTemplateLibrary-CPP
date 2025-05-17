@@ -89,16 +89,33 @@ namespace rtl {
 
     struct CtorName
     {
-        static const std::string dctor(const std::string& pRecordName) {
+        inline static const std::string dctor(const std::string& pRecordName) {
             return (pRecordName + "::~" + pRecordName + "()");
         }
 
-        static const std::string ctor(const std::string& pRecordName) {
+        inline static const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
 
-        static const std::string copyCtor(const std::string& pRecordName) {
+        inline static const std::string copyCtor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
         }
     };
+
+
+    inline const char* to_string(Error err) 
+    {
+        switch (err) {
+        case Error::None: return "None";
+        case Error::EmptyInstance: return "EmptyInstance";
+        case Error::InvalidAllocType: return "InvalidAllocType";
+        case Error::SignatureMismatch: return "SignatureMismatch";
+        case Error::InstanceTypeMismatch: return "InstanceTypeMismatch";
+        case Error::InstanceConstMismatch: return "InstanceConstMismatch";
+        case Error::ConstructorNotFound: return "ConstructorNotFound";
+        case Error::CopyConstructorDisabled: return "CopyConstructorDisabled";
+        case Error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
+        default: return "Unknown";
+        }
+    }
 }

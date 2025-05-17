@@ -1,10 +1,10 @@
-# CMakeLists.txt for ProxyDesignPattern
+# CMakeLists.txt for SingletonReflectedAccess
 
 # Set the minimum required CMake version
 cmake_minimum_required(VERSION 3.20)
 
 # Set the project name
-project(ProxyDesignPattern)
+project(SingletonReflectedAccess)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD 20)
 # Enable debug symbols
 #set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
-set(CXX_EXE_NAME ProxyDesignPattern)
+set(CXX_EXE_NAME SingletonReflectedAccess)
 add_executable(${CXX_EXE_NAME} "")
 
 

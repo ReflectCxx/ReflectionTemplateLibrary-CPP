@@ -19,8 +19,8 @@ namespace rtl
         * adds lambda (functor-wrapped) in '_derivedType' (MethodContainer<TypeQ::Mute, _signature...>) and maintains functorSet.
         * thread safe, multiple functors can be registered simultaneously.
     */  template<class _derivedType>
-        template<class _recordType, class _retType, class ..._signature>
-        inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...))
+        template<class _recordType, class _returnType, class ..._signature>
+        inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...))
         {
         /*  set of already registered functors. (static life time).
             used std::vector, efficient for small sets. std::set/map will be overhead.
@@ -48,7 +48,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<_retType>::get();
+            const std::size_t retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
@@ -60,7 +60,7 @@ namespace rtl
                                                                   : (std::any_cast<_recordType>(&anyRef));
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) 
+                if constexpr (std::is_same_v<_returnType, void>) 
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
@@ -69,11 +69,11 @@ namespace rtl
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else
                 {
-                    constexpr const TypeQ qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+                    constexpr const TypeQ qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
+                    const _returnType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
                     //return 'RStatus' with return value wrapped in it as std::any.
-                    pRStatus.init(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
                 }
             };
 
@@ -81,7 +81,7 @@ namespace rtl
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType, _retType>());
+                                     _derivedType::template getSignatureStr<_recordType, _returnType>());
         }
 
 
@@ -95,8 +95,8 @@ namespace rtl
         * adds lambda (containing functor) in '_derivedType' (MethodContainer<TypeQ::Const, _signature...>) and maintains a functorSet.
         * thread safe, multiple functors can be registered simultaneously.
     */  template<class _derivedType>
-        template<class _recordType, class _retType, class ..._signature>
-        inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_retType(_recordType::* pFunctor)(_signature...) const)
+        template<class _recordType, class _returnType, class ..._signature>
+        inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const)
         {
         /*  set of already registered functors. (static life time).
             used std::vector, efficient for small sets. std::set/map will be overhead.
@@ -120,8 +120,8 @@ namespace rtl
                 return -1;
             };
 
-            //generate a type-id of '_retType'.
-            const std::size_t retTypeId = TypeId<_retType>::get();
+            //generate a type-id of '_returnType'.
+            const std::size_t retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
@@ -133,7 +133,7 @@ namespace rtl
                                                                   : (std::any_cast<_recordType>(&anyRef));
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_retType, void>) 
+                if constexpr (std::is_same_v<_returnType, void>) 
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (target->*pFunctor)(std::forward<_signature>(params)...);
@@ -141,11 +141,11 @@ namespace rtl
                 }
                 else 
                 {
-                    const TypeQ& qualifier = std::is_const<_retType>::value ? TypeQ::Const : TypeQ::Mute;
+                    const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _retType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                    const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
                     //return 'RStatus' with return value wrapped in it as std::any.
-                    pRStatus.init(std::make_any<_retType>(retObj), retTypeId, qualifier);
+                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
                 }
             };
 
@@ -153,7 +153,7 @@ namespace rtl
             const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType, _retType>());
+                                     _derivedType::template getSignatureStr<_recordType, _returnType>());
         }
     }
 }

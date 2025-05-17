@@ -55,6 +55,17 @@ namespace rtl {
             g_instanceCount++;
         }
 
+        Instance::Instance(RStatus& pRStatus)
+            : m_qualifier(pRStatus.getQualifier())
+            , m_typeId(pRStatus.getTypeId())
+            , m_allocatedOn(alloc::Stack)
+            , m_anyObject(std::move(pRStatus.m_returnObj))
+            , m_destructor(nullptr)
+        {
+            pRStatus.m_returnObj.reset();
+            g_instanceCount++;
+        }
+
 
         Instance::Instance(std::any&& pRetObj, const RStatus& pStatus)
             : m_qualifier(TypeQ::Mute)

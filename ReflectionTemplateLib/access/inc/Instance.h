@@ -54,6 +54,8 @@ namespace rtl {
             //create empty instance.
             explicit Instance();
 
+            Instance(RStatus& pRStatus);
+
             //creating copies.
             Instance(const Instance& pOther);
 
