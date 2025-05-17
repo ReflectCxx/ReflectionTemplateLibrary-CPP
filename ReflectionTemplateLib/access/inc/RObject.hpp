@@ -1,21 +1,37 @@
 #pragma once
 
-#include <RObject.h>
+#include <optional>
+
+#include "RObject.h"
 
 namespace rtl::access {
 
-    template <class T>
-    static RObject RObject::create(T&& pVal)
+    template<class T>
+    inline T& RObject::as()
     {
-        const auto& typeId = rtl::detail::TypeId<T>::get();
-        const auto& typeStr = typeid(T).name();
-        return std::move(RObject(pVal, typeId, typeStr));
+        return std::any_cast<T&>(m_object);
     }
 
 
-    template <class _type>
-    _type RObject::to() 
+    template<class T>
+    inline const bool RObject::isa()
     {
-        return std::any_cast<_type>(m_val);
+        return (m_typeId == rtl::detail::TypeId<T>::get());
+    }
+
+
+    template <class T>
+    inline std::optional<std::reference_wrapper<T>> RObject::ref() noexcept
+    {
+        return isa<T>() ? std::any_cast<T&>(m_object) : std::nullopt;
+    }
+
+
+    template <alloc _allocOn, class T>
+    inline static RObject RObject::create(T&& pVal)
+    {
+        const auto& typeId = rtl::detail::TypeId<T>::get();
+        const auto& typeStr = typeid(T).name();
+        return std::move(RObject(std::any(pVal), typeId, typeStr, _allocOn));
     }
 }
