@@ -49,6 +49,9 @@ namespace rtl {
                 if constexpr (!std::is_same_v<_type, std::nullptr_t>) {
                     return std::string(typeid(_type).name());
                 }
+                if constexpr (std::is_same_v<_type, std::nullptr_t>) {
+                    return "std::nullptr_t";
+                }
                 else return std::string();
             }
 
