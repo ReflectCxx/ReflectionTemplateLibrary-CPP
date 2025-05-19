@@ -16,18 +16,6 @@ namespace rtl::access {
 	}
 
 
-	const std::size_t RObject::getConverterIndex(const std::size_t& pToTypeId) const
-	{
-		for (std::size_t index = 0; index < m_converters.size(); index++) 
-		{
-			if (m_converters[index].first == pToTypeId) {
-				return index;
-			}
-		}
-		return -1;
-	}
-
-
 	RObject::RObject(RObject&& pOther) noexcept
 		: m_object(std::move(pOther.m_object))
 		, m_typeId(pOther.m_typeId)
@@ -53,10 +41,29 @@ namespace rtl::access {
 		m_typeStr = pOther.m_typeStr;
 		m_allocatedOn = pOther.m_allocatedOn;
 		pOther.m_object.reset();
-
-		//TODO:
-		//enable move ops for const&-vector m_converters
-
-		return *this;
+		return *this;	//TODO: enable move ops for const&-vector m_converters
 	}
+
+
+	const std::size_t RObject::getConverterIndex(const std::size_t& pToTypeId) const
+	{
+		for (std::size_t index = 0; index < m_converters.size(); index++)
+		{
+			if (m_converters[index].first == pToTypeId) {
+				return index;
+			}
+		}
+		return -1;
+	}
+
+	//RObject RObject::clone() 
+	//{
+	//	const auto& objValue = as<_asType>();
+	//	if (m_allocatedOn == alloc::Heap) {
+	//		return std::optional<RObject>(RObject::reflect<alloc::Heap>(objValue));
+	//	}
+	//	else {
+	//		return std::optional<RObject>(RObject::reflect<alloc::Stack>(objValue));
+	//	}
+	//}
 }
