@@ -5,7 +5,7 @@
 #include "RObject.h"
 
 namespace rtl::access {
-    
+
     template<class T>
     inline T& RObject::as()
     {
@@ -14,38 +14,10 @@ namespace rtl::access {
 
 
     template<class T>
-    inline const T& RObject::as() const
+    inline const bool RObject::isReflecting()
     {
-        return std::any_cast<const T&>(m_object);
-    }
-
-
-    template<class T>
-    inline const bool RObject::isReflectingType()
-    {
-        return (m_typeId == rtl::detail::TypeId<T>::get());
-    }
-
-
-    template <class T>
-    inline std::optional<T> RObject::getAs()
-    {
-        return isReflectingType<T>() ? std::optional<T>(std::any_cast<T>(m_object)) : std::nullopt;
-    }
-
-
-    template <class _asType>
-    inline std::optional<std::reference_wrapper<_asType>> RObject::viewAs()
-    {
-        return isReflectingType<_asType>() ? std::optional<std::reference_wrapper<_asType>>(std::any_cast<_asType&>(m_object)) : std::nullopt;
-    }
-
-
-    template<class _asType>
-    inline const bool RObject::canBeClonedAs()
-    {
-        const auto& typeId = rtl::detail::TypeId<_asType>::get();
-        return (getConverterIndex(typeId) != -1);
+        const auto& typeId = rtl::detail::TypeId<T>::get();
+        return (typeId == m_typeId || getConverterIndex(typeId) != -1);
     }
 
 
@@ -71,6 +43,25 @@ namespace rtl::access {
     }
 
 
+    template <class _asType>
+    inline std::optional<std::reference_wrapper<const _asType>> RObject::view()
+    {
+        const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
+        if (toTypeId == m_typeId) {
+            return std::optional<std::reference_wrapper<_asType>>(as<_asType>());
+        }
+
+        const auto& index = getConverterIndex(toTypeId);
+        if (index != -1) {
+            const auto& viewObject = m_converters[index].second(m_object);
+            const auto& retView = std::any_cast<const _asType&>(viewObject);
+            return std::optional<std::reference_wrapper<const _asType>>(retView);
+        }
+
+        return std::nullopt;
+    }
+
+
     template <alloc _allocOn, class T>
     inline RObject RObject::reflect(T pVal)
     {
@@ -87,33 +78,9 @@ namespace rtl::access {
         {
             return create<_allocOn>(std::string(pVal));
         }
-        else 
+        else
         {
             return create<_allocOn>(pVal);
         }
-    }
-
-
-    template<class _asType>
-    inline std::optional<RObject> RObject::cloneAs()
-    {
-        const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
-
-        if (toTypeId == m_typeId) 
-        {
-            const auto& objValue = as<_asType>();
-            if (m_allocatedOn == alloc::Heap) {
-                return std::optional<RObject>(RObject::reflect<alloc::Heap>(objValue));
-            }
-            else {
-                return std::optional<RObject>(RObject::reflect<alloc::Stack>(objValue));
-            }
-        }
-
-        const auto& index = getConverterIndex(toTypeId);
-        if (index != -1) {
-            return std::optional<RObject>(std::move(m_converters[index].second(*this)));
-        }
-        return std::nullopt;
     }
 }
