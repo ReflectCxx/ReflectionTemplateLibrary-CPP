@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set the project name
-project(ProxyDesignPattern)
+project(CxxTestProxyDesignPattern)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD 20)
 # Enable debug symbols
 #set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
-set(CXX_EXE_NAME ProxyDesignPattern)
+set(CXX_EXE_NAME CxxTestProxyDesignPattern)
 add_executable(${CXX_EXE_NAME} "")
 
 

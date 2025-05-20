@@ -1,7 +1,7 @@
 # CMakeLists.txt for CxxReflectionTests
 cmake_minimum_required(VERSION 3.20)
 
-project(CxxReflectionTests)
+project(CxxRTLUseCaseTests)
 
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
@@ -17,7 +17,7 @@ set(LOCAL_SOURCES
 )
 
 # Add any additional source files if needed
-target_sources(CxxReflectionTests
+target_sources(CxxRTLUseCaseTests
     PUBLIC
 		"${LOCAL_SOURCES}"
 )

@@ -1,7 +1,7 @@
 # CMakeLists.txt for ReflectionTypeRegistration
 cmake_minimum_required(VERSION 3.20)
 
-project(ReflectionTypeRegistration)
+project(CxxRTLTypeRegistration)
 
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
@@ -18,7 +18,7 @@ SET(LOCAL_HEADERS
 )
 
 # Add any additional source files if needed
-target_sources(ReflectionTypeRegistration
+target_sources(CxxRTLTypeRegistration
 	PRIVATE
 		"${LOCAL_SOURCES}"
         "${LOCAL_HEADERS}"

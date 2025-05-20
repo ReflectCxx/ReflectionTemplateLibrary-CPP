@@ -27,7 +27,7 @@ namespace rtl::access {
         const auto& typeId = rtl::detail::TypeId<remove_const_and_reference<T>>::get();
         const auto& typeStr = rtl::detail::TypeId<remove_const_and_reference<T>>::toString();
         const auto& conversions = rtl::detail::RObjectConverter<remove_const_and_reference<T>>::getConversions();
-        return std::move(RObject(std::any(pVal), typeId, typeStr, _allocOn, conversions));
+        return RObject(std::any(pVal), typeId, typeStr, _allocOn, conversions);
     }
 
 

@@ -17,7 +17,9 @@ namespace rtl::detail
 
         template<class _toType>
         static void pushConversion();
-        
+     
+        static bool addKnownConversions();
+
         static const std::vector<std::pair<std::size_t, Converter>>& getConversions();
 	};
 }

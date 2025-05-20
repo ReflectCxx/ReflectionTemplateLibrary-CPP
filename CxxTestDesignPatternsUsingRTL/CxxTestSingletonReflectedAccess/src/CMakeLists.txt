@@ -1,7 +1,7 @@
 # CMakeLists.txt for CxxTypeRegistration
 cmake_minimum_required(VERSION 3.20)
 
-project(SingletonReflectedAccess)
+project(CxxTestSingletonReflectedAccess)
 
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
@@ -16,7 +16,7 @@ SET(LOCAL_HEADERS
 )
 
 # Add any additional source files if needed
-target_sources(SingletonReflectedAccess
+target_sources(CxxTestSingletonReflectedAccess
 	PRIVATE
 		"${LOCAL_SOURCES}"
         "${LOCAL_HEADERS}"
