@@ -48,7 +48,7 @@ namespace rtl::access {
     {
         const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
         if (toTypeId == m_typeId) {
-            return std::optional<std::reference_wrapper<_asType>>(as<_asType>());
+            return std::optional<std::reference_wrapper<const _asType>>(as<const _asType>());
         }
 
         const auto& index = getConverterIndex(toTypeId);

@@ -14,19 +14,16 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        std::any m_object;
-        std::size_t m_typeId;
-        std::string m_typeStr;
-        alloc m_allocatedOn;
+        const std::any m_object;
+        const std::size_t m_typeId;
+        const std::string m_typeStr;
+        const alloc m_allocatedOn;
 
-        const std::vector<std::pair<std::size_t, rtl::detail::Converter>>& m_converters;
-
-        RObject() = default;
+        using Converter = std::pair<std::size_t, rtl::detail::Converter>;
+        const std::vector<Converter>& m_converters;
 
         RObject(std::any pObjRef, std::size_t pTypeId, std::string pTypeStr, alloc pAllocOn, 
-                const std::vector<std::pair<std::size_t, rtl::detail::Converter>>& pConversions);
-
-        const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
+                const std::vector<Converter>& pConversions);
 
         template<class T>
         T& as();
@@ -34,17 +31,16 @@ namespace rtl::access
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
 
+        const std::size_t getConverterIndex(const std::size_t& pToTypeId);
+
     public:
 
         ~RObject() = default;
+        RObject(const RObject&) = default;
+        RObject(RObject&& pOther) = default;
 
-        //Copy not allowed.
-        RObject(const RObject&) = delete;
         RObject& operator=(const RObject&) = delete;
-
-        //Only move allowed.
-        RObject(RObject&& pOther) noexcept;
-        RObject& operator=(RObject&& pOther) noexcept;
+        RObject& operator=(RObject&& pOther) = delete;
 
         GETTER(std::string, TypeStr, m_typeStr)
 
