@@ -7,17 +7,6 @@
 
 #include "RObjectConverters.h"
 
-namespace rtl::detail 
-{
-    std::vector<std::pair<std::size_t, Converter>> RObjectConverter<std::string>::m_converters;
-}
-
-namespace {
-
-    //adding known conversions.
-    static auto _ = rtl::detail::RObjectConverter<std::string>::addKnownConversions();
-}
-
 
 namespace rtl {
 

@@ -1,13 +1,13 @@
 
 #include "TypeId.hpp"
-#include "RObjectConverters.h"
+#include "RObjectConverters.hpp"
 
 namespace rtl::detail
 {
     template<>
     const std::vector<std::pair<std::size_t, Converter>>& RObjectConverter<std::string>::getConversions()
     {
-        return m_converters;
+        return m_conversions;
     }
 
 
@@ -20,7 +20,7 @@ namespace rtl::detail
             auto& srcStr = std::any_cast<const std::string&>(pSrc);
             return std::any(static_cast<const char*>(srcStr.c_str()));
         };
-        m_converters.emplace_back(std::pair(TypeId<const char*>::get(), converter));
+        m_conversions.emplace_back(std::pair(TypeId<const char*>::get(), converter));
     }
 
 
@@ -30,4 +30,10 @@ namespace rtl::detail
         pushConversion<const char*>();
         return false;
     }
+}
+
+namespace {
+
+    //adding known conversions.
+    static auto _ = rtl::detail::RObjectConverter<std::string>::addKnownConversions();
 }

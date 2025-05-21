@@ -11,7 +11,7 @@ namespace rtl::detail
     template<class _fromType>
     class RObjectConverter
     {
-        static std::vector<std::pair<std::size_t, Converter>> m_converters;
+        static std::vector<std::pair<std::size_t, Converter>> m_conversions;
 
     public:
 
