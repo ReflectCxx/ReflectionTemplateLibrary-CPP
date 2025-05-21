@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <optional>
 
@@ -27,60 +27,59 @@ namespace rtl::access {
         const auto& typeId = rtl::detail::TypeId<remove_const_and_reference<T>>::get();
         const auto& typeStr = rtl::detail::TypeId<remove_const_and_reference<T>>::toString();
         const auto& conversions = rtl::detail::RObjectConverter<remove_const_and_reference<T>>::getConversions();
-        return RObject(std::any(pVal), typeId, typeStr, _allocOn, conversions);
+        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, _allocOn, conversions);
     }
 
 
-    template<alloc _allocOn, class T, std::size_t N>
-    inline RObject RObject::reflect(const T(&pStr)[N])
+    template <alloc _allocOn, class T>
+    inline RObject RObject::reflect(T&& pVal)
     {
-        if constexpr (!std::is_same_v<T, char>) {
-            static_assert(false, "RObject: cannot reflect a c-style array, except char[]. Use containers.");
+        if constexpr (is_string_like<std::decay_t<T>>::value) {
+            return create<_allocOn>(std::string(pVal));
         }
         else {
-            return create<_allocOn>(std::string(pStr));
+            return create<_allocOn>(pVal);
+        }
+    }
+
+
+    template<class _asType>
+    const std::size_t RObject::getTypeId()
+    {
+        if constexpr (std::is_same_v<_asType, char>) 
+        {
+            // Special case: char → const char* view if underlying type is std::string
+            if (m_typeId == rtl::detail::TypeId<std::string>::get()) {
+                return rtl::detail::TypeId<const char*>::get();
+            }
+            else {
+                return rtl::detail::TypeId<_asType>::get();
+            }
+        }
+        else {
+            return rtl::detail::TypeId<_asType>::get();
         }
     }
 
 
     template <class _asType>
-    inline std::optional<std::reference_wrapper<const _asType>> RObject::view()
+    inline const _asType* RObject::view()
     {
-        const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
+        static_assert(!std::is_const_v<_asType>, "RObject::view<T>() requires T to be a non-const, non-pointer, non-reference type.");
+        static_assert(!std::is_pointer_v<_asType>, "RObject::view<T>() requires T to be a non-pointer type. Use T, not T*.");
+        static_assert(!std::is_reference_v<_asType>, "RObject::view<T>() requires T to be a non-reference type. Use T, not T& or T&&.");
+
+        const auto& toTypeId = getTypeId<_asType>();
         if (toTypeId == m_typeId) {
-            return std::optional<std::reference_wrapper<const _asType>>(as<const _asType>());
+            return &as<const _asType>();
         }
 
         const auto& index = getConverterIndex(toTypeId);
         if (index != -1) {
-            const auto& viewObject = m_converters[index].second(m_object);
-            const auto& retView = std::any_cast<const _asType&>(viewObject);
-            return std::optional<std::reference_wrapper<const _asType>>(retView);
+            const auto& converted = m_converters[index].second(m_object);
+            const _asType* viewPtr = std::any_cast<const _asType*>(converted);
+            return viewPtr;
         }
-
-        return std::nullopt;
-    }
-
-
-    template <alloc _allocOn, class T>
-    inline RObject RObject::reflect(T pVal)
-    {
-        if constexpr (std::is_array_v<T>) 
-        {
-            if constexpr (!std::is_same_v<std::remove_cv_t<std::remove_extent_t<T>>, char>) {
-                static_assert(false, "RObject: cannot reflect a c-style array, except char[]. Use containers.");
-            }
-            else {
-                return create<_allocOn>(std::string(pVal));
-            }
-        }
-        else if constexpr (std::is_same_v<T, const char*>) 
-        {
-            return create<_allocOn>(std::string(pVal));
-        }
-        else
-        {
-            return create<_allocOn>(pVal);
-        }
+        return nullptr;
     }
 }

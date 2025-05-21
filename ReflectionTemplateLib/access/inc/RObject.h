@@ -31,6 +31,9 @@ namespace rtl::access
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
 
+        template<class T>
+        const std::size_t getTypeId();
+
         const std::size_t getConverterIndex(const std::size_t& pToTypeId);
 
     public:
@@ -44,17 +47,14 @@ namespace rtl::access
 
         GETTER(std::string, TypeStr, m_typeStr)
 
-        template <class T>
+        template <class _asType>
         const bool isReflecting();
 
-        template <class T>
-        std::optional<std::reference_wrapper<const T>> view();
+        template <class _asType>
+        const _asType* view();
 
         template <alloc _allocOn, class T>
-        static RObject reflect(T pVal);
-
-        template <alloc _allocOn, class T, std::size_t N>
-        static RObject reflect(const T(&pStr)[N]);
+        static RObject reflect(T&& pVal);
 
         //friends :)
         template<class _fromType>

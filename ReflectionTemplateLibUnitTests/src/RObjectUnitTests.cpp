@@ -6,47 +6,48 @@
 
 using namespace rtl::access;
 
-//Initialize the reflection system to initialize the RObject's converters.
+//Initialize the reflection-system to initialize the RObject's converter-system.
 static rtl::access::CxxMirror reflectionSystem({});
 
 namespace rtl
 {
     namespace unit_test
     {
-        TEST(RObjectTest, reflect_as_string_containing_c_style_char_litral)
+        TEST(RObjectTest, reflect_a_string_and_view_as_const_char_pointer)
         {
-            //create an RObject reflecting value with type 'const char *'.
+            //Create an RObject that reflects a string value (accepts const char[], const char*, std::string, or std::string_view).
             RObject robj = RObject::reflect<alloc::Stack>(STRING_CHAR_POINTER);
 
-            //check if the RObject reflects(contains) value with type 'const char *'.
+            //check if the RObject reflects(or contains) value type 'const char *'.
             ASSERT_TRUE(robj.isReflecting<const char *>());            
             
-            //get the view as type 'const char*', which is the original type of the value assigned.
-            auto constCharPtrView = robj.view<const char*>();
+            //get the view as type 'const char*'.
+            const char* str = robj.view<char>();
 
-            //returns std::optional, containing reference to contained value, may be empty if types not true or not convertible.
-            ASSERT_TRUE(constCharPtrView.has_value());
-            
-            //Returns 'const char* const', assigned to std::string.
-            std::string str0 = constCharPtrView->get();
+            //robj.view<char>() returns nullptr, if underlying data is convertible to 'const char*'.
+            ASSERT_TRUE(str != nullptr);
 
             //Check if the value contained is same as given initially.
-            ASSERT_EQ(str0, STRING_CHAR_POINTER);
+            ASSERT_EQ(std::string(str), STRING_CHAR_POINTER);
+        }
 
-            //check if the RObject reflects(contains) value with type 'std::string'
+
+        TEST(RObjectTest, reflect_a_string_and_view_as_std_string)
+        {
+            //Create an RObject that reflects a string value (accepts const char[], const char*, std::string, or std::string_view).
+            RObject robj = RObject::reflect<alloc::Stack>(STRING_CHAR_POINTER);
+
+            //check if the RObject reflects(or contains) value type 'std::string'.
             ASSERT_TRUE(robj.isReflecting<std::string>());
 
-            //get the view as type 'std::string', which is not the original but 'const char*' can be converted to 'std::string' implicitly.
-            auto stdStringView = robj.view<std::string>();
+            //get the view as type 'std::string'.
+            auto str = robj.view<std::string>();
 
-            //returns std::optional, containing reference to contained value, may be empty if 'const char*' cannot be converted to 'std::string'.
-            ASSERT_TRUE(stdStringView.has_value());
-            
-            //Returns 'const std::string', assigned to std::string.
-            std::string str1 = stdStringView->get();
+            //robj.view<std::string>() returns nullptr, if underlying data is not convertible to 'std::string'.
+            ASSERT_TRUE(str != nullptr);
 
             //Check if the value contained is same as given initially.
-            ASSERT_EQ(str1, STRING_CHAR_POINTER);
+            ASSERT_EQ(*str, STRING_CHAR_POINTER);
         }
     }
 }

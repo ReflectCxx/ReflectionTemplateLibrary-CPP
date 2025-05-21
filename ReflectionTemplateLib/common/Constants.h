@@ -1,16 +1,30 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <type_traits>
 
 namespace rtl {
 
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
+    template<typename T>
+    struct is_string_like : std::false_type {};
+
+    template<>
+    struct is_string_like<std::string> : std::true_type {};
+
+    template<>
+    struct is_string_like<std::string_view> : std::true_type {};
+
+    template<>
+    struct is_string_like<const char*> : std::true_type {};
+
+    template<std::size_t N>
+    struct is_string_like<const char[N]> : std::true_type {};
 
     template <typename T>
     using remove_const_and_reference = std::remove_const_t<std::remove_reference_t<T>>;
-
 
     template <typename T>
     using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;

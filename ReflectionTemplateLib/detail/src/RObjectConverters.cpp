@@ -17,8 +17,8 @@ namespace rtl::detail
     {
         const auto& converter = [](const std::any& pSrc)-> std::any
         {
-            auto srcStr = std::any_cast<const std::string&>(pSrc).c_str();
-            return std::make_any<const char*>(srcStr);
+            auto& srcStr = std::any_cast<const std::string&>(pSrc);
+            return std::any(static_cast<const char*>(srcStr.c_str()));
         };
         m_converters.emplace_back(std::pair(TypeId<const char*>::get(), converter));
     }
