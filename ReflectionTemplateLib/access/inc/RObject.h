@@ -7,10 +7,17 @@
 
 #include "Constants.h"
 
-#include "RObjectConverters.hpp"
+namespace rtl::detail 
+{
+    template<class _fromType>
+    class RObjectConverter;
+}
+
 
 namespace rtl::access
 {
+    using Converter = std::pair<std::size_t, std::function< std::any(const std::any&) >>;
+
     //Reflecting the object within.
     class RObject
     {
@@ -18,23 +25,21 @@ namespace rtl::access
         const std::size_t m_typeId;
         const std::string m_typeStr;
         const alloc m_allocatedOn;
-
-        using Converter = std::pair<std::size_t, rtl::detail::Converter>;
         const std::vector<Converter>& m_converters;
 
-        RObject(std::any pObjRef, std::size_t pTypeId, std::string pTypeStr, alloc pAllocOn, 
+        RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr, alloc pAllocOn, 
                 const std::vector<Converter>& pConversions);
 
         template<class T>
-        T& as();
+        T& as() const;
 
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
 
         template<class T>
-        const std::size_t getTypeId();
+        const std::size_t getTypeId() const;
 
-        const std::size_t getConverterIndex(const std::size_t& pToTypeId);
+        const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
 
     public:
 
@@ -46,12 +51,13 @@ namespace rtl::access
         RObject& operator=(RObject&& pOther) = delete;
 
         GETTER(std::string, TypeStr, m_typeStr)
+        GETTER_BOOL(Empty, (!m_object.has_value()))
 
         template <class _asType>
-        const bool isReflecting();
+        const bool isReflecting() const;
 
         template <class _asType>
-        const _asType* view();
+        const _asType* view() const;
 
         template <alloc _allocOn, class T>
         static RObject reflect(T&& pVal);

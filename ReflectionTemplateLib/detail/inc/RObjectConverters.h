@@ -3,6 +3,7 @@
 #include <any>
 #include <vector>
 #include <functional>
+#include "Constants.h"
 
 namespace rtl::detail
 {
@@ -11,15 +12,17 @@ namespace rtl::detail
     template<class _fromType>
     class RObjectConverter
     {
-        static std::vector<std::pair<std::size_t, Converter>> m_conversions;
-
-    public:
+        static std::vector<std::pair<std::size_t, Converter>>& conversions();
 
         template<class _toType>
         static void pushConversion();
-     
-        static bool addKnownConversions();
 
-        static const std::vector<std::pair<std::size_t, Converter>>& getConversions();
+        static bool pushKnownConversions();
+
+    public:
+
+        static const std::vector<std::pair<std::size_t, Converter>>& getConversions() {
+            return conversions();
+        }
 	};
 }

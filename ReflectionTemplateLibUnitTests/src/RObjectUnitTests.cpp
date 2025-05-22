@@ -6,9 +6,6 @@
 
 using namespace rtl::access;
 
-//Initialize the reflection-system to initialize the RObject's converter-system.
-static rtl::access::CxxMirror reflectionSystem({});
-
 namespace rtl
 {
     namespace unit_test

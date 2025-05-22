@@ -3,18 +3,19 @@
 #include <optional>
 
 #include "RObject.h"
+#include "RObjectConverters.h"
 
 namespace rtl::access {
 
     template<class T>
-    inline T& RObject::as()
+    inline T& RObject::as() const
     {
         return std::any_cast<T&>(m_object);
     }
 
 
     template<class T>
-    inline const bool RObject::isReflecting()
+    inline const bool RObject::isReflecting() const
     {
         const auto& typeId = rtl::detail::TypeId<T>::get();
         return (typeId == m_typeId || getConverterIndex(typeId) != -1);
@@ -24,9 +25,10 @@ namespace rtl::access {
     template <alloc _allocOn, class T>
     inline RObject RObject::create(T&& pVal)
     {
-        const auto& typeId = rtl::detail::TypeId<remove_const_and_reference<T>>::get();
-        const auto& typeStr = rtl::detail::TypeId<remove_const_and_reference<T>>::toString();
-        const auto& conversions = rtl::detail::RObjectConverter<remove_const_and_reference<T>>::getConversions();
+        using _type = remove_const_and_reference<T>;
+        const auto& typeId = rtl::detail::TypeId<_type>::get();
+        const auto& typeStr = rtl::detail::TypeId<_type>::toString();
+        const auto& conversions = rtl::detail::RObjectConverter<_type>::getConversions();
         return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, _allocOn, conversions);
     }
 
@@ -44,7 +46,7 @@ namespace rtl::access {
 
 
     template<class _asType>
-    const std::size_t RObject::getTypeId()
+    inline const std::size_t RObject::getTypeId() const
     {
         if constexpr (std::is_same_v<_asType, char>) 
         {
@@ -63,7 +65,7 @@ namespace rtl::access {
 
 
     template <class _asType>
-    inline const _asType* RObject::view()
+    inline const _asType* RObject::view() const
     {
         static_assert(!std::is_const_v<_asType>, "RObject::view<T>() requires T to be a non-const, non-pointer, non-reference type.");
         static_assert(!std::is_pointer_v<_asType>, "RObject::view<T>() requires T to be a non-pointer type. Use T, not T*.");
