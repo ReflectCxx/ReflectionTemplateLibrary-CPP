@@ -14,7 +14,18 @@ namespace rtl::detail
 			initialized = true;
 			pushKnownConversions();
 		}
-
 		return converters;
+	}
+
+	template<class _fromType>
+	template<class _toType>
+	void RObjectConverter<_fromType>::pushConversion() 
+	{
+		const auto& conversion = [](const std::any& pSrc)-> std::any 
+		{
+			const auto& srcObj = std::any_cast<const _fromType&>(pSrc);
+			return std::any(static_cast<_toType>(srcObj));
+		};
+		conversions().emplace_back(std::pair(TypeId<_toType>::get(), conversion));
 	}
 }

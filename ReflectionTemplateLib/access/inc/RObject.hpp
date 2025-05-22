@@ -8,9 +8,9 @@
 namespace rtl::access {
 
     template<class T>
-    inline T& RObject::as() const
+    inline const T& RObject::as() const
     {
-        return std::any_cast<T&>(m_object);
+        return std::any_cast<const T&>(m_object);
     }
 
 
@@ -64,24 +64,37 @@ namespace rtl::access {
     }
 
 
-    template <class _asType>
-    inline const _asType* RObject::view() const
+    template <class _asConstPtrT, std::enable_if_t<std::is_pointer_v<_asConstPtrT>, int>>
+    inline _asConstPtrT RObject::view() const
     {
-        static_assert(!std::is_const_v<_asType>, "RObject::view<T>() requires T to be a non-const, non-pointer, non-reference type.");
-        static_assert(!std::is_pointer_v<_asType>, "RObject::view<T>() requires T to be a non-pointer type. Use T, not T*.");
-        static_assert(!std::is_reference_v<_asType>, "RObject::view<T>() requires T to be a non-reference type. Use T, not T& or T&&.");
+        //using _asConstT = std::remove_pointer_t<_asConstPtrT>;
+        //using _asT = std::remove_const_t<_asConstT>;
 
-        const auto& toTypeId = getTypeId<_asType>();
-        if (toTypeId == m_typeId) {
-            return &as<const _asType>();
-        }
+        //const auto& toTypeId = rtl::detail::TypeId<_asT>::get();
 
-        const auto& index = getConverterIndex(toTypeId);
-        if (index != -1) {
-            const auto& converted = m_converters[index].second(m_object);
-            const _asType* viewPtr = std::any_cast<const _asType*>(converted);
-            return viewPtr;
-        }
-        return nullptr;
+        //if (toTypeId == m_typeId) {
+        //    // Only allow const pointer types
+        //    static_assert(std::is_const_v<RawType>,
+        //        "Cannot get non-const pointer from const RObject. Use view<const T*>() instead.");
+        //    return static_cast<_asConstPtrT>(&as<RawType>());
+        //}
+        //return nullptr;
+
+        ////using _rawType = std::remove_cv_t<std::remove_pointer_t<_asType>>;
+        //
+        ////const auto& rawTypeId = rtl::detail::TypeId<_rawType>::get();
+        //const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
+
+        //if (toTypeId == m_typeId) {
+        //    return static_cast<const _asType>(&as<std::remove_pointer_t<_asType>>());
+        //}
+
+        ////const auto& index = getConverterIndex(toTypeId);
+        ////if (index != -1) {
+        ////    const auto& converted = m_converters[index].second(m_object);
+        ////    const _asType* viewPtr = std::any_cast<const _asType*>(converted);
+        ////    return viewPtr;
+        ////}
+        //return nullptr;
     }
 }

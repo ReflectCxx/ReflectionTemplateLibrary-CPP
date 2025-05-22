@@ -21,6 +21,7 @@ namespace rtl::detail
     bool RObjectConverter<std::string>::pushKnownConversions()
     {
         pushConversion<const char*>();
+        pushConversion<std::string_view>();
         return false;
     }
 }

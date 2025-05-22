@@ -31,7 +31,7 @@ namespace rtl::access
                 const std::vector<Converter>& pConversions);
 
         template<class T>
-        T& as() const;
+        const T& as() const;
 
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
@@ -56,8 +56,11 @@ namespace rtl::access
         template <class _asType>
         const bool isReflecting() const;
 
-        template <class _asType>
-        const _asType* view() const;
+        template <class _asConstPtrT, std::enable_if_t<std::is_pointer_v<_asConstPtrT>, int> = 0>
+        _asConstPtrT view() const;
+
+        template <class _asType, std::enable_if_t<!std::is_pointer_v<_asType>, int> = 0>
+        std::optional<const _asType> view() const;
 
         template <alloc _allocOn, class T>
         static RObject reflect(T&& pVal);
