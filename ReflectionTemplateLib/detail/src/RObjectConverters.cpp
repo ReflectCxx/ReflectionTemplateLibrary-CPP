@@ -17,6 +17,19 @@ namespace rtl::detail
     }
 
 
+    //template<>
+    //template<>
+    //void RObjectConverter<std::string>::pushConversion<std::string_view>()
+    //{
+    //    const auto& converter = [](const std::any& pSrc)-> std::any
+    //    {
+    //        auto& srcStr = std::any_cast<const std::string&>(pSrc);
+    //        return std::any(static_cast<const char*>(srcStr.c_str()));
+    //    };
+    //    conversions().emplace_back(std::pair(TypeId<const char*>::get(), converter));
+    //}
+
+
     template<>
     bool RObjectConverter<std::string>::pushKnownConversions()
     {

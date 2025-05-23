@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "Constants.h"
+#include "cref_view.h"
 
 namespace rtl::detail 
 {
@@ -36,8 +37,8 @@ namespace rtl::access
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
 
-        template<class T>
-        const std::size_t getTypeId() const;
+        //template<class T>
+        //const std::size_t getTypeId() const;
 
         const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
 
@@ -56,11 +57,11 @@ namespace rtl::access
         template <class _asType>
         const bool isReflecting() const;
 
-        template <class _asConstPtrT, std::enable_if_t<std::is_pointer_v<_asConstPtrT>, int> = 0>
-        _asConstPtrT view() const;
+        template<class _asType>
+        rtl::cref_view<_asType> view() const;
 
-        template <class _asType, std::enable_if_t<!std::is_pointer_v<_asType>, int> = 0>
-        std::optional<const _asType> view() const;
+        //template <class _asType, std::enable_if_t<!std::is_pointer_v<_asType>, int> = 0>
+        //std::optional<const _asType> view() const;
 
         template <alloc _allocOn, class T>
         static RObject reflect(T&& pVal);
