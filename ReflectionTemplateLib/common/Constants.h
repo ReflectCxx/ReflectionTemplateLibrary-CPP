@@ -18,6 +18,9 @@ namespace rtl {
     struct is_string_like<std::string_view> : std::true_type {};
 
     template<>
+    struct is_string_like<char*> : std::true_type {};
+
+    template<>
     struct is_string_like<const char*> : std::true_type {};
 
     template<std::size_t N>
