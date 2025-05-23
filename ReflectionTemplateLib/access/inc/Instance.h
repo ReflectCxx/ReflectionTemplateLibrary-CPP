@@ -74,7 +74,7 @@ namespace rtl {
             GETTER(TypeQ, Qualifier, m_qualifier);
 
             //checks if object constructed via reflection on heap or stack.
-            GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::access::alloc::Heap));
+            GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::alloc::Heap));
 
             //checks if it contains object constructed via reflection.
             GETTER_BOOL(Empty, (!m_anyObject.has_value()));

@@ -66,16 +66,13 @@ namespace rtl {
     };
 
 
-    namespace access 
+    //Allocation type.
+    enum class alloc
     {
-        //Allocation type.
-        enum class alloc
-        {
-            None = -1,
-            Stack = 0,
-            Heap = 1,
-        };
-    }
+        None = -1,
+        Stack = 0,
+        Heap = 1,
+    };
 
 
     //Qualifier type.

@@ -11,7 +11,7 @@ namespace proxy_test
      */
     Proxy::Proxy()
     {
-        constexpr auto allocType = rtl::access::alloc::Heap;
+        constexpr auto allocType = rtl::alloc::Heap;
         auto [status, obj] = OriginalReflection::getClass()->instance<allocType>();
         if (status == rtl::Error::None) {
             m_originalObj = obj;

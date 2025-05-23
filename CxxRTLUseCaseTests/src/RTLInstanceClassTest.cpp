@@ -22,7 +22,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
             
-            auto [status, dateObj] = structDate->instance<alloc::Stack>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Stack>();
 			ASSERT_TRUE(status);
 
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -62,7 +62,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Heap>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -102,7 +102,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Stack>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Stack>();
             ASSERT_TRUE(status);
 
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -142,7 +142,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Heap>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -182,12 +182,12 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Heap>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
             {
-                auto [status0, instance] = structDate->instance<alloc::Heap>();
+                auto [status0, instance] = structDate->instance<rtl::alloc::Heap>();
                 ASSERT_TRUE(status0);
 
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
@@ -224,7 +224,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Stack>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Stack>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(dateObj.isEmpty());
@@ -264,7 +264,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Heap>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(dateObj.isEmpty());
@@ -307,7 +307,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Stack>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Stack>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(dateObj.isEmpty());
@@ -348,7 +348,7 @@ namespace rtl_tests
             optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
             ASSERT_TRUE(structDate);
 
-            auto [status, dateObj] = structDate->instance<alloc::Heap>();
+            auto [status, dateObj] = structDate->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(dateObj.isEmpty());
@@ -389,7 +389,7 @@ namespace rtl_tests
             optional<Record> animal = cxxMirror.getRecord(animal::class_);
             ASSERT_TRUE(animal);
 
-            auto [status, animalObj] = animal->instance<alloc::Heap>();
+            auto [status, animalObj] = animal->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(animalObj.isEmpty());
@@ -441,7 +441,7 @@ namespace rtl_tests
             optional<Record> animal = cxxMirror.getRecord(animal::class_);
             ASSERT_TRUE(animal);
 
-            auto [status, animalObj] = animal->instance<alloc::Stack>();
+            auto [status, animalObj] = animal->instance<rtl::alloc::Stack>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(animalObj.isEmpty());
@@ -493,7 +493,7 @@ namespace rtl_tests
             optional<Record> animal = cxxMirror.getRecord(animal::class_);
             ASSERT_TRUE(animal);
 
-            auto [status, animalObj] = animal->instance<alloc::Heap>();
+            auto [status, animalObj] = animal->instance<rtl::alloc::Heap>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(animalObj.isEmpty());
@@ -546,7 +546,7 @@ namespace rtl_tests
             optional<Record> animal = cxxMirror.getRecord(animal::class_);
             ASSERT_TRUE(animal);
 
-            auto [status, animalObj] = animal->instance<alloc::Stack>();
+            auto [status, animalObj] = animal->instance<rtl::alloc::Stack>();
             ASSERT_TRUE(status);
 
             ASSERT_FALSE(animalObj.isEmpty());

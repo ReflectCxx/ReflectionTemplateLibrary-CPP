@@ -72,7 +72,7 @@ namespace rtl {
     */  template<typename _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstructor() const
         {
-            using Container = detail::FunctorContainer<rtl::access::alloc, remove_const_if_not_reference<_ctorSignature>...>;
+            using Container = detail::FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
             const detail::FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list, at index FunctorIdx::ONE.

@@ -28,26 +28,26 @@ namespace rtl::access {
     }
 
 
-    template <alloc _allocOn, class T>
+    template <class T>
     inline RObject RObject::reflect(T&& pVal)
     {
         if constexpr (is_string_like<std::decay_t<T>>::value) {
-            return create<_allocOn>(std::string(pVal));
+            return create(std::string(pVal));
         }
         else {
-            return create<_allocOn>(pVal);
+            return create(pVal);
         }
     }
 
 
-    template <alloc _allocOn, class T>
+    template <class T>
     inline RObject RObject::create(T&& pVal)
     {
         using _type = remove_const_and_reference<T>;
         const auto& typeId = rtl::detail::TypeId<_type>::get();
         const auto& typeStr = rtl::detail::TypeId<_type>::toString();
         const auto& conversions = rtl::detail::RObjectConverter<_type>::getConversions();
-        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, _allocOn, conversions);
+        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, conversions);
     }
 
 
