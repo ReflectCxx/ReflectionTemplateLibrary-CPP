@@ -46,12 +46,12 @@ namespace rtl::access {
 
 
     template <class _asType>
-    inline rtl::cref_view<_asType> RObject::view() const
+    inline std::optional<rtl::cref_view<_asType>> RObject::view() const
     {
         const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
 
         if (toTypeId == m_typeId) {
-            return static_cast<const _asType*>(&as<_asType>());
+            return std::make_optional(cref_view<_asType>(as<_asType>()));
         }
 
         const auto& index = getConverterIndex(toTypeId);
@@ -59,10 +59,10 @@ namespace rtl::access {
             const std::any& converted = m_converters[index].second(m_object);
             if (converted.has_value()) {
                 const _asType& viewRef = std::any_cast<const _asType&>(converted);
-                return &viewRef;
+                return std::make_optional(cref_view<_asType>(std::move(viewRef)));
             }
         }
-        return nullptr;
+        return std::nullopt;
     }
 }
 

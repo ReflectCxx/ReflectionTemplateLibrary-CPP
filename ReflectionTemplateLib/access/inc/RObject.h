@@ -58,7 +58,7 @@ namespace rtl::access
         const bool isReflecting() const;
 
         template<class _asType>
-        rtl::cref_view<_asType> view() const;
+        std::optional<rtl::cref_view<_asType>> view() const;
 
         //template <class _asType, std::enable_if_t<!std::is_pointer_v<_asType>, int> = 0>
         //std::optional<const _asType> view() const;
