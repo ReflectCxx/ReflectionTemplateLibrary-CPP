@@ -37,9 +37,6 @@ namespace rtl::access
         template <alloc _allocOn, class T>
         static RObject create(T&& pVal);
 
-        //template<class T>
-        //const std::size_t getTypeId() const;
-
         const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
 
     public:
@@ -52,16 +49,14 @@ namespace rtl::access
         RObject& operator=(RObject&& pOther) = delete;
 
         GETTER(std::string, TypeStr, m_typeStr)
-        GETTER_BOOL(Empty, (!m_object.has_value()))
+
+        const bool isReflecting() const;
 
         template <class _asType>
         const bool isReflecting() const;
 
         template<class _asType>
         std::optional<rtl::cref_view<_asType>> view() const;
-
-        //template <class _asType, std::enable_if_t<!std::is_pointer_v<_asType>, int> = 0>
-        //std::optional<const _asType> view() const;
 
         template <alloc _allocOn, class T>
         static RObject reflect(T&& pVal);

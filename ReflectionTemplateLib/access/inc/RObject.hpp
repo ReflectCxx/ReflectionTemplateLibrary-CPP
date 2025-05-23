@@ -14,22 +14,17 @@ namespace rtl::access {
     }
 
 
+    inline const bool RObject::isReflecting() const
+    {
+        return (m_object.has_value());
+    }
+
+
     template<class T>
     inline const bool RObject::isReflecting() const
     {
         const auto& typeId = rtl::detail::TypeId<T>::get();
         return (typeId == m_typeId || getConverterIndex(typeId) != -1);
-    }
-
-
-    template <alloc _allocOn, class T>
-    inline RObject RObject::create(T&& pVal)
-    {
-        using _type = remove_const_and_reference<T>;
-        const auto& typeId = rtl::detail::TypeId<_type>::get();
-        const auto& typeStr = rtl::detail::TypeId<_type>::toString();
-        const auto& conversions = rtl::detail::RObjectConverter<_type>::getConversions();
-        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, _allocOn, conversions);
     }
 
 
@@ -45,48 +40,35 @@ namespace rtl::access {
     }
 
 
+    template <alloc _allocOn, class T>
+    inline RObject RObject::create(T&& pVal)
+    {
+        using _type = remove_const_and_reference<T>;
+        const auto& typeId = rtl::detail::TypeId<_type>::get();
+        const auto& typeStr = rtl::detail::TypeId<_type>::toString();
+        const auto& conversions = rtl::detail::RObjectConverter<_type>::getConversions();
+        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, _allocOn, conversions);
+    }
+
+
     template <class _asType>
     inline std::optional<rtl::cref_view<_asType>> RObject::view() const
     {
         const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
-
         if (toTypeId == m_typeId) {
-            return std::make_optional(cref_view<_asType>(as<_asType>()));
+            const auto& viewRef = as<_asType>();
+            return std::optional<rtl::cref_view<_asType>>(std::in_place, viewRef);
         }
 
         const auto& index = getConverterIndex(toTypeId);
         if (index != -1) {
             const std::any& converted = m_converters[index].second(m_object);
             if (converted.has_value()) {
-                const _asType& viewRef = std::any_cast<const _asType&>(converted);
-                return std::make_optional(cref_view<_asType>(std::move(viewRef)));
+                const auto& viewCopy = std::any_cast<const _asType&>(converted);
+                return std::optional<rtl::cref_view<_asType>>(std::in_place, _asType(viewCopy));
+
             }
         }
         return std::nullopt;
     }
 }
-
-
-
-
-
-
-
-
-//template<class _asType>
-//inline const std::size_t RObject::getTypeId() const
-//{
-//    if constexpr (std::is_same_v<_asType, char>)
-//    {
-//        // Special case: char → const char* view if underlying type is std::string
-//        if (m_typeId == rtl::detail::TypeId<std::string>::get()) {
-//            return rtl::detail::TypeId<const char*>::get();
-//        }
-//        else {
-//            return rtl::detail::TypeId<_asType>::get();
-//        }
-//    }
-//    else {
-//        return rtl::detail::TypeId<_asType>::get();
-//    }
-//}
