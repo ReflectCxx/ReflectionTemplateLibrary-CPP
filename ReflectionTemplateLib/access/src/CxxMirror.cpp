@@ -5,7 +5,7 @@
 #include "CxxMirror.h"
 #include "Constants.h"
 
-#include "RObjectConverters.hpp"
+#include "RObjectConvertersInit.h"
 
 namespace rtl::detail 
 {
@@ -30,8 +30,7 @@ namespace rtl {
         * the vector is simply forwarded to the base class constructor.
     */  CxxMirror::CxxMirror(const std::vector<Function>& pFunctions) : detail::CxxReflection(pFunctions) 
         {
-            rtl::detail::RObjectConverter<std::string>::pushConversion<const char*>();
-            rtl::detail::RObjectConverter<std::string>::pushConversion<std::string_view>();
+            rtl::detail::RObjectConverterInit::registerConverters();
         }
 
 

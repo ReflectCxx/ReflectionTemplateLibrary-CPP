@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+
+#include "TypeId.h"
 #include "RObjectConverters.h"
 
 namespace rtl::detail
@@ -37,6 +40,9 @@ namespace rtl::detail
             }
             return std::any();
         };
+
+        //std::cout << "\nPush: from(" << TypeId<_fromType>::toString() << ")->to(" << TypeId<_toType>::toString() << ")";
+
 		conversions().emplace_back(std::pair(TypeId<_toType>::get(), conversion));
 	}
 }

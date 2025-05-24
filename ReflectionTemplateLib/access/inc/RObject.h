@@ -50,10 +50,11 @@ namespace rtl::access
 
         GETTER(std::string, TypeStr, m_typeStr)
 
-        const bool isReflecting() const;
+        template <class T>
+        const bool isTrueType() const;
 
         template <class _asType>
-        const bool isReflecting() const;
+        const bool canReflectAs() const;
 
         template<class _asType>
         std::optional<rtl::cref_view<_asType>> view() const;

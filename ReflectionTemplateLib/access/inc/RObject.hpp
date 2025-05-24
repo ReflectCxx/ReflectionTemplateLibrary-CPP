@@ -13,15 +13,15 @@ namespace rtl::access {
         return std::any_cast<const T&>(m_object);
     }
 
-
-    inline const bool RObject::isReflecting() const
+    template <class T>
+    inline const bool RObject::isTrueType() const
     {
-        return (m_object.has_value());
+        return (m_typeId == rtl::detail::TypeId<T>::get());
     }
 
 
     template<class T>
-    inline const bool RObject::isReflecting() const
+    inline const bool RObject::canReflectAs() const
     {
         const auto& typeId = rtl::detail::TypeId<T>::get();
         return (typeId == m_typeId || getConverterIndex(typeId) != -1);
