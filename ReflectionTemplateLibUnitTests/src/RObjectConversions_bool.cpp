@@ -1,18 +1,20 @@
 ﻿
 #include <gtest/gtest.h>
 
-#include "RTLibInterface.h"
-#include "RObjectUnitTests_strings.h"
+#include "ReflectionSystem.h"
 
 using namespace rtl::access;
 
-static CxxMirror reflectionSystem({});
+namespace
+{
+    static bool _= rtl::unit_test::ReflectionSystem::init();
+}
 
 namespace rtl
 {
     namespace unit_test
     {
-        TEST(RObject_podTest, reflect_bool_view_as_bool)
+        TEST(RObject_bool, reflect_bool_view_as_bool)
         {
             // Reflect a bool value into RObject
             RObject robj = RObject::reflect(true);
@@ -37,7 +39,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_podTest, reflect_bool_view_as_int)
+        TEST(RObject_bool, reflect_bool_view_as_int)
         {
             // Reflect a bool value (false) into RObject
             RObject robj = RObject::reflect(false);
@@ -63,7 +65,7 @@ namespace rtl
 
 
         // Test reflecting a bool and viewing it as char
-        TEST(RObject_podTest, reflect_bool_view_as_char)
+        TEST(RObject_bool, reflect_bool_view_as_char)
         {
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
@@ -89,7 +91,7 @@ namespace rtl
 
 
         // Test reflecting a bool and viewing it as signed char
-        TEST(RObject_podTest, reflect_bool_view_as_signed_char)
+        TEST(RObject_bool, reflect_bool_view_as_signed_char)
         {
             // Reflect the value `false` into RObject
             RObject robj = RObject::reflect(false);
@@ -115,7 +117,7 @@ namespace rtl
 
 
         // Test reflecting a bool and viewing it as unsigned char
-        TEST(RObject_podTest, reflect_bool_view_as_unsigned_char)
+        TEST(RObject_bool, reflect_bool_view_as_unsigned_char)
         {
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
@@ -141,7 +143,7 @@ namespace rtl
 
 
         // Test reflecting a bool and viewing it as short
-        TEST(RObject_podTest, reflect_bool_view_as_short)
+        TEST(RObject_bool, reflect_bool_view_as_short)
         {
             // Reflect the value `false` into RObject
             RObject robj = RObject::reflect(false);
@@ -167,7 +169,7 @@ namespace rtl
 
 
         // Test reflecting a bool and viewing it as unsigned short
-        TEST(RObject_podTest, reflect_bool_view_as_unsigned_short)
+        TEST(RObject_bool, reflect_bool_view_as_unsigned_short)
         {
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
