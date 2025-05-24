@@ -1,6 +1,8 @@
 
-#include "TypeId.hpp"
+#include "TypeId.h"
 #include "RObjectConverters.hpp"
+
+#include <iostream>
 
 namespace rtl::detail
 {
@@ -15,13 +17,5 @@ namespace rtl::detail
             return std::any(static_cast<const _toType&>(srcObj.c_str()));
         };
         conversions().emplace_back(std::pair(TypeId<_toType>::get(), conversion));
-    }
-
-    template<>
-    bool RObjectConverter<std::string>::pushKnownConversions()
-    {
-        pushConversion<std::string_view>();
-        pushConversion<const char*>();
-        return false;
     }
 }

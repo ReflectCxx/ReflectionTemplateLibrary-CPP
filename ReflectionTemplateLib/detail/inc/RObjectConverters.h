@@ -5,6 +5,10 @@
 #include <functional>
 #include "Constants.h"
 
+namespace rtl::access {
+    class CxxMirror;
+}
+
 namespace rtl::detail
 {
     using Converter = std::function< std::any(const std::any&) >;
@@ -14,15 +18,16 @@ namespace rtl::detail
     {
         static std::vector<std::pair<std::size_t, Converter>>& conversions();
 
-        template<class _toType>
-        static void pushConversion();
-
-        static bool pushKnownConversions();
+        template<class _toType> static void pushConversion();
 
     public:
 
-        static const std::vector<std::pair<std::size_t, Converter>>& getConversions() {
-            return conversions();
-        }
+        static const std::vector<std::pair<std::size_t, Converter>>& getConversions();
+
+        friend rtl::access::CxxMirror;
 	};
+
+    template<>
+    template<>
+    void RObjectConverter<std::string>::pushConversion<const char*>();
 }

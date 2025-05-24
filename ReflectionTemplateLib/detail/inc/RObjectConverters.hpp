@@ -5,21 +5,23 @@
 namespace rtl::detail
 {
     template<class _fromType>
-    std::vector<std::pair<std::size_t, Converter>>& rtl::detail::RObjectConverter<_fromType>::conversions()
+    inline const std::vector<std::pair<std::size_t, Converter>>& RObjectConverter<_fromType>::getConversions()
     {
-        static std::atomic_bool initialized = false;
+        return conversions();
+    }
+
+
+    template<class _fromType>
+    inline std::vector<std::pair<std::size_t, Converter>>& rtl::detail::RObjectConverter<_fromType>::conversions()
+    {
         static std::vector<std::pair<std::size_t, Converter>> converters;
-        if (!initialized) {
-            initialized = true;
-            pushKnownConversions();
-        }
         return converters;
     }
 
 
     template<class _fromType>
     template<class _toType>
-    void RObjectConverter<_fromType>::pushConversion()
+    inline void RObjectConverter<_fromType>::pushConversion()
     {
         const auto& conversion = [](const std::any& pSrc)-> std::any
         {

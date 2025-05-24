@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RStatus.h"
-#include "TypeId.hpp"
+#include "TypeId.h"
 #include "SetupMethod.h"
 #include "Instance.h"
 
