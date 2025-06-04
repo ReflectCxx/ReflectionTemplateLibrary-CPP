@@ -24,7 +24,7 @@ namespace rtl {
     {
     /*  only constructed if we own the value.
     *   order matters: m_value must be declared before m_cref
-    *   because m_ref may bind to m_value during initialization
+    *   because m_cref may bind to m_value during initialization
     */  const std::optional<const _asType> m_value;
 
         const _asType& m_cref;

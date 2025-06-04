@@ -22,7 +22,7 @@ namespace rtl
 {
     namespace unit_test
     {
-        TEST(RObject_string, init_with_charArray_view_as_stdString)
+        TEST(RObject_string_value, init_with_charArray_view_as_stdString)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
@@ -43,7 +43,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_charArray_view_as_stdStringView)
+        TEST(RObject_string_value, init_with_charArray_view_as_stdStringView)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
@@ -64,7 +64,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_charArray_view_as_constCharPtr)
+        TEST(RObject_string_value, init_with_charArray_view_as_constCharPtr)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
@@ -85,7 +85,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharArray_view_as_stdString)
+        TEST(RObject_string_value, init_with_constCharArray_view_as_stdString)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
@@ -106,7 +106,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharArray_view_as_stdStringView)
+        TEST(RObject_string_value, init_with_constCharArray_view_as_stdStringView)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
@@ -127,7 +127,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharArray_view_as_constCharPtr)
+        TEST(RObject_string_value, init_with_constCharArray_view_as_constCharPtr)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
@@ -148,7 +148,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharPtr_view_as_stdString)
+        TEST(RObject_string_value, init_with_constCharPtr_view_as_stdString)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
@@ -169,7 +169,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharPtr_view_as_stdStringView)
+        TEST(RObject_string_value, init_with_constCharPtr_view_as_stdStringView)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
@@ -190,7 +190,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_constCharPtr_view_as_constCharPtr)
+        TEST(RObject_string_value, init_with_constCharPtr_view_as_constCharPtr)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
@@ -211,7 +211,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdString_view_as_stdString)
+        TEST(RObject_string_value, init_with_stdString_view_as_stdString)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
@@ -232,7 +232,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdString_view_as_stdStringView)
+        TEST(RObject_string_value, init_with_stdString_view_as_stdStringView)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
@@ -253,7 +253,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdString_view_as_constCharPtr)
+        TEST(RObject_string_value, init_with_stdString_view_as_constCharPtr)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
@@ -274,7 +274,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdStringView_view_as_stdString)
+        TEST(RObject_string_value, init_with_stdStringView_view_as_stdString)
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
@@ -296,7 +296,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdStringView_view_as_stdStringView)
+        TEST(RObject_string_value, init_with_stdStringView_view_as_stdStringView)
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
@@ -318,7 +318,7 @@ namespace rtl
         }
 
 
-        TEST(RObject_string, init_with_stdStringView_view_as_constCharPtr)
+        TEST(RObject_string_value, init_with_stdStringView_view_as_constCharPtr)
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.

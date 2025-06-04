@@ -8,28 +8,24 @@
 #include "Constants.h"
 #include "cref_view.h"
 
-namespace rtl::detail 
-{
-    template<class _fromType>
-    class RObjectConverter;
-}
-
 
 namespace rtl::access
 {
-    using Converter = std::pair<std::size_t, std::function< std::any(const std::any&) >>;
+    using ConverterPair = std::pair< std::size_t, Converter >;
 
     //Reflecting the object within.
     class RObject
     {
+        const bool m_isPointer;
         const std::any m_object;
         const std::size_t m_typeId;
         const std::string m_typeStr;
         const alloc m_allocatedOn;
-        const std::vector<Converter>& m_converters;
+        const std::vector<ConverterPair>& m_converters;
 
-        RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr, 
-                const std::vector<Converter>& pConversions, alloc pAllocOn = rtl::alloc::None);
+        RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr,
+                const std::vector<ConverterPair>& pConversions, const bool pIsPointer,
+                alloc pAllocOn = rtl::alloc::None);
 
         template<class T>
         const T& as() const;
@@ -61,9 +57,5 @@ namespace rtl::access
 
         template <class T>
         static RObject reflect(T&& pVal);
-
-        //friends :)
-        template<class _fromType>
-        friend class rtl::detail::RObjectConverter;
     };
 }

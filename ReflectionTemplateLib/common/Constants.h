@@ -3,10 +3,14 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <functional>
+#include <any>
 
 namespace rtl {
 
     constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
+
+    using Converter = std::function< std::any(const std::any&, const bool&, bool&) >;
 
     template<typename T>
     struct is_string_like : std::false_type {};
@@ -31,7 +35,6 @@ namespace rtl {
 
     template <typename T>
     using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
-
 
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \

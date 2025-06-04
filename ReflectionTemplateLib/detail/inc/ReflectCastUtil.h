@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RObjectConvertersInit.h"
+#include "ReflectCast.h"
 
 namespace
 {
@@ -16,7 +16,6 @@ namespace
     auto make_pairs_for_index(std::index_sequence<Js...>) 
     {
         using From = std::tuple_element_t<I, TypeList>;
-
         return std::tuple<TypeConversion<From, std::tuple_element_t<Js, TypeList>>...>{};
     }
 
@@ -52,7 +51,7 @@ namespace
                     using From = typename Conversion::from;
                     using To = typename Conversion::to;
                     if constexpr (!std::is_same_v<From, To>) {
-                        rtl::detail::RObjectConverter<From>::template pushConversion<To>();
+                        rtl::detail::ReflectCast<From>::template pushConversion<To>();
                     }
                 }()
             )

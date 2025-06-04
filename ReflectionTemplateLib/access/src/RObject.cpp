@@ -5,8 +5,9 @@
 namespace rtl::access {
 
 	RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr,
-		             const std::vector<Converter>& pConversions, alloc pAllocOn)
-		: m_object(std::move(pObjRef))
+		             const std::vector<ConverterPair>& pConversions, const bool pIsPtr, alloc pAllocOn)
+		: m_isPointer(pIsPtr)
+		, m_object(std::move(pObjRef))
 		, m_typeId(pTypeId)
 		, m_typeStr(pTypeStr)
 		, m_allocatedOn(pAllocOn)

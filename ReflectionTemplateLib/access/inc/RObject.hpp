@@ -3,7 +3,7 @@
 #include <optional>
 
 #include "RObject.h"
-#include "RObjectConverters.hpp"
+#include "ReflectCast.hpp"
 
 namespace rtl::access {
 
@@ -12,6 +12,7 @@ namespace rtl::access {
     {
         return std::any_cast<const T&>(m_object);
     }
+
 
     template <class T>
     inline const bool RObject::isTrueType() const
@@ -32,10 +33,10 @@ namespace rtl::access {
     inline RObject RObject::reflect(T&& pVal)
     {
         if constexpr (is_string_like<std::decay_t<T>>::value) {
-            return create(std::string(pVal));
+            return create(std::string(std::forward<T>(pVal)));
         }
         else {
-            return create(pVal);
+            return create(std::forward<T>(pVal));
         }
     }
 
@@ -43,11 +44,20 @@ namespace rtl::access {
     template <class T>
     inline RObject RObject::create(T&& pVal)
     {
-        using _type = remove_const_and_reference<T>;
-        const auto& typeId = rtl::detail::TypeId<_type>::get();
-        const auto& typeStr = rtl::detail::TypeId<_type>::toString();
-        const auto& conversions = rtl::detail::RObjectConverter<_type>::getConversions();
-        return RObject(std::any(std::forward<T>(pVal)), typeId, typeStr, conversions);
+        if constexpr (std::is_pointer_v<T>) {
+            using _type = remove_const_and_reference<std::remove_pointer_t<T>>;
+            const auto& typeId = rtl::detail::TypeId<_type>::get();
+            const auto& typeStr = rtl::detail::TypeId<_type>::toString();
+            const auto& conversions = rtl::detail::ReflectCast<_type>::getConversions();
+            return RObject(std::any(static_cast<const _type*>(pVal)), typeId, typeStr, conversions, true);
+        }
+        else {
+            using _type = remove_const_and_reference<T>;
+            const auto& typeId = rtl::detail::TypeId<_type>::get();
+            const auto& typeStr = rtl::detail::TypeId<_type>::toString();
+            const auto& conversions = rtl::detail::ReflectCast<_type>::getConversions();
+            return RObject(std::any(std::forward<_type>(pVal)), typeId, typeStr, conversions, false);
+        }
     }
 
 
@@ -61,12 +71,19 @@ namespace rtl::access {
         }
 
         const auto& index = getConverterIndex(toTypeId);
-        if (index != -1) {
-            const std::any& converted = m_converters[index].second(m_object);
-            if (converted.has_value()) {
-                const auto& viewCopy = std::any_cast<const _asType&>(converted);
-                return std::optional<rtl::cref_view<_asType>>(std::in_place, _asType(viewCopy));
-
+        if (index != -1) 
+        {
+            bool isConvertedByRef = false;
+            const std::any& converted = m_converters[index].second(m_object, m_isPointer, isConvertedByRef);
+            if (converted.has_value())
+            {
+                const _asType& viewRef = std::any_cast<const _asType&>(converted);
+                if (isConvertedByRef) {
+                    return std::optional<rtl::cref_view<_asType>>(std::in_place, viewRef);
+                }
+                else {
+                    return std::optional<rtl::cref_view<_asType>>(std::in_place, _asType(viewRef));
+                }
             }
         }
         return std::nullopt;

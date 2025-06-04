@@ -15,7 +15,7 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting a char and viewing it as signed char
-        TEST(RObject_char, reflect_char_view_as_signed_char)
+        TEST(RObject_char_value, reflect_char_view_as_signed_char)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
@@ -41,7 +41,7 @@ namespace rtl
 
 
         // Test reflecting a char and viewing it as unsigned char
-        TEST(RObject_char, reflect_char_view_as_unsigned_char)
+        TEST(RObject_char_value, reflect_char_view_as_unsigned_char)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
@@ -67,7 +67,7 @@ namespace rtl
 
 
         // Test reflecting a char and viewing it as short
-        TEST(RObject_char, reflect_char_view_as_short)
+        TEST(RObject_char_value, reflect_char_view_as_short)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
@@ -93,7 +93,7 @@ namespace rtl
 
 
         // Test reflecting a char and viewing it as unsigned short
-        TEST(RObject_char, reflect_char_view_as_unsigned_short)
+        TEST(RObject_char_value, reflect_char_view_as_unsigned_short)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
@@ -119,7 +119,7 @@ namespace rtl
 
 
         // Test reflecting a char and viewing it as int
-        TEST(RObject_char, reflect_char_view_as_int)
+        TEST(RObject_char_value, reflect_char_view_as_int)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');

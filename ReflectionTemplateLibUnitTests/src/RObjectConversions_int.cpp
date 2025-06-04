@@ -14,7 +14,7 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting an int and viewing it as bool
-        TEST(RObject_int, reflect_int_view_as_bool)
+        TEST(RObject_int_value, reflect_int_view_as_bool)
         {
             // Reflect an int value (e.g., 5) into RObject
             RObject robj = RObject::reflect(5);
@@ -40,7 +40,7 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as char
-        TEST(RObject_int, reflect_int_view_as_char)
+        TEST(RObject_int_value, reflect_int_view_as_char)
         {
             // Reflect an int value (e.g., 65) into RObject
             RObject robj = RObject::reflect(65);
@@ -66,7 +66,7 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as signed char
-        TEST(RObject_int, reflect_int_view_as_signed_char)
+        TEST(RObject_int_value, reflect_int_view_as_signed_char)
         {
             // Reflect an int value (e.g., 97) into RObject
             RObject robj = RObject::reflect(97);
@@ -92,7 +92,7 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as unsigned char
-        TEST(RObject_int, reflect_int_view_as_unsigned_char)
+        TEST(RObject_int_value, reflect_int_view_as_unsigned_char)
         {
             // Reflect an int value (e.g., 255) into RObject
             RObject robj = RObject::reflect(255);
@@ -118,7 +118,7 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as short
-        TEST(RObject_int, reflect_int_view_as_short)
+        TEST(RObject_int_value, reflect_int_view_as_short)
         {
             // Reflect an int value (e.g., 32767) into RObject
             RObject robj = RObject::reflect(32767);
@@ -144,7 +144,7 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as unsigned short
-        TEST(RObject_int, reflect_int_view_as_unsigned_short)
+        TEST(RObject_int_value, reflect_int_view_as_unsigned_short)
         {
             // Reflect an int value (e.g., 65535) into RObject
             RObject robj = RObject::reflect(65535);
@@ -166,6 +166,64 @@ namespace rtl
 
             // Verify the conversion result
             ASSERT_EQ(cref, static_cast<unsigned short>(65535));
+        }
+    }
+}
+
+
+namespace rtl
+{
+    namespace unit_test
+    {
+        // Test reflecting an int and viewing it as bool
+        TEST(RObject_int_ptr, reflect_int_view_as_bool_true)
+        {
+            // Reflect an int value (e.g., 5) into RObject
+            RObject robj = RObject::reflect(new int(5));
+
+            // Verify the true type stored is `int`
+            ASSERT_TRUE(robj.isTrueType<int>());
+
+            // Check if RObject can reflect as `bool`
+            ASSERT_TRUE(robj.canReflectAs<bool>());
+
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted bool value
+            const bool& cref = view->get();
+
+            // Verify the conversion result (non-zero → true)
+            ASSERT_TRUE(cref);
+        }
+
+
+        // Test reflecting an int and viewing it as bool
+        TEST(RObject_int_ptr, reflect_int_view_as_bool_false)
+        {
+            // Reflect an int value (e.g., 5) into RObject
+            RObject robj = RObject::reflect(new int(0));
+
+            // Verify the true type stored is `int`
+            ASSERT_TRUE(robj.isTrueType<int>());
+
+            // Check if RObject can reflect as `bool`
+            ASSERT_TRUE(robj.canReflectAs<bool>());
+
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted bool value
+            auto cref = view->get();
+
+            // Verify the conversion result (non-zero → true)
+            ASSERT_FALSE(cref);
         }
     }
 }
