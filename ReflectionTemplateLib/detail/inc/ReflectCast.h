@@ -22,12 +22,17 @@ namespace rtl::detail
     template<class _fromType>
     class ReflectCast
     {
-        static std::vector<std::pair<std::size_t, Converter>>& conversions();
+        static std::vector<std::pair<std::size_t, Converter>>& conversions() {
+            static std::vector<std::pair<std::size_t, Converter>> converters;
+            return converters;
+        }
 
     public:
 
         template<class _toType> static void pushConversion();
 
-        static const std::vector<std::pair<std::size_t, Converter>>& getConversions();
+        static const std::vector<std::pair<std::size_t, Converter>>& getConversions() {
+            return conversions();
+        }
     };
 }

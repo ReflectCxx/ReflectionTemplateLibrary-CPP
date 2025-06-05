@@ -16,7 +16,7 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        const bool m_isPointer;
+        const rtl::IsPointer m_isPointer;
         const std::any m_object;
         const std::size_t m_typeId;
         const std::string m_typeStr;
@@ -24,7 +24,7 @@ namespace rtl::access
         const std::vector<ConverterPair>& m_converters;
 
         RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr,
-                const std::vector<ConverterPair>& pConversions, const bool pIsPointer,
+                const std::vector<ConverterPair>& pConversions, const rtl::IsPointer pIsPtr,
                 alloc pAllocOn = rtl::alloc::None);
 
         template<class T>

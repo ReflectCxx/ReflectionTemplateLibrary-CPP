@@ -4,8 +4,8 @@
 
 namespace rtl::access {
 
-	RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr,
-		             const std::vector<ConverterPair>& pConversions, const bool pIsPtr, alloc pAllocOn)
+    RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::string pTypeStr,
+                     const std::vector<ConverterPair>& pConversions, const rtl::IsPointer pIsPtr, alloc pAllocOn)
 		: m_isPointer(pIsPtr)
 		, m_object(std::move(pObjRef))
 		, m_typeId(pTypeId)

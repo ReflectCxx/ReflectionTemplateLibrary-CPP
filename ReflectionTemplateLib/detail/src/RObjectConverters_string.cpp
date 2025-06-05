@@ -11,9 +11,9 @@ namespace rtl::detail
     void ReflectCast<std::string>::pushConversion<const char*>()
     {
         using _toType = const char*;
-        const auto& conversion = [](const std::any& pSrc, const bool& pIsPointer, bool& pConvertedByRef)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsPointer, rtl::ConversionKind& pConverKind)-> std::any
         {
-            pConvertedByRef = false;
+            pConverKind = rtl::ConversionKind::ByValue;
             const auto& srcObj = std::any_cast<const std::string&>(pSrc);
             return std::any(static_cast<const _toType&>(srcObj.c_str()));
         };

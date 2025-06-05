@@ -8,10 +8,6 @@
 
 namespace rtl {
 
-    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
-
-    using Converter = std::function< std::any(const std::any&, const bool&, bool&) >;
-
     template<typename T>
     struct is_string_like : std::false_type {};
 
@@ -36,30 +32,28 @@ namespace rtl {
     template <typename T>
     using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
 
-#define GETTER(_varType, _name, _var)                       \
-    inline constexpr const _varType& get##_name() const {   \
-        return _var;                                        \
-    }
 
+    enum class ConversionKind
+    {
+        ByRef,
+        ByValue,
+        NotDefined,
+        BadAnyCast
+    };
 
-#define GETTER_REF(_varType, _name, _var)       \
-    inline _varType& get##_name() const {       \
-        return _var;                            \
-    }
+    enum class IsPointer {
+        Yes = 1,
+        No = 0
+    };
 
-
-#define GETTER_BOOL(_name, _var)              \
-    inline const bool is##_name() const {     \
-        return _var;                          \
-    }
-
+    using Converter = std::function< std::any(const std::any&, const IsPointer&, ConversionKind&) >;
 
     enum FunctorIdx
     {
         ZERO = 0,   //heap constructor index
-        ONE,    //destructor index
-        TWO,    //copy constructor index
-        MAX_SIZE
+        ONE = 1,    //destructor index
+        TWO = 2,    //copy constructor index
+        MAX_SIZE = 3
     };
 
 
@@ -134,5 +128,26 @@ namespace rtl {
         case Error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
         default: return "Unknown";
         }
+    }
+
+
+    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
+
+
+#define GETTER(_varType, _name, _var)                       \
+    inline constexpr const _varType& get##_name() const {   \
+        return _var;                                        \
+    }
+
+
+#define GETTER_REF(_varType, _name, _var)       \
+    inline _varType& get##_name() const {       \
+        return _var;                            \
+    }
+
+
+#define GETTER_BOOL(_name, _var)              \
+    inline const bool is##_name() const {     \
+        return _var;                          \
     }
 }
