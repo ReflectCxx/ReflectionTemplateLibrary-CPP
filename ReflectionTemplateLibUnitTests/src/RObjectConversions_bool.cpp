@@ -19,9 +19,6 @@ namespace rtl
             // Reflect a bool value into RObject
             RObject robj = RObject::reflect(true);
 
-            // Check if the original stored type is bool
-            ASSERT_TRUE(robj.isTrueType<bool>());
-
             // Check if RObject can be viewed as bool (true type or convertible)
             ASSERT_TRUE(robj.canReflectAs<bool>());
 
@@ -43,9 +40,6 @@ namespace rtl
         {
             // Reflect a bool value (false) into RObject
             RObject robj = RObject::reflect(false);
-
-            // Confirm the true type held is bool
-            ASSERT_TRUE(robj.isTrueType<bool>());
 
             // Check if RObject can be viewed as int (via conversion)
             ASSERT_TRUE(robj.canReflectAs<int>());
@@ -70,9 +64,6 @@ namespace rtl
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
 
-            // Ensure the stored type is actually `bool`
-            ASSERT_TRUE(robj.isTrueType<bool>());
-
             // Check if the RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
 
@@ -95,9 +86,6 @@ namespace rtl
         {
             // Reflect the value `false` into RObject
             RObject robj = RObject::reflect(false);
-
-            // Check if the original type is `bool`
-            ASSERT_TRUE(robj.isTrueType<bool>());
 
             // Check if the value can be reflected as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -122,9 +110,6 @@ namespace rtl
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
 
-            // Confirm the stored type is `bool`
-            ASSERT_TRUE(robj.isTrueType<bool>());
-
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
 
@@ -148,9 +133,6 @@ namespace rtl
             // Reflect the value `false` into RObject
             RObject robj = RObject::reflect(false);
 
-            // Verify the stored true type is `bool`
-            ASSERT_TRUE(robj.isTrueType<bool>());
-
             // Check if the value can be reflected as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
 
@@ -173,9 +155,6 @@ namespace rtl
         {
             // Reflect the value `true` into RObject
             RObject robj = RObject::reflect(true);
-
-            // Confirm the stored true type is `bool`
-            ASSERT_TRUE(robj.isTrueType<bool>());
 
             // Check if the value can be reflected as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());

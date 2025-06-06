@@ -20,9 +20,6 @@ namespace rtl
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
 
-            // Verify the true type stored is `char`
-            ASSERT_TRUE(robj.isTrueType<char>());
-
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
 
@@ -45,9 +42,6 @@ namespace rtl
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
-
-            // Verify the true type stored is `char`
-            ASSERT_TRUE(robj.isTrueType<char>());
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -72,9 +66,6 @@ namespace rtl
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
 
-            // Verify the true type stored is `char`
-            ASSERT_TRUE(robj.isTrueType<char>());
-
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
 
@@ -98,9 +89,6 @@ namespace rtl
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
 
-            // Verify the true type stored is `char`
-            ASSERT_TRUE(robj.isTrueType<char>());
-
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
 
@@ -123,9 +111,6 @@ namespace rtl
         {
             // Reflect the value 'A' (ASCII 65) into RObject
             RObject robj = RObject::reflect('A');
-
-            // Verify the true type stored is `char`
-            ASSERT_TRUE(robj.isTrueType<char>());
 
             // Check if RObject can reflect as `int`
             ASSERT_TRUE(robj.canReflectAs<int>());

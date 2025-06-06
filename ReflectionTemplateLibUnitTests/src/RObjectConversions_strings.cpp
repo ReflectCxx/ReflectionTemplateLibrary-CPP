@@ -27,9 +27,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
 
@@ -47,9 +44,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -69,9 +63,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'char[]').
             RObject robj = RObject::reflect(STR_CHAR_ARRAY);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
 
@@ -89,9 +80,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -111,9 +99,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
 
@@ -131,9 +116,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
             RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -153,9 +135,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
 
@@ -173,9 +152,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -195,9 +171,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'const char*').
             RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
 
@@ -215,9 +188,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -237,9 +207,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
 
@@ -257,9 +224,6 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string').
             RObject robj = RObject::reflect(STR_STD_STRING);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -280,9 +244,6 @@ namespace rtl
             // Stores a copy of the 'std::string_view' as a 'std::string'.
             RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
 
@@ -302,9 +263,6 @@ namespace rtl
             // Stores a copy of the 'std::string_view' as a 'std::string'.
             RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
 
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
-
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
 
@@ -323,9 +281,6 @@ namespace rtl
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
             RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
-
-            // Check that the original type stored is 'std::string'.
-            ASSERT_TRUE(robj.isTrueType<std::string>());
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());

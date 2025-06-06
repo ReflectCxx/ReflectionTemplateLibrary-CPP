@@ -14,13 +14,6 @@ namespace rtl::access {
     }
 
 
-    template <class T>
-    inline const bool RObject::isTrueType() const
-    {
-        return (m_typeId == rtl::detail::TypeId<T>::get());
-    }
-
-
     template<class T>
     inline const bool RObject::canReflectAs() const
     {
@@ -44,15 +37,15 @@ namespace rtl::access {
     template <class T>
     inline RObject RObject::create(T&& pVal)
     {
-        using _type = remove_const_and_reference<std::remove_pointer_t<T>>;
-        const auto& typeId = rtl::detail::TypeId<_type>::get();
-        const auto& typeStr = rtl::detail::TypeId<_type>::toString();
-        const auto& conversions = rtl::detail::ReflectCast<_type>::getConversions();
-        if constexpr (std::is_pointer_v<T>) {
-            return RObject(std::any(static_cast<const _type*>(pVal)), typeId, typeStr, conversions, rtl::IsPointer::Yes);
+        using _T = remove_const_n_ref_n_ptr<T>;
+        const auto& typeId = rtl::detail::TypeId<_T>::get();
+        const auto& typeStr = rtl::detail::TypeId<_T>::toString();
+        const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
+        if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
+            return RObject(std::any(static_cast<const _T*>(pVal)), typeId, typeStr, conversions, rtl::IsPointer::Yes);
         }
         else {
-            return RObject(std::any(std::forward<_type>(pVal)), typeId, typeStr, conversions, rtl::IsPointer::No);
+            return RObject(std::any(std::in_place_type<_T>, _T(pVal)), typeId, typeStr, conversions, rtl::IsPointer::No);
         }
     }
 

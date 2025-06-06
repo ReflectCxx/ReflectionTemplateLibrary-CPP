@@ -46,7 +46,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const auto& retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
+            const auto& retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.

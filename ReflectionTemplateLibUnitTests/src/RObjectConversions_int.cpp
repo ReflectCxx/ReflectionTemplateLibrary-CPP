@@ -14,13 +14,10 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting an int and viewing it as bool
-        TEST(RObject_int_value, reflect_int_view_as_bool)
+        TEST(RObject_int_rvalue, reflect_int_view_as_bool)
         {
             // Reflect an int value (e.g., 5) into RObject
             RObject robj = RObject::reflect(5);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -40,13 +37,10 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as char
-        TEST(RObject_int_value, reflect_int_view_as_char)
+        TEST(RObject_int_rvalue, reflect_int_view_as_char)
         {
             // Reflect an int value (e.g., 65) into RObject
             RObject robj = RObject::reflect(65);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -66,13 +60,10 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as signed char
-        TEST(RObject_int_value, reflect_int_view_as_signed_char)
+        TEST(RObject_int_rvalue, reflect_int_view_as_signed_char)
         {
             // Reflect an int value (e.g., 97) into RObject
             RObject robj = RObject::reflect(97);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -92,13 +83,10 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as unsigned char
-        TEST(RObject_int_value, reflect_int_view_as_unsigned_char)
+        TEST(RObject_int_rvalue, reflect_int_view_as_unsigned_char)
         {
             // Reflect an int value (e.g., 255) into RObject
             RObject robj = RObject::reflect(255);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -118,13 +106,10 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as short
-        TEST(RObject_int_value, reflect_int_view_as_short)
+        TEST(RObject_int_rvalue, reflect_int_view_as_short)
         {
             // Reflect an int value (e.g., 32767) into RObject
             RObject robj = RObject::reflect(32767);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -144,13 +129,10 @@ namespace rtl
 
 
         // Test reflecting an int and viewing it as unsigned short
-        TEST(RObject_int_value, reflect_int_view_as_unsigned_short)
+        TEST(RObject_int_rvalue, reflect_int_view_as_unsigned_short)
         {
             // Reflect an int value (e.g., 65535) into RObject
             RObject robj = RObject::reflect(65535);
-
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
@@ -176,13 +158,12 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting an int and viewing it as bool
-        TEST(RObject_int_ptr, reflect_int_view_as_bool_true)
+        TEST(RObject_int_lvalue, reflect_int_view_as_bool)
         {
-            // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(new int(5));
+			int value = 5; // Example int value
 
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
+            // Reflect an int value (e.g., 5) into RObject
+            RObject robj = RObject::reflect(value);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -197,18 +178,148 @@ namespace rtl
             const bool& cref = view->get();
 
             // Verify the conversion result (non-zero → true)
-            ASSERT_TRUE(cref);
+            ASSERT_EQ(cref, true);
         }
 
 
-        // Test reflecting an int and viewing it as bool
-        TEST(RObject_int_ptr, reflect_int_view_as_bool_false)
+        // Test reflecting an int and viewing it as char
+        TEST(RObject_int_lvalue, reflect_int_view_as_char)
         {
-            // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(new int(0));
+			int value = 65; // Example int value
 
-            // Verify the true type stored is `int`
-            ASSERT_TRUE(robj.isTrueType<int>());
+            // Reflect an int value (e.g., 65) into RObject
+            RObject robj = RObject::reflect(value);
+
+            // Check if RObject can reflect as `char`
+            ASSERT_TRUE(robj.canReflectAs<char>());
+
+            // Get a view of the value as `char`
+            auto view = robj.view<char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted char value
+            const char& cref = view->get();
+
+            // Verify the conversion result (65 → 'A')
+            ASSERT_EQ(cref, static_cast<char>(value));
+        }
+
+
+        // Test reflecting an int and viewing it as signed char
+        TEST(RObject_int_lvalue, reflect_int_view_as_signed_char)
+        {
+			int value = 97; // Example int value
+
+            // Reflect an int value (e.g., 97) into RObject
+            RObject robj = RObject::reflect(value);
+
+            // Check if RObject can reflect as `signed char`
+            ASSERT_TRUE(robj.canReflectAs<signed char>());
+
+            // Get a view of the value as `signed char`
+            auto view = robj.view<signed char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted signed char value
+            const signed char& cref = view->get();
+
+            // Verify the conversion result (97 → 'a')
+            ASSERT_EQ(cref, static_cast<signed char>(value));
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned char
+        TEST(RObject_int_lvalue, reflect_int_view_as_unsigned_char)
+        {
+			int value = 255; // Example int value
+
+            // Reflect an int value (e.g., 255) into RObject
+            RObject robj = RObject::reflect(value);
+
+            // Check if RObject can reflect as `unsigned char`
+            ASSERT_TRUE(robj.canReflectAs<unsigned char>());
+
+            // Get a view of the value as `unsigned char`
+            auto view = robj.view<unsigned char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned char value
+            const unsigned char& cref = view->get();
+
+            // Verify the conversion result (255 → '\xff')
+            ASSERT_EQ(cref, static_cast<unsigned char>(value));
+        }
+
+
+        // Test reflecting an int and viewing it as short
+        TEST(RObject_int_lvalue, reflect_int_view_as_short)
+        {
+			int value = 32767; // Example int value
+
+            // Reflect an int value (e.g., 32767) into RObject
+            RObject robj = RObject::reflect(value);
+
+            // Check if RObject can reflect as `short`
+            ASSERT_TRUE(robj.canReflectAs<short>());
+
+            // Get a view of the value as `short`
+            auto view = robj.view<short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted short value
+            const short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<short>(value));
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned short
+        TEST(RObject_int_lvalue, reflect_int_view_as_unsigned_short)
+        {
+			int value = 65535; // Example int value
+
+            // Reflect an int value (e.g., 65535) into RObject
+            RObject robj = RObject::reflect(value);
+
+            // Check if RObject can reflect as `unsigned short`
+            ASSERT_TRUE(robj.canReflectAs<unsigned short>());
+
+            // Get a view of the value as `unsigned short`
+            auto view = robj.view<unsigned short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned short value
+            const unsigned short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<unsigned short>(value));
+        }
+    }
+}
+
+
+namespace rtl
+{
+    namespace unit_test
+    {
+        // Test reflecting an int* and viewing it as bool
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_bool_true)
+        {
+            int *ptr = new int(5);
+
+            // Reflect an int value (e.g., 5) into RObject
+            RObject robj = RObject::reflect(ptr);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -220,10 +331,367 @@ namespace rtl
             ASSERT_TRUE(view.has_value());
 
             // Access the converted bool value
-            auto cref = view->get();
+            const bool& cref = view->get();
 
             // Verify the conversion result (non-zero → true)
-            ASSERT_FALSE(cref);
+            ASSERT_EQ(cref, true);
+
+			delete ptr; // Clean up the dynamically allocated memory
+        }
+
+
+        // Test reflecting an int* and viewing it as bool
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_bool_false)
+        {
+			int* ptr = new int(0);
+
+            // Reflect an int value (e.g., 5) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `bool`
+            ASSERT_TRUE(robj.canReflectAs<bool>());
+
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted bool value
+            const bool& cref = view->get();
+
+            // Verify the conversion result (non-zero → true)
+            ASSERT_EQ(cref, false);
+        }
+
+
+        // Test reflecting an int* and viewing it as char
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_char)
+        {
+			int* ptr = new int(65);
+
+            // Reflect an int value (e.g., 65) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `char`
+            ASSERT_TRUE(robj.canReflectAs<char>());
+
+            // Get a view of the value as `char`
+            auto view = robj.view<char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted char value
+            const char& cref = view->get();
+
+            // Verify the conversion result (65 → 'A')
+            ASSERT_EQ(cref, static_cast<char>(65));
+
+			delete ptr; // Clean up the dynamically allocated memory
+        }
+
+
+        // Test reflecting an int* and viewing it as signed char
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_signed_char)
+        {
+			int* ptr = new int(97);
+
+            // Reflect an int value (e.g., 97) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `signed char`
+            ASSERT_TRUE(robj.canReflectAs<signed char>());
+
+            // Get a view of the value as `signed char`
+            auto view = robj.view<signed char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted signed char value
+            const signed char& cref = view->get();
+
+            // Verify the conversion result (97 → 'a')
+            ASSERT_EQ(cref, static_cast<signed char>(97));
+
+            delete ptr; // Clean up the dynamically allocated memory
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned char
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_unsigned_char)
+        {
+			int* ptr = new int(255);
+
+            // Reflect an int value (e.g., 255) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `unsigned char`
+            ASSERT_TRUE(robj.canReflectAs<unsigned char>());
+
+            // Get a view of the value as `unsigned char`
+            auto view = robj.view<unsigned char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned char value
+            const unsigned char& cref = view->get();
+
+            // Verify the conversion result (255 → '\xff')
+            ASSERT_EQ(cref, static_cast<unsigned char>(255));
+
+            delete ptr; // Clean up the dynamically allocated memory
+        }
+
+
+        // Test reflecting an int and viewing it as short
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_short)
+        {
+			int* ptr = new int(32767);
+
+            // Reflect an int value (e.g., 32767) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `short`
+            ASSERT_TRUE(robj.canReflectAs<short>());
+
+            // Get a view of the value as `short`
+            auto view = robj.view<short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted short value
+            const short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<short>(32767));
+
+            delete ptr; // Clean up the dynamically allocated memory
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned short
+        TEST(RObject_int_pointer_lvalue, reflect_int_view_as_unsigned_short)
+        {
+			int* ptr = new int(65535);
+
+            // Reflect an int value (e.g., 65535) into RObject
+            RObject robj = RObject::reflect(ptr);
+
+            // Check if RObject can reflect as `unsigned short`
+            ASSERT_TRUE(robj.canReflectAs<unsigned short>());
+
+            // Get a view of the value as `unsigned short`
+            auto view = robj.view<unsigned short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned short value
+            const unsigned short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<unsigned short>(65535));
+
+            delete ptr; // Clean up the dynamically allocated memory
+        }
+    }
+}
+
+
+namespace rtl
+{
+    namespace unit_test
+    {
+        // Test reflecting an int* and viewing it as bool
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_bool_true)
+        {
+        /*  Reflect an int value(e.g., 5) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(5));
+
+            // Check if RObject can reflect as `bool`
+            ASSERT_TRUE(robj.canReflectAs<bool>());
+
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted bool value
+            const bool& cref = view->get();
+
+            // Verify the conversion result (non-zero → true)
+            ASSERT_EQ(cref, true);
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int* and viewing it as bool
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_bool_false)
+        {
+        /*  Reflect an int value (e.g., 0) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(0));
+
+            // Check if RObject can reflect as `bool`
+            ASSERT_TRUE(robj.canReflectAs<bool>());
+
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted bool value
+            const bool& cref = view->get();
+
+            // Verify the conversion result (non-zero → true)
+            ASSERT_EQ(cref, false);
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int* and viewing it as char
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_char)
+        {
+        /* Reflect an int value(e.g., 65) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(65));
+
+            // Check if RObject can reflect as `char`
+            ASSERT_TRUE(robj.canReflectAs<char>());
+
+            // Get a view of the value as `char`
+            auto view = robj.view<char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted char value
+            const char& cref = view->get();
+
+            // Verify the conversion result (65 → 'A')
+            ASSERT_EQ(cref, static_cast<char>(65));
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int* and viewing it as signed char
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_signed_char)
+        {
+        /*  Reflect an int value(e.g., 97) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(97));
+
+            // Check if RObject can reflect as `signed char`
+            ASSERT_TRUE(robj.canReflectAs<signed char>());
+
+            // Get a view of the value as `signed char`
+            auto view = robj.view<signed char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted signed char value
+            const signed char& cref = view->get();
+
+            // Verify the conversion result (97 → 'a')
+            ASSERT_EQ(cref, static_cast<signed char>(97));
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned char
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_unsigned_char)
+        {
+        /*  Reflect an int value(e.g., 255) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(255));
+
+            // Check if RObject can reflect as `unsigned char`
+            ASSERT_TRUE(robj.canReflectAs<unsigned char>());
+
+            // Get a view of the value as `unsigned char`
+            auto view = robj.view<unsigned char>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned char value
+            const unsigned char& cref = view->get();
+
+            // Verify the conversion result (255 → '\xff')
+            ASSERT_EQ(cref, static_cast<unsigned char>(255));
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int and viewing it as short
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_short)
+        {
+        /*  Reflect an int value(e.g., 32767) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(32767));
+
+            // Check if RObject can reflect as `short`
+            ASSERT_TRUE(robj.canReflectAs<short>());
+
+            // Get a view of the value as `short`
+            auto view = robj.view<short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted short value
+            const short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<short>(32767));
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
+        }
+
+
+        // Test reflecting an int and viewing it as unsigned short
+        TEST(RObject_int_pointer_rvalue, reflect_int_view_as_unsigned_short)
+        {
+        /*  Reflect an int value(e.g., 65535) into RObject
+        *   Intentionally relinquishing ownership of dynamically allocated memory
+        *   to test RObject creation with an rvalue pointer.
+        */  RObject robj = RObject::reflect(new int(65535));
+
+            // Check if RObject can reflect as `unsigned short`
+            ASSERT_TRUE(robj.canReflectAs<unsigned short>());
+
+            // Get a view of the value as `unsigned short`
+            auto view = robj.view<unsigned short>();
+
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
+
+            // Access the converted unsigned short value
+            const unsigned short& cref = view->get();
+
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<unsigned short>(65535));
+
+            //Caution: The dynamically allocated memory (new int) is not deleted here.
         }
     }
 }

@@ -48,7 +48,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
+            const std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
@@ -121,7 +121,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_and_reference<_returnType>>::get();
+            const std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.

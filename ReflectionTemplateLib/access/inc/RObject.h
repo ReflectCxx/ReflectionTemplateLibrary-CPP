@@ -46,9 +46,6 @@ namespace rtl::access
 
         GETTER(std::string, TypeStr, m_typeStr)
 
-        template <class T>
-        const bool isTrueType() const;
-
         template <class _asType>
         const bool canReflectAs() const;
 

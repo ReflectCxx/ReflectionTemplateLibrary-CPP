@@ -27,11 +27,13 @@ namespace rtl {
     struct is_string_like<const char[N]> : std::true_type {};
 
     template <typename T>
-    using remove_const_and_reference = std::remove_const_t<std::remove_reference_t<T>>;
+    using remove_const_n_reference = std::remove_const_t<std::remove_reference_t<T>>;
 
     template <typename T>
     using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
 
+    template<typename T>
+    using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
     enum class ConversionKind
     {
@@ -41,10 +43,7 @@ namespace rtl {
         BadAnyCast
     };
 
-    enum class IsPointer {
-        Yes = 1,
-        No = 0
-    };
+    enum class IsPointer { Yes, No };
 
     using Converter = std::function< std::any(const std::any&, const IsPointer&, ConversionKind&) >;
 
