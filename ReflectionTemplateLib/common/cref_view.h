@@ -13,6 +13,18 @@
  * This is useful when you want to accept inputs that may either
  * be passed by reference or value, without worrying about
  * ownership or lifetime in the caller code.
+ *
+ * ----------------------------------------------------------------------------
+ * Purpose:
+ *   cref_view is specifically designed to provide read-only access to values
+ *   reflected by an RObject. It abstracts whether the value is owned or
+ *   referenced, allowing seamless access in both cases.
+ *
+ * Lifetime:
+ *   A cref_view instance is only valid as long as the associated RObject
+ *   from which it was obtained remains alive. If the RObject is destroyed,
+ *   any cref_view referencing its data becomes invalid and must not be used.
+ * ----------------------------------------------------------------------------
  */
 
 #include <optional>

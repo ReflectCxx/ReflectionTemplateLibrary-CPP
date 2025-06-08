@@ -10,8 +10,8 @@ namespace rtl
         {
             static bool init() 
             {
-                //instantiate the empty reflection system to initialize the implicit conversion mechanism.
-                static rtl::access::CxxMirror reflectionSystem({});
+                //instantiating a reflection system to initialize the RObject's cast/conversion mechanism.
+                static rtl::access::CxxMirror reflectionSystem({/*...empty reflection system...no types passed...*/});
                 return true;
             }
         };

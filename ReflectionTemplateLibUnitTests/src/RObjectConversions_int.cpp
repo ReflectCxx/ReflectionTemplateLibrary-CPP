@@ -6,7 +6,7 @@
 using namespace rtl::access;
 
 namespace {
-    static bool _ = rtl::unit_test::ReflectionSystem::init();
+    static bool _= rtl::unit_test::ReflectionSystem::init();
 }
 
 namespace rtl
@@ -563,7 +563,7 @@ namespace rtl
         // Test reflecting an int* and viewing it as char
         TEST(RObject_int_pointer_rvalue, reflect_int_view_as_char)
         {
-        /* Reflect an int value(e.g., 65) into RObject
+        /*  Reflect an int value(e.g., 65) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
         */  RObject robj = RObject::reflect(new int(65));
