@@ -31,7 +31,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, true);
         }
 
@@ -54,7 +54,7 @@ namespace rtl
             // Access the converted char value
             const char& cref = view->get();
 
-            // Verify the conversion result (65 → 'A')
+            // Verify the conversion result (65 -> 'A')
             ASSERT_EQ(cref, static_cast<char>(65));
         }
 
@@ -77,7 +77,7 @@ namespace rtl
             // Access the converted signed char value
             const signed char& cref = view->get();
 
-            // Verify the conversion result (97 → 'a')
+            // Verify the conversion result (97 -> 'a')
             ASSERT_EQ(cref, static_cast<signed char>(97));
         }
 
@@ -100,7 +100,7 @@ namespace rtl
             // Access the converted unsigned char value
             const unsigned char& cref = view->get();
 
-            // Verify the conversion result (255 → '\xff')
+            // Verify the conversion result (255 -> '\xff')
             ASSERT_EQ(cref, static_cast<unsigned char>(255));
         }
 
@@ -158,6 +158,31 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting an int and viewing it as bool
+        TEST(RObject_int_lvalue, reflect_int_ptr_view_as_int)
+        {
+            int value = 5; // Example int value
+
+            // Reflect an int value pointer into RObject
+            RObject robj = RObject::reflect(&value);
+
+            // Check if RObject can reflect as `const int *`
+            ASSERT_TRUE(robj.canReflectAs<const int *>());
+
+            // Get a view of the value as `const int *`
+            auto view = robj.view<const int*>();
+
+            // Ensure the view is valid
+            ASSERT_TRUE(view.has_value());
+
+			// Access the pointer returned by the view
+            const int* cref = view->get();
+
+            // Verify the addresses are same, no copy made.
+            ASSERT_EQ(cref, &value);
+        }
+
+
+        // Test reflecting an int and viewing it as bool
         TEST(RObject_int_lvalue, reflect_int_view_as_bool)
         {
 			int value = 5; // Example int value
@@ -177,7 +202,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, true);
         }
 
@@ -202,7 +227,7 @@ namespace rtl
             // Access the converted char value
             const char& cref = view->get();
 
-            // Verify the conversion result (65 → 'A')
+            // Verify the conversion result (65 -> 'A')
             ASSERT_EQ(cref, static_cast<char>(value));
         }
 
@@ -227,7 +252,7 @@ namespace rtl
             // Access the converted signed char value
             const signed char& cref = view->get();
 
-            // Verify the conversion result (97 → 'a')
+            // Verify the conversion result (97 -> 'a')
             ASSERT_EQ(cref, static_cast<signed char>(value));
         }
 
@@ -252,7 +277,7 @@ namespace rtl
             // Access the converted unsigned char value
             const unsigned char& cref = view->get();
 
-            // Verify the conversion result (255 → '\xff')
+            // Verify the conversion result (255 -> '\xff')
             ASSERT_EQ(cref, static_cast<unsigned char>(value));
         }
 
@@ -333,7 +358,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, true);
 
 			delete ptr; // Clean up the dynamically allocated memory
@@ -360,7 +385,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, false);
         }
 
@@ -385,7 +410,7 @@ namespace rtl
             // Access the converted char value
             const char& cref = view->get();
 
-            // Verify the conversion result (65 → 'A')
+            // Verify the conversion result (65 -> 'A')
             ASSERT_EQ(cref, static_cast<char>(65));
 
 			delete ptr; // Clean up the dynamically allocated memory
@@ -412,7 +437,7 @@ namespace rtl
             // Access the converted signed char value
             const signed char& cref = view->get();
 
-            // Verify the conversion result (97 → 'a')
+            // Verify the conversion result (97 -> 'a')
             ASSERT_EQ(cref, static_cast<signed char>(97));
 
             delete ptr; // Clean up the dynamically allocated memory
@@ -439,7 +464,7 @@ namespace rtl
             // Access the converted unsigned char value
             const unsigned char& cref = view->get();
 
-            // Verify the conversion result (255 → '\xff')
+            // Verify the conversion result (255 -> '\xff')
             ASSERT_EQ(cref, static_cast<unsigned char>(255));
 
             delete ptr; // Clean up the dynamically allocated memory
@@ -526,7 +551,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, true);
 
             //Caution: The dynamically allocated memory (new int) is not deleted here.
@@ -553,7 +578,7 @@ namespace rtl
             // Access the converted bool value
             const bool& cref = view->get();
 
-            // Verify the conversion result (non-zero → true)
+            // Verify the conversion result (non-zero -> true)
             ASSERT_EQ(cref, false);
 
             //Caution: The dynamically allocated memory (new int) is not deleted here.
@@ -580,7 +605,7 @@ namespace rtl
             // Access the converted char value
             const char& cref = view->get();
 
-            // Verify the conversion result (65 → 'A')
+            // Verify the conversion result (65 -> 'A')
             ASSERT_EQ(cref, static_cast<char>(65));
 
             //Caution: The dynamically allocated memory (new int) is not deleted here.
@@ -607,7 +632,7 @@ namespace rtl
             // Access the converted signed char value
             const signed char& cref = view->get();
 
-            // Verify the conversion result (97 → 'a')
+            // Verify the conversion result (97 -> 'a')
             ASSERT_EQ(cref, static_cast<signed char>(97));
 
             //Caution: The dynamically allocated memory (new int) is not deleted here.
@@ -634,7 +659,7 @@ namespace rtl
             // Access the converted unsigned char value
             const unsigned char& cref = view->get();
 
-            // Verify the conversion result (255 → '\xff')
+            // Verify the conversion result (255 -> '\xff')
             ASSERT_EQ(cref, static_cast<unsigned char>(255));
 
             //Caution: The dynamically allocated memory (new int) is not deleted here.

@@ -14,7 +14,8 @@ namespace rtl::detail
         const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsPointer, rtl::ConversionKind& pConverKind)-> std::any
         {
             pConverKind = rtl::ConversionKind::ByValue;
-            const auto& srcObj = std::any_cast<const std::string&>(pSrc);
+            const auto& isPtr = (pIsPointer == rtl::IsPointer::Yes);
+            const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
             return std::any(static_cast<const _toType&>(srcObj.c_str()));
         };
 
