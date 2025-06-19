@@ -26,6 +26,10 @@ namespace rtl {
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
         {
+            // Check if the constructor is not deleted and publicly accessible
+            static_assert(std::is_constructible_v<_recordType, _ctorSignature...>,
+                          "The specified constructor is either deleted or not publicly accessible.");
+
             const auto& ctorName = (m_ctorType == ConstructorType::CopyCtor ? CtorName::copyCtor(m_record) : CtorName::ctor(m_record));
             return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
         }

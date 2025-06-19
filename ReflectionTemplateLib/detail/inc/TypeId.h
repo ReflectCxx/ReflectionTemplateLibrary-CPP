@@ -2,11 +2,14 @@
 
 #include <string>
 #include <typeinfo>
+#include <atomic>
 
 namespace rtl {
 
     namespace detail 
     {
+        extern std::atomic<std::size_t> g_typeIdCounter;
+
         //class to generate unique type-id for a type or combination of types.
         template<class _type = std::nullptr_t, class ..._rest>
         struct TypeId;
@@ -21,8 +24,11 @@ namespace rtl {
             //'0' represents no type.
             static constexpr const std::size_t None = 0;
 
-            static const std::size_t get() {
-                return m_typeId;
+            static const std::size_t get() 
+            {
+                //statically initialize a unique-id.
+                static const std::size_t typeId = g_typeIdCounter.fetch_add(1);
+                return typeId;
             }
 
             //returns the type-list as string.
@@ -49,11 +55,11 @@ namespace rtl {
                 if constexpr (!std::is_same_v<_type, std::nullptr_t>) {
                     return std::string(typeid(_type).name());
                 }
+                if constexpr (std::is_same_v<_type, std::nullptr_t>) {
+                    return "std::nullptr_t";
+                }
                 else return std::string();
             }
-
-        private:
-            static const std::size_t m_typeId;
         };
 
 

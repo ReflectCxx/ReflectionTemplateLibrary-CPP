@@ -77,9 +77,9 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, rtl::access::alloc pAllocType, _signature&&...params)-> void
+            const auto& functor = [=](access::RStatus& pRStatus, rtl::alloc pAllocType, _signature&&...params)-> void
             {
-                if (pAllocType == rtl::access::alloc::Stack) 
+                if (pAllocType == rtl::alloc::Stack) 
                 {
                     if constexpr (std::is_copy_constructible_v<_recordType>) {
                         pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
@@ -88,7 +88,7 @@ namespace rtl
                         pRStatus.init(rtl::Error::InstanceOnStackDisabledNoCopyCtor);
                     }
                 }
-                else if (pAllocType == rtl::access::alloc::Heap) 
+                else if (pAllocType == rtl::alloc::Heap) 
                 {
                     _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
                     pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);

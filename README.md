@@ -1,6 +1,3 @@
-  ```c++
-  using modern.C++; //and templates only, no RTTI, no Macros.
-  ```
 # Reflection Template Library C++
 
 The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.

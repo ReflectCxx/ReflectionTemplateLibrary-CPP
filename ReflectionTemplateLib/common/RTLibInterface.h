@@ -73,3 +73,6 @@
 /* Class containing everything required to provide reflection interface and functionality.
 * Users are required to instantiate this class and pass all registration as constructor parameter. */
 #include "CxxMirror.h"
+
+
+#include "RObject.hpp"

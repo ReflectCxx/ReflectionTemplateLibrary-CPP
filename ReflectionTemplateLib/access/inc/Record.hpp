@@ -22,7 +22,7 @@ namespace rtl {
     */  template<alloc _alloc, class ..._ctorArgs>
         inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
         {
-            static_assert(_alloc != alloc::None, "Instance cannot be created with 'alloc::None' option.");
+            static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
 
             const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
             //if registered constructor is found for the class/struct represented by this 'Record' object.
@@ -34,11 +34,11 @@ namespace rtl {
                 //if status is 'true', object construction is successful.
                 if (status) 
                 {
-                    if constexpr (_alloc == alloc::Stack) {
+                    if constexpr (_alloc == rtl::alloc::Stack) {
                         //construct the 'Instance' object, no custom deleter needed.
                         return std::make_pair(std::move(status), Instance(std::move(status.m_returnObj), status));
                     }
-                    else if constexpr (_alloc == alloc::Heap) {
+                    else if constexpr (_alloc == rtl::alloc::Heap) {
 
                         //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
                         const Function dctor = *getMethod(CtorName::dctor(m_recordName));

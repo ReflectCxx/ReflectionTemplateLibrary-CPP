@@ -1,7 +1,7 @@
 
 #include <any>
 #include <cassert>
-#include "TypeId.hpp"
+#include "TypeId.h"
 #include "RStatus.h"
 #include "Instance.h"
 #include "Function.hpp"
@@ -17,7 +17,7 @@ namespace rtl {
     {
         Instance::~Instance()
         {
-            if (m_allocatedOn != alloc::Heap || m_destructor.use_count() != 1) {
+            if (m_allocatedOn != rtl::alloc::Heap || m_destructor.use_count() != 1) {
                 g_instanceCount--;
             }
         }
@@ -51,7 +51,18 @@ namespace rtl {
     */  Instance::Instance()
             : m_qualifier(TypeQ::None)
             , m_typeId(detail::TypeId<>::None)
-            , m_allocatedOn(alloc::None) {
+            , m_allocatedOn(rtl::alloc::None) {
+            g_instanceCount++;
+        }
+
+        Instance::Instance(RStatus& pRStatus)
+            : m_qualifier(pRStatus.getQualifier())
+            , m_typeId(pRStatus.getTypeId())
+            , m_allocatedOn(rtl::alloc::Stack)
+            , m_anyObject(std::move(pRStatus.m_returnObj))
+            , m_destructor(nullptr)
+        {
+            pRStatus.m_returnObj.reset();
             g_instanceCount++;
         }
 
@@ -59,7 +70,7 @@ namespace rtl {
         Instance::Instance(std::any&& pRetObj, const RStatus& pStatus)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
-            , m_allocatedOn(alloc::Stack)
+            , m_allocatedOn(rtl::alloc::Stack)
             , m_anyObject(std::move(pRetObj))
             , m_destructor(nullptr) {
             g_instanceCount++;
@@ -85,7 +96,7 @@ namespace rtl {
         Instance& Instance::operator=(const Instance& pOther)
         {
             if (this == &pOther) return *this; // self-assignment check
-            if (m_allocatedOn == alloc::Heap && m_destructor.use_count() == 1) {
+            if (m_allocatedOn == rtl::alloc::Heap && m_destructor.use_count() == 1) {
                 g_instanceCount++;
             }
 
@@ -108,7 +119,7 @@ namespace rtl {
             m_anyObject = std::move(pOther.m_anyObject);
             m_destructor = std::move(pOther.m_destructor);
 
-            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_allocatedOn = rtl::alloc::None; // reset the moved-from instance
             pOther.m_anyObject.reset(); // reset the moved-from instance
             pOther.m_destructor.reset(); // reset the moved-from instance
             pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
@@ -125,7 +136,7 @@ namespace rtl {
             , m_destructor(std::move(pOther.m_destructor))
         {
             g_instanceCount++;
-            pOther.m_allocatedOn = alloc::None; // reset the moved-from instance
+            pOther.m_allocatedOn = rtl::alloc::None; // reset the moved-from instance
             pOther.m_anyObject.reset(); // reset the moved-from instance
             pOther.m_destructor.reset(); // reset the moved-from instance
             pOther.m_qualifier = TypeQ::None; // reset the moved-from instance
@@ -146,7 +157,7 @@ namespace rtl {
     */  Instance::Instance(std::any&& pRetObj, const RStatus& pStatus, const Function& pDctor)
             : m_qualifier(TypeQ::Mute)
             , m_typeId(pStatus.getTypeId())
-            , m_allocatedOn(alloc::Heap)
+            , m_allocatedOn(rtl::alloc::Heap)
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
                 const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
