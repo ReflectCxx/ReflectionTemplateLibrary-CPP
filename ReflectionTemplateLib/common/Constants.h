@@ -1,39 +1,24 @@
 #pragma once
 
 #include <string>
-#include <string_view>
 #include <type_traits>
 #include <functional>
 #include <any>
 
 namespace rtl {
 
-    template<typename T>
-    struct is_string_like : std::false_type {};
-
-    template<>
-    struct is_string_like<std::string> : std::true_type {};
-
-    template<>
-    struct is_string_like<std::string_view> : std::true_type {};
-
-    template<>
-    struct is_string_like<char*> : std::true_type {};
-
-    template<>
-    struct is_string_like<const char*> : std::true_type {};
-
-    template<std::size_t N>
-    struct is_string_like<const char[N]> : std::true_type {};
-
+    // Utility: Remove const and reference qualifiers from T.
     template <typename T>
     using remove_const_n_reference = std::remove_const_t<std::remove_reference_t<T>>;
 
+    // Utility: Remove const from T if T is not a reference; otherwise, leave as is.
     template <typename T>
     using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
 
+    // Utility: Remove const, reference, and pointer from T (after decay).
     template<typename T>
     using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
+
 
     enum class ConversionKind
     {

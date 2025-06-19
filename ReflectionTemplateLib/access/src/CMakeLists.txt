@@ -13,6 +13,7 @@ set(LOCAL_SOURCES
 SET(COMMON_HEADERS
 	"${PROJECT_SOURCE_DIR}/common/Constants.h"
 	"${PROJECT_SOURCE_DIR}/common/cref_view.h"
+	"${PROJECT_SOURCE_DIR}/common/Reflect.h"
 	"${PROJECT_SOURCE_DIR}/common/RTLibInterface.h"
 )
 

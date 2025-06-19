@@ -114,7 +114,7 @@ namespace rtl
 
         TEST(RObject_view_negative_test, disallowed_mutable_views_should_not_compile)
         {
-            RObject robj = RObject::reflect(std::string("Immutable"));
+            RObject robj = rtl::reflect(std::string("Immutable"));
 
         /*  The following lines SHOULD NOT COMPILE if uncommented:
             These are intentionally commented to enforce design-time correctness.
@@ -134,7 +134,7 @@ namespace rtl
 
         TEST(RObject_view_negative_test, incompatible_view_returns_nullopt)
         {
-            RObject robj = RObject::reflect(std::string("test"));
+            RObject robj = rtl::reflect(std::string("test"));
 
             ASSERT_FALSE(robj.canReflectAs<int>());
 
@@ -147,7 +147,7 @@ namespace rtl
         TEST(RObject_view_negative_test, incompatible_reflected_type_returns_nullopt)
         {
             int value = 42;
-            RObject robj = RObject::reflect(&value);
+            RObject robj = rtl::reflect(&value);
 
             // Although value is stored, it's not a string
             ASSERT_FALSE(robj.canReflectAs<std::string_view>());
@@ -166,7 +166,7 @@ namespace rtl
         TEST(RObject_init_with_stdString_pointer, view_as_std_string_pointer)
         {
             // Create an RObject that reflects a std::string pointer.
-            RObject robj = RObject::reflect(&STR_STD_STRING);
+            RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<const std::string*>());
@@ -188,7 +188,7 @@ namespace rtl
         TEST(RObject_init_with_stdString_pointer, view_as_std_string)
         {
             // Create an RObject that reflects a std::string pointer.
-            RObject robj = RObject::reflect(&STR_STD_STRING);
+            RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -207,7 +207,7 @@ namespace rtl
         TEST(RObject_init_with_stdString_pointer, view_as_const_char_ptr)
         {
             // Create an RObject that reflects a std::string pointer.
-            RObject robj = RObject::reflect(&STR_STD_STRING);
+            RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -225,7 +225,7 @@ namespace rtl
         TEST(RObject_init_with_stdString_pointer, view_as_std_string_view)
         {
             // Create an RObject that reflects a std::string pointer.
-            RObject robj = RObject::reflect(&STR_STD_STRING);
+            RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -243,7 +243,7 @@ namespace rtl
         TEST(RObject_init_with_empty_literal, view_as_std_string)
         {
             // Create an RObject that reflects a empty string literal rvalue
-            RObject robj = RObject::reflect("");
+            RObject robj = rtl::reflect("");
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -261,7 +261,7 @@ namespace rtl
         TEST(RObject_init_with_literal, view_as_std_string)
         {
             // Create an RObject that reflects a string literal rvalue
-            RObject robj = RObject::reflect("string_literal_rvalue");
+            RObject robj = rtl::reflect("string_literal_rvalue");
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -279,7 +279,7 @@ namespace rtl
         TEST(RObject_init_with_charArray, view_as_std_string)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
-            RObject robj = RObject::reflect(STR_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -297,7 +297,7 @@ namespace rtl
         TEST(RObject_init_with_charArray, view_as_std_const_string_pointer)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
-            RObject robj = RObject::reflect(STR_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CHAR_ARRAY);
           
             //Check if the value can be accessed as 'const std::string*'.
             ASSERT_TRUE(robj.canReflectAs<const std::string*>());
@@ -316,7 +316,7 @@ namespace rtl
         TEST(RObject_init_with_charArray, view_as_std_string_view)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
-            RObject robj = RObject::reflect(STR_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -334,7 +334,7 @@ namespace rtl
         TEST(RObject_init_with_charArray, view_as_const_char_ptr)
         {
             // Create an RObject that reflects a string value (init with 'char[]').
-            RObject robj = RObject::reflect(STR_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -352,7 +352,7 @@ namespace rtl
         TEST(RObject_init_with_constCharArray, view_as_std_string)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -370,7 +370,7 @@ namespace rtl
         TEST(RObject_init_with_constCharArray, view_as_std_const_string_pointer)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             //Check if the value can be accessed as 'const std::string*'.
             ASSERT_TRUE(robj.canReflectAs<const std::string*>());
@@ -389,7 +389,7 @@ namespace rtl
         TEST(RObject_init_with_constCharArray, view_as_std_string_view)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -407,7 +407,7 @@ namespace rtl
         TEST(RObject_init_with_constCharArray, view_as_const_char_ptr)
         {
             // Create an RObject that reflects a string value (init with 'const char[]').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -425,7 +425,7 @@ namespace rtl
         TEST(RObject_init_with_constCharPtr, view_as_std_string)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -443,7 +443,7 @@ namespace rtl
         TEST(RObject_init_with_constCharPtr, view_as_std_const_string_pointer)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_ARRAY);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             //Check if the value can be accessed as 'const std::string*'.
             ASSERT_TRUE(robj.canReflectAs<const std::string*>());
@@ -462,7 +462,7 @@ namespace rtl
         TEST(RObject_init_with_constCharPtr, view_as_std_string_view)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -480,7 +480,7 @@ namespace rtl
         TEST(RObject_init_with_constCharPtr, view_as_const_char_ptr)
         {
             // Create an RObject that reflects a string value (init with 'const char*').
-            RObject robj = RObject::reflect(STR_CONST_CHAR_POINTER);
+            RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -498,7 +498,7 @@ namespace rtl
         TEST(RObject_init_with_stdString, view_as_std_string)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
-            RObject robj = RObject::reflect(STR_STD_STRING);
+            RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -516,7 +516,7 @@ namespace rtl
         TEST(RObject_init_with_stdString_rvalue, view_as_std_string)
         {
             // Create an RObject that reflects a string value (init with 'std::string' rvalue).
-            RObject robj = RObject::reflect(std::string(STR_STD_STRING));
+            RObject robj = rtl::reflect(std::string(STR_STD_STRING));
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -534,7 +534,7 @@ namespace rtl
         TEST(RObject_init_with_stdString, view_as_std_string_view)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
-            RObject robj = RObject::reflect(STR_STD_STRING);
+            RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -552,7 +552,7 @@ namespace rtl
         TEST(RObject_init_with_stdString, view_as_const_char_ptr)
         {
             // Create an RObject that reflects a string value (init with 'std::string').
-            RObject robj = RObject::reflect(STR_STD_STRING);
+            RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());
@@ -571,7 +571,7 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
-            RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
+            RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'std::string'.
             ASSERT_TRUE(robj.canReflectAs<std::string>());
@@ -590,7 +590,7 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
-            RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
+            RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -609,7 +609,7 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
-            RObject robj = RObject::reflect(std::string_view(STR_CONST_CHAR_POINTER));
+            RObject robj = rtl::reflect(std::string_view(STR_CONST_CHAR_POINTER));
 
             // Check if the value can be accessed as 'std::string_view'.
             ASSERT_TRUE(robj.canReflectAs<std::string_view>());
@@ -628,7 +628,7 @@ namespace rtl
         {
             // Create an RObject that reflects a string value (init with 'std::string_view').
             // Stores a copy of the 'std::string_view' as a 'std::string'.
-            RObject robj = RObject::reflect(STR_STD_STRING_VIEW);
+            RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'const char*'.
             ASSERT_TRUE(robj.canReflectAs<const char*>());

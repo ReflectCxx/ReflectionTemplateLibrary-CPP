@@ -17,7 +17,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_bool)
         {
             // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(5);
+            RObject robj = rtl::reflect(5);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -40,7 +40,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_char)
         {
             // Reflect an int value (e.g., 65) into RObject
-            RObject robj = RObject::reflect(65);
+            RObject robj = rtl::reflect(65);
 
             // Check if RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -63,7 +63,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_signed_char)
         {
             // Reflect an int value (e.g., 97) into RObject
-            RObject robj = RObject::reflect(97);
+            RObject robj = rtl::reflect(97);
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -86,7 +86,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_unsigned_char)
         {
             // Reflect an int value (e.g., 255) into RObject
-            RObject robj = RObject::reflect(255);
+            RObject robj = rtl::reflect(255);
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -109,7 +109,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_short)
         {
             // Reflect an int value (e.g., 32767) into RObject
-            RObject robj = RObject::reflect(32767);
+            RObject robj = rtl::reflect(32767);
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -132,7 +132,7 @@ namespace rtl
         TEST(RObject_int_rvalue, reflect_int_view_as_unsigned_short)
         {
             // Reflect an int value (e.g., 65535) into RObject
-            RObject robj = RObject::reflect(65535);
+            RObject robj = rtl::reflect(65535);
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
@@ -163,7 +163,7 @@ namespace rtl
             int value = 5; // Example int value
 
             // Reflect an int value pointer into RObject
-            RObject robj = RObject::reflect(&value);
+            RObject robj = rtl::reflect(&value);
 
             // Check if RObject can reflect as `const int *`
             ASSERT_TRUE(robj.canReflectAs<const int *>());
@@ -188,7 +188,7 @@ namespace rtl
 			int value = 5; // Example int value
 
             // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -213,7 +213,7 @@ namespace rtl
 			int value = 65; // Example int value
 
             // Reflect an int value (e.g., 65) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -238,7 +238,7 @@ namespace rtl
 			int value = 97; // Example int value
 
             // Reflect an int value (e.g., 97) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -263,7 +263,7 @@ namespace rtl
 			int value = 255; // Example int value
 
             // Reflect an int value (e.g., 255) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -288,7 +288,7 @@ namespace rtl
 			int value = 32767; // Example int value
 
             // Reflect an int value (e.g., 32767) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -313,7 +313,7 @@ namespace rtl
 			int value = 65535; // Example int value
 
             // Reflect an int value (e.g., 65535) into RObject
-            RObject robj = RObject::reflect(value);
+            RObject robj = rtl::reflect(value);
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
@@ -344,7 +344,7 @@ namespace rtl
             int *ptr = new int(5);
 
             // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -371,7 +371,7 @@ namespace rtl
 			int* ptr = new int(0);
 
             // Reflect an int value (e.g., 5) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -396,7 +396,7 @@ namespace rtl
 			int* ptr = new int(65);
 
             // Reflect an int value (e.g., 65) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -423,7 +423,7 @@ namespace rtl
 			int* ptr = new int(97);
 
             // Reflect an int value (e.g., 97) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -450,7 +450,7 @@ namespace rtl
 			int* ptr = new int(255);
 
             // Reflect an int value (e.g., 255) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -477,7 +477,7 @@ namespace rtl
 			int* ptr = new int(32767);
 
             // Reflect an int value (e.g., 32767) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -504,7 +504,7 @@ namespace rtl
 			int* ptr = new int(65535);
 
             // Reflect an int value (e.g., 65535) into RObject
-            RObject robj = RObject::reflect(ptr);
+            RObject robj = rtl::reflect(ptr);
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
@@ -537,7 +537,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 5) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(5));
+        */  RObject robj = rtl::reflect(new int(5));
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -564,7 +564,7 @@ namespace rtl
         /*  Reflect an int value (e.g., 0) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(0));
+        */  RObject robj = rtl::reflect(new int(0));
 
             // Check if RObject can reflect as `bool`
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -591,7 +591,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 65) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(65));
+        */  RObject robj = rtl::reflect(new int(65));
 
             // Check if RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -618,7 +618,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 97) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(97));
+        */  RObject robj = rtl::reflect(new int(97));
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -645,7 +645,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 255) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(255));
+        */  RObject robj = rtl::reflect(new int(255));
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -672,7 +672,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 32767) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(32767));
+        */  RObject robj = rtl::reflect(new int(32767));
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -699,7 +699,7 @@ namespace rtl
         /*  Reflect an int value(e.g., 65535) into RObject
         *   Intentionally relinquishing ownership of dynamically allocated memory
         *   to test RObject creation with an rvalue pointer.
-        */  RObject robj = RObject::reflect(new int(65535));
+        */  RObject robj = rtl::reflect(new int(65535));
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());

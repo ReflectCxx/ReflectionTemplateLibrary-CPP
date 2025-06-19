@@ -1,13 +1,13 @@
 #pragma once
 
 #include <any>
+#include <array>
 #include <string>
 #include <optional>
 #include <functional>
 
 #include "Constants.h"
 #include "cref_view.h"
-
 
 namespace rtl::access
 {
@@ -31,9 +31,6 @@ namespace rtl::access
         template<class T>
         const T& as() const;
 
-        template <class T>
-        static RObject create(T&& pVal);
-
         const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
 
     public:
@@ -54,6 +51,6 @@ namespace rtl::access
         std::optional<rtl::cref_view<_asType>> view() const;
 
         template <class T>
-        static RObject reflect(T&& pVal);
+        static RObject create(T&& pVal);
     };
 }

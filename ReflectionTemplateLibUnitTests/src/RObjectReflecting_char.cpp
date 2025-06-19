@@ -18,7 +18,7 @@ namespace rtl
         TEST(RObject_char_value, reflect_char_view_as_signed_char)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
-            RObject robj = RObject::reflect('A');
+            RObject robj = rtl::reflect('A');
 
             // Check if RObject can reflect as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -41,7 +41,7 @@ namespace rtl
         TEST(RObject_char_value, reflect_char_view_as_unsigned_char)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
-            RObject robj = RObject::reflect('A');
+            RObject robj = rtl::reflect('A');
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -64,7 +64,7 @@ namespace rtl
         TEST(RObject_char_value, reflect_char_view_as_short)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
-            RObject robj = RObject::reflect('A');
+            RObject robj = rtl::reflect('A');
 
             // Check if RObject can reflect as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -87,7 +87,7 @@ namespace rtl
         TEST(RObject_char_value, reflect_char_view_as_unsigned_short)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
-            RObject robj = RObject::reflect('A');
+            RObject robj = rtl::reflect('A');
 
             // Check if RObject can reflect as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
@@ -110,7 +110,7 @@ namespace rtl
         TEST(RObject_char_value, reflect_char_view_as_int)
         {
             // Reflect the value 'A' (ASCII 65) into RObject
-            RObject robj = RObject::reflect('A');
+            RObject robj = rtl::reflect('A');
 
             // Check if RObject can reflect as `int`
             ASSERT_TRUE(robj.canReflectAs<int>());

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "RObject.h"
+#include "Reflect.h"
 #include "ReflectCast.h"
 
 namespace rtl::access {
@@ -16,18 +17,6 @@ namespace rtl::access {
         }
         else {
             return std::any_cast<const T&>(m_object);
-        }
-    }
-
-
-    template <class T>
-    inline RObject RObject::reflect(T&& pVal)
-    {
-        if constexpr (is_string_like<std::decay_t<T>>::value) {
-            return create(std::string(std::forward<T>(pVal)));
-        }
-        else {
-            return create(std::forward<T>(pVal));
         }
     }
 

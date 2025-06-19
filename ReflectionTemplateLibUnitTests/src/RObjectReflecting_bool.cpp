@@ -17,7 +17,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_bool)
         {
             // Reflect a bool value into RObject
-            RObject robj = RObject::reflect(true);
+            RObject robj = rtl::reflect(true);
 
             // Check if RObject can be viewed as bool (true type or convertible)
             ASSERT_TRUE(robj.canReflectAs<bool>());
@@ -39,7 +39,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_int)
         {
             // Reflect a bool value (false) into RObject
-            RObject robj = RObject::reflect(false);
+            RObject robj = rtl::reflect(false);
 
             // Check if RObject can be viewed as int (via conversion)
             ASSERT_TRUE(robj.canReflectAs<int>());
@@ -62,7 +62,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_char)
         {
             // Reflect the value `true` into RObject
-            RObject robj = RObject::reflect(true);
+            RObject robj = rtl::reflect(true);
 
             // Check if the RObject can reflect as `char`
             ASSERT_TRUE(robj.canReflectAs<char>());
@@ -85,7 +85,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_signed_char)
         {
             // Reflect the value `false` into RObject
-            RObject robj = RObject::reflect(false);
+            RObject robj = rtl::reflect(false);
 
             // Check if the value can be reflected as `signed char`
             ASSERT_TRUE(robj.canReflectAs<signed char>());
@@ -108,7 +108,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_unsigned_char)
         {
             // Reflect the value `true` into RObject
-            RObject robj = RObject::reflect(true);
+            RObject robj = rtl::reflect(true);
 
             // Check if RObject can reflect as `unsigned char`
             ASSERT_TRUE(robj.canReflectAs<unsigned char>());
@@ -131,7 +131,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_short)
         {
             // Reflect the value `false` into RObject
-            RObject robj = RObject::reflect(false);
+            RObject robj = rtl::reflect(false);
 
             // Check if the value can be reflected as `short`
             ASSERT_TRUE(robj.canReflectAs<short>());
@@ -154,7 +154,7 @@ namespace rtl
         TEST(RObject_bool_value, reflect_bool_view_as_unsigned_short)
         {
             // Reflect the value `true` into RObject
-            RObject robj = RObject::reflect(true);
+            RObject robj = rtl::reflect(true);
 
             // Check if the value can be reflected as `unsigned short`
             ASSERT_TRUE(robj.canReflectAs<unsigned short>());
