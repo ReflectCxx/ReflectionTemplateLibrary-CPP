@@ -59,7 +59,7 @@ namespace rtl::access {
 
 
     template <class _asType>
-    inline std::optional<rtl::cref_view<_asType>> RObject::view() const
+    inline std::optional<rtl::view<_asType>> RObject::view() const
     {
 
         static_assert(!std::is_reference_v<_asType>, "reference views are not supported.");
@@ -69,7 +69,7 @@ namespace rtl::access {
         const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
         if (toTypeId == m_typeId) {
             const auto& viewRef = as<_asType>();
-            return std::optional<rtl::cref_view<_asType>>(std::in_place, viewRef);
+            return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
         }
 
         if constexpr (std::is_pointer_v<remove_const_n_reference<_asType>>)
@@ -78,7 +78,7 @@ namespace rtl::access {
             const auto& typePtrId = rtl::detail::TypeId<T*>::get();
             if (typePtrId == m_typePtrId) {
                 auto& viewRef = as<T>();
-                return std::optional<rtl::cref_view<const T*>>(&viewRef);
+                return std::optional<rtl::view<const T*>>(&viewRef);
             }
         }
 
@@ -91,10 +91,10 @@ namespace rtl::access {
             {
                 const _asType& viewRef = std::any_cast<const _asType&>(viewObj);
                 if (conversionKind == rtl::ConversionKind::ByRef) {
-                    return std::optional<rtl::cref_view<_asType>>(std::in_place, viewRef);
+                    return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
                 }
                 else /*if (converted == rtl::Converted::ByValue)*/ {
-                    return std::optional<rtl::cref_view<_asType>>(std::in_place, _asType(viewRef));
+                    return std::optional<rtl::view<_asType>>(std::in_place, _asType(viewRef));
                 }
             }
             else {

@@ -7,7 +7,7 @@
 #include <functional>
 
 #include "Constants.h"
-#include "cref_view.h"
+#include "view.h"
 
 namespace rtl::access
 {
@@ -48,7 +48,7 @@ namespace rtl::access
         const bool canReflectAs() const;
 
         template<class _asType>
-        std::optional<rtl::cref_view<_asType>> view() const;
+        std::optional<rtl::view<_asType>> view() const;
 
         template <class T>
         static RObject create(T&& pVal);

@@ -53,7 +53,7 @@ namespace rtl
             // Access the converted int value
             const int& cref = view->get();
 
-            // Confirm the value matches expected result of bool(false) → int(0)
+            // Confirm the value matches expected result of bool(false) -> int(0)
             ASSERT_EQ(cref, 0);
         }
 

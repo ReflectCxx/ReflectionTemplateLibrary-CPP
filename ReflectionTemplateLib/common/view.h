@@ -3,7 +3,7 @@
 /**
  * @brief A lightweight immutable view of a const T object.
  *
- * cref_view<T> provides uniform access to either:
+ * rtl::view<T> provides uniform access to either:
  * - a non-owning const reference (borrowed), or
  * - an internally stored const value (owned).
  *
@@ -16,14 +16,14 @@
  *
  * ----------------------------------------------------------------------------
  * Purpose:
- *   cref_view is specifically designed to provide read-only access to values
+ *   rtl::view is specifically designed to provide read-only access to values
  *   reflected by an RObject. It abstracts whether the value is owned or
  *   referenced, allowing seamless access in both cases.
  *
  * Lifetime:
- *   A cref_view instance is only valid as long as the associated RObject
+ *   A rtl::view instance is only valid as long as the associated RObject
  *   from which it was obtained remains alive. If the RObject is destroyed,
- *   any cref_view referencing its data becomes invalid and must not be used.
+ *   any rtl::view referencing its data becomes invalid and must not be used.
  * ----------------------------------------------------------------------------
  */
 
@@ -32,7 +32,7 @@
 namespace rtl {
 
     template<class _asType>
-    class cref_view
+    class view
     {
     /*  only constructed if we own the value.
     *   order matters: m_value must be declared before m_cref
@@ -44,18 +44,18 @@ namespace rtl {
     public:
 
     //  Construct from reference (no copy, no default init)
-        cref_view(const _asType& ref) : m_value(std::nullopt), m_cref(ref) {}
+        view(const _asType& ref) : m_value(std::nullopt), m_cref(ref) {}
 
     //  Construct from value (copy or move)
-        cref_view(_asType&& val) : m_value(std::move(val)), m_cref(*m_value) {}
+        view(_asType&& val) : m_value(std::move(val)), m_cref(*m_value) {}
 
     //  Default copy and move constructors are OK for an immutable type
-        cref_view(cref_view&&) = default;
-        cref_view(const cref_view&) = default;
+        view(view&&) = default;
+        view(const view&) = default;
         
     //  Delete copy and move assignment to guarantee no mutation after construction
-        cref_view& operator=(cref_view&&) = delete;
-        cref_view& operator=(const cref_view&) = delete;
+        view& operator=(view&&) = delete;
+        view& operator=(const view&) = delete;
 
         operator const _asType& () const {
             return m_cref;
