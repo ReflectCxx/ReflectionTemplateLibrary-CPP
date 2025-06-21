@@ -41,7 +41,7 @@ namespace rtl_tests
 
 			status = (*setAuthor)(bookObj)(book::AUTHOR);
 
-			ASSERT_TRUE(status == rtl::Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}
@@ -69,7 +69,7 @@ namespace rtl_tests
 
 			status = (*setAuthor)(bookObj)(book::AUTHOR);
 
-			ASSERT_TRUE(status == rtl::Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_FALSE(status.getReturn().has_value());
 			EXPECT_FALSE(book::test_method_setAuthor(bookObj.get(), bookObj.isOnHeap()));
 		}

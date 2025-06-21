@@ -33,7 +33,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classDate->create<alloc::Heap>("wrong", "args0", 10);
 
-			ASSERT_TRUE(status == Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -51,7 +51,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classDate->create<alloc::Stack>("wrong", "args0", 10);
 
-			ASSERT_TRUE(status == Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(date::assert_zero_instance_count());
@@ -235,7 +235,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classBook->create<alloc::Heap>(19.0, 87.5);
 
-			ASSERT_TRUE(status == Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -253,7 +253,7 @@ namespace rtl_tests
 
 			auto [status, instance] = classBook->create<alloc::Stack>(19.0, 87.5);
 
-			ASSERT_TRUE(status == Error::SignatureMismatch);
+			ASSERT_TRUE(status == error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

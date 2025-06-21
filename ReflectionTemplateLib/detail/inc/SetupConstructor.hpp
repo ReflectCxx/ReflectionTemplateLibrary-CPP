@@ -37,7 +37,7 @@ namespace rtl
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 _recordType* object = std::any_cast<_recordType*>(pTarget);
                 delete object;
-                pRStatus.init(Error::None);
+                pRStatus.init(error::None);
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -85,7 +85,7 @@ namespace rtl
                         pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
                     }
                     else {
-                        pRStatus.init(rtl::Error::InstanceOnStackDisabledNoCopyCtor);
+                        pRStatus.init(rtl::error::InstanceOnStackDisabledNoCopyCtor);
                     }
                 }
                 else if (pAllocType == rtl::alloc::Heap) 

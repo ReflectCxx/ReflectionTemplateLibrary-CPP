@@ -31,7 +31,7 @@ namespace rtl {
     /*  @method: operator()()
         @param: variadic arguments.
         @return: RStatus, containing the call status & return value of from the reflected call.
-        * if the arguments did not match with any overload, returns RStatus with Error::SignatureMismatch
+        * if the arguments did not match with any overload, returns RStatus with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
         inline RStatus Function::operator()(_args&& ...params) const noexcept

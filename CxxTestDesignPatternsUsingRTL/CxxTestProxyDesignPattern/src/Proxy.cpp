@@ -13,7 +13,7 @@ namespace proxy_test
     {
         constexpr auto allocType = rtl::alloc::Heap;
         auto [status, obj] = OriginalReflection::getClass()->create<allocType>();
-        if (status == rtl::Error::None) {
+        if (status == rtl::error::None) {
             m_originalObj = obj;
         }
     }

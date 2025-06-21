@@ -68,7 +68,7 @@ namespace rtl {
     };
 
 
-    enum class Error
+    enum class error
     {
         None,
         EmptyInstance,
@@ -98,18 +98,18 @@ namespace rtl {
     };
 
 
-    inline const char* to_string(Error err) 
+    inline const char* to_string(error err) 
     {
         switch (err) {
-        case Error::None: return "None";
-        case Error::EmptyInstance: return "EmptyInstance";
-        case Error::InvalidAllocType: return "InvalidAllocType";
-        case Error::SignatureMismatch: return "SignatureMismatch";
-        case Error::InstanceTypeMismatch: return "InstanceTypeMismatch";
-        case Error::InstanceConstMismatch: return "InstanceConstMismatch";
-        case Error::ConstructorNotFound: return "ConstructorNotFound";
-        case Error::CopyConstructorDisabled: return "CopyConstructorDisabled";
-        case Error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
+        case error::None: return "None";
+        case error::EmptyInstance: return "EmptyInstance";
+        case error::InvalidAllocType: return "InvalidAllocType";
+        case error::SignatureMismatch: return "SignatureMismatch";
+        case error::InstanceTypeMismatch: return "InstanceTypeMismatch";
+        case error::InstanceConstMismatch: return "InstanceConstMismatch";
+        case error::ConstructorNotFound: return "ConstructorNotFound";
+        case error::CopyConstructorDisabled: return "CopyConstructorDisabled";
+        case error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
         default: return "Unknown";
         }
     }

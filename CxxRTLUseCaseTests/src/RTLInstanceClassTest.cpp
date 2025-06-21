@@ -244,7 +244,7 @@ namespace rtl_tests
 
                 string dateStr = date::DATE_STR1;
                 ASSERT_TRUE(updateDate->bind(instance).call(dateStr));
-                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == rtl::Error::EmptyInstance);
+                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == error::EmptyInstance);
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -287,7 +287,7 @@ namespace rtl_tests
 
                 string dateStr = date::DATE_STR1;
                 ASSERT_TRUE(updateDate->bind(instance).call(dateStr));
-                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == rtl::Error::EmptyInstance);
+                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == error::EmptyInstance);
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -328,7 +328,7 @@ namespace rtl_tests
 
                 string dateStr = date::DATE_STR1;
                 ASSERT_TRUE(updateDate->bind(instance).call(dateStr));
-                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == rtl::Error::EmptyInstance);
+                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == error::EmptyInstance);
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);
@@ -369,7 +369,7 @@ namespace rtl_tests
 
                 string dateStr = date::DATE_STR1;
                 ASSERT_TRUE(updateDate->bind(instance).call(dateStr));
-                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == rtl::Error::EmptyInstance);
+                ASSERT_TRUE(updateDate->bind(dateObj).call(dateStr) == error::EmptyInstance);
                 EXPECT_TRUE(Instance::getInstanceCount() == 2);
             }
             EXPECT_TRUE(Instance::getInstanceCount() == 1);

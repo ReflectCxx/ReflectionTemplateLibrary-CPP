@@ -26,11 +26,11 @@ namespace rtl
         {
             if (m_target.isEmpty()) {
                 //if the target is empty.
-                return RStatus(Error::EmptyInstance);
+                return RStatus(error::EmptyInstance);
             }
             if (m_target.getTypeId() != m_method.getRecordTypeId()) {
                 //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-                return RStatus(Error::InstanceTypeMismatch);
+                return RStatus(error::InstanceTypeMismatch);
             }
             if constexpr (sizeof...(_signature) == 0) {
                 RStatus retStatus;
@@ -85,18 +85,18 @@ namespace rtl
                 const std::size_t& index = pMethod.hasSignatureId(containerMute::getContainerId());
                 if (index != -1) {
                     //if Const-MethodContainer contains no such member-functor and functor is present in Non-Const-MethodContainer.
-                    pRStatus.init(Error::InstanceConstMismatch);
+                    pRStatus.init(error::InstanceConstMismatch);
                     return;
                 }
                 break;
             }
             //only an empty 'Instance' will have TypeQ::None.
             case TypeQ::None: {
-                pRStatus.init(Error::EmptyInstance);
+                pRStatus.init(error::EmptyInstance);
                 return;
             }
             }
-            pRStatus.init(Error::SignatureMismatch);
+            pRStatus.init(error::SignatureMismatch);
         }
     }
 }

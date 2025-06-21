@@ -27,7 +27,7 @@ namespace rtl_tests
 
 			auto [retStatus, badObj] = classPerson->clone(bookObj);
 
-			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+			ASSERT_TRUE(retStatus == error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -49,7 +49,7 @@ namespace rtl_tests
 
 			auto [retStatus, badObj] = classPerson->clone(bookObj);
 
-			ASSERT_TRUE(retStatus == Error::InstanceTypeMismatch);
+			ASSERT_TRUE(retStatus == error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);

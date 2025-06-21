@@ -133,6 +133,6 @@ namespace rtl_tests
 
 		//TODO: handle this test case with appropriate error or make successful call as its valid to call static method on objects.
 		const RStatus& status = (*getDefaults)(personObj)();
-		ASSERT_TRUE(status == rtl::Error::InstanceTypeMismatch);
+		ASSERT_TRUE(status == error::InstanceTypeMismatch);
 	}
 }

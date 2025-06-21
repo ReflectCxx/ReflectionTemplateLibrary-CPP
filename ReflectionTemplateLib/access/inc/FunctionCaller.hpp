@@ -36,8 +36,8 @@ namespace rtl
                     return retStatus;
                 }
             }
-            //else return with Error::SignatureMismatch.
-            return RStatus(Error::SignatureMismatch);
+            //else return with error::SignatureMismatch.
+            return RStatus(error::SignatureMismatch);
         }
     }
 }

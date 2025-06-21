@@ -64,7 +64,7 @@ namespace rtl
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(Error::None);
+                    pRStatus.init(error::None);
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else
@@ -137,7 +137,7 @@ namespace rtl
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (target->*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(Error::None);
+                    pRStatus.init(error::None);
                 }
                 else 
                 {
