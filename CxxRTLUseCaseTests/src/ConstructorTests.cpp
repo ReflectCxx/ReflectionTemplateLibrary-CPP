@@ -31,7 +31,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Heap>("wrong", "args0", 10);
+			auto [status, instance] = classDate->create<alloc::Heap>("wrong", "args0", 10);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -49,7 +49,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Stack>("wrong", "args0", 10);
+			auto [status, instance] = classDate->create<alloc::Stack>("wrong", "args0", 10);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -67,7 +67,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Heap>();
+			auto [status, instance] = classDate->create<alloc::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -86,7 +86,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Stack>();
+			auto [status, instance] = classDate->create<alloc::Stack>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -106,7 +106,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classDate);
 
 			string dateStr = date::DATE_STR0;
-			auto [status, instance] = classDate->instance<rtl::alloc::Heap>(dateStr);
+			auto [status, instance] = classDate->create<alloc::Heap>(dateStr);
 			
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -126,7 +126,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classDate);
 
 			string dateStr = date::DATE_STR0;
-			auto [status, instance] = classDate->instance<rtl::alloc::Stack>(dateStr);
+			auto [status, instance] = classDate->create<alloc::Stack>(dateStr);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -149,7 +149,7 @@ namespace rtl_tests
 			unsigned month = date::MONTH;
 			unsigned year = date::YEAR;
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Heap>(day, month, year);
+			auto [status, instance] = classDate->create<alloc::Heap>(day, month, year);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -174,7 +174,7 @@ namespace rtl_tests
 			unsigned month = date::MONTH;
 			unsigned year = date::YEAR;
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Stack>(day, month, year);
+			auto [status, instance] = classDate->create<alloc::Stack>(day, month, year);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -195,7 +195,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Heap>();
+			auto [status, instance] = classDate->create<alloc::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -214,7 +214,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [status, instance] = classDate->instance<rtl::alloc::Stack>();
+			auto [status, instance] = classDate->create<alloc::Stack>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -233,7 +233,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Heap>(19.0, 87.5);
+			auto [status, instance] = classBook->create<alloc::Heap>(19.0, 87.5);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -251,7 +251,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Stack>(19.0, 87.5);
+			auto [status, instance] = classBook->create<alloc::Stack>(19.0, 87.5);
 
 			ASSERT_TRUE(status == Error::SignatureMismatch);
 			ASSERT_TRUE(instance.isEmpty());
@@ -269,7 +269,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Heap>();
+			auto [status, instance] = classBook->create<alloc::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -288,7 +288,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Stack>();
+			auto [status, instance] = classBook->create<alloc::Stack>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -309,7 +309,7 @@ namespace rtl_tests
 
 			double price = book::PRICE;
 			string title = book::TITLE;
-			auto [status, instance] = classBook->instance<rtl::alloc::Heap>(price, title);
+			auto [status, instance] = classBook->create<alloc::Heap>(price, title);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -332,7 +332,7 @@ namespace rtl_tests
 
 			double price = book::PRICE;
 			string title = book::TITLE;
-			auto [status, instance] = classBook->instance<rtl::alloc::Stack>(price, title);
+			auto [status, instance] = classBook->create<alloc::Stack>(price, title);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -353,7 +353,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Heap>();
+			auto [status, instance] = classBook->create<alloc::Heap>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());
@@ -372,7 +372,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxxMirror.getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, instance] = classBook->instance<rtl::alloc::Stack>();
+			auto [status, instance] = classBook->create<alloc::Stack>();
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(instance.isEmpty());

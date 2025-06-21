@@ -21,7 +21,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<rtl::alloc::Heap>();
+			auto [status, bookObj] = classBook->create<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 
@@ -43,7 +43,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<rtl::alloc::Stack>();
+			auto [status, bookObj] = classBook->create<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 
@@ -75,7 +75,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<rtl::alloc::Heap>(price, title);
+			auto [status, srcObj] = classBook->create<alloc::Heap>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -116,7 +116,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<rtl::alloc::Stack>(price, title);
+			auto [status, srcObj] = classBook->create<alloc::Stack>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -157,7 +157,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<rtl::alloc::Heap>(price, title);
+			auto [status, srcObj] = classBook->create<alloc::Heap>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -201,7 +201,7 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->instance<rtl::alloc::Stack>(price, title);
+			auto [status, srcObj] = classBook->create<alloc::Stack>(price, title);
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -234,7 +234,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<rtl::alloc::Heap>();
+			auto [status, srcObj] = classPerson->create<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -260,7 +260,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<rtl::alloc::Stack>();
+			auto [status, srcObj] = classPerson->create<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -286,7 +286,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<rtl::alloc::Heap>();
+			auto [status, srcObj] = classPerson->create<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 
@@ -310,7 +310,7 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->instance<rtl::alloc::Stack>();
+			auto [status, srcObj] = classPerson->create<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(srcObj.isEmpty());
 

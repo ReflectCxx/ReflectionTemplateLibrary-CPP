@@ -9,7 +9,7 @@ namespace rtl {
 
     namespace access
     {
-    /*  @method: instance
+    /*  @method: create
         @param: ...params (any number/type of arguments)
         @return: std::pair<RStatus, Instance>
         * calls the constructor of the calss/struct represented by this 'Record' object.
@@ -20,7 +20,7 @@ namespace rtl {
         * in case of reflected call failure, empty 'Instance' will be returned.
         * on success Error::None will be returned along with the newly constructed object wrapped under 'Instance' (type erased).
     */  template<alloc _alloc, class ..._ctorArgs>
-        inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
+        inline const std::pair<RStatus, Instance> Record::create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
 

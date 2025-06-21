@@ -5,6 +5,7 @@
 #include "TestUtilsPerson.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
@@ -125,7 +126,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [isSuccess, personObj] = classPerson->instance<rtl::alloc::Heap>();
+		auto [isSuccess, personObj] = classPerson->create<alloc::Heap>();
 
 		ASSERT_TRUE(isSuccess);
 		ASSERT_FALSE(personObj.isEmpty());

@@ -4,6 +4,7 @@
 #include "TestUtilsPerson.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
@@ -22,7 +23,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -53,7 +54,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -84,7 +85,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -117,7 +118,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -150,7 +151,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			std::string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -186,7 +187,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateLastName);
 
 			std::string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -221,7 +222,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -253,7 +254,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -285,7 +286,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -315,7 +316,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -346,7 +347,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -379,7 +380,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson.instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson.create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -411,7 +412,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Heap>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
@@ -440,7 +441,7 @@ namespace rtl_tests
 			ASSERT_TRUE(updateAddress);
 
 			string firstName = person::FIRST_NAME;
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Stack>(firstName);
+			auto [status, personObj] = classPerson->create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
