@@ -18,13 +18,13 @@ namespace rtl
 
     /*  @class: RStatus
         * Every reflection call made, returns a RStatus object.
-        * it contains the error status of the call, defined by enum rtl::Error (in Constants.h)
+        * it contains the error status of the call, defined by enum rtl::error (in Constants.h)
         * indicates all possible failure-errors that could happen on calling reflected funtion/method/constructor.
         * it also contains the return value/object from the reflected function/method call wrapped under std::any.
     */  class RStatus
         {
             //indicates the reflection call status error
-            Error m_callStatus;
+            error m_callStatus;
 
             //indicates whether the returned value from reflected call is const/non-const.
             TypeQ m_typeQualifier;
@@ -37,12 +37,12 @@ namespace rtl
             
             explicit RStatus();
             
-            explicit RStatus(const Error pCallStatus);
+            explicit RStatus(const error pCallStatus);
 
         public:
 
             //used when the reflected call doesn't have any return value, or in case of call failure.
-            void init(const Error pCallStatus);
+            void init(const error pCallStatus);
 
             //used when the reflected call returns a value, called only in case of no call failure.
             void init(std::any&& pRetObj, const std::size_t pTypeId, const TypeQ pQualifier);
@@ -59,18 +59,18 @@ namespace rtl
 
             RStatus& operator=(const RStatus&) = default;
 
-            operator Error() const {
+            operator error() const {
                 return m_callStatus;
             }
 
             //RStatus object converted to bool based on call succes or not.
             operator bool() const {
-                //Error::None, reflected call successful.
-                return (m_callStatus == Error::None);
+                //error::None, reflected call successful.
+                return (m_callStatus == error::None);
             }
 
             //RStatus object can be directly checked against any error-code.
-            const bool operator==(const Error pError) const {
+            const bool operator==(const error pError) const {
                 return (m_callStatus == pError);
             }
 

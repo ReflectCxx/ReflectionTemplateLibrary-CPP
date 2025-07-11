@@ -49,7 +49,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Heap>();
+            auto [status, animalObj] = classAnimal->create<alloc::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -85,7 +85,7 @@ namespace rtl_tests
             optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
             ASSERT_TRUE(setAnimalName);
 
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Stack>();
+            auto [status, animalObj] = classAnimal->create<alloc::Stack>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -125,7 +125,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Heap>();
+            auto [status, animalObj] = classAnimal->create<alloc::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -160,7 +160,7 @@ namespace rtl_tests
             optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
             ASSERT_TRUE(setAnimalName);
 
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Stack>();
+            auto [status, animalObj] = classAnimal->create<alloc::Stack>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -198,7 +198,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Heap>();
+            auto [status, animalObj] = classAnimal->create<alloc::Heap>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 
@@ -234,7 +234,7 @@ namespace rtl_tests
             optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
             ASSERT_TRUE(setAnimalName);
 
-            auto [status, animalObj] = classAnimal->instance<rtl::alloc::Stack>();
+            auto [status, animalObj] = classAnimal->create<alloc::Stack>();
             ASSERT_TRUE(status);
             ASSERT_FALSE(animalObj.isEmpty());
 

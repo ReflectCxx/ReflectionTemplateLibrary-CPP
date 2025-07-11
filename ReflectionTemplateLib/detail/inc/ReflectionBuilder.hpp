@@ -3,6 +3,9 @@
 #include "ReflectionBuilder.h"
 #include "FunctorContainer.h"
 #include "MethodContainer.h"
+#include "SetupMethod.hpp"
+#include "SetupFunction.hpp"
+#include "SetupConstructor.hpp"
 
 namespace rtl {
 	
@@ -25,8 +28,8 @@ namespace rtl {
     */  template<class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
         {
-            using Container = detail::FunctorContainer< remove_const_if_not_reference<_signature>...>;
-            const detail::FunctorId& functorId = Container::addFunctor(pFunctor);
+            using Container = FunctorContainer< remove_const_if_not_reference<_signature>...>;
+            const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<>::None, TypeQ::None);
         }
 
@@ -41,8 +44,8 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
-            using Container = detail::MethodContainer<TypeQ::Mute, remove_const_if_not_reference<_signature>...>;
-            const detail::FunctorId& functorId = Container::addFunctor(pFunctor);
+            using Container = MethodContainer<TypeQ::Mute, remove_const_if_not_reference<_signature>...>;
+            const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
         }
 
@@ -57,8 +60,8 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
-            using Container = detail::MethodContainer<TypeQ::Const, remove_const_if_not_reference<_signature>...>;
-            const detail::FunctorId& functorId = Container::addFunctor(pFunctor);
+            using Container = MethodContainer<TypeQ::Const, remove_const_if_not_reference<_signature>...>;
+            const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Const);
         }
 
@@ -72,17 +75,17 @@ namespace rtl {
     */  template<typename _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstructor() const
         {
-            using Container = detail::FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
-            const detail::FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
+            using Container = FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
+            const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list, at index FunctorIdx::ONE.
-            const auto& dctorFunctorId = detail::FunctorContainer<std::any>::addDestructor<_recordType>();
+            const auto& dctorFunctorId = FunctorContainer<std::any>::template addDestructor<_recordType>();
             constructor.getFunctorIds().emplace_back(dctorFunctorId);
 
             //if the _recordType has valid copy constructor.
             if constexpr (std::is_copy_constructible_v<_recordType>) {
                 //Construct and add the copy constructor's functorId at index FunctorIdx::TWO.
-                const detail::FunctorId& copyCtorFunctorId = detail::FunctorContainer<std::any>::addCopyConstructor<_recordType>();
+                const FunctorId& copyCtorFunctorId = FunctorContainer<std::any>::template addCopyConstructor<_recordType>();
                 constructor.getFunctorIds().emplace_back(copyCtorFunctorId);
             }
 

@@ -1,10 +1,10 @@
 
+#include "RObject.h"
 #include "Record.h"
 #include "Method.h"
 #include "RStatus.h"
 #include "Instance.h"
 #include "Constants.h"
-#include "Function.hpp"
 
 namespace rtl {
 
@@ -76,13 +76,13 @@ namespace rtl {
             //validate the source object, should not be empty.
             if (pOther.isEmpty()) {
                 //return empty instance with error status.
-                return std::make_pair(RStatus(Error::EmptyInstance), Instance());
+                return std::make_pair(RStatus(error::EmptyInstance), Instance());
             }
 
             //type of the object wrapped under source 'Instance' should match with type of this class/struct.
             if (m_recordId != pOther.getTypeId()) {
                 //if source instance & ctor type didn't match, return empty instance with error status.
-                return std::make_pair(RStatus(Error::InstanceTypeMismatch), Instance());
+                return std::make_pair(RStatus(error::InstanceTypeMismatch), Instance());
             }
 
             if (!pOther.isOnHeap()) {
@@ -105,7 +105,7 @@ namespace rtl {
             }
 
             //if no registered copy constructor found, return empty instance with error status.
-            return std::make_pair(RStatus(Error::CopyConstructorDisabled), Instance());
+            return std::make_pair(RStatus(error::CopyConstructorDisabled), Instance());
         }
     }
 }

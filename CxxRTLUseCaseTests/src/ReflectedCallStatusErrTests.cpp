@@ -18,9 +18,9 @@ namespace rtl_tests
 		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
 		ASSERT_TRUE(classLibrary);
 
-		auto [status, instance] = classLibrary->instance<rtl::alloc::Heap>();
+		auto [status, instance] = classLibrary->create<alloc::Heap>();
 
-		ASSERT_TRUE(status == Error::ConstructorNotFound);
+		ASSERT_TRUE(status == error::ConstructorNotFound);
 		ASSERT_TRUE(instance.isEmpty());
 	}
 
@@ -30,9 +30,9 @@ namespace rtl_tests
 		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
 		ASSERT_TRUE(classLibrary);
 
-		auto [status, instance] = classLibrary->instance<rtl::alloc::Stack>();
+		auto [status, instance] = classLibrary->create<alloc::Stack>();
 
-		ASSERT_TRUE(status == Error::ConstructorNotFound);
+		ASSERT_TRUE(status == error::ConstructorNotFound);
 		ASSERT_TRUE(instance.isEmpty());
 	}
 
@@ -43,13 +43,13 @@ namespace rtl_tests
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
 			ASSERT_TRUE(classCalender);
 
-			auto [ret, srcObj] = classCalender->instance<rtl::alloc::Heap>();
+			auto [ret, srcObj] = classCalender->create<alloc::Heap>();
 			ASSERT_TRUE(ret);
 			ASSERT_FALSE(srcObj.isEmpty());
 
 			auto [status, instance] = classCalender->clone(srcObj);
 
-			ASSERT_TRUE(status == Error::CopyConstructorDisabled);
+			ASSERT_TRUE(status == error::CopyConstructorDisabled);
 			ASSERT_TRUE(instance.isEmpty());
 		}
 		EXPECT_TRUE(calender::assert_zero_instance_count());
@@ -63,8 +63,8 @@ namespace rtl_tests
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
 			ASSERT_TRUE(classCalender);
 
-			auto [status, srcObj] = classCalender->instance<rtl::alloc::Stack>();
-			ASSERT_TRUE(status == Error::InstanceOnStackDisabledNoCopyCtor);
+			auto [status, srcObj] = classCalender->create<alloc::Stack>();
+			ASSERT_TRUE(status == error::InstanceOnStackDisabledNoCopyCtor);
 			ASSERT_TRUE(srcObj.isEmpty());
 		}
 		EXPECT_TRUE(calender::assert_zero_instance_count());
@@ -83,7 +83,7 @@ namespace rtl_tests
 
 		const RStatus& status = getProfile->bind().call(std::string());
 
-		ASSERT_TRUE(status == Error::SignatureMismatch);
+		ASSERT_TRUE(status == error::SignatureMismatch);
 	}
 
 
@@ -98,7 +98,7 @@ namespace rtl_tests
 
 			auto [status, personObj] = classPerson->clone(emptyObj);
 
-			ASSERT_TRUE(status == Error::EmptyInstance);
+			ASSERT_TRUE(status == error::EmptyInstance);
 		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
@@ -114,7 +114,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classBook);
 
 			RStatus status = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
-			ASSERT_TRUE(status == Error::EmptyInstance);
+			ASSERT_TRUE(status == error::EmptyInstance);
 		}
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
 	}
@@ -129,7 +129,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Heap>();
+			auto [status, personObj] = classPerson->create<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
 
@@ -137,7 +137,7 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			status = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(status == Error::InstanceTypeMismatch);
+			ASSERT_TRUE(status == error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -153,7 +153,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, personObj] = classPerson->instance<rtl::alloc::Stack>();
+			auto [status, personObj] = classPerson->create<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(personObj.isEmpty());
 
@@ -161,7 +161,7 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			status = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(status == Error::InstanceTypeMismatch);
+			ASSERT_TRUE(status == error::InstanceTypeMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -174,7 +174,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<rtl::alloc::Heap>();
+			auto [status, bookObj] = classBook->create<alloc::Heap>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 
@@ -184,7 +184,7 @@ namespace rtl_tests
 			bookObj.makeConst();
 			status = getPublishedOn->bind(bookObj).call();
 
-			ASSERT_TRUE(status == Error::InstanceConstMismatch);
+			ASSERT_TRUE(status == error::InstanceConstMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);
@@ -197,7 +197,7 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->instance<rtl::alloc::Stack>();
+			auto [status, bookObj] = classBook->create<alloc::Stack>();
 			ASSERT_TRUE(status);
 			ASSERT_FALSE(bookObj.isEmpty());
 
@@ -207,7 +207,7 @@ namespace rtl_tests
 			bookObj.makeConst();
 			status = getPublishedOn->bind(bookObj).call();
 
-			ASSERT_TRUE(status == Error::InstanceConstMismatch);
+			ASSERT_TRUE(status == error::InstanceConstMismatch);
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
 		EXPECT_TRUE(Instance::getInstanceCount() == 0);

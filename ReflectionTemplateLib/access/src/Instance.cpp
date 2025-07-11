@@ -109,7 +109,7 @@ namespace rtl {
         }
 
 
-        Instance& Instance::operator=(const Instance&& pOther) noexcept
+        Instance& Instance::operator=(Instance&& pOther) noexcept
         {
             if (this == &pOther) return *this; // self-assignment check
 
@@ -161,7 +161,7 @@ namespace rtl {
             , m_destructor(&g_instanceCount, [=](void* ptr)
             {
                 const auto& retStaus = pDctor.bind<std::any>().call(pRetObj);
-                assert(retStaus == rtl::Error::None && "dctor not called. memory leak!");
+                assert(retStaus == rtl::error::None && "dctor not called. memory leak!");
                 const auto& instanceCount = --(*static_cast<std::size_t*>(ptr));
                 assert(instanceCount >= 0 && "instance count can't be less than zero. memory leak!");
             })

@@ -8,7 +8,7 @@
 #include "Constants.h"
 
 #include "CallReflector.h"
-#include "SetupMethod.hpp"
+#include "SetupMethod.h"
 
 namespace rtl {
 

@@ -1,5 +1,6 @@
 
 #include "RStatus.h"
+#include "RObject.hpp"
 #include "SetupFunction.h"
 
 namespace rtl
@@ -50,14 +51,14 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  const auto functor = [=](access::RStatus& pRStatus, _signature&&...params)-> void
+        */  const auto functor = [=](access::RStatus& pRStatus, _signature&&...params)-> access::RObject
             {
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>) {
 
                     //call will definitely be successful, since the signature type has alrady been validated.
                     (*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(Error::None);
+                    pRStatus.init(error::None);
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else {
@@ -90,6 +91,8 @@ namespace rtl
                         pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
                     }
                 }
+
+                return access::RObject();
             };
 
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.

@@ -66,7 +66,7 @@ namespace rtl {
             Instance(Instance&& pOther) noexcept;
             
             //move assignment
-            Instance& operator=(const Instance&& pOther) noexcept;
+            Instance& operator=(Instance&& pOther) noexcept;
 
             //simple inlined getters.
             GETTER(std::any, , m_anyObject);

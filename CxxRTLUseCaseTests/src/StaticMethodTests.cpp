@@ -5,6 +5,7 @@
 #include "TestUtilsPerson.h"
 
 using namespace std;
+using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
@@ -125,13 +126,13 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [isSuccess, personObj] = classPerson->instance<rtl::alloc::Heap>();
+		auto [isSuccess, personObj] = classPerson->create<alloc::Heap>();
 
 		ASSERT_TRUE(isSuccess);
 		ASSERT_FALSE(personObj.isEmpty());
 
 		//TODO: handle this test case with appropriate error or make successful call as its valid to call static method on objects.
 		const RStatus& status = (*getDefaults)(personObj)();
-		ASSERT_TRUE(status == rtl::Error::InstanceTypeMismatch);
+		ASSERT_TRUE(status == error::InstanceTypeMismatch);
 	}
 }

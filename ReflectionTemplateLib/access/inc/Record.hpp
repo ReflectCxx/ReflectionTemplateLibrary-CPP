@@ -9,18 +9,18 @@ namespace rtl {
 
     namespace access
     {
-    /*  @method: instance
+    /*  @method: create
         @param: ...params (any number/type of arguments)
         @return: std::pair<RStatus, Instance>
         * calls the constructor of the calss/struct represented by this 'Record' object.
         * returns the dynamically allocated object of the calss/struct along with the status.
         * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
-        * if the signature(...params) did not match any registered ctor, Error::SignatureMismatch is returned as RStatus.
-        * if no constructor found, Error::ConstructorNotFound is returned as RStatus.
+        * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned as RStatus.
+        * if no constructor found, error::ConstructorNotFound is returned as RStatus.
         * in case of reflected call failure, empty 'Instance' will be returned.
-        * on success Error::None will be returned along with the newly constructed object wrapped under 'Instance' (type erased).
+        * on success error::None will be returned along with the newly constructed object wrapped under 'Instance' (type erased).
     */  template<alloc _alloc, class ..._ctorArgs>
-        inline const std::pair<RStatus, Instance> Record::instance(_ctorArgs&& ...params) const
+        inline const std::pair<RStatus, Instance> Record::create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
 
@@ -52,7 +52,7 @@ namespace rtl {
             else 
             {
                 //if no constructor found, return with empty 'Instance'.
-                return std::make_pair(RStatus(Error::ConstructorNotFound), Instance());
+                return std::make_pair(RStatus(error::ConstructorNotFound), Instance());
             }
         }
     }

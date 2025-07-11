@@ -4,6 +4,8 @@
 #include <string>
 #include <type_traits>
 
+#include "RObject.hpp"
+
 namespace rtl
 {
     namespace utils {

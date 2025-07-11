@@ -7,8 +7,8 @@
 
 #include "Constants.h"
 #include "CallReflector.h"
-#include "SetupFunction.hpp"
-#include "SetupConstructor.hpp"
+#include "SetupFunction.h"
+#include "SetupConstructor.h"
 
 namespace rtl {
 
@@ -28,7 +28,7 @@ namespace rtl {
                                  public SetupConstructor<FunctorContainer<_signature...>>,
                                  public CallReflector<FunctorContainer<_signature...>>
         {
-            using FunctionLambda = std::function < void (access::RStatus&, _signature...) >;
+            using FunctionLambda = std::function < access::RObject (access::RStatus&, _signature...) >;
         public:
 
             //every FunctorContainer<...> will have a unique-id.
