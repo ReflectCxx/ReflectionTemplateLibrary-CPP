@@ -29,7 +29,7 @@ namespace rtl {
         inline const access::Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
         {
             using Container = FunctorContainer< remove_const_if_not_reference<_signature>...>;
-            const FunctorId& functorId = Container::template addFunctor(pFunctor);
+            const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<>::None, TypeQ::None);
         }
 
@@ -45,7 +45,7 @@ namespace rtl {
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
             using Container = MethodContainer<TypeQ::Mute, remove_const_if_not_reference<_signature>...>;
-            const FunctorId& functorId = Container::template addFunctor(pFunctor);
+            const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Mute);
         }
 
@@ -61,7 +61,7 @@ namespace rtl {
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
             using Container = MethodContainer<TypeQ::Const, remove_const_if_not_reference<_signature>...>;
-            const FunctorId& functorId = Container::template addFunctor(pFunctor);
+            const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::Const);
         }
 
