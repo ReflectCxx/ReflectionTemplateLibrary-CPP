@@ -3,6 +3,7 @@
 #include "Method.h"
 #include "Instance.h"
 #include "MethodInvoker.h"
+#include "MethodContainer.h"
 
 namespace rtl 
 {

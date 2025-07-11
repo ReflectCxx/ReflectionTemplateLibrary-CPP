@@ -2,6 +2,7 @@
 #include <map>
 
 #include "RStatus.h"
+#include "RObject.h"
 #include "SetupConstructor.h"
 
 namespace rtl
@@ -32,12 +33,13 @@ namespace rtl
             };
 
             //destructor lambda.
-            const auto& functor = [](access::RStatus& pRStatus, std::any&& pTarget)-> void
+            const auto& functor = [](access::RStatus& pRStatus, std::any&& pTarget)-> access::RObject
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 _recordType* object = std::any_cast<_recordType*>(pTarget);
                 delete object;
                 pRStatus.init(error::None);
+                return access::RObject();
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -77,7 +79,7 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, rtl::alloc pAllocType, _signature&&...params)-> void
+            const auto& functor = [=](access::RStatus& pRStatus, rtl::alloc pAllocType, _signature&&...params)-> access::RObject
             {
                 if (pAllocType == rtl::alloc::Stack) 
                 {
@@ -93,6 +95,7 @@ namespace rtl
                     _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
                     pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
                 }
+                return access::RObject();
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -128,12 +131,14 @@ namespace rtl
 
             const auto& recordId = TypeId<_recordType>::get();
             //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> void
+            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> access::RObject
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
                 _recordType* retObj = new _recordType(*srcObj);
                 pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
+
+                return access::RObject();
             };
 
             //add the lambda in 'FunctorContainer'.

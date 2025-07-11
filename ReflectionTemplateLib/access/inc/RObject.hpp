@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "RObject.h"
-#include "Reflect.h"
 #include "ReflectCast.h"
 
 namespace rtl::access {
@@ -42,7 +41,7 @@ namespace rtl::access {
 
 
     template <class T>
-    inline RObject RObject::create(T&& pVal)
+    inline RObject RObject::create(T&& pVal, const rtl::TypeQ& pTypeQ)
     {
         using _T = remove_const_n_ref_n_ptr<T>;
         const auto& typeId = rtl::detail::TypeId<_T>::get();
@@ -50,10 +49,12 @@ namespace rtl::access {
         const auto& typeStr = rtl::detail::TypeId<_T>::toString();
         const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
         if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
-            return RObject(std::any(static_cast<const _T*>(pVal)), typeId, typePtrId, typeStr, conversions, rtl::IsPointer::Yes);
+            return RObject(std::any(static_cast<const _T*>(pVal)), typeId, typePtrId, typeStr,
+                           pTypeQ, rtl::IsPointer::Yes, conversions);
         }
         else {
-            return RObject(std::any(std::in_place_type<_T>, _T(pVal)), typeId, typePtrId, typeStr, conversions, rtl::IsPointer::No);
+            return RObject(std::any(std::in_place_type<_T>, _T(pVal)), typeId, typePtrId, typeStr,
+                           pTypeQ, rtl::IsPointer::No, conversions);
         }
     }
 
@@ -61,7 +62,6 @@ namespace rtl::access {
     template <class _asType>
     inline std::optional<rtl::view<_asType>> RObject::view() const
     {
-
         static_assert(!std::is_reference_v<_asType>, "reference views are not supported.");
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");

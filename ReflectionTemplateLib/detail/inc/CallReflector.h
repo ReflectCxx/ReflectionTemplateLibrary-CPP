@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include "RObject.h"
 #include "Constants.h"
 
 namespace rtl {

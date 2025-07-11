@@ -41,12 +41,13 @@ namespace rtl {
     };
 
 
-    //Qualifier type.
+    //Type Qualifier.
     enum class TypeQ
     {
         None,
-        Mute,   //Mutable
-        Const,  //Constant
+        Mute,       //Mutable
+        Const,      //Constant
+        ConstRef    //Constant Reference
     };
 
 

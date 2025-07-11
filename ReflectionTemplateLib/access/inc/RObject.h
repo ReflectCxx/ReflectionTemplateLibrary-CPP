@@ -2,20 +2,25 @@
 
 #include <any>
 #include <array>
+#include <memory>
 #include <string>
 #include <optional>
 #include <functional>
 
-#include "Constants.h"
 #include "view.h"
+#include "Constants.h"
+
 
 namespace rtl::access
 {
+    class Function;
+
     using ConverterPair = std::pair< std::size_t, Converter >;
 
     //Reflecting the object within.
     class RObject
     {
+        const rtl::TypeQ m_typeQ;
         const rtl::IsPointer m_isPointer;
         const std::any m_object;
         const std::size_t m_typeId;
@@ -23,10 +28,12 @@ namespace rtl::access
         const std::string m_typeStr;
         const alloc m_allocatedOn;
         const std::vector<ConverterPair>& m_converters;
+        const std::shared_ptr<std::size_t> m_deallocator;
 
-        RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                const std::vector<ConverterPair>& pConversions, const rtl::IsPointer pIsPtr,
-                alloc pAllocOn = rtl::alloc::None);
+        explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
+                         const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const std::vector<ConverterPair>& pConversions);
+
+        //explicit RObject(std::any pObjectPtr, const Function& pDctor);
 
         template<class T>
         const T& as() const;
@@ -35,6 +42,7 @@ namespace rtl::access
 
     public:
 
+        RObject();
         ~RObject() = default;
         RObject(const RObject&) = default;
         RObject(RObject&& pOther) = default;
@@ -43,6 +51,7 @@ namespace rtl::access
         RObject& operator=(RObject&& pOther) = delete;
 
         GETTER(std::string, TypeStr, m_typeStr)
+        GETTER_BOOL(Empty, (m_object.has_value() == false))
 
         template <class _asType>
         const bool canReflectAs() const;
@@ -51,6 +60,6 @@ namespace rtl::access
         std::optional<rtl::view<_asType>> view() const;
 
         template <class T>
-        static RObject create(T&& pVal);
+        static RObject create(T&& pVal, const rtl::TypeQ& pTypeQ = rtl::TypeQ::Mute);
     };
 }
