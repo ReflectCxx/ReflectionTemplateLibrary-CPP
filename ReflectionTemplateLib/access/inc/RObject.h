@@ -8,6 +8,7 @@
 #include <functional>
 
 #include "view.h"
+#include "TypeId.h"
 #include "Constants.h"
 
 
@@ -20,6 +21,8 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
+        static std::vector<rtl::access::ConverterPair> m_conversions;
+
         const rtl::TypeQ m_typeQ;
         const rtl::IsPointer m_isPointer;
         const std::any m_object;
@@ -42,7 +45,7 @@ namespace rtl::access
 
     public:
 
-        RObject();
+        explicit RObject();
         ~RObject() = default;
         RObject(const RObject&) = default;
         RObject(RObject&& pOther) = default;
@@ -50,7 +53,11 @@ namespace rtl::access
         RObject& operator=(const RObject&) = delete;
         RObject& operator=(RObject&& pOther) = delete;
 
-        GETTER(std::string, TypeStr, m_typeStr)
+        GETTER(std::size_t, TypeId, m_typeId);
+        GETTER(rtl::TypeQ, Qualifier, m_typeQ);
+
+        //checks if object constructed via reflection on heap or stack.
+        GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::alloc::Heap));
         GETTER_BOOL(Empty, (m_object.has_value() == false))
 
         template <class _asType>
@@ -62,4 +69,31 @@ namespace rtl::access
         template <class T>
         static RObject create(T&& pVal, const rtl::TypeQ& pTypeQ = rtl::TypeQ::Mute);
     };
+
+
+    inline RObject::RObject()
+        : m_typeQ(rtl::TypeQ::None)
+        , m_isPointer(rtl::IsPointer::No)
+        , m_typeId(rtl::detail::TypeId<>::None)
+        , m_typePtrId(rtl::detail::TypeId<>::None)
+        , m_allocatedOn(rtl::alloc::None)
+        , m_converters(m_conversions)
+        , m_deallocator(nullptr)
+    {
+    }
+
+
+    inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
+        const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const std::vector<ConverterPair>& pConversions)
+        : m_typeQ(pTypeQ)
+        , m_isPointer(pIsPtr)
+        , m_object(std::move(pObjRef))
+        , m_typeId(pTypeId)
+        , m_typePtrId(pTypePtrId)
+        , m_typeStr(pTypeStr)
+        , m_allocatedOn(rtl::alloc::Stack)
+        , m_converters(pConversions)
+        , m_deallocator(nullptr)
+    {
+    }
 }

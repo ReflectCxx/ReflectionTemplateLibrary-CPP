@@ -3,11 +3,9 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirror.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorToJson.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Function.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/Instance.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Record.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObject.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/RStatus.cpp"
 )
 
 SET(COMMON_HEADERS
@@ -24,7 +22,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/FunctionCaller.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/FunctionCaller.hpp"
-	"${PROJECT_SOURCE_DIR}/access/inc/Instance.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Method.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.h"
@@ -33,7 +30,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/RObject.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/RObject.hpp"
-	"${PROJECT_SOURCE_DIR}/access/inc/RStatus.h"
 )
 
 # Add any additional source files if needed

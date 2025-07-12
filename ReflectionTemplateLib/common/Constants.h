@@ -19,7 +19,6 @@ namespace rtl {
     template<typename T>
     using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
-
     enum class ConversionKind
     {
         ByRef,
@@ -47,7 +46,7 @@ namespace rtl {
         None,
         Mute,       //Mutable
         Const,      //Constant
-        ConstRef    //Constant Reference
+        //ConstRef    //Constant Reference
     };
 
 
@@ -77,8 +76,9 @@ namespace rtl {
         SignatureMismatch,
         InstanceTypeMismatch,
         InstanceConstMismatch,
-        ConstructorNotFound,
         CopyConstructorDisabled,
+        ReflectedFunctionNotFound,
+        ReflectedConstructorNotFound,
         InstanceOnStackDisabledNoCopyCtor
     };
 
@@ -108,7 +108,8 @@ namespace rtl {
         case error::SignatureMismatch: return "SignatureMismatch";
         case error::InstanceTypeMismatch: return "InstanceTypeMismatch";
         case error::InstanceConstMismatch: return "InstanceConstMismatch";
-        case error::ConstructorNotFound: return "ConstructorNotFound";
+        case error::ReflectedFunctionNotFound: return "ReflectedFunctionNotFound";
+        case error::ReflectedConstructorNotFound: return "ReflectedConstructorNotFound";
         case error::CopyConstructorDisabled: return "CopyConstructorDisabled";
         case error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
         default: return "Unknown";

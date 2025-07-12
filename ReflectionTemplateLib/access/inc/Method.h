@@ -3,13 +3,15 @@
 #include <functional>
 
 #include "Function.h"
-#include "Instance.h"
 #include "MethodInvoker.h"
 
 namespace rtl {
 
     namespace access
     {
+        class RObject;
+        class Record;
+
     /*  @class: Method
         * extends 'Function' class and adds interfaces to call member function.
         * invokes only static & non-static member functions via reflection.
@@ -28,7 +30,7 @@ namespace rtl {
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>
-            RStatus invokeCtor(alloc&& pAllocType, _args&&...params) const;
+            std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
 
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
@@ -45,7 +47,7 @@ namespace rtl {
             const bool hasSignature() const;
 
             template<class ..._signature>
-            const MethodInvoker<_signature...> bind(const Instance& pTarget) const;
+            const MethodInvoker<_signature...> bind(const RObject& pTarget) const;
 
             //friends :)
             template<class ..._signature>
@@ -68,15 +70,15 @@ namespace rtl {
             }
 
 
-        /*  @method: operator()(const Instance&)
-            @param: const Instance& (target object)
+        /*  @method: operator()(const RObject&)
+            @param: const RObject& (target object)
             @return: lambda
             * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
             * returns a lambda, which forwards the call to 'call', finally invoking the associated non-static-member-function functor.
             * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
-        */  constexpr auto operator()(const Instance& pTarget) const
+        */  constexpr auto operator()(const RObject& pTarget) const
             {
-                return [&](auto&&...params)->RStatus {
+                return [&](auto&&...params)-> std::pair<error, RObject> {
                     return bind(pTarget).call(std::forward<decltype(params)>(params)...);
                 };
             }

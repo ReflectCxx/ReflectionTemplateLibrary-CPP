@@ -18,7 +18,7 @@ namespace rtl {
         //forward decls
         class Method;
         class RStatus;
-        class Instance;
+        class RObject;
 
     /*  @class: Record
         * represents a reflected class/struct.
@@ -48,11 +48,11 @@ namespace rtl {
             std::optional<Method> getMethod(const std::string& pMethod) const;
 
             //creates dynamic, deep-copy instance, calling copy ctor, using new.
-            const std::pair<RStatus, Instance> clone(Instance& pOther) const;
+            const std::pair<error, RObject> clone(RObject& pOther) const;
 
             //creates dynamic instance, using new.
             template<alloc _alloc, class ..._ctorArgs>
-            const std::pair<RStatus, Instance> create(_ctorArgs&& ...params) const;
+            const std::pair<error, RObject> create(_ctorArgs&& ...params) const;
 
             const std::unordered_map< std::string, access::Method >& getMethodMap() const;
 

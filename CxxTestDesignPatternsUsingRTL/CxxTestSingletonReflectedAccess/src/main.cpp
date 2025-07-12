@@ -2,53 +2,43 @@
 #include <iostream>
 #include "SingletonReflection.h"
 
+using namespace singleton_test;
 
 int main()
 {
     std::cout << "Singleton Instance reflected access test." << std::endl;
     {
-        const auto& getInstance = singleton_test::Reflection::getSingletonClass()->getMethod("getInstance");
+        const auto& getInstance = Reflection::getSingletonClass()->getMethod("getInstance");
 
         if (!getInstance.has_value()) {
             std::cout << "Singleton::getInstance() not found! Test Failed." << std::endl;
             return -1;
         }
 
-        auto status = getInstance->bind().call();
+        auto [err, robj] = getInstance->bind().call();
 
-        if (!status || !status.getReturn().has_value()) {
-            std::cout << "Singleton::getInstance() reflected call failed! Error: " << rtl::to_string(status) << std::endl;
+        if (err != rtl::error::None) {
+            std::cout << "Singleton::getInstance() reflected call failed! Error: " << rtl::to_string(err) << std::endl;
             return -1;
         }
 
-        rtl::access::Instance instance(status);
-
-        if (status.getReturn().has_value() || instance.isEmpty()) {
-            std::cout << "Singleton::getInstance(), cannot create reflected instance! " << std::endl;
-            return -1;
-        }
-
-        const auto& getHelloString = singleton_test::Reflection::getSingletonClass()->getMethod("getHelloString");
+        const auto& getHelloString = Reflection::getSingletonClass()->getMethod("getHelloString");
 
         if (!getHelloString.has_value()) {
             std::cout << "Singleton::getHelloString() not found! Test Failed." << std::endl;
             return -1;
         }
 
-        status = getHelloString->bind(instance).call();
+        auto [err0, retVal] = getHelloString->bind(robj).call();
 
-        if (!status || !status.getReturn().has_value() || !status.isOfType<std::string>()) {
-            std::cout << "Singleton::getHelloString() reflected call failed! Error: " << rtl::to_string(status) << std::endl;
+        if (err0 != rtl::error::None || !retVal.canReflectAs<std::string>()) {
+            std::cout << "Singleton::getHelloString() reflected call failed! Error: " << rtl::to_string(err) << std::endl;
             return -1;
         }
 
-        const auto& helloStr = std::any_cast<std::string>(status.getReturn());
+        const auto& helloStr = retVal.view<std::string>()->get();
 
         std::cout << "Singleton::getHelloString(), reflected call returned: " << helloStr << std::endl;
-    }
-
-    if (rtl::access::Instance::getInstanceCount() != 0) {
-        std::cout << "'Instance' not destroyed! test failed." << std::endl;
     }
 
     std::cout << "Singleton Instance reflected access test. PASSED." << std::endl;

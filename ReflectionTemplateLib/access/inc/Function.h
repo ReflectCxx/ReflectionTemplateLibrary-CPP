@@ -4,7 +4,6 @@
 #include <vector>
 #include <functional>
 
-#include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
 #include "FunctionCaller.h"
@@ -84,7 +83,7 @@ namespace rtl {
             const bool hasSignature() const;
 
             template<class ..._args>
-            RStatus operator()(_args&&...params) const noexcept;
+            std::pair<error, RObject> operator()(_args&&...params) const noexcept;
 
             template<class ..._signature>
             const FunctionCaller<_signature...> bind() const;

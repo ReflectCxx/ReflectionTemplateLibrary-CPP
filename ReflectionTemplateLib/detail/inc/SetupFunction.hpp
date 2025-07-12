@@ -1,5 +1,4 @@
 
-#include "RStatus.h"
 #include "RObject.hpp"
 #include "SetupFunction.h"
 
@@ -51,35 +50,35 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  const auto functor = [=](access::RStatus& pRStatus, _signature&&...params)-> access::RObject
+        */  const auto functor = [=](error& pError, _signature&&...params)-> access::RObject
             {
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>) {
 
                     //call will definitely be successful, since the signature type has alrady been validated.
                     (*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(error::None);
+                    pError = error::None;
+                    return access::RObject();
                 }
-                //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                else {
-
+                else //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
+                {
                     if constexpr (std::is_reference_v<_returnType>)
                     {
-                        if constexpr (std::is_const_v<std::remove_reference_t<_returnType>>) 
+                        if constexpr (std::is_const_v<std::remove_reference_t<_returnType>>)
                         {
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
                             const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                            //return 'RStatus' with return value-const-reference wrapped in it as std::any.
-                            pRStatus.init(std::any(std::cref(retObj)), retTypeId, qualifier);
+                            pError = error::None;
+                            return access::RObject::create(&retObj, qualifier);
                         }
                         else
                         {
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
                             const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                            //return 'RStatus' with return value reference wrapped in it as std::any.
-                            pRStatus.init(std::any(std::ref(retObj)), retTypeId, qualifier);
+                            pError = error::None;
+                            return access::RObject::create(&retObj, qualifier);
                         }
                     }
                     else
@@ -87,12 +86,10 @@ namespace rtl
                         //call will definitely be successful, since the signature type has alrady been validated.
                         const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
                         const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                        //return 'RStatus' with return value wrapped in it as std::any.
-                        pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+                        pError = error::None;
+                        return access::RObject::create(retObj, qualifier);
                     }
                 }
-
-                return access::RObject();
             };
 
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.

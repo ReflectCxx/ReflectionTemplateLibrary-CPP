@@ -1,9 +1,9 @@
 #pragma once
 
-#include "RStatus.h"
+#include "RObject.h"
 #include "TypeId.h"
 #include "SetupMethod.h"
-#include "Instance.h"
+#include "view.h"
 
 namespace rtl
 {
@@ -52,19 +52,21 @@ namespace rtl
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](access::RStatus& pRStatus, const rtl::access::Instance& pTargetObj, _signature&&...params)-> void
+        */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                const std::any& anyRef = pTargetObj.get();
-                //cast would not fail, since the type has already been validated.
-                const _recordType* target = pTargetObj.isOnHeap() ? (std::any_cast<_recordType*>(anyRef))
-                                                                  : (std::any_cast<_recordType>(&anyRef));
+                if (!pTargetObj.canReflectAs<const _recordType*>()) {
+                    pError = error::InstanceTypeMismatch;
+                    return access::RObject();
+                }
 
+                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>) 
+                if constexpr (std::is_same_v<_returnType, void>)
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(error::None);
+                    pError = error::None;
+                    return access::RObject();
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else
@@ -72,8 +74,8 @@ namespace rtl
                     constexpr const TypeQ qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     const _returnType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    //return 'RStatus' with return value wrapped in it as std::any.
-                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+                    pError = error::None;
+                    return access::RObject::create(retObj, qualifier);
                 }
             };
 
@@ -125,27 +127,29 @@ namespace rtl
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](access::RStatus& pRStatus, const rtl::access::Instance& pTargetObj, _signature&&...params)-> void
+        */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                const std::any& anyRef = pTargetObj.get();
-                //cast would not fail, since the type has already been validated.
-                const _recordType* target = pTargetObj.isOnHeap() ? (std::any_cast<_recordType*>(anyRef))
-                                                                  : (std::any_cast<_recordType>(&anyRef));
+                if (!pTargetObj.canReflectAs<const _recordType*>()) {
+                    pError = error::InstanceTypeMismatch;
+                    return access::RObject();
+                }
 
+                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>) 
+                if constexpr (std::is_same_v<_returnType, void>)
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (target->*pFunctor)(std::forward<_signature>(params)...);
-                    pRStatus.init(error::None);
+                    pError = error::None;
+                    return access::RObject();
                 }
-                else 
+                else
                 {
                     const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    //return 'RStatus' with return value wrapped in it as std::any.
-                    pRStatus.init(std::make_any<_returnType>(retObj), retTypeId, qualifier);
+                    pError = error::None;
+                    return access::RObject::create(retObj, qualifier);
                 }
             };
 

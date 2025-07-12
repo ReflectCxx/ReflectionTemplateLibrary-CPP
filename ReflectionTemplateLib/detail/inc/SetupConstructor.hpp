@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 
-#include "RStatus.h"
 #include "RObject.h"
 #include "SetupConstructor.h"
 
@@ -33,12 +32,12 @@ namespace rtl
             };
 
             //destructor lambda.
-            const auto& functor = [](access::RStatus& pRStatus, std::any&& pTarget)-> access::RObject
+            const auto& functor = [](error& pError, std::any&& pTarget)-> access::RObject
             {
                 //cast will definitely succeed, will not throw since the object type is already validated.
                 _recordType* object = std::any_cast<_recordType*>(pTarget);
                 delete object;
-                pRStatus.init(error::None);
+                pError = error::None;
                 return access::RObject();
             };
 
@@ -79,23 +78,28 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, rtl::alloc pAllocType, _signature&&...params)-> access::RObject
+            const auto& functor = [=](error& pError, rtl::alloc pAllocType, _signature&&...params)-> access::RObject
             {
-                if (pAllocType == rtl::alloc::Stack) 
-                {
-                    if constexpr (std::is_copy_constructible_v<_recordType>) {
-                        pRStatus.init(std::make_any<_recordType>(std::forward<_signature>(params)...), recordId, TypeQ::Mute);
+                if constexpr (!std::is_constructible_v<_recordType, _signature...>) {
+                    pError = error::InstanceOnStackDisabledNoCopyCtor;
+                    return access::RObject();
+                }
+                else {
+                    if (pAllocType == rtl::alloc::Heap) {
+                        pError = error::None;
+                        const _recordType* robj = new _recordType(std::forward<_signature>(params)...);
+                        return access::RObject::create(robj, TypeQ::Mute);
+                    }
+                    else if (pAllocType == rtl::alloc::Stack) {
+                        pError = error::None;
+                        const _recordType& robj = _recordType(std::forward<_signature>(params)...);
+                        return access::RObject::create(robj, TypeQ::Mute);
                     }
                     else {
-                        pRStatus.init(rtl::error::InstanceOnStackDisabledNoCopyCtor);
+                        pError = error::InvalidAllocType;
+                        return access::RObject();
                     }
                 }
-                else if (pAllocType == rtl::alloc::Heap) 
-                {
-                    _recordType* retObj = new _recordType(std::forward<_signature>(params)...);
-                    pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
-                }
-                return access::RObject();
             };
 
             //add the lambda in 'FunctorContainer'.
@@ -131,14 +135,18 @@ namespace rtl
 
             const auto& recordId = TypeId<_recordType>::get();
             //lambda containing constructor call.
-            const auto& functor = [=](access::RStatus& pRStatus, std::any&& pOther)-> access::RObject
+            const auto& functor = [=](error& pError, std::any&& pOther)-> access::RObject
             {
-                //cast will definitely succeed, will not throw since the object type is already validated.
-                const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
-                _recordType* retObj = new _recordType(*srcObj);
-                pRStatus.init(std::make_any<_recordType*>(retObj), recordId, TypeQ::Mute);
-
-                return access::RObject();
+                if constexpr (!std::is_copy_constructible_v<_recordType>) {
+                    pError = error::InstanceOnStackDisabledNoCopyCtor;
+                    return access::RObject();
+                }
+                else {
+                    //cast will definitely succeed, will not throw since the object type is already validated.
+                    const _recordType* srcObj = std::any_cast<_recordType*>(pOther);
+                    pError = error::None;
+                    return access::RObject::create((new _recordType(*srcObj)), TypeQ::Mute);
+                }
             };
 
             //add the lambda in 'FunctorContainer'.

@@ -35,11 +35,11 @@ namespace rtl
             //type-id of the return value.
             std::size_t m_typeId;
             
-            explicit RStatus();
-            
             explicit RStatus(const error pCallStatus);
 
         public:
+
+            explicit RStatus();
 
             //used when the reflected call doesn't have any return value, or in case of call failure.
             void init(const error pCallStatus);
