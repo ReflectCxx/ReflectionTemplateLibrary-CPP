@@ -82,6 +82,7 @@ namespace rtl {
         InstanceOnStackDisabledNoCopyCtor
     };
 
+    static constexpr std::size_t invalid_index = static_cast<std::size_t>(-1);
 
     struct CtorName
     {

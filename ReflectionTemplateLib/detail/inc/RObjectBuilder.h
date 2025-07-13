@@ -117,7 +117,7 @@ namespace rtl::detail
             }
         }
 
-        inline static const std::size_t& reflectedInstanceCount() {
+        inline static const std::size_t reflectedInstanceCount() {
             return m_reflectedInstanceCount;
         }
 
@@ -145,13 +145,13 @@ namespace rtl::detail
 namespace rtl
 {
     template <class T>
-    inline access::RObject reflect(T&& pVal) 
+    inline access::RObject reflect(T&& pVal)
     {
         static_assert(!std::is_same_v<remove_const_n_ref_n_ptr<T>, std::any>, "cannot reflect std::any.");
         return detail::RObjectBuilder::build(std::forward<T>(pVal), nullptr, TypeQ::None, alloc::None);
     }
 
-    inline const std::size_t& getReflecetedInstanceCount() {
+    inline const std::size_t getReflectedHeapInstanceCount() {
         return detail::RObjectBuilder::reflectedInstanceCount();
     }
 }

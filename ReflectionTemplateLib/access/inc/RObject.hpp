@@ -53,7 +53,7 @@ namespace rtl::access {
                            pTypeQ, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
         }
         else {
-            return RObject(std::any(std::in_place_type<_T>, _T(pVal)), typeId, typePtrId, typeStr,
+            return RObject(std::any(std::forward<T>(pVal)), typeId, typePtrId, typeStr,
                            pTypeQ, rtl::IsPointer::No, pAllocOn, std::move(pDeleter), conversions);
         }
     }

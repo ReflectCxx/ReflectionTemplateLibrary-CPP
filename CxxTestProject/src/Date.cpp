@@ -6,7 +6,6 @@ using namespace std;
 
 namespace nsdate
 {
-	unsigned int Date::m_instanceCount = 0;
 	unsigned int Calender::m_instanceCount = 0;
 
 	Calender::Calender()
@@ -23,7 +22,12 @@ namespace nsdate
 	{
 		return m_instanceCount;
 	}
+}
 
+namespace nsdate
+{
+	unsigned int g_maxInstanceCount = 0;
+	unsigned int Date::m_instanceCount = 0;
 
 	Date::~Date() {
 		m_instanceCount--;
@@ -34,12 +38,10 @@ namespace nsdate
 		return m_instanceCount;
 	}
 
-
 	std::string Date::getAsString() const
 	{
 		return (to_string(m_day) + "/" + to_string(m_month) + "/" + to_string(m_year));
 	}
-
 
 	void Date::updateDate(std::string pDateStr)
 	{
@@ -60,40 +62,62 @@ namespace nsdate
 		m_year = stoi(strBuf);
 	}
 
-
 	Date::Date()
 		: m_day(1)
 		, m_month(1)
-		, m_year(2000) {
+		, m_year(2000) 
+		, m_calender(new Calender()) {
 		m_instanceCount++;
+		if (m_instanceCount > g_maxInstanceCount) {
+			g_maxInstanceCount = m_instanceCount;
+		}
 	}
-
 
 	Date::Date(const Date& pOther)
 		: m_day(pOther.m_day)
 		, m_month(pOther.m_month)
-		, m_year(pOther.m_year) {
+		, m_year(pOther.m_year)
+		, m_calender(pOther.m_calender) {
 		m_instanceCount++;
+		if (m_instanceCount > g_maxInstanceCount) {
+			g_maxInstanceCount = m_instanceCount;
+		}
 	}
-
 
 	Date::Date(unsigned dd, unsigned mm, unsigned yy)
 		: m_day(dd)
 		, m_month(mm)
-		, m_year(yy) {
+		, m_year(yy)
+		, m_calender(new Calender()) {
 		m_instanceCount++;
+		if (m_instanceCount > g_maxInstanceCount) {
+			g_maxInstanceCount = m_instanceCount;
+		}
 	}
 
+	Date::Date(Date&& pOther) noexcept
+		: m_day(pOther.m_day)
+		, m_month(pOther.m_month)
+		, m_year(pOther.m_year)
+		, m_calender(std::move(pOther.m_calender)) {
+		m_instanceCount++;
+		if (m_instanceCount > g_maxInstanceCount) {
+			g_maxInstanceCount = m_instanceCount;
+		}
+	}
 
 	const bool Date::operator==(const Date& pOther) const
 	{
 		return (m_day == pOther.m_day && m_month == pOther.m_month && m_year == pOther.m_year);
 	}
 
-
 	Date::Date(const string& pDateStr)
+		: m_calender(new Calender())
 	{
 		m_instanceCount++;
+		if (m_instanceCount > g_maxInstanceCount) {
+			g_maxInstanceCount = m_instanceCount;
+		}
 		string strBuf;
 		vector<string> date;
 		for (size_t i = 0; i < pDateStr.length(); i++)
