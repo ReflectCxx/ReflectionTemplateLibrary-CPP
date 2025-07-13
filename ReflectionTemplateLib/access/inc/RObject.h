@@ -1,16 +1,10 @@
 #pragma once
 
-#include <any>
-#include <array>
 #include <memory>
-#include <string>
-#include <optional>
-#include <functional>
 
 #include "view.h"
 #include "TypeId.h"
 #include "Constants.h"
-
 
 namespace rtl::access
 {
@@ -31,18 +25,22 @@ namespace rtl::access
         const std::string m_typeStr;
         const alloc m_allocatedOn;
         const std::vector<ConverterPair>& m_converters;
-        const std::shared_ptr<std::size_t> m_deallocator;
+        const std::shared_ptr<void> m_deallocator;
 
         explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                         const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const std::vector<ConverterPair>& pConversions);
-
-        //explicit RObject(std::any pObjectPtr, const Function& pDctor);
+                         const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const rtl::alloc& pAllocOn,
+                         std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions);
 
         template<class T>
         const T& as() const;
 
         const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
 
+    protected:
+
+        template <class T>
+        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter,
+                              const rtl::TypeQ& pTypeQ, const rtl::alloc& pAllocOn);
     public:
 
         explicit RObject();
@@ -61,13 +59,11 @@ namespace rtl::access
         GETTER_BOOL(Empty, (m_object.has_value() == false))
 
         template <class _asType>
-        const bool canReflectAs() const;
+        const bool canViewAs() const;
 
+        //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
         template<class _asType>
         std::optional<rtl::view<_asType>> view() const;
-
-        template <class T>
-        static RObject create(T&& pVal, const rtl::TypeQ& pTypeQ = rtl::TypeQ::Mute);
     };
 
 
@@ -84,16 +80,17 @@ namespace rtl::access
 
 
     inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-        const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const std::vector<ConverterPair>& pConversions)
+                            const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const rtl::alloc& pAllocOn, 
+                            std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions)
         : m_typeQ(pTypeQ)
         , m_isPointer(pIsPtr)
         , m_object(std::move(pObjRef))
         , m_typeId(pTypeId)
         , m_typePtrId(pTypePtrId)
         , m_typeStr(pTypeStr)
-        , m_allocatedOn(rtl::alloc::Stack)
+        , m_allocatedOn(pAllocOn)
         , m_converters(pConversions)
-        , m_deallocator(nullptr)
+        , m_deallocator(std::move(pDeleter))
     {
     }
 }

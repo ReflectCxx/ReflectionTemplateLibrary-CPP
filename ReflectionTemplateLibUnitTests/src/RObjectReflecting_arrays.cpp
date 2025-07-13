@@ -10,7 +10,7 @@
  * Components tested:
  * - `rtl::reflect`     -> creates RObject from value or pointer
  * - `RObject::view<T>` -> provides typed, non-owning access to the internal value
- * - `canReflectAs<T>`  -> checks if a view of type T is supported
+ * - `canViewAs<T>`  -> checks if a view of type T is supported
  */
 
 #include <gtest/gtest.h>
@@ -33,7 +33,7 @@ namespace rtl {
             std::vector<int> input = { 1, 2, 3, 4, 5 };
             RObject robj = rtl::reflect(input);  // reflect by copy
 
-            ASSERT_TRUE(robj.canReflectAs<std::vector<int>>());
+            ASSERT_TRUE(robj.canViewAs<std::vector<int>>());
 
             auto vec_view = robj.view<std::vector<int>>();
             ASSERT_TRUE(vec_view.has_value());
@@ -48,7 +48,7 @@ namespace rtl {
             std::vector<int> input = { 1, 2, 3, 4, 5 };
             RObject robj = rtl::reflect(&input);  // reflect by reference
 
-            ASSERT_TRUE(robj.canReflectAs<const std::vector<int>*>());
+            ASSERT_TRUE(robj.canViewAs<const std::vector<int>*>());
 
             const auto& vec_view = robj.view<const std::vector<int>*>();
             ASSERT_TRUE(vec_view.has_value());
@@ -64,7 +64,7 @@ namespace rtl {
         {
             RObject robj = rtl::reflect(std::vector<int>({ 1, 2, 3, 4, 5 }));
 
-            ASSERT_TRUE(robj.canReflectAs<std::vector<int>>());
+            ASSERT_TRUE(robj.canViewAs<std::vector<int>>());
 
             auto vec_view = robj.view<std::vector<int>>();
             ASSERT_TRUE(vec_view.has_value());
@@ -80,7 +80,7 @@ namespace rtl {
             RObject robj = rtl::reflect(data);
 
             using ExpectedArray = std::array<int, 3>;
-            ASSERT_TRUE(robj.canReflectAs<ExpectedArray>());
+            ASSERT_TRUE(robj.canViewAs<ExpectedArray>());
 
             auto view = robj.view<ExpectedArray>();
             ASSERT_TRUE(view.has_value());
@@ -98,7 +98,7 @@ namespace rtl {
             TYPE data[SIZE] = { __VA_ARGS__ };                                              \
             RObject robj = rtl::reflect(data);                                              \
             using ExpectedArray = std::array<TYPE, SIZE>;                                   \
-            ASSERT_TRUE(robj.canReflectAs<ExpectedArray>());                                \
+            ASSERT_TRUE(robj.canViewAs<ExpectedArray>());                                \
             auto view = robj.view<ExpectedArray>();                                         \
             ASSERT_TRUE(view.has_value());                                                  \
             const ExpectedArray& arr = view->get();                                         \

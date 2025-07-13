@@ -120,10 +120,10 @@ namespace rtl
             These are intentionally commented to enforce design-time correctness.
         */
 
-        //  ASSERT_FALSE(robj.canReflectAs<std::string*>());     //Mutable pointer not allowed
-        //  ASSERT_FALSE(robj.canReflectAs<char*>());            //Mutable C-string
-        //  ASSERT_FALSE(robj.canReflectAs<std::string&>());     //Reference not supported
-        //  ASSERT_FALSE(robj.canReflectAs<std::string&&>());    //Rvalue ref not allowed
+        //  ASSERT_FALSE(robj.canViewAs<std::string*>());     //Mutable pointer not allowed
+        //  ASSERT_FALSE(robj.canViewAs<char*>());            //Mutable C-string
+        //  ASSERT_FALSE(robj.canViewAs<std::string&>());     //Reference not supported
+        //  ASSERT_FALSE(robj.canViewAs<std::string&&>());    //Rvalue ref not allowed
             
         //  auto bad1 = robj.view<std::string*>();     //Mutable pointer not allowed
         //  auto bad2 = robj.view<char*>();            //Mutable C-string
@@ -136,7 +136,7 @@ namespace rtl
         {
             RObject robj = rtl::reflect(std::string("test"));
 
-            ASSERT_FALSE(robj.canReflectAs<int>());
+            ASSERT_FALSE(robj.canViewAs<int>());
 
             // Request a view of an incompatible type
             auto view = robj.view<int>();
@@ -150,11 +150,11 @@ namespace rtl
             RObject robj = rtl::reflect(&value);
 
             // Although value is stored, it's not a string
-            ASSERT_FALSE(robj.canReflectAs<std::string_view>());
+            ASSERT_FALSE(robj.canViewAs<std::string_view>());
             auto str_view = robj.view<std::string_view>();
             ASSERT_FALSE(str_view.has_value());
 
-            ASSERT_FALSE(robj.canReflectAs<const char*>());
+            ASSERT_FALSE(robj.canViewAs<const char*>());
             auto cstr_view = robj.view<const char*>();
             ASSERT_FALSE(cstr_view.has_value());
         }
@@ -169,7 +169,7 @@ namespace rtl
             RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<const std::string*>());
+            ASSERT_TRUE(robj.canViewAs<const std::string*>());
 
             // Try to obtain a view as 'std::string*', should not compile.
             //auto view0 = robj.view<std::string*>();
@@ -191,7 +191,7 @@ namespace rtl
             RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -210,7 +210,7 @@ namespace rtl
             RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();
@@ -228,7 +228,7 @@ namespace rtl
             RObject robj = rtl::reflect(&STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -246,7 +246,7 @@ namespace rtl
             RObject robj = rtl::reflect("");
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -264,7 +264,7 @@ namespace rtl
             RObject robj = rtl::reflect("string_literal_rvalue");
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -282,7 +282,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -300,7 +300,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CHAR_ARRAY);
           
             //Check if the value can be accessed as 'const std::string*'.
-            ASSERT_TRUE(robj.canReflectAs<const std::string*>());
+            ASSERT_TRUE(robj.canViewAs<const std::string*>());
 
         /*  Try to obtain a view as 'const std::string*' and verify it is present.
 		*   Returns the address of the internal std::string (constructed from input char[]).
@@ -319,7 +319,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -337,7 +337,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();
@@ -355,7 +355,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -373,7 +373,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             //Check if the value can be accessed as 'const std::string*'.
-            ASSERT_TRUE(robj.canReflectAs<const std::string*>());
+            ASSERT_TRUE(robj.canViewAs<const std::string*>());
 
         /*  Try to obtain a view as 'const std::string*' and verify it is present.
         *   Returns the address of the internal std::string (constructed from input 'const char[]').
@@ -392,7 +392,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -410,7 +410,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();
@@ -428,7 +428,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -446,7 +446,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
             //Check if the value can be accessed as 'const std::string*'.
-            ASSERT_TRUE(robj.canReflectAs<const std::string*>());
+            ASSERT_TRUE(robj.canViewAs<const std::string*>());
 
         /*  Try to obtain a view as 'const std::string*' and verify it is present.
         *   Returns the address of the internal std::string (constructed from input 'const char*').
@@ -465,7 +465,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -483,7 +483,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();
@@ -501,7 +501,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -519,7 +519,7 @@ namespace rtl
             RObject robj = rtl::reflect(std::string(STR_STD_STRING));
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -537,7 +537,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -555,7 +555,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();
@@ -574,7 +574,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'std::string'.
-            ASSERT_TRUE(robj.canReflectAs<std::string>());
+            ASSERT_TRUE(robj.canViewAs<std::string>());
 
             // Try to obtain a view as 'std::string' and verify it is present.
             auto view = robj.view<std::string>();
@@ -593,7 +593,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -612,7 +612,7 @@ namespace rtl
             RObject robj = rtl::reflect(std::string_view(STR_CONST_CHAR_POINTER));
 
             // Check if the value can be accessed as 'std::string_view'.
-            ASSERT_TRUE(robj.canReflectAs<std::string_view>());
+            ASSERT_TRUE(robj.canViewAs<std::string_view>());
 
             // Try to obtain a view as 'std::string_view' and verify it is present.
             auto view = robj.view<std::string_view>();
@@ -631,7 +631,7 @@ namespace rtl
             RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
             // Check if the value can be accessed as 'const char*'.
-            ASSERT_TRUE(robj.canReflectAs<const char*>());
+            ASSERT_TRUE(robj.canViewAs<const char*>());
 
             // Try to obtain a view as 'const char*' and verify it is present.
             auto view = robj.view<const char*>();

@@ -4,9 +4,6 @@
 
 using namespace std;
 
-static int g_dateObjCount = 0;
-static int g_calenderObjCount = 0;
-
 namespace nsdate
 {
 	unsigned int Date::m_instanceCount = 0;
@@ -24,7 +21,7 @@ namespace nsdate
 
 	unsigned Calender::instanceCount()
 	{
-		return g_calenderObjCount;
+		return m_instanceCount;
 	}
 
 

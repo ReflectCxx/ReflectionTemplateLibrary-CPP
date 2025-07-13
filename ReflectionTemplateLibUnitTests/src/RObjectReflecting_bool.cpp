@@ -20,7 +20,7 @@ namespace rtl
             RObject robj = rtl::reflect(true);
 
             // Check if RObject can be viewed as bool (true type or convertible)
-            ASSERT_TRUE(robj.canReflectAs<bool>());
+            ASSERT_TRUE(robj.canViewAs<bool>());
 
             // Get a view of the value as bool
             auto view = robj.view<bool>();
@@ -42,7 +42,7 @@ namespace rtl
             RObject robj = rtl::reflect(false);
 
             // Check if RObject can be viewed as int (via conversion)
-            ASSERT_TRUE(robj.canReflectAs<int>());
+            ASSERT_TRUE(robj.canViewAs<int>());
 
             // Get a view of the value as int
             auto view = robj.view<int>();
@@ -65,7 +65,7 @@ namespace rtl
             RObject robj = rtl::reflect(true);
 
             // Check if the RObject can reflect as `char`
-            ASSERT_TRUE(robj.canReflectAs<char>());
+            ASSERT_TRUE(robj.canViewAs<char>());
 
             // Get the reflected value as `char`
             auto view = robj.view<char>();
@@ -88,7 +88,7 @@ namespace rtl
             RObject robj = rtl::reflect(false);
 
             // Check if the value can be reflected as `signed char`
-            ASSERT_TRUE(robj.canReflectAs<signed char>());
+            ASSERT_TRUE(robj.canViewAs<signed char>());
 
             // Get the reflected value as `signed char`
             auto view = robj.view<signed char>();
@@ -111,7 +111,7 @@ namespace rtl
             RObject robj = rtl::reflect(true);
 
             // Check if RObject can reflect as `unsigned char`
-            ASSERT_TRUE(robj.canReflectAs<unsigned char>());
+            ASSERT_TRUE(robj.canViewAs<unsigned char>());
 
             // Get the reflected value as `unsigned char`
             auto view = robj.view<unsigned char>();
@@ -134,7 +134,7 @@ namespace rtl
             RObject robj = rtl::reflect(false);
 
             // Check if the value can be reflected as `short`
-            ASSERT_TRUE(robj.canReflectAs<short>());
+            ASSERT_TRUE(robj.canViewAs<short>());
 
             // Get the reflected value as `short`
             auto view = robj.view<short>();
@@ -157,7 +157,7 @@ namespace rtl
             RObject robj = rtl::reflect(true);
 
             // Check if the value can be reflected as `unsigned short`
-            ASSERT_TRUE(robj.canReflectAs<unsigned short>());
+            ASSERT_TRUE(robj.canViewAs<unsigned short>());
 
             // Get the reflected value as `unsigned short`
             auto view = robj.view<unsigned short>();

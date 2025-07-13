@@ -1,5 +1,6 @@
 
 #include "RObject.hpp"
+#include "RObjectBuilder.h"
 #include "SetupFunction.h"
 
 namespace rtl
@@ -66,28 +67,28 @@ namespace rtl
                     {
                         if constexpr (std::is_const_v<std::remove_reference_t<_returnType>>)
                         {
+                            pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                            pError = error::None;
-                            return access::RObject::create(&retObj, qualifier);
+                            const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                         else
                         {
+                            pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                            pError = error::None;
-                            return access::RObject::create(&retObj, qualifier);
+                            const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                     }
                     else
                     {
+                        pError = error::None;
                         //call will definitely be successful, since the signature type has alrady been validated.
                         const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                        const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
-                        pError = error::None;
-                        return access::RObject::create(retObj, qualifier);
+                        const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                        return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
                     }
                 }
             };

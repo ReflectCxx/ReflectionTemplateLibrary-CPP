@@ -7,7 +7,7 @@ int main() {
 
     // Call a static method of "Original" dynamically using the Proxy class
     auto [ierr, irobj] = Proxy::forwardStaticCall("getInstanceCount");
-    if (ierr != rtl::error::None || irobj.isEmpty() || !irobj.canReflectAs<unsigned int>()) {
+    if (ierr != rtl::error::None || irobj.isEmpty() || !irobj.canViewAs<unsigned int>()) {
         std::cout << "Proxy call to 'getInstanceCount' failed! (error: " << rtl::to_string(ierr) << ")" << std::endl;
         return -1;
     }
@@ -20,7 +20,7 @@ int main() {
 
         // Call an instance method of "Original" dynamically to get the class name
         auto [err0, robj0] = proxyObj.forwardCall("getClassName");
-        if (err0 != rtl::error::None || robj0.isEmpty() || !robj0.canReflectAs<std::string>()) {
+        if (err0 != rtl::error::None || robj0.isEmpty() || !robj0.canViewAs<std::string>()) {
             std::cout << "Proxy call to 'getClassName' failed! (error: " << rtl::to_string(err0) << ")" << std::endl;
             return -1;
         }
@@ -30,7 +30,7 @@ int main() {
 
         // Call an instance method of "Original" dynamically to get the square root of a number
         auto [err1, robj1] = proxyObj.forwardCall("getSquareRoot", double(10000));
-        if (err1 != rtl::error::None || robj1.isEmpty() || !robj1.canReflectAs<double>()) {
+        if (err1 != rtl::error::None || robj1.isEmpty() || !robj1.canViewAs<double>()) {
             std::cout << "Proxy call to 'getSquareRoot' failed! (error: " << rtl::to_string(err1) << ")" << std::endl;
             return -1;
         }
@@ -47,7 +47,7 @@ int main() {
 
         // Call an instance method of "Original" dynamically to get the node name
         auto [err3, robj3] = proxyObj.forwardCall("getNodeName");
-        if (err3 != rtl::error::None || robj3.isEmpty() || !robj3.canReflectAs<std::string>()) {
+        if (err3 != rtl::error::None || robj3.isEmpty() || !robj3.canViewAs<std::string>()) {
             std::cout << "Proxy call to 'getNodeName' failed! (error: " << rtl::to_string(err3) << ")" << std::endl;
             return -1;
         }
@@ -57,7 +57,7 @@ int main() {
 
     // Call the static method of "Original" again to get the updated instance count
     const auto [oerr, orobj] = Proxy::forwardStaticCall("getInstanceCount");
-    if (oerr != rtl::error::None || orobj.isEmpty() || !orobj.canReflectAs<unsigned int>()) {
+    if (oerr != rtl::error::None || orobj.isEmpty() || !orobj.canViewAs<unsigned int>()) {
         std::cout << "Proxy call to 'getInstanceCount' failed! (error: " << rtl::to_string(oerr) << ")" << std::endl;
         return -1;
     }

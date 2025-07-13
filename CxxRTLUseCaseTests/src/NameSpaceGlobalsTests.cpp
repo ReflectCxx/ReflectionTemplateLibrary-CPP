@@ -61,25 +61,27 @@ namespace rtl_tests
 
 		double real = g_real;	//g_real's type is "const double", so can't be passed directly to setReal else,
 								//its type will be inferred 'const double' instead of 'double'.
-		RStatus status = (*setReal)(real);
-		ASSERT_TRUE(status);
+		auto [err0, ret0] = (*setReal)(real);
+		ASSERT_TRUE(err0 == rtl::error::None);
+		EXPECT_TRUE(ret0.isEmpty());
 
 		EXPECT_TRUE(setImaginary->hasSignature<double>());
 
 		double imaginary = g_imaginary;	//g_imaginary's type is "const double", so can't be passed directly to setImaginary else,
 										//its type will be inferred 'const double' instead of 'double'.
-		status = (*setImaginary)(imaginary);
-		ASSERT_TRUE(status);
+		auto [err1, ret1] = (*setImaginary)(imaginary);
+		ASSERT_TRUE(err1 == rtl::error::None);
+		EXPECT_TRUE(ret1.isEmpty());
 
 		EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-		status = (*getMagnitude)();
+		auto [err2, ret2] = (*getMagnitude)();
 
-		ASSERT_TRUE(status);
-		ASSERT_TRUE(status.getReturn().has_value());
-		ASSERT_TRUE(status.isOfType<double>());
+		ASSERT_TRUE(err2 == rtl::error::None);
+		ASSERT_TRUE(!ret2.isEmpty());
+		ASSERT_TRUE(ret2.canViewAs<double>());
 
-		double retVal = std::any_cast<double>(status.getReturn());
+		double retVal = ret2.view<double>()->get();
 		double magnitude = abs(complex(g_real, g_imaginary));
 		EXPECT_DOUBLE_EQ(magnitude, retVal);
 	}
@@ -100,10 +102,10 @@ namespace rtl_tests
 		//Instead we can explicitly specify the types as template parameter,
 		//like, (*setReal).operator()<float>(g_real);
 		//or we can use the bind<...>().call(), specifying type as template param, like,
-		RStatus status = setReal->bind<float>().call(g_real);
+		auto [err, robj] = setReal->bind<float>().call(g_real);
 
-		ASSERT_FALSE(status);
-		ASSERT_FALSE(status.getReturn().has_value());
+		ASSERT_TRUE(err == rtl::error::SignatureMismatch);
+		ASSERT_TRUE(robj.isEmpty());
 	}
 
 
@@ -114,13 +116,13 @@ namespace rtl_tests
 		optional<Function> getComplexNumAsString = cxxMirror.getFunction(str_getComplexNumAsString);
 		ASSERT_TRUE(getComplexNumAsString);
 
-		RStatus status = (*getComplexNumAsString)();
+		auto [err, ret] = (*getComplexNumAsString)();
 
-		ASSERT_TRUE(status);
-		ASSERT_TRUE(status.getReturn().has_value()); 
-		ASSERT_TRUE(status.isOfType<string>());
+		ASSERT_TRUE(err == rtl::error::None);
+		ASSERT_FALSE(ret.isEmpty());
+		ASSERT_TRUE(ret.canViewAs<string>());
 
-		string retVal = std::any_cast<string>(status.getReturn());
+		string retVal = ret.view<std::string>()->get();
 		string comlexNumStr = to_string(g_real) + "i" + to_string(g_imaginary);
 		EXPECT_TRUE(comlexNumStr == retVal);
 	}
@@ -135,31 +137,31 @@ namespace rtl_tests
 		{
 			//STRA's type is 'consexpr const char*', function accepts 'string',
 			//so type-casting in place as 'string'
-			RStatus status = (*reverseString)(string(STRA));
-			ASSERT_TRUE(status);
-			ASSERT_TRUE(status.getReturn().has_value());
-			ASSERT_TRUE(status.isOfType<string>());
+			auto [err, ret] = (*reverseString)(string(STRA));
+			ASSERT_TRUE(err == rtl::error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-			string retVal = std::any_cast<string>(status.getReturn());
+			string retVal = ret.view<std::string>()->get();
 			EXPECT_TRUE(retVal == STRA_REVERSE);
 		} {
 			//STRB's type is 'consexpr const char*', function accepts 'string',
 			//so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-			RStatus status = reverseString->bind<string>().call(STRB);
+			auto [err, ret] = reverseString->bind<string>().call(STRB);
 
-			ASSERT_TRUE(status);
-			ASSERT_TRUE(status.getReturn().has_value());
-			ASSERT_TRUE(status.isOfType<string>());
+			ASSERT_TRUE(err == rtl::error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-			string retVal = std::any_cast<string>(status.getReturn());
+			string retVal = ret.view<std::string>()->get();
 			EXPECT_TRUE(retVal == STRB_REVERSE);
 		} {
-			RStatus status = (*reverseString)();
-			ASSERT_TRUE(status);
-			ASSERT_TRUE(status.getReturn().has_value());
-			ASSERT_TRUE(status.isOfType<string>());
+			auto [err, ret] = (*reverseString)();
+			ASSERT_TRUE(err == rtl::error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-			string retVal = std::any_cast<string>(status.getReturn());
+			string retVal = ret.view<std::string>()->get();
 			EXPECT_TRUE(retVal == REV_STR_VOID_RET);
 		}
 	}

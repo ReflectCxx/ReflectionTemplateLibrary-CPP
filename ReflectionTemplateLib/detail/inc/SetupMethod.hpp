@@ -1,9 +1,10 @@
 #pragma once
 
-#include "RObject.h"
-#include "TypeId.h"
-#include "SetupMethod.h"
 #include "view.h"
+#include "TypeId.h"
+#include "RObject.h"
+#include "SetupMethod.h"
+#include "RObjectBuilder.h"
 
 namespace rtl
 {
@@ -54,18 +55,19 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                if (!pTargetObj.canReflectAs<const _recordType*>()) {
+                if (!pTargetObj.canViewAs<const _recordType*>()) {
                     pError = error::InstanceTypeMismatch;
                     return access::RObject();
                 }
 
+                pError = error::None;
                 const _recordType* target = pTargetObj.view<const _recordType*>()->get();
+
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>)
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    pError = error::None;
                     return access::RObject();
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
@@ -74,8 +76,7 @@ namespace rtl
                     constexpr const TypeQ qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     const _returnType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    pError = error::None;
-                    return access::RObject::create(retObj, qualifier);
+                    return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
                 }
             };
 
@@ -129,18 +130,19 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                if (!pTargetObj.canReflectAs<const _recordType*>()) {
+                if (!pTargetObj.canViewAs<const _recordType*>()) {
                     pError = error::InstanceTypeMismatch;
                     return access::RObject();
                 }
 
+                pError = error::None;
                 const _recordType* target = pTargetObj.view<const _recordType*>()->get();
+
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
                 if constexpr (std::is_same_v<_returnType, void>)
                 {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (target->*pFunctor)(std::forward<_signature>(params)...);
-                    pError = error::None;
                     return access::RObject();
                 }
                 else
@@ -148,8 +150,7 @@ namespace rtl
                     const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    pError = error::None;
-                    return access::RObject::create(retObj, qualifier);
+                    return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
                 }
             };
 

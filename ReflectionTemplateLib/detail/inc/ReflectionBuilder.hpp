@@ -79,13 +79,13 @@ namespace rtl {
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
             //add the destructor's 'FunctorId' to the constructor's functorIds list, at index FunctorIdx::ONE.
-            const auto& dctorFunctorId = FunctorContainer<std::any>::template addDestructor<_recordType>();
+            const auto& dctorFunctorId = FunctorContainer<access::RObject&>::template addDestructor<_recordType>();
             constructor.getFunctorIds().emplace_back(dctorFunctorId);
 
             //if the _recordType has valid copy constructor.
             if constexpr (std::is_copy_constructible_v<_recordType>) {
                 //Construct and add the copy constructor's functorId at index FunctorIdx::TWO.
-                const FunctorId& copyCtorFunctorId = FunctorContainer<std::any>::template addCopyConstructor<_recordType>();
+                const FunctorId& copyCtorFunctorId = FunctorContainer<access::RObject&>::template addCopyConstructor<_recordType>();
                 constructor.getFunctorIds().emplace_back(copyCtorFunctorId);
             }
 

@@ -31,7 +31,7 @@ int main()
 
         auto [err0, retVal] = getHelloString->bind(robj).call();
 
-        if (err0 != rtl::error::None || !retVal.canReflectAs<std::string>()) {
+        if (err0 != rtl::error::None || !retVal.canViewAs<std::string>()) {
             std::cout << "Singleton::getHelloString() reflected call failed! Error: " << rtl::to_string(err) << std::endl;
             return -1;
         }
