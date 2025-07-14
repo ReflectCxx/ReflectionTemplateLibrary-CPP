@@ -46,7 +46,7 @@ namespace nsdate
 		Calender();
 		~Calender();
 
-		Calender(const Calender& pOther) = delete;
+		Calender(const Calender&) = delete;
 
 		static unsigned instanceCount();
 

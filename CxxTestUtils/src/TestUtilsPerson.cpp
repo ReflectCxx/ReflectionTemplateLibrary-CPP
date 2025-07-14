@@ -46,7 +46,7 @@ namespace test_utils
 		person.updateLastName(LAST_NAME);
 
 		if (pOnHeap) {
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -66,7 +66,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -86,7 +86,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -106,7 +106,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -127,7 +127,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -148,7 +148,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -169,7 +169,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}
@@ -190,7 +190,7 @@ namespace test_utils
 
 		if (pOnHeap) {
 			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
-			Person* rPerson = any_cast<Person*>(pInstance);
+			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
 			}

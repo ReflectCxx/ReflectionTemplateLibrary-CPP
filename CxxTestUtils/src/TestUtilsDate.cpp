@@ -46,7 +46,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}
@@ -63,7 +63,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}
@@ -80,7 +80,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}

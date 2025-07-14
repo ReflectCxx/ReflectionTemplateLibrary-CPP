@@ -31,7 +31,7 @@ namespace rtl {
             }
             else {
                 //if no constructor found, return with empty 'RObject'.
-                return { error::ReflectedConstructorNotFound, RObject() };
+                return { error::ConstructorNotRegisteredInRTL, RObject() };
             }
         }
     }

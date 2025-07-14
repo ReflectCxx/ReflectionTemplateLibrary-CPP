@@ -71,15 +71,14 @@ namespace rtl {
     enum class error
     {
         None,
-        EmptyInstance,
+        EmptyRObject,
         InvalidAllocType,
         SignatureMismatch,
-        InstanceTypeMismatch,
-        InstanceConstMismatch,
-        CopyConstructorDisabled,
-        ReflectedFunctionNotFound,
-        ReflectedConstructorNotFound,
-        InstanceOnStackDisabledNoCopyCtor
+        FunctionNotRegisterdInRTL,
+        ReflectedObjectTypeMismatch,
+        ReflecetdObjectConstMismatch,
+        ConstructorNotRegisteredInRTL,
+        CopyConstructorPrivateOrDeleted,
     };
 
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
@@ -104,15 +103,14 @@ namespace rtl {
     {
         switch (err) {
         case error::None: return "None";
-        case error::EmptyInstance: return "EmptyInstance";
+        case error::EmptyRObject: return "EmptyInstance";
         case error::InvalidAllocType: return "InvalidAllocType";
         case error::SignatureMismatch: return "SignatureMismatch";
-        case error::InstanceTypeMismatch: return "InstanceTypeMismatch";
-        case error::InstanceConstMismatch: return "InstanceConstMismatch";
-        case error::ReflectedFunctionNotFound: return "ReflectedFunctionNotFound";
-        case error::ReflectedConstructorNotFound: return "ReflectedConstructorNotFound";
-        case error::CopyConstructorDisabled: return "CopyConstructorDisabled";
-        case error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
+        case error::FunctionNotRegisterdInRTL: return "FunctionNotRegisterdInRTL";
+        case error::ReflectedObjectTypeMismatch: return "ReflectedObjectTypeMismatch";
+        case error::ReflecetdObjectConstMismatch: return "ReflecetdObjectConstMismatch";
+        case error::ConstructorNotRegisteredInRTL: return "ConstructorNotRegisteredInRTL";
+        case error::CopyConstructorPrivateOrDeleted: return "CopyConstructorPrivateOrDeleted";
         default: return "Unknown";
         }
     }

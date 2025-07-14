@@ -56,7 +56,7 @@ namespace rtl
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
                 if (!pTargetObj.canViewAs<const _recordType*>()) {
-                    pError = error::InstanceTypeMismatch;
+                    pError = error::ReflectedObjectTypeMismatch;
                     return access::RObject();
                 }
 
@@ -131,7 +131,7 @@ namespace rtl
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
                 if (!pTargetObj.canViewAs<const _recordType*>()) {
-                    pError = error::InstanceTypeMismatch;
+                    pError = error::ReflectedObjectTypeMismatch;
                     return access::RObject();
                 }
 

@@ -75,13 +75,13 @@ namespace rtl {
             //validate the source object, should not be empty.
             if (pOther.isEmpty()) {
                 //return empty instance with error status.
-                return { error::EmptyInstance, RObject() };
+                return { error::EmptyRObject, RObject() };
             }
 
             //type of the object wrapped under source 'Instance' should match with type of this class/struct.
             if (m_recordId != pOther.getTypeId()) {
                 //if source instance & ctor type didn't match, return empty instance with error status.
-                return { error::InstanceTypeMismatch, RObject() };
+                return { error::ReflectedObjectTypeMismatch, RObject() };
             }
 
             if (!pOther.isOnHeap()) {
@@ -93,11 +93,11 @@ namespace rtl {
             //if the object is const, only copy constructor with 'const&' can be called on it.
             if (constCopyCtor) {
                 //object and type validated. call the const-copy-constructor.
-                return (*constCopyCtor).bind<std::any>().call(pOther);
+                return (*constCopyCtor).bind<RObject&>().call(pOther);
             }
 
             //if no registered copy constructor found, return empty instance with error status.
-            return { error::CopyConstructorDisabled, RObject() };
+            return { error::CopyConstructorPrivateOrDeleted, RObject() };
         }
     }
 }

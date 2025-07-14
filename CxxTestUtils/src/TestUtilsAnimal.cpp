@@ -41,7 +41,7 @@ const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::
 	animal.setAnimalName(std::string(NAME));
 
 	if (pOnHeap) {
-		Animal* rAnimal = std::any_cast<Animal*>(pInstance);
+		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;
 		}
@@ -61,7 +61,7 @@ const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(c
 	animal.setAnimalName(nameStr);
 
 	if (pOnHeap) {
-		Animal* rAnimal = std::any_cast<Animal*>(pInstance);
+		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;
 		}
@@ -81,7 +81,7 @@ const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_ar
 	animal.setAnimalName(nameStr);
 
 	if (pOnHeap) {
-		Animal* rAnimal = std::any_cast<Animal*>(pInstance);
+		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;
 		}

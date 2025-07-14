@@ -22,12 +22,12 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		const RStatus& status = (*getDefaults)()();
-		ASSERT_TRUE(status);
-		ASSERT_TRUE(status.getReturn().has_value());
-		ASSERT_TRUE(status.isOfType<string>());
+		auto [err, ret] = (*getDefaults)()();
+		ASSERT_TRUE(err == error::None);
+		ASSERT_FALSE(ret.isEmpty());
+		ASSERT_TRUE(ret.canViewAs<string>());
 
-		const string& retStr = any_cast<string>(status.getReturn());
+		const string& retStr = ret.view<string>()->get();
 		EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
 	}
 
@@ -43,12 +43,12 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		ASSERT_TRUE(getProfile->hasSignature<>());	//empty template params checks for zero arguments.
 
-		const RStatus& status = getProfile->bind().call();
-		ASSERT_TRUE(status);
-		ASSERT_TRUE(status.getReturn().has_value());
-		ASSERT_TRUE(status.isOfType<string>());
+		auto [err, ret] = getProfile->bind().call();
+		ASSERT_TRUE(err == error::None);
+		ASSERT_FALSE(ret.isEmpty());
+		ASSERT_TRUE(ret.canViewAs<string>());
 
-		const string& retStr = any_cast<string>(status.getReturn());
+		const string& retStr = ret.view<string>()->get();
 		EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile());
 	}
 
@@ -64,22 +64,22 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		ASSERT_TRUE(getProfile->hasSignature<bool>());
 		{
-			const RStatus& status = (*getProfile)()(true);
-			ASSERT_TRUE(status);
-			ASSERT_TRUE(status.getReturn().has_value());
-			ASSERT_TRUE(status.isOfType<string>());
+			auto [err, ret] = (*getProfile)()(true);
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-			const string& retStr = any_cast<string>(status.getReturn());
+			const string& retStr = ret.view<string>()->get();
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 		} {
 			//use the bind-call syntax.
-			const RStatus& status = getProfile->bind().call(false);
+			auto [err, ret] = getProfile->bind().call(false);
 
-			ASSERT_TRUE(status);
-			ASSERT_TRUE(status.getReturn().has_value());
-			ASSERT_TRUE(status.isOfType<string>());
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-			const string& retStr = any_cast<string>(status.getReturn());
+			const string& retStr = ret.view<string>()->get();
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(false));
 		}
 	}
@@ -102,13 +102,13 @@ namespace rtl_tests
 
 		size_t age = person::AGE;
 		string occupation = person::OCCUPATION;
-		const RStatus& status = getProfile.bind().call(occupation, age);
+		auto [err, ret] = getProfile.bind().call(occupation, age);
 
-		ASSERT_TRUE(status);
-		ASSERT_TRUE(status.getReturn().has_value());
-		ASSERT_TRUE(status.isOfType<string>());
+		ASSERT_TRUE(err == error::None);
+		ASSERT_FALSE(ret.isEmpty());
+		ASSERT_TRUE(ret.canViewAs<string>());
 
-		const string& retStr = any_cast<string>(status.getReturn());
+		const string& retStr = ret.view<string>()->get();
 		const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
 
 		EXPECT_EQ(retStr, checkStr);
@@ -126,13 +126,14 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		ASSERT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [isSuccess, personObj] = classPerson->create<alloc::Heap>();
+		auto [err0, person] = classPerson->create<alloc::Heap>();
 
-		ASSERT_TRUE(isSuccess);
-		ASSERT_FALSE(personObj.isEmpty());
+		ASSERT_TRUE(err0 == error::None);
+		ASSERT_FALSE(person.isEmpty());
 
 		//TODO: handle this test case with appropriate error or make successful call as its valid to call static method on objects.
-		const RStatus& status = (*getDefaults)(personObj)();
-		ASSERT_TRUE(status == error::InstanceTypeMismatch);
+		auto [err1, ret1] = (*getDefaults)(person)();
+		ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
+		ASSERT_TRUE(ret1.isEmpty());
 	}
 }
