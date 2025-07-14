@@ -33,8 +33,7 @@ namespace rtl {
 
         public:
 
-            ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord,
-                               const ConstructorType& pCtorType);
+            ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord, ConstructorType pCtorType);
           
             inline const access::Function build() const;
         };

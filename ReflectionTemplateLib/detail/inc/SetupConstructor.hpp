@@ -65,22 +65,22 @@ namespace rtl
         template<class _recordType, class ..._signature>
         inline const detail::FunctorId SetupConstructor<_derivedType>::addConstructor()
         {
-            const auto& recordId = TypeId<_recordType>::get();
-            const auto& containerId = _derivedType::getContainerId();
-            const auto& hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
+            std::size_t recordId = TypeId<_recordType>::get();
+            std::size_t containerId = _derivedType::getContainerId();
+            std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
 
             //maintaining a set of already registered constructors.
             static std::map<std::size_t, std::size_t> ctorSet;
 
             //will be called from '_derivedType' if the constructor not already registered.
-            const auto& updateIndex = [&](const std::size_t& pIndex) {
+            const auto& updateIndex = [&](std::size_t pIndex)->void {
                 ctorSet.insert(std::make_pair(hashKey, pIndex));
             };
 
             //will be called from '_derivedType' to check if the constructor already registered.
-            const auto& getIndex = [&]()->const std::size_t {
+            const auto& getIndex = [&]()-> std::size_t {
                 const auto& itr = ctorSet.find(hashKey);
-                return (itr != ctorSet.end() ? itr->second : -1);
+                return (itr != ctorSet.end() ? itr->second : rtl::index_none);
             };
 
             //lambda containing constructor call.
@@ -94,8 +94,7 @@ namespace rtl
                     if (pAllocType == rtl::alloc::Heap) {
                         pError = error::None;
                         const _recordType* robj = new _recordType(std::forward<_signature>(params)...);
-                        const auto& dctor = [=]() { delete robj; };
-                        return RObjectBuilder::build(robj, dctor, TypeQ::Mute, pAllocType);
+                        return RObjectBuilder::build(robj, [=]() { delete robj; }, TypeQ::Mute, pAllocType);
                     }
                     else if (pAllocType == rtl::alloc::Stack) {
 
@@ -105,8 +104,7 @@ namespace rtl
                         }
                         else {
                             pError = error::None;
-                            const auto& object = _recordType(std::forward<_signature>(params)...);
-                            return RObjectBuilder::build(object, std::function<void()>(), TypeQ::Mute, pAllocType);
+                            return RObjectBuilder::build(_recordType(std::forward<_signature>(params)...), std::function<void()>(), TypeQ::Mute, pAllocType);
                         }
                     }
                     else {
@@ -117,7 +115,7 @@ namespace rtl
             };
 
             //add the lambda in 'FunctorContainer'.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
             const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
             return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
         }
@@ -135,10 +133,10 @@ namespace rtl
         inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
         {
             //no copy constructor with const-ref is registered yet for type '_recordType' if 'constCopyCtorIndex' is -1.
-            static std::size_t constCopyCtorIndex = -1;
+            static std::size_t constCopyCtorIndex = rtl::index_none;
 
             //will be called from '_derivedType' if the const-ref-copy-constructor not already registered.
-            const auto& updateIndex = [&](const std::size_t& pIndex) {
+            const auto& updateIndex = [&](const std::size_t& pIndex)->void {
                 constCopyCtorIndex = pIndex;
             };
 
@@ -163,15 +161,13 @@ namespace rtl
                     }
                     pError = error::None;
                     //cast will definitely succeed, will not throw since the object type is already validated.
-                    const _recordType& srcObj = pOther.view<_recordType>()->get();
-                    const _recordType* robj = new _recordType(srcObj);
-                    const auto& dctor = [=]() { delete robj; };
-                    return RObjectBuilder::build(robj, dctor, TypeQ::Mute, alloc::Heap);
+                    _recordType* robj = new _recordType(pOther.view<_recordType>()->get());
+                    return RObjectBuilder::build(robj, [=]() { delete robj; }, TypeQ::Mute, alloc::Heap);
                 }
             };
 
             //add the lambda in 'FunctorContainer'.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
             const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
             return detail::FunctorId(index, recordId, recordId, _derivedType::getContainerId(), signatureStr);
         }

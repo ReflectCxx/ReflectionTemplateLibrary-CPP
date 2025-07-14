@@ -29,19 +29,18 @@ namespace rtl::access
         std::shared_ptr<void> m_deallocator;
 
         explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                         const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const rtl::alloc& pAllocOn,
+                         rtl::TypeQ pTypeQ, rtl::IsPointer pIsPtr,rtl::alloc pAllocOn,
                          std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions);
 
         template<class T>
         const T& as() const;
 
-        const std::size_t getConverterIndex(const std::size_t& pToTypeId) const;
+        std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
     protected:
 
         template <class T>
-        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter,
-                              const rtl::TypeQ& pTypeQ, const rtl::alloc& pAllocOn);
+        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::TypeQ pTypeQ, rtl::alloc pAllocOn);
     public:
 
         explicit RObject();
@@ -62,7 +61,7 @@ namespace rtl::access
         GETTER_BOOL(Empty, (m_object.has_value() == false))
 
         template <class _asType>
-        const bool canViewAs() const;
+        bool canViewAs() const;
 
         //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
         template<class _asType>
@@ -83,7 +82,7 @@ namespace rtl::access
 
 
     inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                            const rtl::TypeQ& pTypeQ, const rtl::IsPointer pIsPtr, const rtl::alloc& pAllocOn, 
+                            rtl::TypeQ pTypeQ, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn,
                             std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions)
         : m_typeQ(pTypeQ)
         , m_isPointer(pIsPtr)

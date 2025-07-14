@@ -29,13 +29,13 @@ namespace rtl
 
         /*  adds the generated functor index to the 'functorSet'. (thread safe).
             called from '_derivedType' (MethodContainer<TypeQ::Mute, _signature...>)
-        */  const auto& updateIndex = [&](const std::size_t& pIndex) {
+        */  const auto& updateIndex = [&](std::size_t pIndex)->void {
                 functorSet.emplace_back(pFunctor, pIndex);
             };
 
         /*  checks if the 'pFunctor' is already present in 'functorSet'. (thread safe).
             called from '_derivedType' ('FunctorContainer')
-        */  const auto& getIndex = [&]()->const std::size_t
+        */  const auto& getIndex = [&]()->std::size_t
             {
                 //linear search, efficient for small set.
                 for (const auto& fptr : functorSet) {
@@ -45,11 +45,11 @@ namespace rtl
                     }
                 }
                 //functor is not already registered, return '-1'.
-                return -1;
+                return rtl::index_none;
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
+            std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
             
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Mute, _signature...>) vector holding lambda's.
@@ -73,15 +73,15 @@ namespace rtl
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else
                 {
-                    constexpr const TypeQ qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
+                    TypeQ qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _returnType& retObj = (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
+                    return RObjectBuilder::build((const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...), 
+                                                 nullptr, qualifier, alloc::None);
                 }
             };
 
             //finally add the lambda 'functor' in 'MethodContainer<TypeQ::Mute, _signature...>' lambda vector and get the index.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _returnType>());
@@ -104,13 +104,13 @@ namespace rtl
         /*  set of already registered functors. (static life time).
             used std::vector, efficient for small sets. std::set/map will be overhead.
         */  static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
-            const auto& updateIndex = [&](const std::size_t& pIndex) {
+            const auto& updateIndex = [&](std::size_t pIndex)->void {
                 functorSet.emplace_back(pFunctor, pIndex);
             };
 
         /*  adds the generated functor index to the 'functorSet'. (thread safe).
             called from '_derivedType' (MethodContainer<TypeQ::Const, _signature...>)
-        */  const auto& getIndex = [&]()->const std::size_t
+        */  const auto& getIndex = [&]()->std::size_t
             {
                 //linear search, efficient for small set.
                 for (const auto& fptr : functorSet) {
@@ -120,11 +120,11 @@ namespace rtl
                     }
                 }
                 //functor is not already registered, return '-1'.
-                return -1;
+                return rtl::index_none;
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
+            std::size_t retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<TypeQ::Const, _signature...>) vector holding lambda's.
@@ -149,13 +149,12 @@ namespace rtl
                 {
                     const TypeQ& qualifier = std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
+                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, qualifier, alloc::None);
                 }
             };
 
             //finally add the lambda 'functor' in 'MethodContainer<TypeQ::Const, _signature...>' lambda vector and get the index.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _returnType>());

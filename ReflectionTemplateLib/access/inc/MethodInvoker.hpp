@@ -35,13 +35,11 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err;
-                const auto& robj = Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...);
-                return { err, robj };
+                return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err;
-                const auto& robj = Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...);
-                return { err, robj };
+                return { err, Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
         }
 
@@ -63,12 +61,12 @@ namespace rtl
             case TypeQ::Mute: {
 
                 //if the target is non-const, then const & non-const both type of member-function can be invoked on it.
-                const std::size_t& index = pMethod.hasSignatureId(containerMute::getContainerId());
-                if (index != -1) {
+                std::size_t index = pMethod.hasSignatureId(containerMute::getContainerId());
+                if (index != rtl::index_none) {
                     return containerMute::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
                 }
-                const std::size_t& indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
-                if (indexConst != -1) {
+                std::size_t indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
+                if (indexConst != rtl::index_none) {
                     return containerConst::template forwardCall<_args...>(pError, pTarget, indexConst, std::forward<_args>(params)...);
                 }
                 break;
@@ -76,13 +74,13 @@ namespace rtl
             case TypeQ::Const: {
 
                 //if the pTarget is const, only const member function can be invoked on it.
-                const std::size_t& indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
-                if (indexConst != -1) {
+                std::size_t indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
+                if (indexConst != rtl::index_none) {
                     return containerConst::template forwardCall<_args...>(pError, pTarget, indexConst, std::forward<_args>(params)...);
                     
                 }
-                const std::size_t& index = pMethod.hasSignatureId(containerMute::getContainerId());
-                if (index != -1) {
+                std::size_t index = pMethod.hasSignatureId(containerMute::getContainerId());
+                if (index != rtl::index_none) {
                     //if Const-MethodContainer contains no such member-functor and functor is present in Non-Const-MethodContainer.
                     pError = error::InstanceConstMismatch;
                     return RObject();

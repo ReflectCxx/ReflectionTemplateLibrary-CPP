@@ -35,7 +35,7 @@ namespace rtl {
 
         private:
 
-            explicit Record(const std::string& pRecordName, const std::size_t& pRecordId);
+            explicit Record(const std::string& pRecordName, const std::size_t pRecordId);
 
             std::unordered_map< std::string, access::Method >& getFunctionsMap() const;
 
@@ -48,11 +48,11 @@ namespace rtl {
             std::optional<Method> getMethod(const std::string& pMethod) const;
 
             //creates dynamic, deep-copy instance, calling copy ctor, using new.
-            const std::pair<error, RObject> clone(RObject& pOther) const;
+            std::pair<error, RObject> clone(RObject& pOther) const;
 
             //creates dynamic instance, using new.
             template<alloc _alloc, class ..._ctorArgs>
-            const std::pair<error, RObject> create(_ctorArgs&& ...params) const;
+            std::pair<error, RObject> create(_ctorArgs&& ...params) const;
 
             const std::unordered_map< std::string, access::Method >& getMethodMap() const;
 

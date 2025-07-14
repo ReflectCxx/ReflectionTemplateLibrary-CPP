@@ -26,7 +26,7 @@ namespace rtl
                                                  detail::FunctorContainer<_signature...>>;
 
             std::size_t index = m_function.hasSignatureId(Container::getContainerId());
-            if (index != rtl::invalid_index) {
+            if (index != rtl::index_none) {
 
                 error err = error::None;
                 return { err, Container::template forwardCall<_args...>(err, index, std::forward<_args>(params)...) };

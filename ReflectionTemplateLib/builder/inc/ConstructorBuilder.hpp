@@ -9,8 +9,7 @@ namespace rtl {
     namespace builder 
     {
         template<class _recordType, class ..._ctorSignature>
-        inline ConstructorBuilder<_recordType, _ctorSignature...>::ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord,
-                                                                                      const ConstructorType& pCtorType)
+        inline ConstructorBuilder<_recordType, _ctorSignature...>::ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord, ConstructorType pCtorType)
             : m_record(pRecord)
             , m_namespace(pNamespace)
             , m_ctorType(pCtorType)

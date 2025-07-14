@@ -85,7 +85,7 @@ namespace rtl::detail
         RObjectBuilder(const RObjectBuilder&) = delete;
 
         template<class T, typename enable_if_string_t<T> = 0>
-        inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, const TypeQ& pTypeQ, const alloc& pAllocOn) 
+        inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, TypeQ pTypeQ, alloc pAllocOn)
         {
             if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
                 return smartRObject(std::string(std::forward<T>(pVal)), pDeleter, pTypeQ, pAllocOn);
@@ -96,7 +96,7 @@ namespace rtl::detail
         }
 
         template<class T, typename enable_if_array_t<T> = 0>
-        inline static access::RObject build(T&& pArr, std::function<void()>&& pDeleter, const TypeQ& pTypeQ, const alloc& pAllocOn) 
+        inline static access::RObject build(T&& pArr, std::function<void()>&& pDeleter, TypeQ pTypeQ, alloc pAllocOn) 
         {
             if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
                 return smartRObject(std::move(to_std_array(pArr)), pDeleter, pTypeQ, pAllocOn);
@@ -107,7 +107,7 @@ namespace rtl::detail
         }
 
         template<class T, typename enable_if_neither_string_nor_array_t<T> = 0>
-        inline static access::RObject build(T&& pVal, std::function<void()>&& pDeleter, const TypeQ& pTypeQ, const alloc& pAllocOn) 
+        inline static access::RObject build(T&& pVal, std::function<void()>&& pDeleter, TypeQ pTypeQ, alloc pAllocOn) 
         {
             if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
                 return smartRObject(std::forward<T>(pVal), pDeleter, pTypeQ, pAllocOn);
@@ -124,8 +124,7 @@ namespace rtl::detail
     private: 
 
         template<class T>
-        inline static access::RObject smartRObject(T&& pVal, const std::function<void()>& pDeleter,
-                                                   const TypeQ& pTypeQ, const alloc& pAllocOn)
+        inline static access::RObject smartRObject(T&& pVal, const std::function<void()>& pDeleter, TypeQ pTypeQ, alloc pAllocOn)
         {
             m_reflectedInstanceCount.fetch_add(1);
             return access::RObject::create(std::forward<T>(pVal),

@@ -5,7 +5,7 @@ namespace rtl::access {
 
     std::vector<ConverterPair> RObject::m_conversions = { };
 
-    const std::size_t RObject::getConverterIndex(const std::size_t& pToTypeId) const
+    std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {
         for (std::size_t index = 0; index < m_converters.size(); index++)
         {
@@ -13,6 +13,6 @@ namespace rtl::access {
                 return index;
             }
         }
-        return -1;
+        return rtl::index_none;
     }
 }

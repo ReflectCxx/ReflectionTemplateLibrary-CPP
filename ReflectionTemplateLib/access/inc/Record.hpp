@@ -19,7 +19,7 @@ namespace rtl {
         * in case of reflected call failure, empty 'RObject' will be returned.
         * on success error::None will be returned along with the newly constructed object wrapped under 'RObject' (type erased).
     */  template<alloc _alloc, class ..._ctorArgs>
-        inline const std::pair<error, RObject> Record::create(_ctorArgs&& ...params) const
+        inline std::pair<error, RObject> Record::create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
 
@@ -36,24 +36,3 @@ namespace rtl {
         }
     }
 }
-
-
-
-
-////if status is 'true', object construction is successful.
-//if (err == error::None)
-//{
-//    if constexpr (_alloc == rtl::alloc::Stack) {
-//        //construct the 'RObject' object, no custom deleter needed.
-//        return std::make_pair(std::move(status), Instance(std::move(status.m_returnObj), status));
-//    }
-//    else if constexpr (_alloc == rtl::alloc::Heap) {
-
-//        //get the destructor 'Function', which is gauranteed to be present, if at least one constructor is registered.
-//        const Function dctor = *getMethod(CtorName::dctor(m_recordName));
-//        //construct the 'RObject' object, assigning the destructor as custom deleter, its lifetime is managed via std::shared_ptr.
-//        return std::make_pair(status, Instance(std::move(status.m_returnObj), status, dctor));
-//    }
-//}
-////if reflected call fails, return with empty 'RObject'.
-//return std::make_pair(std::move(status), Instance());

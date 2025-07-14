@@ -21,7 +21,7 @@ namespace rtl::access {
 
 
     template<class T>
-    inline const bool RObject::canViewAs() const
+    inline bool RObject::canViewAs() const
     {
         static_assert(!std::is_reference_v<T>, "reference views are not supported.");
         static_assert(!std::is_pointer_v<T> || std::is_const_v<std::remove_pointer_t<T>>,
@@ -30,22 +30,22 @@ namespace rtl::access {
         if constexpr (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>)
         {
             using _T = remove_const_n_ref_n_ptr<T>;
-            const auto& typePtrId = rtl::detail::TypeId<_T*>::get();
+            std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
             if (typePtrId == m_typePtrId) {
                 return true;
             }
         }
         const auto& typeId = rtl::detail::TypeId<T>::get();
-        return (typeId == m_typeId || getConverterIndex(typeId) != -1);
+        return (typeId == m_typeId || getConverterIndex(typeId) != rtl::index_none);
     }
 
 
     template <class T>
-    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, const rtl::TypeQ& pTypeQ, const rtl::alloc& pAllocOn)
+    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::TypeQ pTypeQ, rtl::alloc pAllocOn)
     {
         using _T = remove_const_n_ref_n_ptr<T>;
-        const auto& typeId = rtl::detail::TypeId<_T>::get();
-        const auto& typePtrId = rtl::detail::TypeId<_T*>::get();
+        std::size_t typeId = rtl::detail::TypeId<_T>::get();
+        std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
         const auto& typeStr = rtl::detail::TypeId<_T>::toString();
         const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
         if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
@@ -66,7 +66,7 @@ namespace rtl::access {
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 
-        const auto& toTypeId = rtl::detail::TypeId<_asType>::get();
+        std::size_t toTypeId = rtl::detail::TypeId<_asType>::get();
         if (toTypeId == m_typeId) {
             const auto& viewRef = as<_asType>();
             return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
@@ -75,15 +75,15 @@ namespace rtl::access {
         if constexpr (std::is_pointer_v<remove_const_n_reference<_asType>>)
         {
             using T = remove_const_n_ref_n_ptr<_asType>;
-            const auto& typePtrId = rtl::detail::TypeId<T*>::get();
+            std::size_t typePtrId = rtl::detail::TypeId<T*>::get();
             if (typePtrId == m_typePtrId) {
                 auto& viewRef = as<T>();
                 return std::optional<rtl::view<const T*>>(&viewRef);
             }
         }
 
-        const auto& index = getConverterIndex(toTypeId);
-        if (index != -1) 
+        std::size_t index = getConverterIndex(toTypeId);
+        if (index != rtl::index_none)
         {
             rtl::ConversionKind conversionKind = rtl::ConversionKind::NotDefined;
             const std::any& viewObj = m_converters[index].second(m_object, m_isPointer, conversionKind);

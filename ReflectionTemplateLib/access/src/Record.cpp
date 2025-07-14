@@ -9,7 +9,7 @@ namespace rtl {
 
     namespace access
     {
-        Record::Record(const std::string& pRecordName, const std::size_t& pRecordId)
+        Record::Record(const std::string& pRecordName, const std::size_t pRecordId)
             : m_recordName(pRecordName)
             , m_recordId(pRecordId)
         {
@@ -70,7 +70,7 @@ namespace rtl {
         * calls copy constructor of class/struct represented by this 'Record'
         * creates copy of the object wrapped inside 'Instance' object.
         * returns 'RStatus' object indicating the success of the reflection call with other infos.
-    */  const std::pair<error, RObject> Record::clone(RObject& pOther) const
+    */  std::pair<error, RObject> Record::clone(RObject& pOther) const
         {
             //validate the source object, should not be empty.
             if (pOther.isEmpty()) {

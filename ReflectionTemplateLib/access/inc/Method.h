@@ -30,7 +30,7 @@ namespace rtl {
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>
-            std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
+            std::pair<error, RObject> invokeCtor(alloc pAllocType, _args&&...params) const;
 
             //called from class 'Record', creates a 'Method' object for destructor.
             static Method getDestructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
@@ -44,7 +44,7 @@ namespace rtl {
 
             //indicates if a particular set of arguments accepted by the functor associated with it.
             template<class ..._args>
-            const bool hasSignature() const;
+            bool hasSignature() const;
 
             template<class ..._signature>
             const MethodInvoker<_signature...> bind(const RObject& pTarget) const;

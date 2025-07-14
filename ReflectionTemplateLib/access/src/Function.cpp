@@ -66,7 +66,7 @@ namespace rtl {
         * a 'Function' object may be associated with multiple functors in case of overloads.
         * every overload will have unique 'FunctorId', contained by one 'Function' object.
         * given signatureId is compared against the signatureId of all overloads registered.
-    */	const std::size_t Function::hasSignatureId(const std::size_t& pSignatureId) const
+    */	std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
         {
             //simple linear-search, efficient for small set of elements.
             for (const auto& functorId : m_functorIds) {
@@ -74,7 +74,7 @@ namespace rtl {
                     return functorId.getIndex();
                 }
             }
-            return -1;
+            return rtl::index_none;
         }
 
 

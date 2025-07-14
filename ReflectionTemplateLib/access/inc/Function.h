@@ -58,7 +58,7 @@ namespace rtl {
             Function(const Function& pOther, const detail::FunctorId& pFunctorId,
                      const std::string& pFunctorName);
 
-            const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
+            std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
         public:
 
@@ -77,10 +77,10 @@ namespace rtl {
             Function& operator=(const Function& pOther);
 
             //indicates if a functor associated with it takes zero arguments.
-            const bool hasSignature() const;
+            bool hasSignature() const;
 
             template<class ..._args>
-            const bool hasSignature() const;
+            bool hasSignature() const;
 
             template<class ..._args>
             std::pair<error, RObject> operator()(_args&&...params) const noexcept;

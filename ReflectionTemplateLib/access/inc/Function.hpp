@@ -19,7 +19,7 @@ namespace rtl {
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
     */  template<class ..._args>
-        inline const bool Function::hasSignature() const
+        inline bool Function::hasSignature() const
         {
             //hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
             return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);

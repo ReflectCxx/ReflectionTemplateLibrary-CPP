@@ -39,7 +39,7 @@ namespace rtl {
         public:
 
             //every MethodContainer<TypeQ::Mute,...> will have a unique-id.
-            static const std::size_t& getContainerId() {
+            static std::size_t getContainerId() {
                 return m_containerId;
             }
 
@@ -50,8 +50,10 @@ namespace rtl {
 
             //get container type as string
             template<class _recordType, class _returnType>
-            static const std::string getSignatureStr() {
-                return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + "::(" + TypeId<_signature...>::toString() + ")");
+            static std::string getSignatureStr() 
+            {
+                return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + 
+                        "::(" + TypeId<_signature...>::toString() + ")");
             }
 
         private:
@@ -67,9 +69,9 @@ namespace rtl {
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static const std::size_t pushBack(const MethodLambda& pFunctor,
-                                              std::function<const std::size_t()> pGetIndex,
-                                              std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::size_t pushBack(const MethodLambda& pFunctor,
+                                        std::function<const std::size_t()> pGetIndex,
+                                        std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
@@ -113,7 +115,7 @@ namespace rtl {
         public:
 
             //every MethodContainer<TypeQ::Const,...> will have a unique-id.
-            static const std::size_t& getContainerId() {
+            static std::size_t getContainerId() {
                 return m_containerId;
             }
 
@@ -124,8 +126,10 @@ namespace rtl {
 
             //get container type as string
             template<class _recordType, class _returnType>
-            static const std::string getSignatureStr() {
-                return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + "::(" + TypeId<_signature...>::toString() + ") const");
+            static std::string getSignatureStr() 
+            {
+                return (TypeId<_returnType>::toString() + " " + TypeId<_recordType>::toString() + 
+                       "::(" + TypeId<_signature...>::toString() + ") const");
             }
 
         private:
@@ -141,9 +145,9 @@ namespace rtl {
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static const std::size_t pushBack(const MethodLambda& pFunctor,
-                                              std::function<const std::size_t()> pGetIndex,
-                                              std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::size_t pushBack(const MethodLambda& pFunctor,
+                                        std::function<const std::size_t()> pGetIndex,
+                                        std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;

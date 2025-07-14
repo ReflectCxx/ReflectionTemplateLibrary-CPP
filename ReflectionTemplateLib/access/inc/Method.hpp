@@ -18,9 +18,9 @@ namespace rtl
         @return: RStatus
         * calls the constructor with given arguments.
     */  template<class ..._args>
-        inline std::pair<error, RObject> Method::invokeCtor(alloc&& pAllocType, _args&& ...params) const
+        inline std::pair<error, RObject> Method::invokeCtor(alloc pAllocType, _args&& ...params) const
         {
-            return Function::bind().call<alloc, _args...>(std::forward<alloc>(pAllocType), std::forward<_args>(params)...);
+            return Function::bind().call<alloc, _args...>(std::move(pAllocType), std::forward<_args>(params)...);
         }
 
 
@@ -29,7 +29,7 @@ namespace rtl
         @return: bool
         * checks if the member-function functor associated with this 'Method', takes template specified arguments set or not.
     */  template<class ..._args>
-        inline const bool Method::hasSignature() const
+        inline bool Method::hasSignature() const
         {
             switch (getQualifier())
             {

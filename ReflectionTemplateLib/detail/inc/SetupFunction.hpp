@@ -26,14 +26,14 @@ namespace rtl
 
         /*  adds the generated functor index to the 'functorSet'. (thread safe).
             called from '_derivedType' ('FunctorContainer')
-        */  const auto& updateIndex = [&](const std::size_t& pIndex) 
+        */  const auto& updateIndex = [&](std::size_t pIndex)->void
             {
                 functorSet.emplace_back(pFunctor, pIndex);
             };
 
         /*  checks if the 'pFunctor' is already present in 'functorSet'. (thread safe).
             called from '_derivedType' ('FunctorContainer')
-        */  const auto& getIndex = [&]()->const std::size_t 
+        */  const auto& getIndex = [&]()-> std::size_t 
             {
                 //linear search, efficient for small set.
                 for (const auto& fptr : functorSet) {
@@ -43,7 +43,7 @@ namespace rtl
                     }
                 }
                 //functor is not already registered, return '-1'.
-                return -1;
+                return rtl::index_none;
             };
 
             //generate a type-id of '_returnType'.
@@ -70,7 +70,7 @@ namespace rtl
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
                             return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                         else
@@ -78,7 +78,7 @@ namespace rtl
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
                             return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                     }
@@ -87,14 +87,14 @@ namespace rtl
                         pError = error::None;
                         //call will definitely be successful, since the signature type has alrady been validated.
                         const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                        const TypeQ& qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                        TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
                         return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
                     }
                 }
             };
 
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<>::None, _derivedType::getContainerId(),
