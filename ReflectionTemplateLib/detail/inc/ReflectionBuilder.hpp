@@ -71,20 +71,15 @@ namespace rtl {
         @param: '_recordType'(class/struct type) & '_ctorSignature...' (explicitly specified),
         * adds the lambda invoking constructor (type-erased) in 'FunctorContainer'
         * builds the 'Function' object containing hash-key & meta-data for the constructor.
-        * also adds the lambda for invoking the destructor and returns its hash-key with the constructor's 'Function'.
     */  template<typename _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstructor() const
         {
             using Container = FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, TypeId<_recordType>::get(), TypeQ::None);
-            //add the destructor's 'FunctorId' to the constructor's functorIds list, at index FunctorIdx::ONE.
-            const auto& dctorFunctorId = FunctorContainer<access::RObject&>::template addDestructor<_recordType>();
-            constructor.getFunctorIds().emplace_back(dctorFunctorId);
-
             //if the _recordType has valid copy constructor.
             if constexpr (std::is_copy_constructible_v<_recordType>) {
-                //Construct and add the copy constructor's functorId at index FunctorIdx::TWO.
+                //Construct and push the copy constructor's functorId at pos 1, it will be accessed using FunctorIdx::ONE.
                 const FunctorId& copyCtorFunctorId = FunctorContainer<access::RObject&>::template addCopyConstructor<_recordType>();
                 constructor.getFunctorIds().emplace_back(copyCtorFunctorId);
             }

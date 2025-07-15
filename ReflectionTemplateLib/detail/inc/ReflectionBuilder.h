@@ -9,7 +9,7 @@ namespace rtl {
     /*  @class: ReflectionBuilder
         * adds the given non-member, static-member 'functor' to the 'FunctionContainer'.
         * adds the given const/non-const member, non-static-member 'functor' to the 'MethodContainer'.
-        * adds the constructor and destructor to 'FunctionContainer'.
+        * adds the constructor to 'FunctionContainer'.
     */  class ReflectionBuilder
         {
         protected:

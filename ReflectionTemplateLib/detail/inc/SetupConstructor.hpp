@@ -9,51 +9,6 @@ namespace rtl
 {
     namespace detail
     {
-    /*  @method: addDestructor()
-        @param: '_derivedType' (FunctorContainer), '_recordType' (class/struct type)
-        @return: 'FunctorId' object, a hash-key to lookup the destructor (wrapped in lambda) in the _derivedType's lambda-table.
-        * adds lambda (destructor-call-wrapped) in '_derivedType' (FunctorContainer).
-        * maintains a static var for already registered destructor for a particular class/struct type.
-        * thread safe, this method is uniquely generated for each '_recordType' (class/struct type).
-	*/  template<class _derivedType>
-        template<class _recordType>
-        inline const detail::FunctorId SetupConstructor<_derivedType>::addDestructor()
-        {
-            //no destructor is registered yet for type '_recordType' if 'dctorIndex' is -1.
-            static std::size_t dctorIndex = -1;
-
-            //will be called from '_derivedType' if the destructor not already registered.
-            const auto& updateIndex = [&](const std::size_t& pIndex) {
-                dctorIndex = pIndex;
-            };
-
-            //will be called from '_derivedType' to check if the destructor already registered.
-            const auto& getIndex = [&]()->const std::size_t {
-                return dctorIndex;
-            };
-
-            //destructor lambda.
-            const auto& functor = [](error& pError, access::RObject& pTarget)-> access::RObject
-            {
-                if (!pTarget.canViewAs<const _recordType*>()) {
-                    pError = error::SignatureMismatch;
-                    return access::RObject();
-                }
-
-                //cast will definitely succeed, will not throw since the object type is already validated.
-                pError = error::None;
-                const _recordType* object = pTarget.view<const _recordType*>()->get();
-                delete object;
-                return access::RObject();
-            };
-
-            //add the lambda in 'FunctorContainer'.
-            const std::size_t& index = _derivedType::pushBack(functor, getIndex, updateIndex);
-            return detail::FunctorId(index, TypeId<>::None, TypeId<_recordType>::get(), _derivedType::getContainerId(), 
-                                    (std::string("~") + _derivedType::template getSignatureStr<_recordType>(true)));
-        }
-
-
     /*  @method: addConstructor()
         @param: '_derivedType' (FunctorContainer), '_recordType' (class/struct), '_signature...' (ctor's args, explicitly specified)
         @return: 'FunctorId' object, a hash-key to lookup the lambda in the _derivedType's lambda-table.

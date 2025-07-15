@@ -11,7 +11,7 @@ namespace rtl {
 
     /*  @class: RecordBuilder
         @param: <_recordType>, a struct/class type.
-        * provides interface to register member-function & constructors/destructor of a class/struct.
+        * provides interface to register member-function & constructors of a class/struct.
     */  template<class _recordType>
         class RecordBuilder
         {

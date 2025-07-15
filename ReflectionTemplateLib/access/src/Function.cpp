@@ -43,11 +43,11 @@ namespace rtl {
 
     /*  @constructor: Function()
         @params: pOther - 'Function' object associated with a constructor.
-        *        pFunctorId - 'FunctorId', object associated with a destructor.
-        *        pFunctorName - name of the destructor.
-        * this constructor is only called to create 'Function' object associated with destructor.
-        * the destructor 'FunctorId' is added to the 'Function' object associated with a constructor while registration.
-        * the very first registration of constructor adds the destructor lambda in the functor-container and sends its
+        *        pFunctorId - 'FunctorId', object associated with a copy-constructor.
+        *        pFunctorName - name of the constructor.
+        * this constructor is only called to create 'Function' object associated with copy-constructor.
+        * the copy-constructor's 'FunctorId' is added to the 'Function' object associated with a constructor while registration.
+        * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
           'FunctorId' with the 'Function' object associated with a constructor.
     */  Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
                            const std::string& pFunctorName)
@@ -92,7 +92,6 @@ namespace rtl {
                     return; //ignore and return since its already registered.
                 }
             }
-
             //add the 'functorId' of the overloaded functor.
             m_functorIds.push_back(pOtherFunc.m_functorIds[0]);
         }

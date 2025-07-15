@@ -15,7 +15,7 @@
 
 
 /*
-* Interface to access user defined class/struct(s) and its members(veariables, functions, constructor & destructor).
+* Interface to access user defined class/struct(s) and its members(variables, functions & constructor).
 * it encapsulates all the member's information and provides objects (Function/Method) to access them.
 * the Record objects are obtained from reflection object ie, CxxMirror, querying by string.
 * decleared in namespace rtl::access.*/

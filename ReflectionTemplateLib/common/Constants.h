@@ -34,9 +34,8 @@ namespace rtl {
     enum FunctorIdx
     {
         ZERO = 0,   //heap constructor index
-        ONE = 1,    //destructor index
-        TWO = 2,    //copy constructor index
-        MAX_SIZE = 3
+        ONE = 1,    //copy constructor index
+        MAX_SIZE = 2
     };
 
 
@@ -46,7 +45,6 @@ namespace rtl {
         None,
         Mute,       //Mutable
         Const,      //Constant
-        //ConstRef    //Constant Reference
     };
 
 
@@ -85,10 +83,6 @@ namespace rtl {
 
     struct CtorName
     {
-        inline static const std::string dctor(const std::string& pRecordName) {
-            return (pRecordName + "::~" + pRecordName + "()");
-        }
-
         inline static const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
@@ -102,16 +96,26 @@ namespace rtl {
     inline const char* to_string(error err) 
     {
         switch (err) {
-        case error::None: return "None";
-        case error::EmptyRObject: return "EmptyInstance";
-        case error::InvalidAllocType: return "InvalidAllocType";
-        case error::SignatureMismatch: return "SignatureMismatch";
-        case error::FunctionNotRegisterdInRTL: return "FunctionNotRegisterdInRTL";
-        case error::ReflectedObjectTypeMismatch: return "ReflectedObjectTypeMismatch";
-        case error::ReflecetdObjectConstMismatch: return "ReflecetdObjectConstMismatch";
-        case error::ConstructorNotRegisteredInRTL: return "ConstructorNotRegisteredInRTL";
-        case error::CopyConstructorPrivateOrDeleted: return "CopyConstructorPrivateOrDeleted";
-        default: return "Unknown";
+        case error::None: 
+            return "No error (operation successful)";
+        case error::EmptyRObject:
+            return "Empty instance: RObject does not hold any reflected object";
+        case error::InvalidAllocType:
+            return "Invalid allocation type: Allocation type is 'None'; object must be allocated on stack or heap";
+        case error::SignatureMismatch:
+            return "Signature mismatch: Function parameters do not match the expected signature";
+        case error::FunctionNotRegisterdInRTL:
+            return "Function not registered: The requested method is not registered in the Reflection system";
+        case error::ReflectedObjectTypeMismatch:
+            return "Type mismatch: RObject holds a reflected instance of a different class/struct than required by the function";
+        case error::ReflecetdObjectConstMismatch:
+            return "Const mismatch: Method can only be called on a const object, but RObject holds a non-const instance";
+        case error::ConstructorNotRegisteredInRTL:
+            return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
+        case error::CopyConstructorPrivateOrDeleted:
+            return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
+        default:
+            return "Unknown error";
         }
     }
 

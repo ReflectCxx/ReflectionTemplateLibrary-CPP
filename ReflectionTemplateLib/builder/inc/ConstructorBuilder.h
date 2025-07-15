@@ -9,8 +9,8 @@ namespace rtl {
     /*  @class: ConstructorBuilder
         @param: _recordType - struct/class type. 
         *       _signature...- constructor args type (none/_record&/const _record& or any combination of parameters) 
-        * provides interface to register constructors/destructor of a class/struct.
-        * when the very first constructor(any- copy/default/parametrized) is registered, destructor gets registered implicitly.
+        * provides interface to register constructors of a class/struct.
+        * when the very first constructor(any- default/parametrized) is registered, copy-constructor gets registered implicitly.
         * all the objects are created via reflection are on heap, using 'new'.
         * the constructed objects are returned wrapped in 'Instance' object, with type erased.
         * lifetime of created objects are managed using 'shared_ptr'.

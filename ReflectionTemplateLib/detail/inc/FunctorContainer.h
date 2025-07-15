@@ -21,7 +21,7 @@ namespace rtl {
 
     /*  @class: FunctorContainer
         @param: '_signature...' (combination of any types)
-        * container class for holding lambda's wrapping functor, constructor/destructor calls of same signatures.
+        * container class for holding lambda's wrapping functor, constructor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
@@ -58,7 +58,7 @@ namespace rtl {
             static std::vector<FunctionLambda> m_functors;
 
         /*  @method: pushBack
-            @params: pFunctor (lambda containing functor or constructor/destructor call)
+            @params: pFunctor (lambda containing functor or constructor call)
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors/ctor/d'tor set)
             @return: index of newly added or already existing lambda in vector 'm_functors'.
