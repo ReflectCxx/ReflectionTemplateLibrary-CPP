@@ -17,9 +17,10 @@ namespace rtl {
             const std::string& m_record;
             const std::string& m_function;
             const std::string& m_namespace;
+            const std::size_t m_recordId;
 
             explicit ReflectionBuilder(const std::string& pNamespace, const std::string& pRecord,
-                                       const std::string& pFunction);
+                                       const std::string& pFunction, std::size_t pRecordId);
 
             //adds constructor (any overload) to the 'FunctorContainer'.
             template<class _recordType, class ..._ctorSignature>

@@ -24,7 +24,7 @@ namespace rtl {
         protected:
 
             template<class _returnType, class ..._signature>
-            static const detail::FunctorId addFunctor(_returnType(*pFunctor)(_signature...));
+            static const detail::FunctorId addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId);
         };
     }
 }

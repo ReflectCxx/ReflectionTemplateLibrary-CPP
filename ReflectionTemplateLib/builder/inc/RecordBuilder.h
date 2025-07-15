@@ -17,10 +17,11 @@ namespace rtl {
         {
             const std::string& m_record;
             const std::string& m_namespace;
+            const std::size_t m_recordId;
 
         public:
 
-            RecordBuilder(const std::string& pNamespace, const std::string& pRecord);
+            RecordBuilder(const std::string& pNamespace, const std::string& pRecord, std::size_t pRecordId);
 
             template<class ..._signature>
             constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;

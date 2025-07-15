@@ -53,6 +53,7 @@ namespace rtl::access {
                            pTypeQ, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
         }
         else {
+            static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
             return RObject(std::any(std::forward<T>(pVal)), typeId, typePtrId, typeStr,
                            pTypeQ, rtl::IsPointer::No, pAllocOn, std::move(pDeleter), conversions);
         }
@@ -62,7 +63,7 @@ namespace rtl::access {
     template <class _asType>
     inline std::optional<rtl::view<_asType>> RObject::view() const
     {
-        static_assert(!std::is_reference_v<_asType>, "reference views are not supported.");
+        static_assert(!std::is_reference_v<_asType>, "explicit reference views are not supported.");
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 

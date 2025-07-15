@@ -17,9 +17,8 @@ namespace rtl
         * thread safe, multiple functors can be registered simultaneously.
     */  template<class _derivedType>
         template<class _returnType, class ..._signature>
-        inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...))
+        inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-
         /*  set of already registered functors. (static life time).
             used std::vector, since std::set/map are not designed for function pointers
         */  static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
@@ -47,7 +46,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const auto& retTypeId = TypeId<remove_const_n_reference<_returnType>>::get();
+            const auto& retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
 
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
@@ -97,7 +96,7 @@ namespace rtl
             std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId(index, retTypeId, TypeId<>::None, _derivedType::getContainerId(),
+            return detail::FunctorId(index, retTypeId, pRecordId, _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_returnType>());
         }
     }

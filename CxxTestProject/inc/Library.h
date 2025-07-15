@@ -12,6 +12,8 @@ public:
 	
 	Library();
 
+	Library(const Library&) = delete;
+
 	static int getBooksCount();
 
 	static void addBook(const Book& pBook);

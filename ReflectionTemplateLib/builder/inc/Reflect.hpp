@@ -40,7 +40,7 @@ namespace rtl {
     */  template<>
         inline const Builder<TypeQ::None> Reflect::function(const std::string& pFunction)
         {
-            return Builder<TypeQ::None>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::None>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
         }
 
 		
@@ -53,7 +53,7 @@ namespace rtl {
     */  template<class _recordType>
         inline constexpr const RecordBuilder<_recordType> Reflect::record(const std::string& pClass)
         {
-            return RecordBuilder<_recordType>(m_namespace, pClass);
+            return RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
         }
 
 		
@@ -68,7 +68,7 @@ namespace rtl {
     */  template<class ..._signature>
         inline constexpr const Builder<TypeQ::None, _signature...> Reflect::function(const std::string& pFunction) 
         {
-            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
         }
     }
 }

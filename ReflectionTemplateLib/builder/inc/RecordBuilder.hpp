@@ -8,9 +8,10 @@ namespace rtl {
     namespace builder
     {
         template<class _recordType>
-        inline RecordBuilder<_recordType>::RecordBuilder(const std::string& pNamespace, const std::string& pRecord)
+        inline RecordBuilder<_recordType>::RecordBuilder(const std::string& pNamespace, const std::string& pRecord, std::size_t pRecordId)
             : m_record(pRecord)
-            , m_namespace(pNamespace) {
+            , m_namespace(pNamespace)
+            , m_recordId(pRecordId) {
         }
 
 
@@ -24,7 +25,7 @@ namespace rtl {
     */  template<class _recordType>
         inline const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
-            return Builder<TypeQ::None>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::None>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
@@ -40,7 +41,7 @@ namespace rtl {
         template<class ..._signature>
         inline const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
-            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
@@ -53,7 +54,7 @@ namespace rtl {
     */  template<class _recordType>
         inline const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
@@ -68,7 +69,7 @@ namespace rtl {
     */  template<class _recordType>
         inline const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Const>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::Const>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
@@ -84,7 +85,7 @@ namespace rtl {
         template<class ..._signature>
         inline const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
@@ -100,7 +101,7 @@ namespace rtl {
         template<class ..._signature>
         inline const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction);
+            return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 

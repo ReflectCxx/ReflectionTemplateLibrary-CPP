@@ -50,10 +50,13 @@ CxxMirror& MyReflection::instance()
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),  //again, the overloaded constructor.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_updateDate).build(&nsdate::Date::updateDate),  //unique method, no overloads.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),  //const method registration, 'methodConst()' function must be used. compiler error otherwise.
+        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_getCalenderPtr).build(&nsdate::Date::getCalenderPtr),  //unique method, no overloads.
+        //Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_getCalenderRef).build(&nsdate::Date::getCalenderRef),  //unique method, no overloads.
 
         //class Calender, default constructor. Instances will always be created on heap and managed using shared_ptr.
-        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(), //registers default constructor & copy constructor.
+        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).methodStatic(calender::str_create).build(&nsdate::Calender::create),
 
+        Reflect().record<Library>(library::class_).constructor().build(),   //Registers constructor, but no copy constructor since its deleted.
         Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),  //Static method registration, 'methodStatic()' function must be used. compiler error otherwise.
         Reflect().record<Library>(library::class_).methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle),
 

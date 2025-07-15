@@ -30,7 +30,7 @@ namespace rtl {
                           "The specified constructor is either deleted or not publicly accessible.");
 
             const auto& ctorName = (m_ctorType == ConstructorType::CopyCtor ? CtorName::copyCtor(m_record) : CtorName::ctor(m_record));
-            return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName).build<_recordType, _ctorSignature...>();
+            return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
         }
     }
 }

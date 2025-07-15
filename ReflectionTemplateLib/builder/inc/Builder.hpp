@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TypeId.h"
 #include "Builder.h"
 #include "ReflectionBuilder.hpp"
 
@@ -8,8 +9,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                             const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                             const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
     /*  @method: build()
@@ -29,8 +30,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                   const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                   const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
     /*  @method: build()
@@ -51,8 +52,8 @@ namespace rtl {
     {
         template<class ..._signature>
         inline Builder<TypeQ::None, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                            const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                            const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
 
@@ -74,8 +75,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::Const>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                              const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                              const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
     /*  @method: build()
@@ -95,8 +96,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::Const, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                    const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                    const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
     /*  @method: build()
@@ -117,8 +118,8 @@ namespace rtl {
     {
         template<class ..._signature>
         inline Builder<TypeQ::Const, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                             const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                             const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
     /*  @method: build()
@@ -139,8 +140,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::Mute>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                             const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                             const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
 
@@ -181,8 +182,8 @@ namespace rtl {
     namespace builder
     {
         inline Builder<TypeQ::Mute, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                   const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                   const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 
 
@@ -204,8 +205,8 @@ namespace rtl {
     {
         template<class ..._signature>
         inline Builder<TypeQ::Mute, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                            const std::string& pFunction)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction) {
+                                                            const std::string& pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
         }
 		
     /*  @method: build()

@@ -19,6 +19,12 @@ namespace rtl {
     template<typename T>
     using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
+    //TODO: Intigrate this utility.
+    //// Utility: Remove const, volatile, reference, pointer, and array extent from T.
+    //template<typename T>
+    //using remove_const_n_ref_n_ptr = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t
+    //                                   < std::remove_all_extents_t<T> > > >;
+
     enum class ConversionKind
     {
         ByRef,

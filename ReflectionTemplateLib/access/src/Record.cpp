@@ -84,10 +84,6 @@ namespace rtl {
                 return { error::ReflectedObjectTypeMismatch, RObject() };
             }
 
-            if (!pOther.isOnHeap()) {
-                return { error::None, RObject(pOther) };
-            }
-
             const std::string& constCopyStr = CtorName::copyCtor(m_recordName);
             std::optional<Function> constCopyCtor = getMethod(constCopyStr);			
             //if the object is const, only copy constructor with 'const&' can be called on it.

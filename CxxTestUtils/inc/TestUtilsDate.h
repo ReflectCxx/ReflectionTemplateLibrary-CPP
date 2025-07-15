@@ -14,6 +14,7 @@ namespace test_utils
 	{
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Calender";
+		static constexpr const char* str_create = "create";
 		static const bool assert_zero_instance_count();
 	};
 
@@ -29,6 +30,8 @@ namespace test_utils
 		static constexpr const char* struct_ = "Date";
 		static constexpr const char* str_updateDate = "updateDate";
 		static constexpr const char* str_getAsString = "getAsString";
+		static constexpr const char* str_getCalenderPtr = "getCalenderPtr";
+		static constexpr const char* str_getCalenderRef = "getCalenderRef";
 
 		static const std::size_t get_date_instance_count();
 

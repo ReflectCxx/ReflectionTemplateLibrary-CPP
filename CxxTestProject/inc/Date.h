@@ -31,6 +31,10 @@ namespace nsdate
 
 		std::shared_ptr<Calender> m_calender;
 
+		Calender* getCalenderPtr();
+
+		const Calender& getCalenderRef();
+
 	private:
 
 		unsigned m_day;
@@ -43,14 +47,20 @@ namespace nsdate
 	//for testing 'copy constructor not defined/disabled'
 	struct Calender 
 	{
-		Calender();
 		~Calender();
+
+		Calender(Calender&&)  noexcept;
 
 		Calender(const Calender&) = delete;
 
 		static unsigned instanceCount();
 
+		static std::shared_ptr<Calender> create();
+
 	private:
+
+		Calender();
+
 		static unsigned m_instanceCount;
 	};
 }

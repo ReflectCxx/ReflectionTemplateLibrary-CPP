@@ -15,61 +15,92 @@ namespace rtl_tests
 {
 	TEST(ReflectedCallStatusError, construct_on_heap___error_ConstructorNotRegisteredInRTL)
 	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
+		optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+		ASSERT_TRUE(classCalender);
 
-		auto [status, instance] = classLibrary->create<alloc::Heap>();
+		auto [err, robj] = classCalender->create<alloc::Stack>();
 
-		ASSERT_TRUE(status == error::ConstructorNotRegisteredInRTL);
-		ASSERT_TRUE(instance.isEmpty());
+		ASSERT_TRUE(err == error::ConstructorNotRegisteredInRTL);
+		ASSERT_TRUE(robj.isEmpty());
 	}
 
 
 	TEST(ReflectedCallStatusError, construct_on_stack___error_ConstructorNotRegisteredInRTL)
 	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
+		optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+		ASSERT_TRUE(classCalender);
 
-		auto [status, instance] = classLibrary->create<alloc::Stack>();
+		auto [err, robj] = classCalender->create<alloc::Heap>();
 
-		ASSERT_TRUE(status == error::ConstructorNotRegisteredInRTL);
-		ASSERT_TRUE(instance.isEmpty());
+		ASSERT_TRUE(err == error::ConstructorNotRegisteredInRTL);
+		ASSERT_TRUE(robj.isEmpty());
 	}
 
 
 	TEST(ReflectedCallStatusError, copy_construct_on_heap___error_CopyConstructorPrivateOrDeleted)
 	{
 		{
+			optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
+			ASSERT_TRUE(classDate);
+			
+			//Calender's constructor not registered, get its instance from Date's method.
+			optional<Method> getCalenderPtr = classDate->getMethod(date::str_getCalenderPtr);
+			ASSERT_TRUE(getCalenderPtr);
+
+			// Create Date, which will create a Calander's instance.
+			auto [err0, date] = classDate->create<alloc::Stack>();
+
+			// Get the Calander's instance.
+			auto [err1, calender] = getCalenderPtr->bind(date).call();
+			ASSERT_TRUE(err1 == error::None);
+			ASSERT_FALSE(calender.isEmpty());
+
+			ASSERT_TRUE(err1 == error::None);
+			ASSERT_FALSE(calender.isEmpty());
+
 			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
 			ASSERT_TRUE(classCalender);
 
-			auto [err0, srcObj] = classCalender->create<alloc::Heap>();
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			auto [err1, copyObj] = classCalender->clone(srcObj);
+			// Try to call copy-constructor of class Calender.
+			auto [err2, copyObj] = classCalender->clone(calender);
 
 			// Cannot create heap instance: Calender's copy constructor is deleted.
-			ASSERT_TRUE(err1 == error::CopyConstructorPrivateOrDeleted);
+			ASSERT_TRUE(err2 == error::CopyConstructorPrivateOrDeleted);
 			ASSERT_TRUE(copyObj.isEmpty());
 		}
 		EXPECT_TRUE(calender::assert_zero_instance_count());
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
-	TEST(ReflectedCallStatusError, copy_construct_on_stack___error_CopyConstructorPrivateOrDeleted)
+	TEST(ReflectedCallStatusError, construction_on_stack_with_no_copy_ctor___error_CopyConstructorPrivateOrDeleted)
 	{
 		{
-			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
-			ASSERT_TRUE(classCalender);
+			optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+			ASSERT_TRUE(classLibrary);
 
-			auto [err, robj] = classCalender->create<alloc::Stack>();
+			auto [err, robj] = classLibrary->create<alloc::Stack>();
 
-			// Cannot create stack instance: Calender's copy constructor is deleted, but std::any requires copy-constructible type
+			// Cannot create stack instance: Library's copy constructor is deleted, but std::any (in RObject) requires copy-constructible type
 			ASSERT_TRUE(err == error::CopyConstructorPrivateOrDeleted);
 			ASSERT_TRUE(robj.isEmpty());
 		}
-		EXPECT_TRUE(calender::assert_zero_instance_count());
+	}
+
+
+	TEST(ReflectedCallStatusError, construction_on_heap_with_no_copy_ctor___error_None)
+	{
+		{
+			optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+			ASSERT_TRUE(classLibrary);
+
+			auto [err, robj] = classLibrary->create<alloc::Heap>();
+
+			// creating heap instance successful: Library's copy constructor is deleted but std::any (in RObject) holds the pointer.
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(robj.isEmpty());
+		}
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
