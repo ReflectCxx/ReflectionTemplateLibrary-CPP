@@ -23,22 +23,22 @@ namespace rtl {
         //unique id generator.
         extern std::atomic<std::size_t> g_containerIdCounter;
 
-        template<TypeQ, class ..._signature>
+        template<methodQ, class ..._signature>
         class MethodContainer;
 
-    /*  @class: MethodContainer<TypeQ::Mute, _signature...>
+    /*  @class: MethodContainer<methodQ::NonConst, _signature...>
         @param: '_signature...' (combination of any types)
         * container class for holding lambda's wrapping non-const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<TypeQ::Mute, _signature...> : public SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>,
-                                                            public CallReflector<MethodContainer<TypeQ::Mute, _signature...>>
+        class MethodContainer<methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>,
+                                                            public CallReflector<MethodContainer<methodQ::NonConst, _signature...>>
         {
             using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
 
         public:
 
-            //every MethodContainer<TypeQ::Mute,...> will have a unique-id.
+            //every MethodContainer<methodQ::NonConst,...> will have a unique-id.
             static std::size_t getContainerId() {
                 return m_containerId;
             }
@@ -88,33 +88,33 @@ namespace rtl {
 
             //friends :)
             friend ReflectionBuilder;
-            friend SetupMethod<MethodContainer<TypeQ::Mute, _signature...>>;
+            friend SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>;
         };
 
         template<class ..._signature>
-        const std::size_t MethodContainer<TypeQ::Mute, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
+        const std::size_t MethodContainer<methodQ::NonConst, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
 
         template<class ..._signature>
-        std::vector<typename MethodContainer<TypeQ::Mute, _signature...>::MethodLambda>
-        MethodContainer<TypeQ::Mute, _signature...>::m_methodPtrs;
+        std::vector<typename MethodContainer<methodQ::NonConst, _signature...>::MethodLambda>
+        MethodContainer<methodQ::NonConst, _signature...>::m_methodPtrs;
     }
 	
 
     namespace detail
     {
-    /*  @class: MethodContainer<TypeQ::Const, _signature...>
+    /*  @class: MethodContainer<methodQ::Const, _signature...>
         @param: '_signature...' (combination of any types)
         * container class for holding lambda's wrapping const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<TypeQ::Const, _signature...> : public SetupMethod<MethodContainer<TypeQ::Const, _signature...>>,
-                                                             public CallReflector<MethodContainer<TypeQ::Const, _signature...>>
+        class MethodContainer<methodQ::Const, _signature...> : public SetupMethod<MethodContainer<methodQ::Const, _signature...>>,
+                                                             public CallReflector<MethodContainer<methodQ::Const, _signature...>>
         {
             using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
 
         public:
 
-            //every MethodContainer<TypeQ::Const,...> will have a unique-id.
+            //every MethodContainer<methodQ::Const,...> will have a unique-id.
             static std::size_t getContainerId() {
                 return m_containerId;
             }
@@ -164,14 +164,14 @@ namespace rtl {
 
             //friends :)
             friend ReflectionBuilder;
-            friend SetupMethod<MethodContainer<TypeQ::Const, _signature...>>;
+            friend SetupMethod<MethodContainer<methodQ::Const, _signature...>>;
         };
 
         template<class ..._signature>
-        const std::size_t MethodContainer<TypeQ::Const, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
+        const std::size_t MethodContainer<methodQ::Const, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
 
         template<class ..._signature>
-        std::vector<typename MethodContainer<TypeQ::Const, _signature...>::MethodLambda> 
-        MethodContainer<TypeQ::Const, _signature...>::m_methodPtrs;
+        std::vector<typename MethodContainer<methodQ::Const, _signature...>::MethodLambda> 
+        MethodContainer<methodQ::Const, _signature...>::m_methodPtrs;
     }
 }

@@ -17,7 +17,7 @@ namespace rtl::access
     {
         static std::vector<rtl::access::ConverterPair> m_conversions;
 
-        rtl::TypeQ m_typeQ;
+        rtl::methodQ m_typeQ;
         rtl::IsPointer m_isPointer;
         std::size_t m_typeId;
         std::size_t m_typePtrId;
@@ -29,7 +29,7 @@ namespace rtl::access
         std::shared_ptr<void> m_deallocator;
 
         explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                         rtl::TypeQ pTypeQ, rtl::IsPointer pIsPtr,rtl::alloc pAllocOn,
+                         rtl::methodQ pTypeQ, rtl::IsPointer pIsPtr,rtl::alloc pAllocOn,
                          std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions);
 
         template<class T>
@@ -40,7 +40,7 @@ namespace rtl::access
     protected:
 
         template <class T>
-        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::TypeQ pTypeQ, rtl::alloc pAllocOn);
+        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::methodQ pTypeQ, rtl::alloc pAllocOn);
     public:
 
         explicit RObject();
@@ -54,7 +54,7 @@ namespace rtl::access
 
         GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_typeId);
-        GETTER(rtl::TypeQ, Qualifier, m_typeQ);
+        GETTER(rtl::methodQ, Qualifier, m_typeQ);
 
         //checks if object constructed via reflection on heap or stack.
         GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::alloc::Heap));
@@ -70,7 +70,7 @@ namespace rtl::access
 
 
     inline RObject::RObject()
-        : m_typeQ(rtl::TypeQ::None)
+        : m_typeQ(rtl::methodQ::None)
         , m_isPointer(rtl::IsPointer::No)
         , m_typeId(rtl::detail::TypeId<>::None)
         , m_typePtrId(rtl::detail::TypeId<>::None)
@@ -82,7 +82,7 @@ namespace rtl::access
 
 
     inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                            rtl::TypeQ pTypeQ, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn,
+                            rtl::methodQ pTypeQ, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn,
                             std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions)
         : m_typeQ(pTypeQ)
         , m_isPointer(pIsPtr)
@@ -108,7 +108,7 @@ namespace rtl::access
         , m_object(std::move(pOther.m_object))
         , m_deallocator(std::move(pOther.m_deallocator))
     {
-        pOther.m_typeQ = rtl::TypeQ::None;
+        pOther.m_typeQ = rtl::methodQ::None;
         pOther.m_isPointer = rtl::IsPointer::No;
         pOther.m_typeId = rtl::detail::TypeId<>::None;
         pOther.m_typePtrId = rtl::detail::TypeId<>::None;

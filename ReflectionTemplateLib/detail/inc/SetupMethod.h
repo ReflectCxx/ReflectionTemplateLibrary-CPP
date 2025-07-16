@@ -10,8 +10,8 @@ namespace rtl {
         @param: _derivedType (type which inherits this class)
         * creates a lambda to perform call on the registered functor.
         * adds it to the functor-container, maintains the already added functor set as well.
-        * deriving classes is MethodContainer<TypeQ::Mute, _signature...> &
-          MethodContainer<TypeQ::Const, _signature...>, which must implement -
+        * deriving classes is MethodContainer<methodQ::NonConst, _signature...> &
+          MethodContainer<methodQ::Const, _signature...>, which must implement -
             - std::size_t& _derived::getContainerId();
             - std::string _derivedType::getSignatureStr();
             - std::size_t& _derived::pushBack(std::function < access::RStatus(_signature...) >,

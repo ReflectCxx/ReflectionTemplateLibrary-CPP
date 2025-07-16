@@ -69,7 +69,7 @@ namespace rtl
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
                             return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                         else
@@ -77,7 +77,7 @@ namespace rtl
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                            methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
                             return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
                         }
                     }
@@ -86,7 +86,7 @@ namespace rtl
                         pError = error::None;
                         //call will definitely be successful, since the signature type has alrady been validated.
                         const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                        TypeQ qualifier = (std::is_const<_returnType>::value ? TypeQ::Const : TypeQ::Mute);
+                        methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
                         return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
                     }
                 }

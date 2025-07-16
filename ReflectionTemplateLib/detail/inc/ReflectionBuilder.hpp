@@ -31,7 +31,7 @@ namespace rtl {
         {
             using Container = FunctorContainer< remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
-            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, TypeQ::None);
+            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
         }
 
 
@@ -45,9 +45,9 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
-            using Container = MethodContainer<TypeQ::Mute, remove_const_if_not_reference<_signature>...>;
+            using Container = MethodContainer<methodQ::NonConst, remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, TypeQ::Mute);
+            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
         }
 
 
@@ -61,9 +61,9 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
-            using Container = MethodContainer<TypeQ::Const, remove_const_if_not_reference<_signature>...>;
+            using Container = MethodContainer<methodQ::Const, remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, TypeQ::Const);
+            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
         }
 
 
@@ -77,7 +77,7 @@ namespace rtl {
         {
             using Container = FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
-            const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, m_recordId, TypeQ::None);
+            const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
             //if the _recordType has valid copy constructor.
             if constexpr (std::is_copy_constructible_v<_recordType>) {
                 //Construct and push the copy constructor's functorId at pos 1, it will be accessed using FunctorIdx::ONE.

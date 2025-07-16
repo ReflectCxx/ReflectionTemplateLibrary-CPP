@@ -85,9 +85,9 @@ namespace rtl::detail
         RObjectBuilder(const RObjectBuilder&) = delete;
 
         template<class T, typename enable_if_string_t<T> = 0>
-        inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, TypeQ pTypeQ, alloc pAllocOn)
+        inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, methodQ pTypeQ, alloc pAllocOn)
         {
-            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
+            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != methodQ::None) {
                 return smartRObject(std::string(std::forward<T>(pVal)), pDeleter, pTypeQ, pAllocOn);
             }
             else {
@@ -96,9 +96,9 @@ namespace rtl::detail
         }
 
         template<class T, typename enable_if_array_t<T> = 0>
-        inline static access::RObject build(T&& pArr, std::function<void()>&& pDeleter, TypeQ pTypeQ, alloc pAllocOn) 
+        inline static access::RObject build(T&& pArr, std::function<void()>&& pDeleter, methodQ pTypeQ, alloc pAllocOn) 
         {
-            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
+            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != methodQ::None) {
                 return smartRObject(std::move(to_std_array(pArr)), pDeleter, pTypeQ, pAllocOn);
             }
             else {
@@ -107,9 +107,9 @@ namespace rtl::detail
         }
 
         template<class T, typename enable_if_neither_string_nor_array_t<T> = 0>
-        inline static access::RObject build(T&& pVal, std::function<void()>&& pDeleter, TypeQ pTypeQ, alloc pAllocOn) 
+        inline static access::RObject build(T&& pVal, std::function<void()>&& pDeleter, methodQ pTypeQ, alloc pAllocOn) 
         {
-            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != TypeQ::None) {
+            if (pDeleter && pAllocOn == alloc::Heap && pTypeQ != methodQ::None) {
                 return smartRObject(std::forward<T>(pVal), pDeleter, pTypeQ, pAllocOn);
             }
             else{
@@ -124,7 +124,7 @@ namespace rtl::detail
     private: 
 
         template<class T>
-        inline static access::RObject smartRObject(T&& pVal, const std::function<void()>& pDeleter, TypeQ pTypeQ, alloc pAllocOn)
+        inline static access::RObject smartRObject(T&& pVal, const std::function<void()>& pDeleter, methodQ pTypeQ, alloc pAllocOn)
         {
             m_reflectedInstanceCount.fetch_add(1);
             return access::RObject::create(std::forward<T>(pVal),
@@ -147,7 +147,7 @@ namespace rtl
     inline access::RObject reflect(T&& pVal)
     {
         static_assert(!std::is_same_v<remove_const_n_ref_n_ptr<T>, std::any>, "cannot reflect std::any.");
-        return detail::RObjectBuilder::build(std::forward<T>(pVal), nullptr, TypeQ::None, alloc::None);
+        return detail::RObjectBuilder::build(std::forward<T>(pVal), nullptr, methodQ::None, alloc::None);
     }
 
     inline const std::size_t getReflectedHeapInstanceCount() {

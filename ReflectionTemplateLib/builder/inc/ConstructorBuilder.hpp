@@ -20,8 +20,8 @@ namespace rtl {
     /*  @method: build()
         @param: none
         @return: 'Function' object.
-        * constructs temparory object of class Builder<TypeQ::Mute> with given class/struct, namespace name & constructor type.
-        * forwards the call to Builder<TypeQ::Mute>::build().
+        * constructs temparory object of class Builder<methodQ::NonConst> with given class/struct, namespace name & constructor type.
+        * forwards the call to Builder<methodQ::NonConst>::build().
     */  template<class _recordType, class ..._ctorSignature>
         inline const access::Function ConstructorBuilder<_recordType, _ctorSignature...>::build() const
         {
@@ -30,7 +30,7 @@ namespace rtl {
                           "The specified constructor is either deleted or not publicly accessible.");
 
             const auto& ctorName = (m_ctorType == ConstructorType::CopyCtor ? CtorName::copyCtor(m_record) : CtorName::ctor(m_record));
-            return Builder<TypeQ::Mute>(m_namespace, m_record, ctorName, detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
+            return Builder<methodQ::NonConst>(m_namespace, m_record, ctorName, detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
         }
     }
 }

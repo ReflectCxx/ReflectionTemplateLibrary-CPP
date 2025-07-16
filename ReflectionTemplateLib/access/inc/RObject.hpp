@@ -41,7 +41,7 @@ namespace rtl::access {
 
 
     template <class T>
-    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::TypeQ pTypeQ, rtl::alloc pAllocOn)
+    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::methodQ pTypeQ, rtl::alloc pAllocOn)
     {
         using _T = remove_const_n_ref_n_ptr<T>;
         std::size_t typeId = rtl::detail::TypeId<_T>::get();

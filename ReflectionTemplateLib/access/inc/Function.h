@@ -25,8 +25,8 @@ namespace rtl {
         * perform call on the functor represented by this object.
     */  class Function
         {
-            //TypeQ::Const/Mute represents the const/non-const member-function, Type::None for non-member functions.
-            TypeQ m_qualifier;
+            //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
+            methodQ m_qualifier;
 
             //type id of class/struct (if it represents a member-function, else always '0')
             std::size_t m_recordTypeId;
@@ -47,7 +47,7 @@ namespace rtl {
 
             Function(const std::string& pNamespace, const std::string& pClassName, 
                      const std::string& pFuncName, const detail::FunctorId& pFunctorId,
-                     const std::size_t pRecordTypeId, const TypeQ pQualifier);
+                     const std::size_t pRecordTypeId, const methodQ pQualifier);
 
             void addOverload(const Function& pOtherFunc) const;
 
@@ -63,7 +63,7 @@ namespace rtl {
         public:
 
             //simple inlined getters.
-            GETTER(TypeQ, Qualifier, m_qualifier)
+            GETTER(methodQ, Qualifier, m_qualifier)
             GETTER(std::string, RecordName, m_record)
             GETTER(std::string, Namespace, m_namespace)
             GETTER(std::string, FunctionName, m_function)

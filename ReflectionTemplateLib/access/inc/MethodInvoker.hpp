@@ -53,12 +53,12 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
-            using containerMute = detail::MethodContainer<TypeQ::Mute, _finalSignature...>;
-            using containerConst = detail::MethodContainer<TypeQ::Const, _finalSignature...>;
+            using containerMute = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
+            using containerConst = detail::MethodContainer<methodQ::Const, _finalSignature...>;
 
             switch (pTarget.getQualifier())
             {
-            case TypeQ::Mute: {
+            case methodQ::NonConst: {
 
                 //if the target is non-const, then const & non-const both type of member-function can be invoked on it.
                 std::size_t index = pMethod.hasSignatureId(containerMute::getContainerId());
@@ -71,7 +71,7 @@ namespace rtl
                 }
                 break;
             }
-            case TypeQ::Const: {
+            case methodQ::Const: {
 
                 //if the pTarget is const, only const member function can be invoked on it.
                 std::size_t indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
@@ -87,8 +87,8 @@ namespace rtl
                 }
                 break;
             }
-            //only an empty 'RObject' will have TypeQ::None.
-            case TypeQ::None: {
+            //only an empty 'RObject' will have methodQ::None.
+            case methodQ::None: {
                 pError = error::EmptyRObject;
                 return RObject();
             }

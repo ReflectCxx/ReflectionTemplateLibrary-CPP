@@ -45,12 +45,12 @@ namespace rtl {
     };
 
 
-    //Type Qualifier.
-    enum class TypeQ
+    // MethodQ: Method qualifier + static marker.
+    enum class methodQ
     {
-        None,
-        Mute,       //Mutable
-        Const,      //Constant
+        None,       // Static method (no const/non-const qualifier)
+        Const,      // Const-qualified instance method
+        NonConst    // Non-const instance method
     };
 
 

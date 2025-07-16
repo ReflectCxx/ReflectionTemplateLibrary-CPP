@@ -17,21 +17,21 @@ namespace rtl {
 
     /*  @method: methodStatic()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::None, _signature...>
+        @return: Builder<methodQ::None, _signature...>
         * registers only static member functions.
         * used for registering unique static member function, if overload exists, use templated version 'methodStatic<...>()'.
         * the 'build(..)' called on return object will accepts static member function pointer only.
         * compiler error on 'build(..)' if non-static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline const Builder<TypeQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
+        inline const Builder<methodQ::None> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
-            return Builder<TypeQ::None>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::None>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
     /*  @method: methodStatic<...>()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::None, _signature...>
+        @return: Builder<methodQ::None, _signature...>
         * registers only static member functions.
         * used for registering overloads, if unique member function, use non-templated version 'methodStatic()'.
         * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -39,43 +39,43 @@ namespace rtl {
         * compiler error on 'build(..)' if const member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline const Builder<TypeQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
+        inline const Builder<methodQ::None, _signature...> RecordBuilder<_recordType>::methodStatic(const std::string& pFunction) const
         {
-            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::None, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
     /*  @method: method()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::Mute>
+        @return: Builder<methodQ::NonConst>
         * registers non-const, non-static member functions.
         * the 'build(..)' called on return object will accepts non-const, non-static member-function-pointer only.
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline const Builder<TypeQ::Mute> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+        inline const Builder<methodQ::NonConst> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Mute>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::NonConst>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
     /*  @method: methodConst()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::Const>
+        @return: Builder<methodQ::Const>
         * registers const member functions.
         * used for registering unique member function, if overload exists, use templated version 'methodConst<...>()'.
         * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
         * the 'build(..)' called on return object will accepts non-const member-function-pointer only.
         * compiler error 'build(..)' if non-const, static member or non-member function pointer is passed.
     */  template<class _recordType>
-        inline const Builder<TypeQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+        inline const Builder<methodQ::Const> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Const>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::Const>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
     /*  @method: method()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::Mute, _signature...>
+        @return: Builder<methodQ::NonConst, _signature...>
         * registers non-const member functions.
         * used for registering overloads, for unique member function, use non-templated version 'method()'.
         * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -83,15 +83,15 @@ namespace rtl {
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline const Builder<TypeQ::Mute, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const
+        inline const Builder<methodQ::NonConst, _signature...> RecordBuilder<_recordType>::method(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Mute, _signature...>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::NonConst, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
     /*  @method: methodConst<...>()
         @param: std::string, name of function as string.
-        @return: Builder<TypeQ::Const, _signature...>
+        @return: Builder<methodQ::Const, _signature...>
         * registers const member functions.
         * used for registering overloads, for unique member function, use non-templated version 'methodConst()'.
         * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -99,9 +99,9 @@ namespace rtl {
         * compiler error on 'build(..)' if non-const, static member or non-member function pointer is passed.
     */  template<class _recordType>
         template<class ..._signature>
-        inline const Builder<TypeQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
+        inline const Builder<methodQ::Const, _signature...> RecordBuilder<_recordType>::methodConst(const std::string& pFunction) const
         {
-            return Builder<TypeQ::Const, _signature...>(m_namespace, m_record, pFunction, m_recordId);
+            return Builder<methodQ::Const, _signature...>(m_namespace, m_record, pFunction, m_recordId);
         }
 
 
