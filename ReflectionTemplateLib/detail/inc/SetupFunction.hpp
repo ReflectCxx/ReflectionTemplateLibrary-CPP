@@ -69,25 +69,21 @@ namespace rtl
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
-                            return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
+                            return RObjectBuilder::build(&retObj, nullptr, alloc::None);
                         }
                         else
                         {
                             pError = error::None;
                             //call will definitely be successful, since the signature type has alrady been validated.
                             const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
-                            return RObjectBuilder::build(&retObj, nullptr, qualifier, alloc::None);
+                            return RObjectBuilder::build(&retObj, nullptr, alloc::None);
                         }
                     }
                     else
                     {
                         pError = error::None;
                         //call will definitely be successful, since the signature type has alrady been validated.
-                        const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                        methodQ qualifier = (std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst);
-                        return RObjectBuilder::build(retObj, nullptr, qualifier, alloc::None);
+                        return RObjectBuilder::build((*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
                     }
                 }
             };

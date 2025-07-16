@@ -41,7 +41,7 @@ namespace rtl::access {
 
 
     template <class T>
-    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::methodQ pTypeQ, rtl::alloc pAllocOn)
+    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn)
     {
         using _T = remove_const_n_ref_n_ptr<T>;
         std::size_t typeId = rtl::detail::TypeId<_T>::get();
@@ -50,12 +50,12 @@ namespace rtl::access {
         const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
         if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
             return RObject(std::any(static_cast<const _T*>(pVal)), typeId, typePtrId, typeStr,
-                           pTypeQ, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
+                           rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
         }
         else {
             static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-            return RObject(std::any(std::forward<T>(pVal)), typeId, typePtrId, typeStr,
-                           pTypeQ, rtl::IsPointer::No, pAllocOn, std::move(pDeleter), conversions);
+            return RObject(std::any(std::forward<T>(pVal)), typeId, typePtrId, typeStr, 
+                           rtl::IsPointer::No, pAllocOn, std::move(pDeleter), conversions);
         }
     }
 

@@ -73,10 +73,9 @@ namespace rtl
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
                 else
                 {
-                    methodQ qualifier = std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst;
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     return RObjectBuilder::build((const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...), 
-                                                 nullptr, qualifier, alloc::None);
+                                                 nullptr, alloc::None);
                 }
             };
 
@@ -147,9 +146,8 @@ namespace rtl
                 }
                 else
                 {
-                    const methodQ& qualifier = std::is_const<_returnType>::value ? methodQ::Const : methodQ::NonConst;
                     //call will definitely be successful, since the object type, signature type has already been validated.
-                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, qualifier, alloc::None);
+                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
                 }
             };
 

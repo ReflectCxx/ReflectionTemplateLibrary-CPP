@@ -17,7 +17,6 @@ namespace rtl::access
     {
         static std::vector<rtl::access::ConverterPair> m_conversions;
 
-        rtl::methodQ m_typeQ;
         rtl::IsPointer m_isPointer;
         std::size_t m_typeId;
         std::size_t m_typePtrId;
@@ -28,9 +27,9 @@ namespace rtl::access
         std::any m_object;
         std::shared_ptr<void> m_deallocator;
 
-        explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                         rtl::methodQ pTypeQ, rtl::IsPointer pIsPtr,rtl::alloc pAllocOn,
-                         std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions);
+        explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr, 
+                         rtl::IsPointer pIsPtr,rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter, 
+                         const std::vector<ConverterPair>& pConversions);
 
         template<class T>
         const T& as() const;
@@ -40,7 +39,7 @@ namespace rtl::access
     protected:
 
         template <class T>
-        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::methodQ pTypeQ, rtl::alloc pAllocOn);
+        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
     public:
 
         explicit RObject();
@@ -54,7 +53,6 @@ namespace rtl::access
 
         GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_typeId);
-        GETTER(rtl::methodQ, Qualifier, m_typeQ);
 
         //checks if object constructed via reflection on heap or stack.
         GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::alloc::Heap));
@@ -70,8 +68,7 @@ namespace rtl::access
 
 
     inline RObject::RObject()
-        : m_typeQ(rtl::methodQ::None)
-        , m_isPointer(rtl::IsPointer::No)
+        : m_isPointer(rtl::IsPointer::No)
         , m_typeId(rtl::detail::TypeId<>::None)
         , m_typePtrId(rtl::detail::TypeId<>::None)
         , m_allocatedOn(rtl::alloc::None)
@@ -82,10 +79,9 @@ namespace rtl::access
 
 
     inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                            rtl::methodQ pTypeQ, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn,
-                            std::shared_ptr<void>&& pDeleter, const std::vector<ConverterPair>& pConversions)
-        : m_typeQ(pTypeQ)
-        , m_isPointer(pIsPtr)
+                            rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
+                            const std::vector<ConverterPair>& pConversions)
+        : m_isPointer(pIsPtr)
         , m_typeId(pTypeId)
         , m_typePtrId(pTypePtrId)
         , m_typeStr(pTypeStr)
@@ -98,8 +94,7 @@ namespace rtl::access
 
 
     inline RObject::RObject(RObject&& pOther) noexcept
-        : m_typeQ(pOther.m_typeQ)
-        , m_isPointer(pOther.m_isPointer)
+        : m_isPointer(pOther.m_isPointer)
         , m_typeId(pOther.m_typeId)
         , m_typePtrId(pOther.m_typePtrId)
         , m_typeStr(pOther.m_typeStr)
@@ -108,7 +103,6 @@ namespace rtl::access
         , m_object(std::move(pOther.m_object))
         , m_deallocator(std::move(pOther.m_deallocator))
     {
-        pOther.m_typeQ = rtl::methodQ::None;
         pOther.m_isPointer = rtl::IsPointer::No;
         pOther.m_typeId = rtl::detail::TypeId<>::None;
         pOther.m_typePtrId = rtl::detail::TypeId<>::None;

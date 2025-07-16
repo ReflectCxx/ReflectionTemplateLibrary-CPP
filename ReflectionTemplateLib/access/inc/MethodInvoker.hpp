@@ -25,6 +25,10 @@ namespace rtl
         template<class ..._args>
         inline std::pair<error, RObject> MethodInvoker<_signature...>::call(_args&& ...params) const noexcept
         {
+            if (m_method.getQualifier() == methodQ::None) {
+                return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
+            }
+
             if (m_target.isEmpty()) {
                 //if the target is empty.
                 return { error::EmptyRObject, RObject() };
@@ -53,47 +57,24 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
-            using containerMute = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
             using containerConst = detail::MethodContainer<methodQ::Const, _finalSignature...>;
+            using containerNonConst = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
 
-            switch (pTarget.getQualifier())
-            {
-            case methodQ::NonConst: {
+            std::size_t constMethodIndex = pMethod.hasSignatureId(containerConst::getContainerId());
+            std::size_t nonConstMethodIndex = pMethod.hasSignatureId(containerNonConst::getContainerId());
 
-                //if the target is non-const, then const & non-const both type of member-function can be invoked on it.
-                std::size_t index = pMethod.hasSignatureId(containerMute::getContainerId());
-                if (index != rtl::index_none) {
-                    return containerMute::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
-                }
-                std::size_t indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
-                if (indexConst != rtl::index_none) {
-                    return containerConst::template forwardCall<_args...>(pError, pTarget, indexConst, std::forward<_args>(params)...);
-                }
-                break;
+            if (constMethodIndex != rtl::index_none && nonConstMethodIndex == rtl::index_none) {
+                return containerConst::template forwardCall<_args...>(pError, pTarget, constMethodIndex, std::forward<_args>(params)...);
             }
-            case methodQ::Const: {
-
-                //if the pTarget is const, only const member function can be invoked on it.
-                std::size_t indexConst = pMethod.hasSignatureId(containerConst::getContainerId());
-                if (indexConst != rtl::index_none) {
-                    return containerConst::template forwardCall<_args...>(pError, pTarget, indexConst, std::forward<_args>(params)...);
-                    
-                }
-                std::size_t index = pMethod.hasSignatureId(containerMute::getContainerId());
-                if (index != rtl::index_none) {
-                    //if Const-MethodContainer contains no such member-functor and functor is present in Non-Const-MethodContainer.
-                    pError = error::ReflecetdObjectConstMismatch;
-                    return RObject();
-                }
-                break;
+            else if (nonConstMethodIndex != rtl::index_none && constMethodIndex == rtl::index_none) {
+                return containerNonConst::template forwardCall<_args...>(pError, pTarget, nonConstMethodIndex, std::forward<_args>(params)...);
             }
-            //only an empty 'RObject' will have methodQ::None.
-            case methodQ::None: {
-                pError = error::EmptyRObject;
-                return RObject();
+            else if (constMethodIndex != rtl::index_none && nonConstMethodIndex != rtl::index_none) {
+                pError = error::ReflecetdObjectConstMismatch;
             }
+            else {
+                pError = error::SignatureMismatch;
             }
-            pError = error::SignatureMismatch;
             return RObject();
         }
     }

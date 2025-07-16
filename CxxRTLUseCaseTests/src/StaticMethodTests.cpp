@@ -9,7 +9,7 @@ using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
-namespace rtl_tests 
+namespace rtl_tests
 {
 	TEST(StaticMethods, unique_method_call)
 	{
@@ -130,10 +130,22 @@ namespace rtl_tests
 
 		ASSERT_TRUE(err0 == error::None);
 		ASSERT_FALSE(person.isEmpty());
+		{
+			auto [err, ret] = (*getDefaults)(person)();
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
 
-		//TODO: handle this test case with appropriate error or make successful call as its valid to call static method on objects.
-		auto [err1, ret1] = (*getDefaults)(person)();
-		ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
-		ASSERT_TRUE(ret1.isEmpty());
+			auto& retStr = ret.view<string>()->get();
+			EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
+		} {
+			auto [err, ret] = getDefaults->bind(person).call();
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
+
+			auto& retStr = ret.view<string>()->get();
+			EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
+		}
 	}
 }
