@@ -27,7 +27,7 @@ namespace rtl_tests
 
 			auto [err1, badObj] = classPerson->clone(book);
 
-			ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
 			ASSERT_TRUE(badObj.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -50,7 +50,7 @@ namespace rtl_tests
 
 			auto [err1, badObj] = classPerson->clone(book);
 
-			ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
 			ASSERT_TRUE(badObj.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

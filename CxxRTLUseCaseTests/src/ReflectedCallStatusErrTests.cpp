@@ -172,7 +172,7 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			auto [err1, ret] = getPublishedOn->bind(person).call();
-			ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
 			ASSERT_TRUE(ret.isEmpty());
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());
@@ -197,7 +197,7 @@ namespace rtl_tests
 			ASSERT_TRUE(getPublishedOn);
 
 			auto [err1, ret] = getPublishedOn->bind(person).call();
-			ASSERT_TRUE(err1 == error::ReflectedObjectTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
 			ASSERT_TRUE(ret.isEmpty());
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());

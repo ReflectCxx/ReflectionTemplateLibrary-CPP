@@ -43,14 +43,21 @@ namespace rtl {
             template<class ..._args>
             bool hasSignature() const;
 
+            template<methodQ _Q, class ..._signature>
+            const MethodInvokerQ<_Q, _signature...> bind(const RObject& pTarget) const;
+
             template<class ..._signature>
             const MethodInvoker<_signature...> bind(const RObject& pTarget) const;
 
             //friends :)
+            friend Record;
+            friend detail::CxxReflection;
+
             template<class ..._signature>
             friend class MethodInvoker;
-            friend detail::CxxReflection;
-            friend Record;
+
+            template<methodQ _Q, class ..._signature>
+            friend class MethodInvokerQ;
 
         public:
 

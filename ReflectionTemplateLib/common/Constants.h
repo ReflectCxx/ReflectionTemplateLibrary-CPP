@@ -78,10 +78,12 @@ namespace rtl {
         EmptyRObject,
         InvalidAllocType,
         SignatureMismatch,
+        MethodTargetMismatch,
+        AmbiguousConstOverload,
         FunctionNotRegisterdInRTL,
-        ReflectedObjectTypeMismatch,
-        ReflecetdObjectConstMismatch,
+        ConstMethodOverloadNotFound,
         ConstructorNotRegisteredInRTL,
+        NonConstMethodOverloadNotFound,
         CopyConstructorPrivateOrDeleted,
     };
 
@@ -112,10 +114,14 @@ namespace rtl {
             return "Signature mismatch: Function parameters do not match the expected signature";
         case error::FunctionNotRegisterdInRTL:
             return "Function not registered: The requested method is not registered in the Reflection system";
-        case error::ReflectedObjectTypeMismatch:
-            return "Type mismatch: RObject holds a reflected instance of a different class/struct than required by the function";
-        case error::ReflecetdObjectConstMismatch:
-            return "Const mismatch: Method can only be called on a const object, but RObject holds a non-const instance";
+        case error::MethodTargetMismatch:
+            return "The object you’re trying to bind doesn’t match the expected type of the method.";
+        case error::AmbiguousConstOverload:
+            return "Ambiguous overload: Both const and non-const methods are registered; explicitly specify MethodQ to resolve.";
+        case error::ConstMethodOverloadNotFound:
+            return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
+        case error::NonConstMethodOverloadNotFound:
+            return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
         case error::ConstructorNotRegisteredInRTL:
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::CopyConstructorPrivateOrDeleted:

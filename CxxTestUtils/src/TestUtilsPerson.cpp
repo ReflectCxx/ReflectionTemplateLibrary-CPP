@@ -40,25 +40,6 @@ namespace test_utils
 	}
 
 
-	const bool person::test_method_updateLastName(const std::any& pInstance, bool pOnHeap)
-	{
-		Person person(FIRST_NAME);
-		person.updateLastName(LAST_NAME);
-
-		if (pOnHeap) {
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
-		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
-	}
-
-
 	const bool person::test_method_updateLastName_const(const std::any& pInstance, bool pOnHeap)
 	{
 		const Person person(FIRST_NAME);

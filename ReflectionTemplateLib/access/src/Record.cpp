@@ -81,7 +81,7 @@ namespace rtl {
             //type of the object wrapped under source 'Instance' should match with type of this class/struct.
             if (m_recordId != pOther.getTypeId()) {
                 //if source instance & ctor type didn't match, return empty instance with error status.
-                return { error::ReflectedObjectTypeMismatch, RObject() };
+                return { error::MethodTargetMismatch, RObject() };
             }
 
             const std::string& constCopyStr = CtorName::copyCtor(m_recordName);

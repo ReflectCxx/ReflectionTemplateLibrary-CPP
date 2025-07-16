@@ -13,6 +13,14 @@ namespace rtl
         }
 
 
+        template<methodQ _Q, class ..._signature>
+        inline const MethodInvokerQ<_Q, _signature...> Method::bind(const RObject& pTarget) const
+        {
+            static_assert(_Q != methodQ::None, "Invalid method-qualifier, use 'Const' or 'NonConst'");
+            return MethodInvokerQ<_Q, _signature...>(*this, pTarget);
+        }
+
+
     /*  @method: invokeCtor()
         @params: variable arguments.
         @return: RStatus
