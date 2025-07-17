@@ -77,7 +77,7 @@ CxxMirror& MyReflection::instance()
         Reflect().record<Person>(person::class_).constructor<string>().build(),
         Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
-        Reflect().record<Person>(person::class_).methodConst(person::str_getFirstName).build(&Person::getFirstName),
+        Reflect().record<Person>(person::class_).method(person::str_getFirstName).build(&Person::getFirstName),
         Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),  //const method registration, 'methodConst()' function must be used. compiler error otherwise.
         Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress),  //overloaded method based on 'const'.

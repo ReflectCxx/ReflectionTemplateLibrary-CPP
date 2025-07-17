@@ -65,7 +65,7 @@ void Person::updateAddress() const
 }
 
 
-std::string Person::getFirstName() const
+std::string Person::getFirstName()
 {
 	return m_firstName;
 }

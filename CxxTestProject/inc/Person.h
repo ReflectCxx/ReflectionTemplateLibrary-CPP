@@ -20,7 +20,7 @@ public:
 
     void updateAddress() const;
 
-    std::string getFirstName() const;
+    std::string getFirstName();
 
     void updateAddress(std::string pAddress);
 

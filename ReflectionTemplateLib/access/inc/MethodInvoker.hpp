@@ -38,11 +38,11 @@ namespace rtl
                 return { error::MethodTargetMismatch, RObject() };
             }
             if constexpr (sizeof...(_signature) == 0) {
-                error err;
+                error err = error::None;
                 return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
-                error err;
+                error err = error::None;
                 return { err, Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
         }
@@ -111,11 +111,11 @@ namespace rtl
                 return { error::MethodTargetMismatch, RObject() };
             }
             if constexpr (sizeof...(_signature) == 0) {
-                error err;
+                error err = error::None;
                 return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
-                error err;
+                error err = error::None;
                 return { err, Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
         }
