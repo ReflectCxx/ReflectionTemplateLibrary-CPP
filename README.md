@@ -109,7 +109,7 @@ int main()
         * An instance created via reflection (constructor).
         * OR a value returned from any reflection-based method/function call.
      Internally:
-        * Uses shared_ptr for lifetime management (only for heap-allocated instances).
+        * Uses shared_ptr for lifetime management (only for explicitly heap-allocated instances).
         * Copy and move constructors behave as standard value-type copies:
             - For heap-allocated objects: sharing underlying instance via shared_ptr.
             - For stack-allocated objects: distinct object copies are created.
