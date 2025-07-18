@@ -3,12 +3,18 @@
 
 //User defined types.
 #include "Book.h"
+#include "Library.h"
 
 using namespace std;
 using namespace nsdate;
 
 namespace test_utils
 {
+	const bool library::assert_zero_instance_count()
+	{
+		return (Library::getInstanceCount() == 0);
+	}
+
 	const bool book::assert_zero_instance_count()
 	{
 		return (Book::getInstanceCount() == 0);

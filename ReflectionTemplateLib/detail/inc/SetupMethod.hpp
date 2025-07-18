@@ -55,24 +55,17 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<methodQ::NonConst, _signature...>) vector holding lambda's.
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                if (!pTargetObj.canViewAs<const _recordType*>()) {
-                    pError = error::MethodTargetMismatch;
-                    return access::RObject();
-                }
-
                 pError = error::None;
                 const _recordType* target = pTargetObj.view<const _recordType*>()->get();
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>)
-                {
+                if constexpr (std::is_same_v<_returnType, void>) {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
                     return access::RObject();
                 }
                 //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                else
-                {
+                else {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     return RObjectBuilder::build((const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...), 
                                                  nullptr, alloc::None);
@@ -129,23 +122,16 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<methodQ::Const, _signature...>) vector holding lambda's.
         */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
             {
-                if (!pTargetObj.canViewAs<const _recordType*>()) {
-                    pError = error::MethodTargetMismatch;
-                    return access::RObject();
-                }
-
                 pError = error::None;
                 const _recordType* target = pTargetObj.view<const _recordType*>()->get();
 
                 //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>)
-                {
+                if constexpr (std::is_same_v<_returnType, void>) {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     (target->*pFunctor)(std::forward<_signature>(params)...);
                     return access::RObject();
                 }
-                else
-                {
+                else {
                     //call will definitely be successful, since the object type, signature type has already been validated.
                     return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
                 }

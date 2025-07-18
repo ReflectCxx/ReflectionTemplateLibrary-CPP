@@ -11,10 +11,13 @@ class Library
 public:
 	
 	Library();
+	~Library();
 
 	Library(const Library&) = delete;
 
 	static int getBooksCount();
+
+	static std::size_t getInstanceCount();
 
 	static void addBook(const Book& pBook);
 

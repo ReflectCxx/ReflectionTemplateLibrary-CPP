@@ -15,6 +15,8 @@ namespace test_utils
 		static constexpr const char* class_ = "Library";
 		static constexpr const char* str_addBook = "addBook";
 		static constexpr const char* str_getBookByTitle = "getBookByTitle";
+
+		static const bool assert_zero_instance_count();
 	};
 
 	struct book

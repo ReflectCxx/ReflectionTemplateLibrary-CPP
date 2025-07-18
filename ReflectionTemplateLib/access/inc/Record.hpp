@@ -24,15 +24,12 @@ namespace rtl {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
 
             const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
-            //if registered constructor is found for the class/struct represented by this 'Record' object.
-            if (itr != m_methods.end()) {
-                //invoke the constructor, forwarding the arguments.
-                return itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
-            }
-            else {
-                //if no constructor found, return with empty 'RObject'.
-                return { error::ConstructorNotRegisteredInRTL, RObject() };
-            }
+                          //if registered constructor is found for the class/struct represented by this 'Record' object.
+            return itr != m_methods.end()
+                          //invoke the constructor, forwarding the arguments.
+                        ? itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...)
+                          //if no constructor found, return with empty 'RObject'.
+                        : std::make_pair(error::ConstructorNotRegisteredInRTL, RObject());
         }
     }
 }

@@ -57,10 +57,8 @@ namespace rtl
                         return RObjectBuilder::build(_recordType(std::forward<_signature>(params)...), std::function<void()>(), pAllocType);
                     }
                 }
-                else {
-                    pError = error::InvalidAllocType;
-                    return access::RObject();
-                }
+                //dead-code.
+                return access::RObject();
             };
 
             //add the lambda in 'FunctorContainer'.

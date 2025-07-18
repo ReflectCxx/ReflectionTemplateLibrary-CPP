@@ -76,7 +76,6 @@ namespace rtl {
     {
         None,
         EmptyRObject,
-        InvalidAllocType,
         SignatureMismatch,
         MethodTargetMismatch,
         AmbiguousConstOverload,
@@ -108,8 +107,6 @@ namespace rtl {
             return "No error (operation successful)";
         case error::EmptyRObject:
             return "Empty instance: RObject does not hold any reflected object";
-        case error::InvalidAllocType:
-            return "Invalid allocation type: Allocation type is 'None'; object must be allocated on stack or heap";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
         case error::FunctionNotRegisterdInRTL:
