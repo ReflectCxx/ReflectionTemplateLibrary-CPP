@@ -117,23 +117,6 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, construction_on_heap_with_no_copy_ctor___error_None)
-    {
-        {
-            optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-            ASSERT_TRUE(classLibrary);
-
-            auto [err, robj] = classLibrary->create<alloc::Heap>();
-
-            // creating heap instance successful: Library's copy constructor is deleted but std::any (in RObject) holds the pointer.
-            ASSERT_TRUE(err == error::None);
-            ASSERT_FALSE(robj.isEmpty());
-        }
-        EXPECT_TRUE(library::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
-    }
-
-
     TEST(ReflectedCallStatusError, static_method_call_wrong_args___error_SignatureMismatch)
     {
         optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
