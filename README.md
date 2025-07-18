@@ -102,18 +102,18 @@ int main()
 
 /*  Create an instance of 'class Person' using the default constructor.
     You can choose between heap or stack allocation using 'alloc::Heap' or 'alloc::Stack'.
-    Returns a tuple of: [error code, RObject].
+    Returns a tuple of: [error code, RObject]. RObject returned is empty if:
+       * error != error::None (creation or reflection call failure).
+       * OR if the reflected function is 'void' (doesn't return any value).
     'RObject'-
         * wraps a type-erased instance created via reflection.
-	* Internally uses 'std::shared_ptr' for lifetime management (only for heap-allocated objects).
-	* Copy and move constructors behave as standard value-type copies (shared_ptr is copied for heap).
-	* Assignment operator is disabled to enforce immutability semantics.
-	* For heap-allocated objects:
-		- Copying or moving an 'RObject' shares the same underlying instance (shared ownership).
-	* For stack-allocated objects:
-		- Each 'RObject' holds an independent copy of the stack object.
-		- Copy/move operations result in distinct object copies (no shared_ptr involved).
-	* Externally immutable: Once constructed, the visible state of 'RObject' cannot be modified.
+        * Internally uses 'std::shared_ptr' for lifetime management (only for heap-allocated objects).
+        * For heap-allocated objects:
+            - Copying or moving an 'RObject' shares the same underlying instance (shared ownership).
+        * For stack-allocated objects:
+           - Each 'RObject' holds an independent copy of the stack object.
+           - Copy/move operations result in distinct object copies (no shared_ptr involved).
+        * RObject returned is empty if error != error::None (during creation or failed reflection calls).
 */  auto [err0, personObj] = classPerson->create<alloc::Heap>();
 
 //  Ensure object was created successfully.
