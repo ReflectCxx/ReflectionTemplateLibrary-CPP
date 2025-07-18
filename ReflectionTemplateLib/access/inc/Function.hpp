@@ -1,6 +1,5 @@
 #pragma once
 
-#include "RStatus.h"
 #include "Function.h"
 #include "FunctionCaller.hpp"
 
@@ -20,7 +19,7 @@ namespace rtl {
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
     */  template<class ..._args>
-        inline const bool Function::hasSignature() const
+        inline bool Function::hasSignature() const
         {
             //hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
             return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);
@@ -33,7 +32,7 @@ namespace rtl {
         * if the arguments did not match with any overload, returns RStatus with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
-        inline RStatus Function::operator()(_args&& ...params) const noexcept
+        inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept
         {
             return bind().call(std::forward<_args>(params)...);
         }

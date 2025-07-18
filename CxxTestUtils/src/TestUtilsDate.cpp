@@ -15,17 +15,23 @@ namespace test_utils
 	}
 
 
-	const bool date::assert_zero_instance_count()
+	const std::size_t date::get_calender_instance_count()
 	{
-		return (Date::instanceCount() == 0);
+		return Calender::instanceCount();
+	}
+
+
+	const std::size_t date::get_date_instance_count()
+	{
+		return Date::instanceCount();
 	}
 
 
 	const bool date::test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap)
 	{
 		if (pIsOnHeap) {
-			auto rdate0 = any_cast<Date*>(pInstance0);
-			auto rdate1 = any_cast<Date*>(pInstance1);
+			auto rdate0 = any_cast<const Date*>(pInstance0);
+			auto rdate1 = any_cast<const Date*>(pInstance1);
 			return (*rdate0 == *rdate1);
 		}
 		else {
@@ -40,7 +46,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}
@@ -57,7 +63,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}
@@ -74,7 +80,7 @@ namespace test_utils
 	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance, bool pOnHeap)
 	{
 		if (pOnHeap) {
-			Date* rdate = any_cast<Date*>(pInstance);
+			const Date* rdate = any_cast<const Date*>(pInstance);
 			if (rdate == nullptr) {
 				return false;
 			}

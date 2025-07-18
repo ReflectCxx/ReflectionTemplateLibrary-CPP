@@ -30,7 +30,7 @@ namespace rtl {
             Reflect& nameSpace(const std::string& pNamespace);
 
             template<class ..._signature>
-            constexpr const Builder<TypeQ::None, _signature...> function(const std::string& pFunction);
+            constexpr const Builder<methodQ::None, _signature...> function(const std::string& pFunction);
 
             template<class _recordType>
             constexpr const RecordBuilder<_recordType> record(const std::string& pClass);

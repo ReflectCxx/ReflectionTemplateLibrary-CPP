@@ -34,16 +34,16 @@ namespace rtl
         public:
 
             FunctorId() 
-                : m_index(-1)
+                : m_index(rtl::index_none)
                 , m_returnId(TypeId<>::None)
                 , m_recordId(TypeId<>::None)
                 , m_containerId(TypeId<>::None)
                 , m_signature("") {
             }
 
-            FunctorId(const std::size_t& pIndex,
-                      const std::size_t& pReturnId, const std::size_t& pRecordId,
-                      const std::size_t& pContainerId, const std::string& pSignature)
+            FunctorId(std::size_t pIndex,
+                      std::size_t pReturnId, std::size_t pRecordId,
+                      std::size_t pContainerId, const std::string& pSignature)
                 : m_index(pIndex)
                 , m_returnId(pReturnId)
                 , m_recordId(pRecordId)

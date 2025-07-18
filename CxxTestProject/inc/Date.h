@@ -2,15 +2,22 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 namespace nsdate
 {
+	struct Calender;
+
 	struct Date
 	{
 		Date();
 		Date(const Date& pOther);
 		Date(const std::string& pDateStr);
 		Date(unsigned dd, unsigned mm, unsigned yy);
+        Date(Date&&) noexcept;
+
+		Date& operator=(Date&&) = default;
+		Date& operator=(const Date&) = default;
 
 		const bool operator==(const Date& pOther) const;
 
@@ -21,6 +28,12 @@ namespace nsdate
 		std::string getAsString() const;
 
 		void updateDate(std::string pDateStr);
+
+		std::shared_ptr<Calender> m_calender;
+
+		Calender* getCalenderPtr();
+
+		const Calender& getCalenderRef();
 
 	private:
 
@@ -34,14 +47,20 @@ namespace nsdate
 	//for testing 'copy constructor not defined/disabled'
 	struct Calender 
 	{
-		Calender();
 		~Calender();
 
-		Calender(const Calender& pOther) = delete;
+		Calender(Calender&&)  noexcept;
+
+		Calender(const Calender&) = delete;
 
 		static unsigned instanceCount();
 
+		static std::shared_ptr<Calender> create();
+
 	private:
+
+		Calender();
+
 		static unsigned m_instanceCount;
 	};
 }

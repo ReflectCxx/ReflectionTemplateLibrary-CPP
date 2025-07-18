@@ -16,10 +16,6 @@ namespace rtl {
         {	
         protected:
 
-            //adds the lambda wrapping destructor call to '_derivedType' (FunctorContainer)
-            template<class _recordType>
-            static const detail::FunctorId addDestructor();
-
             //adds the lambda, wrapping constructor call, recordType(_signature...), to '_derivedType' (FunctorContainer)
             template<class _recordType, class ..._signature>
             static const detail::FunctorId addConstructor();

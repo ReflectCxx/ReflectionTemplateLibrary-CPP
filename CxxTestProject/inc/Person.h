@@ -10,17 +10,17 @@ class Person
 
 public:
 
-    ~Person();
     Person();
-    Person(const std::string& pName);
-    
+    ~Person();
+    Person(Person&&) noexcept;
     Person(const Person& pOther);
+    Person(const std::string& pName);
 
     void updateAddress();
 
     void updateAddress() const;
 
-    std::string getFirstName() const;
+    std::string getFirstName();
 
     void updateAddress(std::string pAddress);
 

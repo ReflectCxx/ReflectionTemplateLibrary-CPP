@@ -2,10 +2,23 @@
 #include "Book.h"
 #include "Library.h"
 
+std::size_t g_instanceCount = 0;
+
 std::unordered_map<std::string, Book> Library::m_booksByTitle;
 
 Library::Library()
 {
+	g_instanceCount++;
+}
+
+Library::~Library()
+{
+	g_instanceCount--;
+}
+
+std::size_t Library::getInstanceCount()
+{
+	return g_instanceCount;
 }
 
 int Library::getBooksCount()

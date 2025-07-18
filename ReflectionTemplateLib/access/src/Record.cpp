@@ -2,15 +2,14 @@
 #include "RObject.h"
 #include "Record.h"
 #include "Method.h"
-#include "RStatus.h"
-#include "Instance.h"
+#include "Function.hpp"
 #include "Constants.h"
 
 namespace rtl {
 
     namespace access
     {
-        Record::Record(const std::string& pRecordName, const std::size_t& pRecordId)
+        Record::Record(const std::string& pRecordName, const std::size_t pRecordId)
             : m_recordName(pRecordName)
             , m_recordId(pRecordId)
         {
@@ -71,41 +70,30 @@ namespace rtl {
         * calls copy constructor of class/struct represented by this 'Record'
         * creates copy of the object wrapped inside 'Instance' object.
         * returns 'RStatus' object indicating the success of the reflection call with other infos.
-    */  const std::pair<RStatus, Instance> Record::clone(Instance& pOther) const
+    */  std::pair<error, RObject> Record::clone(RObject& pOther) const
         {
             //validate the source object, should not be empty.
             if (pOther.isEmpty()) {
                 //return empty instance with error status.
-                return std::make_pair(RStatus(error::EmptyInstance), Instance());
+                return { error::EmptyRObject, RObject() };
             }
 
             //type of the object wrapped under source 'Instance' should match with type of this class/struct.
             if (m_recordId != pOther.getTypeId()) {
                 //if source instance & ctor type didn't match, return empty instance with error status.
-                return std::make_pair(RStatus(error::InstanceTypeMismatch), Instance());
+                return { error::MethodTargetMismatch, RObject() };
             }
 
-            if (!pOther.isOnHeap()) {
-                RStatus status;
-                status.init(std::any(), m_recordId, pOther.getQualifier());
-                return std::make_pair(status, pOther);
-            }
-
-            const std::string& dctor = CtorName::dctor(m_recordName);
             const std::string& constCopyStr = CtorName::copyCtor(m_recordName);
-
-            std::optional<Function> destructor = getMethod(dctor);
-            std::optional<Function> constCopyCtor = getMethod(constCopyStr);
-			
+            std::optional<Function> constCopyCtor = getMethod(constCopyStr);			
             //if the object is const, only copy constructor with 'const&' can be called on it.
             if (constCopyCtor) {
                 //object and type validated. call the const-copy-constructor.
-                RStatus status = (*constCopyCtor).bind<std::any>().call(pOther.get());
-                return std::make_pair(status, Instance(std::move(status.m_returnObj), status, *destructor));
+                return (*constCopyCtor).bind<RObject&>().call(pOther);
             }
 
             //if no registered copy constructor found, return empty instance with error status.
-            return std::make_pair(RStatus(error::CopyConstructorDisabled), Instance());
+            return { error::CopyConstructorPrivateOrDeleted, RObject() };
         }
     }
 }

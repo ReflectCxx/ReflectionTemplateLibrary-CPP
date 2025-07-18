@@ -19,6 +19,11 @@ namespace rtl {
     template<typename T>
     using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
+    //TODO: Intigrate this utility.
+    //// Utility: Remove const, volatile, reference, pointer, and array extent from T.
+    //template<typename T>
+    //using remove_const_n_ref_n_ptr = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t
+    //                                   < std::remove_all_extents_t<T> > > >;
 
     enum class ConversionKind
     {
@@ -35,19 +40,17 @@ namespace rtl {
     enum FunctorIdx
     {
         ZERO = 0,   //heap constructor index
-        ONE = 1,    //destructor index
-        TWO = 2,    //copy constructor index
-        MAX_SIZE = 3
+        ONE = 1,    //copy constructor index
+        MAX_SIZE = 2
     };
 
 
-    //Type Qualifier.
-    enum class TypeQ
+    // MethodQ: Method qualifier + static marker.
+    enum class methodQ
     {
-        None,
-        Mute,       //Mutable
-        Const,      //Constant
-        ConstRef    //Constant Reference
+        None,       // Static method (no const/non-const qualifier)
+        Const,      // Const-qualified instance method
+        NonConst    // Non-const instance method
     };
 
 
@@ -72,23 +75,21 @@ namespace rtl {
     enum class error
     {
         None,
-        EmptyInstance,
-        InvalidAllocType,
+        EmptyRObject,
         SignatureMismatch,
-        InstanceTypeMismatch,
-        InstanceConstMismatch,
-        ConstructorNotFound,
-        CopyConstructorDisabled,
-        InstanceOnStackDisabledNoCopyCtor
+        MethodTargetMismatch,
+        AmbiguousConstOverload,
+        FunctionNotRegisterdInRTL,
+        ConstMethodOverloadNotFound,
+        ConstructorNotRegisteredInRTL,
+        NonConstMethodOverloadNotFound,
+        CopyConstructorPrivateOrDeleted,
     };
 
+    static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
     struct CtorName
     {
-        inline static const std::string dctor(const std::string& pRecordName) {
-            return (pRecordName + "::~" + pRecordName + "()");
-        }
-
         inline static const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
@@ -102,16 +103,28 @@ namespace rtl {
     inline const char* to_string(error err) 
     {
         switch (err) {
-        case error::None: return "None";
-        case error::EmptyInstance: return "EmptyInstance";
-        case error::InvalidAllocType: return "InvalidAllocType";
-        case error::SignatureMismatch: return "SignatureMismatch";
-        case error::InstanceTypeMismatch: return "InstanceTypeMismatch";
-        case error::InstanceConstMismatch: return "InstanceConstMismatch";
-        case error::ConstructorNotFound: return "ConstructorNotFound";
-        case error::CopyConstructorDisabled: return "CopyConstructorDisabled";
-        case error::InstanceOnStackDisabledNoCopyCtor: return "InstanceOnStackDisabledNoCopyCtor";
-        default: return "Unknown";
+        case error::None: 
+            return "No error (operation successful)";
+        case error::EmptyRObject:
+            return "Empty instance: RObject does not hold any reflected object";
+        case error::SignatureMismatch:
+            return "Signature mismatch: Function parameters do not match the expected signature";
+        case error::FunctionNotRegisterdInRTL:
+            return "Function not registered: The requested method is not registered in the Reflection system";
+        case error::MethodTargetMismatch:
+            return "The object you're trying to bind doesn't match the expected type of the method.";
+        case error::AmbiguousConstOverload:
+            return "Ambiguous overload: Both const and non-const methods are registered; explicitly specify MethodQ to resolve.";
+        case error::ConstMethodOverloadNotFound:
+            return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
+        case error::NonConstMethodOverloadNotFound:
+            return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
+        case error::ConstructorNotRegisteredInRTL:
+            return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
+        case error::CopyConstructorPrivateOrDeleted:
+            return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
+        default:
+            return "Unknown error";
         }
     }
 

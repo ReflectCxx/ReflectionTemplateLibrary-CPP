@@ -17,7 +17,7 @@ namespace test_utils
 		static constexpr const bool IS_MAMMAL = false;
 		static constexpr const char* NAME = "Orangutan";
 		static constexpr const char* FAMILY_NAME = "Great Ape";
-		static constexpr const char* ZOO_KEEPER = "Donald Trump";
+		static constexpr const char* ZOO_KEEPER = "Donald McAdams";
 
 		static constexpr const char* class_ = "Animal";
 		static constexpr const char* str_updateZooKeeper = "updateZooKeeper";

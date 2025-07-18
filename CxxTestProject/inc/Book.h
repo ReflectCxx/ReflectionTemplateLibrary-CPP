@@ -19,7 +19,7 @@ public:
 
 	Book();
 	Book(const Book& pOther);
-	Book(const Book&& pOther) noexcept;
+	Book(Book&& pOther) noexcept;
 	Book(double pPrice, std::string pTitle);
 	~Book();
 

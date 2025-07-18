@@ -4,7 +4,6 @@
 #include <vector>
 #include <functional>
 
-#include "RStatus.h"
 #include "FunctorId.h"
 #include "Constants.h"
 #include "FunctionCaller.h"
@@ -20,14 +19,14 @@ namespace rtl {
     namespace access
     {
     /*  @class: Function, (callable object)
-        * every functor (function/method pointer), constructor, destructor registered will produce a 'Function' object
+        * every functor (function/method pointer), constructor registered will produce a 'Function' object
         * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
         * once the Function object is obtained, it can be called with the correct set of arguments, which will finally 
         * perform call on the functor represented by this object.
     */  class Function
         {
-            //TypeQ::Const/Mute represents the const/non-const member-function, Type::None for non-member functions.
-            TypeQ m_qualifier;
+            //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
+            methodQ m_qualifier;
 
             //type id of class/struct (if it represents a member-function, else always '0')
             std::size_t m_recordTypeId;
@@ -48,7 +47,7 @@ namespace rtl {
 
             Function(const std::string& pNamespace, const std::string& pClassName, 
                      const std::string& pFuncName, const detail::FunctorId& pFunctorId,
-                     const std::size_t pRecordTypeId, const TypeQ pQualifier);
+                     const std::size_t pRecordTypeId, const methodQ pQualifier);
 
             void addOverload(const Function& pOtherFunc) const;
 
@@ -59,12 +58,12 @@ namespace rtl {
             Function(const Function& pOther, const detail::FunctorId& pFunctorId,
                      const std::string& pFunctorName);
 
-            const std::size_t hasSignatureId(const std::size_t& pSignatureId) const;
+            std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
         public:
 
             //simple inlined getters.
-            GETTER(TypeQ, Qualifier, m_qualifier)
+            GETTER(methodQ, Qualifier, m_qualifier)
             GETTER(std::string, RecordName, m_record)
             GETTER(std::string, Namespace, m_namespace)
             GETTER(std::string, FunctionName, m_function)
@@ -78,13 +77,13 @@ namespace rtl {
             Function& operator=(const Function& pOther);
 
             //indicates if a functor associated with it takes zero arguments.
-            const bool hasSignature() const;
+            bool hasSignature() const;
 
             template<class ..._args>
-            const bool hasSignature() const;
+            bool hasSignature() const;
 
             template<class ..._args>
-            RStatus operator()(_args&&...params) const noexcept;
+            std::pair<error, RObject> operator()(_args&&...params) const noexcept;
 
             template<class ..._signature>
             const FunctionCaller<_signature...> bind() const;

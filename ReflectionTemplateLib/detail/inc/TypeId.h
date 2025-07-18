@@ -24,7 +24,7 @@ namespace rtl {
             //'0' represents no type.
             static constexpr const std::size_t None = 0;
 
-            static const std::size_t get() 
+            static std::size_t get() 
             {
                 //statically initialize a unique-id.
                 static const std::size_t typeId = g_typeIdCounter.fetch_add(1);
@@ -32,7 +32,7 @@ namespace rtl {
             }
 
             //returns the type-list as string.
-            static const std::string toString()
+            static std::string toString()
             {
                 if constexpr (std::is_same_v<_type, void>) {
                     return std::string("void");
@@ -74,7 +74,7 @@ namespace rtl {
             using TAIL = TypeId<_rest...>;
 
             //returns the type-list as string.
-            static const std::string toString() 
+            static std::string toString() 
             {
                 const std::string& tailStr = TAIL::toString();
                 if (std::is_same<HEAD, std::string>::value) {

@@ -4,7 +4,7 @@ namespace rtl {
 
     namespace access
     {
-        class RStatus;
+        class RObject;
         class Function;
 		
         template<class ..._signature>
@@ -18,7 +18,7 @@ namespace rtl {
         public:
 
             template<class ..._args>
-            RStatus call(_args&&...) const noexcept;
+            std::pair<error, RObject> call(_args&&...) const noexcept;
 
             friend Function;
         };

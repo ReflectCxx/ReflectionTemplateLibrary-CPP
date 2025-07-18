@@ -3,12 +3,18 @@
 
 //User defined types.
 #include "Book.h"
+#include "Library.h"
 
 using namespace std;
 using namespace nsdate;
 
 namespace test_utils
 {
+	const bool library::assert_zero_instance_count()
+	{
+		return (Library::getInstanceCount() == 0);
+	}
+
 	const bool book::assert_zero_instance_count()
 	{
 		return (Book::getInstanceCount() == 0);
@@ -26,7 +32,7 @@ namespace test_utils
 	const bool book::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pIsOnHeap)
 	{
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -43,7 +49,7 @@ namespace test_utils
 	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const any& pInstance, bool pIsOnHeap)
 	{
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -61,7 +67,7 @@ namespace test_utils
 		Book book;
 		book.setAuthor(AUTHOR);
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -79,7 +85,7 @@ namespace test_utils
 		book.addCopyrightTag(COPYRIGHT_TAG);
 
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -98,7 +104,7 @@ namespace test_utils
 		book.addPreface(ACKNOWLEDGEMENTS, PREFACE);
 
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -117,7 +123,7 @@ namespace test_utils
 		Book book;
 		book.updateBookInfo();
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -136,7 +142,7 @@ namespace test_utils
 		Book book;
 		book.updateBookInfo(TITLE, PRICE, string(AUTHOR));
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -155,7 +161,7 @@ namespace test_utils
 		Book book;
 		book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
 		if (pIsOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}
@@ -176,7 +182,7 @@ namespace test_utils
 		Book copyObj(obj);
 
 		if (pOnHeap) {
-			Book* rbook = any_cast<Book*>(pInstance);
+			const Book* rbook = any_cast<const Book*>(pInstance);
 			if (rbook == nullptr) {
 				return false;
 			}

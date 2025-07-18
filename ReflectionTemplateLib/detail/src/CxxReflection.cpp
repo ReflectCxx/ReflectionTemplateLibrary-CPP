@@ -60,8 +60,8 @@ namespace rtl {
         @params: MethodMap, Function
         * adds the 'Function' object as 'Method' object in MethodMap, contained by 'Record' object.
         * if the function name already exists in the map, then 'FunctorId' from the param 'pFunction' is added to already existing 'Function'.
-        * if a 'Function' object represents a Constructor, it might have the destructor 'FunctorId' as well.
-        * if destructor 'FunctorId' is found, destructor 'Function' object is created and added to the 'MethodMap'.
+        * if a 'Function' object represents a Constructor, it might have the copy-constructor 'FunctorId' as well.
+        * if copy-constructor 'FunctorId' is found, 'Function' object is created and added to the 'MethodMap' for the same.
     */  void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
         {
             const auto& fname = pFunction.getFunctionName();
@@ -76,22 +76,10 @@ namespace rtl {
                     const auto& ctorName = CtorName::copyCtor(pFunction.getRecordName());
                     if (pMethodMap.find(ctorName) == pMethodMap.end()) {
                         //copy-constructor's 'FunctorId' will always be the second in the constructor's FunctorId's vector.
-                        access::Method method = access::Method::getCopyConstructorMethod(pFunction, functorIds[FunctorIdx::TWO]);
+                        access::Method method = access::Method::getCopyConstructorMethod(pFunction, functorIds[FunctorIdx::ONE]);
                         pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
                     }
                     //remove the copy-constructor's 'FunctorId' from the constructor's 'FunctorId' vector.
-                    functorIds.pop_back();
-                }
-
-                if (functorIds.size() == FunctorIdx::TWO)
-                {
-                    const auto& dctorName = CtorName::dctor(pFunction.getRecordName());
-                    if (pMethodMap.find(dctorName) == pMethodMap.end()) {
-                        //destructor 'FunctorId' will always be the second in the constructor's FunctorId's vector.
-                        access::Method method = access::Method::getDestructorMethod(pFunction, functorIds[FunctorIdx::ONE]);
-                        pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
-                    }
-                    //remove the destructor 'FunctorId' from the constructor's 'FunctorId' vector.
                     functorIds.pop_back();
                 }
                 //construct 'Method' obejct and add.

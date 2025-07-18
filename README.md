@@ -95,56 +95,70 @@ In main.cpp, use the **`Person`** class without directly exposing its type.
 extern const rtl::CxxMirror& MyReflection();
 using namespace rtl::access;
 
-int main() 
+int main()
 {
- // Get 'class Person', Returns 'Record' object associated with 'class Person'
+//  Get 'class Person' — returns 'Record' representing reflected class.
     std::optional<Record> classPerson = MyReflection().getClass("Person");
 
- /* Create an instance of 'class Person' via reflection using the default constructor.
-    Use 'rtl::access::alloc::Heap' or 'rtl::access::alloc::Stack' to define the allocation type.
-    Returns 'RStatus' and 'Instance' objects.
- */ auto [status, personObj] = classPerson->instance<alloc::Heap>();
-	
-```
-- `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
-- `Instance` holds the created object, on stack or on the heap managed using `std::shared_ptr`.
-```c++
+/*  Create an instance of 'class Person' using the default constructor.
+    You can choose between heap or stack allocation using 'alloc::Heap' or 'alloc::Stack'.
+    Returns a tuple of: [error code, RObject]. RObject returned is empty if:
+       * error != error::None (creation or reflection call failure).
+       * OR if the reflected function is 'void' (doesn't return any value).
+    'RObject' wraps a type-erased object, which can be:
+        * An instance created via reflection (constructor).
+        * OR a value returned from any reflection-based method/function call.
+     Internally:
+        * Uses shared_ptr for lifetime management (only for explicitly heap-allocated instances).
+        * Copy and move constructors behave as standard value-type copies:
+            - For heap-allocated objects: sharing underlying instance via shared_ptr.
+            - For stack-allocated objects: distinct object copies are created.
+*/  auto [err0, personObj] = classPerson->create<alloc::Heap>();
 
- /* Create an instance via reflection using a parameterized constructor. 
-    Argument types/order must match else call will fail, returning error-code in 'status'.
-    This instance is created on the heap.
- */ auto [status, personObj] = classPerson->instance<alloc::Heap>(std::string("John Doe"), int(42));
+//  Ensure object was created successfully.
+    if (err0 != error::None)
+        return -1;
 
- // Get method of 'class Person'. Returns a callable 'Method' object.
+/*  Create instance via parameterized constructor.
+    Arguments must match in type and order.
+*/  auto [err1, personObj2] = classPerson->create<alloc::Heap>(std::string("John Doe"), int(42));
+
+//  Fetch a reflected method — returns optional 'Method'.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
 
- // Call methods on the 'Person' object. returns 'RStatus'.
-    RStatus status = (*setAge)(personObj)(int(42));
- // Alternatively, use the bind-call syntax for clarity.
-    status = setAge->bind<int>(personObj).call(42);
+//  Call method: returns [error code, return value].
+    auto [err2, ret1] = setAge->bind(personObj).call(42);
 
- // Get method of 'class Person'. Returns a callable 'Method' object.
+//  Alternative syntax (without bind).
+    auto [err3, ret2] = (*setAge)(personObj)(42);
+
+//  Fetch and invoke another reflected method.
     std::optional<Method> setName = classPerson->getMethod("setName");
 
- /* No need to pass 'string' as 'const' even if the function expects a const parameter, 
-    as long as it is passed by value. For reference parameters, the type must match exactly.
-    Use 'bind<...>()' to explicitly specify the types to be forwarded to the function.
- */ status = setName->bind<string, const string&>(personObj).call("Todd", "Packer");
+    std::string name = "Todd";
+    std::string surname = "Packer";
 
- /* Get method of 'class Person' that returns a value.
- */ std::optional<Method> getName = classPerson->getMethod("getName");
+//  Example: using bind to specify argument types explicitly.
+    auto [err4, ret3] = setName->bind<string, const string&>(personObj).call(name, surname);
 
- // Call method, returns 'RStatus' containing return value.
-    RStatus retName = (*getName)(personObj)();
- // or, using bind-call syntax..
-    RStatus retName = getName->bind(personObj).call();
+//  Fetch method returning a value.
+    std::optional<Method> getName = classPerson->getMethod("getName");
 
- // Extract the return value.
-    std::string nameStr = std::any_cast<std::string>(retName.getReturn());
- // Destructor of 'Person' will get called for object creted on heap, once out of scape.
+//  Call and retrieve return value.
+    auto [err5, nameReturn] = getName->bind(personObj).call();
+
+    if (err5 == error::None && nameReturn.canViewAs<std::string>())
+    {
+        const std::string& nameStr = nameReturn.view<std::string>()->get();
+        std::cout << nameStr << std::endl;
+    }
+
+/*  Object lifetime:
+    * Heap-allocated instance will be destroyed automatically when the last RObject sharing it goes out of scope.
+    * Stack-allocated instance is cleaned up via scope-based lifetime (tracked internally but not reference-counted).
+*/  return 0;
 }
 ```
-- `std::any_cast` will throw an exception if correct type is not specified.
 - Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
 - Check, `CxxReflectionTests/src` for test cases.
 

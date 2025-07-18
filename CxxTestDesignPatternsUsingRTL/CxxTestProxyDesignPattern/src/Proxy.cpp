@@ -1,3 +1,6 @@
+
+#include <cassert>
+
 #include "Proxy.h"
 #include "OriginalReflection.h"
 
@@ -10,11 +13,11 @@ namespace proxy_test
      * If the instance creation is successful, m_originalObj is set to the created instance.
      */
     Proxy::Proxy()
+    : m_originalObj([&]() {
+            auto [err, robj] = OriginalReflection::getClass()->create<rtl::alloc::Heap>();
+            return (err == rtl::error::None ? std::move(robj) : rtl::access::RObject());
+        }())
     {
-        constexpr auto allocType = rtl::alloc::Heap;
-        auto [status, obj] = OriginalReflection::getClass()->create<allocType>();
-        if (status == rtl::error::None) {
-            m_originalObj = obj;
-        }
+        assert(!m_originalObj.isEmpty() && "Reflected instance creation failed.");
     }
 }

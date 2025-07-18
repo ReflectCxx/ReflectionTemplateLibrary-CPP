@@ -21,18 +21,18 @@ namespace rtl {
 
     /*  @class: FunctorContainer
         @param: '_signature...' (combination of any types)
-        * container class for holding lambda's wrapping functor, constructor/destructor calls of same signatures.
+        * container class for holding lambda's wrapping functor, constructor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
                                  public SetupConstructor<FunctorContainer<_signature...>>,
                                  public CallReflector<FunctorContainer<_signature...>>
         {
-            using FunctionLambda = std::function < access::RObject (access::RStatus&, _signature...) >;
+            using FunctionLambda = std::function < access::RObject (error&, _signature...) >;
         public:
 
             //every FunctorContainer<...> will have a unique-id.
-            static const std::size_t& getContainerId() {
+            static std::size_t getContainerId() {
                 return m_containerId;
             }
 
@@ -43,9 +43,10 @@ namespace rtl {
 
             //get functor container type(_signature...) as string with given 'returnType'.
             template<class _returnType>
-            static const std::string getSignatureStr(const bool pIsMember = false) {
-                const std::string& retStr = TypeId<_returnType>::toString();
-                return (retStr + (pIsMember ? "::" : " ") + "(" + TypeId<_signature...>::toString() + ")");
+            static std::string getSignatureStr(const bool pIsMember = false) 
+            {
+                return (TypeId<_returnType>::toString() + (pIsMember ? "::" : " ") +
+                       "(" + TypeId<_signature...>::toString() + ")");
             }
 
         private:
@@ -57,13 +58,13 @@ namespace rtl {
             static std::vector<FunctionLambda> m_functors;
 
         /*  @method: pushBack
-            @params: pFunctor (lambda containing functor or constructor/destructor call)
+            @params: pFunctor (lambda containing functor or constructor call)
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors/ctor/d'tor set)
             @return: index of newly added or already existing lambda in vector 'm_functors'.
-        */  static const std::size_t pushBack(const FunctionLambda& pFunctor,
-                                              std::function<const std::size_t()> pGetIndex,
-                                              std::function<void(const std::size_t&)> pUpdate)
+        */  static std::size_t pushBack(const FunctionLambda& pFunctor,
+                                        std::function<const std::size_t()> pGetIndex,
+                                        std::function<void(const std::size_t&)> pUpdate)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;

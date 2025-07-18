@@ -32,8 +32,6 @@ namespace test_utils
 		template<class ..._signature>
 		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);
 
-		static const bool test_method_updateLastName(const std::any& pInstance, bool pOnHeap);
-
 		static const bool test_method_updateLastName_const(const std::any& pInstance, bool pOnHeap);
 
 		template<class ..._signature>

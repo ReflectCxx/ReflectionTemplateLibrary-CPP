@@ -12,6 +12,16 @@ Person::~Person()
 	}
 }
 
+Person::Person(Person&& pOther) noexcept
+	: m_address(pOther.m_address)
+	, m_lastName(pOther.m_lastName)
+	, m_firstName(pOther.m_firstName)
+{
+	g_instanceCount++;
+	pOther.m_address.clear();
+	pOther.m_lastName.clear();
+}
+
 Person::Person()
 	: m_address("182 st. Westoros, Dune.")
 	, m_lastName("Doe")
@@ -55,7 +65,7 @@ void Person::updateAddress() const
 }
 
 
-std::string Person::getFirstName() const
+std::string Person::getFirstName()
 {
 	return m_firstName;
 }

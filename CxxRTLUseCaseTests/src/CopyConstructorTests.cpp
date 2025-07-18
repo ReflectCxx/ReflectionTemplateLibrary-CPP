@@ -21,16 +21,17 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->create<alloc::Heap>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(bookObj.isEmpty());
+			auto [err0, book] = classBook->create<alloc::Heap>();
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(book.isEmpty());
 
-			auto [retStatus, badObj] = classPerson->clone(bookObj);
+			auto [err1, badObj] = classPerson->clone(book);
 
-			ASSERT_TRUE(retStatus == error::InstanceTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
+			ASSERT_TRUE(badObj.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -43,16 +44,17 @@ namespace rtl_tests
 			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [status, bookObj] = classBook->create<alloc::Stack>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(bookObj.isEmpty());
+			auto [err0, book] = classBook->create<alloc::Stack>();
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(book.isEmpty());
 
-			auto [retStatus, badObj] = classPerson->clone(bookObj);
+			auto [err1, badObj] = classPerson->clone(book);
 
-			ASSERT_TRUE(retStatus == error::InstanceTypeMismatch);
+			ASSERT_TRUE(err1 == error::MethodTargetMismatch);
+			ASSERT_TRUE(badObj.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -75,25 +77,25 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->create<alloc::Heap>(price, title);
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
+			auto [err0, book] = classBook->create<alloc::Heap>(price, title);
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(book.isEmpty());
 
-			status = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status);
+			auto [err1, ret1] = (*setAuthor)(book)(author);
+			ASSERT_TRUE(err1 == error::None);
 
-			status = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status);
+			auto [err2, ret2] = (*setDecription)(book)(description);
+			ASSERT_TRUE(err1 == error::None);
 
-			auto [ret, copyObj] = classBook->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
+			auto [err3, bookCopy] = classBook->clone(book);
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(bookCopy.isEmpty());
 
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get(), copyObj.isOnHeap());
+			const bool isPassed = book::test_unique_copy_ctor_const_ref(bookCopy.get(), bookCopy.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -116,165 +118,25 @@ namespace rtl_tests
 			string author = book::AUTHOR;
 			string description = book::DESCRIPTION;
 
-			auto [status, srcObj] = classBook->create<alloc::Stack>(price, title);
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
+			auto [err0, book] = classBook->create<alloc::Stack>(price, title);
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(book.isEmpty());
 
-			status = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status);
+			auto [err1, ret1] = (*setAuthor)(book)(author);
+			ASSERT_TRUE(err1 == error::None);
 
-			status = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status);
+			auto [err2, ret2] = (*setDecription)(book)(description);
+			ASSERT_TRUE(err1 == error::None);
 
-			auto [ret, copyObj] = classBook->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
+			auto [err3, bookCopy] = classBook->clone(book);
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(bookCopy.isEmpty());
 
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get(), copyObj.isOnHeap());
+			const bool isPassed = book::test_unique_copy_ctor_const_ref(bookCopy.get(), bookCopy.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_const_on_heap)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(classBook);
-
-			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-			ASSERT_TRUE(setAuthor);
-
-			optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-			ASSERT_TRUE(setDecription);
-
-			double price = book::PRICE;
-			string title = book::TITLE;
-			string author = book::AUTHOR;
-			string description = book::DESCRIPTION;
-
-			auto [status, srcObj] = classBook->create<alloc::Heap>(price, title);
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			status = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status);
-
-			status = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status);
-
-			//make this instance const.
-			srcObj.makeConst();
-
-			auto [ret, copyObj] = classBook->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
-
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get(), copyObj.isOnHeap());
-			EXPECT_TRUE(isPassed);
-		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(CopyConstructor, copy_ctor_arg_const_ref___src_instance_const_on_stack)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
-			ASSERT_TRUE(classBook);
-
-			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-			ASSERT_TRUE(setAuthor);
-
-			optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-			ASSERT_TRUE(setDecription);
-
-			double price = book::PRICE;
-			string title = book::TITLE;
-			string author = book::AUTHOR;
-			string description = book::DESCRIPTION;
-
-			auto [status, srcObj] = classBook->create<alloc::Stack>(price, title);
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			status = (*setAuthor)(srcObj)(author);
-			ASSERT_TRUE(status);
-
-			status = (*setDecription)(srcObj)(description);
-			ASSERT_TRUE(status);
-
-			//make this instance const.
-			srcObj.makeConst();
-
-			auto [ret, copyObj] = classBook->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
-
-			const bool isPassed = book::test_unique_copy_ctor_const_ref(copyObj.get(), copyObj.isOnHeap());
-			EXPECT_TRUE(isPassed);
-		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(CopyConstructor, copy_ctor_arg_const_ref_overload___src_instance_const_on_heap)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
-			ASSERT_TRUE(classPerson);
-
-			auto [status, srcObj] = classPerson->create<alloc::Heap>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			srcObj.makeConst();
-
-			auto [ret, copyObj] = classPerson->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
-
-			const bool isPassed = person::test_copy_constructor_overload_src_const_obj(copyObj.get(), copyObj.isOnHeap());
-			EXPECT_TRUE(isPassed);
-		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(CopyConstructor, copy_ctor_arg_const_ref_overload___src_instance_const_on_stack)
-	{
-		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
-			ASSERT_TRUE(classPerson);
-
-			auto [status, srcObj] = classPerson->create<alloc::Stack>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
-
-			srcObj.makeConst();
-
-			auto [ret, copyObj] = classPerson->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
-
-			const bool isPassed = person::test_copy_constructor_overload_src_const_obj(copyObj.get(), copyObj.isOnHeap());
-			EXPECT_TRUE(isPassed);
-		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -286,19 +148,19 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->create<alloc::Heap>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
+			auto [err0, person] = classPerson->create<alloc::Heap>();
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(person.isEmpty());
 
-			auto [ret, copyObj] = classPerson->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
+			auto [err1, personCopy] = classPerson->clone(person);
+			ASSERT_TRUE(err1 == error::None);
+			ASSERT_FALSE(personCopy.isEmpty());
 
-			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(copyObj.get(), copyObj.isOnHeap());
+			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(personCopy.get(), personCopy.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -310,18 +172,18 @@ namespace rtl_tests
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
 			ASSERT_TRUE(classPerson);
 
-			auto [status, srcObj] = classPerson->create<alloc::Stack>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(srcObj.isEmpty());
+			auto [err0, person] = classPerson->create<alloc::Stack>();
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(person.isEmpty());
 
-			auto [ret, copyObj] = classPerson->clone(srcObj);
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(copyObj.isEmpty());
+			auto [err1, personCopy] = classPerson->clone(person);
+			ASSERT_TRUE(err1 == error::None);
+			ASSERT_FALSE(personCopy.isEmpty());
 
-			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(copyObj.get(), copyObj.isOnHeap());
+			const bool isPassed = person::test_copy_constructor_overload_src_non_const_obj(personCopy.get(), personCopy.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
-		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 }

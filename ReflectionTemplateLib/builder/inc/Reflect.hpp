@@ -33,14 +33,14 @@ namespace rtl {
 
     /*  @function: function()
         @param: std::string (name of the function).
-        @return: Builder<TypeQ::None>
+        @return: Builder<methodQ::None>
         * registers only non-member functions.
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if member function pointer is passed.
     */  template<>
-        inline const Builder<TypeQ::None> Reflect::function(const std::string& pFunction)
+        inline const Builder<methodQ::None> Reflect::function(const std::string& pFunction)
         {
-            return Builder<TypeQ::None>(m_namespace, m_record, pFunction);
+            return Builder<methodQ::None>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
         }
 
 		
@@ -53,22 +53,22 @@ namespace rtl {
     */  template<class _recordType>
         inline constexpr const RecordBuilder<_recordType> Reflect::record(const std::string& pClass)
         {
-            return RecordBuilder<_recordType>(m_namespace, pClass);
+            return RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
         }
 
 		
     /*  @method: function<...>()
         @param: std::string (name of function)
-        @return: Builder<TypeQ::None, _signature...>
+        @return: Builder<methodQ::None, _signature...>
         * registers only non-member functions.
         * used for registering overloads, if unique member function, use non-templated version 'function()'.
         * template parameters must be explicitly specified, should be exactly same as the function being registered.
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if any member function pointer is passed.
     */  template<class ..._signature>
-        inline constexpr const Builder<TypeQ::None, _signature...> Reflect::function(const std::string& pFunction) 
+        inline constexpr const Builder<methodQ::None, _signature...> Reflect::function(const std::string& pFunction) 
         {
-            return Builder<TypeQ::None, _signature...>(m_namespace, m_record, pFunction);
+            return Builder<methodQ::None, _signature...>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
         }
     }
 }

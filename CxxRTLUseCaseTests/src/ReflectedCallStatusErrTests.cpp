@@ -1,4 +1,18 @@
 
+/*
+* 
+* Below error codes are covered in ConstMethodOverloadTests.cpp
+* 	error::AmbiguousConstOverload
+*	error::ConstMethodOverloadNotFound
+*	error::NonConstMethodOverloadNotFound
+* and,
+*	error::FunctionNotRegisterdInRTL
+* is not internally used by RTL.
+* Function/Method objects are returned wrapped in std::optional<>, which will 
+* be empty if its not in registered in Reflection-system.
+* 
+*/
+
 #include <gtest/gtest.h>
 
 #include "MyReflection.h"
@@ -13,203 +27,193 @@ using namespace test_utils;
 
 namespace rtl_tests
 {
-	TEST(ReflectedCallStatusError, construct_on_heap___error_ConstructorNotFound)
-	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
+    TEST(ReflectedCallStatusError, error_ConstructorNotRegisteredInRTL)
+    {
+        optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+        ASSERT_TRUE(classCalender);
 
-		auto [status, instance] = classLibrary->create<alloc::Heap>();
+        auto [err0, robj0] = classCalender->create<alloc::Stack>();
 
-		ASSERT_TRUE(status == error::ConstructorNotFound);
-		ASSERT_TRUE(instance.isEmpty());
-	}
+        ASSERT_TRUE(err0 == error::ConstructorNotRegisteredInRTL);
+        ASSERT_TRUE(robj0.isEmpty());
 
+        auto [err1, robj1] = classCalender->create<alloc::Heap>();
 
-	TEST(ReflectedCallStatusError, construct_on_stack___error_ConstructorNotFound)
-	{
-		optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
-		ASSERT_TRUE(classLibrary);
-
-		auto [status, instance] = classLibrary->create<alloc::Stack>();
-
-		ASSERT_TRUE(status == error::ConstructorNotFound);
-		ASSERT_TRUE(instance.isEmpty());
-	}
+        ASSERT_TRUE(err1 == error::ConstructorNotRegisteredInRTL);
+        ASSERT_TRUE(robj1.isEmpty());
+    }
 
 
-	TEST(ReflectedCallStatusError, copy_construct_on_heap___error_CopyConstructorDeleted)
-	{
-		{
-			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
-			ASSERT_TRUE(classCalender);
+    TEST(ReflectedCallStatusError, heap__error_CopyConstructorPrivateOrDeleted)
+    {
+        {
+            optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
+            ASSERT_TRUE(classDate);
 
-			auto [ret, srcObj] = classCalender->create<alloc::Heap>();
-			ASSERT_TRUE(ret);
-			ASSERT_FALSE(srcObj.isEmpty());
+            //Calender's constructor not registered, get its instance from Date's method.
+            optional<Method> getCalenderPtr = classDate->getMethod(date::str_getCalenderPtr);
+            ASSERT_TRUE(getCalenderPtr);
 
-			auto [status, instance] = classCalender->clone(srcObj);
+            // Create Date, which will create a Calander's instance.
+            auto [err0, date] = classDate->create<alloc::Stack>();
 
-			ASSERT_TRUE(status == error::CopyConstructorDisabled);
-			ASSERT_TRUE(instance.isEmpty());
-		}
-		EXPECT_TRUE(calender::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+            // Get the Calander's instance.
+            auto [err1, calender] = getCalenderPtr->bind(date).call();
+            ASSERT_TRUE(err1 == error::None);
+            ASSERT_FALSE(calender.isEmpty());
 
+            ASSERT_TRUE(err1 == error::None);
+            ASSERT_FALSE(calender.isEmpty());
 
-	TEST(ReflectedCallStatusError, copy_construct_on_stack___error_InstanceOnStackDisabledNoCopyCtor)
-	{
-		{
-			optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
-			ASSERT_TRUE(classCalender);
+            optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+            ASSERT_TRUE(classCalender);
 
-			auto [status, srcObj] = classCalender->create<alloc::Stack>();
-			ASSERT_TRUE(status == error::InstanceOnStackDisabledNoCopyCtor);
-			ASSERT_TRUE(srcObj.isEmpty());
-		}
-		EXPECT_TRUE(calender::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+            // Try to call copy-constructor of class Calender.
+            auto [err2, copyObj] = classCalender->clone(calender);
 
-
-	TEST(ReflectedCallStatusError, static_method_call_wrong_args___error_SignatureMismatch)
-	{
-		optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-		ASSERT_TRUE(classPerson);
-
-		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-		ASSERT_TRUE(getProfile);
-		ASSERT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
-
-		const RStatus& status = getProfile->bind().call(std::string());
-
-		ASSERT_TRUE(status == error::SignatureMismatch);
-	}
+            // Cannot create heap instance: Calender's copy constructor is deleted.
+            ASSERT_TRUE(err2 == error::CopyConstructorPrivateOrDeleted);
+            ASSERT_TRUE(copyObj.isEmpty());
+        }
+        EXPECT_TRUE(calender::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
 
 
-	TEST(ReflectedCallStatusError, copy_ctor_on_empty_instance___error_EmptyInstance)
-	{
-		{
-			Instance emptyObj;
-			ASSERT_TRUE(emptyObj.isEmpty());
+    TEST(ReflectedCallStatusError, construction_on_stack_with_no_copy_ctor___error_CopyConstructorPrivateOrDeleted)
+    {
+        {
+            // Fetch the reflected Record for class 'Library'.
+            optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+            ASSERT_TRUE(classLibrary);
+            {
+                // Attempt to create a reflected instance allocated on the heap.
+                auto [err, robj] = classLibrary->create<alloc::Heap>();
 
-			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-			ASSERT_TRUE(classPerson);
+            /*
+            *   Heap allocation succeeds:
+            *   Even though Library's copy constructor is deleted, RObject internally stores
+            *   the pointer directly inside std::any (type-erased), without requiring the type T
+            *   to be copy-constructible.
+            */  ASSERT_TRUE(err == error::None);
+                ASSERT_FALSE(robj.isEmpty());
+            }
+            // Ensure no leaked or lingering reflected instances.
+            EXPECT_TRUE(calender::assert_zero_instance_count());
+            {
+                // Attempt to create a reflected instance allocated on the stack.
+                auto [err, robj] = classLibrary->create<alloc::Stack>();
 
-			auto [status, personObj] = classPerson->clone(emptyObj);
-
-			ASSERT_TRUE(status == error::EmptyInstance);
-		}
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(ReflectedCallStatusError, method_call_on_empty_instance___error_EmptyInstance)
-	{
-		{
-			Instance emptyObj;
-			ASSERT_TRUE(emptyObj.isEmpty());
-
-			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-			ASSERT_TRUE(classBook);
-
-			RStatus status = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
-			ASSERT_TRUE(status == error::EmptyInstance);
-		}
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
-
-
-	TEST(ReflectedCallStatusError, method_on_wrong_heap_instance___error_InstanceTypeMismatch)
-	{
-		{
-			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-			ASSERT_TRUE(classPerson);
-
-			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-			ASSERT_TRUE(classBook);
-
-			auto [status, personObj] = classPerson->create<alloc::Heap>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(personObj.isEmpty());
-
-			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-			ASSERT_TRUE(getPublishedOn);
-
-			status = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(status == error::InstanceTypeMismatch);
-		}
-		EXPECT_TRUE(person::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+            /*  Stack allocation fails:
+            *   Creating a stack instance requires storing the actual object inside std::any.
+            *   Since std::any requires the contained type T to be copy-constructible for emplacement,
+            *   and Library's copy constructor is deleted, construction fails.
+            *
+            *   Reflection returns error::CopyConstructorPrivateOrDeleted.
+            */  ASSERT_TRUE(err == error::CopyConstructorPrivateOrDeleted);
+                ASSERT_TRUE(robj.isEmpty());
+            }
+        }
+    }
 
 
-	TEST(ReflectedCallStatusError, method_on_wrong_stack_instance___error_InstanceTypeMismatch)
-	{
-		{
-			optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-			ASSERT_TRUE(classPerson);
+    TEST(ReflectedCallStatusError, static_method_call_wrong_args___error_SignatureMismatch)
+    {
+        optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+        ASSERT_TRUE(classPerson);
 
-			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-			ASSERT_TRUE(classBook);
+        optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
+        ASSERT_TRUE(getProfile);
+        ASSERT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
-			auto [status, personObj] = classPerson->create<alloc::Stack>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(personObj.isEmpty());
+        auto [err, robj] = getProfile->bind().call(std::string());
 
-			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-			ASSERT_TRUE(getPublishedOn);
-
-			status = getPublishedOn->bind(personObj).call();
-			ASSERT_TRUE(status == error::InstanceTypeMismatch);
-		}
-		EXPECT_TRUE(person::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+        ASSERT_TRUE(err == error::SignatureMismatch);
+        ASSERT_TRUE(robj.isEmpty());
+    }
 
 
-	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_heap___error_InstanceConstMismatch)
-	{
-		{	
-			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-			ASSERT_TRUE(classBook);
+    TEST(ReflectedCallStatusError, copy_ctor_on_empty_instance___error_EmptyRObject)
+    {
+        {
+            RObject emptyObj;
+            ASSERT_TRUE(emptyObj.isEmpty());
 
-			auto [status, bookObj] = classBook->create<alloc::Heap>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(bookObj.isEmpty());
+            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            ASSERT_TRUE(classPerson);
 
-			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-			ASSERT_TRUE(getPublishedOn);
+            auto [err, person] = classPerson->clone(emptyObj);
 
-			bookObj.makeConst();
-			status = getPublishedOn->bind(bookObj).call();
-
-			ASSERT_TRUE(status == error::InstanceConstMismatch);
-		}
-		EXPECT_TRUE(person::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+            ASSERT_TRUE(err == error::EmptyRObject);
+            ASSERT_TRUE(person.isEmpty());
+        }
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
 
 
-	TEST(ReflectedCallStatusError, non_const_method_on_const_Instance_on_stack___error_InstanceConstMismatch)
-	{
-		{
-			optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
-			ASSERT_TRUE(classBook);
+    TEST(ReflectedCallStatusError, method_call_on_empty_instance___error_EmptyRObject)
+    {
+        {
+            RObject emptyObj;
+            ASSERT_TRUE(emptyObj.isEmpty());
 
-			auto [status, bookObj] = classBook->create<alloc::Stack>();
-			ASSERT_TRUE(status);
-			ASSERT_FALSE(bookObj.isEmpty());
+            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            ASSERT_TRUE(classBook);
 
-			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-			ASSERT_TRUE(getPublishedOn);
+            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
+            ASSERT_TRUE(err == error::EmptyRObject);
+            ASSERT_TRUE(ret.isEmpty());
+        }
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
 
-			bookObj.makeConst();
-			status = getPublishedOn->bind(bookObj).call();
 
-			ASSERT_TRUE(status == error::InstanceConstMismatch);
-		}
-		EXPECT_TRUE(person::assert_zero_instance_count());
-		EXPECT_TRUE(Instance::getInstanceCount() == 0);
-	}
+    TEST(ReflectedCallStatusError, method_on_wrong_heap_instance___error_MethodTargetMismatch)
+    {
+        {
+            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            ASSERT_TRUE(classPerson);
+
+            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            ASSERT_TRUE(classBook);
+
+            auto [err0, person] = classPerson->create<alloc::Heap>();
+            ASSERT_TRUE(err0 == error::None);
+            ASSERT_FALSE(person.isEmpty());
+
+            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(getPublishedOn);
+
+            auto [err1, ret] = getPublishedOn->bind(person).call();
+            ASSERT_TRUE(err1 == error::MethodTargetMismatch);
+            ASSERT_TRUE(ret.isEmpty());
+        }
+        EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(ReflectedCallStatusError, method_on_wrong_stack_instance___error_MethodTargetMismatch)
+    {
+        {
+            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            ASSERT_TRUE(classPerson);
+
+            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            ASSERT_TRUE(classBook);
+
+            auto [err0, person] = classPerson->create<alloc::Stack>();
+            ASSERT_TRUE(err0 == error::None);
+            ASSERT_FALSE(person.isEmpty());
+
+            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(getPublishedOn);
+
+            auto [err1, ret] = getPublishedOn->bind(person).call();
+            ASSERT_TRUE(err1 == error::MethodTargetMismatch);
+            ASSERT_TRUE(ret.isEmpty());
+        }
+        EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
 }

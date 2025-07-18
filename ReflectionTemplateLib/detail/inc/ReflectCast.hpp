@@ -13,7 +13,7 @@ namespace rtl::detail
         {
             try 
             {
-                const auto& isPointer = (pIsSrcPointer == rtl::IsPointer::Yes);
+                bool isPointer = (pIsSrcPointer == rtl::IsPointer::Yes);
                 const _fromType& srcRef = (isPointer ? *(std::any_cast<const _fromType*>(pSrc)) : std::any_cast<const _fromType&>(pSrc));
 
                 if constexpr (std::is_convertible_v<_fromType*, _toType*>)

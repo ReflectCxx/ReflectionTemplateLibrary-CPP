@@ -7,6 +7,7 @@ namespace rtl {
         //forward decls
         class Method;
 
+
         template<class ..._signature>
         class MethodInvoker
         {
@@ -14,21 +15,48 @@ namespace rtl {
             const Method& m_method;
 
             //the object on which, the method needs to be called.
-            const Instance& m_target;
+            const RObject& m_target;
 
-            MethodInvoker(const Method& pMethod, const Instance& pTarget);
+            MethodInvoker(const Method& pMethod, const RObject& pTarget);
 
             template<class ..._finalSignature>
             struct Invoker {
 
                 template<class ..._args>
-                static void invoke(RStatus& pRStatus, const Method& pMethod, const Instance& pTarget, _args&&...);
+                static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
             };
 
         public:
 
             template<class ..._args>
-            RStatus call(_args&&...) const noexcept;
+            std::pair<error, RObject> call(_args&&...) const noexcept;
+
+            friend Method;
+        };
+
+
+        template<methodQ _Q, class ..._signature>
+        class MethodInvokerQ
+        {
+            //the method to be called.
+            const Method& m_method;
+
+            //the object on which, the method needs to be called.
+            const RObject& m_target;
+
+            MethodInvokerQ(const Method& pMethod, const RObject& pTarget);
+
+            template<class ..._finalSignature>
+            struct Invoker {
+
+                template<class ..._args>
+                static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
+            };
+
+        public:
+
+            template<class ..._args>
+            std::pair<error, RObject> call(_args&&...) const noexcept;
 
             friend Method;
         };
