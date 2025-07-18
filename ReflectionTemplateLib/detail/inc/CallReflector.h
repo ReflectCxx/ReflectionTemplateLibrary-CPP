@@ -1,14 +1,10 @@
 #pragma once
 
 #include <optional>
+#include "RObject.h"
 #include "Constants.h"
 
 namespace rtl {
-
-    namespace access {
-        //forward decl.
-        class RObject;
-    }
 
     namespace detail
     {

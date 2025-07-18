@@ -112,7 +112,7 @@ namespace rtl {
         case error::FunctionNotRegisterdInRTL:
             return "Function not registered: The requested method is not registered in the Reflection system";
         case error::MethodTargetMismatch:
-            return "The object you’re trying to bind doesn’t match the expected type of the method.";
+            return "The object you're trying to bind doesn't match the expected type of the method.";
         case error::AmbiguousConstOverload:
             return "Ambiguous overload: Both const and non-const methods are registered; explicitly specify MethodQ to resolve.";
         case error::ConstMethodOverloadNotFound:

@@ -84,7 +84,7 @@ namespace rtl::detail
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
-        template<class T, typename enable_if_string_t<T> = 0>
+        template<class T, enable_if_string_t<T> = 0>
         inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, alloc pAllocOn)
         {
             if (pDeleter && pAllocOn == alloc::Heap) {
@@ -95,7 +95,7 @@ namespace rtl::detail
             }
         }
 
-        template<class T, typename enable_if_array_t<T> = 0>
+        template<class T, enable_if_array_t<T> = 0>
         inline static access::RObject build(T&& pArr, std::function<void()>&& pDeleter, alloc pAllocOn) 
         {
             if (pDeleter && pAllocOn == alloc::Heap) {
@@ -106,7 +106,7 @@ namespace rtl::detail
             }
         }
 
-        template<class T, typename enable_if_neither_string_nor_array_t<T> = 0>
+        template<class T, enable_if_neither_string_nor_array_t<T> = 0>
         inline static access::RObject build(T&& pVal, std::function<void()>&& pDeleter, alloc pAllocOn) 
         {
             if (pDeleter && pAllocOn == alloc::Heap) {

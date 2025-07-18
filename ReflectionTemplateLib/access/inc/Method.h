@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "RObject.h"
 #include "Function.h"
 #include "MethodInvoker.h"
 
@@ -9,7 +10,6 @@ namespace rtl {
 
     namespace access
     {
-        class RObject;
         class Record;
 
     /*  @class: Method
