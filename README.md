@@ -160,7 +160,7 @@ int main()
 }
 ```
 - Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
-- Check, `CxxReflectionTests/src` for test cases.
+- Check, `CxxRTLUseCaseTests/src` for test cases.
 
 ## Reflection Features
 
