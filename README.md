@@ -113,7 +113,6 @@ int main()
         * For stack-allocated objects:
            - Each 'RObject' holds an independent copy of the stack object.
            - Copy/move operations result in distinct object copies (no shared_ptr involved).
-        * RObject returned is empty if error != error::None (during creation or failed reflection calls).
 */  auto [err0, personObj] = classPerson->create<alloc::Heap>();
 
 //  Ensure object was created successfully.
