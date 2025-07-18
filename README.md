@@ -103,8 +103,8 @@ int main()
 /*  Create an instance of 'class Person' using the default constructor.
     You can choose between heap or stack allocation using 'alloc::Heap' or 'alloc::Stack'.
     Returns a tuple of: [error code, RObject].
-
-    Note: 'RObject' acts as an externally immutable handle:
+    'RObject'-
+        * wraps a type-erased instance created via reflection.
 	* Internally uses 'std::shared_ptr' for lifetime management (only for heap-allocated objects).
 	* Copy and move constructors behave as standard value-type copies (shared_ptr is copied for heap).
 	* Assignment operator is disabled to enforce immutability semantics.
