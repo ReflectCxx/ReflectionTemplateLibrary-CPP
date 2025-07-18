@@ -105,14 +105,14 @@ int main()
     Returns a tuple of: [error code, RObject]. RObject returned is empty if:
        * error != error::None (creation or reflection call failure).
        * OR if the reflected function is 'void' (doesn't return any value).
-    'RObject'-
-        * wraps a type-erased instance created via reflection.
-        * Internally uses 'std::shared_ptr' for lifetime management (only for heap-allocated objects).
-        * For heap-allocated objects:
-            - Copying or moving an 'RObject' shares the same underlying instance (shared ownership).
-        * For stack-allocated objects:
-           - Each 'RObject' holds an independent copy of the stack object.
-           - Copy/move operations result in distinct object copies (no shared_ptr involved).
+    'RObject' wraps a type-erased object, which can be:
+        * An instance created via reflection (constructor).
+        * OR a value returned from any reflection-based method/function call.
+     Internally:
+        * Uses shared_ptr for lifetime management (only for heap-allocated instances).
+        * Copy and move constructors behave as standard value-type copies:
+            - For heap-allocated objects: sharing underlying instance via shared_ptr.
+            - For stack-allocated objects: distinct object copies are created.
 */  auto [err0, personObj] = classPerson->create<alloc::Heap>();
 
 //  Ensure object was created successfully.
