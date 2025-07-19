@@ -13,7 +13,7 @@ SET(CXX_LIB_NAME CxxTestUtils)
 ADD_LIBRARY(${PROJECT_NAME} STATIC "")
 
 INCLUDE_DIRECTORIES(inc)
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/CxxTestProject/inc")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/CxxTestProps/inc")
 
 # Add the source directory
 INCLUDE(src/CMakeLists.txt)

@@ -17,7 +17,7 @@ SET(LOCAL_HEADERS
 )
 
 # Add any additional source files if needed
-target_sources(CxxTestProject
+target_sources(CxxTestProps
     PRIVATE
         "${LOCAL_HEADERS}"
 		"${LOCAL_SOURCES}"
