@@ -1,14 +1,9 @@
 ﻿
 #include <gtest/gtest.h>
 
-#include "ReflectionSystem.h"
+#include "MyReflection.h"
 
 using namespace rtl::access;
-
-namespace
-{
-    static bool _= rtl::unit_test::ReflectionSystem::init();
-}
 
 namespace rtl
 {

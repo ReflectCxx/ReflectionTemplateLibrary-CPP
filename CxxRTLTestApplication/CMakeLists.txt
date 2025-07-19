@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_CXX_STANDARD 20)
 
-project(CxxRTLUseCaseTests)
+project(CxxRTLTestApplication)
 
-set(CXX_EXE_NAME CxxRTLUseCaseTests)
+set(CXX_EXE_NAME CxxRTLTestApplication)
 add_executable(${CXX_EXE_NAME} "")
 
 

@@ -15,14 +15,9 @@
 
 #include <gtest/gtest.h>
 
-#include "ReflectionSystem.h"
+#include "MyReflection.h"
 
 using namespace rtl::access;
-
-// Static initializer to register reflection metadata
-namespace {
-    static bool _ = rtl::unit_test::ReflectionSystem::init();
-}
 
 namespace rtl {
     namespace unit_test {

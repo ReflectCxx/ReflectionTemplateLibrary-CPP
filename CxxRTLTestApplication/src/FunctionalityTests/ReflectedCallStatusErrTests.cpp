@@ -44,7 +44,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, heap__error_CopyConstructorPrivateOrDeleted)
+    TEST(ReflectedCallStatusError, error_CopyConstructorPrivateOrDeleted)
     {
         {
             optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
@@ -80,7 +80,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, construction_on_stack_with_no_copy_ctor___error_CopyConstructorPrivateOrDeleted)
+    TEST(ReflectedCallStatusError, on_construction___error_CopyConstructorPrivateOrDeleted)
     {
         {
             // Fetch the reflected Record for class 'Library'.

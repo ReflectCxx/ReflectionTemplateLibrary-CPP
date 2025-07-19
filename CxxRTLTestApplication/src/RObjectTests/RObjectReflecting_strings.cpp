@@ -89,14 +89,12 @@ Summary:
 
 #include <gtest/gtest.h>
 
-#include "ReflectionSystem.h"
+#include "MyReflection.h"
 
 using namespace rtl::access;
 
 namespace
 {
-    static bool _= rtl::unit_test::ReflectionSystem::init();
-
     static const std::string STR_STD_STRING = "string_type: std::string";
     static constexpr const char* STR_CONST_CHAR_POINTER = "string_type: const_char_*.";
 
