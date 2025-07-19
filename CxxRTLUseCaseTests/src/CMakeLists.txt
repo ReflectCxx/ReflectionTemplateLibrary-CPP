@@ -14,6 +14,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/StaticMethodTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/PerfectForwardingTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RTLInstanceClassTest.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/ReturnValueReflectionTest.cpp"
 )
 
 # Add any additional source files if needed

@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "MyReflection.h"
-#include "TestUtilsGlobals.h"
+#include "GlobalTestUtils.h"
 
 using namespace std;
 using namespace test_utils;

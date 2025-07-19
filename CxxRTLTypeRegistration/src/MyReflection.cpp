@@ -19,7 +19,7 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
 #include "TestUtilsAnimal.h"
-#include "TestUtilsGlobals.h"
+#include "GlobalTestUtils.h"
 
 
 using namespace std;

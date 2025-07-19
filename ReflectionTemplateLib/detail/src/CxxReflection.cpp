@@ -29,8 +29,10 @@ namespace rtl {
             const auto& recordName = pFunction.getRecordName();
             const auto& itr = pRecordMap.find(recordName);
             if (itr == pRecordMap.end()) {
-                const auto& recordItr = pRecordMap.emplace(recordName, access::Record(recordName, pFunction.getRecordTypeId()));
-                addMethod(recordItr.first->second.getFunctionsMap(),pFunction);
+                const std::size_t recordId = pFunction.getRecordTypeId();
+                const auto& record = pRecordMap.emplace(recordName, access::Record(recordName, recordId)).first->second;
+                m_recordIdMap.emplace(recordId, record);
+                addMethod(record.getFunctionsMap(), pFunction);
             }
             else {
                 addMethod(itr->second.getFunctionsMap(), pFunction);
@@ -102,9 +104,9 @@ namespace rtl {
 
             //if the record-name is empty, 'Function' object is considered as non-member function.
             if (pFunction.getRecordName().empty()) {
-                const auto& itr = m_nsFunctionsMap.find(nameSpace);
-                if (itr == m_nsFunctionsMap.end()) {
-                    const auto& funcMapItr = m_nsFunctionsMap.emplace(nameSpace, FunctionMap());
+                const auto& itr = m_functionMap.find(nameSpace);
+                if (itr == m_functionMap.end()) {
+                    const auto& funcMapItr = m_functionMap.emplace(nameSpace, FunctionMap());
                     addFunction(funcMapItr.first->second, pFunction);
                 }
                 else {
@@ -113,9 +115,9 @@ namespace rtl {
             }
             //if the record-name is not-empty, 'Function' object is considered as member function, a 'Method'.
             else {
-                const auto& itr = m_nsRecordsMap.find(nameSpace);
-                if (itr == m_nsRecordsMap.end()) {
-                    const auto& recordMapItr = m_nsRecordsMap.emplace(nameSpace, RecordMap());
+                const auto& itr = m_recordMap.find(nameSpace);
+                if (itr == m_recordMap.end()) {
+                    const auto& recordMapItr = m_recordMap.emplace(nameSpace, RecordMap());
                     addRecord(recordMapItr.first->second, pFunction);
                 }
                 else {

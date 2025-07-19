@@ -33,6 +33,14 @@ namespace rtl {
         }
 
 
+        std::optional<Record> CxxMirror::getRecord(const std::size_t pRecordId) const
+        {
+            const auto& recordMap = getRecordIdMap();
+            const auto& itr = recordMap.find(pRecordId);
+            return (itr == recordMap.end() ? std::nullopt : std::make_optional(itr->second.get()));
+        }
+
+
     /*  @method: getRecord
         @param: const std::string& (name of the class/struct)
         @return: std::optional<Record>

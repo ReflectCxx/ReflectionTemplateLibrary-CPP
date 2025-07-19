@@ -24,15 +24,18 @@ namespace rtl {
         * organizes the 'Function' objects by namespace, class/structs.
     */  class CxxReflection
         {
+            using RecordRef = std::reference_wrapper<const access::Record>;
             using RecordMap = std::unordered_map <std::string, access::Record>;
             using MethodMap = std::unordered_map <std::string, access::Method>;
             using FunctionMap = std::unordered_map <std::string, access::Function>;
 
             //contains 'Record' (class/struct) objects, mapped with given namespace name.
-            std::unordered_map<std::string, RecordMap> m_nsRecordsMap;
+            std::unordered_map<std::string, RecordMap> m_recordMap;
+
+            std::unordered_map<std::size_t, RecordRef> m_recordIdMap;
 
             //contains 'Function' (non-member-function) objects, mapped with given namespace name.
-            std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;
+            std::unordered_map<std::string, FunctionMap> m_functionMap;
 
             void organizeFunctorsMetaData(const access::Function& pFunction);
 
@@ -51,13 +54,18 @@ namespace rtl {
         public:
 
             //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
+            constexpr const std::unordered_map<std::size_t, RecordRef>& getRecordIdMap() const {
+                return m_recordIdMap;
+            }
+
+            //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
             constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() const {
-                return m_nsRecordsMap;
+                return m_recordMap;
             }
 
             //returns the complete map of registered functions ('Function' objects) under a namespace.
             constexpr const std::unordered_map<std::string, FunctionMap>& getNamespaceFunctionsMap() const {
-                return m_nsFunctionsMap;
+                return m_functionMap;
             }
         };
     }

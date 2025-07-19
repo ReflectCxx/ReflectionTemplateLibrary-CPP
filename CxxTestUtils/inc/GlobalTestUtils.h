@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
 strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
@@ -27,4 +29,5 @@ namespace test_utils {
 	static constexpr const char* str_setImaginary = "setImaginary";
 	static constexpr const char* str_getMagnitude = "getMagnitude";
 
+	const std::size_t getRecordIdFor(const std::string& pRecordName);
 }
