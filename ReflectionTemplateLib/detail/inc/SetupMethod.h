@@ -22,6 +22,15 @@ namespace rtl {
     */  template<class _derivedType>
         class SetupMethod
         {
+            template<class ..._signature>
+            using MethodLambda = std::function < access::RObject(error&, const rtl::access::RObject&, _signature...) >;
+
+            template<class _recordType, class _returnType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...));
+
+            template<class _recordType, class _returnType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const);
+            
         protected:
 
             template<class _recordType, class _returnType, class ..._signature>

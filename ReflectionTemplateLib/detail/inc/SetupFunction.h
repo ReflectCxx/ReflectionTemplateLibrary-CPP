@@ -21,6 +21,12 @@ namespace rtl {
     */  template<class _derivedType>
         class SetupFunction
         {
+            template<class ..._signature>
+            using FunctionLambda = std::function < access::RObject(error&, _signature...) >;
+
+            template<class _returnType, class ..._signature>
+            static FunctionLambda<_signature...> getCaller(_returnType(*pFunctor)(_signature...));
+
         protected:
 
             template<class _returnType, class ..._signature>

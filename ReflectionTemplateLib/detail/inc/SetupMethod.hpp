@@ -10,7 +10,74 @@ namespace rtl
 {
     namespace detail
     {
-    /*  @method: addFunctor().
+        template<class _derivedType>
+        template<class _recordType, class _returnType, class ..._signature>
+        inline SetupMethod<_derivedType>::MethodLambda<_signature...>
+               SetupMethod<_derivedType>::getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...))
+        {
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (MethodContainer<methodQ::NonConst, _signature...>) vector holding lambda's.
+        */  return [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
+            {
+                //call on 'pFunctor' will definitely be successful, since the object type, signature type has already been validated.
+                pError = error::None;
+                //'target' needs const_cast, since the functor is non-const-member-function.
+                _recordType* target = const_cast<_recordType*>(pTargetObj.view<const _recordType*>()->get());
+                
+                if constexpr (std::is_same_v<_returnType, void>) {
+                    //if the function do not returns anything, this block will be retained by compiler.
+                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                    return access::RObject();
+                }
+                else if constexpr (std::is_reference_v<_returnType>) {
+                /*  if the function returns reference, this block will be retained by compiler.
+                    Note: reference to temporary or dangling is not checked here.
+                */  const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                    return RObjectBuilder::build(&retObj, nullptr, alloc::None);
+                }
+                else {
+                    //if the function returns anything (not refrence), this block will be retained by compiler.
+                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...),
+                                                  nullptr, alloc::None);
+                }
+            };
+        }
+
+
+        template<class _derivedType>
+        template<class _recordType, class _returnType, class ..._signature>
+        inline SetupMethod<_derivedType>::MethodLambda<_signature...>
+               SetupMethod<_derivedType>::getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const)
+        {
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (MethodContainer<methodQ::Const, _signature...>) vector holding lambda's.
+        */  return [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
+            {
+                //call will definitely be successful, since the object type, signature type has already been validated.
+                pError = error::None;
+                //'target' is const and 'pFunctor' is const-member-function.
+                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
+
+                if constexpr (std::is_same_v<_returnType, void>) {
+                    //if the function do not returns anything, this block will be retained by compiler.
+                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                    return access::RObject();
+                }
+                else if constexpr (std::is_reference_v<_returnType>) {
+                /*  if the function returns reference, this block will be retained by compiler.
+                    Note: reference to temporary or dangling is not checked here.
+                */  const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                    return RObjectBuilder::build(&retObj, nullptr, alloc::None);
+                }
+                else {
+                    //if the function returns anything (not refreence), this block will be retained by compiler.
+                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
+                }
+            };
+        }
+
+
+        /*  @method: addFunctor().
         @param: 'pFuntor' (a non-const, non-static-member function pointer).
             '_derivedType' : class deriving this class ('MethodContainer<methodQ::NonConst, _signature...>').
             '_recordType' : the owner 'class/stuct' type of the functor.
@@ -49,31 +116,9 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
-            
-        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-            this is stored in _derivedType's (MethodContainer<methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
-            {
-                pError = error::None;
-                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
-
-                //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>) {
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    (const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RObject();
-                }
-                //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                else {
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    return RObjectBuilder::build((const_cast<_recordType*>(target)->*pFunctor)(std::forward<_signature>(params)...), 
-                                                 nullptr, alloc::None);
-                }
-            };
-
+            const std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<methodQ::NonConst, _signature...>' lambda vector and get the index.
-            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _returnType>());
@@ -116,29 +161,9 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
-
-        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-            this is stored in _derivedType's (MethodContainer<methodQ::Const, _signature...>) vector holding lambda's.
-        */  const auto functor = [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
-            {
-                pError = error::None;
-                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
-
-                //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>) {
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    (target->*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RObject();
-                }
-                else {
-                    //call will definitely be successful, since the object type, signature type has already been validated.
-                    return RObjectBuilder::build((target->*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
-                }
-            };
-
+            const std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<methodQ::Const, _signature...>' lambda vector and get the index.
-            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
+            const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_recordType, _returnType>());

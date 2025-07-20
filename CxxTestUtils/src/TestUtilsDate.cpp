@@ -15,7 +15,7 @@ namespace test_utils
 	}
 
 
-	const std::size_t date::get_calender_instance_count()
+	const std::size_t calender::get_instance_count()
 	{
 		return Calender::instanceCount();
 	}

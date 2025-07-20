@@ -65,11 +65,12 @@ namespace rtl {
 
 
     /*  @method: clone
-        @param: Instance& (containing class/struct's object represented by this 'Record')
-        @return: std::pair<RStatus, Instance> (RStatus: call success or not, Instance: containing copy constructed object)
+        @param: RObject& (containing class/struct's object represented by this 'Record')
+        @return: std::pair<rtl::error, RObject> (RStatus: call success or not, Instance: containing copy constructed object)
         * calls copy constructor of class/struct represented by this 'Record'
         * creates copy of the object wrapped inside 'Instance' object.
         * returns 'RStatus' object indicating the success of the reflection call with other infos.
+        * Creates managed instance on 'heap' only.
     */  std::pair<error, RObject> Record::clone(RObject& pOther) const
         {
             //validate the source object, should not be empty.

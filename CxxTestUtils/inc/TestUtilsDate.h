@@ -16,6 +16,7 @@ namespace test_utils
 		static constexpr const char* struct_ = "Calender";
 		static constexpr const char* str_create = "create";
 		static const bool assert_zero_instance_count();
+		static const std::size_t get_instance_count();
 	};
 
 	struct date
@@ -34,8 +35,6 @@ namespace test_utils
 		static constexpr const char* str_getCalenderRef = "getCalenderRef";
 
 		static const std::size_t get_date_instance_count();
-
-		static const std::size_t get_calender_instance_count();
 
 		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap);
 

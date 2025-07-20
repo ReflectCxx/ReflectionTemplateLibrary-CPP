@@ -99,7 +99,7 @@ namespace rtl_tests
                 ASSERT_FALSE(robj.isEmpty());
             }
             // Ensure no leaked or lingering reflected instances.
-            EXPECT_TRUE(calender::assert_zero_instance_count());
+            EXPECT_TRUE(library::assert_zero_instance_count());
             {
                 // Attempt to create a reflected instance allocated on the stack.
                 auto [err, robj] = classLibrary->create<alloc::Stack>();
@@ -108,8 +108,6 @@ namespace rtl_tests
             *   Creating a stack instance requires storing the actual object inside std::any.
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
             *   and Library's copy constructor is deleted, construction fails.
-            *
-            *   Reflection returns error::CopyConstructorPrivateOrDeleted.
             */  ASSERT_TRUE(err == error::CopyConstructorPrivateOrDeleted);
                 ASSERT_TRUE(robj.isEmpty());
             }

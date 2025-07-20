@@ -31,7 +31,7 @@ to build, any IDE applicable to the generator can be used or you can also just b
 ```sh
     cmake --build .
 ```
-Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested with Visual Studio(2022), gnu(14) & clang(19))*
+Run **CxxRTLTestApplication** binary, generated in ../bin folder. *(tested with Visual Studio(2022), gnu(14) & clang(19))*
 ## How To Use,
 In this example, we'll reflect a simple Person class. `Person.h`,
 ```c++
@@ -109,7 +109,8 @@ int main()
         * An instance created via reflection (constructor).
         * OR a value returned from any reflection-based method/function call.
      Internally:
-        * Uses shared_ptr for lifetime management (only for explicitly heap-allocated instances).
+        * Manages the lifetime only of instances created via reflection on heap.
+		  Return values from reflection calls are treated as unmanaged.
         * Copy and move constructors behave as standard value-type copies:
             - For heap-allocated objects: sharing underlying instance via shared_ptr.
             - For stack-allocated objects: distinct object copies are created.
@@ -159,7 +160,7 @@ int main()
 */  return 0;
 }
 ```
-- Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
+- Check, `CxxRTLTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
 - Check, `CxxRTLTestApplication/src` for test cases.
 
 ## Reflection Features

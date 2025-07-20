@@ -32,7 +32,7 @@ namespace rtl {
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class MethodContainer<methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>,
-                                                            public CallReflector<MethodContainer<methodQ::NonConst, _signature...>>
+                                                                  public CallReflector<MethodContainer<methodQ::NonConst, _signature...>>
         {
             using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
 
@@ -108,7 +108,7 @@ namespace rtl {
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class MethodContainer<methodQ::Const, _signature...> : public SetupMethod<MethodContainer<methodQ::Const, _signature...>>,
-                                                             public CallReflector<MethodContainer<methodQ::Const, _signature...>>
+                                                               public CallReflector<MethodContainer<methodQ::Const, _signature...>>
         {
             using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
 

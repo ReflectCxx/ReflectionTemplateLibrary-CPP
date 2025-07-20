@@ -51,7 +51,7 @@ CxxMirror& MyReflection::instance()
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_updateDate).build(&nsdate::Date::updateDate),  //unique method, no overloads.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),  //const method registration, 'methodConst()' function must be used. compiler error otherwise.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_getCalenderPtr).build(&nsdate::Date::getCalenderPtr),  //unique method, no overloads.
-        //Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_getCalenderRef).build(&nsdate::Date::getCalenderRef),  //unique method, no overloads.
+        Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_getCalenderRef).build(&nsdate::Date::getCalenderRef),  //unique method, no overloads.
 
         //class Calender, default constructor. Instances will always be created on heap and managed using shared_ptr.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).methodStatic(calender::str_create).build(&nsdate::Calender::create),

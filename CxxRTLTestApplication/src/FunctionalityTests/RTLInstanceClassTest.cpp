@@ -16,7 +16,7 @@ namespace rtl_tests
     {
         // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_date_instance_count() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -34,7 +34,7 @@ namespace rtl_tests
             // Only one instance of 'Date' must exists yet.
             EXPECT_TRUE(date::get_date_instance_count() == 1);
             //'Date' contains a shared_ptr<Calender>.
-            EXPECT_TRUE(date::get_calender_instance_count() == 1);
+            EXPECT_TRUE(calender::get_instance_count() == 1);
 
         /*  Core Concept:
             - Copying a stack-allocated RObject creates a new wrapper.
@@ -45,7 +45,7 @@ namespace rtl_tests
             // Another 'Date' instance got created now.
             EXPECT_TRUE(date::get_date_instance_count() == 2);
             // 'Calender' not created, got shared.
-            EXPECT_TRUE(date::get_calender_instance_count() == 1);
+            EXPECT_TRUE(calender::get_instance_count() == 1);
 
             // Verify the object created is valid and on stack.
             ASSERT_FALSE(robj1.isEmpty());
@@ -63,12 +63,12 @@ namespace rtl_tests
             auto [err1, ret] = updateDate->bind(robj0).call(dateStr);
             EXPECT_TRUE(err1 == error::None && ret.isEmpty());
 
-            // After mutation, robj0 and robj1 should differ — confirms distinct stack instances
+            // After mutation, robj0 and robj1 should differ - confirms distinct stack instances
             EXPECT_FALSE(date::test_if_obejcts_are_equal(robj0.get(), robj1.get(), false));
         }
         // After scope exit, stack instances are cleaned up automatically
         EXPECT_TRUE(date::get_date_instance_count() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
     }
 
 
@@ -77,7 +77,7 @@ namespace rtl_tests
         // Ensure a clean start: no previously reflected heap instances alive
         EXPECT_TRUE(date::get_date_instance_count() == 0);
         EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -95,7 +95,7 @@ namespace rtl_tests
             // Only one instance of 'Date' must exists yet.
             EXPECT_TRUE(date::get_date_instance_count() == 1);
             //'Date' contains a shared_ptr<Calender>.
-            EXPECT_TRUE(date::get_calender_instance_count() == 1);
+            EXPECT_TRUE(calender::get_instance_count() == 1);
             {
             /*  Core Concept:
                 - This test verifies that copying an RObject pointing to a heap-allocated object
@@ -107,7 +107,7 @@ namespace rtl_tests
                 // Still only one instance of 'Date' must exists.
                 EXPECT_TRUE(date::get_date_instance_count() == 1);
                 // Since only one 'Date' instance exists.
-                EXPECT_TRUE(date::get_calender_instance_count() == 1);
+                EXPECT_TRUE(calender::get_instance_count() == 1);
 
                 // Both objects should point to the same heap instance
                 ASSERT_FALSE(robj1.isEmpty());
@@ -134,9 +134,9 @@ namespace rtl_tests
             // After inner scope ends, one reference should still be alive (robj0)
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
-        // All shared_ptrs should be released now — cleanup should be complete
+        // All shared_ptrs should be released now - cleanup should be complete
         EXPECT_TRUE(date::get_date_instance_count() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
@@ -145,7 +145,7 @@ namespace rtl_tests
     {
         // Ensure there are no reflected stack or heap objects alive before the test begins
         EXPECT_TRUE(date::get_date_instance_count() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -164,7 +164,7 @@ namespace rtl_tests
             // Only one instance of 'Date' must exists yet.
             EXPECT_TRUE(date::get_date_instance_count() == 1);
             //'Date' contains a shared_ptr<Calender>.
-            EXPECT_TRUE(date::get_calender_instance_count() == 1);
+            EXPECT_TRUE(calender::get_instance_count() == 1);
             {
             /*  RObject move transfers std::any and shared_ptr; robj0 becomes invalid for use.
                 robj1 is the sole valid owner after std::move.
@@ -173,7 +173,7 @@ namespace rtl_tests
                 // Date's move constructor got called, followed by destructor.
                 EXPECT_TRUE(date::get_date_instance_count() == 1);
                 // Calender's move constructor got called, followed by destructor.
-                EXPECT_TRUE(date::get_calender_instance_count() == 1);
+                EXPECT_TRUE(calender::get_instance_count() == 1);
 
                 // robj0 got moved to robj1 and invalid now.
                 ASSERT_TRUE(robj0.isEmpty());
@@ -183,16 +183,16 @@ namespace rtl_tests
             }
             // Confirm no stack-allocated reflected objects remain after scope ends
             EXPECT_TRUE(date::get_date_instance_count() == 0);
-            EXPECT_TRUE(date::get_calender_instance_count() == 0);
+            EXPECT_TRUE(calender::get_instance_count() == 0);
         }
     }
 
 
     TEST(ReflectedSmartInstanceTest, robject_move_construct_on_heap)
     {
-        // Ensure clean state before test begins — no lingering reflected heap instances
+        // Ensure clean state before test begins - no lingering reflected heap instances
         EXPECT_TRUE(date::get_date_instance_count() == 0);
-        EXPECT_TRUE(date::get_calender_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -211,7 +211,7 @@ namespace rtl_tests
             // Only one instance of 'Date' must exists yet.
             EXPECT_TRUE(date::get_date_instance_count() == 1);
             //'Date' contains a shared_ptr<Calender>.
-            EXPECT_TRUE(date::get_calender_instance_count() == 1);
+            EXPECT_TRUE(calender::get_instance_count() == 1);
             {
             /*  RObject move transfers std::any and shared_ptr; robj0 becomes invalid for use.
                 robj1 is the sole valid owner after std::move.
@@ -220,7 +220,7 @@ namespace rtl_tests
                 // Date's move constructor didn't get called, just pointer in RObject moved.
                 EXPECT_TRUE(date::get_date_instance_count() == 1);
                 // Hence, Calender's move constructor also didn't get called.
-                EXPECT_TRUE(date::get_calender_instance_count() == 1);
+                EXPECT_TRUE(calender::get_instance_count() == 1);
 
                 // robj0 got moved to robj1 and invalid now.
                 ASSERT_TRUE(robj0.isEmpty());
@@ -233,8 +233,8 @@ namespace rtl_tests
             }
             // Since robj1 got destroyed, Date & Calender should too.
             EXPECT_TRUE(date::get_date_instance_count() == 0);
-            EXPECT_TRUE(date::get_calender_instance_count() == 0);
-            // Still within outer scope — heap object still alive and tracked
+            EXPECT_TRUE(calender::get_instance_count() == 0);
+            // Still within outer scope - heap object still alive and tracked
             ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
         }
     }
