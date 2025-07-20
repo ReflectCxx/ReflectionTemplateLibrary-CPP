@@ -110,7 +110,7 @@ int main()
         * OR a value returned from any reflection-based method/function call.
      Internally:
         * Manages the lifetime only of instances created via reflection on heap.
-		  Return values from reflection calls are treated as unmanaged.
+          Return values from reflection calls are treated as unmanaged.
         * Copy and move constructors behave as standard value-type copies:
             - For heap-allocated objects: sharing underlying instance via shared_ptr.
             - For stack-allocated objects: distinct object copies are created.
