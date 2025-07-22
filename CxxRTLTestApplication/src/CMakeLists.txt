@@ -24,14 +24,15 @@ set(LOCAL_SOURCES_1
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_strings.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_int.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_arrays.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_stdWrappers.cpp"
 )
 
 # Add any additional source files if needed
 target_sources(CxxRTLTestApplication
-    PUBLIC
+    PRIVATE
 		"${LOCAL_SOURCES_0}"
 		"${LOCAL_SOURCES_1}"
 )
 
-SOURCE_GROUP("Source Files\\FunctionalityTests" FILES ${LOCAL_SOURCE_0})
-SOURCE_GROUP("Source Files\\RObjectTests" FILES ${LOCAL_SOURCE_1})
+SOURCE_GROUP("Source Files\\FunctionalityTests" FILES ${LOCAL_SOURCES_0})
+SOURCE_GROUP("Source Files\\RObjectTests" FILES ${LOCAL_SOURCES_1})

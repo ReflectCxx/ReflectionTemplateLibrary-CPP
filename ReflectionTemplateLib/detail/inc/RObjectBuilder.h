@@ -84,6 +84,11 @@ namespace rtl::detail
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
+        template<class T>
+        inline static access::RObject build(std::unique_ptr<T>&& pVal) {
+
+        }
+
         template<class T, enable_if_string_t<T> = 0>
         inline static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, alloc pAllocOn)
         {
