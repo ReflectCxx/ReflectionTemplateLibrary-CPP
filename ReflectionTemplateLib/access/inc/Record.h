@@ -17,7 +17,6 @@ namespace rtl {
     {
         //forward decls
         class Method;
-        class RStatus;
         class RObject;
 
     /*  @class: Record

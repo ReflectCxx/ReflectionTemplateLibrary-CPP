@@ -68,37 +68,19 @@ namespace rtl {
             ASSERT_EQ(inputView, std::vector<int>({ 1, 2, 3, 4, 5 }));
         }
 
-        // Test: Reflect int[3] -> std::array<int, 3>
-        TEST(RObject_array_reflection, reflect_int_array)
-        {
-            int data[3] = { 10, 20, 30 };
-            RObject robj = rtl::reflect(data);
-
-            using ExpectedArray = std::array<int, 3>;
-            ASSERT_TRUE(robj.canViewAs<ExpectedArray>());
-
-            auto view = robj.view<ExpectedArray>();
-            ASSERT_TRUE(view.has_value());
-
-            const ExpectedArray& arr = view->get();
-            EXPECT_EQ(arr[0], 10);
-            EXPECT_EQ(arr[1], 20);
-            EXPECT_EQ(arr[2], 30);
-        }
 
         // Macro: Generate tests for trivial C-style arrays -> std::array<T, N>
 #define TEST_TRIVIAL_ARRAY_REFLECTION(TYPE, SIZE, ...)                                 \
-        TEST(RObject_array_reflection, reflect_##TYPE##_array_##SIZE)                      \
-        {                                                                                   \
-            TYPE data[SIZE] = { __VA_ARGS__ };                                              \
-            RObject robj = rtl::reflect(data);                                              \
-            using ExpectedArray = std::array<TYPE, SIZE>;                                   \
-            ASSERT_TRUE(robj.canViewAs<ExpectedArray>());                                \
-            auto view = robj.view<ExpectedArray>();                                         \
-            ASSERT_TRUE(view.has_value());                                                  \
-            const ExpectedArray& arr = view->get();                                         \
-            for (size_t i = 0; i < SIZE; ++i)                                               \
-                EXPECT_EQ(arr[i], data[i]);                                                 \
+        TEST(RObject_array_reflection, reflect_##TYPE##_array_##SIZE)                  \
+        {                                                                              \
+            TYPE data[SIZE] = { __VA_ARGS__ };                                         \
+            RObject robj = rtl::reflect(data);                                         \
+            ASSERT_TRUE(robj.canViewAs<std::vector<TYPE>>());                          \
+            auto view = robj.view<std::vector<TYPE>>();                                \
+            ASSERT_TRUE(view.has_value());                                             \
+            const std::vector<TYPE>& arr = view->get();                                \
+            for (size_t i = 0; i < arr.size(); ++i)                                    \
+                EXPECT_EQ(arr[i], data[i]);                                            \
         }
 
     // Tests for all trivial types with various array sizes

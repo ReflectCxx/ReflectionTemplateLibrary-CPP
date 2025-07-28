@@ -6,6 +6,10 @@
 #include "TypeId.h"
 #include "Constants.h"
 
+namespace rtl::detail {
+    class RObjectBuilder;
+}
+
 namespace rtl::access
 {
     class Function;
@@ -19,16 +23,18 @@ namespace rtl::access
 
         rtl::IsPointer m_isPointer;
         std::size_t m_typeId;
-        std::size_t m_typePtrId;
+        std::size_t m_ptrTypeId;
+        std::size_t m_wrapperTypeId;
         std::string m_typeStr;
         alloc m_allocatedOn;
         const std::vector<ConverterPair>& m_converters;
 
         std::any m_object;
+        std::any m_wrapper;
         std::shared_ptr<void> m_deallocator;
 
-        explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr, 
-                         rtl::IsPointer pIsPtr,rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter, 
+        explicit RObject(std::any&& pObject, std::any&& pWrapper, std::size_t pTypeId, std::size_t pPtrTypeId, std::size_t pWrapperTypeId,
+                         const std::string& pTypeStr, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
                          const std::vector<ConverterPair>& pConversions);
 
         template<class T>
@@ -40,6 +46,10 @@ namespace rtl::access
 
         template <class T>
         static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
+
+        //template <class T, class _wrapperT>
+        //static RObject create(T&& pVal, _wrapperT&& pWrapper, rtl::alloc pAllocOn);
+
     public:
 
         explicit RObject();
@@ -64,13 +74,15 @@ namespace rtl::access
         //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
         template<class _asType>
         std::optional<rtl::view<_asType>> view() const;
+
+        friend rtl::detail::RObjectBuilder;
     };
 
 
     inline RObject::RObject()
         : m_isPointer(rtl::IsPointer::No)
         , m_typeId(rtl::detail::TypeId<>::None)
-        , m_typePtrId(rtl::detail::TypeId<>::None)
+        , m_ptrTypeId(rtl::detail::TypeId<>::None)
         , m_allocatedOn(rtl::alloc::None)
         , m_converters(m_conversions)
         , m_deallocator(nullptr)
@@ -78,16 +90,18 @@ namespace rtl::access
     }
 
 
-    inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                            rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
+    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::size_t pTypeId, std::size_t pPtrTypeId, std::size_t pWrapperTypeId,
+                            const std::string& pTypeStr, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
                             const std::vector<ConverterPair>& pConversions)
         : m_isPointer(pIsPtr)
         , m_typeId(pTypeId)
-        , m_typePtrId(pTypePtrId)
+        , m_ptrTypeId(pPtrTypeId)
+        , m_wrapperTypeId(pWrapperTypeId)
         , m_typeStr(pTypeStr)
         , m_allocatedOn(pAllocOn)
         , m_converters(pConversions)
-        , m_object(std::forward<std::any>(pObjRef))
+        , m_object(std::forward<std::any>(pObject))
+        , m_wrapper(std::forward<std::any>(pWrapper))
         , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
     {
     }
@@ -96,20 +110,24 @@ namespace rtl::access
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_isPointer(pOther.m_isPointer)
         , m_typeId(pOther.m_typeId)
-        , m_typePtrId(pOther.m_typePtrId)
+        , m_ptrTypeId(pOther.m_ptrTypeId)
+        , m_wrapperTypeId(pOther.m_wrapperTypeId)
         , m_typeStr(pOther.m_typeStr)
         , m_allocatedOn(pOther.m_allocatedOn)
         , m_converters(pOther.m_converters)
         , m_object(std::move(pOther.m_object))
+        , m_wrapper(std::move(pOther.m_wrapper))
         , m_deallocator(std::move(pOther.m_deallocator))
     {
         pOther.m_isPointer = rtl::IsPointer::No;
         pOther.m_typeId = rtl::detail::TypeId<>::None;
-        pOther.m_typePtrId = rtl::detail::TypeId<>::None;
-        pOther.m_typeStr = "";
+        pOther.m_ptrTypeId = rtl::detail::TypeId<>::None;
+        pOther.m_wrapperTypeId = rtl::detail::TypeId<>::None;
         pOther.m_allocatedOn = alloc::None;
         // Explicitly clear moved-from source
-        pOther.m_object.reset();      // Clears std::any
-        pOther.m_deallocator.reset();   // Clears shared_ptr
+        pOther.m_object.reset();
+        pOther.m_wrapper.reset();
+        pOther.m_deallocator.reset();
+        pOther.m_typeStr.clear();
     }
 }

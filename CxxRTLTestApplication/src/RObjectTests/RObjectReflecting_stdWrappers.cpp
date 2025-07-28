@@ -14,7 +14,7 @@ namespace rtl
         {
             std::unique_ptr<int> uptr = std::make_unique<int>(329);
 
-            //RObject robj = reflect(uptr);
+            //RObject robj = reflect(std::move(uptr));
 
             // Check if RObject can reflect as `unique_ptr<int>`
             //ASSERT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
