@@ -3,13 +3,8 @@
 #include <atomic>
 #include <functional>
 
+#include "RObject.h"
 #include "Constants.h"
-
-namespace rtl::access
-{
-    class RObject;
-}
-
 
 namespace rtl::detail
 {
