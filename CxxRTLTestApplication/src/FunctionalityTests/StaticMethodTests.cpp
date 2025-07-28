@@ -97,8 +97,7 @@ namespace rtl_tests
 		ASSERT_TRUE(methOpt.has_value());
 
 		const Method& getProfile = methOpt.value();
-		const bool& signValid = getProfile.hasSignature<string, size_t>();
-		ASSERT_TRUE(signValid);
+		ASSERT_TRUE((getProfile.hasSignature<string, size_t>()));
 
 		size_t age = person::AGE;
 		string occupation = person::OCCUPATION;
@@ -146,6 +145,50 @@ namespace rtl_tests
 
 			auto& retStr = ret.view<string>()->get();
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
+		}
+	}
+
+
+	TEST(StaticMethods, static_method_call_on_target_instance_with_args)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		ASSERT_TRUE(classPerson);
+
+		auto [err0, person] = classPerson->create<alloc::Heap>();
+
+		ASSERT_TRUE(err0 == error::None);
+		ASSERT_FALSE(person.isEmpty());
+
+		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
+		ASSERT_TRUE(getProfile);
+		ASSERT_TRUE((getProfile->hasSignature<string, size_t>()));
+
+		size_t age = person::AGE;
+		string occupation = person::OCCUPATION;
+		{
+			auto [err, ret] = getProfile->bind(person).call(occupation, age);
+
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
+
+			const string& retStr = ret.view<string>()->get();
+			const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
+
+			EXPECT_EQ(retStr, checkStr);
+		} {
+			auto [err, ret] = (*getProfile)(person)(occupation, age);
+
+			ASSERT_TRUE(err == error::None);
+			ASSERT_FALSE(ret.isEmpty());
+			ASSERT_TRUE(ret.canViewAs<string>());
+
+			const string& retStr = ret.view<string>()->get();
+			const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
+
+			EXPECT_EQ(retStr, checkStr);
 		}
 	}
 }

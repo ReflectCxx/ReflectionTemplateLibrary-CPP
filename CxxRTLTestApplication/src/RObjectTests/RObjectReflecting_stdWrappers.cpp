@@ -12,24 +12,46 @@ namespace rtl
     {
         TEST(RObject_smart_ptr, reflect_unique_ptr)
         {
-            std::unique_ptr<int> uptr = std::make_unique<int>(329);
+            std::shared_ptr<int> uptr = std::make_shared<int>(329);
 
-            //RObject robj = reflect(std::move(uptr));
+            RObject robj = reflect(std::move(uptr));
 
-            // Check if RObject can reflect as `unique_ptr<int>`
-            //ASSERT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
+            // Check if RObject can reflect as `int`
+            EXPECT_TRUE(robj.canViewAs<int>());
+            {
+                auto view = robj.view<int>();
+                ASSERT_TRUE(view);
 
-            // Get a view of the value as `bool`
-            //auto view = robj.view<std::unique_ptr<int>>();
+                int value = view->get();
+                EXPECT_EQ(value, 329);
+            }
+            // Check if RObject can reflect as `int`
+            EXPECT_TRUE(robj.canViewAs<const int*>());
+            {
+                auto view = robj.view<const int*>();
+                ASSERT_TRUE(view);
 
-            // Ensure the view is valid (conversion succeeded)
-            //ASSERT_TRUE(view.has_value());
+                int value = *view->get();
+                EXPECT_EQ(value, 329);
+            }
+            // Check if RObject can reflect as `shared_ptr<int>`
+            EXPECT_TRUE(robj.canViewAs<std::shared_ptr<int>>());
+            {
+                // Get a view of the value as `bool`
+                auto view = robj.view<std::shared_ptr<int>>();
 
-            // Access the converted bool value
-            //const int cref = *view->get();
+                // Ensure the view is valid (conversion succeeded)
+                ASSERT_TRUE(view.has_value());
 
-            // Verify the conversion result (non-zero -> true)
-            //ASSERT_EQ(cref, 329);
+                // Access the converted bool value
+                const int cref = *view->get();
+
+                // Verify the conversion result (non-zero -> true)
+                EXPECT_EQ(cref, 329);
+            }
+            //These should not compile.
+            //robj.canViewAs<const std::shared_ptr<int>*>();
+            //robj.view<const std::shared_ptr<int>*>();
         }
     }
 }

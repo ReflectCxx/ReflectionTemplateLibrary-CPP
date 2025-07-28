@@ -25,6 +25,14 @@ namespace rtl {
     //using remove_const_n_ref_n_ptr = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t
     //                                   < std::remove_all_extents_t<T> > > >;
 
+    enum class Wrapper
+    {
+        None,
+        Weak,
+        Unique,
+        Shared
+    };
+
     enum class ConversionKind
     {
         ByRef,

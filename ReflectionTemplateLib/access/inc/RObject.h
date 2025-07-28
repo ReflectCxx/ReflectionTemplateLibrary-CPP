@@ -5,6 +5,7 @@
 #include "view.h"
 #include "TypeId.h"
 #include "Constants.h"
+#include "rtl_traits.h"
 
 namespace rtl::detail {
     class RObjectBuilder;
@@ -38,7 +39,7 @@ namespace rtl::access
                          const std::vector<ConverterPair>& pConversions);
 
         template<class T>
-        const T& as() const;
+        const T& as(bool pGetFromWrapper = false) const;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
@@ -47,8 +48,8 @@ namespace rtl::access
         template <class T>
         static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
 
-        //template <class T, class _wrapperT>
-        //static RObject create(T&& pVal, _wrapperT&& pWrapper, rtl::alloc pAllocOn);
+        template <class W>
+        static RObject create(W&& pWrapper, rtl::alloc pAllocOn);
 
     public:
 
@@ -83,6 +84,7 @@ namespace rtl::access
         : m_isPointer(rtl::IsPointer::No)
         , m_typeId(rtl::detail::TypeId<>::None)
         , m_ptrTypeId(rtl::detail::TypeId<>::None)
+        , m_wrapperTypeId(rtl::detail::TypeId<>::None)
         , m_allocatedOn(rtl::alloc::None)
         , m_converters(m_conversions)
         , m_deallocator(nullptr)

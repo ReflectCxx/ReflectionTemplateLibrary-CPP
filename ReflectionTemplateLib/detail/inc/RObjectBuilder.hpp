@@ -8,16 +8,30 @@
 
 namespace rtl::detail
 {
+    template<class T>
+    inline access::RObject RObjectBuilder::build(std::shared_ptr<T>&& pVal, const std::function<void()>& pDeleter, rtl::alloc pAllocOn)
+    {
+        return access::RObject::create(std::forward<std::shared_ptr<T>>(pVal), pAllocOn);
+    }
+
+
+    template<class T>
+    inline access::RObject RObjectBuilder::build(std::unique_ptr<T>&& pVal, const std::function<void()>& pDeleter, rtl::alloc pAllocOn)
+    {
+        return access::RObject::create(std::forward<std::unique_ptr<T>>(pVal), pAllocOn);
+    }
+
+
     template<class T, std::size_t N>
     inline access::RObject RObjectBuilder::build(T(&pArr)[N], const std::function<void()>& pDeleter, alloc pAllocOn)
     {
-        if constexpr (std::is_same<traits::base_t<T>, char>::value) 
+        if constexpr (std::is_same_v<traits::base_t<T>, char>) 
         {
-            return access::RObject::create(std::string_view(pArr, N - 1), std::shared_ptr<void>(), pAllocOn);
+            return build(std::string_view(pArr, N - 1), nullptr, rtl::alloc::None);
         }
         else
         {
-            return access::RObject::create(std::vector(pArr, pArr + N), std::shared_ptr<void>(), pAllocOn);
+            return build(std::vector(pArr, pArr + N), nullptr, rtl::alloc::None);
         }
     }
 

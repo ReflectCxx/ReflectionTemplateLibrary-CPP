@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <iostream>
+#include <cassert>
 
 #include "RObject.h"
 #include "ReflectCast.h"
@@ -9,32 +10,44 @@
 namespace rtl::access {
 
     template<class T>
-    inline const T& RObject::as() const
+    inline const T& RObject::as(bool pGetFromWrapper/* = false*/) const
     {
+        if (pGetFromWrapper) {
+            return std::any_cast<const T&>(m_wrapper);
+        }
         if (m_isPointer == rtl::IsPointer::Yes) {
-            return *(std::any_cast<const T*>(m_object));
+
+            using _ptrT = std::add_pointer_t<std::add_const_t<T>>;
+            return *(std::any_cast<_ptrT>(m_object));
         }
-        else {
-            return std::any_cast<const T&>(m_object);
-        }
+        return std::any_cast<const T&>(m_object);
     }
 
 
     template<class T>
     inline bool RObject::canViewAs() const
     {
+        using _T = remove_const_n_ref_n_ptr<T>;
+
         static_assert(!std::is_reference_v<T>, "reference views are not supported.");
-        static_assert(!std::is_pointer_v<T> || std::is_const_v<std::remove_pointer_t<T>>,
-                      "non-const pointers not supported, Only read-only (const) pointer views are supported.");
+        constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::StdWrapper<_T>::type != Wrapper::None);
+        static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
+        constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
+        static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 
         if constexpr (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>)
         {
-            using _T = remove_const_n_ref_n_ptr<T>;
-            std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
-            if (typePtrId == m_ptrTypeId) {
+            if (m_ptrTypeId == rtl::detail::TypeId<_T*>::get()) {
                 return true;
             }
         }
+        else if constexpr (traits::StdWrapper<_T>::type != Wrapper::None)
+        {
+            if (m_wrapperTypeId == traits::StdWrapper<_T>::id()) {
+                return true;
+            }
+        }
+
         const auto& typeId = rtl::detail::TypeId<T>::get();
         return (typeId == m_typeId || getConverterIndex(typeId) != rtl::index_none);
     }
@@ -48,6 +61,7 @@ namespace rtl::access {
         const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
         const auto& typeStr = rtl::detail::TypeId<_T>::toString();
         const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
+
         if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
             return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), typeId, typePtrId, rtl::detail::TypeId<>::None,
                            typeStr, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
@@ -60,18 +74,28 @@ namespace rtl::access {
     }
 
 
-    //template<class T, class _wrapperT>
-    //inline RObject RObject::create(T&& pVal, _wrapperT&& pWrapper, rtl::alloc pAllocOn)
-    //{
-    //    using _T = remove_const_n_ref_n_ptr<T>;
-    //    const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-    //    const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
-    //    const std::size_t typeWrapperId = rtl::detail::TypeId<_wrapperT>::get();
-    //    const auto& typeStr = rtl::detail::TypeId<_T>::toString();
-    //    const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
-    //    return RObject(std::any(static_cast<const _T*>(pVal)), std::any(std::move(pWrapper)), typeId, typePtrId, rtl::detail::TypeId<>::None,
-    //                   typeStr, rtl::IsPointer::Yes, pAllocOn, nullptr, conversions);
-    //}
+    template<class W>
+    inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
+    {
+        using _W = traits::StdWrapper<remove_const_n_ref_n_ptr<W>>;
+        using _T = _W::baseT;
+        const std::size_t typeId = detail::TypeId<_T>::get();
+        const std::size_t typePtrId = detail::TypeId<_T*>::get();
+        const std::size_t wrapperId = _W::id();
+        const auto& typeStr = detail::TypeId<_T>::toString();
+        const auto& conversions = detail::ReflectCast<_T>::getConversions();
+
+        if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Unique || _W::type == Wrapper::Shared) {
+            auto rawPtr = static_cast<const _T*>(pWrapper.get());
+            return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), typeId, typePtrId,
+                           wrapperId, typeStr, IsPointer::Yes, pAllocOn, nullptr, conversions);
+        }
+        else {
+            auto obj = pWrapper.value();
+            return RObject(std::any(obj), std::any(std::forward<W>(pWrapper)), typeId, typePtrId,
+                           wrapperId, typeStr, IsPointer::Yes, pAllocOn, nullptr, conversions);
+        }
+    }
 
 
     template <class _asType>
@@ -81,19 +105,31 @@ namespace rtl::access {
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 
+        using _asWraper = traits::StdWrapper<remove_const_n_ref_n_ptr<_asType>>;
+        constexpr bool isWrapperPtr = (std::is_pointer_v<_asType> && _asWraper::type != Wrapper::None);
+        static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
+
         std::size_t toTypeId = rtl::detail::TypeId<_asType>::get();
         if (toTypeId == m_typeId) {
             const auto& viewRef = as<_asType>();
             return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
         }
 
-        if constexpr (std::is_pointer_v<remove_const_n_reference<_asType>>)
+        using _T = remove_const_n_reference<_asType>;
+        if constexpr (std::is_pointer_v<_T>)
         {
             using T = remove_const_n_ref_n_ptr<_asType>;
             std::size_t typePtrId = rtl::detail::TypeId<T*>::get();
             if (typePtrId == m_ptrTypeId) {
                 auto& viewRef = as<T>();
                 return std::optional<rtl::view<const T*>>(&viewRef);
+            }
+        }
+        else if constexpr (traits::StdWrapper<_T>::type != Wrapper::None)
+        {
+            if (m_wrapperTypeId == traits::StdWrapper<_T>::id()) {
+                const _asType& viewRef = as<_asType>(true);
+                return std::optional<rtl::view<_asType>>(viewRef);
             }
         }
 
