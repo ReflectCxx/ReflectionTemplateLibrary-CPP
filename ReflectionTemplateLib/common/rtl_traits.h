@@ -23,7 +23,7 @@ namespace rtl
 
 
         template<typename T>
-        struct StdWrapper
+        struct std_wrapper
         {
             using baseT = std::nullptr_t;
             static constexpr const auto type = Wrapper::None;
@@ -32,7 +32,7 @@ namespace rtl
 
 
         template<typename T>
-        struct StdWrapper<std::shared_ptr<T>>
+        struct std_wrapper<std::shared_ptr<T>>
         {
             using baseT = T;
             static constexpr const auto type = Wrapper::Shared;
@@ -41,7 +41,7 @@ namespace rtl
 
 
         template<typename T>
-        struct StdWrapper<std::unique_ptr<T>>
+        struct std_wrapper<std::unique_ptr<T>>
         {
             using baseT = T;
             static constexpr const auto type = Wrapper::Unique;
@@ -50,7 +50,7 @@ namespace rtl
 
 
         template<typename T>
-        struct StdWrapper<std::weak_ptr<T>>
+        struct std_wrapper<std::weak_ptr<T>>
         {
             using baseT = T;
             static constexpr const auto type = Wrapper::Weak;

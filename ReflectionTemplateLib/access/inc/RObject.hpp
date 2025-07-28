@@ -30,7 +30,7 @@ namespace rtl::access {
         using _T = remove_const_n_ref_n_ptr<T>;
 
         static_assert(!std::is_reference_v<T>, "reference views are not supported.");
-        constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::StdWrapper<_T>::type != Wrapper::None);
+        constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::std_wrapper<_T>::type != Wrapper::None);
         static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
         constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
         static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
@@ -41,9 +41,9 @@ namespace rtl::access {
                 return true;
             }
         }
-        else if constexpr (traits::StdWrapper<_T>::type != Wrapper::None)
+        else if constexpr (traits::std_wrapper<_T>::type != Wrapper::None)
         {
-            if (m_wrapperTypeId == traits::StdWrapper<_T>::id()) {
+            if (m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
                 return true;
             }
         }
@@ -77,7 +77,7 @@ namespace rtl::access {
     template<class W>
     inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
     {
-        using _W = traits::StdWrapper<remove_const_n_ref_n_ptr<W>>;
+        using _W = traits::std_wrapper<remove_const_n_ref_n_ptr<W>>;
         using _T = _W::baseT;
         const std::size_t typeId = detail::TypeId<_T>::get();
         const std::size_t typePtrId = detail::TypeId<_T*>::get();
@@ -105,7 +105,7 @@ namespace rtl::access {
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 
-        using _asWraper = traits::StdWrapper<remove_const_n_ref_n_ptr<_asType>>;
+        using _asWraper = traits::std_wrapper<remove_const_n_ref_n_ptr<_asType>>;
         constexpr bool isWrapperPtr = (std::is_pointer_v<_asType> && _asWraper::type != Wrapper::None);
         static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
 
@@ -125,9 +125,9 @@ namespace rtl::access {
                 return std::optional<rtl::view<const T*>>(&viewRef);
             }
         }
-        else if constexpr (traits::StdWrapper<_T>::type != Wrapper::None)
+        else if constexpr (traits::std_wrapper<_T>::type != Wrapper::None)
         {
-            if (m_wrapperTypeId == traits::StdWrapper<_T>::id()) {
+            if (m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
                 const _asType& viewRef = as<_asType>(true);
                 return std::optional<rtl::view<_asType>>(viewRef);
             }
