@@ -17,34 +17,34 @@ namespace rtl_tests
         for (const auto& itr0 : MyReflection::instance().getNamespaceRecordMap())
         {
             const auto& namespaceRecordMap = itr0.second;
-			for (const auto& itr1 : namespaceRecordMap)
-			{
-				const std::string& recordName = itr1.first;
-				const std::size_t recordId = getRecordIdFor(recordName);
-				const auto& itr = rtl_recordIdMap.find(recordId);
+            for (const auto& itr1 : namespaceRecordMap)
+            {
+                const std::string& recordName = itr1.first;
+                const std::size_t recordId = getRecordIdFor(recordName);
+                const auto& itr = rtl_recordIdMap.find(recordId);
 
-				ASSERT_TRUE(itr != rtl_recordIdMap.end());
+                ASSERT_TRUE(itr != rtl_recordIdMap.end());
 
-				const rtl::access::Record& reflectedClass = itr->second.get();
+                const rtl::access::Record& reflectedClass = itr->second.get();
 
-				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
+                auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
 
-				if (recordName == calender::struct_) {
+                if (recordName == calender::struct_) {
                     //Calender's constructor not registered in RTL.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRTL);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == library::class_) {
+                    EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRTL);
+                    EXPECT_TRUE(robj.isEmpty());
+                }
+                else if (recordName == library::class_) {
                     //Library's copy-constructor is deleted or private.
-					EXPECT_TRUE(err == rtl::error::CopyConstructorPrivateOrDeleted);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else {
+                    EXPECT_TRUE(err == rtl::error::CopyConstructorPrivateOrDeleted);
+                    EXPECT_TRUE(robj.isEmpty());
+                }
+                else {
 
-					EXPECT_TRUE(err == rtl::error::None);
-					EXPECT_FALSE(robj.isEmpty());
-					EXPECT_TRUE(robj.getTypeId() == recordId);
-				}
+                    EXPECT_TRUE(err == rtl::error::None);
+                    EXPECT_FALSE(robj.isEmpty());
+                    EXPECT_TRUE(robj.getTypeId() == recordId);
+                }
             }
         }
     }

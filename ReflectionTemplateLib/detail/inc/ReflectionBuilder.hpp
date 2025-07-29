@@ -29,7 +29,7 @@ namespace rtl {
     */  template<class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
         {
-            using Container = FunctorContainer< remove_const_if_not_reference<_signature>...>;
+            using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
             return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
         }
@@ -45,7 +45,7 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
-            using Container = MethodContainer<methodQ::NonConst, remove_const_if_not_reference<_signature>...>;
+            using Container = MethodContainer<methodQ::NonConst, traits::remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
         }
@@ -61,7 +61,7 @@ namespace rtl {
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
-            using Container = MethodContainer<methodQ::Const, remove_const_if_not_reference<_signature>...>;
+            using Container = MethodContainer<methodQ::Const, traits::remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
             return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
         }
@@ -75,7 +75,7 @@ namespace rtl {
     */  template<typename _recordType, class ..._ctorSignature>
         inline const access::Function ReflectionBuilder::buildConstructor() const
         {
-            using Container = FunctorContainer<rtl::alloc, remove_const_if_not_reference<_ctorSignature>...>;
+            using Container = FunctorContainer<rtl::alloc, traits::remove_const_if_not_reference<_ctorSignature>...>;
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
             //if the _recordType has valid copy constructor.

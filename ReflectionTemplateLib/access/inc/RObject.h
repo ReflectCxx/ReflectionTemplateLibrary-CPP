@@ -15,12 +15,10 @@ namespace rtl::access
 {
     class Function;
 
-    using ConverterPair = std::pair< std::size_t, Converter >;
-
     //Reflecting the object within.
     class RObject
     {
-        static std::vector<rtl::access::ConverterPair> m_conversions;
+        static std::vector<traits::ConverterPair> m_conversions;
 
         rtl::IsPointer m_isPointer;
         std::size_t m_typeId;
@@ -28,7 +26,7 @@ namespace rtl::access
         std::size_t m_wrapperTypeId;
         std::string m_typeStr;
         alloc m_allocatedOn;
-        const std::vector<ConverterPair>& m_converters;
+        const std::vector<traits::ConverterPair>& m_converters;
 
         std::any m_object;
         std::any m_wrapper;
@@ -36,7 +34,7 @@ namespace rtl::access
 
         explicit RObject(std::any&& pObject, std::any&& pWrapper, std::size_t pTypeId, std::size_t pPtrTypeId, std::size_t pWrapperTypeId,
                          const std::string& pTypeStr, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
-                         const std::vector<ConverterPair>& pConversions);
+                         const std::vector<traits::ConverterPair>& pConversions);
 
         template<class T>
         const T& as(bool pGetFromWrapper = false) const;
@@ -94,7 +92,7 @@ namespace rtl::access
 
     inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::size_t pTypeId, std::size_t pPtrTypeId, std::size_t pWrapperTypeId,
                             const std::string& pTypeStr, rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
-                            const std::vector<ConverterPair>& pConversions)
+                            const std::vector<traits::ConverterPair>& pConversions)
         : m_isPointer(pIsPtr)
         , m_typeId(pTypeId)
         , m_ptrTypeId(pPtrTypeId)

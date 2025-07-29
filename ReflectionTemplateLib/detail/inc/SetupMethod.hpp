@@ -116,7 +116,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
+            const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<methodQ::NonConst, _signature...>' lambda vector and get the index.
             const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
@@ -161,7 +161,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
+            const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<methodQ::Const, _signature...>' lambda vector and get the index.
             const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.

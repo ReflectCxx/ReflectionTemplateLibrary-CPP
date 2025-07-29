@@ -3,7 +3,7 @@
 
 namespace rtl::access {
 
-    std::vector<ConverterPair> RObject::m_conversions = { };
+    std::vector<traits::ConverterPair> RObject::m_conversions = { };
 
     std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {

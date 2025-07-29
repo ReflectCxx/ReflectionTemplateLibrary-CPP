@@ -27,7 +27,7 @@ namespace rtl::access {
     template<class T>
     inline bool RObject::canViewAs() const
     {
-        using _T = remove_const_n_ref_n_ptr<T>;
+        using _T = traits::remove_const_n_ref_n_ptr<T>;
 
         static_assert(!std::is_reference_v<T>, "reference views are not supported.");
         constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::std_wrapper<_T>::type != Wrapper::None);
@@ -56,13 +56,13 @@ namespace rtl::access {
     template <class T>
     inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn)
     {
-        using _T = remove_const_n_ref_n_ptr<T>;
+        using _T = traits::remove_const_n_ref_n_ptr<T>;
         const std::size_t typeId = rtl::detail::TypeId<_T>::get();
         const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
         const auto& typeStr = rtl::detail::TypeId<_T>::toString();
         const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
 
-        if constexpr (std::is_pointer_v<remove_const_n_reference<T>>) {
+        if constexpr (std::is_pointer_v<traits::remove_const_n_reference<T>>) {
             return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), typeId, typePtrId, rtl::detail::TypeId<>::None,
                            typeStr, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
         }
@@ -77,7 +77,7 @@ namespace rtl::access {
     template<class W>
     inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
     {
-        using _W = traits::std_wrapper<remove_const_n_ref_n_ptr<W>>;
+        using _W = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<W>>;
         using _T = _W::baseT;
         const std::size_t typeId = detail::TypeId<_T>::get();
         const std::size_t typePtrId = detail::TypeId<_T*>::get();
@@ -105,7 +105,7 @@ namespace rtl::access {
         static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
                       "non-const pointers not supported, Only read-only (const) pointer views are supported.");
 
-        using _asWraper = traits::std_wrapper<remove_const_n_ref_n_ptr<_asType>>;
+        using _asWraper = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<_asType>>;
         constexpr bool isWrapperPtr = (std::is_pointer_v<_asType> && _asWraper::type != Wrapper::None);
         static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
 
@@ -115,10 +115,10 @@ namespace rtl::access {
             return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
         }
 
-        using _T = remove_const_n_reference<_asType>;
+        using _T = traits::remove_const_n_reference<_asType>;
         if constexpr (std::is_pointer_v<_T>)
         {
-            using T = remove_const_n_ref_n_ptr<_asType>;
+            using T = traits::remove_const_n_ref_n_ptr<_asType>;
             std::size_t typePtrId = rtl::detail::TypeId<T*>::get();
             if (typePtrId == m_ptrTypeId) {
                 auto& viewRef = as<T>();

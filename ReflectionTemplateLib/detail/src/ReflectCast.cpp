@@ -2,7 +2,6 @@
 #include "ReflectCast.hpp"
 #include "ReflectCastUtil.h"
 
-
 namespace rtl::detail
 {
     template<>

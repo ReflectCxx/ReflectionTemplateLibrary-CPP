@@ -8,7 +8,7 @@
 
 namespace rtl::detail
 {
-    template<class T, std::enable_if_t<traits::std_wrapper<T>::type != Wrapper::None, int>>
+    template<class T, traits::enable_if_std_wrapper<T>>
     inline access::RObject RObjectBuilder::build(T&& pVal, const std::function<void()>& pDeleter, rtl::alloc pAllocOn)
     {
         return access::RObject::create(std::forward<T>(pVal), pAllocOn);
@@ -27,7 +27,7 @@ namespace rtl::detail
     }
 
 
-    template<class T, std::enable_if_t<traits::std_wrapper<T>::type == Wrapper::None, int>>
+    template<class T, traits::enable_if_not_std_wrapper<T>>
     inline access::RObject RObjectBuilder::build(T&& pVal, const std::function<void()>& pDeleter, alloc pAllocOn)
     {
         if (std::is_pointer_v<std::remove_reference_t<T>> && pDeleter && pAllocOn == alloc::Heap) {

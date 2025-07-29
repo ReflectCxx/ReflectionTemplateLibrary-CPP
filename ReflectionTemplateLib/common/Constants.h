@@ -1,29 +1,15 @@
 #pragma once
 
 #include <string>
-#include <type_traits>
-#include <functional>
-#include <any>
 
 namespace rtl {
 
-    // Utility: Remove const and reference qualifiers from T.
-    template <typename T>
-    using remove_const_n_reference = std::remove_const_t<std::remove_reference_t<T>>;
+    enum class IsPointer 
+    { 
+        No,
+        Yes
+    };
 
-    // Utility: Remove const from T if T is not a reference; otherwise, leave as is.
-    template <typename T>
-    using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
-
-    // Utility: Remove const, reference, and pointer from T (after decay).
-    template<typename T>
-    using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
-
-    //TODO: Intigrate this utility.
-    //// Utility: Remove const, volatile, reference, pointer, and array extent from T.
-    //template<typename T>
-    //using remove_const_n_ref_n_ptr = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t
-    //                                   < std::remove_all_extents_t<T> > > >;
 
     enum class Wrapper
     {
@@ -33,6 +19,7 @@ namespace rtl {
         Shared
     };
 
+
     enum class ConversionKind
     {
         ByRef,
@@ -41,9 +28,6 @@ namespace rtl {
         BadAnyCast
     };
 
-    enum class IsPointer { Yes, No };
-
-    using Converter = std::function< std::any(const std::any&, const IsPointer&, ConversionKind&) >;
 
     enum FunctorIdx
     {

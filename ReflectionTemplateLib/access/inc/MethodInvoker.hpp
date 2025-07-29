@@ -39,7 +39,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;
@@ -112,7 +112,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;
