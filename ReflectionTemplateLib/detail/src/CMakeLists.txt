@@ -2,6 +2,7 @@
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxReflection.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctorId.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObjectId.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/ReflectCast.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectBuilder.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectConverters_string.cpp"
@@ -13,6 +14,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectCast.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectCast.hpp"

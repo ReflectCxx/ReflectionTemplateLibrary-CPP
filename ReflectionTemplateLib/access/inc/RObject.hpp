@@ -15,7 +15,7 @@ namespace rtl::access {
         if (pGetFromWrapper) {
             return std::any_cast<const T&>(m_wrapper);
         }
-        if (m_isPointer == rtl::IsPointer::Yes) {
+        if (m_objectId.m_isPointer == rtl::IsPointer::Yes) {
 
             using _ptrT = std::add_pointer_t<std::add_const_t<T>>;
             return *(std::any_cast<_ptrT>(m_object));
@@ -37,64 +37,19 @@ namespace rtl::access {
 
         if constexpr (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>)
         {
-            if (m_ptrTypeId == rtl::detail::TypeId<_T*>::get()) {
+            if (m_objectId.m_ptrTypeId == rtl::detail::TypeId<_T*>::get()) {
                 return true;
             }
         }
         else if constexpr (traits::std_wrapper<_T>::type != Wrapper::None)
         {
-            if (m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
+            if (m_objectId.m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
                 return true;
             }
         }
 
         const auto& typeId = rtl::detail::TypeId<T>::get();
-        return (typeId == m_typeId || getConverterIndex(typeId) != rtl::index_none);
-    }
-
-
-    template <class T>
-    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn)
-    {
-        using _T = traits::remove_const_n_ref_n_ptr<T>;
-        const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-        const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
-        const auto& typeStr = rtl::detail::TypeId<_T>::toString();
-        const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
-
-        if constexpr (std::is_pointer_v<traits::remove_const_n_reference<T>>) {
-            return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), typeId, typePtrId, rtl::detail::TypeId<>::None,
-                           typeStr, rtl::IsPointer::Yes, pAllocOn, std::move(pDeleter), conversions);
-        }
-        else {
-            static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-            return RObject(std::any(std::forward<T>(pVal)), std::any(), typeId, typePtrId, rtl::detail::TypeId<>::None,
-                           typeStr, rtl::IsPointer::No, pAllocOn, std::move(pDeleter), conversions);
-        }
-    }
-
-
-    template<class W>
-    inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
-    {
-        using _W = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<W>>;
-        using _T = _W::baseT;
-        const std::size_t typeId = detail::TypeId<_T>::get();
-        const std::size_t typePtrId = detail::TypeId<_T*>::get();
-        const std::size_t wrapperId = _W::id();
-        const auto& typeStr = detail::TypeId<_T>::toString();
-        const auto& conversions = detail::ReflectCast<_T>::getConversions();
-
-        if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Unique || _W::type == Wrapper::Shared) {
-            auto rawPtr = static_cast<const _T*>(pWrapper.get());
-            return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), typeId, typePtrId,
-                           wrapperId, typeStr, IsPointer::Yes, pAllocOn, nullptr, conversions);
-        }
-        else {
-            auto obj = pWrapper.value();
-            return RObject(std::any(obj), std::any(std::forward<W>(pWrapper)), typeId, typePtrId,
-                           wrapperId, typeStr, IsPointer::Yes, pAllocOn, nullptr, conversions);
-        }
+        return (typeId == m_objectId.m_typeId || getConverterIndex(typeId) != rtl::index_none);
     }
 
 
@@ -110,7 +65,7 @@ namespace rtl::access {
         static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
 
         std::size_t toTypeId = rtl::detail::TypeId<_asType>::get();
-        if (toTypeId == m_typeId) {
+        if (toTypeId == m_objectId.m_typeId) {
             const auto& viewRef = as<_asType>();
             return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
         }
@@ -120,14 +75,14 @@ namespace rtl::access {
         {
             using T = traits::remove_const_n_ref_n_ptr<_asType>;
             std::size_t typePtrId = rtl::detail::TypeId<T*>::get();
-            if (typePtrId == m_ptrTypeId) {
+            if (typePtrId == m_objectId.m_ptrTypeId) {
                 auto& viewRef = as<T>();
                 return std::optional<rtl::view<const T*>>(&viewRef);
             }
         }
         else if constexpr (traits::std_wrapper<_T>::type != Wrapper::None)
         {
-            if (m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
+            if (m_objectId.m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
                 const _asType& viewRef = as<_asType>(true);
                 return std::optional<rtl::view<_asType>>(viewRef);
             }
@@ -137,7 +92,7 @@ namespace rtl::access {
         if (index != rtl::index_none)
         {
             rtl::ConversionKind conversionKind = rtl::ConversionKind::NotDefined;
-            const std::any& viewObj = m_converters[index].second(m_object, m_isPointer, conversionKind);
+            const std::any& viewObj = m_objectId.m_converters[index].second(m_object, m_objectId.m_isPointer, conversionKind);
             if (viewObj.has_value())  //if true, 'conversionKind' can only be 'rtl::Converted::ByRef/ByValue'
             {
                 const _asType& viewRef = std::any_cast<const _asType&>(viewObj);
@@ -153,5 +108,56 @@ namespace rtl::access {
             }
         }
         return std::nullopt;
+    }
+}
+
+
+namespace rtl::access
+{
+    template <class T>
+    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn)
+    {
+        using _T = traits::remove_const_n_ref_n_ptr<T>;
+        using _isPointer = std::is_pointer<traits::remove_const_n_reference<T>>;
+
+        const std::size_t typeId = rtl::detail::TypeId<_T>::get();
+        const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
+        const std::size_t wrapperId = detail::TypeId<>::None;
+        const auto& typeStr = rtl::detail::TypeId<_T>::toString();
+        const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
+        const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
+        const auto& robjId = detail::RObjectId(pAllocOn, isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
+
+        if constexpr (_isPointer::value) {
+            return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), std::move(pDeleter), robjId);
+        }
+        else {
+            static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
+            return RObject(std::any(std::forward<T>(pVal)), std::any(), std::move(pDeleter), robjId);
+        }
+    }
+
+
+    template<class W>
+    inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
+    {
+        using _W = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<W>>;
+        using _T = _W::baseT;
+
+        const std::size_t typeId = detail::TypeId<_T>::get();
+        const std::size_t typePtrId = detail::TypeId<_T*>::get();
+        const std::size_t wrapperId = _W::id();
+        const auto& typeStr = detail::TypeId<_T>::toString();
+        const auto& conversions = detail::ReflectCast<_T>::getConversions();
+        const auto& robjId = detail::RObjectId(pAllocOn, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
+
+        if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Unique || _W::type == Wrapper::Shared) {
+            auto rawPtr = static_cast<const _T*>(pWrapper.get());
+            return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), nullptr, robjId);
+        }
+        else {
+            auto obj = pWrapper.value();
+            return RObject(std::any(obj), std::any(std::forward<W>(pWrapper)), nullptr, robjId);
+        }
     }
 }

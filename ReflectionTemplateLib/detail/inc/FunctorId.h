@@ -33,13 +33,18 @@ namespace rtl
 
         public:
 
+            FunctorId(FunctorId&&) = default;
+            FunctorId(const FunctorId&) = default;
+            FunctorId& operator=(FunctorId&&) = default;
+            FunctorId& operator=(const FunctorId&) = default;
+
             FunctorId() 
                 : m_index(rtl::index_none)
                 , m_returnId(TypeId<>::None)
                 , m_recordId(TypeId<>::None)
                 , m_containerId(TypeId<>::None)
-                , m_signature("") {
-            }
+                , m_signature("") 
+            { }
 
             FunctorId(std::size_t pIndex,
                       std::size_t pReturnId, std::size_t pRecordId,
@@ -48,10 +53,9 @@ namespace rtl
                 , m_returnId(pReturnId)
                 , m_recordId(pRecordId)
                 , m_containerId(pContainerId)
-                , m_signature(pSignature) {
-            }
+                , m_signature(pSignature) 
+            { }
 
-            FunctorId& operator=(const FunctorId& pOther);
 
             GETTER(std::size_t, Index, m_index)
             GETTER(std::size_t, ReturnId, m_returnId);
