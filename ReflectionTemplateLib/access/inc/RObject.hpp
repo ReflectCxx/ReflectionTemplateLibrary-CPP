@@ -7,7 +7,30 @@
 #include "RObject.h"
 #include "ReflectCast.h"
 
-namespace rtl::access {
+namespace rtl::traits
+{
+    template<class T>
+    void validate_view()
+    {
+        using _T = traits::remove_const_n_ref_n_ptr<T>;
+        constexpr bool isReference = std::is_reference_v<T>;
+        constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::std_wrapper<_T>::type != Wrapper::None);
+        constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
+
+        static_assert(!isReference, "explicit reference views are not supported.");
+        static_assert(!isWrapperPtr, "viewing standard wrappers (like std::optional or smart pointers) as raw pointers, not supported.");
+        static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
+    }
+}
+
+
+namespace rtl::access
+{
+    template<rtl::alloc _allocOn>
+    inline std::pair<error, RObject> RObject::clone() const
+    {
+        return { error::None, RObject(*this) };
+    }
 
     template<class T>
     inline const T& RObject::as(bool pGetFromWrapper/* = false*/) const
@@ -27,14 +50,9 @@ namespace rtl::access {
     template<class T>
     inline bool RObject::canViewAs() const
     {
+        traits::validate_view<T>();
+
         using _T = traits::remove_const_n_ref_n_ptr<T>;
-
-        static_assert(!std::is_reference_v<T>, "reference views are not supported.");
-        constexpr bool isWrapperPtr = (std::is_pointer_v<T> && traits::std_wrapper<_T>::type != Wrapper::None);
-        static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
-        constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
-        static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
-
         if constexpr (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>)
         {
             if (m_objectId.m_ptrTypeId == rtl::detail::TypeId<_T*>::get()) {
@@ -56,13 +74,7 @@ namespace rtl::access {
     template <class _asType>
     inline std::optional<rtl::view<_asType>> RObject::view() const
     {
-        static_assert(!std::is_reference_v<_asType>, "explicit reference views are not supported.");
-        static_assert(!std::is_pointer_v<_asType> || std::is_const_v<std::remove_pointer_t<_asType>>,
-                      "non-const pointers not supported, Only read-only (const) pointer views are supported.");
-
-        using _asWraper = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<_asType>>;
-        constexpr bool isWrapperPtr = (std::is_pointer_v<_asType> && _asWraper::type != Wrapper::None);
-        static_assert(!isWrapperPtr, "Cannot access the address of wrappers/smart-pointers.");
+        traits::validate_view<_asType>();
 
         std::size_t toTypeId = rtl::detail::TypeId<_asType>::get();
         if (toTypeId == m_objectId.m_typeId) {
@@ -82,7 +94,7 @@ namespace rtl::access {
         }
         else if constexpr (traits::std_wrapper<_T>::type != Wrapper::None)
         {
-            if (m_objectId.m_wrapperTypeId == traits::std_wrapper<_T>::id()) {
+            if (traits::std_wrapper<_T>::id() == m_objectId.m_wrapperTypeId) {
                 const _asType& viewRef = as<_asType>(true);
                 return std::optional<rtl::view<_asType>>(viewRef);
             }
@@ -151,7 +163,11 @@ namespace rtl::access
         const auto& conversions = detail::ReflectCast<_T>::getConversions();
         const auto& robjId = detail::RObjectId(pAllocOn, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
 
-        if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Unique || _W::type == Wrapper::Shared) {
+        if constexpr (_W::type == Wrapper::Unique) {
+            auto rawPtr = static_cast<const _T*>(pWrapper.get());
+            return RObject(std::any(rawPtr), std::any(std::unique_ptr<_T>(std::move(pWrapper))), nullptr, robjId);
+        }
+        else if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Shared) {
             auto rawPtr = static_cast<const _T*>(pWrapper.get());
             return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), nullptr, robjId);
         }

@@ -180,9 +180,10 @@ namespace rtl
                 EXPECT_TRUE(view->get().use_count() == 1);
             } {
                 //create copy of RObject itself.
-                RObject robj0 = robj;
-                auto view = robj0.view<std::shared_ptr<int>>();
+                auto [err, robj0] = robj.clone<alloc::Stack>();
+                ASSERT_TRUE(err == error::None);
 
+                auto view = robj0.view<std::shared_ptr<int>>();
                 ASSERT_TRUE(view.has_value());
                 {
                     const std::shared_ptr<int>& sptrVal = view->get();
@@ -261,6 +262,52 @@ namespace rtl
                 //now owned by 'robj0' alone.
                 EXPECT_TRUE(view->get().use_count() == 1);
             }
+        }
+    }
+
+
+    TEST(RObject_std_wrapper_unique_ptr, reflect_init_with_lvalue)
+    {
+        constexpr const int NUM = 963;
+        std::unique_ptr<int> uptr = std::make_unique<int>(NUM);
+        {
+            //RObject robj = reflect(std::move(uptr));
+
+            //// Check if RObject can reflect as `int`
+            //EXPECT_TRUE(robj.canViewAs<int>());
+            //{
+            //    auto view = robj.view<int>();
+            //    ASSERT_TRUE(view);
+
+            //    int value = view->get();
+            //    EXPECT_EQ(value, NUM);
+            //}
+            //// Check if RObject can reflect as `int`
+            //EXPECT_TRUE(robj.canViewAs<const int*>());
+            //{
+            //    auto view = robj.view<const int*>();
+            //    ASSERT_TRUE(view);
+
+            //    int value = *view->get();
+            //    EXPECT_EQ(value, NUM);
+            //}
+            //// Check if RObject can reflect as `unique_ptr<int>`
+            //EXPECT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
+            //{
+            //    // Get a view of the value as `unique_ptr<int>`
+            //    auto view = robj.view<std::unique_ptr<int>>();
+
+            //    // Ensure the view is valid
+            //    ASSERT_TRUE(view.has_value());
+
+            //    // Access the converted bool value
+            //    const std::unique_ptr<int>& sptrVal = view->get();
+
+            //    // Verify the conversion result (non-zero -> true)
+            //    EXPECT_EQ(*sptrVal, NUM);
+            //}
+            //  robj.canViewAs<const std::unique_ptr<int>*>();  //should not compile.
+            //  robj.view<const std::unique_ptr<int>*>();       //should not compile.
         }
     }
 }

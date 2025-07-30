@@ -88,10 +88,11 @@ namespace rtl_tests
             /*  Copy-constructs on stack successfully.
                 No actual deep copy occurs, RObject internally holds a const pointer/reference to the original instance.
                 The underlying object's copy constructor is not invoked; only the RObject wrapper is copied.
-            */  rtl::access::RObject robj = calender;
+            */  auto [err3, cal] = calender.clone<rtl::alloc::Stack>();
 
-                ASSERT_FALSE(robj.isEmpty());
-                ASSERT_TRUE(robj.getTypeId() == id::calender);
+                ASSERT_TRUE(err3 == rtl::error::None);
+                ASSERT_FALSE(cal.isEmpty());
+                ASSERT_TRUE(cal.getTypeId() == id::calender);
                 EXPECT_TRUE(calender::get_instance_count() == 1);
             }
         }

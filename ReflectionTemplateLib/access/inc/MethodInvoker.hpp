@@ -132,23 +132,23 @@ namespace rtl
         {
             static_assert(_Q != methodQ::None, "Invalid qualifier used.");
 
-            using container = detail::MethodContainer<_Q, _finalSignature...>;
-            const std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+            using container0 = detail::MethodContainer<_Q, _finalSignature...>;
+            const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
             if (index != rtl::index_none) {
-                return container::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
+                return container0::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
             }
             else {
                 if constexpr (_Q == methodQ::Const) {
-                    using container = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
-                    std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+                    using container1 = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
+                    std::size_t index = pMethod.hasSignatureId(container1::getContainerId());
                     if (index != rtl::index_none) {
                         pError = error::ConstMethodOverloadNotFound;
                         return RObject();
                     }
                 }
                 else if constexpr (_Q == methodQ::NonConst) {
-                    using container = detail::MethodContainer<methodQ::Const, _finalSignature...>;
-                    std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+                    using container2 = detail::MethodContainer<methodQ::Const, _finalSignature...>;
+                    std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
                     if (index != rtl::index_none) {
                         pError = error::NonConstMethodOverloadNotFound;
                         return RObject();

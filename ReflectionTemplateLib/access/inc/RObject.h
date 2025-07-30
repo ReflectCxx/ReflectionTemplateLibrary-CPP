@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include "view.h"
 #include "TypeId.h"
@@ -25,6 +26,8 @@ namespace rtl::access
         std::shared_ptr<void> m_deallocator;
         detail::RObjectId m_objectId;
 
+        RObject(const RObject&) = default;
+
         RObject(std::any&& pObject, std::any&& pWrapper,
                 std::shared_ptr<void>&& pDeleter, const detail::RObjectId& pRObjectId);
 
@@ -33,13 +36,11 @@ namespace rtl::access
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
-    protected:
+        template <class W>
+        static RObject create(W&& pWrapper, rtl::alloc pAllocOn);
 
         template <class T>
         static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
-
-        template <class W>
-        static RObject create(W&& pWrapper, rtl::alloc pAllocOn);
 
     public:
 
@@ -47,7 +48,6 @@ namespace rtl::access
         RObject(RObject&&) noexcept;
 
         ~RObject() = default;
-        RObject(const RObject&) = default;
 
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
@@ -59,14 +59,17 @@ namespace rtl::access
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == rtl::alloc::Heap));
         GETTER_BOOL(Empty, (m_object.has_value() == false))
 
+        template<rtl::alloc _allocOn>
+        std::pair<error, RObject> clone() const;
+
         template <class _asType>
         bool canViewAs() const;
 
         //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
         template<class _asType>
-        std::optional<rtl::view<_asType>> view() const;
+        std::optional<view<_asType>> view() const;
 
-        friend rtl::detail::RObjectBuilder;
+        friend detail::RObjectBuilder;
     };
 
 

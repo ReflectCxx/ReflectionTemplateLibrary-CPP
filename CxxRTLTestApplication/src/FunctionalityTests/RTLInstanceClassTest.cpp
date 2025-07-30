@@ -40,8 +40,9 @@ namespace rtl_tests
             - Copying a stack-allocated RObject creates a new wrapper.
             - The underlying object is expected to be copied via copy constructor.
             - This test ensures that a mutation to one does not affect the other.
-        */  RObject robj1 = robj0;
-            
+        */  auto [err1, robj1] = robj0.clone<rtl::alloc::Stack>(); 
+            EXPECT_TRUE(err1 == error::None);
+
             // Another 'Date' instance got created now.
             EXPECT_TRUE(date::get_date_instance_count() == 2);
             // 'Calender' not created, got shared.
@@ -60,8 +61,8 @@ namespace rtl_tests
             ASSERT_TRUE(updateDate);
 
             string dateStr = date::DATE_STR1;
-            auto [err1, ret] = updateDate->bind(robj0).call(dateStr);
-            EXPECT_TRUE(err1 == error::None && ret.isEmpty());
+            auto [err2, ret] = updateDate->bind(robj0).call(dateStr);
+            EXPECT_TRUE(err2 == error::None && ret.isEmpty());
 
             // After mutation, robj0 and robj1 should differ - confirms distinct stack instances
             EXPECT_FALSE(date::test_if_obejcts_are_equal(robj0.get(), robj1.get(), false));
@@ -102,7 +103,8 @@ namespace rtl_tests
                   results in shared ownership of the same underlying instance.
                 - No deep copy or clone of the object is performed.
                 - Internally, the shared_ptr ensures reference-counted lifetime.
-            */  RObject robj1 = robj0;
+            */  auto [err3, robj1] = robj0.clone<rtl::alloc::Stack>();
+                ASSERT_TRUE(err3 == rtl::error::None);
 
                 // Still only one instance of 'Date' must exists.
                 EXPECT_TRUE(date::get_date_instance_count() == 1);
