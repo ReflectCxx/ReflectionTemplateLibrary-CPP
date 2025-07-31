@@ -10,7 +10,7 @@
 namespace rtl::traits
 {
     template<class T>
-    void validate_view()
+    constexpr void validate_view()
     {
         using _T = traits::remove_const_n_ref_n_ptr<T>;
         constexpr bool isReference = std::is_reference_v<T>;
@@ -29,7 +29,18 @@ namespace rtl::access
     template<rtl::alloc _allocOn>
     inline std::pair<error, RObject> RObject::clone() const
     {
-        return { error::None, RObject(*this) };
+        //if constexpr (_allocOn == alloc::Stack)
+        {
+            if (m_objectId.m_wrapperType == Wrapper::Unique) {
+                return { error::ReflectingUniquePtrCopyDisallowed, RObject() };
+            }
+            else {
+                return { error::None, RObject(*this) };
+            }
+        }
+        //else {
+
+        //}
     }
 
     template<class T>
@@ -124,44 +135,70 @@ namespace rtl::access
 }
 
 
+//static functions.
 namespace rtl::access
 {
-    template <class T>
-    inline RObject RObject::create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn)
+    template<class T>
+    inline std::shared_ptr<void> RObject::getDeallocator(T pObject)
+    {
+        auto deleter = [=](void*) {
+            delete pObject;
+            m_rtlOwnedRObjectInstanceCount.fetch_sub(1);
+            assert(m_rtlOwnedRObjectInstanceCount >= 0 && "instance count can't be less than zero. memory leak alert!");
+        };
+        m_rtlOwnedRObjectInstanceCount.fetch_add(1);
+        return std::shared_ptr<void>(static_cast<void*>(&m_rtlOwnedRObjectInstanceCount), deleter);
+    }
+
+
+    template<class T>
+    inline std::function<std::any(error&)> RObject::getCopyConstructor()
+    {
+        //lambda containing constructor call.
+        return [=](error& pError)-> std::any
+        {
+            //if (!pOther.canViewAs<_recordType>()) {
+            //    pError = error::SignatureMismatch;
+            //    return access::RObject();
+            //}
+            //pError = error::None;
+            ////cast will definitely succeed, will not throw since the object type is already validated.
+            //_recordType* robj = new _recordType(pOther.view<_recordType>()->get());
+            //return RObjectBuilder::build(robj, [=]() { delete robj; }, alloc::Heap);
+            return std::any();
+        };
+    }
+
+
+    template <class T, rtl::alloc _allocOn>
+    inline RObject RObject::create(T&& pVal)
     {
         using _T = traits::remove_const_n_ref_n_ptr<T>;
         using _isPointer = std::is_pointer<traits::remove_const_n_reference<T>>;
-
-        const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-        const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
-        const std::size_t wrapperId = detail::TypeId<>::None;
-        const auto& typeStr = rtl::detail::TypeId<_T>::toString();
-        const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
-        const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
-        const auto& robjId = detail::RObjectId(pAllocOn, isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
+        const detail::RObjectId& robjId = detail::RObjectId::create<T, _allocOn>();
 
         if constexpr (_isPointer::value) {
-            return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), std::move(pDeleter), robjId);
+            if constexpr (_allocOn == rtl::alloc::Heap) {
+                auto&& deleter = getDeallocator(static_cast<const _T*>(pVal));
+                return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), std::move(deleter), getCopyConstructor<T>(), robjId);
+            }
+            else {
+                return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), nullptr, getCopyConstructor<T>(), robjId);
+            }
         }
         else {
             static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-            return RObject(std::any(std::forward<T>(pVal)), std::any(), std::move(pDeleter), robjId);
+            return RObject(std::any(std::forward<T>(pVal)), std::any(), nullptr, getCopyConstructor<T>(), robjId);
         }
     }
 
 
     template<class W>
-    inline RObject RObject::create(W&& pWrapper, alloc pAllocOn)
+    inline RObject RObject::createWithWrapper(W&& pWrapper)
     {
         using _W = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<W>>;
         using _T = _W::baseT;
-
-        const std::size_t typeId = detail::TypeId<_T>::get();
-        const std::size_t typePtrId = detail::TypeId<_T*>::get();
-        const std::size_t wrapperId = _W::id();
-        const auto& typeStr = detail::TypeId<_T>::toString();
-        const auto& conversions = detail::ReflectCast<_T>::getConversions();
-        const auto& robjId = detail::RObjectId(pAllocOn, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
+        const detail::RObjectId& robjId = detail::RObjectId::createForWrapper<W>();
 
         if constexpr (_W::type == Wrapper::Unique) {
             auto rawPtr = static_cast<const _T*>(pWrapper.get());
@@ -169,11 +206,11 @@ namespace rtl::access
         }
         else if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Shared) {
             auto rawPtr = static_cast<const _T*>(pWrapper.get());
-            return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), nullptr, robjId);
+            return RObject(std::any(rawPtr), std::any(std::forward<W>(pWrapper)), nullptr, getCopyConstructor<_T>(), robjId);
         }
         else {
             auto obj = pWrapper.value();
-            return RObject(std::any(obj), std::any(std::forward<W>(pWrapper)), nullptr, robjId);
+            return RObject(std::any(obj), std::any(std::forward<W>(pWrapper)), nullptr, getCopyConstructor<_T>(), robjId);
         }
     }
 }

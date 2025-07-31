@@ -4,7 +4,6 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/FunctorId.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectId.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/ReflectCast.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/RObjectBuilder.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectConverters_string.cpp"
 )
 
@@ -29,7 +28,6 @@ SET(LOCAL_HEADERS
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectBuilder.h"
-	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectBuilder.hpp"
 )
 
 

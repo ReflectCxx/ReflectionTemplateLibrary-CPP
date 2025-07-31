@@ -1,8 +1,10 @@
 
 #include "RObject.h"
 
-namespace rtl::access 
+namespace rtl::access
 {
+    std::atomic<std::size_t> RObject::m_rtlOwnedRObjectInstanceCount = 0;
+
     std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {
         if (!isEmpty()) 

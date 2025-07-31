@@ -49,9 +49,9 @@ namespace rtl {
     //Allocation type.
     enum class alloc
     {
-        None = -1,
-        Stack = 0,
-        Heap = 1,
+        None,
+        Stack,
+        Heap,
     };
 
 
@@ -76,6 +76,7 @@ namespace rtl {
         ConstructorNotRegisteredInRTL,
         NonConstMethodOverloadNotFound,
         CopyConstructorPrivateOrDeleted,
+        ReflectingUniquePtrCopyDisallowed
     };
 
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
@@ -115,6 +116,8 @@ namespace rtl {
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::CopyConstructorPrivateOrDeleted:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
+        case error::ReflectingUniquePtrCopyDisallowed:
+            return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
         default:
             return "Unknown error";
         }

@@ -1,32 +1,35 @@
 #pragma once
 
-#include <atomic>
-#include <functional>
-#include <memory>
-
-#include "RObject.h"
+#include "RObject.hpp"
 
 namespace rtl::detail
 {
-    class RObjectBuilder
+    struct RObjectBuilder
     {
-        static std::atomic<std::size_t> m_reflectedInstanceCount;
-
-    public:
-
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
-        static const std::size_t reflectedInstanceCount();
+        static const std::size_t reflectedInstanceCount()
+        {
+            return access::RObject::m_rtlOwnedRObjectInstanceCount;
+        }
 
-        template<class T, traits::enable_if_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, rtl::alloc pAllocOn);
+        template<class T, alloc _allocOn = alloc::None, traits::enable_if_std_wrapper<T> = 0>
+        static access::RObject build(T&& pVal) 
+        {
+            return access::RObject::createWithWrapper(std::forward<T>(pVal));
+        }
 
-        template<class T, std::size_t N>
-        static access::RObject build(T(&pArr)[N], const std::function<void()>& pDeleter, rtl::alloc pAllocOn);
-
-        template<class T, traits::enable_if_not_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal, const std::function<void()>& pDeleter, rtl::alloc pAllocOn);
+        template<class T, alloc _allocOn = alloc::None, traits::enable_if_not_std_wrapper<T> = 0>
+        static access::RObject build(T&& pVal) 
+        {
+            if constexpr (std::is_pointer_v<std::remove_reference_t<T>> && _allocOn == alloc::Heap) {
+                return access::RObject::create<T, alloc::Heap>(std::forward<T>(pVal));
+            }
+            else {
+                return access::RObject::create<T, _allocOn>(std::forward<T>(pVal));
+            }
+        }
     };
 }
 
@@ -36,7 +39,18 @@ namespace rtl
     template <class T>
     inline access::RObject reflect(T&& pVal)
     {
-        return detail::RObjectBuilder::build(std::forward<T>(pVal), nullptr, alloc::None);
+        return detail::RObjectBuilder::build(std::forward<T>(pVal));
+    }
+
+    template<class T, std::size_t N>
+    inline access::RObject reflect(T(&pArr)[N])
+    {
+        if constexpr (std::is_same_v<traits::base_t<T>, char>) {
+            return detail::RObjectBuilder::build<std::string_view, alloc::None>(std::string_view(pArr, N - 1));
+        }
+        else {
+            return detail::RObjectBuilder::build<std::vector<T>, alloc::None>(std::vector(pArr, pArr + N));
+        }
     }
 
     inline const std::size_t getReflectedHeapInstanceCount() 

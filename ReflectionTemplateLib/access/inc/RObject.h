@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
 #include <functional>
 
 #include "view.h"
@@ -11,7 +12,7 @@
 
 namespace rtl::detail 
 {
-    class RObjectBuilder;
+    struct RObjectBuilder;
 }
 
 namespace rtl::access
@@ -24,23 +25,33 @@ namespace rtl::access
         std::any m_object;
         std::any m_wrapper;
         std::shared_ptr<void> m_deallocator;
+        std::function<std::any(error&)> m_copyCtor;
+
         detail::RObjectId m_objectId;
+
+        static std::atomic<std::size_t> m_rtlOwnedRObjectInstanceCount;
 
         RObject(const RObject&) = default;
 
-        RObject(std::any&& pObject, std::any&& pWrapper,
-                std::shared_ptr<void>&& pDeleter, const detail::RObjectId& pRObjectId);
+        RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
+                std::function<std::any(error&)>&& pCopyCtor, const detail::RObjectId& pRObjectId);
 
         template<class T>
         const T& as(bool pGetFromWrapper = false) const;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
-        template <class W>
-        static RObject create(W&& pWrapper, rtl::alloc pAllocOn);
+        template <class T>
+        static std::shared_ptr<void> getDeallocator(T pObject);
 
         template <class T>
-        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
+        static std::function<std::any(error&)> getCopyConstructor(/*T* pObject*/ );
+
+        template <class T, rtl::alloc _allocOn>
+        static RObject create(T&& pVal);
+
+        template <class W>
+        static RObject createWithWrapper(W&& pWrapper);
 
     public:
 
@@ -73,11 +84,12 @@ namespace rtl::access
     };
 
 
-    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper,
-                            std::shared_ptr<void>&& pDeleter, const detail::RObjectId& pRObjectId)
+    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
+                            std::function<std::any(error&)>&& pCopyCtor, const detail::RObjectId& pRObjectId)
         : m_object(std::forward<std::any>(pObject))
         , m_wrapper(std::forward<std::any>(pWrapper))
         , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
+        , m_copyCtor(std::forward<std::function<std::any(error&)>>(pCopyCtor))
         , m_objectId(pRObjectId)
     {
     }
@@ -87,6 +99,7 @@ namespace rtl::access
         : m_object(std::move(pOther.m_object))
         , m_wrapper(std::move(pOther.m_wrapper))
         , m_deallocator(std::move(pOther.m_deallocator))
+        , m_copyCtor(std::move(pOther.m_copyCtor))
         , m_objectId(pOther.m_objectId)
     {
         // Explicitly clear moved-from source

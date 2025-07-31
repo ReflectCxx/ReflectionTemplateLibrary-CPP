@@ -42,19 +42,18 @@ namespace rtl
             const auto& functor = [=](error& pError, rtl::alloc pAllocType, _signature&&...params)-> access::RObject
             {
                 if (pAllocType == rtl::alloc::Heap) {
-                    pError = error::None;
-                    const _recordType* robj = new _recordType(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(robj, [=]() { delete robj; }, pAllocType);
+                    pError = rtl::error::None;
+                    return RObjectBuilder::build<const _recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...));
                 }
                 else if (pAllocType == rtl::alloc::Stack) 
                 {
                     if constexpr (!std::is_copy_constructible<_recordType>::value) {
-                        pError = error::CopyConstructorPrivateOrDeleted;
+                        pError = rtl::error::CopyConstructorPrivateOrDeleted;
                         return access::RObject();
                     }
                     else {
                         pError = error::None;
-                        return RObjectBuilder::build(_recordType(std::forward<_signature>(params)...), std::function<void()>(), pAllocType);
+                        return RObjectBuilder::build<_recordType, rtl::alloc::Stack>(_recordType(std::forward<_signature>(params)...));
                     }
                 }
                 //dead-code.
@@ -101,9 +100,8 @@ namespace rtl
                     return access::RObject();
                 }
                 pError = error::None;
-                //cast will definitely succeed, will not throw since the object type is already validated.
-                _recordType* robj = new _recordType(pOther.view<_recordType>()->get());
-                return RObjectBuilder::build(robj, [=]() { delete robj; }, alloc::Heap);
+                auto& srcObj = pOther.view<_recordType>()->get();
+                return RObjectBuilder::build<const _recordType*, alloc::Heap>(new _recordType(srcObj));
             };
 
             //add the lambda in 'FunctorContainer'.

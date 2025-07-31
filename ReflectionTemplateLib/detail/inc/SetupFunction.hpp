@@ -28,11 +28,11 @@ namespace rtl
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(&retObj, nullptr, alloc::None);
+                    return RObjectBuilder::build(&retObj);
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    return RObjectBuilder::build((*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
+                    return RObjectBuilder::build<_returnType, rtl::alloc::None>((*pFunctor)(std::forward<_signature>(params)...));
                 }
             };
         }
