@@ -25,7 +25,9 @@ namespace rtl::access
         std::any m_object;
         std::any m_wrapper;
         std::shared_ptr<void> m_deallocator;
-        std::function<std::any(error&)> m_copyCtor;
+
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        Cloner m_getClone;
 
         detail::RObjectId m_objectId;
 
@@ -33,8 +35,8 @@ namespace rtl::access
 
         RObject(const RObject&) = default;
 
-        RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
-                std::function<std::any(error&)>&& pCopyCtor, const detail::RObjectId& pRObjectId);
+        RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter, 
+                Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId);
 
         template<class T>
         const T& as(bool pGetFromWrapper = false) const;
@@ -42,10 +44,10 @@ namespace rtl::access
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
         template <class T>
-        static std::shared_ptr<void> getDeallocator(T pObject);
+        static std::shared_ptr<void> getDeallocator(T* pObject);
 
         template <class T>
-        static std::function<std::any(error&)> getCopyConstructor(/*T* pObject*/ );
+        static Cloner getCloner();
 
         template <class T, rtl::alloc _allocOn>
         static RObject create(T&& pVal);
@@ -85,11 +87,11 @@ namespace rtl::access
 
 
     inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
-                            std::function<std::any(error&)>&& pCopyCtor, const detail::RObjectId& pRObjectId)
+                            Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId)
         : m_object(std::forward<std::any>(pObject))
         , m_wrapper(std::forward<std::any>(pWrapper))
         , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
-        , m_copyCtor(std::forward<std::function<std::any(error&)>>(pCopyCtor))
+        , m_getClone(std::forward<Cloner>(pCopyCtor))
         , m_objectId(pRObjectId)
     {
     }
@@ -99,7 +101,7 @@ namespace rtl::access
         : m_object(std::move(pOther.m_object))
         , m_wrapper(std::move(pOther.m_wrapper))
         , m_deallocator(std::move(pOther.m_deallocator))
-        , m_copyCtor(std::move(pOther.m_copyCtor))
+        , m_getClone(std::move(pOther.m_getClone))
         , m_objectId(pOther.m_objectId)
     {
         // Explicitly clear moved-from source

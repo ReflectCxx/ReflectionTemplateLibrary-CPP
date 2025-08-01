@@ -13,7 +13,7 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReflectedCallStatusErrTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticMethodTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/PerfectForwardingTests.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/RTLInstanceClassTest.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/MoveConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReturnValueReflectionTest.cpp"
 )
 

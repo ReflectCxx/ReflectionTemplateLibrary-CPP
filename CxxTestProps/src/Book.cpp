@@ -3,7 +3,7 @@
 
 using namespace nsdate;
 
-unsigned Book::m_instanceCount = 0;
+int Book::m_instanceCount = 0;
 
 Book::~Book() {
 	m_instanceCount--;
@@ -80,7 +80,7 @@ std::string Book::getPublishedOn() {
 }
 
 
-unsigned Book::getInstanceCount() {
+int Book::getInstanceCount() {
 	return m_instanceCount;
 }
 

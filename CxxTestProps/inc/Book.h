@@ -13,7 +13,7 @@ class Book
 	std::string m_author;
 	std::string m_description;
 
-	static unsigned m_instanceCount;
+	static int m_instanceCount;
 
 public:
 
@@ -39,5 +39,5 @@ public:
 	Book& operator=(const Book& pOther) = default;
 	const bool operator==(const Book& pOther) const;
 
-	static unsigned getInstanceCount();
+	static int getInstanceCount();
 };

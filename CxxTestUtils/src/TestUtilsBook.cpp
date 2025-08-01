@@ -15,6 +15,11 @@ namespace test_utils
 		return (Library::getInstanceCount() == 0);
 	}
 
+	const int book::get_book_instance_count()
+	{
+		return Book::getInstanceCount();
+	}
+
 	const bool book::assert_zero_instance_count()
 	{
 		return (Book::getInstanceCount() == 0);
@@ -174,7 +179,7 @@ namespace test_utils
 	}
 
 
-	const bool test_utils::book::test_unique_copy_ctor_const_ref(const std::any& pInstance, bool pOnHeap)
+	const bool test_utils::book::test_copy_ctor_with_mutated_object(const std::any& pInstance, bool pOnHeap)
 	{
 		Book obj(PRICE, TITLE);
 		obj.setAuthor(AUTHOR);
