@@ -4,17 +4,9 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Constants.h"
+#include "Record.h"
 
 namespace rtl {
-
-    namespace access 
-    {
-        //Forward decls.
-        class Record;
-        class Method;
-        class Function;
-    }
 
     namespace detail
     {

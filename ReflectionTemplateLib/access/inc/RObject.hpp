@@ -41,7 +41,10 @@ namespace rtl::access
     inline std::pair<error, RObject> RObject::clone() const
     {
         static_assert(_allocOn != alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
-        if (m_objectId.m_wrapperType == Wrapper::Unique) {
+        if (isEmpty()) {
+            return { error::EmptyRObject, RObject() };
+        }
+        else if (m_objectId.m_wrapperType == Wrapper::Unique) {
             return { error::ReflectingUniquePtrCopyDisallowed, RObject() };
         }
         error err = error::None;
@@ -61,6 +64,20 @@ namespace rtl::access
             return *(std::any_cast<_ptrT>(m_object));
         }
         return std::any_cast<const T&>(m_object);
+    }
+
+
+    inline std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
+    {
+        if (!isEmpty())
+        {
+            for (std::size_t index = 0; index < m_objectId.m_converters.size(); index++) {
+                if (m_objectId.m_converters[index].first == pToTypeId) {
+                    return index;
+                }
+            }
+        }
+        return rtl::index_none;
     }
 
 

@@ -78,13 +78,6 @@ namespace rtl {
             using Container = FunctorContainer<rtl::alloc, traits::remove_const_if_not_reference<_ctorSignature>...>;
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
-            //if the _recordType has valid copy constructor.
-            if constexpr (std::is_copy_constructible_v<_recordType>) {
-                //Construct and push the copy constructor's functorId at pos 1, it will be accessed using FunctorIdx::ONE.
-                const FunctorId& copyCtorFunctorId = FunctorContainer<access::RObject&>::template addCopyConstructor<_recordType>();
-                constructor.getFunctorIds().emplace_back(copyCtorFunctorId);
-            }
-
             return constructor;
         }
     }

@@ -25,22 +25,6 @@ namespace rtl {
         }
 
 
-        Function& Function::operator=(const Function& pOther) 
-        {
-            if (this == &pOther) {
-                return *this;
-            }
-
-            m_qualifier = pOther.m_qualifier;
-            m_recordTypeId = pOther.m_recordTypeId;
-            m_record = pOther.m_record;
-            m_function = pOther.m_function;
-            m_namespace = pOther.m_namespace;
-            m_functorIds = pOther.m_functorIds;
-
-            return *this;
-        }
-
     /*  @constructor: Function()
         @params: pOther - 'Function' object associated with a constructor.
         *        pFunctorId - 'FunctorId', object associated with a copy-constructor.
@@ -57,24 +41,6 @@ namespace rtl {
             , m_function(pFunctorName)
             , m_namespace(pOther.m_namespace)
             , m_functorIds({ pFunctorId }) {
-        }
-
-
-    /*  @method: hasSignatureId()
-        @param: const std::size_t& (signatureId to be found)
-        @return: the index of the functor in the functor-table.
-        * a 'Function' object may be associated with multiple functors in case of overloads.
-        * every overload will have unique 'FunctorId', contained by one 'Function' object.
-        * given signatureId is compared against the signatureId of all overloads registered.
-    */	std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
-        {
-            //simple linear-search, efficient for small set of elements.
-            for (const auto& functorId : m_functorIds) {
-                if (functorId.getSignatureId() == pSignatureId) {
-                    return functorId.getIndex();
-                }
-            }
-            return rtl::index_none;
         }
 
 

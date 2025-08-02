@@ -81,7 +81,7 @@ namespace rtl_tests
             EXPECT_TRUE(calender.getTypeId() == id::calender);
 
             //clone always creates instance on heap.
-            auto [err2, robj2] = structCalender->clone(calender);
+            auto [err2, robj2] = calender.clone<rtl::alloc::Heap>();
             //Calender's copy-constructor private or deleted.
             EXPECT_TRUE(err2 == rtl::error::CopyConstructorPrivateOrDeleted);
             {

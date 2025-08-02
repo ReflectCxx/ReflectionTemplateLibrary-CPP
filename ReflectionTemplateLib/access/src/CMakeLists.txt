@@ -3,9 +3,6 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirror.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorToJson.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Function.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/Method.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/Record.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/RObject.cpp"
 )
 
 SET(COMMON_HEADERS
@@ -18,6 +15,7 @@ SET(COMMON_HEADERS
 
 SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirror.h"
+	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirror.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/CxxMirrorToJson.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/Function.hpp"
@@ -28,7 +26,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/MethodInvoker.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/Record.h"
-	"${PROJECT_SOURCE_DIR}/access/inc/Record.hpp"
 	"${PROJECT_SOURCE_DIR}/access/inc/RObject.h"
 	"${PROJECT_SOURCE_DIR}/access/inc/RObject.hpp"
 )

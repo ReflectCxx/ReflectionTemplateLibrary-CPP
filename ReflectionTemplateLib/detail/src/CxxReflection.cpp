@@ -68,22 +68,7 @@ namespace rtl {
         {
             const auto& fname = pFunction.getFunctionName();
             const auto& itr = pMethodMap.find(fname);
-            if (itr == pMethodMap.end())
-            {
-                auto& functorIds = pFunction.getFunctorIds();
-            /*  Below These conditions will be true only in case that 'Function' object represents a constructor
-                and has more than one 'FunctorId'. every other function registered will have only one 'FunctorId'.
-            */  if (functorIds.size() == FunctorIdx::MAX_SIZE)
-                {
-                    const auto& ctorName = CtorName::copyCtor(pFunction.getRecordName());
-                    if (pMethodMap.find(ctorName) == pMethodMap.end()) {
-                        //copy-constructor's 'FunctorId' will always be the second in the constructor's FunctorId's vector.
-                        access::Method method = access::Method::getCopyConstructorMethod(pFunction, functorIds[FunctorIdx::ONE]);
-                        pMethodMap.insert(std::make_pair(method.getFunctionName(), method));
-                    }
-                    //remove the copy-constructor's 'FunctorId' from the constructor's 'FunctorId' vector.
-                    functorIds.pop_back();
-                }
+            if (itr == pMethodMap.end()) {
                 //construct 'Method' obejct and add.
                 pMethodMap.emplace(fname, access::Method(pFunction));
             }

@@ -2,12 +2,11 @@
 /*
 * 
 * Below error codes are covered in ConstMethodOverloadTests.cpp
-* 	error::AmbiguousConstOverload
-*	error::ConstMethodOverloadNotFound
-*	error::NonConstMethodOverloadNotFound
+* 	rtl::error::AmbiguousConstOverload
+*	rtl::error::ConstMethodOverloadNotFound
+*	rtl::error::NonConstMethodOverloadNotFound
 * and,
-*	error::FunctionNotRegisterdInRTL
-* is not internally used by RTL.
+*	rtl::error::FunctionNotRegisterdInRTL, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 
 * be empty if its not in registered in Reflection-system.
 * 
@@ -27,6 +26,24 @@ using namespace test_utils;
 
 namespace rtl_tests
 {
+    TEST(ReflectedCallStatusError, clone_empty_instance___error_EmptyRObject)
+    {
+        {
+            RObject emptyObj;
+            ASSERT_TRUE(emptyObj.isEmpty());
+            {
+                auto [err, person] = emptyObj.clone<alloc::Stack>();
+                ASSERT_TRUE(err == error::EmptyRObject);
+                ASSERT_TRUE(person.isEmpty());
+            } {
+                auto [err, person] = emptyObj.clone<alloc::Heap>();
+                ASSERT_TRUE(err == error::EmptyRObject);
+                ASSERT_TRUE(person.isEmpty());
+            }
+        }
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
+
     TEST(ReflectedCallStatusError, error_ConstructorNotRegisteredInRTL)
     {
         optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
@@ -69,7 +86,7 @@ namespace rtl_tests
             ASSERT_TRUE(classCalender);
 
             // Try to call copy-constructor of class Calender.
-            auto [err2, copyObj] = classCalender->clone(calender);
+            auto [err2, copyObj] = calender.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
             ASSERT_TRUE(err2 == error::CopyConstructorPrivateOrDeleted);
@@ -128,24 +145,6 @@ namespace rtl_tests
 
         ASSERT_TRUE(err == error::SignatureMismatch);
         ASSERT_TRUE(robj.isEmpty());
-    }
-
-
-    TEST(ReflectedCallStatusError, copy_ctor_on_empty_instance___error_EmptyRObject)
-    {
-        {
-            RObject emptyObj;
-            ASSERT_TRUE(emptyObj.isEmpty());
-
-            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            auto [err, person] = classPerson->clone(emptyObj);
-
-            ASSERT_TRUE(err == error::EmptyRObject);
-            ASSERT_TRUE(person.isEmpty());
-        }
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 

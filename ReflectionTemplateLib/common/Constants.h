@@ -1,15 +1,14 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
 namespace rtl {
 
-    enum class IsPointer 
-    { 
-        No,
-        Yes
-    };
+    static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
+    constexpr const std::string_view NAMESPACE_GLOBAL = "namespace_global";
+
+    enum class IsPointer { No, Yes };
 
     enum class Wrapper
     {
@@ -26,14 +25,6 @@ namespace rtl {
         ByValue,
         NotDefined,
         BadAnyCast
-    };
-
-
-    enum FunctorIdx
-    {
-        ZERO = 0,   //heap constructor index
-        ONE = 1,    //copy constructor index
-        MAX_SIZE = 2
     };
 
 
@@ -55,15 +46,6 @@ namespace rtl {
     };
 
 
-    //Qualifier type.
-    enum class ConstructorType
-    {
-        None,
-        Ctor,
-        CopyCtor
-    };
-
-
     enum class error
     {
         None,
@@ -79,21 +61,16 @@ namespace rtl {
         ReflectingUniquePtrCopyDisallowed
     };
 
-    static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
     struct CtorName
     {
         inline static const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
-
-        inline static const std::string copyCtor(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
-        }
     };
 
 
-    inline const char* to_string(error err) 
+    inline const std::string_view to_string(error err)
     {
         switch (err) {
         case error::None: 
@@ -124,9 +101,6 @@ namespace rtl {
     }
 
 
-    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
-
-
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \
@@ -138,6 +112,10 @@ namespace rtl {
         return _var;                            \
     }
 
+#define GETTER_CREF(_varType, _name, _var)       \
+    inline const _varType& get##_name() const {  \
+        return _var;                             \
+    }
 
 #define GETTER_BOOL(_name, _var)              \
     inline const bool is##_name() const {     \
