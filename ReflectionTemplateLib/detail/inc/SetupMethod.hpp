@@ -36,7 +36,7 @@ namespace rtl
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    return RObjectBuilder::build<_returnType, rtl::alloc::None>((target->*pFunctor)(std::forward<_signature>(params)...));
+                    return RObjectBuilder::build<_returnType, alloc::Stack>((target->*pFunctor)(std::forward<_signature>(params)...));
                 }
             };
         }
@@ -69,7 +69,7 @@ namespace rtl
                 }
                 else {
                     //if the function returns anything (not refreence), this block will be retained by compiler.
-                    return RObjectBuilder::build<_returnType, rtl::alloc::None>((target->*pFunctor)(std::forward<_signature>(params)...));
+                    return RObjectBuilder::build<_returnType, alloc::Stack>((target->*pFunctor)(std::forward<_signature>(params)...));
                 }
             };
         }
@@ -110,7 +110,7 @@ namespace rtl
                     }
                 }
                 //functor is not already registered, return '-1'.
-                return rtl::index_none;
+                return index_none;
             };
 
             //generate a type-id of '_returnType'.
@@ -155,7 +155,7 @@ namespace rtl
                     }
                 }
                 //functor is not already registered, return '-1'.
-                return rtl::index_none;
+                return index_none;
             };
 
             //generate a type-id of '_returnType'.

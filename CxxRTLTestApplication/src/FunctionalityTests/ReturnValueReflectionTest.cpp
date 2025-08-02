@@ -31,12 +31,12 @@ namespace rtl_tests
 
                 if (recordName == calender::struct_) {
                     //Calender's constructor not registered in RTL.
-                    EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRTL);
+                    EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
                     EXPECT_TRUE(robj.isEmpty());
                 }
                 else if (recordName == library::class_) {
                     //Library's copy-constructor is deleted or private.
-                    EXPECT_TRUE(err == rtl::error::CopyConstructorPrivateOrDeleted);
+                    EXPECT_TRUE(err == rtl::error::Instantiating_typeNotCopyConstructible);
                     EXPECT_TRUE(robj.isEmpty());
                 }
                 else {
@@ -58,7 +58,7 @@ namespace rtl_tests
         auto [err, robj] = structCalender->create<rtl::alloc::Stack>();
 
         //Calender's constructor not registered in RTL.
-        EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRTL);
+        EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
         EXPECT_TRUE(robj.isEmpty());
         {
             auto structDate = MyReflection::instance().getRecord(id::date);
@@ -80,10 +80,9 @@ namespace rtl_tests
             EXPECT_FALSE(calender.isEmpty());
             EXPECT_TRUE(calender.getTypeId() == id::calender);
 
-            //clone always creates instance on heap.
             auto [err2, robj2] = calender.clone<rtl::alloc::Heap>();
             //Calender's copy-constructor private or deleted.
-            EXPECT_TRUE(err2 == rtl::error::CopyConstructorPrivateOrDeleted);
+            EXPECT_TRUE(err2 == rtl::error::Instantiating_typeNotCopyConstructible);
             {
             /*  Copy-constructs on stack successfully.
                 No actual deep copy occurs, RObject internally holds a const pointer/reference to the original instance.

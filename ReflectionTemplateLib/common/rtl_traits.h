@@ -85,4 +85,34 @@ namespace rtl
         template<typename T>
         using enable_if_not_std_wrapper = std::enable_if<std_wrapper<std::remove_reference_t<T>>::type == Wrapper::None, int>::type;
     }
+
+
+    namespace traits 
+    {
+        template <typename T, typename = void>
+        struct is_complete : std::false_type {};
+
+        template <typename T>
+        struct is_complete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
+        // Usage:
+        template<typename T>
+        inline constexpr bool is_incomplete_v = !is_complete<T>::value;
+
+        template<typename T>
+        struct instantiation_error 
+        {
+            static constexpr error value = std::is_void_v<T> ? error::Instantiating_typeVoid :
+                                           std::is_abstract_v<T> ? error::Instantiating_typeAbstract :
+                                           std::is_function_v<T> ? error::Instantiating_typeFunction :
+                                           is_incomplete_v<T> ? error::Instantiating_typeIncomplete : // requires customization
+                                           !std::is_default_constructible_v<T> ? error::Instantiating_typeNotDefaultConstructible :
+                                           !std::is_copy_constructible_v<T> ? error::Instantiating_typeNotCopyConstructible :
+                                           !std::is_move_constructible_v<T> ? error::Instantiating_typeNotMoveConstructible :
+                                           error::None;
+        };
+
+        template<typename T>
+        constexpr rtl::error instantiation_error_v = instantiation_error<base_t<T>>::value;
+    }
 }

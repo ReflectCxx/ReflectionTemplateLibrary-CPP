@@ -5,8 +5,12 @@
 
 namespace rtl::detail
 {
-    struct RObjectId
+    class RObjectId
     {
+        static std::vector<traits::ConverterPair> m_conversions;
+
+    public:
+
         alloc m_allocatedOn;
         Wrapper m_wrapperType;
         IsPointer m_isPointer;
@@ -17,7 +21,6 @@ namespace rtl::detail
         std::string m_typeStr;
 
         const std::vector<traits::ConverterPair>& m_converters;
-        static std::vector<traits::ConverterPair> m_conversions;
 
         RObjectId()
             : m_allocatedOn(alloc::None)
@@ -87,7 +90,7 @@ namespace rtl::detail
             const std::size_t wrapperId = _W::id();
             const auto& typeStr = detail::TypeId<_T>::toString();
             const auto& conversions = detail::ReflectCast<_T>::getConversions();
-            return RObjectId(rtl::alloc::None, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
+            return RObjectId(rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
     };
 }

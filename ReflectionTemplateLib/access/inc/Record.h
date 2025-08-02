@@ -80,6 +80,7 @@ namespace rtl {
             std::pair<error, RObject> create(_ctorArgs&& ...params) const
             {
                 static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
+                static_assert(_alloc != rtl::alloc::Heap_viaReflection,"'rtl::alloc::Heap_ViaReflection' is internal to RTL and must not be used explicitly.");
 
                 const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
                 //if registered constructor is found for the class/struct represented by this 'Record' object.
@@ -87,7 +88,7 @@ namespace rtl {
                            //invoke the constructor, forwarding the arguments.
                            ? itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...)
                            //if no constructor found, return with empty 'RObject'.
-                           : std::make_pair(error::ConstructorNotRegisteredInRTL, RObject());
+                           : std::make_pair(error::ConstructorNotRegisteredInRtl, RObject());
             }
 
             //only class which can create objects of this class & manipulates 'm_methods'.

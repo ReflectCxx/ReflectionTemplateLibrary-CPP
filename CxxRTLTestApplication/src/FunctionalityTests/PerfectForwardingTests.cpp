@@ -7,7 +7,7 @@
  * and invoke methods, ensuring that the correct overload is called based on the argument type and value category.
  *
  * Note: The explicitly provided template types (e.g., `std::string&`, `std::string&&`, `const std::string&`) are
- * required by the design of the Reflection Template Library (RTL) to match the method signatures during invocation.
+ * required by the design of the RTL to match the method signatures during invocation.
  *
  * Key Components:
  * - `CxxMirror`: The main reflection interface that provides access to class metadata (`Record`) and methods (`Method`).

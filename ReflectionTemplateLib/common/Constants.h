@@ -41,8 +41,10 @@ namespace rtl {
     enum class alloc
     {
         None,
-        Stack,
         Heap,
+        Stack,
+        Heap_viaReflection,     //used internally by rtl.
+        //Stack_viaReflection     //used internally by rtl.
     };
 
 
@@ -53,12 +55,19 @@ namespace rtl {
         SignatureMismatch,
         MethodTargetMismatch,
         AmbiguousConstOverload,
-        FunctionNotRegisterdInRTL,
+        FunctionNotRegisterdInRtl,
         ConstMethodOverloadNotFound,
-        ConstructorNotRegisteredInRTL,
+        ConstructorNotRegisteredInRtl,
         NonConstMethodOverloadNotFound,
-        CopyConstructorPrivateOrDeleted,
-        ReflectingUniquePtrCopyDisallowed
+        ReflectingUniquePtrCopyDisallowed,
+
+        Instantiating_typeVoid,
+        Instantiating_typeAbstract,
+        Instantiating_typeFunction,
+        Instantiating_typeIncomplete,
+        Instantiating_typeNotDefaultConstructible,
+        Instantiating_typeNotCopyConstructible,
+        Instantiating_typeNotMoveConstructible
     };
 
 
@@ -79,7 +88,7 @@ namespace rtl {
             return "Empty instance: RObject does not hold any reflected object";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
-        case error::FunctionNotRegisterdInRTL:
+        case error::FunctionNotRegisterdInRtl:
             return "Function not registered: The requested method is not registered in the Reflection system";
         case error::MethodTargetMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
@@ -89,9 +98,9 @@ namespace rtl {
             return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
         case error::NonConstMethodOverloadNotFound:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
-        case error::ConstructorNotRegisteredInRTL:
+        case error::ConstructorNotRegisteredInRtl:
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
-        case error::CopyConstructorPrivateOrDeleted:
+        case error::Instantiating_typeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::ReflectingUniquePtrCopyDisallowed:
             return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";

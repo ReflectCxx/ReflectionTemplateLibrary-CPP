@@ -7,7 +7,6 @@
 #include "view.h"
 #include "TypeId.h"
 #include "RObjectId.h"
-#include "Constants.h"
 #include "rtl_traits.h"
 
 namespace rtl::detail
@@ -58,19 +57,18 @@ namespace rtl::access
     public:
 
         RObject() = default;
-        RObject(RObject&&) noexcept;
-
         ~RObject() = default;
-
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
+        RObject(RObject&&) noexcept;
+
         GETTER(std::any,,m_object)
-        GETTER(std::size_t, TypeId, m_objectId.m_typeId);
+        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
+        GETTER_BOOL(Empty, (m_object.has_value() == false))
 
         //checks if object constructed via reflection on heap or stack.
-        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == rtl::alloc::Heap));
-        GETTER_BOOL(Empty, (m_object.has_value() == false))
+        bool isOnHeap() const;
 
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;
@@ -84,31 +82,4 @@ namespace rtl::access
 
         friend detail::RObjectBuilder;
     };
-
-
-    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
-                            Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId)
-        : m_object(std::forward<std::any>(pObject))
-        , m_wrapper(std::forward<std::any>(pWrapper))
-        , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
-        , m_getClone(std::forward<Cloner>(pCopyCtor))
-        , m_objectId(pRObjectId)
-    {
-    }
-
-
-    inline RObject::RObject(RObject&& pOther) noexcept
-        : m_object(std::move(pOther.m_object))
-        , m_wrapper(std::move(pOther.m_wrapper))
-        , m_deallocator(std::move(pOther.m_deallocator))
-        , m_getClone(std::move(pOther.m_getClone))
-        , m_objectId(pOther.m_objectId)
-    {
-        // Explicitly clear moved-from source
-        pOther.m_object.reset();
-        pOther.m_wrapper.reset();
-        pOther.m_deallocator.reset();
-        pOther.m_objectId.reset();
-        pOther.m_getClone = nullptr;
-    }
 }

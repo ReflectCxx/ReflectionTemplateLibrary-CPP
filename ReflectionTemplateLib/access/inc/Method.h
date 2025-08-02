@@ -34,7 +34,7 @@ namespace rtl {
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>
-            std::pair<error, RObject> invokeCtor(alloc pAllocType, _args&&...params) const;
+            std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
 
         public:
 

@@ -9,13 +9,6 @@ namespace rtl {
 
     namespace access
     {
-        inline std::optional<Record> CxxMirror::getRecord(const std::size_t pRecordId) const
-        {
-            const auto& recordMap = getRecordIdMap();
-            const auto& itr = recordMap.find(pRecordId);
-            return (itr == recordMap.end() ? std::nullopt : std::make_optional(itr->second.get()));
-        }
-
 
     /*  @method: getRecord
         @param: const std::string& (name of the class/struct)
@@ -38,6 +31,14 @@ namespace rtl {
     */  inline std::optional<Function> CxxMirror::getFunction(const std::string& pFunction) const
         {
             return getFunction(std::string(NAMESPACE_GLOBAL), pFunction);
+        }
+
+
+        inline std::optional<Record> CxxMirror::getRecord(const std::size_t pRecordId) const
+        {
+            const auto& recordMap = getRecordIdMap();
+            const auto& itr = recordMap.find(pRecordId);
+            return (itr == recordMap.end() ? std::nullopt : std::make_optional(itr->second.get()));
         }
 
 

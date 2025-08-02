@@ -34,25 +34,26 @@ namespace rtl
             //will be called from '_derivedType' to check if the constructor already registered.
             const auto& getIndex = [&]()-> std::size_t {
                 const auto& itr = ctorSet.find(hashKey);
-                return (itr != ctorSet.end() ? itr->second : rtl::index_none);
+                return (itr != ctorSet.end() ? itr->second : index_none);
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](error& pError, rtl::alloc pAllocType, _signature&&...params)-> access::RObject
+            const auto& functor = [=](error& pError, alloc pAllocType, _signature&&...params)-> access::RObject
             {
-                if (pAllocType == rtl::alloc::Heap) {
-                    pError = rtl::error::None;
-                    return RObjectBuilder::build<const _recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...));
+                if (pAllocType == alloc::Heap) {
+                    pError = error::None;
+                    constexpr auto _allocOn = alloc::Heap_viaReflection;
+                    return RObjectBuilder::build<const _recordType*, _allocOn>(new _recordType(std::forward<_signature>(params)...));
                 }
-                else if (pAllocType == rtl::alloc::Stack) 
+                else if (pAllocType == alloc::Stack) 
                 {
-                    if constexpr (!std::is_copy_constructible<_recordType>::value) {
-                        pError = rtl::error::CopyConstructorPrivateOrDeleted;
+                    if constexpr (traits::instantiation_error_v<_recordType> != error::None) {
+                        pError = traits::instantiation_error_v<_recordType>;
                         return access::RObject();
                     }
                     else {
                         pError = error::None;
-                        return RObjectBuilder::build<_recordType, rtl::alloc::Stack>(_recordType(std::forward<_signature>(params)...));
+                        return RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...));
                     }
                 }
                 //dead-code.

@@ -19,11 +19,6 @@ namespace rtl::detail {
     template<class T, alloc _allocOn, traits::enable_if_not_std_wrapper<T>>
     inline access::RObject RObjectBuilder::build(T&& pVal)
     {
-        if constexpr (std::is_pointer_v<std::remove_reference_t<T>> && _allocOn == alloc::Heap) {
-            return access::RObject::create<T, alloc::Heap>(std::forward<T>(pVal));
-        }
-        else {
-            return access::RObject::create<T, _allocOn>(std::forward<T>(pVal));
-        }
+        return access::RObject::create<T, _allocOn>(std::forward<T>(pVal));
     }
 }
