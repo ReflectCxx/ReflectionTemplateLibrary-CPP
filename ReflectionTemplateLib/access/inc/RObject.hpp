@@ -6,7 +6,6 @@
 
 #include "RObject.h"
 #include "ReflectCast.h"
-#include "RObjectBuilder.h"
 
 namespace rtl::traits
 {
@@ -46,6 +45,9 @@ namespace rtl::access
         }
         else if (m_objectId.m_wrapperType == Wrapper::Unique) {
             return { error::ReflectingUniquePtrCopyDisallowed, RObject() };
+        }
+        else if(!m_getClone){
+            return { error::CopyConstructorPrivateOrDeleted, RObject() };
         }
         error err = error::None;
         return { err, m_getClone(err, *this, _allocOn) };
@@ -238,7 +240,7 @@ namespace rtl::access
 
         if constexpr (_W::type == Wrapper::Unique) {
             auto rawPtr = static_cast<const _T*>(pWrapper.get());
-            return RObject(std::any(rawPtr), std::any(std::unique_ptr<_T>(std::move(pWrapper))), nullptr, robjId);
+            return RObject(std::any(rawPtr), std::any(std::unique_ptr<_T>(std::move(pWrapper))), nullptr, nullptr, robjId);
         }
         else if constexpr (_W::type == Wrapper::Weak || _W::type == Wrapper::Shared) {
             auto rawPtr = static_cast<const _T*>(pWrapper.get());

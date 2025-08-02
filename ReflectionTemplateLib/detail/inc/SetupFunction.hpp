@@ -1,7 +1,7 @@
+#pragma once
 
-#include "RObject.hpp"
-#include "RObjectBuilder.h"
 #include "SetupFunction.h"
+#include "RObjectBuilder.hpp"
 
 namespace rtl
 {

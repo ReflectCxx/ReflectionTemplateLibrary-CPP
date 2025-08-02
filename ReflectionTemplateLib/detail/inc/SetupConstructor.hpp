@@ -1,8 +1,7 @@
 #pragma once
 #include <map>
 
-#include "RObject.h"
-#include "RObjectBuilder.h"
+#include "RObjectBuilder.hpp"
 #include "SetupConstructor.h"
 
 namespace rtl

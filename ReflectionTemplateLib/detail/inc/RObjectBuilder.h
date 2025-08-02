@@ -1,6 +1,10 @@
 #pragma once
 
-#include "RObject.hpp"
+#include "rtl_traits.h"
+
+namespace rtl::access {
+    class RObject;
+}
 
 namespace rtl::detail
 {
@@ -9,27 +13,13 @@ namespace rtl::detail
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
-        static const std::size_t reflectedInstanceCount()
-        {
-            return access::RObject::m_rtlOwnedRObjectInstanceCount;
-        }
+        static const std::size_t reflectedInstanceCount();
 
-        template<class T, alloc _allocOn = alloc::None, traits::enable_if_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal) 
-        {
-            return access::RObject::createWithWrapper(std::forward<T>(pVal));
-        }
+        template<class T, rtl::alloc _allocOn = alloc::None, traits::enable_if_std_wrapper<T> = 0>
+        static access::RObject build(T&& pVal);
 
-        template<class T, alloc _allocOn = alloc::None, traits::enable_if_not_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal) 
-        {
-            if constexpr (std::is_pointer_v<std::remove_reference_t<T>> && _allocOn == alloc::Heap) {
-                return access::RObject::create<T, alloc::Heap>(std::forward<T>(pVal));
-            }
-            else {
-                return access::RObject::create<T, _allocOn>(std::forward<T>(pVal));
-            }
-        }
+        template<class T, rtl::alloc _allocOn = alloc::None, traits::enable_if_not_std_wrapper<T> = 0>
+        static access::RObject build(T&& pVal);
     };
 }
 

@@ -2,9 +2,8 @@
 
 #include "view.h"
 #include "TypeId.h"
-#include "RObject.h"
 #include "SetupMethod.h"
-#include "RObjectBuilder.h"
+#include "RObjectBuilder.hpp"
 
 namespace rtl
 {

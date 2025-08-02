@@ -10,7 +10,7 @@
 #include "Constants.h"
 #include "rtl_traits.h"
 
-namespace rtl::detail 
+namespace rtl::detail
 {
     struct RObjectBuilder;
 }
@@ -109,5 +109,6 @@ namespace rtl::access
         pOther.m_wrapper.reset();
         pOther.m_deallocator.reset();
         pOther.m_objectId.reset();
+        pOther.m_getClone = nullptr;
     }
 }

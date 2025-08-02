@@ -3,13 +3,9 @@
 #include <vector>
 #include "ReflectCast.h"
 
-namespace rtl::access {
-    class RObject;
-}
-
 namespace rtl::detail
 {
-    class RObjectId
+    struct RObjectId
     {
         alloc m_allocatedOn;
         Wrapper m_wrapperType;
@@ -62,8 +58,8 @@ namespace rtl::detail
 
         RObjectId(RObjectId&&) = default;
         RObjectId(const RObjectId&) = default;
-        RObjectId& operator=(RObjectId&&) = default;
-        RObjectId& operator=(const RObjectId&) = default;
+        RObjectId& operator=(RObjectId&&) = delete;
+        RObjectId& operator=(const RObjectId&) = delete;
 
         template<class T, rtl::alloc _allocOn>
         static RObjectId create()
@@ -93,8 +89,5 @@ namespace rtl::detail
             const auto& conversions = detail::ReflectCast<_T>::getConversions();
             return RObjectId(rtl::alloc::None, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
-
-        //friends :)
-        friend rtl::access::RObject;
     };
 }
