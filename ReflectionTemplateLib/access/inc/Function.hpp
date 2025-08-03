@@ -28,8 +28,8 @@ namespace rtl {
 
     /*  @method: operator()()
         @param: variadic arguments.
-        @return: RStatus, containing the call status & return value of from the reflected call.
-        * if the arguments did not match with any overload, returns RStatus with error::SignatureMismatch
+        @return: std::pair<error, RObject>, possible error & return value of from the reflected call.
+        * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
         inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept

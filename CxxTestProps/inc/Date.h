@@ -6,15 +6,13 @@
 
 namespace nsdate
 {
-	struct Calender;
-
 	struct Date
 	{
 		Date();
 		Date(const Date& pOther);
 		Date(const std::string& pDateStr);
 		Date(unsigned dd, unsigned mm, unsigned yy);
-        Date(Date&&) noexcept;
+		Date(Date&&) noexcept;
 
 		Date& operator=(Date&&) = default;
 		Date& operator=(const Date&) = default;
@@ -23,44 +21,65 @@ namespace nsdate
 
 		~Date();
 
-		static unsigned instanceCount();
+		static std::size_t instanceCount();
 
 		std::string getAsString() const;
 
 		void updateDate(std::string pDateStr);
-
-		std::shared_ptr<Calender> m_calender;
-
-		Calender* getCalenderPtr();
-
-		const Calender& getCalenderRef();
 
 	private:
 
 		unsigned m_day;
 		unsigned m_month;
 		unsigned m_year;
-		static unsigned m_instanceCount;
+		static std::size_t m_instanceCount;
 	};
 
 
-	//for testing 'copy constructor not defined/disabled'
-	struct Calender 
+	struct Event;
+
+	struct Calender
 	{
 		~Calender();
+		Calender();
+		Calender(const Calender&);
 
-		Calender(Calender&&)  noexcept;
+		const Event& getTheEvent();
 
-		Calender(const Calender&) = delete;
+		const Date& getTheDate();
 
-		static unsigned instanceCount();
-
-		static std::shared_ptr<Calender> create();
+		static std::size_t instanceCount();
 
 	private:
 
-		Calender();
+		std::shared_ptr<Event> m_event;
 
-		static unsigned m_instanceCount;
+		static std::size_t m_instanceCount;
+	};
+
+
+	struct Event
+	{
+		~Event();
+
+		Event(Event&&) = delete;
+		Event(const Event&) = delete;
+
+		static std::size_t instanceCount();
+
+		const Date& getEventDate();
+
+	private:
+
+		Event();
+
+		std::shared_ptr<Date> m_edate;
+
+		static std::size_t m_instanceCount;
+
+		static Event* create();
+
+		//friends :)
+		friend Calender;
 	};
 }

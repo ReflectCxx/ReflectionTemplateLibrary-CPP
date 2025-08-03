@@ -15,7 +15,7 @@ namespace rtl::detail
 
 namespace rtl::access {
 
-    std::atomic<std::size_t> RObject::m_rtlOwnedRObjectInstanceCount = 0;
+    std::atomic<std::size_t> RObject::m_rtlOwnedHeapAllocCount = 0;
 
     /*  @Constructor: CxxMirror
         @params: 'const std::vector<Function>&'

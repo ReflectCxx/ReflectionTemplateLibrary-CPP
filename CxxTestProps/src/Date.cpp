@@ -6,9 +6,12 @@ using namespace std;
 
 namespace nsdate
 {
-	unsigned int Calender::m_instanceCount = 0;
+	std::size_t Date::m_instanceCount = 0;
+	std::size_t Event::m_instanceCount = 0;
+	std::size_t Calender::m_instanceCount = 0;
 
 	Calender::Calender()
+		:m_event(std::shared_ptr<Event>(Event::create()))
 	{
 		m_instanceCount++;
 	}
@@ -18,32 +21,65 @@ namespace nsdate
 		m_instanceCount--;
 	}
 
-	Calender::Calender(Calender&&) noexcept
+	Calender::Calender(const Calender& pOther)
+		:m_event(pOther.m_event)
 	{
 		m_instanceCount++;
 	}
 
-	unsigned Calender::instanceCount()
+	const Event& Calender::getTheEvent()
 	{
-		return m_instanceCount;
+		return *m_event;
 	}
 
-	std::shared_ptr<Calender> Calender::create()
+	const Date& Calender::getTheDate()
 	{
-		return std::shared_ptr<Calender>(new Calender());
+		return *(m_event->m_edate);
+	}
+
+	std::size_t Calender::instanceCount()
+	{
+		return m_instanceCount;
 	}
 }
 
 namespace nsdate
 {
-	unsigned int g_maxInstanceCount = 0;
-	unsigned int Date::m_instanceCount = 0;
+	Event::Event()
+		:m_edate(std::make_shared<Date>())
+	{
+		m_instanceCount++;
+	}
 
+	Event::~Event() 
+	{
+		m_instanceCount--;
+	}
+
+	const Date& Event::getEventDate()
+	{
+		return *m_edate;
+	}
+
+	std::size_t Event::instanceCount()
+	{
+		return m_instanceCount;
+	}
+
+	Event* Event::create()
+	{
+		return new Event();
+	}
+}
+
+
+namespace nsdate 
+{
 	Date::~Date() {
 		m_instanceCount--;
 	}
 
-	unsigned Date::instanceCount()
+	std::size_t Date::instanceCount()
 	{
 		return m_instanceCount;
 	}
@@ -53,15 +89,6 @@ namespace nsdate
 		return (to_string(m_day) + "/" + to_string(m_month) + "/" + to_string(m_year));
 	}
 
-	Calender* Date::getCalenderPtr()
-	{
-		return m_calender.get();
-	}
-
-	const Calender& Date::getCalenderRef()
-	{
-		return *m_calender;
-	}
 
 	void Date::updateDate(std::string pDateStr)
 	{
@@ -86,44 +113,32 @@ namespace nsdate
 		: m_day(1)
 		, m_month(1)
 		, m_year(2000) 
-		, m_calender(std::move(Calender::create())) {
+	{
 		m_instanceCount++;
-		if (m_instanceCount > g_maxInstanceCount) {
-			g_maxInstanceCount = m_instanceCount;
-		}
 	}
 
 	Date::Date(const Date& pOther)
 		: m_day(pOther.m_day)
 		, m_month(pOther.m_month)
 		, m_year(pOther.m_year)
-		, m_calender(pOther.m_calender) {
+	{
 		m_instanceCount++;
-		if (m_instanceCount > g_maxInstanceCount) {
-			g_maxInstanceCount = m_instanceCount;
-		}
 	}
 
 	Date::Date(unsigned dd, unsigned mm, unsigned yy)
 		: m_day(dd)
 		, m_month(mm)
 		, m_year(yy)
-		, m_calender(std::move(Calender::create())) {
+	{
 		m_instanceCount++;
-		if (m_instanceCount > g_maxInstanceCount) {
-			g_maxInstanceCount = m_instanceCount;
-		}
 	}
 
 	Date::Date(Date&& pOther) noexcept
 		: m_day(pOther.m_day)
 		, m_month(pOther.m_month)
 		, m_year(pOther.m_year)
-		, m_calender(std::move(pOther.m_calender)) {
+	{
 		m_instanceCount++;
-		if (m_instanceCount > g_maxInstanceCount) {
-			g_maxInstanceCount = m_instanceCount;
-		}
 	}
 
 	const bool Date::operator==(const Date& pOther) const
@@ -132,12 +147,8 @@ namespace nsdate
 	}
 
 	Date::Date(const string& pDateStr)
-		: m_calender(std::move(Calender::create()))
 	{
 		m_instanceCount++;
-		if (m_instanceCount > g_maxInstanceCount) {
-			g_maxInstanceCount = m_instanceCount;
-		}
 		string strBuf;
 		vector<string> date;
 		for (size_t i = 0; i < pDateStr.length(); i++)

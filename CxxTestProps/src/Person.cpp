@@ -98,6 +98,11 @@ std::string Person::getProfile(std::string pOccupation, std::size_t pAge)
 		"\nAge: " + std::to_string(pAge) + "\n[__Person::getProfile(string, size_t)]");
 }
 
+const Person Person::createConst()
+{
+	return Person();
+}
+
 
 std::string Person::getProfile(bool pNoAddress)
 {

@@ -38,5 +38,7 @@ public:
 
     static std::string getProfile(std::string pOccupation, std::size_t pAge);
 
+    static const Person createConst();
+
     static unsigned getInstanceCount();
 };

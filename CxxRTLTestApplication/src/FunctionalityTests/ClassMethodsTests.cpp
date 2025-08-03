@@ -2,13 +2,15 @@
 
 #include "MyReflection.h"
 #include "TestUtilsBook.h"
+#include "TestUtilsDate.h"
+#include "GlobalTestUtils.h"
 
 using namespace std;
 using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
 
-namespace rtl_tests 
+namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
@@ -19,6 +21,46 @@ namespace rtl_tests
 
 		optional<Method> badMethod = classBook->getMethod("no_method");
 		ASSERT_FALSE(badMethod.has_value());
+	}
+
+
+	TEST(RTLInterfaceCxxMirror, verify_typeIds_of_registered_records)
+	{
+		const auto& rtl_recordIdMap = MyReflection::instance().getRecordIdMap();
+
+		for (const auto& itr0 : MyReflection::instance().getNamespaceRecordMap())
+		{
+			const auto& namespaceRecordMap = itr0.second;
+			for (const auto& itr1 : namespaceRecordMap)
+			{
+				const std::string& recordName = itr1.first;
+				const std::size_t recordId = getRecordIdFor(recordName);
+				const auto& itr = rtl_recordIdMap.find(recordId);
+
+				ASSERT_TRUE(itr != rtl_recordIdMap.end());
+
+				const rtl::access::Record& reflectedClass = itr->second.get();
+
+				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
+
+				if (recordName == event::struct_) {
+					//Calender's constructor not registered in RTL.
+					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					EXPECT_TRUE(robj.isEmpty());
+				}
+				else if (recordName == library::class_) {
+					//Library's copy-constructor is deleted or private.
+					EXPECT_TRUE(err == rtl::error::Instantiating_typeNotCopyConstructible);
+					EXPECT_TRUE(robj.isEmpty());
+				}
+				else {
+
+					EXPECT_TRUE(err == rtl::error::None);
+					EXPECT_FALSE(robj.isEmpty());
+					EXPECT_TRUE(robj.getTypeId() == recordId);
+				}
+			}
+		}
 	}
 
 

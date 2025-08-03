@@ -39,12 +39,10 @@ namespace rtl {
 
     //Allocation type.
     enum class alloc
-    {
-        None,
-        Heap,
-        Stack,
-        Heap_viaReflection,     //used internally by rtl.
-        //Stack_viaReflection     //used internally by rtl.
+    {   
+        None,       //assigned to empty/moved-from 'RObject's.
+        Heap,       //assigned to only rtl-allocated heap objects
+        Stack,      //assigned to return-values & rtl-allocated stack objects
     };
 
 
@@ -59,6 +57,7 @@ namespace rtl {
         ConstMethodOverloadNotFound,
         ConstructorNotRegisteredInRtl,
         NonConstMethodOverloadNotFound,
+        ImplicitCallToNonConstOnConstTarget,
         ReflectingUniquePtrCopyDisallowed,
 
         Instantiating_typeVoid,
@@ -104,6 +103,8 @@ namespace rtl {
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::ReflectingUniquePtrCopyDisallowed:
             return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
+        case error::ImplicitCallToNonConstOnConstTarget:
+            return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         default:
             return "Unknown error";
         }

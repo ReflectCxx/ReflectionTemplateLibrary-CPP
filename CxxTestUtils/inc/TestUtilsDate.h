@@ -10,11 +10,24 @@ Provides interface for Testing/Comparing the class "Date" objects states/returns
 */
 namespace test_utils
 {
-	struct calender 
+	struct event
+	{
+		static constexpr const char* ns = "nsdate";
+		static constexpr const char* struct_ = "Event";
+		static constexpr const char* str_getDate = "getDate";
+
+		static const bool assert_zero_instance_count();
+		static const std::size_t get_instance_count();
+	};
+
+	struct calender
 	{
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Calender";
-		static constexpr const char* str_create = "create";
+		static constexpr const char* str_create = "createPtr";
+		static constexpr const char* str_getTheEvent = "getTheEvent";
+		static constexpr const char* str_getTheDate = "getTheDate";
+
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
 	};
@@ -31,14 +44,12 @@ namespace test_utils
 		static constexpr const char* struct_ = "Date";
 		static constexpr const char* str_updateDate = "updateDate";
 		static constexpr const char* str_getAsString = "getAsString";
-		static constexpr const char* str_getCalenderPtr = "getCalenderPtr";
-		static constexpr const char* str_getCalenderRef = "getCalenderRef";
 
-		static const std::size_t get_date_instance_count();
+		static const std::size_t get_instance_count();
 
-		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pIsOnHeap);
+		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pCastAsPtr);
 
 		template<class ..._argsType>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pOnHeap);
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pCastAsPtr);
 	};
 }

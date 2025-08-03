@@ -5,6 +5,7 @@
 * 	rtl::error::AmbiguousConstOverload
 *	rtl::error::ConstMethodOverloadNotFound
 *	rtl::error::NonConstMethodOverloadNotFound
+*   rtl::error::ImplicitCallToNonConstOnConstTarget
 * and,
 *	rtl::error::FunctionNotRegisterdInRTL, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 
@@ -44,17 +45,18 @@ namespace rtl_tests
         ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
+
     TEST(ReflectedCallStatusError, error_ConstructorNotRegisteredInRTL)
     {
-        optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
-        ASSERT_TRUE(classCalender);
+        optional<Record> classEvent = MyReflection::instance().getRecord(event::ns, event::struct_);
+        ASSERT_TRUE(classEvent);
 
-        auto [err0, robj0] = classCalender->create<alloc::Stack>();
+        auto [err0, robj0] = classEvent->create<alloc::Stack>();
 
         ASSERT_TRUE(err0 == error::ConstructorNotRegisteredInRtl);
         ASSERT_TRUE(robj0.isEmpty());
 
-        auto [err1, robj1] = classCalender->create<alloc::Heap>();
+        auto [err1, robj1] = classEvent->create<alloc::Heap>();
 
         ASSERT_TRUE(err1 == error::ConstructorNotRegisteredInRtl);
         ASSERT_TRUE(robj1.isEmpty());
@@ -64,33 +66,29 @@ namespace rtl_tests
     TEST(ReflectedCallStatusError, error_Instantiating_typeNotCopyConstructible)
     {
         {
-            optional<Record> classDate = MyReflection::instance().getRecord(date::ns, date::struct_);
-            ASSERT_TRUE(classDate);
-
-            //Calender's constructor not registered, get its instance from Date's method.
-            optional<Method> getCalenderPtr = classDate->getMethod(date::str_getCalenderPtr);
-            ASSERT_TRUE(getCalenderPtr);
-
-            // Create Date, which will create a Calander's instance.
-            auto [err0, date] = classDate->create<alloc::Stack>();
-
-            // Get the Calander's instance.
-            auto [err1, calender] = getCalenderPtr->bind(date).call();
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_FALSE(calender.isEmpty());
-
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_FALSE(calender.isEmpty());
-
             optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
-            // Try to call copy-constructor of class Calender.
-            auto [err2, copyObj] = calender.clone<alloc::Heap>();
+            //Events's constructor not registered, get its instance from 'Calander'.
+            optional<Method> getEvent = classCalender->getMethod(calender::str_getTheEvent);
+            ASSERT_TRUE(getEvent);
+
+            // Create Calender, which will create a Event's instance.
+            auto [err0, calender] = classCalender->create<alloc::Stack>();
+            ASSERT_TRUE(err0 == error::None);
+            ASSERT_FALSE(calender.isEmpty());
+
+            // Get the Event's instance.
+            auto [err1, event] = getEvent->bind(calender).call();
+            ASSERT_TRUE(err1 == error::None);
+            ASSERT_FALSE(event.isEmpty());
+
+            // Try to call copy-constructor of class Event.
+            auto [err2, eventCp] = event.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
             ASSERT_TRUE(err2 == error::Instantiating_typeNotCopyConstructible);
-            ASSERT_TRUE(copyObj.isEmpty());
+            ASSERT_TRUE(eventCp.isEmpty());
         }
         EXPECT_TRUE(calender::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);

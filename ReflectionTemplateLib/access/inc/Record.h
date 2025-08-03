@@ -72,16 +72,13 @@ namespace rtl {
             * calls the constructor of the calss/struct represented by this 'Record' object.
             * returns the dynamically allocated object of the calss/struct along with the status.
             * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
-            * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned as RStatus.
-            * if no constructor found, error::ReflecetdConstructorNotFound is returned as RStatus.
-            * in case of reflected call failure, empty 'RObject' will be returned.
-            * on success error::None will be returned along with the newly constructed object wrapped under 'RObject' (type erased).
+            * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned with empty 'RObject'.
+            * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
+            * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
     */      template<alloc _alloc, class ..._ctorArgs>
             std::pair<error, RObject> create(_ctorArgs&& ...params) const
             {
                 static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
-                static_assert(_alloc != rtl::alloc::Heap_viaReflection,"'rtl::alloc::Heap_ViaReflection' is internal to RTL and must not be used explicitly.");
-
                 const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
                 //if registered constructor is found for the class/struct represented by this 'Record' object.
                 return itr != m_methods.end()

@@ -43,6 +43,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 			ASSERT_TRUE(err0 == error::None);
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(book.isReflectingConst());
 			ASSERT_FALSE(book.isEmpty());
 
 			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
@@ -112,6 +114,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				string_view lastName = "invalid_arg";
@@ -149,6 +153,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				string_view lastName = "invalid_arg";
@@ -186,6 +192,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 			{
 				auto address = string(person::ADDRESS);
@@ -222,6 +230,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateAddress->hasSignature<string>());
 			{
 				auto address = string(person::ADDRESS);
@@ -255,11 +265,12 @@ namespace rtl_tests
 
 			string lastName = person::LAST_NAME;
 			string firstName = person::FIRST_NAME;
-
 			auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invalid argument
@@ -297,6 +308,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invlid argument
@@ -334,6 +347,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
@@ -365,11 +380,12 @@ namespace rtl_tests
 
 			string lastName = person::LAST_NAME;
 			string firstName = person::FIRST_NAME;
-
 			auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(updateLastName->hasSignature<string>());
 			{
 				auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
@@ -404,6 +420,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(getFirstName->hasSignature<>());
 			{
 				auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
@@ -438,6 +456,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(getFirstName->hasSignature<>());
 			{
 				auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
@@ -472,6 +492,8 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(getFirstName->hasSignature<>());
 			{
 				auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -510,6 +532,9 @@ namespace rtl_tests
 
 			ASSERT_TRUE(err0 == error::None);
 			ASSERT_FALSE(person.isEmpty());
+			// Objects created through reflection are considered mutable (non-const) by default.
+			ASSERT_FALSE(person.isReflectingConst());
+			ASSERT_FALSE(person.isReflectingConst());
 			ASSERT_TRUE(getFirstName->hasSignature<>());
 			{
 				auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -525,6 +550,47 @@ namespace rtl_tests
 
 				auto& fname = ret.view<std::string>()->get();
 				EXPECT_EQ(fname, firstName);
+			}
+		}
+		EXPECT_TRUE(person::assert_zero_instance_count());
+		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+	}
+
+
+	TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_const_target)
+	{
+		{
+			CxxMirror& cxxMirror = MyReflection::instance();
+
+			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+			ASSERT_TRUE(classPerson);
+
+			optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
+			ASSERT_TRUE(createConstPerson);
+
+			// Objects created through reflection are considered mutable (non-const) by default.
+			// But return-values can be 'const' objects.
+			auto [err0, person] = createConstPerson->bind().call();
+			ASSERT_TRUE(err0 == error::None);
+			ASSERT_FALSE(person.isEmpty());
+			ASSERT_TRUE(person.isReflectingConst());
+
+			optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
+			ASSERT_TRUE(getFirstName);
+
+			string firstName = person::FIRST_NAME;
+			ASSERT_TRUE(getFirstName->hasSignature<>());
+			{
+				auto [err, ret] = getFirstName->bind(person).call();
+
+				ASSERT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget);
+				ASSERT_TRUE(ret.isEmpty());
+			} {
+				auto [err, ret] = getFirstName->bind<methodQ::NonConst>(person).call();
+
+				ASSERT_TRUE(err == error::None);
+				ASSERT_FALSE(ret.isEmpty());
+				ASSERT_TRUE(ret.canViewAs<std::string>());
 			}
 		}
 		EXPECT_TRUE(person::assert_zero_instance_count());

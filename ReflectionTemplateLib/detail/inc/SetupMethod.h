@@ -14,7 +14,7 @@ namespace rtl {
           MethodContainer<methodQ::Const, _signature...>, which must implement -
             - std::size_t& _derived::getContainerId();
             - std::string _derivedType::getSignatureStr();
-            - std::size_t& _derived::pushBack(std::function < access::RStatus(_signature...) >,
+            - std::size_t& _derived::pushBack(std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >,
                                               std::function<const std::size_t()>,
                                               std::function<void(const std::size_t&)>);
         * sets up only non-static-member-function functors in lambda table.

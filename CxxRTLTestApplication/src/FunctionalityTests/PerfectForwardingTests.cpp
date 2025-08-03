@@ -13,8 +13,7 @@
  * - `CxxMirror`: The main reflection interface that provides access to class metadata (`Record`) and methods (`Method`).
  * - `Record`: Represents a reflected class/struct and provides access to its methods and constructors.
  * - `Method`: Represents a reflected method and provides interfaces to invoke it dynamically.
- * - `Instance`: A type-erased wrapper for objects created via reflection, ensuring proper memory management.
- * - `RStatus`: Represents the result of a reflection call, including the return value and error status.
+ * - `RObject`: A type-erased wrapper for return values and objects created via reflection, ensuring proper memory management.
  */
 
 #include <gtest/gtest.h>

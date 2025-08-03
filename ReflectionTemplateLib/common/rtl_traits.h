@@ -39,6 +39,10 @@ namespace rtl
         // Utility: Remove const, reference, and pointer from T (after decay).
         template<typename T>
         using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
+
+        template<typename T>
+        constexpr bool is_const_v = ((std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>) ||
+                                    (!std::is_pointer_v<T> && std::is_const_v<T>));
     }
     
     

@@ -32,7 +32,13 @@ namespace rtl
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  const _returnType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(&retObj);
+                    if constexpr (std::is_const_v<_returnType>) {
+                        using _T = std::remove_reference_t<_returnType>;
+                        return RObjectBuilder::build(static_cast<const _T*>(&retObj));
+                    }
+                    else {
+                        return RObjectBuilder::build(&retObj);
+                    }
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.

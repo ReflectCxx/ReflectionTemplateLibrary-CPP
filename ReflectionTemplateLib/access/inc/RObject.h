@@ -21,20 +21,19 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
+        using Deleter = std::function<void()>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        
         std::any m_object;
         std::any m_wrapper;
-        std::shared_ptr<void> m_deallocator;
-
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
         Cloner m_getClone;
-
+        Deleter m_deleter;
         detail::RObjectId m_objectId;
 
-        static std::atomic<std::size_t> m_rtlOwnedRObjectInstanceCount;
+        static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
 
         RObject(const RObject&) = default;
-
-        RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter, 
+        RObject(std::any&& pObject, std::any&& pWrapper, Deleter&& pDeleter, 
                 Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId);
 
         template<class T>
@@ -42,8 +41,8 @@ namespace rtl::access
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
-        template <class T>
-        static std::shared_ptr<void> getDeallocator(T* pObject);
+        template <rtl::alloc _allocOn>
+        std::pair<error, RObject> createCopy() const;
 
         template <class T>
         static Cloner getCloner();
@@ -56,8 +55,8 @@ namespace rtl::access
 
     public:
 
+        ~RObject();
         RObject() = default;
-        ~RObject() = default;
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
@@ -66,9 +65,10 @@ namespace rtl::access
         GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
-
-        //checks if object constructed via reflection on heap or stack.
-        bool isOnHeap() const;
+        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(RefOrPtr, (m_objectId.m_isPointer == IsPointer::Yes))
+        // Objects created through reflection are considered mutable (non-const) by default.
+        GETTER_BOOL(ReflectingConst, m_objectId.m_isTypeConst)
 
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;

@@ -36,7 +36,7 @@ namespace rtl_tests
 			ASSERT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(date.isEmpty());
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -54,7 +54,7 @@ namespace rtl_tests
 			ASSERT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(date.isEmpty());
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -73,7 +73,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -92,7 +92,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -112,7 +112,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -132,7 +132,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -157,7 +157,7 @@ namespace rtl_tests
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date.get(), date.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -182,7 +182,7 @@ namespace rtl_tests
 			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date.get(), date.isOnHeap());
 			EXPECT_TRUE(isPassed);
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -201,7 +201,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
@@ -220,7 +220,7 @@ namespace rtl_tests
 			ASSERT_FALSE(date.isEmpty());
 			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
 		}
-		EXPECT_TRUE(date::get_date_instance_count() == 0);
+		EXPECT_TRUE(date::get_instance_count() == 0);
 		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 

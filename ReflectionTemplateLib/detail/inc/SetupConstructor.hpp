@@ -42,7 +42,7 @@ namespace rtl
             {
                 if (pAllocType == alloc::Heap) {
                     pError = error::None;
-                    constexpr auto _allocOn = alloc::Heap_viaReflection;
+                    constexpr auto _allocOn = alloc::Heap;
                     return RObjectBuilder::build<const _recordType*, _allocOn>(new _recordType(std::forward<_signature>(params)...));
                 }
                 else if (pAllocType == alloc::Stack) 

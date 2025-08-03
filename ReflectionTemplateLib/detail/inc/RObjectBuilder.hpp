@@ -7,7 +7,7 @@ namespace rtl::detail {
 
     inline const std::size_t RObjectBuilder::reflectedInstanceCount()
     {
-        return access::RObject::m_rtlOwnedRObjectInstanceCount;
+        return access::RObject::m_rtlOwnedHeapAllocCount;
     }
 
     template<class T, alloc _allocOn, traits::enable_if_std_wrapper<T>>

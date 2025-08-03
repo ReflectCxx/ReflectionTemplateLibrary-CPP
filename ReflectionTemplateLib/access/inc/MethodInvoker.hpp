@@ -57,6 +57,11 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
+            if (pMethod.getQualifier() == methodQ::NonConst && pTarget.isReflectingConst()) {
+                pError = error::ImplicitCallToNonConstOnConstTarget;
+                return RObject();
+            }
+
             using containerConst = detail::MethodContainer<methodQ::Const, _finalSignature...>;
             using containerNonConst = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
 

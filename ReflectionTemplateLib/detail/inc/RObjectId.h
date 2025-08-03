@@ -11,6 +11,7 @@ namespace rtl::detail
 
     public:
 
+        bool m_isTypeConst;
         alloc m_allocatedOn;
         Wrapper m_wrapperType;
         IsPointer m_isPointer;
@@ -23,7 +24,8 @@ namespace rtl::detail
         const std::vector<traits::ConverterPair>& m_converters;
 
         RObjectId()
-            : m_allocatedOn(alloc::None)
+            : m_isTypeConst(false)
+            , m_allocatedOn(alloc::None)
             , m_wrapperType(Wrapper::None)
             , m_isPointer(IsPointer::No)
             , m_typeId(TypeId<>::None)
@@ -33,10 +35,11 @@ namespace rtl::detail
             , m_converters(m_conversions)
         { }
 
-        RObjectId(alloc pAllocOn, Wrapper pWrapperType, IsPointer pIsPtr, std::size_t pTypeId,
+        RObjectId(bool pIsTypeConst, alloc pAllocOn, Wrapper pWrapperType, IsPointer pIsPtr, std::size_t pTypeId,
                   std::size_t pPtrTypeId, std::size_t pWrapperTypeId, const std::string& pTypeStr, 
                   const std::vector<traits::ConverterPair>& pConverters)
-            : m_allocatedOn(pAllocOn)
+            : m_isTypeConst(pIsTypeConst)
+            , m_allocatedOn(pAllocOn)
             , m_wrapperType(pWrapperType)
             , m_isPointer(pIsPtr)
             , m_typeId(pTypeId)
@@ -49,6 +52,7 @@ namespace rtl::detail
         void reset()
         {
             m_isPointer = IsPointer::No;
+            //very important, identifies empty/moved-from 'RObject's.
             m_allocatedOn = alloc::None;
             m_wrapperType = Wrapper::None;
 
@@ -76,7 +80,8 @@ namespace rtl::detail
             const auto& typeStr = rtl::detail::TypeId<_T>::toString();
             const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
             const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
-            return RObjectId(_allocOn, Wrapper::None, isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
+            constexpr auto isTypeConst = (_allocOn != alloc::Heap ? traits::is_const_v<T> : false);
+            return RObjectId(isTypeConst, _allocOn, Wrapper::None, isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
 
         template<class W>
@@ -90,7 +95,7 @@ namespace rtl::detail
             const std::size_t wrapperId = _W::id();
             const auto& typeStr = detail::TypeId<_T>::toString();
             const auto& conversions = detail::ReflectCast<_T>::getConversions();
-            return RObjectId(rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
+            return RObjectId(std::is_const_v<_T>, rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
     };
 }

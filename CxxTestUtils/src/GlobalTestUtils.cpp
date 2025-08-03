@@ -28,6 +28,8 @@ namespace test_utils {
 
 	std::size_t id::book = rtl::detail::TypeId<Book>::get();
 
+	std::size_t id::event = rtl::detail::TypeId<nsdate::Event>::get();
+
 	std::size_t id::person = rtl::detail::TypeId<Person>::get();
 
 	std::size_t id::animal = rtl::detail::TypeId<Animal>::get();
@@ -49,6 +51,9 @@ namespace test_utils {
 		}
 		else if (pRecordName == date::struct_) {
 			return id::date;
+		}
+		else if (pRecordName == event::struct_) {
+			return id::event;
 		}
 		else if (pRecordName == calender::struct_) {
 			return id::calender;

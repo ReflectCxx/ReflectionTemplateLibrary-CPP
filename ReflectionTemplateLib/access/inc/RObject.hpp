@@ -36,85 +36,67 @@ namespace rtl::traits
 
 namespace rtl::access
 {
-    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, std::shared_ptr<void>&& pDeleter,
+    inline access::RObject::~RObject()
+    {
+        if (m_objectId.m_allocatedOn == alloc::Heap) {
+            m_deleter();
+            RObject::m_rtlOwnedHeapAllocCount.fetch_sub(1);
+        }
+    }
+
+
+    inline RObject::RObject(std::any&& pObject, std::any&& pWrapper, Deleter&& pDeleter,
                             Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId)
         : m_object(std::forward<std::any>(pObject))
         , m_wrapper(std::forward<std::any>(pWrapper))
-        , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
+        , m_deleter(std::forward<Deleter>(pDeleter))
         , m_getClone(std::forward<Cloner>(pCopyCtor))
         , m_objectId(pRObjectId)
     {
+    /*  destructor called for temporay(moved-from) objects will always have this
+    *   value set to 'alloc::None' via RObjectId::reset() method called from move-ctor.
+    */  if (m_objectId.m_allocatedOn == alloc::Heap) {
+            RObject::m_rtlOwnedHeapAllocCount.fetch_add(1);
+        }
     }
 
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
         , m_wrapper(std::move(pOther.m_wrapper))
-        , m_deallocator(std::move(pOther.m_deallocator))
+        , m_deleter(std::move(pOther.m_deleter))
         , m_getClone(std::move(pOther.m_getClone))
         , m_objectId(pOther.m_objectId)
     {
         // Explicitly clear moved-from source
         pOther.m_object.reset();
         pOther.m_wrapper.reset();
-        pOther.m_deallocator.reset();
         pOther.m_objectId.reset();
         pOther.m_getClone = nullptr;
+        pOther.m_deleter = nullptr;
     }
 
 
-    inline bool RObject::isOnHeap() const
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap>() const
     {
-        return (m_objectId.m_allocatedOn == alloc::Heap ||
-                m_objectId.m_allocatedOn == alloc::Heap_viaReflection);
+        error err = error::None;
+        return { err, m_getClone(err, *this, alloc::Heap) };
     }
 
 
-    template<alloc _allocOn>
-    inline std::pair<error, RObject> RObject::clone() const
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack>() const
     {
-        static_assert(_allocOn != alloc::None, "Instance cannot be created with 'alloc::None' option.");
-        if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
+        if (m_objectId.m_allocatedOn == alloc::Stack) {
+            return { error::None, RObject(*this) };
         }
-        else if (m_objectId.m_wrapperType == Wrapper::Unique) {
-            return { error::ReflectingUniquePtrCopyDisallowed, RObject() };
-        }
-        else if(!m_getClone){
-            return { error::Instantiating_typeNotCopyConstructible, RObject() };
-        }
-
-        if constexpr (_allocOn == alloc::Stack)
-        {
-            if (m_objectId.m_allocatedOn == alloc::Stack) {
-                return { error::None, RObject(*this) };
-            }
-            else if (m_objectId.m_allocatedOn == alloc::Heap_viaReflection) {
-                error err = error::None;
-                return { err, m_getClone(err, *this, _allocOn) };
-            }
-            assert(false && "no alloc info.");
-        }
-        else if constexpr (_allocOn == alloc::Heap)
-        {
+        else if (m_objectId.m_allocatedOn == alloc::Heap) {
             error err = error::None;
-            return { err, m_getClone(err, *this, _allocOn) };
+            return { err, m_getClone(err, *this, alloc::Stack) };
         }
-    }
-
-
-    template<class T>
-    inline const T& RObject::as(bool pGetFromWrapper/* = false*/) const
-    {
-        if (pGetFromWrapper) {
-            return std::any_cast<const T&>(m_wrapper);
-        }
-        if (m_objectId.m_isPointer == IsPointer::Yes) {
-
-            using _ptrT = std::add_pointer_t<std::add_const_t<T>>;
-            return *(std::any_cast<_ptrT>(m_object));
-        }
-        return std::any_cast<const T&>(m_object);
+        assert(false && "no alloc info.");
+        return { error::None,  RObject() }; //dead code. compiler warning ommited.
     }
 
 
@@ -133,12 +115,43 @@ namespace rtl::access
 
 
     template<class T>
+    inline const T& RObject::as(bool pGetFromWrapper/* = false*/) const
+    {
+        if (pGetFromWrapper) {
+            return std::any_cast<const T&>(m_wrapper);
+        }
+        if (m_objectId.m_isPointer == IsPointer::Yes) {
+
+            using _ptrT = std::add_pointer_t<std::add_const_t<T>>;
+            return *(std::any_cast<_ptrT>(m_object));
+        }
+        return std::any_cast<const T&>(m_object);
+    }
+
+
+    template<alloc _allocOn>
+    inline std::pair<error, RObject> RObject::clone() const
+    {
+        static_assert(_allocOn != alloc::None, "Instance cannot be created with 'alloc::None' option.");
+        if (isEmpty()) {
+            return { error::EmptyRObject, RObject() };
+        }
+        else if (m_objectId.m_wrapperType == Wrapper::Unique) {
+            return { error::ReflectingUniquePtrCopyDisallowed, RObject() };
+        }
+        else if (!m_getClone) {
+            return { error::Instantiating_typeNotCopyConstructible, RObject() };
+        }
+        else return createCopy<_allocOn>();
+    }
+
+
+    template<class T>
     inline bool RObject::canViewAs() const
     {
         if (!traits::is_view_suported<T>()) {
             return false;
         }
-
         using _T = traits::remove_const_n_ref_n_ptr<T>;
         if constexpr (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>)
         {
@@ -152,7 +165,6 @@ namespace rtl::access
                 return true;
             }
         }
-
         const auto& typeId = detail::TypeId<T>::get();
         return (typeId == m_objectId.m_typeId || getConverterIndex(typeId) != index_none);
     }
@@ -168,7 +180,6 @@ namespace rtl::access
             const auto& viewRef = as<_asType>();
             return std::optional<rtl::view<_asType>>(std::in_place, viewRef);
         }
-
         using _T = traits::remove_const_n_reference<_asType>;
         if constexpr (std::is_pointer_v<_T>)
         {
@@ -186,7 +197,6 @@ namespace rtl::access
                 return std::optional<rtl::view<_asType>>(viewRef);
             }
         }
-
         std::size_t index = getConverterIndex(toTypeId);
         if (index != index_none)
         {
@@ -212,28 +222,14 @@ namespace rtl::access
 //static functions.
 namespace rtl::access
 {
-    template<class T>
-    inline std::shared_ptr<void> RObject::getDeallocator(T* pObject)
-    {
-        m_rtlOwnedRObjectInstanceCount.fetch_add(1);
-        auto deleter = [pObject](void*) {
-            delete pObject;
-            m_rtlOwnedRObjectInstanceCount.fetch_sub(1);
-            assert(m_rtlOwnedRObjectInstanceCount >= 0 && "instance count can't be less than zero. memory leak alert!");
-        };
-        static char dummy;
-        return std::shared_ptr<void>(static_cast<void*>(&dummy), deleter);
-    }
-
-
     template <class T, alloc _allocOn>
     inline RObject RObject::create(T&& pVal)
     {
         using _T = traits::base_t<T>;
         const detail::RObjectId& robjId = detail::RObjectId::create<T, _allocOn>();
-        if constexpr (_allocOn == alloc::Heap_viaReflection) {
-            auto&& deleter = getDeallocator(static_cast<const _T*>(pVal));
-            return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), std::move(deleter), getCloner<_T>(), robjId);
+        if constexpr (_allocOn == alloc::Heap) {
+            const _T* objPtr = static_cast<const _T*>(pVal);
+            return RObject(std::any(objPtr), std::any(), [objPtr]() { delete objPtr; }, getCloner<_T>(), robjId);
         }
         else if constexpr (std::is_pointer_v<traits::remove_const_n_reference<T>>) {
             return RObject(std::any(static_cast<const _T*>(pVal)), std::any(), nullptr, getCloner<_T>(), robjId);
@@ -283,7 +279,7 @@ namespace rtl::access
                     return detail::RObjectBuilder::template build<T, alloc::Stack>(T(srcObj));
                 }
                 else if (pAllocOn == alloc::Heap) {
-                    return detail::RObjectBuilder::template build<const T*, alloc::Heap_viaReflection>(new T(srcObj));
+                    return detail::RObjectBuilder::template build<const T*, alloc::Heap>(new T(srcObj));
                 }
                 assert(false && "pAllocOn must never be anything else other than alloc::Stack/Heap here.");
             }

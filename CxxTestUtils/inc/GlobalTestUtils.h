@@ -35,6 +35,7 @@ namespace test_utils {
 
 		static std::size_t date;
 		static std::size_t book;
+		static std::size_t event;
 		static std::size_t animal;
 		static std::size_t person;
 		static std::size_t library;
