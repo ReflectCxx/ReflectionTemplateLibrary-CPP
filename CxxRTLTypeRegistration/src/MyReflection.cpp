@@ -55,6 +55,8 @@ CxxMirror& MyReflection::instance()
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheEvent).build(&nsdate::Calender::getTheEvent),  //unique method, no overloads.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheDate).build(&nsdate::Calender::getTheDate),  //unique method, no overloads.
+        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),  //unique method, no overloads.
+        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate),  //unique method, no overloads.
 
         //class Enevt, unique method, nor registered constructor.
         Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).method(event::str_getDate).build(&nsdate::Event::getEventDate),

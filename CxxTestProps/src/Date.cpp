@@ -11,7 +11,8 @@ namespace nsdate
 	std::size_t Calender::m_instanceCount = 0;
 
 	Calender::Calender()
-		:m_event(std::shared_ptr<Event>(Event::create()))
+		: m_theEvent(std::shared_ptr<Event>(Event::create()))
+		, m_savedEvent(std::unique_ptr<Event>(Event::create()))
 	{
 		m_instanceCount++;
 	}
@@ -22,19 +23,30 @@ namespace nsdate
 	}
 
 	Calender::Calender(const Calender& pOther)
-		:m_event(pOther.m_event)
+		: m_theEvent(pOther.m_theEvent)
+		, m_savedEvent(pOther.m_savedEvent ? std::unique_ptr<Event>(Event::createCopy(*pOther.m_savedEvent)) : nullptr)
 	{
 		m_instanceCount++;
 	}
 
 	const Event& Calender::getTheEvent()
 	{
-		return *m_event;
+		return *m_theEvent;
+	}
+
+	const Event& Calender::getSavedEvent()
+	{
+		return *m_savedEvent;
 	}
 
 	const Date& Calender::getTheDate()
 	{
-		return *(m_event->m_edate);
+		return *(m_theEvent->m_date);
+	}
+
+	const Date& Calender::getSavedDate()
+	{
+		return *(m_savedEvent->m_date);
 	}
 
 	std::size_t Calender::instanceCount()
@@ -45,20 +57,26 @@ namespace nsdate
 
 namespace nsdate
 {
-	Event::Event()
-		:m_edate(std::make_shared<Date>())
-	{
-		m_instanceCount++;
-	}
-
-	Event::~Event() 
+	Event::~Event()
 	{
 		m_instanceCount--;
 	}
 
+	Event::Event()
+		: m_date(std::make_unique<Date>())
+	{
+		m_instanceCount++;
+	}
+
+	Event::Event(const Event& pOther)
+		: m_date(pOther.m_date ? std::make_unique<Date>(*pOther.m_date) : nullptr)
+	{
+		m_instanceCount++;
+	}
+
 	const Date& Event::getEventDate()
 	{
-		return *m_edate;
+		return *m_date;
 	}
 
 	std::size_t Event::instanceCount()
@@ -69,6 +87,11 @@ namespace nsdate
 	Event* Event::create()
 	{
 		return new Event();
+	}
+
+	Event* Event::createCopy(const Event& pOther)
+	{
+		return new Event(pOther);
 	}
 }
 

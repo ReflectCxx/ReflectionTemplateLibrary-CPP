@@ -44,15 +44,19 @@ namespace nsdate
 		Calender();
 		Calender(const Calender&);
 
-		const Event& getTheEvent();
-
 		const Date& getTheDate();
+		const Date& getSavedDate();
+
+		const Event& getTheEvent();
+		const Event& getSavedEvent();
 
 		static std::size_t instanceCount();
 
 	private:
 
-		std::shared_ptr<Event> m_event;
+		std::shared_ptr<Event> m_theEvent;
+
+		std::unique_ptr<Event> m_savedEvent;
 
 		static std::size_t m_instanceCount;
 	};
@@ -63,7 +67,6 @@ namespace nsdate
 		~Event();
 
 		Event(Event&&) = delete;
-		Event(const Event&) = delete;
 
 		static std::size_t instanceCount();
 
@@ -72,12 +75,14 @@ namespace nsdate
 	private:
 
 		Event();
+		Event(const Event& pOther);
 
-		std::shared_ptr<Date> m_edate;
+		std::unique_ptr<Date> m_date;
 
 		static std::size_t m_instanceCount;
 
 		static Event* create();
+		static Event* createCopy(const Event& pOther);
 
 		//friends :)
 		friend Calender;

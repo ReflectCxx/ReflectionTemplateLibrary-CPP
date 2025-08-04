@@ -30,8 +30,10 @@ namespace rtl_tests
             EXPECT_TRUE(err1 == rtl::error::None);
             EXPECT_FALSE(calender.isEmpty());
 
-            //'calender' has-a 'Event', so creates its instance.
+            // 'Calender' instance created.
             EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has two 'Event' instances.
+            EXPECT_TRUE(event::get_instance_count() == 2);
 
             auto getEvent = classCalender->getMethod(calender::str_getTheEvent);
             ASSERT_TRUE(getEvent);
@@ -47,17 +49,19 @@ namespace rtl_tests
                 //Event's copy-constructor private or deleted.
                 EXPECT_TRUE(err == rtl::error::Instantiating_typeNotCopyConstructible);
                 EXPECT_TRUE(robj.isEmpty());
-                EXPECT_TRUE(event::get_instance_count() == 1);
+                // Two 'Event' instances, owned by 'Calender'
+                EXPECT_TRUE(event::get_instance_count() == 2);
             } {
                 auto [err, robj] = event.clone<rtl::alloc::Stack>();
                 //'event' contains refrence of 'Event', no Copy-ctor is called.
                 EXPECT_TRUE(err == rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
-                EXPECT_TRUE(event::get_instance_count() == 1);
+                // Two 'Event' instances, owned by 'Calender'
+                EXPECT_TRUE(event::get_instance_count() == 2);
             }
         }
         ASSERT_TRUE(calender::assert_zero_instance_count());
-        //Once 'Calender' is destryoyed, 'Event' should too.
+        //Once 'Calender' is destryoyed, all 'Event's should too.
         ASSERT_TRUE(event::assert_zero_instance_count());
     }
 
