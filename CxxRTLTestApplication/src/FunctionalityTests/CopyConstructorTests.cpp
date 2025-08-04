@@ -284,8 +284,9 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_instance_on_stack_source_on_stack_mutate_after_clone)
     {
         // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -357,17 +358,18 @@ namespace rtl_tests
             }
         }
         // After scope exit, stack instances are cleaned up automatically
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
     }
 
 
     TEST(CopyConstructor, clone_instance_on_heap_source_on_stack_mutate_after_clone)
     {
         // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -440,17 +442,18 @@ namespace rtl_tests
             }
         }
         // After scope exit, stack instances are cleaned up automatically
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
     }
 
 
     TEST(CopyConstructor, clone_instance_on_stack_source_on_heap_mutate_after_clone)
     {
         // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -522,17 +525,18 @@ namespace rtl_tests
             }
         }
         // After scope exit, stack instances are cleaned up automatically
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
     }
 
 
     TEST(CopyConstructor, clone_instance_on_heap_source_on_heap_mutate_after_clone)
     {
         // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -582,7 +586,7 @@ namespace rtl_tests
                 ASSERT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
 
-                // both objects must be equal (shared via shared_ptr inside 'Calender')
+                // both objects must be equal, created via default-constructor, different instances, not shared.
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0.get(), date1.get(), true));
 
                 optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
@@ -605,8 +609,8 @@ namespace rtl_tests
             }
         }
         // After scope exit, stack instances are cleaned up automatically
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
     }
 }
