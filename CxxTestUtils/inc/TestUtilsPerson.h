@@ -19,6 +19,7 @@ namespace test_utils
 		static constexpr const char* OCCUPATION = "Private Detective.";
 
 		static constexpr const char* class_ = "Person";
+		static constexpr const char* str_createPtr = "createPtr";
 		static constexpr const char* str_getProfile = "getProfile";
 		static constexpr const char* str_createConst = "createConst";
 		static constexpr const char* str_getDefaults = "getDefaults";
@@ -29,6 +30,8 @@ namespace test_utils
 		static const bool assert_zero_instance_count();
 
 		static const std::string get_str_returned_on_call_getDefaults();
+
+		static const bool delete_unmanaged_person_instance_created_via_createPtr(const std::any& pInstance);
 
 		template<class ..._signature>
 		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);

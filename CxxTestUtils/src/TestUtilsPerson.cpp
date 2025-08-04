@@ -46,7 +46,7 @@ namespace test_utils
 		person.updateLastName(LAST_NAME);
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -66,7 +66,7 @@ namespace test_utils
 		Person person(personSrc);
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -86,7 +86,7 @@ namespace test_utils
 		Person person(personSrc);
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -107,7 +107,7 @@ namespace test_utils
 		person.updateAddress(ADDRESS);
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -120,6 +120,17 @@ namespace test_utils
 		}
 	}
 
+	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const std::any& pInstance)
+	{
+		//instance created via reflection is non-const pointer internally.
+		const Person* rPerson = any_cast<const Person*>(pInstance);
+		if (rPerson == nullptr) {
+			return false;
+		}
+		Person::deletePtr(rPerson);
+		return true;
+	}
+
 
 	template<>
 	const bool person::test_method_updateAddress_const<string>(const std::any& pInstance, bool pCastAsPtr)
@@ -128,7 +139,7 @@ namespace test_utils
 		person.updateAddress(ADDRESS);
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -149,7 +160,7 @@ namespace test_utils
 		person.updateAddress();
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -170,7 +181,7 @@ namespace test_utils
 		person.updateAddress();
 
 		if (pCastAsPtr) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;

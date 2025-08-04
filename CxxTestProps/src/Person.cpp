@@ -1,3 +1,5 @@
+#include "Person.h"
+#include "Person.h"
 #include <iostream>
 #include <cassert>
 #include "Person.h"
@@ -101,6 +103,16 @@ std::string Person::getProfile(std::string pOccupation, std::size_t pAge)
 const Person Person::createConst()
 {
 	return Person();
+}
+
+const Person* Person::createPtr()
+{
+	return new Person();
+}
+
+void Person::deletePtr(const Person* ptr)
+{
+	delete ptr;
 }
 
 

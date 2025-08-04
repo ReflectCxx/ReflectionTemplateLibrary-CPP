@@ -78,6 +78,7 @@ CxxMirror& MyReflection::instance()
         //class 'Person', methods & constructors.
         Reflect().record<Person>(person::class_).constructor().build(),     //registers default constructor.
         Reflect().record<Person>(person::class_).constructor<string>().build(),
+        Reflect().record<Person>(person::class_).methodStatic(person::str_createPtr).build(&Person::createPtr),
         Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
         Reflect().record<Person>(person::class_).method(person::str_getFirstName).build(&Person::getFirstName),

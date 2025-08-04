@@ -40,5 +40,9 @@ public:
 
     static const Person createConst();
 
+    static const Person* createPtr();
+
+    static void deletePtr(const Person* ptr);
+
     static unsigned getInstanceCount();
 };
