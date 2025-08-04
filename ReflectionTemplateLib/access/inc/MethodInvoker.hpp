@@ -25,6 +25,7 @@ namespace rtl
         template<class ..._args>
         inline std::pair<error, RObject> MethodInvoker<_signature...>::call(_args&& ...params) const noexcept
         {
+            //Only static-member-functions have Qualifier- 'methodQ::None'
             if (m_method.getQualifier() == methodQ::None) {
                 return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
             }
@@ -57,7 +58,7 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
-            if (pMethod.getQualifier() == methodQ::NonConst && pTarget.isReflectingConst()) {
+            if (pMethod.getQualifier() == methodQ::NonConst && pTarget.isConst()) {
                 pError = error::ImplicitCallToNonConstOnConstTarget;
                 return RObject();
             }

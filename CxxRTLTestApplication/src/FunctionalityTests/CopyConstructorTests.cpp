@@ -11,7 +11,7 @@ using namespace test_utils;
 
 namespace rtl_tests
 {
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_heap)
+    TEST(CopyConstructor, clone_default_instance_on_heap_source_on_heap)
     {
         {
             optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
@@ -30,11 +30,11 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 2);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_stack)
+    TEST(CopyConstructor, clone_default_instance_on_stack_source_on_stack)
     {
         {
             optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
@@ -50,15 +50,14 @@ namespace rtl_tests
             ASSERT_TRUE(!book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+            ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_stack)
+    TEST(CopyConstructor, clone_default_instance_on_heap_source_on_stack)
     {
         {
             optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
@@ -77,12 +76,12 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
 
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_heap)
+    TEST(CopyConstructor, clone_default_instance_on_stack_source_on_heap)
     {
         {
             optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
@@ -101,11 +100,11 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_heap_mutated)
+    TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_heap)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -145,11 +144,11 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 2);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_stack_mutated)
+    TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_stack)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -186,14 +185,14 @@ namespace rtl_tests
             EXPECT_TRUE(isPassed);
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+            ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_stack_mutated)
+    TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_stack)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -233,11 +232,11 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
     
     
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_heap_mutated)
+    TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_heap)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -277,11 +276,11 @@ namespace rtl_tests
             EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_stack_mutate_after_clone)
+    TEST(CopyConstructor, sharing_semantics__clone_on_stack_src_on_stack_mutate_after)
     {
         // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
@@ -330,6 +329,7 @@ namespace rtl_tests
                 ASSERT_TRUE(err_0 == error::None);
                 ASSERT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
+                ASSERT_TRUE(date0.isConst());
 
                 auto [err_1, date1] = getTheDate->bind(calender1).call();
                 ASSERT_TRUE(err_1 == error::None);
@@ -343,13 +343,14 @@ namespace rtl_tests
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
+                ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Invocation of const-member-function requires const-target, but 'date0' is non-const.
+                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
                     EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
                 } {
-                    // Explicitly bind a const member function to 'date0' and invoke it treating 'date0' as const.
+                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -361,10 +362,11 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_stack_mutate_after_clone)
+    TEST(CopyConstructor, sharing_semantics__clone_on_heap_src_on_stack_mutate_after)
     {
         // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
@@ -424,16 +426,17 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                // 'updateDate' is const-member-function in 'Date' class.
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
+                // 'updateDate' is non-const member function in 'Date' class.
+                ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Invocation of const-member-function requires const-target, but 'date0' is non-const.
+                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
                     EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
                 } {
-                    // Explicitly bind a const member function to 'date0' and invoke it treating 'date0' as const.
+                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -445,10 +448,11 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_stack_source_on_heap_mutate_after_clone)
+    TEST(CopyConstructor, sharing_semantics__clone_on_stack_src_on_heap_mutate_after)
     {
         // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
@@ -510,13 +514,15 @@ namespace rtl_tests
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
+                // 'updateDate' is non-const member function in 'Date' class.
+                ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Invocation of const-member-function requires const-target, but 'date0' is non-const.
+                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
                     EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
                 } {
-                    // Explicitly bind a const member function to 'date0' and invoke it treating 'date0' as const.
+                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -528,10 +534,11 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(CopyConstructor, clone_instance_on_heap_source_on_heap_mutate_after_clone)
+    TEST(CopyConstructor, sharing_semantics__clone_on_heap_src_on_heap_mutate_after)
     {
         // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
@@ -591,16 +598,17 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                // 'updateDate' is const-member-function in 'Date' class.
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
+                // 'updateDate' is non-const member function in 'Date' class.
+                ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Invocation of const-member-function requires const-target, but 'date0' is non-const.
+                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
                     EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
                 } {
-                    // Explicitly bind a const member function to 'date0' and invoke it treating 'date0' as const.
+                    // Explicitly bind a const member function to 'date0' (const_cast then reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
@@ -612,5 +620,6 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 }

@@ -1,3 +1,4 @@
+#include "Date.h"
 
 #include <vector>
 #include "Date.h"
@@ -10,6 +11,11 @@ namespace nsdate
 	std::size_t Event::m_instanceCount = 0;
 	std::size_t Calender::m_instanceCount = 0;
 
+	Calender::~Calender()
+	{
+		m_instanceCount--;
+	}
+
 	Calender::Calender()
 		: m_theEvent(std::shared_ptr<Event>(Event::create()))
 		, m_savedEvent(std::unique_ptr<Event>(Event::create()))
@@ -17,16 +23,23 @@ namespace nsdate
 		m_instanceCount++;
 	}
 
-	Calender::~Calender()
-	{
-		m_instanceCount--;
-	}
-
 	Calender::Calender(const Calender& pOther)
 		: m_theEvent(pOther.m_theEvent)
 		, m_savedEvent(pOther.m_savedEvent ? std::unique_ptr<Event>(Event::createCopy(*pOther.m_savedEvent)) : nullptr)
 	{
 		m_instanceCount++;
+	}
+
+	Calender::Calender(Calender&& pOther) noexcept
+		: m_theEvent(std::move(pOther.m_theEvent))
+		, m_savedEvent(std::move(pOther.m_savedEvent))
+	{
+		m_instanceCount++;
+	}
+
+	Calender Calender::create()
+	{
+		return Calender();
 	}
 
 	const Event& Calender::getTheEvent()

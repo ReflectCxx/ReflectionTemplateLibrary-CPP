@@ -11,171 +11,243 @@ using namespace rtl::access;
 
 namespace rtl_tests
 {
-    TEST(ReflectedSmartInstanceTest, robject_copy_construct_on_heap)
+    TEST(MoveSemantics, move_reflected_type_allocated_on_stack)
     {
-        // Ensure a clean start: no previously reflected heap instances alive
+        // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
-            // Fetch the reflected Record for the 'date' struct
-            optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
-            ASSERT_TRUE(structDate);
+            // Retrieve the reflected Record for the 'Calender' struct
+            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            ASSERT_TRUE(classCalender);
 
-            // Create a new instance on the heap
-            auto [err0, robj0] = structDate->create<alloc::Heap>();
+            // Create a stack-allocated object via reflection
+            auto [err0, calender0] = classCalender->create<alloc::Stack>();
 
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(robj0.isEmpty());
-            ASSERT_TRUE(robj0.isOnHeap());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(calender0.isEmpty());
+            EXPECT_FALSE(calender0.isConst());
+            EXPECT_FALSE(calender0.isOnHeap());
+            EXPECT_FALSE(calender0.isRefOrPtr());
 
-            // Only one instance of 'Date' must exists yet.
-            EXPECT_TRUE(date::get_instance_count() == 1);
-            //'Date' contains a shared_ptr<Calender>.
             EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
+
+            // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
+            RObject calender1 = std::move(calender0);
+
+            EXPECT_FALSE(calender1.isEmpty());
+            EXPECT_FALSE(calender1.isConst());
+            EXPECT_FALSE(calender1.isOnHeap());
+            EXPECT_FALSE(calender1.isRefOrPtr());
+
+            // 'calander0' must be empty now.
+            EXPECT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
+
+            // After move, these instance count must remain same.
+            EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
             {
-            /*  Core Concept:
-                - This test verifies that copying an RObject pointing to a heap-allocated object
-                  results in shared ownership of the same underlying instance.
-                - No deep copy or clone of the object is performed.
-                - Internally, the shared_ptr ensures reference-counted lifetime.
-            */  auto [err3, robj1] = robj0.clone<rtl::alloc::Stack>();
-                ASSERT_TRUE(err3 == rtl::error::None);
-
-                // Still only one instance of 'Date' must exists.
-                EXPECT_TRUE(date::get_instance_count() == 1);
-                // Since only one 'Date' instance exists.
-                EXPECT_TRUE(calender::get_instance_count() == 1);
-
-                // Both objects should point to the same heap instance
-                ASSERT_FALSE(robj1.isEmpty());
-                ASSERT_TRUE(robj1.isOnHeap());
-                ASSERT_TRUE(robj0.getTypeId() == robj1.getTypeId());
-
-                // Verify that robj0 and robj1 wrap the same object (by address or semantic equality)
-                EXPECT_TRUE(date::test_if_obejcts_are_equal(robj0.get(), robj1.get(), true));
-
-                // Mutate the shared object via robj0
-                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-                ASSERT_TRUE(updateDate);
-
-                string dateStr = date::DATE_STR1;
-                auto [err1, ret] = updateDate->bind(robj0).call(dateStr);
-                ASSERT_TRUE(err1 == error::None && ret.isEmpty());
-
-                // The mutation should be visible from both robj0 and robj1
-                EXPECT_TRUE(date::test_if_obejcts_are_equal(robj0.get(), robj1.get(), true));
-
-                // Confirm only one reflected heap instance is being tracked
-                EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+                // Cloning a moved-from object ie an empty object;
+                auto [err, ret] = calender0.clone<alloc::Stack>();
+                EXPECT_TRUE(err == error::EmptyRObject);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                // Cloning a moved-from object ie an empty object;
+                auto [err, ret] = calender0.clone<alloc::Heap>();
+                EXPECT_TRUE(err == error::EmptyRObject);
+                EXPECT_TRUE(ret.isEmpty());
             }
-            // After inner scope ends, one reference should still be alive (robj0)
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
         }
-        // All shared_ptrs should be released now - cleanup should be complete
-        EXPECT_TRUE(date::get_instance_count() == 0);
+        // After scope exit, stack instances are cleaned up automatically
         EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
         ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(ReflectedSmartInstanceTest, robject_move_construct_on_stack)
+    TEST(MoveSemantics, move_reflected_type_allocated_on_heap)
     {
-        // Ensure there are no reflected stack or heap objects alive before the test begins
+        // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
-            // Retrieve the reflected Record for the 'date' struct
-            optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
-            ASSERT_TRUE(structDate);
+            // Retrieve the reflected Record for the 'Calender' struct
+            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            ASSERT_TRUE(classCalender);
 
-            // Create a stack-allocated reflected object
-            auto [err0, robj0] = structDate->create<alloc::Stack>();
-            ASSERT_TRUE(err0 == error::None);
+            // Create a stack-allocated object via reflection
+            auto [err0, calender0] = classCalender->create<alloc::Heap>();
 
-            // Confirm allocation type and validity
-            ASSERT_FALSE(robj0.isEmpty());
-            ASSERT_FALSE(robj0.isOnHeap());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(calender0.isEmpty());
+            EXPECT_FALSE(calender0.isConst());
+            EXPECT_TRUE(calender0.isOnHeap());
+            EXPECT_TRUE(calender0.isRefOrPtr());
 
-            // Only one instance of 'Date' must exists yet.
-            EXPECT_TRUE(date::get_instance_count() == 1);
-            //'Date' contains a shared_ptr<Calender>.
             EXPECT_TRUE(calender::get_instance_count() == 1);
-            {
-            /*  RObject move transfers std::any and shared_ptr; robj0 becomes invalid for use.
-                robj1 is the sole valid owner after std::move.
-            */  RObject robj1 = std::move(robj0);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
 
-                // Date's move constructor got called, followed by destructor.
-                EXPECT_TRUE(date::get_instance_count() == 1);
-                // Calender's move constructor got called, followed by destructor.
-                EXPECT_TRUE(calender::get_instance_count() == 1);
+            // RObject created via alloc::HEAP, contains pointer to reflected type internally, So just the
+            // address wrapped in std::any inside Robject is moved. Calender's move constructor is not called.
+            RObject calender1 = std::move(calender0);
 
-                // robj0 got moved to robj1 and invalid now.
-                ASSERT_TRUE(robj0.isEmpty());
-                // robj1 owns the content & resources.
-                ASSERT_FALSE(robj1.isEmpty());
-                ASSERT_FALSE(robj1.isOnHeap());
-            }
-            // Confirm no stack-allocated reflected objects remain after scope ends
-            EXPECT_TRUE(date::get_instance_count() == 0);
-            EXPECT_TRUE(calender::get_instance_count() == 0);
+            EXPECT_FALSE(calender1.isEmpty());
+            EXPECT_FALSE(calender1.isConst());
+            EXPECT_TRUE(calender1.isOnHeap());
+            EXPECT_TRUE(calender1.isRefOrPtr());
+
+            // 'calander0' must be empty now.
+            EXPECT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
+
+            // After move, these instance count must remain same.
+            EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
         }
+        // After scope exit, stack instances are cleaned up automatically
+        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
-    TEST(ReflectedSmartInstanceTest, robject_move_construct_on_heap)
+    TEST(MoveSemantics, move_returned_RObject_reflecting_const_refOrPtr)
     {
-        // Ensure clean state before test begins - no lingering reflected heap instances
+        // Ensure there are no lingering reflected instances before the test begins
         EXPECT_TRUE(date::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(calender::get_instance_count() == 0);
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
-            // Fetch the reflected Record representing 'date::struct_'
-            optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
-            ASSERT_TRUE(structDate);
+            // Retrieve the reflected Record for the 'Calender' struct
+            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            ASSERT_TRUE(classCalender);
 
-            // Create a new reflected instance on the heap
-            auto [err0, robj0] = structDate->create<alloc::Heap>();
+            optional<Method> getTheEvent = classCalender->getMethod(calender::str_getTheEvent);
+            ASSERT_TRUE(getTheEvent);
 
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(robj0.isEmpty());
-            ASSERT_TRUE(robj0.isOnHeap());
+            // Create a stack-allocated object via reflection
+            auto [err, calender] = classCalender->create<alloc::Stack>();
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(calender.isEmpty());
 
-            // Only one instance of 'Date' must exists yet.
-            EXPECT_TRUE(date::get_instance_count() == 1);
-            //'Date' contains a shared_ptr<Calender>.
             EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
             {
-            /*  RObject move transfers std::any and shared_ptr; robj0 becomes invalid for use.
-                robj1 is the sole valid owner after std::move.
-            */  RObject robj1 = std::move(robj0);
+                auto [err0, event0] = getTheEvent->bind(calender).call();
+                EXPECT_TRUE(err0 == error::None);
+                EXPECT_FALSE(event0.isEmpty());
+                EXPECT_TRUE(event0.isConst());
+                EXPECT_TRUE(event0.isRefOrPtr());
 
-                // Date's move constructor didn't get called, just pointer in RObject moved.
-                EXPECT_TRUE(date::get_instance_count() == 1);
-                // Hence, Calender's move constructor also didn't get called.
-                EXPECT_TRUE(calender::get_instance_count() == 1);
+                // RObject reflecting reference/pointer, stores pointer to reflected type internally, So just the
+                // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
+                RObject event1 = std::move(event0);
 
-                // robj0 got moved to robj1 and invalid now.
-                ASSERT_TRUE(robj0.isEmpty());
-                // robj1 owns the content & resources.
-                ASSERT_FALSE(robj1.isEmpty());
-                ASSERT_TRUE(robj1.isOnHeap());
+                EXPECT_FALSE(event1.isEmpty());
+                EXPECT_TRUE(event1.isConst());
+                EXPECT_TRUE(event1.isRefOrPtr());
 
-                // Only one heap-allocated reflected instance should be tracked
-                ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+                // 'event0' must be empty now.
+                EXPECT_TRUE(event0.isEmpty());
+                EXPECT_NE(event0.getTypeId(), event1.getTypeId());
             }
-            // Since robj1 got destroyed, Date & Calender should too.
-            EXPECT_TRUE(date::get_instance_count() == 0);
-            EXPECT_TRUE(calender::get_instance_count() == 0);
-            // Still within outer scope - heap object still alive and tracked
-            ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+            // After move, these instance count must remain same.
+            EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
         }
+        // After scope exit, stack instances are cleaned up automatically
+        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(MoveSemantics, move_returned_RObject_reflecting_stack_object)
+    {
+        // Ensure there are no lingering reflected instances before the test begins
+        EXPECT_TRUE(date::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(calender::get_instance_count() == 0);
+        {
+            CxxMirror& cxxMirror = MyReflection::instance();
+
+            // Retrieve the reflected Record for the 'Calender' struct
+            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            ASSERT_TRUE(classCalender);
+
+            optional<Method> createCalender = classCalender->getMethod(calender::str_create);
+            ASSERT_TRUE(createCalender);
+
+            // Calender::create is a static method that returns stack-allocated Calender object.
+            // Calling this via reflection, moves the return value from Calender::create to here.
+            auto [err0, calender0] = (*createCalender)()();
+
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(calender0.isEmpty());
+            EXPECT_FALSE(calender0.isConst());
+            EXPECT_FALSE(calender0.isOnHeap());
+            EXPECT_FALSE(calender0.isRefOrPtr());
+
+            EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
+
+            // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
+            RObject calender1 = std::move(calender0);
+
+            EXPECT_FALSE(calender1.isEmpty());
+            EXPECT_FALSE(calender1.isConst());
+            EXPECT_FALSE(calender1.isOnHeap());
+            EXPECT_FALSE(calender1.isRefOrPtr());
+
+            // 'calander0' must be empty now.
+            EXPECT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
+
+            // After move, these instance count must remain same.
+            EXPECT_TRUE(calender::get_instance_count() == 1);
+            // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
+            EXPECT_TRUE(event::get_instance_count() == 2);
+            // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
+            EXPECT_TRUE(date::get_instance_count() == 2);
+        }
+        // After scope exit, stack instances are cleaned up automatically
+        EXPECT_TRUE(calender::get_instance_count() == 0);
+        EXPECT_TRUE(event::get_instance_count() == 0);
+        EXPECT_TRUE(date::get_instance_count() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 }

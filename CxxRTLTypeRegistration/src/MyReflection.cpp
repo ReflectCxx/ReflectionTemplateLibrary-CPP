@@ -53,12 +53,13 @@ CxxMirror& MyReflection::instance()
 
         //class Calender, default constructor.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
+        Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).methodStatic(calender::str_create).build(&nsdate::Calender::create),
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheEvent).build(&nsdate::Calender::getTheEvent),  //unique method, no overloads.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheDate).build(&nsdate::Calender::getTheDate),  //unique method, no overloads.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),  //unique method, no overloads.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate),  //unique method, no overloads.
 
-        //class Enevt, unique method, nor registered constructor.
+        //class Event, unique method, no registered constructor.
         Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).method(event::str_getDate).build(&nsdate::Event::getEventDate),
 
         Reflect().record<Library>(library::class_).constructor().build(),   //Registers constructor, Library's copy constructor is deleted.

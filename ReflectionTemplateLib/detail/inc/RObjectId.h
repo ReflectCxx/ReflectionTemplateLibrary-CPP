@@ -51,15 +51,13 @@ namespace rtl::detail
 
         void reset()
         {
-            m_isPointer = IsPointer::No;
-            //very important, identifies empty/moved-from 'RObject's.
-            m_allocatedOn = alloc::None;
+            m_isTypeConst = false;
+            m_allocatedOn = alloc::None;    //very important, identifies empty/moved-from 'RObject's.
             m_wrapperType = Wrapper::None;
-
+            m_isPointer = IsPointer::No;
             m_typeId = TypeId<>::None;
             m_ptrTypeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
-
             m_typeStr.clear();
         }
 

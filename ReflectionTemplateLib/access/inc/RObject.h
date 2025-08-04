@@ -57,10 +57,9 @@ namespace rtl::access
 
         ~RObject();
         RObject() = default;
+        RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
-
-        RObject(RObject&&) noexcept;
 
         GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
@@ -68,7 +67,7 @@ namespace rtl::access
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(RefOrPtr, (m_objectId.m_isPointer == IsPointer::Yes))
         // Objects created through reflection are considered mutable (non-const) by default.
-        GETTER_BOOL(ReflectingConst, m_objectId.m_isTypeConst)
+        GETTER_BOOL(Const, m_objectId.m_isTypeConst)
 
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;

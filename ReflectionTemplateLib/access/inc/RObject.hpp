@@ -53,8 +53,9 @@ namespace rtl::access
         , m_getClone(std::forward<Cloner>(pCopyCtor))
         , m_objectId(pRObjectId)
     {
-    /*  destructor called for temporay(moved-from) objects will always have this
+    /*  destructor called for temporary(moved-from) objects will always have this
     *   value set to 'alloc::None' via RObjectId::reset() method called from move-ctor.
+    *   So, alloc::None, gaurds double delete.
     */  if (m_objectId.m_allocatedOn == alloc::Heap) {
             RObject::m_rtlOwnedHeapAllocCount.fetch_add(1);
         }
@@ -89,13 +90,15 @@ namespace rtl::access
     inline std::pair<error, RObject> RObject::createCopy<alloc::Stack>() const
     {
         if (m_objectId.m_allocatedOn == alloc::Stack) {
+            //std::any will call the copy-ctor of the containing type.
             return { error::None, RObject(*this) };
         }
         else if (m_objectId.m_allocatedOn == alloc::Heap) {
+            //contains pointer, need type to access the object. (view<T>, T=?)
             error err = error::None;
             return { err, m_getClone(err, *this, alloc::Stack) };
         }
-        assert(false && "no alloc info.");
+        assert(false && "exception - createCopy() is called on moved/temporary RObject.");
         return { error::None,  RObject() }; //dead code. compiler warning ommited.
     }
 

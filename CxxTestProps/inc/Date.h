@@ -40,9 +40,13 @@ namespace nsdate
 
 	struct Calender
 	{
-		~Calender();
 		Calender();
+		~Calender();
+		Calender(Calender&&) noexcept;
 		Calender(const Calender&);
+		
+		Calender& operator=(Calender&&) = delete;
+		Calender& operator=(const Calender&) = delete;
 
 		const Date& getTheDate();
 		const Date& getSavedDate();
@@ -51,6 +55,8 @@ namespace nsdate
 		const Event& getSavedEvent();
 
 		static std::size_t instanceCount();
+
+		static Calender create();
 
 	private:
 
@@ -86,5 +92,8 @@ namespace nsdate
 
 		//friends :)
 		friend Calender;
+
+		Event& operator=(Event&&) = delete;
+		Event& operator=(const Event&) = delete;
 	};
 }

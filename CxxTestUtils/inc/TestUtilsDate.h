@@ -24,7 +24,7 @@ namespace test_utils
 	{
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Calender";
-		static constexpr const char* str_create = "createPtr";
+		static constexpr const char* str_create = "create";
 		static constexpr const char* str_getTheDate = "getTheDate";
 		static constexpr const char* str_getSavedDate = "getSavedDate";
 		static constexpr const char* str_getTheEvent = "getTheEvent";
