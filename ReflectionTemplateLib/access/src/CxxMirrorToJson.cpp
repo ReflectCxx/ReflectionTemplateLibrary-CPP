@@ -77,7 +77,7 @@ namespace
 		{
 			for (const auto& itr0 : itr.second)
 			{
-				for (const auto& itr1 : itr0.second.getMethodMap())
+				for (const auto& itr1 : itr0.second.get().getMethodMap())
 				{
 					const std::string& methodStr = toJson(itr1.second);
 					sout << methodStr << ",";

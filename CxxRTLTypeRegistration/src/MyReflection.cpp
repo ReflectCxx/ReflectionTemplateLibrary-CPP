@@ -29,9 +29,26 @@ using namespace rtl::builder;
 
 CxxMirror& MyReflection::instance()
 {
-    static CxxMirror cxxMirror = CxxMirror({
+    static CxxMirror cxxMirror = CxxMirror(
+    {
+    //  Registers std::string class, but no constructor.
+        Reflect().nameSpace("std").record<std::string>("string").methodConst("empty").build(&std::string::empty),
 
-        //global functions, not contained in any namespace.
+    /*  Attempting to register the same type(`std::string`) again under a different name.
+    *   RTL will ignore this duplicate registration and retain the first one. Emits a warning on the console:
+    *   "[WARNING] Multiple registrations of the same type with different names detected."
+    */  Reflect().nameSpace("std").record<std::string>("std_string").methodConst("empty").build(&std::string::empty),
+
+    /*  Attempting to register std::string_view, but the provided member function pointer belongs to std::string.
+    *   RTL will ignore this registration. Emits a warning on the console:
+    *   "[WARNING] Member function pointer does not belong to the class being registered!"
+    */  Reflect().nameSpace("std").record<std::string_view>("string_view").methodConst("empty").build(&std::string::empty),
+
+    //  Finally, register std::string_view with correct member-function-pointer
+        Reflect().nameSpace("std").record<std::string_view>("string_view").methodConst("empty").build(&std::string_view::empty),
+
+    //  Registering user defined-types.
+    //  global functions, not contained in any namespace.
         Reflect().function<void>(str_reverseString).build(reverseString),  //function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
         Reflect().function<string>(str_reverseString).build(reverseString),  //overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
         Reflect().function<const char*>(str_reverseString).build(reverseString),  //overloaded function, takes 'const char*' arguments.
@@ -43,10 +60,6 @@ CxxMirror& MyReflection::instance()
     */  Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
         Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
         Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
-
-        // Registers std::string/view class, but no constructor, to test error::ConstructorNotRegisteredInRtl.
-        Reflect().nameSpace("std").record<std::string>("string").methodConst("empty").build(&std::string::empty),
-        Reflect().nameSpace("std").record<std::string>("string_view").methodConst("empty").build(&std::string_view::empty),
 
         //Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),  //registers default constructor
@@ -123,12 +136,12 @@ CxxMirror& MyReflection::instance()
         #endif
     });
 
-    static const auto _v= [&]()
+    static const auto _= [&]()
     {
         const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
         rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
         return -1;
-    } ();
+    }();
 
     return cxxMirror;
 }

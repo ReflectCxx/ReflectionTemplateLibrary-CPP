@@ -39,7 +39,7 @@ namespace rtl_tests
 
 				ASSERT_TRUE(itr != rtl_recordIdMap.end());
 
-				const rtl::access::Record& reflectedClass = itr->second.get();
+				const rtl::access::Record& reflectedClass = itr->second;
 
 				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
 
@@ -54,6 +54,11 @@ namespace rtl_tests
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == "string") {
+					//no constructor of class std::string is registered in RTL, but the calss is registered.
+					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					EXPECT_TRUE(robj.isEmpty());
+				}
+				else if (recordName == "string_view") {
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
 					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
 					EXPECT_TRUE(robj.isEmpty());

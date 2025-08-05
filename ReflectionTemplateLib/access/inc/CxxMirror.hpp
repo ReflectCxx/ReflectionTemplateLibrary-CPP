@@ -38,7 +38,7 @@ namespace rtl {
         {
             const auto& recordMap = getRecordIdMap();
             const auto& itr = recordMap.find(pRecordId);
-            return (itr == recordMap.end() ? std::nullopt : std::make_optional(itr->second.get()));
+            return (itr == recordMap.end() ? std::nullopt : std::make_optional(itr->second));
         }
 
 

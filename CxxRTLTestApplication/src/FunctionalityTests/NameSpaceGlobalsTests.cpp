@@ -167,12 +167,12 @@ namespace rtl_tests
 	}
 
 
-	TEST(STL_class_string, test__no_constructor_registerd_and_call_empty_method)
+	TEST(Reflecting_STL_class, std_string__no_constructor_registerd__call_method)
 	{
 		CxxMirror& cxxMirror = MyReflection::instance();
 
 		optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
-		EXPECT_TRUE(stdStringClass);
+		ASSERT_TRUE(stdStringClass);
 		{
 			auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
 			EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
@@ -191,7 +191,7 @@ namespace rtl_tests
 			EXPECT_TRUE(reflected_str.isEmpty());
 		} {
 			optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-			EXPECT_TRUE(isStringEmpty);
+			ASSERT_TRUE(isStringEmpty);
 			RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
 			{
 				auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
@@ -201,6 +201,51 @@ namespace rtl_tests
 				EXPECT_TRUE(ret.view<bool>()->get());
 			}
 			RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
+			{
+				auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+				EXPECT_TRUE(err == rtl::error::None);
+				EXPECT_FALSE(ret.isEmpty());
+				EXPECT_TRUE(ret.canViewAs<bool>());
+				EXPECT_FALSE(ret.view<bool>()->get());
+			}
+		}
+	}
+
+
+	TEST(Reflecting_STL_class, std_string_view__no_constructor_registerd__call_method)
+	{
+		CxxMirror& cxxMirror = MyReflection::instance();
+
+		optional<Record> stdStringClass = cxxMirror.getRecord("std", "string_view");
+		ASSERT_TRUE(stdStringClass);
+		{
+			auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
+			EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+			EXPECT_TRUE(reflected_str.isEmpty());
+		} {
+			auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>();
+			EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+			EXPECT_TRUE(reflected_str.isEmpty());
+		} {
+			auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>("string_literal_arg");
+			EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+			EXPECT_TRUE(reflected_str.isEmpty());
+		} {
+			auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>("string_literal_arg");
+			EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+			EXPECT_TRUE(reflected_str.isEmpty());
+		} {
+			optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
+			ASSERT_TRUE(isStringEmpty);
+			RObject reflected_str0 = rtl::reflect("");	//empty string.
+			{
+				auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+				EXPECT_TRUE(err == rtl::error::None);
+				EXPECT_FALSE(ret.isEmpty());
+				EXPECT_TRUE(ret.canViewAs<bool>());
+				EXPECT_TRUE(ret.view<bool>()->get());
+			}
+			RObject reflected_str1 = rtl::reflect("not_empty");
 			{
 				auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
 				EXPECT_TRUE(err == rtl::error::None);
