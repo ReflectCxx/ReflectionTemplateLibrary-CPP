@@ -31,6 +31,7 @@ namespace rtl {
         {
             using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
             const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
+            //assert(functorId.getRecordId() == m_recordId && "function pointer is not member-function of specified record type");
             return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
         }
 
@@ -77,8 +78,8 @@ namespace rtl {
         {
             using Container = FunctorContainer<rtl::alloc, traits::remove_const_if_not_reference<_ctorSignature>...>;
             const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
-            const access::Function& constructor = access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
-            return constructor;
+            
+            return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
         }
     }
 }

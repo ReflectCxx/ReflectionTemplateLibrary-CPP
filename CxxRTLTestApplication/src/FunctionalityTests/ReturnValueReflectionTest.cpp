@@ -19,7 +19,7 @@ namespace rtl_tests
         auto [err0, robj0] = classEvent->create<rtl::alloc::Stack>();
 
         //Event's constructor not registered in RTL.
-        EXPECT_TRUE(err0 == rtl::error::ConstructorNotRegisteredInRtl);
+        EXPECT_TRUE(err0 == rtl::error::Instantiating_typeNotDefaultConstructible);
         EXPECT_TRUE(robj0.isEmpty());
         {
             auto classCalender = MyReflection::instance().getRecord(id::calender);

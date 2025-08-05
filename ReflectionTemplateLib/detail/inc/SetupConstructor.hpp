@@ -40,24 +40,29 @@ namespace rtl
             //lambda containing constructor call.
             const auto& functor = [=](error& pError, alloc pAllocType, _signature&&...params)-> access::RObject
             {
-                if (pAllocType == alloc::Heap) {
-                    pError = error::None;
-                    constexpr auto _allocOn = alloc::Heap;
-                    return RObjectBuilder::build<const _recordType*, _allocOn>(new _recordType(std::forward<_signature>(params)...));
+                if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>) 
+                {   //default constructor, private or deleted.
+                    pError = error::Instantiating_typeNotDefaultConstructible;
+                    return access::RObject();
                 }
-                else if (pAllocType == alloc::Stack) 
+                else 
                 {
-                    if constexpr (traits::instantiation_error_v<_recordType> != error::None) {
-                        pError = traits::instantiation_error_v<_recordType>;
-                        return access::RObject();
+                    if (pAllocType == alloc::Stack) {
+
+                        if constexpr (!std::is_copy_constructible_v<_recordType>) {
+                            pError = error::Instantiating_typeNotCopyConstructible;
+                            return access::RObject();
+                        }
+                        else {
+                            pError = error::None;
+                            return RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...));
+                        }
                     }
-                    else {
-                        pError = error::None;
-                        return RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...));
+                    else if (pAllocType == alloc::Heap) {
+                        return RObjectBuilder::build<const _recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...));
                     }
                 }
-                //dead-code.
-                return access::RObject();
+                return access::RObject();   //dead code. compiler warning ommited.
             };
 
             //add the lambda in 'FunctorContainer'.

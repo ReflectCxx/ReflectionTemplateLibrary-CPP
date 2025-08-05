@@ -46,19 +46,19 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, error_ConstructorNotRegisteredInRTL)
+    TEST(ReflectedCallStatusError, error_Instantiating_typeNotDefaultConstructible)
     {
         optional<Record> classEvent = MyReflection::instance().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<alloc::Stack>();
 
-        ASSERT_TRUE(err0 == error::ConstructorNotRegisteredInRtl);
+        ASSERT_TRUE(err0 == error::Instantiating_typeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
 
         auto [err1, robj1] = classEvent->create<alloc::Heap>();
 
-        ASSERT_TRUE(err1 == error::ConstructorNotRegisteredInRtl);
+        ASSERT_TRUE(err1 == error::Instantiating_typeNotDefaultConstructible);
         ASSERT_TRUE(robj1.isEmpty());
     }
 
@@ -104,27 +104,24 @@ namespace rtl_tests
             {
                 // Attempt to create a reflected instance allocated on the heap.
                 auto [err, robj] = classLibrary->create<alloc::Heap>();
-
-            /*
-            *   Heap allocation succeeds:
+            /*  Heap allocation succeeds:
             *   Even though Library's copy constructor is deleted, RObject internally stores
             *   the pointer directly inside std::any (type-erased), without requiring the type T
             *   to be copy-constructible.
-            */  ASSERT_TRUE(err == error::None);
-                ASSERT_FALSE(robj.isEmpty());
+            */  EXPECT_TRUE(err == error::None);
+                EXPECT_FALSE(robj.isEmpty());
             }
             // Ensure no leaked or lingering reflected instances.
             EXPECT_TRUE(library::assert_zero_instance_count());
             {
                 // Attempt to create a reflected instance allocated on the stack.
                 auto [err, robj] = classLibrary->create<alloc::Stack>();
-
             /*  Stack allocation fails:
             *   Creating a stack instance requires storing the actual object inside std::any.
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
             *   and Library's copy constructor is deleted, construction fails.
-            */  ASSERT_TRUE(err == error::Instantiating_typeNotCopyConstructible);
-                ASSERT_TRUE(robj.isEmpty());
+            */  EXPECT_TRUE(err == error::Instantiating_typeNotCopyConstructible);
+                EXPECT_TRUE(robj.isEmpty());
             }
         }
     }

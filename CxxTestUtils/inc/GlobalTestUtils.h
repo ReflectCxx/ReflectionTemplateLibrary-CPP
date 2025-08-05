@@ -40,5 +40,7 @@ namespace test_utils {
 		static std::size_t person;
 		static std::size_t library;
 		static std::size_t calender;
+		static std::size_t std_string;
+		static std::size_t std_string_view;
 	};
 }

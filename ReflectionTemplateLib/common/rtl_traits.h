@@ -43,6 +43,9 @@ namespace rtl
         template<typename T>
         constexpr bool is_const_v = ((std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>) ||
                                     (!std::is_pointer_v<T> && std::is_const_v<T>));
+
+        template<typename _checkType, typename..._typeList>
+        constexpr bool is_first_type_same_v = std::is_same_v<base_t<typename detail::TypeId<_typeList...>::HEAD>, base_t<_checkType>>;
     }
     
     

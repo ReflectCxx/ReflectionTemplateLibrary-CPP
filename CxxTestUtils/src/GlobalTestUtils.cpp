@@ -38,6 +38,10 @@ namespace test_utils {
 
 	std::size_t id::calender = rtl::detail::TypeId<nsdate::Calender>::get();
 
+	std::size_t id::std_string = rtl::detail::TypeId<std::string>::get();
+
+	std::size_t id::std_string_view = rtl::detail::TypeId<std::string_view>::get();
+
 	const std::size_t getRecordIdFor(const std::string& pRecordName)
 	{
 		if (pRecordName == book::class_) {
@@ -60,6 +64,12 @@ namespace test_utils {
 		}
 		else if (pRecordName == library::class_) {
 			return id::library;
+		}
+		else if (pRecordName == "string") {
+			return id::std_string;
+		}
+		else if (pRecordName == "string_view") {
+			return id::std_string_view;
 		}
 		else return g_invalidId;
 	}

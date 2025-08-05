@@ -44,8 +44,8 @@ namespace rtl_tests
 				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
 
 				if (recordName == event::struct_) {
-					//Calender's constructor not registered in RTL.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					//Event's default constructor is private or deleted.
+					EXPECT_TRUE(err == rtl::error::Instantiating_typeNotDefaultConstructible);
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == library::class_) {
@@ -53,8 +53,12 @@ namespace rtl_tests
 					EXPECT_TRUE(err == rtl::error::Instantiating_typeNotCopyConstructible);
 					EXPECT_TRUE(robj.isEmpty());
 				}
+				else if (recordName == "string") {
+					//no constructor of class std::string is registered in RTL, but the calss is registered.
+					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					EXPECT_TRUE(robj.isEmpty());
+				}
 				else {
-
 					EXPECT_TRUE(err == rtl::error::None);
 					EXPECT_FALSE(robj.isEmpty());
 					EXPECT_TRUE(robj.getTypeId() == recordId);

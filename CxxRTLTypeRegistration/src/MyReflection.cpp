@@ -44,6 +44,10 @@ CxxMirror& MyReflection::instance()
         Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
         Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
 
+        // Registers std::string/view class, but no constructor, to test error::ConstructorNotRegisteredInRtl.
+        Reflect().nameSpace("std").record<std::string>("string").methodConst("empty").build(&std::string::empty),
+        Reflect().nameSpace("std").record<std::string>("string_view").methodConst("empty").build(&std::string_view::empty),
+
         //Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),  //registers default constructor
         Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),  //overloaded constructor, taking 'string' as argument, must be specified as template param.
@@ -59,10 +63,12 @@ CxxMirror& MyReflection::instance()
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),  //unique method, no overloads.
         Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate),  //unique method, no overloads.
 
-        //class Event, unique method, no registered constructor.
-        Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).method(event::str_getDate).build(&nsdate::Event::getEventDate),
+        // Registers 'Event' for reflection; instance creation fails since its default constructor is private or deleted.
+        // At least one member must be registered for RTL to recognize the type. be it property, member-function or constructor.
+        Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).constructor().build(),
 
-        Reflect().record<Library>(library::class_).constructor().build(),   //Registers constructor, Library's copy constructor is deleted.
+        // Registers Library's constructor; stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted.
+        Reflect().record<Library>(library::class_).constructor().build(),   //can only construct instance on heap (rtl::alloc::HEAP) via RTL.
         Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),  //Static method registration, 'methodStatic()' function must be used. compiler error otherwise.
         Reflect().record<Library>(library::class_).methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle),
 
@@ -117,13 +123,12 @@ CxxMirror& MyReflection::instance()
         #endif
     });
 
-
-    static bool dumped = false;
-    if (!dumped) {
+    static const auto _v= [&]()
+    {
         const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
         rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
-        dumped = true;
-    }
+        return -1;
+    } ();
 
     return cxxMirror;
 }
