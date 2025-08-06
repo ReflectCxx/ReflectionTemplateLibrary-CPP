@@ -1,6 +1,6 @@
 # Reflection Template Library C++
 
-The **Reflection Template Library"**, built in & for **Modern C++**, enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
+The **"Reflection Template Library"**, built in & for **Modern C++**, enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
 
 Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
 
