@@ -1,14 +1,14 @@
 # Reflection Template Library C++
 
-The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
+The **Reflection Template Library"**, built in & for **Modern C++**, enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
 
 Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
 
 ## Key Features
 
-- **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious macros involved.
-- **Clean Code**: No reflection-related code needs to be added to class, struct, or function declarations or implementations— keeping your codebase clean and free of clutter.
+- **Clean & Non Intrusive**: No reflection-related code needs to be added to your class, struct, or function declarations/implementations— keeping your codebase clean and free of clutter.
 - **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
+- **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious MACROS involved.
 - **Simple Integration**: Just create an instance of `CxxMirror`, pass all type information to reflect as a constructor parameter, and you’re done!
   ```c++
   rtl::CxxMirror cxxReflection({/*.. Pass all type information to register..*/});
