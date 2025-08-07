@@ -88,7 +88,6 @@ Reflect().nameSpace("..")
          .constructor<..>() // Register constructor with template parameters as signature.
          .build();      // No function pointer needed for constructors.
 ```
-**Automatic Code Generation**: To generate manual registration code automatically, `clang-reflect` can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
 ### Step 2: Use the 'Person' Class via Reflection
 In main.cpp, use the **`Person`** class without directly exposing its type.
 ```c++
