@@ -20,7 +20,7 @@ namespace
 		sout << "{\"containerId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
 		sout << "\"index\": \"" << std::to_string(pFunctorId.getIndex()) << "\",";
 		if (pFunctorId.getRecordId() != TypeId<>::None) {
-			sout << "\"classId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
+			sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
 		}
 		sout << "\"returnId\": \"" << std::to_string(pFunctorId.getReturnId()) << "\",";
 		sout << "\"hash_code\": \"" << std::to_string(pFunctorId.getHashCode()) << "\",";
@@ -77,7 +77,7 @@ namespace
 		{
 			for (const auto& itr0 : itr.second)
 			{
-				for (const auto& itr1 : itr0.second.getMethodMap())
+				for (const auto& itr1 : itr0.second.get().getMethodMap())
 				{
 					const std::string& methodStr = toJson(itr1.second);
 					sout << methodStr << ",";

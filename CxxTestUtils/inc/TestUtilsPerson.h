@@ -19,7 +19,9 @@ namespace test_utils
 		static constexpr const char* OCCUPATION = "Private Detective.";
 
 		static constexpr const char* class_ = "Person";
+		static constexpr const char* str_createPtr = "createPtr";
 		static constexpr const char* str_getProfile = "getProfile";
+		static constexpr const char* str_createConst = "createConst";
 		static constexpr const char* str_getDefaults = "getDefaults";
 		static constexpr const char* str_getFirstName = "getFirstName";
 		static constexpr const char* str_updateAddress = "updateAddress";
@@ -29,19 +31,21 @@ namespace test_utils
 
 		static const std::string get_str_returned_on_call_getDefaults();
 
+		static const bool delete_unmanaged_person_instance_created_via_createPtr(const std::any& pInstance);
+
 		template<class ..._signature>
 		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);
 
-		static const bool test_method_updateLastName_const(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_updateLastName_const(const std::any& pInstance, bool pCastAsPtr);
 
 		template<class ..._signature>
-		static const bool test_method_updateAddress(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_updateAddress(const std::any& pInstance, bool pCastAsPtr);
 
 		template<class ..._signature>
-		static const bool test_method_updateAddress_const(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_updateAddress_const(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pOnHeap);
+		static const bool test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pOnHeap);
+		static const bool test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pCastAsPtr);
 	};
 }

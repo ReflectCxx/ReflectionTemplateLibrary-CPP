@@ -38,22 +38,24 @@ namespace test_utils
 		static constexpr const char* str_updateBookInfo = "updateBookInfo";
 		static constexpr const char* str_addCopyrightTag = "addCopyrightTag";
 
+		static const int get_book_instance_count();
+
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAuthor(const std::any& pInstance, bool pIsOnHeap);
+		static const bool test_method_setAuthor(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_method_addPreface(const std::any& pInstance, bool pIsOnHeap);
+		static const bool test_method_addPreface(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_method_addCopyrightTag(const std::any& pInstance, bool pIsOnHeap);
+		static const bool test_method_addCopyrightTag(const std::any& pInstance, bool pCastAsPtr);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 
 		template<class ..._signature>
-		static const bool test_method_updateBookInfo(const std::any& pInstance, bool pIsOnHeap);
+		static const bool test_method_updateBookInfo(const std::any& pInstance, bool pCastAsPtr);
 
 		template<class ..._ctorArgs>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pIsOnHeap);
+		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_unique_copy_ctor_const_ref(const std::any& pInstance, bool pOnHeap);
+		static const bool test_copy_ctor_with_mutated_object(const std::any& pInstance, bool pCastAsPtr);
 	};
 }

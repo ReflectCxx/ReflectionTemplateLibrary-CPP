@@ -25,6 +25,7 @@ namespace rtl
         template<class ..._args>
         inline std::pair<error, RObject> MethodInvoker<_signature...>::call(_args&& ...params) const noexcept
         {
+            //Only static-member-functions have Qualifier- 'methodQ::None'
             if (m_method.getQualifier() == methodQ::None) {
                 return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
             }
@@ -39,7 +40,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;
@@ -57,6 +58,11 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
+            if (pMethod.getQualifier() == methodQ::NonConst && pTarget.isConst()) {
+                pError = error::ImplicitCallToNonConstOnConstTarget;
+                return RObject();
+            }
+
             using containerConst = detail::MethodContainer<methodQ::Const, _finalSignature...>;
             using containerNonConst = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
 
@@ -112,7 +118,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;
@@ -132,23 +138,23 @@ namespace rtl
         {
             static_assert(_Q != methodQ::None, "Invalid qualifier used.");
 
-            using container = detail::MethodContainer<_Q, _finalSignature...>;
-            const std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+            using container0 = detail::MethodContainer<_Q, _finalSignature...>;
+            const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
             if (index != rtl::index_none) {
-                return container::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
+                return container0::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
             }
             else {
                 if constexpr (_Q == methodQ::Const) {
-                    using container = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
-                    std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+                    using container1 = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
+                    std::size_t index = pMethod.hasSignatureId(container1::getContainerId());
                     if (index != rtl::index_none) {
                         pError = error::ConstMethodOverloadNotFound;
                         return RObject();
                     }
                 }
                 else if constexpr (_Q == methodQ::NonConst) {
-                    using container = detail::MethodContainer<methodQ::Const, _finalSignature...>;
-                    std::size_t index = pMethod.hasSignatureId(container::getContainerId());
+                    using container2 = detail::MethodContainer<methodQ::Const, _finalSignature...>;
+                    std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
                     if (index != rtl::index_none) {
                         pError = error::NonConstMethodOverloadNotFound;
                         return RObject();

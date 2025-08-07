@@ -6,7 +6,6 @@ SET(COMMON_HEADERS
 
 SET(LOCAL_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/inc/ConstructorBuilder.h"
-	"${CMAKE_CURRENT_LIST_DIR}/inc/ConstructorBuilder.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/inc/Builder.h"
 	"${CMAKE_CURRENT_LIST_DIR}/inc/Builder.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/inc/RecordBuilder.h"

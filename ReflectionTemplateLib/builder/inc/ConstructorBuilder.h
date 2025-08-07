@@ -23,19 +23,29 @@ namespace rtl {
             //given name of the namespace.
             const std::string& m_namespace;
 
-        /*  type of constructor to be registered.
-            FunctorType::Ctor - default/parametrized constructor.
-            FunctorType::CopyCtor - copy constructor args, '_recordType&'
-            FunctorType::CopyCtorConst - copy constructor args, 'const _recordType&'
-        */  const ConstructorType m_ctorType;
-
             ConstructorBuilder() = delete;
 
         public:
 
-            ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord, ConstructorType pCtorType);
-          
-            inline const access::Function build() const;
+            ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord)
+                : m_record(pRecord)
+                , m_namespace(pNamespace)
+            { }
+
+        /*  @method: build()
+            @param: none
+            @return: 'Function' object.
+            * constructs temparory object of class Builder<methodQ::NonConst> with given class/struct, namespace name & constructor type.
+            * forwards the call to Builder<methodQ::NonConst>::build().
+        */  const access::Function build() const
+            {
+                // Check if the constructor is not deleted and publicly accessible (excluding default constructor).
+                const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);
+                static_assert(isAccessible, "The specified constructor is either deleted or not publicly accessible.");
+
+                const auto& ctorName = CtorName::ctor(m_record);
+                return Builder<methodQ::NonConst>(m_namespace, m_record, ctorName, detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
+            }
         };
     }
 }

@@ -23,17 +23,18 @@ namespace rtl {
         private:
 
             //private ctor, called by 'Record' class.
-            explicit Method(const Function& pFunction);
+            explicit Method(const Function& pFunction)
+                : Function(pFunction)
+            { }
 
             //private ctor, called by 'Record' class.
-            explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName);
+            explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
+                : Function(pFunction, pFunctorId, pFunctorName)
+            { }
 
             //invokes the constructor associated with this 'Method'
             template<class ..._args>
-            std::pair<error, RObject> invokeCtor(alloc pAllocType, _args&&...params) const;
-
-            //called from class 'Record', creates a 'Method' object for copy-constructor.
-            static Method getCopyConstructorMethod(const Function& pFunction, const detail::FunctorId& pFunctorId);
+            std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
 
         public:
 

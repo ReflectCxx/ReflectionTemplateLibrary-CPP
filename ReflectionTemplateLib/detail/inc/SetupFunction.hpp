@@ -1,12 +1,43 @@
+#pragma once
 
-#include "RObject.hpp"
-#include "RObjectBuilder.h"
 #include "SetupFunction.h"
+#include "RObjectBuilder.hpp"
 
 namespace rtl
 {
     namespace detail
     {
+        template<class _derivedType>
+        template<class _returnType, class ..._signature>
+        inline SetupFunction<_derivedType>::FunctionLambda<_signature...> 
+               SetupFunction<_derivedType>::getCaller(_returnType(*pFunctor)(_signature...))
+        {
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
+        */  return [=](error& pError, _signature&&...params)-> access::RObject
+            {
+                //call will definitely be successful, since the signature type has alrady been validated.
+                pError = error::None;
+
+                if constexpr (std::is_same_v<_returnType, void>) {
+                    //if the function do not returns anything, this block will be retained by compiler.
+                    (*pFunctor)(std::forward<_signature>(params)...);
+                    return access::RObject();
+                }
+                else if constexpr (std::is_reference_v<_returnType>) {
+                /*  if the function returns reference, this block will be retained by compiler.
+                    Note: reference to temporary or dangling is not checked here.
+                */  const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                    return RObjectBuilder::build(&retObj);
+                }
+                else {
+                    //if the function returns anything (not refrence), this block will be retained by compiler.
+                    return RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...));
+                }
+            };
+        }
+
+
     /*  @method: addFunctor().
         @param: 'pFuntor' (a non-member or static-member function pointer).
             '_derivedType' : class deriving this class ('FunctionContainer<...>').
@@ -46,51 +77,9 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const auto& retTypeId = TypeId<remove_const_n_ref_n_ptr<_returnType>>::get();
-
-        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-            this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  const auto functor = [=](error& pError, _signature&&...params)-> access::RObject
-            {
-                //if functor does not returns anything, this 'if' block is retained and else block is omitted by compiler.
-                if constexpr (std::is_same_v<_returnType, void>) {
-
-                    //call will definitely be successful, since the signature type has alrady been validated.
-                    (*pFunctor)(std::forward<_signature>(params)...);
-                    pError = error::None;
-                    return access::RObject();
-                }
-                else //if functor returns value, this 'else' block is retained and 'if' block is omitted by compiler.
-                {
-                    if constexpr (std::is_reference_v<_returnType>)
-                    {
-                        if constexpr (std::is_const_v<std::remove_reference_t<_returnType>>)
-                        {
-                            pError = error::None;
-                            //call will definitely be successful, since the signature type has alrady been validated.
-                            const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            return RObjectBuilder::build(&retObj, nullptr, alloc::None);
-                        }
-                        else
-                        {
-                            pError = error::None;
-                            //call will definitely be successful, since the signature type has alrady been validated.
-                            const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                            return RObjectBuilder::build(&retObj, nullptr, alloc::None);
-                        }
-                    }
-                    else
-                    {
-                        pError = error::None;
-                        //call will definitely be successful, since the signature type has alrady been validated.
-                        return RObjectBuilder::build((*pFunctor)(std::forward<_signature>(params)...), nullptr, alloc::None);
-                    }
-                }
-            };
-
+            const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
-            std::size_t index = _derivedType::pushBack(functor, getIndex, updateIndex);
-
+            const std::size_t index = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId(index, retTypeId, pRecordId, _derivedType::getContainerId(),
                                      _derivedType::template getSignatureStr<_returnType>());

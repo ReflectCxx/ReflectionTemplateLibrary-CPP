@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "Method.h"
+#include "Constants.h"
 
 namespace rtl {
 
@@ -17,7 +18,6 @@ namespace rtl {
     {
         //forward decls
         class Method;
-        class RStatus;
         class RObject;
 
     /*  @class: Record
@@ -27,34 +27,66 @@ namespace rtl {
         * provides interface to construct instances of the class/struct using the registered constructors.
     */  class Record
         {
+            using MethodMap = std::unordered_map< std::string, access::Method >;
+
             mutable std::size_t m_recordId;
-
             mutable std::string m_recordName;
-
-            mutable std::unordered_map< std::string, access::Method > m_methods;
+            mutable MethodMap m_methods;
 
         private:
 
-            explicit Record(const std::string& pRecordName, const std::size_t pRecordId);
+            Record(const std::string& pRecordName, const std::size_t pRecordId)
+                : m_recordId(pRecordId)
+                , m_recordName(pRecordName)
+            { }
 
-            std::unordered_map< std::string, access::Method >& getFunctionsMap() const;
+            GETTER_REF(MethodMap, FunctionsMap, m_methods)
 
         public:
 
             Record() = delete;
+            Record(Record&&) = default;
+            Record(const Record&) = default;
+            Record& operator=(Record&&) = default;
+            Record& operator=(const Record&) = default;
 
-            Record& operator=(const Record& pOther);
+            GETTER_CREF(MethodMap, MethodMap, m_methods)
 
-            std::optional<Method> getMethod(const std::string& pMethod) const;
+    /*      @method: getMethod
+            @param: const std::string& (name of the method)
+            @return: std::optional<Method>
+            * if the method isn't found by the given name, std::nullopt is returned.
+    */      std::optional<Method> getMethod(const std::string& pMethod) const
+            {
+                const auto& itr = m_methods.find(pMethod);
+                if (itr != m_methods.end()) {
+                    return std::optional(itr->second);
+                }
+                return std::nullopt;
+            }
 
-            //creates dynamic, deep-copy instance, calling copy ctor, using new.
-            std::pair<error, RObject> clone(RObject& pOther) const;
 
-            //creates dynamic instance, using new.
-            template<alloc _alloc, class ..._ctorArgs>
-            std::pair<error, RObject> create(_ctorArgs&& ...params) const;
-
-            const std::unordered_map< std::string, access::Method >& getMethodMap() const;
+    /*      @method: create
+            @param: ...params (any number/type of arguments)
+            @return: std::pair<error, RObject>
+            * calls the constructor of the calss/struct represented by this 'Record' object.
+            * returns the dynamically allocated object of the calss/struct along with the status.
+            * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
+            * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned with empty 'RObject'.
+            * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
+            * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
+    */      template<alloc _alloc, class ..._ctorArgs>
+            std::pair<error, RObject> create(_ctorArgs&& ...params) const
+            {
+                static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
+                const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
+                //if registered constructor is found for the class/struct represented by this 'Record' object.
+                return itr != m_methods.end()
+                           //invoke the constructor, forwarding the arguments.
+                           ? itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...)
+                           //if no constructor found, return with empty 'RObject'.
+                           : std::make_pair(error::ConstructorNotRegisteredInRtl, RObject());
+            }
 
             //only class which can create objects of this class & manipulates 'm_methods'.
             friend class detail::CxxReflection;

@@ -1,0 +1,24 @@
+#pragma once
+
+#include "RObjectBuilder.h"
+#include "RObject.hpp"
+
+namespace rtl::detail {
+
+    inline const std::size_t RObjectBuilder::reflectedInstanceCount()
+    {
+        return access::RObject::m_rtlOwnedHeapAllocCount;
+    }
+
+    template<class T, alloc _allocOn, traits::enable_if_std_wrapper<T>>
+    inline access::RObject RObjectBuilder::build(T&& pVal)
+    {
+        return access::RObject::createWithWrapper(std::forward<T>(pVal));
+    }
+
+    template<class T, alloc _allocOn, traits::enable_if_not_std_wrapper<T>>
+    inline access::RObject RObjectBuilder::build(T&& pVal)
+    {
+        return access::RObject::create<T, _allocOn>(std::forward<T>(pVal));
+    }
+}

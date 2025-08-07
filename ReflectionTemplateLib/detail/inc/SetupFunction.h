@@ -13,7 +13,7 @@ namespace rtl {
         * deriving classes is FunctorContainer<...>, which must implement -
             - std::size_t& _derived::getContainerId();
             - std::string _derivedType::getSignatureStr();
-            - std::size_t& _derived::pushBack(std::function < access::RStatus(_signature...) >,
+            - std::size_t& _derived::pushBack(std::function<access::RObject(error&, _signature...)>,
                                               std::function<const std::size_t()>,
                                               std::function<void(const std::size_t&)>);
         * sets up only non-member or static-member-function functors in table.
@@ -21,6 +21,12 @@ namespace rtl {
     */  template<class _derivedType>
         class SetupFunction
         {
+            template<class ..._signature>
+            using FunctionLambda = std::function < access::RObject(error&, _signature...) >;
+
+            template<class _returnType, class ..._signature>
+            static FunctionLambda<_signature...> getCaller(_returnType(*pFunctor)(_signature...));
+
         protected:
 
             template<class _returnType, class ..._signature>

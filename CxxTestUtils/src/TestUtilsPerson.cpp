@@ -40,13 +40,13 @@ namespace test_utils
 	}
 
 
-	const bool person::test_method_updateLastName_const(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_method_updateLastName_const(const std::any& pInstance, bool pCastAsPtr)
 	{
 		const Person person(FIRST_NAME);
 		person.updateLastName(LAST_NAME);
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -60,13 +60,13 @@ namespace test_utils
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pCastAsPtr)
 	{
 		const Person personSrc;
 		Person person(personSrc);
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -80,13 +80,13 @@ namespace test_utils
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pCastAsPtr)
 	{
 		Person personSrc;
 		Person person(personSrc);
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -101,13 +101,13 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress<string>(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_method_updateAddress<string>(const std::any& pInstance, bool pCastAsPtr)
 	{
 		Person person(FIRST_NAME);
 		person.updateAddress(ADDRESS);
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -120,15 +120,26 @@ namespace test_utils
 		}
 	}
 
+	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const std::any& pInstance)
+	{
+		//instance created via reflection is non-const pointer internally.
+		const Person* rPerson = any_cast<const Person*>(pInstance);
+		if (rPerson == nullptr) {
+			return false;
+		}
+		Person::deletePtr(rPerson);
+		return true;
+	}
+
 
 	template<>
-	const bool person::test_method_updateAddress_const<string>(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_method_updateAddress_const<string>(const std::any& pInstance, bool pCastAsPtr)
 	{
 		const Person person(FIRST_NAME);
 		person.updateAddress(ADDRESS);
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -143,13 +154,13 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress<>(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_method_updateAddress<>(const std::any& pInstance, bool pCastAsPtr)
 	{
 		Person person(FIRST_NAME);
 		person.updateAddress();
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;
@@ -164,13 +175,13 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress_const<>(const std::any& pInstance, bool pOnHeap)
+	const bool person::test_method_updateAddress_const<>(const std::any& pInstance, bool pCastAsPtr)
 	{
 		const Person person(FIRST_NAME);
 		person.updateAddress();
 
-		if (pOnHeap) {
-			//instance created via reflection will always hold non-const pointer only. const(or not) is maintained internally to call appropriate method.
+		if (pCastAsPtr) {
+			//instance created via reflection is non-const pointer internally.
 			const Person* rPerson = any_cast<const Person*>(pInstance);
 			if (rPerson == nullptr) {
 				return false;

@@ -9,11 +9,6 @@
  *
  * Clients should treat this as a non-owning view: the semantics
  * are always read-only, and ownership is abstracted away.
- *
- * This is useful when you want to accept inputs that may either
- * be passed by reference or value, without worrying about
- * ownership or lifetime in the caller code.
- *
  * ----------------------------------------------------------------------------
  * Purpose:
  *   rtl::view is specifically designed to provide read-only access to values
@@ -37,7 +32,7 @@ namespace rtl {
     /*  only constructed if we own the value.
     *   order matters: m_value must be declared before m_cref
     *   because m_cref may bind to m_value during initialization
-    */  const std::optional<const _asType> m_value;
+    */  const std::optional<_asType> m_value;
 
         const _asType& m_cref;
 
@@ -49,17 +44,11 @@ namespace rtl {
     //  Construct from value (copy or move)
         view(_asType&& val) : m_value(std::move(val)), m_cref(*m_value) {}
 
-    //  Default copy and move constructors are OK for an immutable type
-        view(view&&) = default;
-        view(const view&) = default;
-        
-    //  Delete copy and move assignment to guarantee no mutation after construction
+    //  Delete all forms of copying and moving, enforcing true immutablilty.
+        view(view&&) = delete;
+        view(const view&) = delete;
         view& operator=(view&&) = delete;
         view& operator=(const view&) = delete;
-
-        operator const _asType& () const {
-            return m_cref;
-        }
 
         const _asType& get() const {
             return m_cref;

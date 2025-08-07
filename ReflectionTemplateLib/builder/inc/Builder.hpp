@@ -155,11 +155,7 @@ namespace rtl {
     */  template<class _recordType, class ..._signature>
         inline const access::Function Builder<methodQ::NonConst>::build() const
         {
-            constexpr bool isCopyCtorSignature =(sizeof...(_signature) == 1 &&
-                                                (std::is_same_v<_recordType, typename detail::TypeId<_signature...>::HEAD>) ||
-                                                (std::is_same_v<_recordType&, typename detail::TypeId<_signature...>::HEAD>) ||
-                                                (std::is_same_v<const _recordType, typename detail::TypeId<_signature...>::HEAD>) ||
-                                                (std::is_same_v<const _recordType&, typename detail::TypeId<_signature...>::HEAD>));
+            constexpr bool isCopyCtorSignature = (sizeof...(_signature) == 1 && traits::is_first_type_same_v<_recordType, _signature...>);
             static_assert(!isCopyCtorSignature, "Copy-constructor registration detected! It is implicitly registered with other constructors.");
             return buildConstructor<_recordType, _signature...>();
         }

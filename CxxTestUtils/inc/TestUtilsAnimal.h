@@ -27,11 +27,11 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAnimalName_rvalue_args(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_setAnimalName_rvalue_args(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr);
 
-		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance, bool pOnHeap);
+		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr);
 
 		template<class ..._signature>
 		static const bool test_method_updateZooKeeper(const std::string& pZooKeeper);

@@ -28,13 +28,31 @@ namespace rtl {
 
     /*  @method: operator()()
         @param: variadic arguments.
-        @return: RStatus, containing the call status & return value of from the reflected call.
-        * if the arguments did not match with any overload, returns RStatus with error::SignatureMismatch
+        @return: std::pair<error, RObject>, possible error & return value of from the reflected call.
+        * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
         inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept
         {
             return bind().call(std::forward<_args>(params)...);
+        }
+
+
+    /*  @method: hasSignatureId()
+        @param: const std::size_t& (signatureId to be found)
+        @return: the index of the functor in the functor-table.
+        * a 'Function' object may be associated with multiple functors in case of overloads.
+        * every overload will have unique 'FunctorId', contained by one 'Function' object.
+        * given signatureId is compared against the signatureId of all overloads registered.
+    */  inline std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
+        {
+            //simple linear-search, efficient for small set of elements.
+            for (const auto& functorId : m_functorIds) {
+                if (functorId.getSignatureId() == pSignatureId) {
+                    return functorId.getIndex();
+                }
+            }
+            return rtl::index_none;
         }
     }
 }

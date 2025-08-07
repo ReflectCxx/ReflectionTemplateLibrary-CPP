@@ -1,29 +1,23 @@
 #pragma once
 
-#include <string>
-#include <type_traits>
-#include <functional>
-#include <any>
+#include <string_view>
 
 namespace rtl {
 
-    // Utility: Remove const and reference qualifiers from T.
-    template <typename T>
-    using remove_const_n_reference = std::remove_const_t<std::remove_reference_t<T>>;
+    static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
-    // Utility: Remove const from T if T is not a reference; otherwise, leave as is.
-    template <typename T>
-    using remove_const_if_not_reference = std::conditional_t< std::is_reference_v<T>, T, std::remove_const_t<T>>;
+    constexpr const std::string_view NAMESPACE_GLOBAL = "namespace_global";
 
-    // Utility: Remove const, reference, and pointer from T (after decay).
-    template<typename T>
-    using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
+    enum class IsPointer { No, Yes };
 
-    //TODO: Intigrate this utility.
-    //// Utility: Remove const, volatile, reference, pointer, and array extent from T.
-    //template<typename T>
-    //using remove_const_n_ref_n_ptr = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t
-    //                                   < std::remove_all_extents_t<T> > > >;
+    enum class Wrapper
+    {
+        None,
+        Weak,
+        Unique,
+        Shared
+    };
+
 
     enum class ConversionKind
     {
@@ -31,17 +25,6 @@ namespace rtl {
         ByValue,
         NotDefined,
         BadAnyCast
-    };
-
-    enum class IsPointer { Yes, No };
-
-    using Converter = std::function< std::any(const std::any&, const IsPointer&, ConversionKind&) >;
-
-    enum FunctorIdx
-    {
-        ZERO = 0,   //heap constructor index
-        ONE = 1,    //copy constructor index
-        MAX_SIZE = 2
     };
 
 
@@ -56,19 +39,10 @@ namespace rtl {
 
     //Allocation type.
     enum class alloc
-    {
-        None = -1,
-        Stack = 0,
-        Heap = 1,
-    };
-
-
-    //Qualifier type.
-    enum class ConstructorType
-    {
-        None,
-        Ctor,
-        CopyCtor
+    {   
+        None,       //assigned to empty/moved-from 'RObject's.
+        Heap,       //assigned to only rtl-allocated heap objects
+        Stack,      //assigned to return-values & rtl-allocated stack objects
     };
 
 
@@ -79,28 +53,32 @@ namespace rtl {
         SignatureMismatch,
         MethodTargetMismatch,
         AmbiguousConstOverload,
-        FunctionNotRegisterdInRTL,
+        FunctionNotRegisterdInRtl,
         ConstMethodOverloadNotFound,
-        ConstructorNotRegisteredInRTL,
+        ConstructorNotRegisteredInRtl,
         NonConstMethodOverloadNotFound,
-        CopyConstructorPrivateOrDeleted,
+        ImplicitCallToNonConstOnConstTarget,
+        ReflectingUniquePtrCopyDisallowed,
+
+        Instantiating_typeVoid,
+        Instantiating_typeAbstract,
+        Instantiating_typeFunction,
+        Instantiating_typeIncomplete,
+        Instantiating_typeNotDefaultConstructible,
+        Instantiating_typeNotCopyConstructible,
+        Instantiating_typeNotMoveConstructible
     };
 
-    static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
     struct CtorName
     {
         inline static const std::string ctor(const std::string& pRecordName) {
             return (pRecordName + "::" + pRecordName + "()");
         }
-
-        inline static const std::string copyCtor(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "(const " + pRecordName + "&)");
-        }
     };
 
 
-    inline const char* to_string(error err) 
+    inline const std::string_view to_string(error err)
     {
         switch (err) {
         case error::None: 
@@ -109,7 +87,7 @@ namespace rtl {
             return "Empty instance: RObject does not hold any reflected object";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
-        case error::FunctionNotRegisterdInRTL:
+        case error::FunctionNotRegisterdInRtl:
             return "Function not registered: The requested method is not registered in the Reflection system";
         case error::MethodTargetMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
@@ -119,17 +97,18 @@ namespace rtl {
             return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
         case error::NonConstMethodOverloadNotFound:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
-        case error::ConstructorNotRegisteredInRTL:
+        case error::ConstructorNotRegisteredInRtl:
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
-        case error::CopyConstructorPrivateOrDeleted:
+        case error::Instantiating_typeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
+        case error::ReflectingUniquePtrCopyDisallowed:
+            return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
+        case error::ImplicitCallToNonConstOnConstTarget:
+            return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         default:
             return "Unknown error";
         }
     }
-
-
-    constexpr const char* NAMESPACE_GLOBAL = "namespace_global";
 
 
 #define GETTER(_varType, _name, _var)                       \
@@ -143,6 +122,10 @@ namespace rtl {
         return _var;                            \
     }
 
+#define GETTER_CREF(_varType, _name, _var)       \
+    inline const _varType& get##_name() const {  \
+        return _var;                             \
+    }
 
 #define GETTER_BOOL(_name, _var)              \
     inline const bool is##_name() const {     \

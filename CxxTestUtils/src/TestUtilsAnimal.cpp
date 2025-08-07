@@ -35,12 +35,12 @@ const bool test_utils::animal::test_method_updateZooKeeper<const std::string&>(c
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::any& pInstance, bool pOnHeap)
+const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::any& pInstance, bool pCastAsPtr)
 {
 	Animal animal;
 	animal.setAnimalName(std::string(NAME));
 
-	if (pOnHeap) {
+	if (pCastAsPtr) {
 		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;
@@ -54,13 +54,13 @@ const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance, bool pOnHeap)
+const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr)
 {
 	Animal animal;
 	const auto& nameStr = std::string(NAME);
 	animal.setAnimalName(nameStr);
 
-	if (pOnHeap) {
+	if (pCastAsPtr) {
 		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;
@@ -74,13 +74,13 @@ const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(c
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance, bool pOnHeap)
+const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr)
 {
 	Animal animal;
 	auto nameStr = std::string(NAME);
 	animal.setAnimalName(nameStr);
 
-	if (pOnHeap) {
+	if (pCastAsPtr) {
 		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
 		if (rAnimal == nullptr) {
 			return false;

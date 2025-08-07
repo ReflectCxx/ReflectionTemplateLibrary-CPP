@@ -14,7 +14,7 @@ namespace rtl {
           MethodContainer<methodQ::Const, _signature...>, which must implement -
             - std::size_t& _derived::getContainerId();
             - std::string _derivedType::getSignatureStr();
-            - std::size_t& _derived::pushBack(std::function < access::RStatus(_signature...) >,
+            - std::size_t& _derived::pushBack(std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >,
                                               std::function<const std::size_t()>,
                                               std::function<void(const std::size_t&)>);
         * sets up only non-static-member-function functors in lambda table.
@@ -22,6 +22,15 @@ namespace rtl {
     */  template<class _derivedType>
         class SetupMethod
         {
+            template<class ..._signature>
+            using MethodLambda = std::function < access::RObject(error&, const rtl::access::RObject&, _signature...) >;
+
+            template<class _recordType, class _returnType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...));
+
+            template<class _recordType, class _returnType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const);
+            
         protected:
 
             template<class _recordType, class _returnType, class ..._signature>

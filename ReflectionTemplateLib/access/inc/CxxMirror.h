@@ -1,49 +1,58 @@
 #pragma once
 
-#include <string>
-#include <optional>
-#include <unordered_map>
-
 #include "CxxReflection.h"
 
 namespace rtl {
 
-    namespace access 
+    namespace access
     {
-        //forward decls
+        // Forward declarations
         class Record;
         class Function;
 
-    /*  @class: CxxMirror
-        * provides interface to access registered functions/methods by name.
-        * its the single point of access to whole reflection system.
-        * all the type registration is done while constructing its object.
-        * its objects can be createed locally and will be destroyed as regular object, at scope's end.
-        * deleted copy constructor and assignment operator, can only be passed around as reference or wrapped in a smart pointer.
-        * the inherited data members are freed upon destruction, except the 'functor-containers', they have static lifetime.
-        * 'functor-containers' are not member of this or base class, base only contains 'Function' objects which is a hash-key for looking up a particular functor.
-        * creating multiple objects of CxxMirror and registring the same functor will not increase the 'functor-container' size.
-        * once a functor is registered, no entry will be added to the 'functor-container' for the same functor.
-        * registering the same functor will create duplicate hash-key 'Function' object, which will be ignored if in the same 'CxxMirror' object.
-          if two different 'CxxMirror' objects are created and registering the same functor, the functor-container will have only one entry for the functor
-          but two identical 'Function' objects will be created, held by respective 'CxxMirror' object.
-    */  class CxxMirror : public detail::CxxReflection 
+    
+    /*  @class CxxMirror
+        * Provides the primary interface to access registered functions and methods by name.
+        * This is the single point of access to the entire reflection system.
+        *
+        * All type registrations happen during object construction.
+        *
+        * Objects of this class are regular stack-allocated objects (non-singleton) and are destroyed automatically when they go out of scope.
+        * Copy constructor and assignment operator are deleted, instances can only be passed by reference or wrapped in a smart pointer.
+        *
+        * All inherited members are properly destroyed when the object is destroyed, except for the *functor containers*.
+        *
+        * Notes on Functor Storage:
+        *   - Functor containers have static lifetime and are not part of this class or its base class.
+        *   - This class (and its base) store only `Function` objects, which serve as hash-keys to look up actual functors.
+        *   - Registering the same functor multiple times across different `CxxMirror` instances will not duplicate the functor in the container.
+        *   - However, each `CxxMirror` instance will maintain its own unique `Function` hash-keys, even for the same functor.
+        *   - Within a single `CxxMirror` object, registering the same functor multiple times is ignored (no duplicate `Function` hash-keys).
+        *
+        * Summary:
+        *   - Functor objects are shared and static.
+        *   - `Function` keys are per-instance.
+        *   - Functor storage remains unaffected by the number of `CxxMirror` instances.
+    */  class CxxMirror : public detail::CxxReflection
         {
         public:
 
-            //constructor, taking function objects, other constructors are disabled.
+            // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
             CxxMirror(const std::vector<Function>& pFunctions);
 
-            //get the class/struct's member-functions hash-keys wrapped in a 'Record' object.
+            // Returns a Record containing function hash-keys for the given record ID.
+            std::optional<Record> getRecord(const std::size_t pRecordId) const;
+
+            // Returns a Record containing function hash-keys for the given record name.
             std::optional<Record> getRecord(const std::string& pRecordName) const;
 
-            //get the non-member functions hash-keys.
-            std::optional<Function> getFunction(const std::string& pFunctionName) const;
-
-            //get the class/struct's member-functions hash-keys wrapped in a 'Record' object, registered with a namespace name.
+            // Returns a Record containing function hash-keys for the given record name (overloaded for namespace support).
             std::optional<Record> getRecord(const std::string& pNameSpaceName, const std::string& pRecordName) const;
 
-            //get the non-member functions hash-keys, registered with a namespace name.
+            // Returns a Function object for the given function name (non-member function).
+            std::optional<Function> getFunction(const std::string& pFunctionName) const;
+
+            // Returns a Function object for the given function name, within the specified namespace.
             std::optional<Function> getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const;
         };
     }

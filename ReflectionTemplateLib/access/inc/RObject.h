@@ -1,115 +1,84 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
+#include <functional>
 
 #include "view.h"
 #include "TypeId.h"
-#include "Constants.h"
+#include "RObjectId.h"
+#include "rtl_traits.h"
+
+namespace rtl::detail
+{
+    struct RObjectBuilder;
+}
 
 namespace rtl::access
 {
     class Function;
 
-    using ConverterPair = std::pair< std::size_t, Converter >;
-
     //Reflecting the object within.
     class RObject
     {
-        static std::vector<rtl::access::ConverterPair> m_conversions;
-
-        rtl::IsPointer m_isPointer;
-        std::size_t m_typeId;
-        std::size_t m_typePtrId;
-        std::string m_typeStr;
-        alloc m_allocatedOn;
-        const std::vector<ConverterPair>& m_converters;
-
+        using Deleter = std::function<void()>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        
         std::any m_object;
-        std::shared_ptr<void> m_deallocator;
+        std::any m_wrapper;
+        Cloner m_getClone;
+        Deleter m_deleter;
+        detail::RObjectId m_objectId;
 
-        explicit RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr, 
-                         rtl::IsPointer pIsPtr,rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter, 
-                         const std::vector<ConverterPair>& pConversions);
+        static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
+
+        RObject(const RObject&) = default;
+        RObject(std::any&& pObject, std::any&& pWrapper, Deleter&& pDeleter, 
+                Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId);
 
         template<class T>
-        const T& as() const;
+        const T& as(bool pGetFromWrapper = false) const;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
-    protected:
+        template <rtl::alloc _allocOn>
+        std::pair<error, RObject> createCopy() const;
 
         template <class T>
-        static RObject create(T&& pVal, std::shared_ptr<void>&& pDeleter, rtl::alloc pAllocOn);
+        static Cloner getCloner();
+
+        template <class T, rtl::alloc _allocOn>
+        static RObject create(T&& pVal);
+
+        template <class W>
+        static RObject createWithWrapper(W&& pWrapper);
+
     public:
 
-        explicit RObject();
+        ~RObject();
+        RObject() = default;
         RObject(RObject&&) noexcept;
-
-        ~RObject() = default;
-        RObject(const RObject&) = default;
-
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
         GETTER(std::any,,m_object)
-        GETTER(std::size_t, TypeId, m_typeId);
-
-        //checks if object constructed via reflection on heap or stack.
-        GETTER_BOOL(OnHeap, (m_allocatedOn == rtl::alloc::Heap));
+        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
+        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(RefOrPtr, (m_objectId.m_isPointer == IsPointer::Yes))
+        // Objects created through reflection are considered mutable (non-const) by default.
+        GETTER_BOOL(Const, m_objectId.m_isTypeConst)
+
+        template<rtl::alloc _allocOn>
+        std::pair<error, RObject> clone() const;
 
         template <class _asType>
         bool canViewAs() const;
 
         //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
         template<class _asType>
-        std::optional<rtl::view<_asType>> view() const;
+        std::optional<view<_asType>> view() const;
+
+        friend detail::RObjectBuilder;
     };
-
-
-    inline RObject::RObject()
-        : m_isPointer(rtl::IsPointer::No)
-        , m_typeId(rtl::detail::TypeId<>::None)
-        , m_typePtrId(rtl::detail::TypeId<>::None)
-        , m_allocatedOn(rtl::alloc::None)
-        , m_converters(m_conversions)
-        , m_deallocator(nullptr)
-    {
-    }
-
-
-    inline RObject::RObject(std::any&& pObjRef, std::size_t pTypeId, std::size_t pTypePtrId, std::string pTypeStr,
-                            rtl::IsPointer pIsPtr, rtl::alloc pAllocOn, std::shared_ptr<void>&& pDeleter,
-                            const std::vector<ConverterPair>& pConversions)
-        : m_isPointer(pIsPtr)
-        , m_typeId(pTypeId)
-        , m_typePtrId(pTypePtrId)
-        , m_typeStr(pTypeStr)
-        , m_allocatedOn(pAllocOn)
-        , m_converters(pConversions)
-        , m_object(std::forward<std::any>(pObjRef))
-        , m_deallocator(std::forward<std::shared_ptr<void>>(pDeleter))
-    {
-    }
-
-
-    inline RObject::RObject(RObject&& pOther) noexcept
-        : m_isPointer(pOther.m_isPointer)
-        , m_typeId(pOther.m_typeId)
-        , m_typePtrId(pOther.m_typePtrId)
-        , m_typeStr(pOther.m_typeStr)
-        , m_allocatedOn(pOther.m_allocatedOn)
-        , m_converters(pOther.m_converters)
-        , m_object(std::move(pOther.m_object))
-        , m_deallocator(std::move(pOther.m_deallocator))
-    {
-        pOther.m_isPointer = rtl::IsPointer::No;
-        pOther.m_typeId = rtl::detail::TypeId<>::None;
-        pOther.m_typePtrId = rtl::detail::TypeId<>::None;
-        pOther.m_typeStr = "";
-        pOther.m_allocatedOn = alloc::None;
-        // Explicitly clear moved-from source
-        pOther.m_object.reset();      // Clears std::any
-        pOther.m_deallocator.reset();   // Clears shared_ptr
-    }
 }

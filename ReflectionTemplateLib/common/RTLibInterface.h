@@ -19,7 +19,7 @@
 * it encapsulates all the member's information and provides objects (Function/Method) to access them.
 * the Record objects are obtained from reflection object ie, CxxMirror, querying by string.
 * decleared in namespace rtl::access.*/
-#include "Record.hpp"
+#include "Record.h"
 
 
 /*
@@ -48,7 +48,4 @@
 
 /* Class containing everything required to provide reflection interface and functionality.
 * Users are required to instantiate this class and pass all registration as constructor parameter. */
-#include "CxxMirror.h"
-
-
-#include "RObjectBuilder.h"
+#include "CxxMirror.hpp"

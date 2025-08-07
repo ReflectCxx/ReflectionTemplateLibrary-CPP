@@ -1,20 +1,20 @@
 # Reflection Template Library C++
 
-The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
+**Reflection Template Library (RTL)** is a lightweight, modern C++ runtime reflection system. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
-Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
+RTL is a static library built entirely in modern C++, designed around type-safe tables of function pointers registered by the user. These are internally wrapped in lambdas, offering a clean and efficient runtime access mechanism.
 
 ## Key Features
 
-- **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious macros involved.
-- **Clean Code**: No reflection-related code needs to be added to class, struct, or function declarations or implementations— keeping your codebase clean and free of clutter.
-- **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
-- **Simple Integration**: Just create an instance of `CxxMirror`, pass all type information to reflect as a constructor parameter, and you’re done!
+- **Non-Intrusive by Design**: Reflection metadata is defined externally. Your types remain untouched — no macros, base classes, or special syntax inside your declarations.
+- **Centralized Registration**: Keep all type and member registrations in one place — separate from your business logic — for better organization and maintainability.
+- **Explicit & Macro-Free**: Type registration follows a clear builder pattern, giving you full control without hidden, mystrious MACRO magic.
+- **Simple Integration**: Just create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
   ```c++
-  rtl::CxxMirror cxxReflection({/*.. Pass all type information to register..*/});
+  rtl::CxxMirror cxxReflection({/* register all types here */});
   ```
-  The *cxxReflection* object (of type rtl::CxxMirror) provides interface to query and instantiate registered types.
-- **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
+  The *cxxReflection* object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
+- **Thread-Safe & Exception-Safe**: Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
 - **Automatic Code Generation**: To generate manual registration code automatically, `clang-reflect` can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
 
 ## How To build (Windows/Linux),
@@ -31,7 +31,7 @@ to build, any IDE applicable to the generator can be used or you can also just b
 ```sh
     cmake --build .
 ```
-Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested with Visual Studio(2022), gnu(14) & clang(19))*
+Run **CxxRTLTestApplication** binary, generated in ../bin folder. *(tested with Visual Studio(2022), gnu(14) & clang(19))*
 ## How To Use,
 In this example, we'll reflect a simple Person class. `Person.h`,
 ```c++
@@ -61,7 +61,7 @@ using namespace rtl::builder;
 
 const CxxMirror& MyReflection() 
 {
-    static const CxxMirror cxxMirror({
+    static const CxxMirror cxxReflection({
         // Register member functions
         Reflect().record<Person>("Person").method("setAge").build(&Person::setAge),
         Reflect().record<Person>("Person").method("getAge").build(&Person::getAge),
@@ -69,11 +69,11 @@ const CxxMirror& MyReflection()
         Reflect().record<Person>("Person").method("getName").build(&Person::getName),
 	
         // Registering a constructor (default or overload) also implicitly registers the copy constructor (if accessible) and the destructor.
-        Reflect().record<Person>("Person").constructor<Person>().build(),  // Default constructor
-        Reflect().record<Person>("Person").constructor<Person>().build<std::string, int>()  // Constructor with parameters
+        Reflect().record<Person>("Person").constructor().build(),  // Default constructor
+        Reflect().record<Person>("Person").constructor<std::string, int>().build()  // Constructor with parameters
     });
 
-    return cxxMirror;
+    return cxxReflection;
 }
 ```
 Registration syntax,
@@ -86,13 +86,18 @@ Reflect().nameSpace("..")   // Optional: specify namespace if the type is enclos
 Reflect().nameSpace("..")
          .record<..>("..")
          .constructor<..>() // Register constructor with template parameters as signature.
-         .build<..>();      // No function pointer needed for constructors.
+         .build();      // No function pointer needed for constructors.
 ```
 ### Step 2: Use the 'Person' Class via Reflection
 In main.cpp, use the **`Person`** class without directly exposing its type.
 ```c++
-#include "RTLibInterface.h"  // Single header including reflection access interface.
+// Single header including reflection access interface.
+#include "RTLibInterface.h"
+
+// True runtime reflection – no compile-time access to types.
+// Reflection works here without even knowing what it's reflecting.
 extern const rtl::CxxMirror& MyReflection();
+
 using namespace rtl::access;
 
 int main()
@@ -109,7 +114,8 @@ int main()
         * An instance created via reflection (constructor).
         * OR a value returned from any reflection-based method/function call.
      Internally:
-        * Uses shared_ptr for lifetime management (only for explicitly heap-allocated instances).
+        * Manages the lifetime only of instances created via reflection on heap.
+          Return values from reflection calls are treated as unmanaged.
         * Copy and move constructors behave as standard value-type copies:
             - For heap-allocated objects: sharing underlying instance via shared_ptr.
             - For stack-allocated objects: distinct object copies are created.
@@ -159,8 +165,8 @@ int main()
 */  return 0;
 }
 ```
-- Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
-- Check, `CxxRTLUseCaseTests/src` for test cases.
+- Check, `CxxRTLTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
+- Check, `CxxRTLTestApplication/src` for test cases.
 
 ## Reflection Features
 

@@ -4,17 +4,9 @@
 #include <optional>
 #include <unordered_map>
 
-#include "Constants.h"
+#include "Record.h"
 
 namespace rtl {
-
-    namespace access 
-    {
-        //Forward decls.
-        class Record;
-        class Method;
-        class Function;
-    }
 
     namespace detail
     {
@@ -24,40 +16,47 @@ namespace rtl {
         * organizes the 'Function' objects by namespace, class/structs.
     */  class CxxReflection
         {
-            using RecordMap = std::unordered_map <std::string, access::Record>;
+            using RecordRef = std::reference_wrapper<access::Record>; 
+            using RecordMap = std::unordered_map <std::string, RecordRef>;
             using MethodMap = std::unordered_map <std::string, access::Method>;
             using FunctionMap = std::unordered_map <std::string, access::Function>;
 
+            std::unordered_map<std::size_t, access::Record> m_recordIdMap;
             //contains 'Record' (class/struct) objects, mapped with given namespace name.
-            std::unordered_map<std::string, RecordMap> m_nsRecordsMap;
-
+            std::unordered_map<std::string, RecordMap> m_recordNamespaceMap;
             //contains 'Function' (non-member-function) objects, mapped with given namespace name.
-            std::unordered_map<std::string, FunctionMap> m_nsFunctionsMap;
+            std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
 
-            void organizeFunctorsMetaData(const access::Function& pFunction);
+            void insertFunctionToNamespaceMap(const access::Function& pFunction);
+            bool insertFunctionToRecordIdMap(const access::Function& pFunction);
 
-            void addRecord(RecordMap& pRecordMap, const access::Function& pFunction);
-            void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
-            void addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction);
+            static void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
+            static void addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction);
+            static const bool validateFunctionByRecordId(const access::Function& pFunction);
+            static const bool validateFunctionByRecordName(const access::Record& pRecord, const access::Function& pFunction);
 
         protected:
 
             CxxReflection() = delete;
             CxxReflection(CxxReflection&) = delete;
             CxxReflection& operator=(CxxReflection&) = delete;
-
             CxxReflection(const std::vector<access::Function>& pFunctions);
 
         public:
 
             //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
+            constexpr const std::unordered_map<std::size_t, access::Record>& getRecordIdMap() const {
+                return m_recordIdMap;
+            }
+
+            //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
             constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() const {
-                return m_nsRecordsMap;
+                return m_recordNamespaceMap;
             }
 
             //returns the complete map of registered functions ('Function' objects) under a namespace.
             constexpr const std::unordered_map<std::string, FunctionMap>& getNamespaceFunctionsMap() const {
-                return m_nsFunctionsMap;
+                return m_functionNamespaceMap;
             }
         };
     }

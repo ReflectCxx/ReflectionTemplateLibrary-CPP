@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RecordBuilder.h"
-#include "ConstructorBuilder.hpp"
+#include "ConstructorBuilder.h"
 
 namespace rtl {
 
@@ -114,7 +114,7 @@ namespace rtl {
         template<class ..._signature>
         inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
         {
-            return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record, ConstructorType::Ctor);
+            return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record);
         }
     }
 }
