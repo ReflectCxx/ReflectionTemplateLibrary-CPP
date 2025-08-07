@@ -1,13 +1,17 @@
 #pragma once
-
-#include <any>
-#include <string>
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
 strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
 
 Provides interface for Testing/Comparing the class "Book" objects states/returns without exposing the actual type "Book".
 */
+
+#include <string>
+
+namespace rtl::access {
+	class RObject;
+}
+
 namespace test_utils
 {
 	struct library
@@ -42,20 +46,20 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAuthor(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_method_setAuthor(const rtl::access::RObject& pInstance);
 
-		static const bool test_method_addPreface(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_method_addPreface(const rtl::access::RObject& pInstance);
 
-		static const bool test_method_addCopyrightTag(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_method_addCopyrightTag(const rtl::access::RObject& pInstance);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 
 		template<class ..._signature>
-		static const bool test_method_updateBookInfo(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_method_updateBookInfo(const rtl::access::RObject& pInstance);
 
 		template<class ..._ctorArgs>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_dynamic_alloc_instance_ctor(const rtl::access::RObject& pInstance);
 
-		static const bool test_copy_ctor_with_mutated_object(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_copy_ctor_with_mutated_object(const rtl::access::RObject& pInstance);
 	};
 }

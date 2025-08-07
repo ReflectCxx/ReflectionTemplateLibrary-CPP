@@ -3,7 +3,7 @@
 
 #include "GlobalTestUtils.h"
 
-#include "../../ReflectionTemplateLib/detail/inc/TypeId.h"
+#include "TypeId.h"
 
 #include "Date.h"
 #include "Book.h"

@@ -86,15 +86,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
-			ASSERT_TRUE(err1 == error::SignatureMismatch);
-			ASSERT_TRUE(ret.isEmpty());
-			EXPECT_FALSE(book::test_method_setAuthor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::SignatureMismatch);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -114,15 +114,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
-			ASSERT_TRUE(err1 == error::SignatureMismatch);
-			ASSERT_TRUE(ret.isEmpty());
-			EXPECT_FALSE(book::test_method_setAuthor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::SignatureMismatch);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -142,15 +142,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
-
+			// Slower. bind<>().call() syntax is faster.
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_FALSE(ret.isEmpty());
-			ASSERT_TRUE(ret.canViewAs<string>());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_FALSE(ret.isEmpty());
+			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
@@ -173,15 +173,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_FALSE(ret.isEmpty());
-			ASSERT_TRUE(ret.canViewAs<string>());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_FALSE(ret.isEmpty());
+			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
@@ -204,17 +204,16 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
-
-			EXPECT_TRUE(book::test_method_setAuthor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -234,17 +233,16 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
-
-			EXPECT_TRUE(book::test_method_setAuthor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -264,15 +262,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
-			EXPECT_TRUE(book::test_method_updateBookInfo(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -292,15 +290,15 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
-			EXPECT_TRUE(book::test_method_updateBookInfo(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
 		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
@@ -320,8 +318,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -332,10 +330,10 @@ namespace rtl_tests
 
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -356,8 +354,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -368,10 +366,10 @@ namespace rtl_tests
 
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -392,8 +390,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -404,10 +402,10 @@ namespace rtl_tests
 
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -428,8 +426,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -440,10 +438,10 @@ namespace rtl_tests
 
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -464,8 +462,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -474,10 +472,10 @@ namespace rtl_tests
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_addCopyrightTag(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -498,8 +496,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -508,10 +506,10 @@ namespace rtl_tests
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_addCopyrightTag(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -532,8 +530,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -546,7 +544,7 @@ namespace rtl_tests
 
 			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
 			const bool signatureValid = addPreface->hasSignature<string, const string&>();
-			ASSERT_TRUE(signatureValid);
+			EXPECT_TRUE(signatureValid);
 
 			const auto& preface = std::string(book::PREFACE);
 			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
@@ -555,10 +553,10 @@ namespace rtl_tests
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_addPreface(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -579,8 +577,8 @@ namespace rtl_tests
 
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err0 == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err0 == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -593,7 +591,7 @@ namespace rtl_tests
 
 			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
 			const bool signatureValid = addPreface->hasSignature<string, const string&>();
-			ASSERT_TRUE(signatureValid);
+			EXPECT_TRUE(signatureValid);
 
 			const auto& preface = std::string(book::PREFACE);
 			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
@@ -602,10 +600,10 @@ namespace rtl_tests
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
-			ASSERT_TRUE(err1 == error::None);
-			ASSERT_TRUE(ret.isEmpty());
+			EXPECT_TRUE(err1 == error::None);
+			EXPECT_TRUE(ret.isEmpty());
 
-			const bool isSuccess = book::test_method_addPreface(book.get(), book.isOnHeap());
+			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());

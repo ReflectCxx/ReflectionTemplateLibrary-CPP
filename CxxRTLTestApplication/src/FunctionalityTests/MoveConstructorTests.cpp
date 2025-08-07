@@ -13,10 +13,6 @@ namespace rtl_tests
 {
     TEST(MoveSemantics, move_reflected_type_allocated_on_stack)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -79,10 +75,6 @@ namespace rtl_tests
 
     TEST(MoveSemantics, move_reflected_type_allocated_on_heap)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -135,10 +127,6 @@ namespace rtl_tests
 
     TEST(MoveSemantics, move_returned_RObject_reflecting_const_refOrPtr)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -195,10 +183,6 @@ namespace rtl_tests
 
     TEST(MoveSemantics, move_returned_RObject_reflecting_stack_object)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 

@@ -49,27 +49,27 @@ namespace rtl_tests
 
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(animal.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for a non-const L-value reference.
             const auto& isValid = setAnimalName->hasSignature<std::string&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             // Invoke the method with a non-const L-value reference.
             auto nameStr = std::string(animal::NAME);
             auto [err1, ret1] = setAnimalName->bind<std::string&>(animal).call(nameStr);
 
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_TRUE(ret1.isEmpty());
+            EXPECT_TRUE(err1 == error::None);
+            EXPECT_TRUE(ret1.isEmpty());
 
             // Validate the behavior of the method.
-            EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animal.get(), animal.isOnHeap()));
+            EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animal));
         }
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
@@ -94,26 +94,26 @@ namespace rtl_tests
 
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(animal.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for an R-value reference.
             const auto& isValid = setAnimalName->hasSignature<std::string&&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             // Invoke the method with an R-value reference.
             auto [err1, ret1] = setAnimalName->bind<std::string&&>(animal).call(animal::NAME);
 
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_TRUE(ret1.isEmpty());
+            EXPECT_TRUE(err1 == error::None);
+            EXPECT_TRUE(ret1.isEmpty());
 
             // Validate the behavior of the method.
-            EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animal.get(), animal.isOnHeap()));
+            EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animal));
         }
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
@@ -138,27 +138,27 @@ namespace rtl_tests
 
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(animal.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for a const L-value reference.
             const auto& isValid = setAnimalName->hasSignature<const std::string&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             // Invoke the method with a const L-value reference.
             const auto nameStr = std::string(animal::NAME);
             auto [err1, ret1] = setAnimalName->bind<const std::string&>(animal).call(nameStr);
 
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_TRUE(ret1.isEmpty());
+            EXPECT_TRUE(err1 == error::None);
+            EXPECT_TRUE(ret1.isEmpty());
 
             // Validate the behavior of the method.
-            EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animal.get(), animal.isOnHeap()));
+            EXPECT_TRUE(animal::test_method_setAnimalName_const_lvalue_ref_args(animal));
         }
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
@@ -174,21 +174,21 @@ namespace rtl_tests
             ASSERT_TRUE(updateZooKeeper);
 
             const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             const auto zookeeper = std::string(animal::ZOO_KEEPER);
             auto [err, ret] = updateZooKeeper->bind<const std::string&>().call(zookeeper);
 
-            ASSERT_TRUE(err == error::None);
-            ASSERT_FALSE(ret.isEmpty());
-            ASSERT_TRUE(ret.canViewAs<string>());
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();
             EXPECT_TRUE(animal::test_method_updateZooKeeper<const std::string&>(retStr));
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
@@ -204,20 +204,20 @@ namespace rtl_tests
             ASSERT_TRUE(updateZooKeeper);
 
             const auto& isValid = updateZooKeeper->hasSignature<std::string&&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             auto [err, ret] = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
 
-            ASSERT_TRUE(err == error::None);
-            ASSERT_FALSE(ret.isEmpty());
-            ASSERT_TRUE(ret.canViewAs<string>());
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();
             EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&&>(retStr));
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 
 
@@ -233,20 +233,20 @@ namespace rtl_tests
             ASSERT_TRUE(updateZooKeeper);
 
             const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
-            ASSERT_TRUE(isValid);
+            EXPECT_TRUE(isValid);
 
             auto zookeeper = std::string(animal::ZOO_KEEPER);
             auto [err, ret] = updateZooKeeper->bind<std::string&>().call(zookeeper);
 
-            ASSERT_TRUE(err == error::None);
-            ASSERT_FALSE(ret.isEmpty());
-            ASSERT_TRUE(ret.canViewAs<string>());
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();
             EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&>(retStr));
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
     }
 }

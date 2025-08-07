@@ -8,7 +8,7 @@
 
 using namespace test_utils;
 
-namespace rtl_tests 
+namespace rtl_tests
 {
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
@@ -60,7 +60,7 @@ namespace rtl_tests
                 EXPECT_TRUE(event::get_instance_count() == 2);
             }
         }
-        ASSERT_TRUE(calender::assert_zero_instance_count());
+        EXPECT_TRUE(calender::assert_zero_instance_count());
         //Once 'Calender' is destryoyed, all 'Event's should too.
         ASSERT_TRUE(event::assert_zero_instance_count());
     }

@@ -1,8 +1,9 @@
 
-#include "TestUtilsDate.h"
+#include "RObject.hpp"
 
 //User defined types.
 #include "Date.h"
+#include "TestUtilsDate.h"
 
 using namespace std;
 using namespace nsdate;
@@ -34,69 +35,45 @@ namespace test_utils
 		return Date::instanceCount();
 	}
 
-	const bool date::test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pCastAsPtr)
+	const bool date::test_if_obejcts_are_equal(const rtl::access::RObject& pInstance0, const rtl::access::RObject& pInstance1)
 	{
-		if (pCastAsPtr) {
-			auto rdate0 = any_cast<const Date*>(pInstance0);
-			auto rdate1 = any_cast<const Date*>(pInstance1);
-			return (*rdate0 == *rdate1);
+		if (pInstance0.canViewAs<Date>() && pInstance1.canViewAs<Date>()) 
+		{
+			const Date& rdate0 = pInstance0.view<Date>()->get();
+			const Date& rdate1 = pInstance1.view<Date>()->get();
+			return (rdate0 == rdate1);
 		}
-		else {
-			auto rdate0 = any_cast<Date>(&pInstance0);
-			auto rdate1 = any_cast<Date>(&pInstance1);
-			return (*rdate0 == *rdate1);
+		return false;
+	}
+
+	template<>
+	const bool date::test_dynamic_alloc_instance_ctor<>(const rtl::access::RObject& pInstance)
+	{
+		if (pInstance.canViewAs<Date>()) {
+			const Date& rdate = pInstance.view<Date>()->get();
+			return (Date() == rdate);
 		}
+		return false;
+	}
+
+	template<>
+	const bool date::test_dynamic_alloc_instance_ctor<string>(const rtl::access::RObject& pInstance)
+	{
+		if (pInstance.canViewAs<Date>()) {
+			const Date& rdate = pInstance.view<Date>()->get();
+			return (Date(DATE_STR0) == rdate);
+		}
+		return false;
 	}
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pCastAsPtr)
+	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const rtl::access::RObject& pInstance)
 	{
-		if (pCastAsPtr) {
-			const Date* rdate = any_cast<const Date*>(pInstance);
-			if (rdate == nullptr) {
-				return false;
-			}
-			return (Date() == *rdate);
+		if (pInstance.canViewAs<Date>()) {
+			const Date& rdate = pInstance.view<Date>()->get();
+			return (Date(DAY, MONTH, YEAR) == rdate);
 		}
-		else {
-			auto rdate = any_cast<Date>(&pInstance);
-			return (Date() == *rdate);
-		}
-	}
-
-
-	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<string>(const any& pInstance, bool pCastAsPtr)
-	{
-		if (pCastAsPtr) {
-			const Date* rdate = any_cast<const Date*>(pInstance);
-			if (rdate == nullptr) {
-				return false;
-			}
-			return (Date(DATE_STR0) == *rdate);
-		}
-		else {
-			auto rdate = any_cast<Date>(&pInstance);
-			return (Date(DATE_STR0) == *rdate);
-		}
-	}
-
-
-	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const any& pInstance, bool pCastAsPtr)
-	{
-		if (pCastAsPtr) {
-			const Date* rdate = any_cast<const Date*>(pInstance);
-			if (rdate == nullptr) {
-				return false;
-			}
-			return (Date(DAY, MONTH, YEAR) == *rdate);
-		}
-		else {
-			auto rdate = any_cast<Date>(&pInstance);
-			return (Date(DAY, MONTH, YEAR) == *rdate);
-		}
-		
+		return false;
 	}
 }

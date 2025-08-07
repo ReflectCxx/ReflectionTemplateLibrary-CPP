@@ -33,11 +33,11 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Heap>("wrong", "args0", 10);
 
-			ASSERT_TRUE(err == error::SignatureMismatch);
-			ASSERT_TRUE(date.isEmpty());
+			EXPECT_TRUE(err == error::SignatureMismatch);
+			EXPECT_TRUE(date.isEmpty());
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -51,11 +51,11 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Stack>("wrong", "args0", 10);
 
-			ASSERT_TRUE(err == error::SignatureMismatch);
-			ASSERT_TRUE(date.isEmpty());
+			EXPECT_TRUE(err == error::SignatureMismatch);
+			EXPECT_TRUE(date.isEmpty());
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -69,12 +69,12 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Heap>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -88,12 +88,12 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Stack>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -108,12 +108,12 @@ namespace rtl_tests
 			string dateStr = date::DATE_STR0;
 			auto [err, date] = classDate->create<alloc::Heap>(dateStr);
 			
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -128,12 +128,12 @@ namespace rtl_tests
 			string dateStr = date::DATE_STR0;
 			auto [err, date] = classDate->create<alloc::Stack>(dateStr);
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<string>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -151,14 +151,14 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Heap>(day, month, year);
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
 
-			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date.get(), date.isOnHeap());
+			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date);
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -176,14 +176,14 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Stack>(day, month, year);
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
 
-			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date.get(), date.isOnHeap());
+			const bool isPassed = date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(date);
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -197,12 +197,12 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Heap>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -216,12 +216,12 @@ namespace rtl_tests
 
 			auto [err, date] = classDate->create<alloc::Stack>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(date.isEmpty());
-			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date.get(), date.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(date.isEmpty());
+			EXPECT_TRUE(date::test_dynamic_alloc_instance_ctor<>(date));
 		}
 		EXPECT_TRUE(date::get_instance_count() == 0);
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -235,11 +235,11 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Heap>(19.0, 87.5);
 
-			ASSERT_TRUE(err == error::SignatureMismatch);
-			ASSERT_TRUE(book.isEmpty());
+			EXPECT_TRUE(err == error::SignatureMismatch);
+			EXPECT_TRUE(book.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -253,11 +253,11 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Stack>(19.0, 87.5);
 
-			ASSERT_TRUE(err == error::SignatureMismatch);
-			ASSERT_TRUE(book.isEmpty());
+			EXPECT_TRUE(err == error::SignatureMismatch);
+			EXPECT_TRUE(book.isEmpty());
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -271,12 +271,12 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -290,12 +290,12 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -311,14 +311,14 @@ namespace rtl_tests
 			string title = book::TITLE;
 			auto [err, book] = classBook->create<alloc::Heap>(price, title);
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
 			
-			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(book.get(), book.isOnHeap());
+			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(book);
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -334,14 +334,14 @@ namespace rtl_tests
 			string title = book::TITLE;
 			auto [err, book] = classBook->create<alloc::Stack>(price, title);
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
 
-			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(book.get(), book.isOnHeap());
+			const bool isPassed = book::test_dynamic_alloc_instance_ctor<double, string>(book);
 			EXPECT_TRUE(isPassed);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -355,12 +355,12 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Heap>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 
 
@@ -374,11 +374,11 @@ namespace rtl_tests
 
 			auto [err, book] = classBook->create<alloc::Stack>();
 
-			ASSERT_TRUE(err == error::None);
-			ASSERT_FALSE(book.isEmpty());
-			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book.get(), book.isOnHeap()));
+			EXPECT_TRUE(err == error::None);
+			EXPECT_FALSE(book.isEmpty());
+			EXPECT_TRUE(book::test_dynamic_alloc_instance_ctor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
 	}
 }

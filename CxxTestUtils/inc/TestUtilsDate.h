@@ -1,13 +1,16 @@
 #pragma once
 
-#include <any>
-
 /*
 TestUtils provide the interface to test/compare reflected type objects with actual objects (retrived/created using
 strict Types) without exposing the actual type objects to "CxxReflectionTests" project.
 
 Provides interface for Testing/Comparing the class "Date" objects states/returns without exposing the actual type "Date".
 */
+
+namespace rtl::access {
+	class RObject;
+}
+
 namespace test_utils
 {
 	struct event
@@ -49,9 +52,9 @@ namespace test_utils
 
 		static const std::size_t get_instance_count();
 
-		static const bool test_if_obejcts_are_equal(const std::any& pInstance0, const std::any& pInstance1, bool pCastAsPtr);
+		static const bool test_if_obejcts_are_equal(const rtl::access::RObject& pInstance0, const rtl::access::RObject& pInstance1);
 
 		template<class ..._argsType>
-		static const bool test_dynamic_alloc_instance_ctor(const std::any& pInstance, bool pCastAsPtr);
+		static const bool test_dynamic_alloc_instance_ctor(const rtl::access::RObject& pInstance);
 	};
 }
