@@ -127,7 +127,7 @@ int main()
 
 /*  Create instance via parameterized constructor.
     Arguments must match in type and order.
-*/  auto [err1, personObj2] = classPerson->create<alloc::Heap>(std::string("John Doe"), int(42));
+*/  auto [err1, personObj2] = classPerson->create<alloc::Stack>(std::string("John Doe"), int(42));
 
 //  Fetch a reflected method — returns optional 'Method'.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
