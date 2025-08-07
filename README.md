@@ -91,8 +91,13 @@ Reflect().nameSpace("..")
 ### Step 2: Use the 'Person' Class via Reflection
 In main.cpp, use the **`Person`** class without directly exposing its type.
 ```c++
-#include "RTLibInterface.h"  // Single header including reflection access interface.
+// Single header including reflection access interface.
+#include "RTLibInterface.h"
+
+// True runtime reflection – no compile-time access to types.
+// Reflection works here without even knowing what it's reflecting.
 extern const rtl::CxxMirror& MyReflection();
+
 using namespace rtl::access;
 
 int main()
