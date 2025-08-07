@@ -69,8 +69,8 @@ const CxxMirror& MyReflection()
         Reflect().record<Person>("Person").method("getName").build(&Person::getName),
 	
         // Registering a constructor (default or overload) also implicitly registers the copy constructor (if accessible) and the destructor.
-        Reflect().record<Person>("Person").constructor<Person>().build(),  // Default constructor
-        Reflect().record<Person>("Person").constructor<Person>().build<std::string, int>()  // Constructor with parameters
+        Reflect().record<Person>("Person").constructor().build(),  // Default constructor
+        Reflect().record<Person>("Person").constructor<std::string, int>().build()  // Constructor with parameters
     });
 
     return cxxReflection;
