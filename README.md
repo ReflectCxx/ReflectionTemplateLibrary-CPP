@@ -61,7 +61,7 @@ using namespace rtl::builder;
 
 const CxxMirror& MyReflection() 
 {
-    static const CxxMirror cxxMirror({
+    static const CxxMirror cxxReflection({
         // Register member functions
         Reflect().record<Person>("Person").method("setAge").build(&Person::setAge),
         Reflect().record<Person>("Person").method("getAge").build(&Person::getAge),
@@ -73,7 +73,7 @@ const CxxMirror& MyReflection()
         Reflect().record<Person>("Person").constructor<Person>().build<std::string, int>()  // Constructor with parameters
     });
 
-    return cxxMirror;
+    return cxxReflection;
 }
 ```
 Registration syntax,
