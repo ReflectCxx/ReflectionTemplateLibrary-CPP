@@ -86,7 +86,7 @@ Reflect().nameSpace("..")   // Optional: specify namespace if the type is enclos
 Reflect().nameSpace("..")
          .record<..>("..")
          .constructor<..>() // Register constructor with template parameters as signature.
-         .build<..>();      // No function pointer needed for constructors.
+         .build();      // No function pointer needed for constructors.
 ```
 ### Step 2: Use the 'Person' Class via Reflection
 In main.cpp, use the **`Person`** class without directly exposing its type.
