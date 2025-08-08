@@ -1,4 +1,4 @@
-## 🧠 Metadata Providers & Runtime Consumers – A Tooling-Friendly Architecture
+### 🧠 Metadata Providers & Runtime Consumers – A Tooling-Friendly Architecture
 
 **RTL** separates the *generation* of reflection metadata from its *consumption*. This makes it ideal not just for runtime introspection, but also for external tools like:
 
@@ -9,8 +9,7 @@
 
 ### ✨ The Metaphor: The Mirror & The Reflection
 
-> A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.
-
+*A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.*
 That’s it. The mirror is a **single object**, typically returned from a function like:
 
 ```cpp
@@ -43,11 +42,10 @@ RTL does not rely on:
 Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
 
 ### 🛡️ Exception-Free Guarantee
-RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only two scenarios could theoretically throw:
+RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong.
+In fact, the only internal operation that can theoretically throw is:
 
-* std::any_cast — guarded by strict, break-proof type checks that make throwing virtually impossible.
-* Heap allocation tracking error — if RObject::m_rtlOwnedHeapAllocCount were to drop below zero, which is also heavily guarded against.
-  
-Both are extremely unlikely, but not absolutely impossible — no system is perfect.
-For every predictable failure case, RTL returns explicit error codes instead of throwing.
+std::any_cast — guarded by strict, break-proof type checks that make throwing virtually impossible.
+
+Every predictable failure case is handled via explicit error codes instead of exceptions.
 RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
