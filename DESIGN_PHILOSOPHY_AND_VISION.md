@@ -41,3 +41,13 @@ RTL does not rely on:
 * Preprocessor hacks
 
 Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
+
+### 🗉 Exception-Free Guarantee
+RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only two scenarios could theoretically throw:
+
+* std::any_cast — guarded by strict, break-proof type checks that make throwing virtually impossible.
+* Heap allocation tracking error — if RObject::m_rtlOwnedHeapAllocCount were to drop below zero, which is also heavily guarded against.
+  
+Both are extremely unlikely, but not absolutely impossible — no system is perfect.
+For every predictable failure case, RTL returns explicit error codes instead of throwing.
+RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
