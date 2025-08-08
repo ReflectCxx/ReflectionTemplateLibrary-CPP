@@ -12,6 +12,9 @@
 namespace rtl::detail
 {
     struct RObjectBuilder;
+
+    template <class T>
+    struct RObjectPtr;
 }
 
 namespace rtl::access
@@ -21,53 +24,41 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Deleter = std::function<void()>;
         using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
-        
-        std::any m_object;
-        std::any m_wrapper;
+
         Cloner m_getClone;
-        Deleter m_deleter;
+        std::any m_object;
         detail::RObjectId m_objectId;
 
         static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, std::any&& pWrapper, Deleter&& pDeleter, 
-                Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId);
+        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
 
-        template<class T>
-        const T& as(bool pGetFromWrapper = false) const;
+        template <class T>
+        const T* extract() const;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
         template <rtl::alloc _allocOn>
         std::pair<error, RObject> createCopy() const;
 
-        template <class T>
-        static Cloner getCloner();
-
-        template <class T, rtl::alloc _allocOn>
-        static RObject create(T&& pVal);
-
-        template <class W>
-        static RObject createWithWrapper(W&& pWrapper);
+        template<class T>
+        std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
     public:
 
-        ~RObject();
+        ~RObject() = default;
         RObject() = default;
         RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
-        GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(RefOrPtr, (m_objectId.m_isPointer == IsPointer::Yes))
-        // Objects created through reflection are considered mutable (non-const) by default.
-        GETTER_BOOL(Const, m_objectId.m_isTypeConst)
+        GETTER_BOOL(Const, m_objectId.m_isTypeConst) // Objects created through reflection are treated mutable by default.
 
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;
@@ -75,10 +66,18 @@ namespace rtl::access
         template <class _asType>
         bool canViewAs() const;
 
-        //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
-        template<class _asType>
-        std::optional<view<_asType>> view() const;
+        template <class T, traits::enable_if_raw_pointer<T> = 0>
+        std::optional<rtl::view<T>> view() const;
 
+        template <class T, traits::enable_if_std_wrapper<T> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        template<class T, traits::enable_if_not_std_wrapper_or_raw_ptr<T> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        //friends :)
+        template <class T>
+        friend struct detail::RObjectPtr;
         friend detail::RObjectBuilder;
     };
 }

@@ -88,7 +88,7 @@ namespace rtl
             // Try to obtain a view as 'std::string*', should not compile.
             //auto view0 = robj.view<std::string*>();
 
-            // Try to obtain a view as 'const char*' and verify it is present.
+            // Try to obtain a view as 'const std::string*' and verify it is present.
             auto view = robj.view<const std::string*>();
             ASSERT_TRUE(view.has_value());
 

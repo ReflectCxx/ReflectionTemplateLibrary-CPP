@@ -8,8 +8,21 @@ namespace rtl::access {
 
 namespace rtl::detail
 {
-    struct RObjectBuilder
+    class RObjectBuilder
     {
+        using Cloner = std::function<access::RObject(error&, const access::RObject&, rtl::alloc)>;
+
+        template <class T>
+        static Cloner createCloner();
+
+        template <class T, rtl::alloc _allocOn>
+        static access::RObject create(T&& pVal);
+
+        template <class W>
+        static access::RObject createWithWrapper(W&& pWrapper);
+
+    public:
+
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
@@ -26,6 +39,11 @@ namespace rtl::detail
 
 namespace rtl
 {
+    inline const std::size_t getReflectedHeapInstanceCount()
+    {
+        return detail::RObjectBuilder::reflectedInstanceCount();
+    }
+
     template <class T>
     inline access::RObject reflect(T&& pVal)
     {
@@ -41,10 +59,5 @@ namespace rtl
         else {
             return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N));
         }
-    }
-
-    inline const std::size_t getReflectedHeapInstanceCount() 
-    {
-        return detail::RObjectBuilder::reflectedInstanceCount();
     }
 }

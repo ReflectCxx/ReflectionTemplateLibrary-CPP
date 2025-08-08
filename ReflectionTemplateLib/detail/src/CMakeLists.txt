@@ -14,6 +14,7 @@ SET(LOCAL_HEADERS
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectId.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectPtr.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectCast.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/ReflectCast.hpp"

@@ -23,6 +23,11 @@ namespace rtl::detail
 
         const std::vector<traits::ConverterPair>& m_converters;
 
+        RObjectId(RObjectId&&) = default;
+        RObjectId(const RObjectId&) = default;
+        RObjectId& operator=(RObjectId&&) = delete;
+        RObjectId& operator=(const RObjectId&) = delete;
+
         RObjectId()
             : m_isTypeConst(false)
             , m_allocatedOn(alloc::None)
@@ -52,48 +57,46 @@ namespace rtl::detail
         void reset()
         {
             m_isTypeConst = false;
-            m_allocatedOn = alloc::None;    //very important, identifies empty/moved-from 'RObject's.
+            m_allocatedOn = alloc::None;    //very important, identifies empty/moved-from RObject.
             m_wrapperType = Wrapper::None;
             m_isPointer = IsPointer::No;
             m_typeId = TypeId<>::None;
-            m_ptrTypeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
             m_typeStr.clear();
-        }
-
-        RObjectId(RObjectId&&) = default;
-        RObjectId(const RObjectId&) = default;
-        RObjectId& operator=(RObjectId&&) = delete;
-        RObjectId& operator=(const RObjectId&) = delete;
-
-        template<class T, rtl::alloc _allocOn>
-        static RObjectId create()
-        {
-            using _T = traits::remove_const_n_ref_n_ptr<T>;
-            using _isPointer = std::is_pointer<traits::remove_const_n_reference<T>>;
-
-            const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-            const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
-            const std::size_t wrapperId = detail::TypeId<>::None;
-            const auto& typeStr = rtl::detail::TypeId<_T>::toString();
-            const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
-            const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
-            constexpr auto isTypeConst = (_allocOn != alloc::Heap ? traits::is_const_v<T> : false);
-            return RObjectId(isTypeConst, _allocOn, Wrapper::None, isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
 
         template<class W>
         static RObjectId createForWrapper()
         {
-            using _W = traits::std_wrapper<traits::remove_const_n_ref_n_ptr<W>>;
-            using _T = _W::baseT;
+            using _W = traits::std_wrapper<traits::base_t<W>>;
+            using _T = _W::innerT;
 
+            const std::size_t wrapperId = _W::id();
             const std::size_t typeId = detail::TypeId<_T>::get();
             const std::size_t typePtrId = detail::TypeId<_T*>::get();
-            const std::size_t wrapperId = _W::id();
             const auto& typeStr = detail::TypeId<_T>::toString();
             const auto& conversions = detail::ReflectCast<_T>::getConversions();
-            return RObjectId(std::is_const_v<_T>, rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes, typeId, typePtrId, wrapperId, typeStr, conversions);
+
+            return RObjectId(std::is_const_v<_T>, rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes,
+                             typeId, typePtrId, wrapperId, typeStr, conversions);
+        }
+
+        template<class T, rtl::alloc _allocOn>
+        static RObjectId create()
+        {
+            using _T = traits::base_t<T>;
+            using _isPointer = std::is_pointer<traits::remove_const_n_reference<T>>;
+
+            const std::size_t wrapperId = detail::TypeId<>::None;
+            const std::size_t typeId = rtl::detail::TypeId<_T>::get();
+            const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
+            const auto& typeStr = rtl::detail::TypeId<_T>::toString();
+            const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
+            const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
+            constexpr auto isTypeConst = (_allocOn != alloc::Heap ? traits::is_const_v<T> : false);
+
+            return RObjectId(isTypeConst, _allocOn, Wrapper::None, 
+                             isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
         }
     };
 }

@@ -54,7 +54,7 @@ namespace rtl
         template<typename T>
         struct std_wrapper
         {
-            using baseT = std::nullptr_t;
+            using innerT = std::nullptr_t;
             static constexpr const auto type = Wrapper::None;
             static auto id() { return detail::TypeId<>::None; }
         };
@@ -63,7 +63,7 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::shared_ptr<T>>
         {
-            using baseT = T;
+            using innerT = T;
             static constexpr const auto type = Wrapper::Shared;
             static auto id() { return detail::TypeId<std::shared_ptr<T>>::get(); }
         };
@@ -72,7 +72,7 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::unique_ptr<T>>
         {
-            using baseT = T;
+            using innerT = T;
             static constexpr const auto type = Wrapper::Unique;
             static auto id() { return detail::TypeId<std::unique_ptr<T>>::get(); }
         };
@@ -81,16 +81,23 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::weak_ptr<T>>
         {
-            using baseT = T;
+            using innerT = T;
             static constexpr const auto type = Wrapper::Weak;
             static auto id() { return detail::TypeId<std::weak_ptr<T>>::get(); }
         };
+
+        template<typename T>
+        using enable_if_raw_pointer = std::enable_if<std::is_pointer_v<remove_const_n_reference<T>>, int>::type;
 
         template<typename T>
         using enable_if_std_wrapper = std::enable_if<std_wrapper<std::remove_reference_t<T>>::type != Wrapper::None, int>::type;
 
         template<typename T>
         using enable_if_not_std_wrapper = std::enable_if<std_wrapper<std::remove_reference_t<T>>::type == Wrapper::None, int>::type;
+
+        template<typename T>
+        using enable_if_not_std_wrapper_or_raw_ptr = std::enable_if<!std::is_pointer_v<remove_const_n_reference<T>> &&
+                                                                    std_wrapper<std::remove_reference_t<T>>::type == Wrapper::None, int>::type;
     }
 
 
@@ -121,5 +128,28 @@ namespace rtl
 
         template<typename T>
         constexpr rtl::error instantiation_error_v = instantiation_error<base_t<T>>::value;
+
+        template<class T>
+        constexpr bool is_view_suported()
+        {
+            using _T = traits::base_t<T>;
+            constexpr bool isReference = std::is_reference_v<T>;
+            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != Wrapper::None);
+            constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
+            return (!isReference && !isWrapperPtr && !isNonConstPtr);
+        }
+
+        template<class T>
+        constexpr void validate_view()
+        {
+            using _T = traits::base_t<T>;
+            constexpr bool isReference = std::is_reference_v<T>;
+            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != Wrapper::None);
+            constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
+
+            static_assert(!isReference, "explicit reference views are not supported.");
+            static_assert(!isWrapperPtr, "viewing standard wrappers (like std::optional or smart pointers) as raw pointers, not supported.");
+            static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
+        }
     }
 }
