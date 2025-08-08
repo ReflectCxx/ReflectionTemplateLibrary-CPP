@@ -9,7 +9,8 @@
 
 ### ✨ The Metaphor: The Mirror & The Reflection
 
-*A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.*
+*"A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection."*
+
 That’s it. The mirror is a **single object**, typically returned from a function like:
 
 ```cpp
