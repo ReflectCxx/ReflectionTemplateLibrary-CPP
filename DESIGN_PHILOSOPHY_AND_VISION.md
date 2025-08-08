@@ -32,7 +32,7 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
-### 🗉 No Static Globals, No Macros, No Surprises
+### 🗒️ No Static Globals, No Macros, No Surprises
 
 RTL does not rely on:
 
@@ -42,7 +42,7 @@ RTL does not rely on:
 
 Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
 
-### 🗉 Exception-Free Guarantee
+### 🛡️ Exception-Free Guarantee
 RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only two scenarios could theoretically throw:
 
 * std::any_cast — guarded by strict, break-proof type checks that make throwing virtually impossible.
