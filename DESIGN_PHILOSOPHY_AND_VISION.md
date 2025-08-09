@@ -9,7 +9,7 @@
 
 ### ✨ The Metaphor: The Mirror & The Reflection
 
-*"A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection."*
+> A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.
 
 That’s it. The mirror is a **single object**, typically returned from a function like:
 
@@ -32,7 +32,7 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
-### 🗒️ No Static Globals, No Macros, No Surprises
+### 🗉 No Static Globals, No Macros, No Surprises
 
 RTL does not rely on:
 
@@ -42,11 +42,27 @@ RTL does not rely on:
 
 Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
 
-### 🛡️ Exception-Free Guarantee
-RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong.
-In fact, the only internal operation that can theoretically throw is:
+### 🗉 Exception-Free Guarantee
 
-std::any_cast — guarded by strict, break-proof type checks that make throwing virtually impossible.
+RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only one scenario could theoretically throw:
 
-Every predictable failure case is handled via explicit error codes instead of exceptions.
+* `std::any_cast` — guarded by strict, break-proof type checks that make throwing virtually impossible.
+
+This is extremely unlikely, but not absolutely impossible — no system is perfect.
+For every predictable failure case, RTL returns explicit error codes instead of throwing.
 RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
+
+### 🛡 Const-By-Default Discipline
+
+RTL enforces a *const-by-default* philosophy.
+All objects instantiated via RTL are treated as **immutable** unless the caller explicitly requests mutation.
+
+This design ensures:
+
+* **No accidental state changes** — methods that modify state must be consciously invoked.
+* **Immediate code clarity** — mutable calls are visually obvious during code review.
+* **Defensive programming** — the default assumption is safety, mutation is a deliberate opt-in.
+
+> *“You can’t change an RTL-managed object unless you loudly tell the compiler and everyone reading your code that you are about to change it.”*
+
+This rule complements RTL’s exception-free guarantee, giving both **predictability** and **safety** at the API boundary.
