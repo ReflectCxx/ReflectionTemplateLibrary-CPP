@@ -42,7 +42,7 @@ RTL does not rely on:
 
 Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
 
-### 🗉 Exception-Free Guarantee
+### 🛡 Exception-Free Guarantee
 
 RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only one scenario could theoretically throw:
 
