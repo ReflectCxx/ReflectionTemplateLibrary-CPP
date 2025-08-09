@@ -1,4 +1,5 @@
 # Reflection Template Library C++
+[![Design Philosophy & Vision](https://img.shields.io/badge/Design%20Doc-Philosophy%20%26%20Vision-blueviolet)](./DESIGN_PHILOSOPHY_AND_VISION.md)
 
 **Reflection Template Library (RTL)** is a lightweight, modern C++ runtime reflection system. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
@@ -16,7 +17,6 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   The *cxxReflection* object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 - **Thread-Safe & Exception-Safe**: Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
 
-[![Design Philosophy & Vision](https://img.shields.io/badge/Design%20Doc-Philosophy%20%26%20Vision-blueviolet)](./DESIGN_PHILOSOPHY_AND_VISION.md)
 ## How To build (Windows/Linux),
 
 Create a build directory in project root folder.
