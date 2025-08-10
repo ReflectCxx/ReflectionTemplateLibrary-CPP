@@ -118,7 +118,7 @@ int main()
         * Uses std::unique_ptr to manage the lifetime only of instances created via reflection on heap.
           Return values from reflection calls are treated as unmanaged, As is.
         * Copy and move constructors behave as standard value-type copies:
-            - For heap-allocated objects: follows semantics of unique_ptr, allowing deep clone.
+            - For heap-allocated objects: follows semantics of unique_ptr.
             - For stack-allocated objects: distinct object copies are created.
 */  auto [err0, person0] = classPerson->create<alloc::Heap>();
 
