@@ -108,62 +108,61 @@ int main()
 
 /*  Create an instance of 'class Person' using the default constructor.
     You can choose between heap or stack allocation using 'alloc::Heap' or 'alloc::Stack'.
-    Returns a tuple of: [error code, RObject]. RObject returned is empty if:
+    Returns a pair of: std::pair<error, RObject>. RObject returned is empty if:
        * error != error::None (creation or reflection call failure).
        * OR if the reflected function is 'void' (doesn't return any value).
     'RObject' wraps a type-erased object, which can be:
         * An instance created via reflection (constructor).
         * OR a value returned from any reflection-based method/function call.
      Internally:
-        * Manages the lifetime only of instances created via reflection on heap.
-          Return values from reflection calls are treated as unmanaged.
+        * Uses std::unique_ptr to manage the lifetime only of instances created via reflection on heap.
+          Return values from reflection calls are treated as unmanaged, As is.
         * Copy and move constructors behave as standard value-type copies:
-            - For heap-allocated objects: sharing underlying instance via shared_ptr.
+            - For heap-allocated objects: follows semantics of unique_ptr, allowing deep clone.
             - For stack-allocated objects: distinct object copies are created.
-*/  auto [err0, personObj] = classPerson->create<alloc::Heap>();
+*/  auto [err0, person0] = classPerson->create<alloc::Heap>();
 
 //  Ensure object was created successfully.
     if (err0 != error::None)
         return -1;
 
 /*  Create instance via parameterized constructor.
-    Arguments must match in type and order.
-*/  auto [err1, personObj2] = classPerson->create<alloc::Stack>(std::string("John Doe"), int(42));
+    Arguments must match in type and order. (Relaxed parameter metching- InProgress.)
+*/  auto [err1, person1] = classPerson->create<alloc::Stack>(std::string("John Doe"), int(42));
 
 //  Fetch a reflected method — returns optional 'Method'.
     std::optional<Method> setAge = classPerson->getMethod("setAge");
+//  Ensure the method is found.
+    if(!setAge)
+        return -1;
 
 //  Call method: returns [error code, return value].
-    auto [err2, ret1] = setAge->bind(personObj).call(42);
+    auto [err2, ret2] = setAge->bind(person0).call(42);
 
-//  Alternative syntax (without bind).
-    auto [err3, ret2] = (*setAge)(personObj)(42);
+//  Alternative syntax (without bind, a bit slower).
+    auto [err3, ret3] = (*setAge)(person1)(42);
 
 //  Fetch and invoke another reflected method.
     std::optional<Method> setName = classPerson->getMethod("setName");
 
-    std::string name = "Todd";
+    const char* name = "Todd";  //will be converted to std::string due to strict-binding.
     std::string surname = "Packer";
-
-//  Example: using bind to specify argument types explicitly.
-    auto [err4, ret3] = setName->bind<string, const string&>(personObj).call(name, surname);
+//  Example: using bind to specify argument types explicitly. (strict-type-binding for qualifiers.)
+    auto [err4, ret4] = setName->bind<string, const string&>(personObj).call(name, surname);
 
 //  Fetch method returning a value.
     std::optional<Method> getName = classPerson->getMethod("getName");
 
 //  Call and retrieve return value.
-    auto [err5, nameReturn] = getName->bind(personObj).call();
+    auto [err5, retName] = getName->bind(personObj).call();
 
-    if (err5 == error::None && nameReturn.canViewAs<std::string>())
+    if (err5 == error::None && retName.canViewAs<std::string>())
     {
-        const std::string& nameStr = nameReturn.view<std::string>()->get();
+        const std::string& nameStr = retName.view<std::string>()->get();
         std::cout << nameStr << std::endl;
     }
-
-/*  Object lifetime:
-    * Heap-allocated instance will be destroyed automatically when the last RObject sharing it goes out of scope.
-    * Stack-allocated instance is cleaned up via scope-based lifetime (tracked internally but not reference-counted).
-*/  return 0;
+    return 0;
+//  Object lifetime: Heap/Stack allocated instances are cleaned up via scope-based lifetime.
 }
 ```
 - Check, `CxxRTLTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
