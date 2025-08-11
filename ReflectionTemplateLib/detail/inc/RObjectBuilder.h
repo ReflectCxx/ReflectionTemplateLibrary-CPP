@@ -13,13 +13,7 @@ namespace rtl::detail
         using Cloner = std::function<access::RObject(error&, const access::RObject&, rtl::alloc)>;
 
         template <class T>
-        static Cloner createCloner();
-
-        template <class T, rtl::alloc _allocOn>
-        static access::RObject create(T&& pVal);
-
-        template <class W>
-        static access::RObject createWithWrapper(W&& pWrapper);
+        static Cloner buildCloner();
 
     public:
 
@@ -28,11 +22,8 @@ namespace rtl::detail
 
         static const std::size_t reflectedInstanceCount();
 
-        template<class T, rtl::alloc _allocOn = alloc::Stack, traits::enable_if_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal);
-
-        template<class T, rtl::alloc _allocOn = alloc::Stack, traits::enable_if_not_std_wrapper<T> = 0>
-        static access::RObject build(T&& pVal);
+        template <class T, rtl::alloc _allocOn>
+        static access::RObject build(T&& pVal, const bool pIsConstCastSafe);
     };
 }
 
@@ -47,17 +38,17 @@ namespace rtl
     template <class T>
     inline access::RObject reflect(T&& pVal)
     {
-        return detail::RObjectBuilder::build(std::forward<T>(pVal));
+        return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), false);
     }
 
     template<class T, std::size_t N>
     inline access::RObject reflect(T(&pArr)[N])
     {
-        if constexpr (std::is_same_v<traits::base_t<T>, char>) {
-            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1));
+        if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
+            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), false);
         }
         else {
-            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N));
+            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N), false);
         }
     }
 }

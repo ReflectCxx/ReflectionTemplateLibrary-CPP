@@ -79,7 +79,7 @@ namespace rtl {
             std::pair<error, RObject> create(_ctorArgs&& ...params) const
             {
                 static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
-                const auto& itr = m_methods.find(CtorName::ctor(m_recordName));
+                const auto& itr = m_methods.find(detail::ctor_name(m_recordName));
                 //if registered constructor is found for the class/struct represented by this 'Record' object.
                 return itr != m_methods.end()
                            //invoke the constructor, forwarding the arguments.

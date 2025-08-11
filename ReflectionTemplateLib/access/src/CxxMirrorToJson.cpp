@@ -36,7 +36,7 @@ namespace
 		const std::string& nmspace = pFunction.getNamespace();
 
 		sout << "{" << (record.empty() ? "\"function\"" : "\"method\"") << ": \"" << pFunction.getFunctionName() << "\",";
-		if (nmspace != rtl::NAMESPACE_GLOBAL) {
+		if (nmspace != rtl::detail::NAMESPACE_GLOBAL) {
 			sout << "\"namespace\": \"" << nmspace << "\",";
 		}
 		if (!record.empty()) {

@@ -9,31 +9,31 @@ namespace rtl::detail
     template<class _toType>
     inline void ReflectCast<_fromType>::pushConversion()
     {
-        const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsSrcPointer, rtl::ConversionKind& pConvertKind) -> std::any
+        const auto& conversion = [](const std::any& pSrc, const Contains& pContainedAs, ConversionKind& pConvertKind) -> std::any
         {
-            try 
+            try
             {
-                bool isPointer = (pIsSrcPointer == rtl::IsPointer::Yes);
+                bool isPointer = (pContainedAs == Contains::Pointer);
                 const _fromType& srcRef = (isPointer ? *(std::any_cast<const _fromType*>(pSrc)) : std::any_cast<const _fromType&>(pSrc));
 
                 if constexpr (std::is_convertible_v<_fromType*, _toType*>)
                 {
-                    pConvertKind = rtl::ConversionKind::ByRef;
+                    pConvertKind = ConversionKind::ByRef;
                     return std::any(std::in_place_type<const _toType&>, static_cast<const _toType&>(srcRef));
                 }
                 else if constexpr ((std::is_convertible_v<_fromType, _toType> && !std::is_convertible_v<_fromType&, const _toType&>) ||
                                    std::is_constructible_v<_toType, const _fromType&>)
                 {
-                    pConvertKind = rtl::ConversionKind::ByValue;
+                    pConvertKind = ConversionKind::ByValue;
                     return std::any(std::in_place_type<_toType>, _toType(srcRef));
                 }
 
-                pConvertKind = rtl::ConversionKind::NotDefined;
+                pConvertKind = ConversionKind::NotDefined;
                 return std::any();
             }
             catch (const std::bad_any_cast&) 
             {
-                pConvertKind = rtl::ConversionKind::BadAnyCast;
+                pConvertKind = ConversionKind::BadAnyCast;
                 return std::any();
             }
         };

@@ -325,7 +325,7 @@ namespace rtl_tests
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 EXPECT_FALSE(date0.isEmpty());
-                EXPECT_TRUE(date0.isConst());
+                EXPECT_TRUE(date0.isConstCastSafe());
 
                 auto [err_1, date1] = getTheDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
@@ -342,11 +342,6 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
-                    EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
-                } {
-                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -424,11 +419,6 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
-                    EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
-                } {
-                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -506,11 +496,6 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
-                    EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
-                } {
-                    // Explicitly bind a const member function to 'date0' (const_cast the reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
@@ -588,11 +573,6 @@ namespace rtl_tests
                 ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(date0).call(dateStr);
-                    // Cannot invoke non-const member function on 'date0'- it reflects a const object.
-                    EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget && ret.isEmpty());
-                } {
-                    // Explicitly bind a const member function to 'date0' (const_cast then reflected object and then invoke).
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
                     EXPECT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.

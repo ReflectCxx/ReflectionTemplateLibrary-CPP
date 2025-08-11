@@ -11,10 +11,10 @@ namespace rtl::detail
     void ReflectCast<std::string>::pushConversion<const char*>()
     {
         using _toType = const char*;
-        const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsPointer, rtl::ConversionKind& pConversionKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const Contains& ContainedAs, ConversionKind& pConversionKind)-> std::any
         {
-            pConversionKind = rtl::ConversionKind::ByValue;
-            const auto& isPtr = (pIsPointer == rtl::IsPointer::Yes);
+            pConversionKind = ConversionKind::ByValue;
+            const auto& isPtr = (ContainedAs == Contains::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
             return std::any(static_cast<const _toType&>(srcObj.c_str()));
         };
@@ -27,10 +27,10 @@ namespace rtl::detail
     void ReflectCast<std::string_view>::pushConversion<const char*>()
     {
         using _toType = const char*;
-        const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsPointer, rtl::ConversionKind& pConversionKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const Contains& ContainedAs, ConversionKind& pConversionKind)-> std::any
         {
-            pConversionKind = rtl::ConversionKind::ByValue;
-            const auto& isPtr = (pIsPointer == rtl::IsPointer::Yes);
+            pConversionKind = ConversionKind::ByValue;
+            const auto& isPtr = (ContainedAs == Contains::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(static_cast<const _toType&>(srcObj.data()));
         };
@@ -43,10 +43,10 @@ namespace rtl::detail
     void ReflectCast<std::string_view>::pushConversion<std::string>()
     {
         using _toType = std::string;
-        const auto& conversion = [](const std::any& pSrc, const rtl::IsPointer& pIsPointer, rtl::ConversionKind& pConversionKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const Contains& ContainedAs, ConversionKind& pConversionKind)-> std::any
         {
-            pConversionKind = rtl::ConversionKind::ByValue;
-            const auto& isPtr = (pIsPointer == rtl::IsPointer::Yes);
+            pConversionKind = ConversionKind::ByValue;
+            const auto& isPtr = (ContainedAs == Contains::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(_toType(srcObj));
         };

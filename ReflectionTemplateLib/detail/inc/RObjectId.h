@@ -11,11 +11,13 @@ namespace rtl::detail
 
     public:
 
-        bool m_isTypeConst;
+        bool m_isWrappingConst;
+        bool m_isConstCastSafe;
+
         alloc m_allocatedOn;
         Wrapper m_wrapperType;
-        IsPointer m_isPointer;
-        
+        Contains m_containsAs;
+
         std::size_t m_typeId;
         std::size_t m_ptrTypeId;
         std::size_t m_wrapperTypeId;
@@ -29,10 +31,11 @@ namespace rtl::detail
         RObjectId& operator=(const RObjectId&) = delete;
 
         RObjectId()
-            : m_isTypeConst(false)
+            : m_isWrappingConst(false)
+            , m_isConstCastSafe(false)
             , m_allocatedOn(alloc::None)
             , m_wrapperType(Wrapper::None)
-            , m_isPointer(IsPointer::No)
+            , m_containsAs(Contains::None)
             , m_typeId(TypeId<>::None)
             , m_ptrTypeId(TypeId<>::None)
             , m_wrapperTypeId(TypeId<>::None)
@@ -40,13 +43,14 @@ namespace rtl::detail
             , m_converters(m_conversions)
         { }
 
-        RObjectId(bool pIsTypeConst, alloc pAllocOn, Wrapper pWrapperType, IsPointer pIsPtr, std::size_t pTypeId,
-                  std::size_t pPtrTypeId, std::size_t pWrapperTypeId, const std::string& pTypeStr, 
-                  const std::vector<traits::ConverterPair>& pConverters)
-            : m_isTypeConst(pIsTypeConst)
+        RObjectId(alloc pAllocOn, bool pIsConstCastSafe, Wrapper pWrapperType, bool pIsStoredConst,
+                  Contains pContainsAs, std::size_t pTypeId, const std::string& pTypeStr, std::size_t pPtrTypeId,
+                  const std::vector<traits::ConverterPair>& pConverters, std::size_t pWrapperTypeId)
+            : m_isWrappingConst(pIsStoredConst)
+            , m_isConstCastSafe(pIsConstCastSafe)
             , m_allocatedOn(pAllocOn)
             , m_wrapperType(pWrapperType)
-            , m_isPointer(pIsPtr)
+            , m_containsAs(pContainsAs)
             , m_typeId(pTypeId)
             , m_ptrTypeId(pPtrTypeId)
             , m_wrapperTypeId(pWrapperTypeId)
@@ -56,47 +60,59 @@ namespace rtl::detail
 
         void reset()
         {
-            m_isTypeConst = false;
+            m_isWrappingConst = false;
+            m_isConstCastSafe = false;
             m_allocatedOn = alloc::None;    //very important, identifies empty/moved-from RObject.
             m_wrapperType = Wrapper::None;
-            m_isPointer = IsPointer::No;
+            m_containsAs = Contains::None;
             m_typeId = TypeId<>::None;
+            m_ptrTypeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
             m_typeStr.clear();
         }
 
-        template<class W>
-        static RObjectId createForWrapper()
+        template<class T>
+        static constexpr Contains getContainingAsType()
         {
-            using _W = traits::std_wrapper<traits::base_t<W>>;
-            using _T = _W::innerT;
+            using W = traits::std_wrapper<traits::raw_t<T>>;
+            using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
 
-            const std::size_t wrapperId = _W::id();
-            const std::size_t typeId = detail::TypeId<_T>::get();
-            const std::size_t typePtrId = detail::TypeId<_T*>::get();
-            const auto& typeStr = detail::TypeId<_T>::toString();
-            const auto& conversions = detail::ReflectCast<_T>::getConversions();
+            constexpr bool isWrapper = (W::type != Wrapper::None);
+            constexpr bool isRawPtr = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
 
-            return RObjectId(std::is_const_v<_T>, rtl::alloc::Stack, _W::type, rtl::IsPointer::Yes,
-                             typeId, typePtrId, wrapperId, typeStr, conversions);
+            if constexpr (isWrapper && !isRawPtr) {
+                return (traits::is_const_v<T> ? Contains::ConstWrapper : Contains::Wrapper);
+            }
+            else if constexpr (isRawPtr && !isWrapper) {
+                return Contains::Pointer;
+            }
+            else if constexpr (!isWrapper && !isRawPtr) {
+                return Contains::Value;
+            }
+            else {
+                static_assert(false, "Pointer to STL wrapper (e.g., pointer to smart-pointer) is not supported.");
+            }
         }
 
         template<class T, rtl::alloc _allocOn>
-        static RObjectId create()
+        static RObjectId create(bool pIsConstCastSafe)
         {
-            using _T = traits::base_t<T>;
-            using _isPointer = std::is_pointer<traits::remove_const_n_reference<T>>;
+            // extract wrapper info.
+            using _W = traits::std_wrapper<traits::raw_t<T>>;
+            // extract Un-Qualified raw type.
+            using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
 
-            const std::size_t wrapperId = detail::TypeId<>::None;
+            constexpr Contains containedAs = getContainingAsType<T>();
+            
+            const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
             const std::size_t typePtrId = rtl::detail::TypeId<_T*>::get();
             const auto& typeStr = rtl::detail::TypeId<_T>::toString();
             const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
-            const auto isPointer = (_isPointer::value ? IsPointer::Yes : IsPointer::No);
-            constexpr auto isTypeConst = (_allocOn != alloc::Heap ? traits::is_const_v<T> : false);
+            const bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
 
-            return RObjectId(isTypeConst, _allocOn, Wrapper::None, 
-                             isPointer, typeId, typePtrId, wrapperId, typeStr, conversions);
+            return RObjectId(_allocOn, pIsConstCastSafe, _W::type, isWrappingConst, containedAs,
+                             typeId, typeStr, typePtrId, conversions, wrapperId);
         }
     };
 }

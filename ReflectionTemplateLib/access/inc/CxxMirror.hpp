@@ -18,7 +18,7 @@ namespace rtl {
         * if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
     */  inline std::optional<Record> CxxMirror::getRecord(const std::string& pRecord) const
         {
-            return getRecord(std::string(NAMESPACE_GLOBAL), pRecord);
+            return getRecord(std::string(detail::NAMESPACE_GLOBAL), pRecord);
         }
 
 
@@ -30,7 +30,7 @@ namespace rtl {
         * if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
     */  inline std::optional<Function> CxxMirror::getFunction(const std::string& pFunction) const
         {
-            return getFunction(std::string(NAMESPACE_GLOBAL), pFunction);
+            return getFunction(std::string(detail::NAMESPACE_GLOBAL), pFunction);
         }
 
 

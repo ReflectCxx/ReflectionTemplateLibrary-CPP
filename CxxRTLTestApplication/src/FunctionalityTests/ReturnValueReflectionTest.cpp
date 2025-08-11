@@ -41,8 +41,6 @@ namespace rtl_tests
             auto [err2, event] = getEvent->bind(calender).call();
             EXPECT_TRUE(err2 == rtl::error::None);
             EXPECT_FALSE(event.isEmpty());
-            //'getEvent' returns 'const Event&'
-            EXPECT_TRUE(event.isRefOrPtr());
             EXPECT_TRUE(event.getTypeId() == id::event);
             {
                 auto [err, robj] = event.clone<rtl::alloc::Heap>();

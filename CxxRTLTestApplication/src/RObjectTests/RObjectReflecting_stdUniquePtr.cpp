@@ -6,35 +6,9 @@
 
 using namespace rtl::access;
 
-namespace {
-
-    static std::size_t g_nodeInstanceCount = 0;
-    struct Node
-    {
-        std::size_t data;
-
-        ~Node() {
-            g_nodeInstanceCount--;
-        }
-        //Node(const Node& pOther) :data(pOther.data) { 
-        //    g_nodeInstanceCount++; 
-        //}
-        Node(Node&& pOther) noexcept :data(pOther.data) {
-            pOther.data = rtl::index_none;
-            g_nodeInstanceCount++;
-        }
-        Node() :data(g_nodeInstanceCount++) {}
-
-        Node(const Node& pOther) = delete;  //Ensure's no copy. only move.
-        Node& operator=(Node&&) = delete;
-        Node& operator=(const Node&) = delete;
-    };
-}
-
-
 namespace rtl::unit_test
 {
-    TEST(RObject_std_wrapper_unique_ptr, reflect_init_with_lvalue)
+    TEST(RObject_std_wrapper_unique_ptr, reflect_pod_init_with_lvalue)
     {
         constexpr const int NUM = 963;
         std::unique_ptr<int> uptr = std::make_unique<int>(NUM);

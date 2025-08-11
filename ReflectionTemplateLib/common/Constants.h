@@ -6,28 +6,6 @@ namespace rtl {
 
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
-    constexpr const std::string_view NAMESPACE_GLOBAL = "namespace_global";
-
-    enum class IsPointer { No, Yes };
-
-    enum class Wrapper
-    {
-        None,
-        Weak,
-        Unique,
-        Shared
-    };
-
-
-    enum class ConversionKind
-    {
-        ByRef,
-        ByValue,
-        NotDefined,
-        BadAnyCast
-    };
-
-
     // MethodQ: Method qualifier + static marker.
     enum class methodQ
     {
@@ -39,12 +17,11 @@ namespace rtl {
 
     //Allocation type.
     enum class alloc
-    {   
+    {
         None,       //assigned to empty/moved-from 'RObject's.
         Heap,       //assigned to only rtl-allocated heap objects
         Stack,      //assigned to return-values & rtl-allocated stack objects
     };
-
 
     enum class error
     {
@@ -57,8 +34,10 @@ namespace rtl {
         ConstMethodOverloadNotFound,
         ConstructorNotRegisteredInRtl,
         NonConstMethodOverloadNotFound,
-        ImplicitCallToNonConstOnConstTarget,
-        ReflectingUniquePtrCopyDisallowed,
+        NonConstMethodCallOnConstTarget,
+        TrueConstTargetConstCastDisallowed,
+        ReflectingUniquePtr_copyDisallowed,
+        ReflectingStlWrapper_copyOnHeapDisallowed,
 
         Instantiating_typeVoid,
         Instantiating_typeAbstract,
@@ -69,19 +48,10 @@ namespace rtl {
         Instantiating_typeNotMoveConstructible
     };
 
-
-    struct CtorName
-    {
-        inline static const std::string ctor(const std::string& pRecordName) {
-            return (pRecordName + "::" + pRecordName + "()");
-        }
-    };
-
-
     inline const std::string_view to_string(error err)
     {
         switch (err) {
-        case error::None: 
+        case error::None:
             return "No error (operation successful)";
         case error::EmptyRObject:
             return "Empty instance: RObject does not hold any reflected object";
@@ -101,21 +71,56 @@ namespace rtl {
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::Instantiating_typeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
-        case error::ReflectingUniquePtrCopyDisallowed:
+        case error::ReflectingUniquePtr_copyDisallowed:
             return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
-        case error::ImplicitCallToNonConstOnConstTarget:
+        case error::NonConstMethodCallOnConstTarget:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         default:
             return "Unknown error";
         }
     }
+}
 
+
+namespace rtl::detail 
+{
+    enum class Wrapper
+    {
+        None,
+        Any,
+        Weak,
+        Unique,
+        Shared,
+        Variant,
+        Optional,
+        Reference
+    };
+
+    enum class Contains
+    {
+        None,
+        Value,
+        Pointer,
+        Wrapper,
+        ConstWrapper
+    };
+
+    enum class ConversionKind
+    {
+        ByRef,
+        ByValue,
+        NotDefined,
+        BadAnyCast
+    };
+    
+    inline static const std::string ctor_name(const std::string& pRecordName) {
+        return (pRecordName + "::" + pRecordName + "()");
+    }
 
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \
     }
-
 
 #define GETTER_REF(_varType, _name, _var)       \
     inline _varType& get##_name() const {       \
@@ -131,4 +136,6 @@ namespace rtl {
     inline const bool is##_name() const {     \
         return _var;                          \
     }
+
+    constexpr const std::string_view NAMESPACE_GLOBAL = "namespace_global";
 }

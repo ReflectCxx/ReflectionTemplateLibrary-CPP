@@ -42,8 +42,7 @@ namespace rtl_tests
 
             auto [err0, book] = classBook->create<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(book.isConst());
+            EXPECT_TRUE(book.isConstCastSafe());
             EXPECT_FALSE(book.isEmpty());
 
             optional<Record> classPerson = cxxMirror.getRecord(person::class_);
@@ -114,7 +113,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 string_view lastName = "invalid_arg";
@@ -153,7 +152,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 string_view lastName = "invalid_arg";
@@ -192,7 +191,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateAddress->hasSignature<string>());
             {
                 auto address = string(person::ADDRESS);
@@ -230,7 +229,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateAddress->hasSignature<string>());
             {
                 auto address = string(person::ADDRESS);
@@ -269,7 +268,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invalid argument
@@ -308,7 +307,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invlid argument
@@ -347,7 +346,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
@@ -384,7 +383,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
@@ -420,7 +419,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
@@ -456,7 +455,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
@@ -491,7 +490,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -531,8 +530,8 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_FALSE(person.isConst());
-            EXPECT_FALSE(person.isConst());
+            EXPECT_TRUE(person.isConstCastSafe());
+            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -555,7 +554,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_const_target)
+    TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_target)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -566,12 +565,11 @@ namespace rtl_tests
             optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
             ASSERT_TRUE(createConstPerson);
 
-            // Objects created through reflection are considered mutable (non-const) by default.
-            // But return-values can be 'const' objects.
             auto [err0, constPerson] = createConstPerson->bind().call();
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(constPerson.isEmpty());
-            EXPECT_TRUE(constPerson.isConst());
+            // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.
+            EXPECT_FALSE(constPerson.isConstCastSafe());
 
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
@@ -581,14 +579,13 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind(constPerson).call();
 
-                EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget);
+                EXPECT_TRUE(err == error::NonConstMethodCallOnConstTarget);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::NonConst>(constPerson).call();
 
-                EXPECT_TRUE(err == error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<std::string>());
+                EXPECT_TRUE(err == error::TrueConstTargetConstCastDisallowed);
+                EXPECT_TRUE(ret.isEmpty());
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -596,7 +593,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_const_ptr_target)
+    TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_pointer_target)
     {
         {
             CxxMirror& cxxMirror = MyReflection::instance();
@@ -611,9 +608,8 @@ namespace rtl_tests
             auto [err0, constPersonPtr] = createConstPtrPerson->bind().call();
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(constPersonPtr.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            // But return-values can be 'const' objects.
-            EXPECT_TRUE(constPersonPtr.isConst());
+            // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.
+            EXPECT_FALSE(constPersonPtr.isConstCastSafe());
 
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
@@ -623,14 +619,13 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind(constPersonPtr).call();
 
-                EXPECT_TRUE(err == error::ImplicitCallToNonConstOnConstTarget);
+                EXPECT_TRUE(err == error::NonConstMethodCallOnConstTarget);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::NonConst>(constPersonPtr).call();
 
-                EXPECT_TRUE(err == error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<std::string>());
+                EXPECT_TRUE(err == error::TrueConstTargetConstCastDisallowed);
+                EXPECT_TRUE(ret.isEmpty());
             }
             EXPECT_TRUE(person::delete_unmanaged_person_instance_created_via_createPtr(constPersonPtr));
         }

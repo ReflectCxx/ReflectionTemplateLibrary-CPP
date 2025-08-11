@@ -11,7 +11,7 @@ namespace rtl {
         inline Reflect::Reflect()
             : m_record("")
             //If no namespace is given, types are kept under default name: NAMESPACE_GLOBAL.
-            , m_namespace(NAMESPACE_GLOBAL) {
+            , m_namespace(detail::NAMESPACE_GLOBAL) {
         }
 
 		

@@ -18,6 +18,7 @@ namespace rtl
             {
                 //call will definitely be successful, since the signature type has alrady been validated.
                 pError = error::None;
+                constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
@@ -27,12 +28,13 @@ namespace rtl
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
-                */  const _returnType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build(&retObj);
+                */  using _rawRetType = traits::raw_t<_returnType>;
+                    const _rawRetType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                    return RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj, isConstCastSafe);
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    return RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...));
+                    return RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
                 }
             };
         }

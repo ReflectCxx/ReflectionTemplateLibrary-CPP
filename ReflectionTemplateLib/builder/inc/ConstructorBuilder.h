@@ -43,7 +43,7 @@ namespace rtl {
                 const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);
                 static_assert(isAccessible, "The specified constructor is either deleted or not publicly accessible.");
 
-                const auto& ctorName = CtorName::ctor(m_record);
+                const auto& ctorName = detail::ctor_name(m_record);
                 return Builder<methodQ::NonConst>(m_namespace, m_record, ctorName, detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
             }
         };

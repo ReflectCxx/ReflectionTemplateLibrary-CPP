@@ -154,7 +154,7 @@ namespace rtl
     namespace unit_test
     {
         // Test reflecting an int and viewing it as bool
-        TEST(RObject_int_lvalue, reflect_int_ptr_view_as_int)
+        TEST(RObject_int_lvalue, reflect_int_ptr_view_as_int_ptr)
         {
             int value = 5; // Example int value
 
@@ -175,6 +175,31 @@ namespace rtl
 
             // Verify the addresses are same, no copy made.
             ASSERT_EQ(cref, &value);
+        }
+
+
+        // Test reflecting an int and viewing it as bool
+        TEST(RObject_int_lvalue, reflect_int_ptr_view_as_int_value)
+        {
+            int value = 5; // Example int value
+
+            // Reflect an int value pointer into RObject
+            RObject robj = rtl::reflect(&value);
+
+            // Check if RObject can reflect as `int`
+            ASSERT_TRUE(robj.canViewAs<int>());
+
+            // Get a view of the value as `int`
+            auto view = robj.view<int>();
+
+            // Ensure the view is valid
+            ASSERT_TRUE(view.has_value());
+
+            // Access the pointer returned by the view
+            int cref = view->get();
+
+            // Verify the addresses are same, no copy made.
+            ASSERT_EQ(cref, value);
         }
 
 

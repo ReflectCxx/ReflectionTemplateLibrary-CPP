@@ -55,11 +55,11 @@ namespace rtl
                         }
                         else {
                             pError = error::None;
-                            return RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...));
+                            return RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...), true);
                         }
                     }
                     else if (pAllocType == alloc::Heap) {
-                        return RObjectBuilder::build<const _recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...));
+                        return RObjectBuilder::build<_recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true);
                     }
                 }
                 return access::RObject();   //dead code. compiler warning ommited.

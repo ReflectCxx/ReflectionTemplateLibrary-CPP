@@ -14,23 +14,23 @@ namespace rtl
 {
     namespace traits
     {
-        using Converter = std::function< std::any(const std::any&, const IsPointer&, ConversionKind&) >;
+        using Converter = std::function< std::any(const std::any&, const detail::Contains&, detail::ConversionKind&) >;
         using ConverterPair = std::pair< std::size_t, Converter >;
     }
 
     namespace traits
     {
         template<typename T>
-        struct base {
+        struct raw_type {
             using type = std::remove_cv_t<std::remove_pointer_t<std::remove_reference_t<std::remove_all_extents_t<T>>>>;
         };
 
         template<typename T>
-        using base_t = typename base<T>::type;
+        using raw_t = typename raw_type<T>::type;
 
         // Utility: Remove const and reference qualifiers from T.
         template <typename T>
-        using remove_const_n_reference = std::remove_const_t<std::remove_reference_t<T>>;
+        using remove_const_n_ref_t = std::remove_const_t<std::remove_reference_t<T>>;
 
         // Utility: Remove const from T if T is not a reference; otherwise, leave as is.
         template <typename T>
@@ -41,11 +41,10 @@ namespace rtl
         using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
         template<typename T>
-        constexpr bool is_const_v = ((std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>) ||
-                                    (!std::is_pointer_v<T> && std::is_const_v<T>));
+        constexpr bool is_const_v = (std::is_const_v<std::remove_reference_t<T>> || (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>));
 
         template<typename _checkType, typename..._typeList>
-        constexpr bool is_first_type_same_v = std::is_same_v<base_t<typename detail::TypeId<_typeList...>::HEAD>, base_t<_checkType>>;
+        constexpr bool is_first_type_same_v = std::is_same_v<raw_t<typename detail::TypeId<_typeList...>::HEAD>, raw_t<_checkType>>;
     }
     
     
@@ -54,8 +53,8 @@ namespace rtl
         template<typename T>
         struct std_wrapper
         {
-            using innerT = std::nullptr_t;
-            static constexpr const auto type = Wrapper::None;
+            using value_type = std::nullptr_t;
+            static constexpr const auto type = detail::Wrapper::None;
             static auto id() { return detail::TypeId<>::None; }
         };
 
@@ -63,8 +62,8 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::shared_ptr<T>>
         {
-            using innerT = T;
-            static constexpr const auto type = Wrapper::Shared;
+            using value_type = T;
+            static constexpr const auto type = detail::Wrapper::Shared;
             static auto id() { return detail::TypeId<std::shared_ptr<T>>::get(); }
         };
 
@@ -72,8 +71,8 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::unique_ptr<T>>
         {
-            using innerT = T;
-            static constexpr const auto type = Wrapper::Unique;
+            using value_type = T;
+            static constexpr const auto type = detail::Wrapper::Unique;
             static auto id() { return detail::TypeId<std::unique_ptr<T>>::get(); }
         };
 
@@ -81,23 +80,23 @@ namespace rtl
         template<typename T>
         struct std_wrapper<std::weak_ptr<T>>
         {
-            using innerT = T;
-            static constexpr const auto type = Wrapper::Weak;
+            using value_type = T;
+            static constexpr const auto type = detail::Wrapper::Weak;
             static auto id() { return detail::TypeId<std::weak_ptr<T>>::get(); }
         };
 
         template<typename T>
-        using enable_if_raw_pointer = std::enable_if<std::is_pointer_v<remove_const_n_reference<T>>, int>::type;
+        using enable_if_raw_pointer = std::enable_if<std::is_pointer_v<remove_const_n_ref_t<T>>, int>::type;
 
         template<typename T>
-        using enable_if_std_wrapper = std::enable_if<std_wrapper<std::remove_reference_t<T>>::type != Wrapper::None, int>::type;
+        using enable_if_std_wrapper = std::enable_if<std_wrapper<remove_const_n_ref_t<T>>::type != detail::Wrapper::None, int>::type;
 
         template<typename T>
-        using enable_if_not_std_wrapper = std::enable_if<std_wrapper<std::remove_reference_t<T>>::type == Wrapper::None, int>::type;
+        using enable_if_not_std_wrapper = std::enable_if<std_wrapper<remove_const_n_ref_t<T>>::type == detail::Wrapper::None, int>::type;
 
         template<typename T>
-        using enable_if_not_std_wrapper_or_raw_ptr = std::enable_if<!std::is_pointer_v<remove_const_n_reference<T>> &&
-                                                                    std_wrapper<std::remove_reference_t<T>>::type == Wrapper::None, int>::type;
+        using enable_if_not_std_wrapper_or_raw_ptr = std::enable_if<!std::is_pointer_v<remove_const_n_ref_t<T>> &&
+                                                                    std_wrapper<remove_const_n_ref_t<T>>::type == detail::Wrapper::None, int>::type;
     }
 
 
@@ -127,14 +126,14 @@ namespace rtl
         };
 
         template<typename T>
-        constexpr rtl::error instantiation_error_v = instantiation_error<base_t<T>>::value;
+        constexpr rtl::error instantiation_error_v = instantiation_error<raw_t<T>>::value;
 
         template<class T>
         constexpr bool is_view_suported()
         {
-            using _T = traits::base_t<T>;
+            using _T = traits::raw_t<T>;
             constexpr bool isReference = std::is_reference_v<T>;
-            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != Wrapper::None);
+            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != detail::Wrapper::None);
             constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
             return (!isReference && !isWrapperPtr && !isNonConstPtr);
         }
@@ -142,9 +141,9 @@ namespace rtl
         template<class T>
         constexpr void validate_view()
         {
-            using _T = traits::base_t<T>;
+            using _T = traits::raw_t<T>;
             constexpr bool isReference = std::is_reference_v<T>;
-            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != Wrapper::None);
+            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != detail::Wrapper::None);
             constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
 
             static_assert(!isReference, "explicit reference views are not supported.");
