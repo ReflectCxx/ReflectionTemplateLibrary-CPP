@@ -7,7 +7,7 @@
 * Game or UI editors
 * Live scripting or plugin systems
 
-### ✨ The Metaphor: The Mirror & The Reflection
+### ✨ The Mirror & The Reflection
 
 > A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.
 
