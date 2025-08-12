@@ -5,27 +5,17 @@
 #include <cassert>
 
 #include "RObject.h"
+#include "RObjectUPtr.h"
 #include "ReflectCast.h"
 #include "RObjectBuilder.h"
 
 namespace rtl::access
 {
-    inline access::RObject::~RObject()
-    {
-        if (m_objectId.m_allocatedOn == alloc::Heap) {
-            RObject::m_rtlOwnedHeapAllocCount.fetch_sub(1);
-        }
-    }
-
     inline RObject::RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId)
         : m_getClone(std::forward<Cloner>(pCloner))
         , m_object(std::forward<std::any>(pObject))
         , m_objectId(pRObjectId)
-    {
-        if (m_objectId.m_allocatedOn == alloc::Heap) {
-            RObject::m_rtlOwnedHeapAllocCount.fetch_add(1);
-        }
-    }
+    { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
@@ -134,163 +124,168 @@ namespace rtl::access
         else {/* This ought to be a dead code block, still..TODO: handle ConversionKind::NoDefined/BadAnyCast */ }
         return std::nullopt;
     }
+}
 
 
-    template<class T, traits::enable_if_not_std_wrapper<T>>
-    inline T* RObject::extract() const
+
+namespace rtl::access
+{
+    template<class T, traits::enable_if_unique_ptr<T>>
+    inline T RObject::extractWrapper() const 
     {
-        switch (m_objectId.m_containsAs)
-        {
-        case detail::Contains::Pointer: {
-            return (std::any_cast<T*>(m_object));
-        }
-        case detail::Contains::Wrapper: {
-            return extractFromWrapper<T>();
-        }
-        case detail::Contains::Value: {
-            using U = traits::raw_t<T>;
-            const U& valueRef = std::any_cast<const U&>(m_object);
-            return static_cast<T*>(&valueRef);
-        }
-        }
-        return nullptr;  //dead-code, eliminates compiler warning.
-    }
-
-
-    template<class T, traits::enable_if_std_wrapper<T>>
-    inline T* RObject::extract() const
-    {
-        using U = traits::raw_t<T>;
-        using _T = traits::std_wrapper<U>::value_type;
-        // std::any can't hold std::unique_ptr, its stored as shared_ptr but uniqueness is maintained.
-        if (m_objectId.m_wrapperType == detail::Wrapper::Shared ||
-            m_objectId.m_wrapperType == detail::Wrapper::Unique)
-        {
-            if (m_objectId.m_isWrappingConst) {
-                using U = std::shared_ptr<const _T>;
-                const std::shared_ptr<const _T>& sptrRef = std::any_cast<const U&>(m_object);
-                return static_cast<T*>(&sptrRef);
+        using _T = traits::std_wrapper<traits::raw_t<T>>::value_type;
+        try {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
+                using U = detail::RObjectUPtr<_T>;
+                const U& uptr = std::any_cast<const U&>(m_object);
+                return (const_cast<U&>(uptr)).release();
             }
-            else {
-                using U = std::shared_ptr<_T>;
-                const std::shared_ptr<_T>& sptrRef = std::any_cast<const U&>(m_object);
-                return static_cast<T*>(&sptrRef);
-            }
+            else return std::unique_ptr<_T>();
+        }
+        catch (const std::bad_any_cast&) {
+            return std::unique_ptr<_T>();
         }
     }
 
 
-    template<class T>
-    inline T* access::RObject::extractFromWrapper() const
+    template<class T, traits::enable_if_shared_ptr<T>>
+    inline const T* RObject::extractWrapper() const
     {
-        using _T = traits::raw_t<T>;
-        // std::any stores unique_ptr as shared_ptr internally, but still preserves sole ownership.
-        if (m_objectId.m_wrapperType == detail::Wrapper::Shared ||
-            m_objectId.m_wrapperType == detail::Wrapper::Unique)
-        {
-            if (m_objectId.m_isWrappingConst) {
-                using U = std::shared_ptr<const _T>;
-                const auto& sptrRef = std::any_cast<const U&>(m_object);
-                return static_cast<T*>(sptrRef.get());
+        try {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Shared)
+            {
+                using _T = traits::std_wrapper<traits::raw_t<T>>::value_type;
+                if constexpr (traits::is_const_v<_T>)
+                {
+                    if (m_objectId.m_isWrappingConst) {
+                        using U = std::shared_ptr<const _T>;
+                        const U& sptrRef = std::any_cast<const U&>(m_object);
+                        return static_cast<const T*>(&sptrRef);
+                    }
+                }
+                else
+                {
+                    using U = std::shared_ptr<_T>;
+                    const U& sptrRef = std::any_cast<const U&>(m_object);
+                    return static_cast<const T*>(&sptrRef);
+                }
             }
-            else {
-                using U = std::shared_ptr<_T>;
-                const auto& sptrRef = std::any_cast<const U&>(m_object);
-                return static_cast<T*>(sptrRef.get());
-            }
+            return nullptr;
         }
-        return nullptr;  //dead-code, eliminates compiler warning.
+        catch (const std::bad_any_cast&) {
+            return nullptr;
+        }
     }
 
-
-    template <class T, traits::enable_if_raw_pointer<T>>
-    std::optional<rtl::view<T>> RObject::view() const
-    {
-        traits::validate_view<T>();
-        using _T = traits::raw_t<T>;
-
-        if (detail::TypeId<_T>::get() == m_objectId.m_typeId)
-        {
-            const _T& valueRef = *extract<const _T>();
-            return std::optional<rtl::view<T>>(std::move(&valueRef));   //Copy pointer.
-        }
-        else {
-            const std::size_t index = getConverterIndex(detail::TypeId<T>::get());
-            if (index != index_none) {
-                return performConversion<T>(index);
-            }
-        }
-        return std::nullopt;
-    }
-
-
-    template <class T, traits::enable_if_not_std_wrapper_or_raw_ptr<T>>
-    inline std::optional<rtl::view<T>> RObject::view() const
-    {
-        traits::validate_view<T>();
-
-        const std::size_t asTypeId = detail::TypeId<T>::get();
-        if (asTypeId == m_objectId.m_typeId)
-        {
-            using _T = traits::raw_t<T>;
-            const _T& valueRef = *extract<const _T>();
-            return std::optional<rtl::view<T>>(valueRef);   //No Copy, init by reference.
-        }
-        else {
-            const std::size_t index = getConverterIndex(asTypeId);
-            if (index != index_none) {
-                return performConversion<T>(index);
-            }
-        }
-        return std::nullopt;
-    }
 
     template <class T, traits::enable_if_std_wrapper<T>>
     std::optional<rtl::view<T>> RObject::view() const
     {
         traits::validate_view<T>();
-        const detail::Wrapper wrap = m_objectId.m_wrapperType;
-        if (wrap == detail::Wrapper::Shared || wrap == detail::Wrapper::Unique)
+        using _T = traits::raw_t<T>;
+        const detail::Wrapper wrapper = m_objectId.m_wrapperType;
+        if (wrapper == detail::Wrapper::Shared || wrapper == detail::Wrapper::Unique)
         {
             if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
             {
-                using W = traits::std_wrapper<traits::raw_t<T>>;
+                using W = traits::std_wrapper<_T>;
                 if constexpr (W::type == detail::Wrapper::Unique) {
-                    // std::any can't hold std::unique_ptr, its stored as shared_ptr but uniqueness is maintained.
-                    using _T = W::value_type;
-                    if (m_objectId.m_isWrappingConst)
-                    {
-                        //using U = std::shared_ptr<const _T>;
-                        //U& sptrRef = *(const_cast<U*>(extract<const U>()));
-                        //if (sptrRef.use_count() == 1) {
-                        //    const _T* rawPtr = sptrRef.get();
-                        //    sptrRef.reset();
-                        //    std::unique_ptr<const _T> uptr(rawPtr);
-                        //    return std::optional<rtl::view<T>>(std::move(uptr));   //No Copy, init by reference.
-                        //}
-                        //else {
-                        //    assert(false && "exception: uniqueness compromised! failed to manage std::unique_ptr as std::shared_ptr");
-                        //}
-                    }
-                    else
-                    {
-                        //using U = std::shared_ptr<_T>;
-                        //const U& sptrRef = *extract<const U>();
-                        //if (sptrRef.use_count() == 1) {
-                        //    _T* rawPtr = sptrRef.get();
-                        //    sptrRef.reset();
-                        //    std::unique_ptr<_T> uptr(rawPtr);
-                        //    return std::optional<rtl::view<T>>(std::move(uptr));   //No Copy, init by reference.
-                        //}
-                        //else {
-                        //    assert(false && "exception: uniqueness compromised! failed to manage std::unique_ptr as std::shared_ptr");
-                        //}
-                    }
+                    _T sptrRef = extractWrapper<_T>();
+                    return std::optional<rtl::view<T>>(std::move(sptrRef));
+                }
+                else if constexpr (W::type == detail::Wrapper::Shared) {
+                    const _T& sptrRef = *extractWrapper<_T>();
+                    return std::optional<rtl::view<T>>(sptrRef);
+                }
+            }
+        }
+        return std::nullopt;
+    }
+}
+
+
+
+namespace rtl::access
+{
+    template<class T>
+    inline const T* RObject::extractRefrence() const
+    {
+        try {
+            switch (m_objectId.m_containsAs)
+            {
+            case detail::Contains::Pointer: {
+                return (std::any_cast<const T*>(m_object));
+            }
+            case detail::Contains::Wrapper: {
+                return extractFromWrapper<T>();
+            }
+            case detail::Contains::Value: {
+                const T& valueRef = std::any_cast<const T&>(m_object);
+                return static_cast<const T*>(&valueRef);
+            }
+            }
+            return nullptr;  //dead-code, eliminates compiler warning.
+        }
+        catch (const std::bad_any_cast&) {
+            return nullptr;
+        }
+    }
+
+
+    template<class T>
+    inline const T* access::RObject::extractFromWrapper() const
+    {
+        try {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Unique)
+            {
+                using U = detail::RObjectUPtr<T>;
+                const U& objRef = std::any_cast<const U&>(m_object);
+                return objRef.m_ptr;
+            }
+            if (m_objectId.m_wrapperType == detail::Wrapper::Shared)
+            {
+                if (m_objectId.m_isWrappingConst) {
+                    using U = std::shared_ptr<const T>;
+                    const auto& sptrRef = std::any_cast<const U&>(m_object);
+                    return static_cast<const T*>(sptrRef.get());
                 }
                 else {
-                    const T& sptrRef = *extract<const T>();
-                    return std::optional<rtl::view<T>>(sptrRef);   //No Copy, init by reference.
+                    using U = std::shared_ptr<T>;
+                    const auto& sptrRef = std::any_cast<const U&>(m_object);
+                    return static_cast<const T*>(sptrRef.get());
                 }
+            }
+            else return nullptr;
+        } 
+        catch (const std::bad_any_cast&) {
+            return nullptr;
+        }
+    }
+
+
+    template <class T, traits::enable_if_not_std_wrapper<T>>
+    inline std::optional<rtl::view<T>> RObject::view() const
+    {
+        traits::validate_view<T>();
+        using _T = traits::raw_t<T>;
+        const std::size_t asTypeId = detail::TypeId<_T>::get();
+        if (asTypeId == m_objectId.m_typeId)
+        {
+            const _T* valueRef = extractRefrence<_T>();
+            if (valueRef != nullptr) {
+                if constexpr (traits::is_raw_ptr_v<T>) {
+                    return std::optional<rtl::view<T>>(std::move(valueRef));
+                }
+                else {
+                    return std::optional<rtl::view<T>>(*valueRef);
+                }
+            }
+        }
+        else {
+            const std::size_t qualifiedId = detail::TypeId<T>::get();
+            const std::size_t index = getConverterIndex(qualifiedId);
+            if (index != index_none) {
+                return performConversion<T>(index);
             }
         }
         return std::nullopt;

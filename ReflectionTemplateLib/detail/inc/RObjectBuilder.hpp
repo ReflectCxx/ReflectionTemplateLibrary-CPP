@@ -1,7 +1,8 @@
 #pragma once
 
-#include "RObjectBuilder.h"
 #include "RObject.hpp"
+#include "RObjectUPtr.h"
+#include "RObjectBuilder.h"
 
 namespace rtl::detail {
 
@@ -47,8 +48,10 @@ namespace rtl::detail {
         if constexpr (_allocOn == alloc::Heap)
         {
             static_assert(isRawPointer, "Invalid 'alloc' specified for non-pointer-type 'T'");
+            const _T* objPtr = static_cast<const _T*>(pVal);
+            std::function<void(_T*)> deleter = [](_T* pPtr) { delete pPtr; };
             const RObjectId& robjId = RObjectId::create<std::unique_ptr<const _T>, _allocOn>(pIsConstCastSafe);
-            return access::RObject(std::any(std::shared_ptr<const _T>(pVal)), buildCloner<_T>(), robjId);
+            return access::RObject(std::any(RObjectUPtr<_T>(const_cast<_T*>(objPtr), deleter)), buildCloner<_T>(), robjId);
         }
         else if constexpr (_allocOn == alloc::Stack)
         {
@@ -60,11 +63,12 @@ namespace rtl::detail {
             else
             {
                 const RObjectId& robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
-                if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique) 
+                if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
                 {
-                    using V = traits::std_wrapper<_T>::value_type;
-                    std::shared_ptr<V> sptr = std::move(pVal);
-                    return access::RObject(std::any(std::move(sptr)), nullptr, robjId);
+                    using U = traits::std_wrapper<_T>::value_type;
+                    U* objPtr = pVal.release();
+                    std::function<void(U*)> deleter = pVal.get_deleter();
+                    return access::RObject(std::any(RObjectUPtr<U>(objPtr, deleter)), buildCloner<_T>(), robjId);
                 }
                 else 
                 {

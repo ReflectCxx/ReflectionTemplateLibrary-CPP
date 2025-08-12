@@ -38,17 +38,17 @@ namespace rtl
     template <class T>
     inline access::RObject reflect(T&& pVal)
     {
-        return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), false);
+        return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), traits::is_const_v<T>);
     }
 
     template<class T, std::size_t N>
     inline access::RObject reflect(T(&pArr)[N])
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
-            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), false);
+            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), traits::is_const_v<T>);
         }
         else {
-            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N), false);
+            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N), traits::is_const_v<T>);
         }
     }
 }

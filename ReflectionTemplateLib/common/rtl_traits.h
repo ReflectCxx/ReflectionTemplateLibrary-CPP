@@ -41,6 +41,9 @@ namespace rtl
         using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
         template<typename T>
+        constexpr bool is_raw_ptr_v = std::is_pointer_v<remove_const_n_ref_t<T>>;
+
+        template<typename T>
         constexpr bool is_const_v = (std::is_const_v<std::remove_reference_t<T>> || (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>));
 
         template<typename _checkType, typename..._typeList>
@@ -87,6 +90,12 @@ namespace rtl
 
         template<typename T>
         using enable_if_raw_pointer = std::enable_if<std::is_pointer_v<remove_const_n_ref_t<T>>, int>::type;
+
+        template<typename T>
+        using enable_if_unique_ptr = std::enable_if<std_wrapper<T>::type == detail::Wrapper::Unique, int>::type;
+
+        template<typename T>
+        using enable_if_shared_ptr = std::enable_if<std_wrapper<T>::type == detail::Wrapper::Shared, int>::type;
 
         template<typename T>
         using enable_if_std_wrapper = std::enable_if<std_wrapper<remove_const_n_ref_t<T>>::type != detail::Wrapper::None, int>::type;

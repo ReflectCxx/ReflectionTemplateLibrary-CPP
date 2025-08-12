@@ -35,15 +35,16 @@ namespace rtl::unit_test
                 EXPECT_EQ(value, NUM);
             }
             // Check if RObject can reflect as `unique_ptr<int>`
-            //EXPECT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
-            //{
-            //    // Get a view of the value as `unique_ptr<int>`, ie. Original type.
-            //    auto view = robj.view<std::unique_ptr<int>>();
-            //    ASSERT_TRUE(view.has_value());
+            EXPECT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
+            {
+                // Get a view of the value as `unique_ptr<int>`, ie. Original type.
+                auto view = robj.view<std::unique_ptr<int>>();
+                ASSERT_TRUE(view.has_value());
 
-            //    const std::unique_ptr<int>& sptrVal = view->get();
-            //    EXPECT_EQ(*sptrVal, NUM);
-            //}
+                const std::unique_ptr<int>& sptrVal = view->get();
+                ASSERT_TRUE(sptrVal);
+                EXPECT_EQ(*sptrVal, NUM);
+            }
             //robj.canViewAs<const std::unique_ptr<int>*>();  //should not compile.
             //robj.view<const std::unique_ptr<int>*>();       //should not compile.
         }

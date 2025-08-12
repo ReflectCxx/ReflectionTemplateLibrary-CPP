@@ -1,15 +1,28 @@
 #pragma once
 
+#include <any>
 #include <vector>
 #include "ReflectCast.h"
 
+namespace rtl::access {
+    class RObject;
+}
+
 namespace rtl::detail
 {
-    class RObjectId
-    {
-        static std::vector<traits::ConverterPair> m_conversions;
+    class RObjectBuilder;
 
-    public:
+    struct RObjectId
+    {
+        friend RObjectBuilder;
+        friend access::RObject;
+
+        GETTER(std::size_t, TypeId, m_typeId)
+        GETTER(Contains, ContainedAs, m_containsAs)
+
+    private:
+
+        static std::vector<traits::ConverterPair> m_conversions;
 
         bool m_isWrappingConst;
         bool m_isConstCastSafe;
@@ -76,12 +89,12 @@ namespace rtl::detail
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
-
+            constexpr bool isConst = traits::is_const_v<T>;
+            constexpr bool isRawPtr = traits::is_raw_ptr_v<T>;
             constexpr bool isWrapper = (W::type != Wrapper::None);
-            constexpr bool isRawPtr = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
 
             if constexpr (isWrapper && !isRawPtr) {
-                return (traits::is_const_v<T> ? Contains::ConstWrapper : Contains::Wrapper);
+                return (isConst ? Contains::ConstWrapper : Contains::Wrapper);
             }
             else if constexpr (isRawPtr && !isWrapper) {
                 return Contains::Pointer;
@@ -101,7 +114,6 @@ namespace rtl::detail
             using _W = traits::std_wrapper<traits::raw_t<T>>;
             // extract Un-Qualified raw type.
             using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
-
             constexpr Contains containedAs = getContainingAsType<T>();
             
             const std::size_t wrapperId = _W::id();

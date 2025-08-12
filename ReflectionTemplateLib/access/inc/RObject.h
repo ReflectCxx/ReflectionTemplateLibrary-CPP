@@ -11,10 +11,9 @@
 
 namespace rtl::detail
 {
+    template<class  T>
+    struct RObjectUPtr;
     struct RObjectBuilder;
-
-    template <class T>
-    struct UniquePtr;
 }
 
 namespace rtl::access
@@ -37,25 +36,25 @@ namespace rtl::access
         
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
+        template <class T, traits::enable_if_unique_ptr<T> = 0>
+        T extractWrapper() const;
+
+        template <class T, traits::enable_if_shared_ptr<T> = 0>
+        const T* extractWrapper() const;
+
         template<class T>
-        T* extractFromWrapper() const;
+        const T* extractRefrence() const;
 
-        template <class T, traits::enable_if_std_wrapper<T> = 0>
-        T* extract() const;
-
-        template<class T, traits::enable_if_not_std_wrapper<T> = 0>
-        T* extract() const;
-
-        template <rtl::alloc _allocOn>
-        std::pair<error, RObject> createCopy() const;
+        template<class T>
+        const T* extractFromWrapper() const;
 
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
     public:
 
-        ~RObject();
         RObject() = default;
+        ~RObject() = default;
         RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
@@ -76,18 +75,15 @@ namespace rtl::access
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;
 
-        template <class T, traits::enable_if_raw_pointer<T> = 0>
+        template<class T, traits::enable_if_std_wrapper<T> = 0>
         std::optional<rtl::view<T>> view() const;
 
-        template <class T, traits::enable_if_std_wrapper<T> = 0>
-        std::optional<rtl::view<T>> view() const;
-
-        template<class T, traits::enable_if_not_std_wrapper_or_raw_ptr<T> = 0>
+        template<class T, traits::enable_if_not_std_wrapper<T> = 0>
         std::optional<rtl::view<T>> view() const;
 
         //friends :)
-        template <class T>
-        friend struct detail::UniquePtr;
+        template<class T>
+        friend struct detail::RObjectUPtr;
         friend detail::RObjectBuilder;
     };
 }
