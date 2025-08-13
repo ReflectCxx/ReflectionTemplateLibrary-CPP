@@ -157,19 +157,19 @@ namespace rtl_tests
         RObject robj = rtl::reflect(&value);
 
         // Check if RObject can reflect as `const int *`
-        ASSERT_TRUE(robj.canViewAs<const int *>());
+        ASSERT_TRUE(robj.canViewAs<int>());
 
         // Get a view of the value as `const int *`
-        auto view = robj.view<const int*>();
+        auto view = robj.view<int>();
 
         // Ensure the view is valid
         ASSERT_TRUE(view.has_value());
 
 		// Access the pointer returned by the view
-        const int* cref = view->get();
+        const int& cref = view->get();
 
         // Verify the addresses are same, no copy made.
-        ASSERT_EQ(cref, &value);
+        ASSERT_EQ(&cref, &value);
     }
 
 
@@ -553,20 +553,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `bool`
         ASSERT_TRUE(robj.canViewAs<bool>());
+        {
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
 
-        // Get a view of the value as `bool`
-        auto view = robj.view<bool>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted bool value
+            const bool& cref = view->get();
 
-        // Access the converted bool value
-        const bool& cref = view->get();
+            // Verify the conversion result (non-zero -> true)
+            ASSERT_EQ(cref, true);
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result (non-zero -> true)
-        ASSERT_EQ(cref, true);
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 
 
@@ -580,18 +590,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `bool`
         ASSERT_TRUE(robj.canViewAs<bool>());
+        {
+            // Get a view of the value as `bool`
+            auto view = robj.view<bool>();
 
-        // Get a view of the value as `bool`
-        auto view = robj.view<bool>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted bool value
+            const bool& cref = view->get();
 
-        // Access the converted bool value
-        const bool& cref = view->get();
+            // Verify the conversion result (non-zero -> true)
+            ASSERT_EQ(cref, false);
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result (non-zero -> true)
-        ASSERT_EQ(cref, false);
+            auto view = robj.view<int>();
+
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
 
         //Caution: The dynamically allocated memory (new int) is not deleted here.
     }
@@ -607,20 +629,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `char`
         ASSERT_TRUE(robj.canViewAs<char>());
+        {
+            // Get a view of the value as `char`
+            auto view = robj.view<char>();
 
-        // Get a view of the value as `char`
-        auto view = robj.view<char>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted char value
+            const char& cref = view->get();
 
-        // Access the converted char value
-        const char& cref = view->get();
+            // Verify the conversion result (65 -> 'A')
+            ASSERT_EQ(cref, static_cast<char>(65));
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result (65 -> 'A')
-        ASSERT_EQ(cref, static_cast<char>(65));
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 
 
@@ -634,20 +666,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `signed char`
         ASSERT_TRUE(robj.canViewAs<signed char>());
+        {
+            // Get a view of the value as `signed char`
+            auto view = robj.view<signed char>();
 
-        // Get a view of the value as `signed char`
-        auto view = robj.view<signed char>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted signed char value
+            const signed char& cref = view->get();
 
-        // Access the converted signed char value
-        const signed char& cref = view->get();
+            // Verify the conversion result (97 -> 'a')
+            ASSERT_EQ(cref, static_cast<signed char>(97));
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result (97 -> 'a')
-        ASSERT_EQ(cref, static_cast<signed char>(97));
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 
 
@@ -661,20 +703,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `unsigned char`
         ASSERT_TRUE(robj.canViewAs<unsigned char>());
+        {
+            // Get a view of the value as `unsigned char`
+            auto view = robj.view<unsigned char>();
 
-        // Get a view of the value as `unsigned char`
-        auto view = robj.view<unsigned char>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted unsigned char value
+            const unsigned char& cref = view->get();
 
-        // Access the converted unsigned char value
-        const unsigned char& cref = view->get();
+            // Verify the conversion result (255 -> '\xff')
+            ASSERT_EQ(cref, static_cast<unsigned char>(255));
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result (255 -> '\xff')
-        ASSERT_EQ(cref, static_cast<unsigned char>(255));
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 
 
@@ -688,20 +740,30 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `short`
         ASSERT_TRUE(robj.canViewAs<short>());
+        {
+            // Get a view of the value as `short`
+            auto view = robj.view<short>();
 
-        // Get a view of the value as `short`
-        auto view = robj.view<short>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted short value
+            const short& cref = view->get();
 
-        // Access the converted short value
-        const short& cref = view->get();
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<short>(32767));
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result
-        ASSERT_EQ(cref, static_cast<short>(32767));
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 
 
@@ -715,19 +777,29 @@ namespace rtl_tests
 
         // Check if RObject can reflect as `unsigned short`
         ASSERT_TRUE(robj.canViewAs<unsigned short>());
+        {
+            // Get a view of the value as `unsigned short`
+            auto view = robj.view<unsigned short>();
 
-        // Get a view of the value as `unsigned short`
-        auto view = robj.view<unsigned short>();
+            // Ensure the view is valid (conversion succeeded)
+            ASSERT_TRUE(view.has_value());
 
-        // Ensure the view is valid (conversion succeeded)
-        ASSERT_TRUE(view.has_value());
+            // Access the converted unsigned short value
+            const unsigned short& cref = view->get();
 
-        // Access the converted unsigned short value
-        const unsigned short& cref = view->get();
+            // Verify the conversion result
+            ASSERT_EQ(cref, static_cast<unsigned short>(65535));
+        } {
+            ASSERT_TRUE(robj.canViewAs<int>());
 
-        // Verify the conversion result
-        ASSERT_EQ(cref, static_cast<unsigned short>(65535));
+            auto view = robj.view<int>();
 
-        //Caution: The dynamically allocated memory (new int) is not deleted here.
+            ASSERT_TRUE(view.has_value());
+
+            // rtl::view<> holds ref to the entity in RObject;
+            // delete the dynamically allocated memory (new int)
+            const int& cref = view->get();
+            delete& cref;
+        }
     }
 }

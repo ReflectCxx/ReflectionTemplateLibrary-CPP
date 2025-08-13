@@ -6,11 +6,11 @@ namespace rtl::detail
 {
     template<>
     template<>
-    void ReflectCast<std::string>::pushConversion<const char*>();
+    void ReflectCast<std::string>::pushConversion<char>();
 
     template<>
     template<>
-    void ReflectCast<std::string_view>::pushConversion<const char*>();
+    void ReflectCast<std::string_view>::pushConversion<char>();
 
     template<>
     template<>
@@ -24,8 +24,8 @@ namespace rtl::detail
     {
         static const bool _= []()
         { 
-            ReflectCast<std::string>::pushConversion<const char*>();
-            ReflectCast<std::string_view>::pushConversion<const char*>();
+            ReflectCast<std::string>::pushConversion<char>();
+            ReflectCast<std::string_view>::pushConversion<char>();
 
             ReflectCast<std::string>::pushConversion<std::string_view>();
             ReflectCast<std::string_view>::pushConversion<std::string>();

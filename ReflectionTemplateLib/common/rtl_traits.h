@@ -14,7 +14,7 @@ namespace rtl
 {
     namespace traits
     {
-        using Converter = std::function< std::any(const std::any&, const detail::Contains&, detail::ConversionKind&) >;
+        using Converter = std::function< std::any(const std::any&, const detail::EntityKind&, detail::EntityKind&) >;
         using ConverterPair = std::pair< std::size_t, Converter >;
     }
 
@@ -138,26 +138,13 @@ namespace rtl
         constexpr rtl::error instantiation_error_v = instantiation_error<raw_t<T>>::value;
 
         template<class T>
-        constexpr bool is_view_suported()
+        constexpr bool is_bare_type()
         {
-            using _T = traits::raw_t<T>;
-            constexpr bool isReference = std::is_reference_v<T>;
-            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != detail::Wrapper::None);
-            constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
-            return (!isReference && !isWrapperPtr && !isNonConstPtr);
-        }
+            static_assert(!std::is_const_v<T>, "Provide bare type (remove const).");
+            static_assert(!std::is_pointer_v<T>, "Provide bare type (remove pointer).");
+            static_assert(!std::is_reference_v<T>, "Provide bare type (remove reference).");
 
-        template<class T>
-        constexpr void validate_view()
-        {
-            using _T = traits::raw_t<T>;
-            constexpr bool isReference = std::is_reference_v<T>;
-            constexpr bool isWrapperPtr = (std::is_pointer_v<T> && std_wrapper<_T>::type != detail::Wrapper::None);
-            constexpr bool isNonConstPtr = (std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>);
-
-            static_assert(!isReference, "explicit reference views are not supported.");
-            static_assert(!isWrapperPtr, "viewing standard wrappers (like std::optional or smart pointers) as raw pointers, not supported.");
-            static_assert(!isNonConstPtr, "non-const pointers not supported, Only read-only (const) pointer views are supported.");
+            return !(std::is_const_v<T> || std::is_pointer_v<T> || std::is_reference_v<T>);
         }
     }
 }

@@ -100,8 +100,8 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			const Person* rPerson = pInstance.view<const Person*>()->get();
-			Person::deletePtr(rPerson);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			Person::deletePtr(&rPerson);
 			return true;
 		}
 		return false;

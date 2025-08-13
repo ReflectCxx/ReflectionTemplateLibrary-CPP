@@ -28,22 +28,21 @@ namespace rtl
                 pError = error::None;
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' needs const_cast, since the functor is non-const-member-function.
-                _recordType* target = const_cast<_recordType*>(pTargetObj.view<const _recordType*>()->get());
-                
+                _recordType& target = const_cast<_recordType&>(pTargetObj.view<_recordType>()->get());
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
-                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                    (target.*pFunctor)(std::forward<_signature>(params)...);
                     return access::RObject();
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
-                    const _rawRetType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                    const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj, isConstCastSafe);
                 }
                 else {
-                    return RObjectBuilder::build<_returnType, alloc::Stack>((target->*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
+                    return RObjectBuilder::build<_returnType, alloc::Stack>((target.*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
                 }
             };
         }
@@ -62,22 +61,22 @@ namespace rtl
                 pError = error::None;
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' is const and 'pFunctor' is const-member-function.
-                const _recordType* target = pTargetObj.view<const _recordType*>()->get();
+                const _recordType& target = pTargetObj.view<_recordType>()->get();
 
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
-                    (target->*pFunctor)(std::forward<_signature>(params)...);
+                    (target.*pFunctor)(std::forward<_signature>(params)...);
                     return access::RObject();
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
-                    const _rawRetType& retObj = (target->*pFunctor)(std::forward<_signature>(params)...);
+                    const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj, isConstCastSafe);
                 }
                 else {
-                    return RObjectBuilder::build<_returnType, alloc::Stack>((target->*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
+                    return RObjectBuilder::build<_returnType, alloc::Stack>((target.*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
                 }
             };
         }

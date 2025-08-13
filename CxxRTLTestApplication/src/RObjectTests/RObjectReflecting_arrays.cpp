@@ -36,22 +36,6 @@ namespace rtl_tests {
         ASSERT_EQ(inputView, input);
     }
 
-    // Test: Reflect std::vector<int>* (pointer to lvalue)
-    TEST(RObject_view_vector, init_with_stdVector_int_lvalue_ptr)
-    {
-        std::vector<int> input = { 1, 2, 3, 4, 5 };
-        RObject robj = rtl::reflect(&input);  // reflect by reference
-
-        ASSERT_TRUE(robj.canViewAs<const std::vector<int>*>());
-
-        const auto& vec_view = robj.view<const std::vector<int>*>();
-        ASSERT_TRUE(vec_view.has_value());
-
-        const std::vector<int>* inputView = vec_view->get();
-
-        // No copy made since RObject was initialized with a pointer
-        ASSERT_EQ(inputView, &input);
-    }
 
     // Test: Reflect rvalue std::vector<int>
     TEST(RObject_view_vector, init_with_stdVector_int_rvalue)

@@ -25,21 +25,13 @@ namespace rtl::unit_test
                 int value = view->get();
                 EXPECT_EQ(value, NUM);
             }
-            // Check if RObject can reflect as `int`
-            EXPECT_TRUE(robj.canViewAs<const int*>());
-            {
-                auto view = robj.view<const int*>();
-                ASSERT_TRUE(view);
-
-                int value = *view->get();
-                EXPECT_EQ(value, NUM);
-            }
             // Check if RObject can reflect as `unique_ptr<int>`
             EXPECT_TRUE(robj.canViewAs<std::unique_ptr<int>>());
             {
                 // Get a view of the value as `unique_ptr<int>`, ie. Original type.
                 auto view = robj.view<std::unique_ptr<int>>();
                 ASSERT_TRUE(view.has_value());
+                ASSERT_TRUE(robj.isEmpty());    //RObject releases its ownership making itself empty.
 
                 const std::unique_ptr<int>& sptrVal = view->get();
                 ASSERT_TRUE(sptrVal);

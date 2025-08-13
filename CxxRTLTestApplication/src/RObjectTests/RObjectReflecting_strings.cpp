@@ -63,40 +63,18 @@ namespace rtl_tests
 
         // Although value is stored, it's not a string
         ASSERT_FALSE(robj.canViewAs<std::string_view>());
-        auto str_view = robj.view<std::string_view>();
-        ASSERT_FALSE(str_view.has_value());
+        auto view0 = robj.view<std::string_view>();
+        ASSERT_FALSE(view0.has_value());
 
-        ASSERT_FALSE(robj.canViewAs<const char*>());
-        auto cstr_view = robj.view<const char*>();
-        ASSERT_FALSE(cstr_view.has_value());
+        ASSERT_FALSE(robj.canViewAs<std::nullptr_t>());
+        auto view1 = robj.view<std::nullptr_t>();
+        ASSERT_FALSE(view1.has_value());
     }
 }
 
 
 namespace unit_test
 {
-    TEST(RObject_init_with_stdString_pointer, view_as_std_string_pointer)
-    {
-        // Create an RObject that reflects a std::string pointer.
-        RObject robj = rtl::reflect(&STR_STD_STRING);
-
-        // Check if the value can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<const std::string*>());
-
-        // Try to obtain a view as 'std::string*', should not compile.
-        //auto view0 = robj.view<std::string*>();
-
-        // Try to obtain a view as 'const std::string*' and verify it is present.
-        auto view = robj.view<const std::string*>();
-        ASSERT_TRUE(view.has_value());
-
-        const std::string* str_ptr = view->get();
-
-        // Validate the addresses are same, no copy made.
-        ASSERT_EQ(str_ptr, &STR_STD_STRING);
-    }
-
-
     TEST(RObject_init_with_stdString_pointer, view_as_std_string)
     {
         // Create an RObject that reflects a std::string pointer.
@@ -122,15 +100,15 @@ namespace unit_test
         RObject robj = rtl::reflect(&STR_STD_STRING);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view = robj.view<const char*>();
+        auto view = robj.view<char>();
         ASSERT_TRUE(view.has_value());
-
+        
         // Ensure the returned pointer is the original std::string's buffer (no copy).
-        const char* str_cref = view->get();
-        ASSERT_EQ(str_cref, STR_STD_STRING.c_str());
+        const char& str_cref = view->get();
+        ASSERT_EQ(&str_cref, STR_STD_STRING.c_str());
     }
 
 
@@ -209,46 +187,15 @@ namespace unit_test
         ASSERT_EQ(str_cref, STR_CHAR_ARRAY);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view2 = robj.view<const char*>();
+        auto view2 = robj.view<char>();
         ASSERT_TRUE(view2.has_value());
 
         //since the char[] is wrapped in string_view, base address is stored, data not copied.
-        const char* str_addr = view2->get();
-        ASSERT_EQ(str_addr, STR_CHAR_ARRAY);
-    }
-
-
-    TEST(RObject_view_as_std_string_and_string_view, init_with_charArray_access_as_pointer)
-    {
-        // Create an RObject that reflects a string value (init with 'char[]').
-        RObject robj = rtl::reflect(STR_CHAR_ARRAY);
-          
-        //Check if the value can be accessed as 'const std::string_view*'.
-        ASSERT_TRUE(robj.canViewAs<const std::string_view*>());
-
-    /*  Try to obtain a view as 'const std::string*' and verify it is present.
-	*   Returns the address of the internal std::string (constructed from input char[]).
-    */  auto view0 = robj.view<const std::string_view*>();
-        ASSERT_TRUE(view0.has_value());
-
-        // Validate the string content matches the original input.
-        const std::string_view& str_view = *(view0->get());
-        ASSERT_EQ(str_view, STR_CHAR_ARRAY);
-
-        // cannot be accessed as 'const std::string*', since the char[] is wrapped in string_view.
-        ASSERT_FALSE(robj.canViewAs<const std::string*>());
-        // can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<std::string>());
-
-        auto view1 = robj.view<std::string>();
-        ASSERT_TRUE(view1.has_value());
-
-        //since the char[] is wrapped in string_view, but will return std::string copy.
-        const std::string& str_ref = view1->get();
-        ASSERT_EQ(str_ref, STR_CHAR_ARRAY);
+        const char& str_addr = view2->get();
+        ASSERT_EQ(&str_addr, STR_CHAR_ARRAY);
     }
 
 
@@ -258,17 +205,17 @@ namespace unit_test
         RObject robj = rtl::reflect(STR_CHAR_ARRAY);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view = robj.view<const char*>();
+        auto view = robj.view<char>();
         ASSERT_TRUE(view.has_value());
 
-        const char* str_cref = view->get();
+        const char& str_cref = view->get();
         // Ensure the returned pointer is the original array (no copy).
-        ASSERT_EQ(str_cref, STR_CHAR_ARRAY);
+        ASSERT_EQ(&str_cref, STR_CHAR_ARRAY);
         // Validate the string content.
-        ASSERT_EQ(str_cref, std::string(STR_CHAR_ARRAY));
+        ASSERT_EQ(std::string_view(&str_cref), std::string_view(STR_CHAR_ARRAY));
     }
 
 
@@ -300,46 +247,15 @@ namespace unit_test
         ASSERT_EQ(str_cref, STR_CONST_CHAR_ARRAY);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view2 = robj.view<const char*>();
+        auto view2 = robj.view<char>();
         ASSERT_TRUE(view2.has_value());
 
         //since the char[] is wrapped in string_view, base address is stored, data not copied.
-        const char* str_addr = view2->get();
-        ASSERT_EQ(str_addr, STR_CONST_CHAR_ARRAY);
-    }
-
-
-    TEST(RObject_view_as_std_string_and_string_view, init_with_const_charArray_access_as_pointer)
-    {
-        // Create an RObject that reflects a string value (init with 'const char[]').
-        RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
-
-        //Check if the value can be accessed as 'const std::string_view*'.
-        ASSERT_TRUE(robj.canViewAs<const std::string_view*>());
-
-    /*  Try to obtain a view as 'const std::string*' and verify it is present.
-    *   Returns the address of the internal std::string (constructed from input char[]).
-    */  auto view0 = robj.view<const std::string_view*>();
-        ASSERT_TRUE(view0.has_value());
-
-        // Validate the string content matches the original input.
-        const std::string_view& str_view = *(view0->get());
-        ASSERT_EQ(str_view, STR_CONST_CHAR_ARRAY);
-
-        // cannot be accessed as 'const std::string*', since the char[] is wrapped in string_view.
-        ASSERT_FALSE(robj.canViewAs<const std::string*>());
-        // can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<std::string>());
-
-        auto view1 = robj.view<std::string>();
-        ASSERT_TRUE(view1.has_value());
-
-        //since the char[] is wrapped in string_view, but will return std::string copy.
-        const std::string& str_ref = view1->get();
-        ASSERT_EQ(str_ref, STR_CONST_CHAR_ARRAY);
+        const char& str_addr = view2->get();
+        ASSERT_EQ(&str_addr, STR_CONST_CHAR_ARRAY);
     }
 
 
@@ -349,19 +265,19 @@ namespace unit_test
         RObject robj = rtl::reflect(STR_CONST_CHAR_ARRAY);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view = robj.view<const char*>();
+        auto view = robj.view<char>();
         ASSERT_TRUE(view.has_value());
 
-        const char* str_cref = view->get();
+        const char& str_cref = view->get();
 
         //the addresses are same
-        ASSERT_EQ(str_cref, STR_CONST_CHAR_ARRAY);
+        ASSERT_EQ(&str_cref, STR_CONST_CHAR_ARRAY);
 
         // Validate the C-string content matches the original input.
-        ASSERT_EQ(std::string(str_cref), STR_CONST_CHAR_ARRAY);
+        ASSERT_EQ(std::string_view(&str_cref), STR_CONST_CHAR_ARRAY);
     }
 
 
@@ -377,15 +293,15 @@ namespace unit_test
         ASSERT_FALSE(robj.canViewAs<std::string_view>());
 
         // Check if the value can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'std::string' and verify it is present.
-        auto view = robj.view<const char*>();
+        auto view = robj.view<char>();
         ASSERT_TRUE(view.has_value());
 
         // Validate the string content matches the original input.
-        const char* str_addr = view->get();
-        ASSERT_EQ(str_addr, STR_CONST_CHAR_POINTER);
+        const char& str_addr = view->get();
+        ASSERT_EQ(&str_addr, STR_CONST_CHAR_POINTER);
     }
 
 
@@ -405,15 +321,15 @@ namespace unit_test
         const std::string& str_cref = view0->get();
         ASSERT_EQ(str_cref, STR_STD_STRING);
 
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view1 = robj.view<const char*>();
+        auto view1 = robj.view<char>();
         ASSERT_TRUE(view1.has_value());
 
         // Validate the base address are different, since RObject is reflecting a copy.
-        const char* str_addr = view1->get();
-        ASSERT_NE(str_addr, STR_STD_STRING.c_str());
+        const char& str_addr = view1->get();
+        ASSERT_NE(&str_addr, STR_STD_STRING.c_str());
     }
 
 
@@ -517,14 +433,14 @@ namespace unit_test
         RObject robj = rtl::reflect(STR_STD_STRING_VIEW);
 
         // Check if the value can be accessed as 'const char*'.
-        ASSERT_TRUE(robj.canViewAs<const char*>());
+        ASSERT_TRUE(robj.canViewAs<char>());
 
         // Try to obtain a view as 'const char*' and verify it is present.
-        auto view = robj.view<const char*>();
+        auto view = robj.view<char>();
         ASSERT_TRUE(view.has_value());
 
         // Validate the C-string content matches the original input.
-        const char* str_cref = view->get();
-        ASSERT_EQ(std::string_view(str_cref), STR_STD_STRING_VIEW);
+        const char& str_cref = view->get();
+        ASSERT_EQ(std::string_view(&str_cref), STR_STD_STRING_VIEW);
     }
 }

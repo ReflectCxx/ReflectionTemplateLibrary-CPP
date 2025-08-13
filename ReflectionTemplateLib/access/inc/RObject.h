@@ -9,12 +9,17 @@
 #include "RObjectId.h"
 #include "rtl_traits.h"
 
+
 namespace rtl::detail
 {
     template<class  T>
     struct RObjectUPtr;
+
+    class RObjExtractor;
+
     struct RObjectBuilder;
 }
+
 
 namespace rtl::access
 {
@@ -25,28 +30,14 @@ namespace rtl::access
     {
         using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
 
-        Cloner m_getClone;
-        std::any m_object;
-        detail::RObjectId m_objectId;
+        mutable Cloner m_getClone;
+        mutable std::any m_object;
+        mutable detail::RObjectId m_objectId;
 
         static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
 
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
-        
-        std::size_t getConverterIndex(const std::size_t pToTypeId) const;
-
-        template <class T, traits::enable_if_unique_ptr<T> = 0>
-        T extractWrapper() const;
-
-        template <class T, traits::enable_if_shared_ptr<T> = 0>
-        const T* extractWrapper() const;
-
-        template<class T>
-        const T* extractRefrence() const;
-
-        template<class T>
-        const T* extractFromWrapper() const;
 
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
@@ -66,7 +57,7 @@ namespace rtl::access
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.
     *   - RTL may 'const_cast' its own objects(allocated via RTL) but preserves logical constness.
-    *   - External objects (e.g. returned via Reflected call ) keep original const; const_cast is unsafe.
+    *   - External objects (e.g. returned via Reflected call) keep original qualifier; if const, then const_cast is unsafe.
     */  GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
 
         template <class _asType>
@@ -84,6 +75,7 @@ namespace rtl::access
         //friends :)
         template<class T>
         friend struct detail::RObjectUPtr;
+        friend detail::RObjExtractor;
         friend detail::RObjectBuilder;
     };
 }

@@ -96,23 +96,16 @@ namespace rtl::detail
         Reference
     };
 
-    enum class Contains
+    enum class EntityKind
     {
         None,
         Value,
         Pointer,
         Wrapper,
-        ConstWrapper
+        ConstValWrapper
     };
 
-    enum class ConversionKind
-    {
-        ByRef,
-        ByValue,
-        NotDefined,
-        BadAnyCast
-    };
-    
+
     inline static const std::string ctor_name(const std::string& pRecordName) {
         return (pRecordName + "::" + pRecordName + "()");
     }

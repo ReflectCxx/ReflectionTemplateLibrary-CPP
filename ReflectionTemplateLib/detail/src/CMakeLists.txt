@@ -28,6 +28,7 @@ SET(LOCAL_HEADERS
     "${PROJECT_SOURCE_DIR}/detail/inc/SetupMethod.hpp"
 	"${PROJECT_SOURCE_DIR}/detail/inc/TypeId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectUPtr.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/RObjExtracter.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectBuilder.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectBuilder.hpp"
 )

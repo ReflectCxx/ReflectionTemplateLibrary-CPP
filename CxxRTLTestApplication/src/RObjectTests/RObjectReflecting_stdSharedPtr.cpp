@@ -33,17 +33,6 @@ namespace rtl::unit_test
                     // Being shared by 'nodePtr' & 'robj'.
                     EXPECT_TRUE(nodePtr.use_count() == 2);
                 }
-                // Check if RObject can reflect as `Node`
-                EXPECT_TRUE(robj.canViewAs<const Node*>());
-                {
-                    auto view = robj.view<const Node*>();
-                    ASSERT_TRUE(view);
-
-                    const Node* node = view->get();
-                    EXPECT_EQ(node->data(), NUM);
-                    //being shared by 'nodePtr' & 'robj'.
-                    EXPECT_TRUE(nodePtr.use_count() == 2);
-                }
                 // Check if RObject can reflect as `shared_ptr<Node>`
                 EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
                 {
@@ -106,16 +95,6 @@ namespace rtl::unit_test
                 const Node& node = view->get();
                 EXPECT_EQ(node.data(), NUM);
                 //owned by 'robj' alone.
-                EXPECT_TRUE(sptrNode.use_count() == 1);
-            }
-            EXPECT_TRUE(robj.canViewAs<const Node*>());
-            {
-                auto view = robj.view<const Node*>();
-                ASSERT_TRUE(view);
-
-                const Node* node = view->get();
-                EXPECT_EQ(node->data(), NUM);
-                // Owned by 'robj' alone.
                 EXPECT_TRUE(sptrNode.use_count() == 1);
             }
         }
