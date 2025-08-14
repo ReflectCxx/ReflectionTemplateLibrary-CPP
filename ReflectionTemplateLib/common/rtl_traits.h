@@ -104,26 +104,10 @@ namespace rtl
         constexpr bool is_not_any_wrapper_v = (wrapper_type_v<T> == detail::Wrapper::None);
 
         template<typename T>
-        using enable_if_weak_ptr = std::enable_if<std_wrapper<T>::type == detail::Wrapper::Weak, int>::type;
-
-        template<typename T>
         using enable_if_unique_ptr = std::enable_if<std_wrapper<T>::type == detail::Wrapper::Unique, int>::type;
 
         template<typename T>
         using enable_if_shared_ptr = std::enable_if<std_wrapper<T>::type == detail::Wrapper::Shared, int>::type;
-
-        template<typename T>
-        using enable_if_no_wrapper = std::enable_if<std::is_pointer_v<remove_const_n_ref_t<T>>, int>::type;
-
-        template<typename T>
-        using enable_if_std_wrapper = std::enable_if<std_wrapper<remove_const_n_ref_t<T>>::type != detail::Wrapper::None, int>::type;
-
-        template<typename T>
-        using enable_if_not_std_wrapper = std::enable_if<std_wrapper<remove_const_n_ref_t<T>>::type == detail::Wrapper::None, int>::type;
-
-        template<typename T>
-        using enable_if_not_std_wrapper_or_raw_ptr = std::enable_if<!std::is_pointer_v<remove_const_n_ref_t<T>> &&
-                                                                    std_wrapper<remove_const_n_ref_t<T>>::type == detail::Wrapper::None, int>::type;
     }
 
 
