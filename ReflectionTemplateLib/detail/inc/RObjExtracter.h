@@ -116,30 +116,33 @@ namespace rtl::detail
         const T* getFromWrapper() const
         {
             try {
-                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
+                if constexpr (std::is_destructible_v<T>)
                 {
-                    if (m_rObj.m_objectId.m_isWrappingConst) {
-                        using U = detail::RObjectUPtr<const T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
-                        return static_cast<const T*>(uptrRef.get());
+                    if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
+                    {
+                        if (m_rObj.m_objectId.m_isWrappingConst) {
+                            using U = detail::RObjectUPtr<const T>;
+                            const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                            return static_cast<const T*>(uptrRef.get());
+                        }
+                        else {
+                            using U = detail::RObjectUPtr<T>;
+                            const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                            return static_cast<const T*>(uptrRef.get());
+                        }
                     }
-                    else {
-                        using U = detail::RObjectUPtr<T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
-                        return static_cast<const T*>(uptrRef.get());
-                    }
-                }
-                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Shared)
-                {
-                    if (m_rObj.m_objectId.m_isWrappingConst) {
-                        using U = std::shared_ptr<const T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
-                        return static_cast<const T*>(sptrRef.get());
-                    }
-                    else {
-                        using U = std::shared_ptr<T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
-                        return static_cast<const T*>(sptrRef.get());
+                    if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Shared)
+                    {
+                        if (m_rObj.m_objectId.m_isWrappingConst) {
+                            using U = std::shared_ptr<const T>;
+                            const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                            return static_cast<const T*>(sptrRef.get());
+                        }
+                        else {
+                            using U = std::shared_ptr<T>;
+                            const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                            return static_cast<const T*>(sptrRef.get());
+                        }
                     }
                 }
             }
