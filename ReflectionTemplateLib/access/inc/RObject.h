@@ -24,10 +24,17 @@ ___________________________________________________________________________*/
 #include "RObjectId.h"
 #include "rtl_traits.h"
 
+
 namespace rtl::detail
 {
+    template<class  T>
+    struct RObjectUPtr;
+
+    class RObjExtractor;
+
     struct RObjectBuilder;
 }
+
 
 namespace rtl::access
 {
@@ -36,64 +43,57 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Deleter = std::function<void()>;
         using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
-        
-        std::any m_object;
-        std::any m_wrapper;
-        Cloner m_getClone;
-        Deleter m_deleter;
-        detail::RObjectId m_objectId;
 
-        static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
+        mutable Cloner m_getClone;
+        mutable std::any m_object;
+        mutable detail::RObjectId m_objectId;
+
+        static std::atomic<std::size_t> m_rtlManagedInstancesCount;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, std::any&& pWrapper, Deleter&& pDeleter, 
-                Cloner&& pCopyCtor, const detail::RObjectId& pRObjectId);
+        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
 
         template<class T>
-        const T& as(bool pGetFromWrapper = false) const;
-
-        std::size_t getConverterIndex(const std::size_t pToTypeId) const;
-
-        template <rtl::alloc _allocOn>
-        std::pair<error, RObject> createCopy() const;
-
-        template <class T>
-        static Cloner getCloner();
-
-        template <class T, rtl::alloc _allocOn>
-        static RObject create(T&& pVal);
-
-        template <class W>
-        static RObject createWithWrapper(W&& pWrapper);
+        std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
     public:
 
-        ~RObject();
         RObject() = default;
+        ~RObject() = default;
         RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
-        GETTER(std::any,,m_object)
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
-        GETTER_BOOL(RefOrPtr, (m_objectId.m_isPointer == IsPointer::Yes))
-        // Objects created through reflection are considered mutable (non-const) by default.
-        GETTER_BOOL(Const, m_objectId.m_isTypeConst)
 
-        template<rtl::alloc _allocOn>
-        std::pair<error, RObject> clone() const;
+    /*  Reflection Const Semantics:
+    *   - All reflected objects default to mutable internally; API enforces logical constness.
+    *   - RTL may 'const_cast' its own objects(allocated via RTL) but preserves logical constness.
+    *   - External objects (e.g. returned via Reflected call) keep original qualifier; if const, then const_cast is unsafe.
+    */  GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
 
         template <class _asType>
         bool canViewAs() const;
 
-        //Returns std::nullopt if type not viewable. Use canViewAs<T>() to check.
-        template<class _asType>
-        std::optional<view<_asType>> view() const;
+        template<rtl::alloc _allocOn>
+        std::pair<error, RObject> clone() const;
 
+        template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        template<class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        //friends :)
+        template<class T>
+        friend struct detail::RObjectUPtr;
+        friend detail::RObjExtractor;
         friend detail::RObjectBuilder;
     };
 }

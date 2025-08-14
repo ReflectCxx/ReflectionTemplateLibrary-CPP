@@ -24,7 +24,9 @@ set(LOCAL_SOURCES_1
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_strings.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_int.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_arrays.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_stdWrappers.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_stdUniquePtr.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_stdSharedPtr.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectImplicitConversions.cpp"
 )
 
 # Add any additional source files if needed

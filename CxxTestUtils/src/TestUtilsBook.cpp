@@ -1,6 +1,8 @@
 
 #include "TestUtilsBook.h"
 
+#include "RObject.hpp"
+
 //User defined types.
 #include "Book.h"
 #include "Library.h"
@@ -34,168 +36,120 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<>(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_dynamic_alloc_instance_ctor<>(const rtl::access::RObject& pInstance)
 	{
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (Book() == *rbook);
+		if (pInstance.canViewAs<Book>()) 
+		{
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (Book() == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (Book() == *rbook);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const rtl::access::RObject& pInstance)
 	{
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (Book(PRICE, TITLE) == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (Book(PRICE, TITLE) == rbook);
 		}
-		else {
-			const Book* rbook = any_cast<Book>(&pInstance);
-			return (Book(PRICE, TITLE) == *rbook);
-		}
+		return false;
 	}
 
 
-	const bool book::test_method_setAuthor(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_setAuthor(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.setAuthor(AUTHOR);
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.setAuthor(AUTHOR);
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
-	const bool book::test_method_addCopyrightTag(const std::any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_addCopyrightTag(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.addCopyrightTag(COPYRIGHT_TAG);
-
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.addCopyrightTag(COPYRIGHT_TAG);
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
 
-	const bool book::test_method_addPreface(const std::any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_addPreface(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.addPreface(ACKNOWLEDGEMENTS, PREFACE);
-
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.addPreface(ACKNOWLEDGEMENTS, PREFACE);
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<>(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_updateBookInfo<>(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.updateBookInfo();
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.updateBookInfo();
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<const char*, double, string>(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_updateBookInfo<const char*, double, string>(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.updateBookInfo(TITLE, PRICE, string(AUTHOR));
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.updateBookInfo(TITLE, PRICE, string(AUTHOR));
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<string, double, const char*>(const any& pInstance, bool pCastAsPtr)
+	const bool book::test_method_updateBookInfo<string, double, const char*>(const rtl::access::RObject& pInstance)
 	{
-		Book book;
-		book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (book == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book book;
+			book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (book == rbook);
 		}
-		else {
-			auto rbook = any_cast<Book>(&pInstance);
-			return (book == *rbook);
-		}
+		return false;
 	}
 
 
-	const bool test_utils::book::test_copy_ctor_with_mutated_object(const std::any& pInstance, bool pCastAsPtr)
+	const bool test_utils::book::test_copy_ctor_with_mutated_object(const rtl::access::RObject& pInstance)
 	{
-		Book obj(PRICE, TITLE);
-		obj.setAuthor(AUTHOR);
-		obj.setDescription(DESCRIPTION);
-		Book copyObj(obj);
-
-		if (pCastAsPtr) {
-			const Book* rbook = any_cast<const Book*>(pInstance);
-			if (rbook == nullptr) {
-				return false;
-			}
-			return (copyObj == *rbook);
+		if (pInstance.canViewAs<Book>())
+		{
+			Book obj(PRICE, TITLE);
+			obj.setAuthor(AUTHOR);
+			obj.setDescription(DESCRIPTION);
+			Book copyObj(obj);
+			const auto& rbook = pInstance.view<Book>()->get();
+			return (copyObj == rbook);
 		}
-		else {
-			const Book* rbook = any_cast<Book>(&pInstance);
-			return (copyObj == *rbook);
-		}
+		return false;
 	}
 }

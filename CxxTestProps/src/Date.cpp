@@ -52,12 +52,12 @@ namespace nsdate
 		return *m_savedEvent;
 	}
 
-	const Date& Calender::getTheDate()
+	Date& Calender::getTheDate()
 	{
 		return *(m_theEvent->m_date);
 	}
 
-	const Date& Calender::getSavedDate()
+	Date& Calender::getSavedDate()
 	{
 		return *(m_savedEvent->m_date);
 	}

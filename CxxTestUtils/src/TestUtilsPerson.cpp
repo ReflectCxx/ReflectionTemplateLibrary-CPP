@@ -1,6 +1,8 @@
 
 #include "TestUtilsPerson.h"
 
+#include "RObject.hpp"
+
 //User defined types.
 #include "Person.h"
 
@@ -40,157 +42,110 @@ namespace test_utils
 	}
 
 
-	const bool person::test_method_updateLastName_const(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_method_updateLastName_const(const rtl::access::RObject& pInstance)
 	{
-		const Person person(FIRST_NAME);
-		person.updateLastName(LAST_NAME);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			const Person person(FIRST_NAME);
+			person.updateLastName(LAST_NAME);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
+		}
+		return false;
 
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
-		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_const_obj(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_copy_constructor_overload_src_const_obj(const rtl::access::RObject& pInstance)
 	{
-		const Person personSrc;
-		Person person(personSrc);
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			const Person personSrc;
+			Person person(personSrc);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_copy_constructor_overload_src_non_const_obj(const rtl::access::RObject& pInstance)
 	{
-		Person personSrc;
-		Person person(personSrc);
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			Person personSrc;
+			Person person(personSrc);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool person::test_method_updateAddress<string>(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_method_updateAddress<string>(const rtl::access::RObject& pInstance)
 	{
-		Person person(FIRST_NAME);
-		person.updateAddress(ADDRESS);
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			Person person(FIRST_NAME);
+			person.updateAddress(ADDRESS);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 
-	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const std::any& pInstance)
+
+	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const rtl::access::RObject& pInstance)
 	{
-		//instance created via reflection is non-const pointer internally.
-		const Person* rPerson = any_cast<const Person*>(pInstance);
-		if (rPerson == nullptr) {
-			return false;
+		if (pInstance.canViewAs<Person>()) 
+		{
+			const Person& rPerson = pInstance.view<Person>()->get();
+			Person::deletePtr(&rPerson);
+			return true;
 		}
-		Person::deletePtr(rPerson);
-		return true;
+		return false;
 	}
 
 
 	template<>
-	const bool person::test_method_updateAddress_const<string>(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_method_updateAddress_const<string>(const rtl::access::RObject& pInstance)
 	{
-		const Person person(FIRST_NAME);
-		person.updateAddress(ADDRESS);
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			const Person person(FIRST_NAME);
+			person.updateAddress(ADDRESS);
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool person::test_method_updateAddress<>(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_method_updateAddress<>(const rtl::access::RObject& pInstance)
 	{
-		Person person(FIRST_NAME);
-		person.updateAddress();
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			Person person(FIRST_NAME);
+			person.updateAddress();
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 
 
 	template<>
-	const bool person::test_method_updateAddress_const<>(const std::any& pInstance, bool pCastAsPtr)
+	const bool person::test_method_updateAddress_const<>(const rtl::access::RObject& pInstance)
 	{
-		const Person person(FIRST_NAME);
-		person.updateAddress();
-
-		if (pCastAsPtr) {
-			//instance created via reflection is non-const pointer internally.
-			const Person* rPerson = any_cast<const Person*>(pInstance);
-			if (rPerson == nullptr) {
-				return false;
-			}
-			return (person == *rPerson);
+		if (pInstance.canViewAs<Person>()) 
+		{
+			const Person person(FIRST_NAME);
+			person.updateAddress();
+			const Person& rPerson = pInstance.view<Person>()->get();
+			return (person == rPerson);
 		}
-		else {
-			auto rPerson = any_cast<Person>(&pInstance);
-			return (person == *rPerson);
-		}
+		return false;
 	}
 }

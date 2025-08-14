@@ -55,7 +55,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;
@@ -73,8 +73,8 @@ namespace rtl
                                                                                          const RObject& pTarget,
                                                                                          _args&&... params)
         {
-            if (pMethod.getQualifier() == methodQ::NonConst && pTarget.isConst()) {
-                pError = error::ImplicitCallToNonConstOnConstTarget;
+            if (pMethod.getQualifier() == methodQ::NonConst && !pTarget.isConstCastSafe()) {
+                pError = error::NonConstMethodCallOnConstTarget;
                 return RObject();
             }
 
@@ -133,7 +133,7 @@ namespace rtl
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
-                return { err, Invoker<traits::remove_const_n_reference<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+                return { err, Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
             }
             else {
                 error err = error::None;

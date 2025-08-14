@@ -34,15 +34,15 @@ namespace rtl_tests
             ASSERT_TRUE(emptyObj.isEmpty());
             {
                 auto [err, person] = emptyObj.clone<alloc::Stack>();
-                ASSERT_TRUE(err == error::EmptyRObject);
-                ASSERT_TRUE(person.isEmpty());
+                EXPECT_TRUE(err == error::EmptyRObject);
+                EXPECT_TRUE(person.isEmpty());
             } {
                 auto [err, person] = emptyObj.clone<alloc::Heap>();
-                ASSERT_TRUE(err == error::EmptyRObject);
-                ASSERT_TRUE(person.isEmpty());
+                EXPECT_TRUE(err == error::EmptyRObject);
+                EXPECT_TRUE(person.isEmpty());
             }
         }
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -53,13 +53,13 @@ namespace rtl_tests
 
         auto [err0, robj0] = classEvent->create<alloc::Stack>();
 
-        ASSERT_TRUE(err0 == error::Instantiating_typeNotDefaultConstructible);
-        ASSERT_TRUE(robj0.isEmpty());
+        EXPECT_TRUE(err0 == error::Instantiating_typeNotDefaultConstructible);
+        EXPECT_TRUE(robj0.isEmpty());
 
         auto [err1, robj1] = classEvent->create<alloc::Heap>();
 
-        ASSERT_TRUE(err1 == error::Instantiating_typeNotDefaultConstructible);
-        ASSERT_TRUE(robj1.isEmpty());
+        EXPECT_TRUE(err1 == error::Instantiating_typeNotDefaultConstructible);
+        EXPECT_TRUE(robj1.isEmpty());
     }
 
 
@@ -75,23 +75,23 @@ namespace rtl_tests
 
             // Create Calender, which will create a Event's instance.
             auto [err0, calender] = classCalender->create<alloc::Stack>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(calender.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(calender.isEmpty());
 
             // Get the Event's instance.
             auto [err1, event] = getEvent->bind(calender).call();
-            ASSERT_TRUE(err1 == error::None);
-            ASSERT_FALSE(event.isEmpty());
+            EXPECT_TRUE(err1 == error::None);
+            EXPECT_FALSE(event.isEmpty());
 
             // Try to call copy-constructor of class Event.
             auto [err2, eventCp] = event.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
-            ASSERT_TRUE(err2 == error::Instantiating_typeNotCopyConstructible);
-            ASSERT_TRUE(eventCp.isEmpty());
+            EXPECT_TRUE(err2 == error::Instantiating_typeNotCopyConstructible);
+            EXPECT_TRUE(eventCp.isEmpty());
         }
         EXPECT_TRUE(calender::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -134,12 +134,12 @@ namespace rtl_tests
 
         optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
         ASSERT_TRUE(getProfile);
-        ASSERT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
+        EXPECT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
         auto [err, robj] = getProfile->bind().call(std::string());
 
-        ASSERT_TRUE(err == error::SignatureMismatch);
-        ASSERT_TRUE(robj.isEmpty());
+        EXPECT_TRUE(err == error::SignatureMismatch);
+        EXPECT_TRUE(robj.isEmpty());
     }
 
 
@@ -153,10 +153,10 @@ namespace rtl_tests
             ASSERT_TRUE(classBook);
 
             auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
-            ASSERT_TRUE(err == error::EmptyRObject);
-            ASSERT_TRUE(ret.isEmpty());
+            EXPECT_TRUE(err == error::EmptyRObject);
+            EXPECT_TRUE(ret.isEmpty());
         }
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -170,18 +170,18 @@ namespace rtl_tests
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Heap>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(person.isEmpty());
 
             optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
-            ASSERT_TRUE(err1 == error::MethodTargetMismatch);
-            ASSERT_TRUE(ret.isEmpty());
+            EXPECT_TRUE(err1 == error::MethodTargetMismatch);
+            EXPECT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -195,17 +195,17 @@ namespace rtl_tests
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Stack>();
-            ASSERT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
+            EXPECT_TRUE(err0 == error::None);
+            EXPECT_FALSE(person.isEmpty());
 
             optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
-            ASSERT_TRUE(err1 == error::MethodTargetMismatch);
-            ASSERT_TRUE(ret.isEmpty());
+            EXPECT_TRUE(err1 == error::MethodTargetMismatch);
+            EXPECT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

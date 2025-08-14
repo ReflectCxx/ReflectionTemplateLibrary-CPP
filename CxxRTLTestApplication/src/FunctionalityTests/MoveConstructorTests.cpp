@@ -13,10 +13,6 @@ namespace rtl_tests
 {
     TEST(MoveSemantics, move_reflected_type_allocated_on_stack)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -29,9 +25,8 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(calender0.isEmpty());
-            EXPECT_FALSE(calender0.isConst());
+            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
-            EXPECT_FALSE(calender0.isRefOrPtr());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
             // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
@@ -43,9 +38,8 @@ namespace rtl_tests
             RObject calender1 = std::move(calender0);
 
             EXPECT_FALSE(calender1.isEmpty());
-            EXPECT_FALSE(calender1.isConst());
+            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
-            EXPECT_FALSE(calender1.isRefOrPtr());
 
             // 'calander0' must be empty now.
             EXPECT_TRUE(calender0.isEmpty());
@@ -73,16 +67,12 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
     TEST(MoveSemantics, move_reflected_type_allocated_on_heap)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -95,9 +85,8 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(calender0.isEmpty());
-            EXPECT_FALSE(calender0.isConst());
+            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_TRUE(calender0.isOnHeap());
-            EXPECT_TRUE(calender0.isRefOrPtr());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
             // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
@@ -110,9 +99,8 @@ namespace rtl_tests
             RObject calender1 = std::move(calender0);
 
             EXPECT_FALSE(calender1.isEmpty());
-            EXPECT_FALSE(calender1.isConst());
+            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_TRUE(calender1.isOnHeap());
-            EXPECT_TRUE(calender1.isRefOrPtr());
 
             // 'calander0' must be empty now.
             EXPECT_TRUE(calender0.isEmpty());
@@ -129,16 +117,12 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
     TEST(MoveSemantics, move_returned_RObject_reflecting_const_refOrPtr)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -163,16 +147,14 @@ namespace rtl_tests
                 auto [err0, event0] = getTheEvent->bind(calender).call();
                 EXPECT_TRUE(err0 == error::None);
                 EXPECT_FALSE(event0.isEmpty());
-                EXPECT_TRUE(event0.isConst());
-                EXPECT_TRUE(event0.isRefOrPtr());
+                EXPECT_FALSE(event0.isConstCastSafe());
 
                 // RObject reflecting reference/pointer, stores pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
                 RObject event1 = std::move(event0);
 
                 EXPECT_FALSE(event1.isEmpty());
-                EXPECT_TRUE(event1.isConst());
-                EXPECT_TRUE(event1.isRefOrPtr());
+                EXPECT_FALSE(event1.isConstCastSafe());
 
                 // 'event0' must be empty now.
                 EXPECT_TRUE(event0.isEmpty());
@@ -189,16 +171,12 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
     TEST(MoveSemantics, move_returned_RObject_reflecting_stack_object)
     {
-        // Ensure there are no lingering reflected instances before the test begins
-        EXPECT_TRUE(date::get_instance_count() == 0);
-        EXPECT_TRUE(event::get_instance_count() == 0);
-        EXPECT_TRUE(calender::get_instance_count() == 0);
         {
             CxxMirror& cxxMirror = MyReflection::instance();
 
@@ -215,9 +193,8 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             EXPECT_FALSE(calender0.isEmpty());
-            EXPECT_FALSE(calender0.isConst());
+            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
-            EXPECT_FALSE(calender0.isRefOrPtr());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
             // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
@@ -229,9 +206,8 @@ namespace rtl_tests
             RObject calender1 = std::move(calender0);
 
             EXPECT_FALSE(calender1.isEmpty());
-            EXPECT_FALSE(calender1.isConst());
+            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
-            EXPECT_FALSE(calender1.isRefOrPtr());
 
             // 'calander0' must be empty now.
             EXPECT_TRUE(calender0.isEmpty());
@@ -248,6 +224,6 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

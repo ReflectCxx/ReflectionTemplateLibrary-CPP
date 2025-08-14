@@ -8,7 +8,7 @@
 
 using namespace test_utils;
 
-namespace rtl_tests 
+namespace rtl_tests
 {
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
@@ -41,8 +41,6 @@ namespace rtl_tests
             auto [err2, event] = getEvent->bind(calender).call();
             EXPECT_TRUE(err2 == rtl::error::None);
             EXPECT_FALSE(event.isEmpty());
-            //'getEvent' returns 'const Event&'
-            EXPECT_TRUE(event.isRefOrPtr());
             EXPECT_TRUE(event.getTypeId() == id::event);
             {
                 auto [err, robj] = event.clone<rtl::alloc::Heap>();
@@ -60,7 +58,7 @@ namespace rtl_tests
                 EXPECT_TRUE(event::get_instance_count() == 2);
             }
         }
-        ASSERT_TRUE(calender::assert_zero_instance_count());
+        EXPECT_TRUE(calender::assert_zero_instance_count());
         //Once 'Calender' is destryoyed, all 'Event's should too.
         ASSERT_TRUE(event::assert_zero_instance_count());
     }

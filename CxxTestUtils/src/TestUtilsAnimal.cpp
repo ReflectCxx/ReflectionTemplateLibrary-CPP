@@ -1,4 +1,5 @@
 
+#include "RObject.hpp"
 
 #include "TestUtilsAnimal.h"
 #include "Animal.h"
@@ -35,60 +36,45 @@ const bool test_utils::animal::test_method_updateZooKeeper<const std::string&>(c
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const std::any& pInstance, bool pCastAsPtr)
+const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const rtl::access::RObject& pInstance)
 {
-	Animal animal;
-	animal.setAnimalName(std::string(NAME));
+	if (pInstance.canViewAs<Animal>()) 
+	{
+		Animal animal;
+		animal.setAnimalName(std::string(NAME));
 
-	if (pCastAsPtr) {
-		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
-		if (rAnimal == nullptr) {
-			return false;
-		}
-		return (animal == *rAnimal);
+		const Animal& rAnimal = pInstance.view<Animal>()->get();
+		return (animal == rAnimal);
 	}
-	else {
-		auto rAnimal = std::any_cast<Animal>(&pInstance);
-		return (animal == *rAnimal);
-	}
+	return false;
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr)
+const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const rtl::access::RObject& pInstance)
 {
-	Animal animal;
-	const auto& nameStr = std::string(NAME);
-	animal.setAnimalName(nameStr);
+	if (pInstance.canViewAs<Animal>()) 
+	{
+		Animal animal;
+		const auto& nameStr = std::string(NAME);
+		animal.setAnimalName(nameStr);
 
-	if (pCastAsPtr) {
-		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
-		if (rAnimal == nullptr) {
-			return false;
-		}
-		return (animal == *rAnimal);
+		const Animal& rAnimal = pInstance.view<Animal>()->get();
+		return (animal == rAnimal);
 	}
-	else {
-		auto rAnimal = std::any_cast<Animal>(&pInstance);
-		return (animal == *rAnimal);
-	}
+	return false;
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const std::any& pInstance, bool pCastAsPtr)
+const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::access::RObject& pInstance)
 {
-	Animal animal;
-	auto nameStr = std::string(NAME);
-	animal.setAnimalName(nameStr);
+	if (pInstance.canViewAs<Animal>()) 
+	{
+		Animal animal;
+		auto nameStr = std::string(NAME);
+		animal.setAnimalName(nameStr);
 
-	if (pCastAsPtr) {
-		const Animal* rAnimal = std::any_cast<const Animal*>(pInstance);
-		if (rAnimal == nullptr) {
-			return false;
-		}
-		return (animal == *rAnimal);
+		const Animal& rAnimal = pInstance.view<Animal>()->get();
+		return (animal == rAnimal);
 	}
-	else {
-		auto rAnimal = std::any_cast<Animal>(&pInstance);
-		return (animal == *rAnimal);
-	}
+	return false;
 }

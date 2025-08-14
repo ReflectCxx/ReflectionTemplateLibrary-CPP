@@ -48,8 +48,8 @@ namespace nsdate
 		Calender& operator=(Calender&&) = delete;
 		Calender& operator=(const Calender&) = delete;
 
-		const Date& getTheDate();
-		const Date& getSavedDate();
+		Date& getTheDate();
+		Date& getSavedDate();
 
 		const Event& getTheEvent();
 		const Event& getSavedEvent();
