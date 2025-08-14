@@ -53,8 +53,6 @@ namespace rtl::unit_test
                 }
                 //still shared by 'nodePtr' & 'robj'.
                 EXPECT_TRUE(nodePtr.use_count() == 2);
-            //  robj.canViewAs<const std::shared_ptr<Node>*>();  //should not compile.
-            //  robj.view<const std::shared_ptr<Node>*>();       //should not compile.
             }
             //now owned by 'uptr' alone.
             EXPECT_TRUE(nodePtr.use_count() == 1);
@@ -163,16 +161,6 @@ namespace rtl::unit_test
                 // Ensure the view is valid
                 ASSERT_TRUE(view.has_value());
                 {
-                /*  This is not a move in practice. Because get() returns a const reference,
-                *   calling std::move on it does not allow modification of the underlying object (i.e., no move-from).
-                *   The shared_ptr's move constructor would require a non-const rvalue to actually
-                *   transfer ownership and const prevents that. So, This will COPY, not move.
-                */  std::shared_ptr<Node> sptrNode(std::move(view->get()));
-
-                    EXPECT_EQ(sptrNode->data(), NUM);
-                    // Being shared by robj & sptrNode.
-                    EXPECT_TRUE(sptrNode.use_count() == 2);
-                } {
                     std::shared_ptr<Node> sptrNode = view->get();
                     EXPECT_EQ(sptrNode->data(), NUM);
                     // Being shared by robj & sptrVal.
@@ -278,16 +266,6 @@ namespace rtl::unit_test
             // Ensure the view is valid
             ASSERT_TRUE(view.has_value());
             {
-            /*  This is not a move in practice. Because get() returns a const reference,
-            *   calling std::move on it does not allow modification of the underlying object (i.e., no move-from).
-            *   The shared_ptr's move constructor would require a non-const rvalue to actually 
-            *   transfer ownership and const prevents that. So, This will COPY, not move.
-            */  std::shared_ptr<int> sptrVal(std::move(view->get()));
-
-                EXPECT_EQ(*sptrVal, NUM);
-                //being shared by robj & sptrVal.
-                EXPECT_TRUE(sptrVal.use_count() == 2);
-            } {
                 std::shared_ptr<int> sptrVal = view->get();
 
                 EXPECT_EQ(*sptrVal, NUM);

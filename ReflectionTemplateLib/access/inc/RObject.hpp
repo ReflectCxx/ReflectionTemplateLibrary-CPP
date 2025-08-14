@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cassert>
 
+#include "view.hpp"
 #include "RObject.h"
 #include "RObjectUPtr.h"
 #include "ReflectCast.h"
@@ -98,38 +99,38 @@ namespace rtl::access
     }
 
 
-    template <class T, traits::enable_if_std_wrapper<T>>
+    template <class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int>>
     std::optional<rtl::view<T>> RObject::view() const
     {
         if constexpr (traits::is_bare_type<T>())
         {
-            const detail::Wrapper wrapper = m_objectId.m_wrapperType;
-            if (wrapper == detail::Wrapper::Shared || wrapper == detail::Wrapper::Unique)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
             {
-                if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
-                {
-                    using W = traits::std_wrapper<T>;
-                    if constexpr (W::type == detail::Wrapper::Unique) 
-                    {
-                        T robjUPtr = detail::RObjExtractor(this).getWrapper<T>();
-                        m_object.reset();   //ownership transferred to std::unique_ptr
-                        m_objectId.reset();
-                        m_getClone = nullptr;
-                        return std::optional<rtl::view<T>>(std::in_place, std::move(robjUPtr));
-                    }
-                    else if constexpr (W::type == detail::Wrapper::Shared) 
-                    {
-                        const T& sptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
-                        return std::optional<rtl::view<T>>(std::in_place, sptrRef);
-                    }
-                }
+                using U = detail::RObjectUPtr<typename traits::std_wrapper<T>::value_type>;
+                const U& uptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
+                return std::optional<rtl::view<T>>(std::in_place, static_cast<const U&>(uptrRef));
             }
         }
         return std::nullopt;
     }
 
 
-    template <class T, traits::enable_if_not_std_wrapper<T>>
+    template <class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int>>
+    std::optional<rtl::view<T>> RObject::view() const
+    {
+        if constexpr (traits::is_bare_type<T>())
+        {
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
+            {
+                const T& sptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
+                return std::optional<rtl::view<T>>(std::in_place, const_cast<T&>(sptrRef));
+            }
+        }
+        return std::nullopt;
+    }
+
+
+    template <class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int>>
     inline std::optional<rtl::view<T>> RObject::view() const
     {
         if constexpr (traits::is_bare_type<T>())
@@ -144,8 +145,7 @@ namespace rtl::access
             }
             else
             {
-                const std::size_t qualifiedId = detail::TypeId<T>::get();
-                const std::size_t index = m_objectId.getConverterIndex(qualifiedId);
+                const std::size_t index = m_objectId.getConverterIndex(asTypeId);
                 if (index != index_none) {
                     return performConversion<T>(index);
                 }

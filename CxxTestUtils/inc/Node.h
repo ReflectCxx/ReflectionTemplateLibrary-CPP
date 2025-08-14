@@ -9,7 +9,7 @@ namespace test_utils
         ~Node();
         Node(int pData);
         Node(Node&& pOther) noexcept = delete;
-        Node(const Node& pOther) = delete;  //Ensure's no copy. only move.
+        Node(const Node& pOther) = delete;
         Node& operator=(Node&&) = delete;
         Node& operator=(const Node&) = delete;
 

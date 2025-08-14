@@ -131,7 +131,7 @@ namespace rtl_tests
             EXPECT_TRUE(person::test_method_updateLastName_const(person));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -170,7 +170,7 @@ namespace rtl_tests
             EXPECT_TRUE(person::test_method_updateLastName_const(person));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -208,7 +208,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -246,7 +246,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -284,7 +284,7 @@ namespace rtl_tests
             EXPECT_TRUE(person::test_method_updateLastName_const(person));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -323,7 +323,7 @@ namespace rtl_tests
             EXPECT_TRUE(person::test_method_updateLastName_const(person));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -361,7 +361,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -398,7 +398,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -434,7 +434,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -469,7 +469,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -509,7 +509,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -550,7 +550,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -589,7 +589,7 @@ namespace rtl_tests
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -630,6 +630,6 @@ namespace rtl_tests
             EXPECT_TRUE(person::delete_unmanaged_person_instance_created_via_createPtr(constPersonPtr));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

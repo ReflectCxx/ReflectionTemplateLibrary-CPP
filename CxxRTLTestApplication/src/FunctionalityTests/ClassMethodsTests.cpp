@@ -97,7 +97,7 @@ namespace rtl_tests
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -125,7 +125,7 @@ namespace rtl_tests
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -156,7 +156,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -187,7 +187,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_getPublishedOn_return(retStr));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -216,7 +216,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -245,7 +245,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -273,7 +273,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -301,7 +301,7 @@ namespace rtl_tests
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -337,7 +337,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -373,7 +373,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -409,7 +409,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -445,7 +445,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -479,7 +479,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -513,7 +513,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -560,7 +560,7 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 
 
@@ -607,6 +607,6 @@ namespace rtl_tests
 			EXPECT_TRUE(isSuccess);
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
-		ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+		ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 	}
 }

@@ -30,10 +30,10 @@ namespace test_utils
     }
 
     //Node::Node(Node&& pOther) noexcept
-    //    : data(pOther.data)
-    //    , deleter(std::move(pOther.deleter)) {
-    //    pOther.data = nullptr;
-    //    pOther.deleter = nullptr;
+    //    : m_data(pOther.m_data)
+    //    , m_deleter(std::move(pOther.m_deleter)) {
+    //    pOther.m_data = nullptr;
+    //    pOther.m_deleter = nullptr;
     //    _liveNodeCount++;
     //    _moveOpsCount++;
     //}

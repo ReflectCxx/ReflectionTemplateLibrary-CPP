@@ -34,7 +34,7 @@ namespace rtl::access
         mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
 
-        static std::atomic<std::size_t> m_rtlOwnedHeapAllocCount;
+        static std::atomic<std::size_t> m_rtlManagedInstancesCount;
 
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
@@ -66,10 +66,13 @@ namespace rtl::access
         template<rtl::alloc _allocOn>
         std::pair<error, RObject> clone() const;
 
-        template<class T, traits::enable_if_std_wrapper<T> = 0>
+        template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;
 
-        template<class T, traits::enable_if_not_std_wrapper<T> = 0>
+        template<class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int> = 0>
+        std::optional<rtl::view<T>> view() const;
+
+        template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;
 
         //friends :)

@@ -56,19 +56,31 @@ namespace rtl::detail
 
 
         template <class T, traits::enable_if_unique_ptr<T> = 0>
-        T getWrapper() const
+        auto getWrapper() const -> const RObjectUPtr<typename traits::std_wrapper<T>::value_type>*
         {
-            using _T = traits::std_wrapper<T>::value_type;
             try {
-                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique) 
+                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
                 {
-                    using U = detail::RObjectUPtr<_T>;
-                    const U& uptr = std::any_cast<const U&>(m_rObj.m_object);
-                    return (const_cast<U&>(uptr)).release();
+                    using _T = traits::std_wrapper<T>::value_type;
+                    if constexpr (traits::is_const_v<_T>)
+                    {
+                        if (m_rObj.m_objectId.m_isWrappingConst)
+                        {
+                            using U = detail::RObjectUPtr<const _T>;
+                            const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                            return static_cast<const U*>(&uptrRef);
+                        }
+                    }
+                    else
+                    {
+                        using U = detail::RObjectUPtr<_T>;
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        return static_cast<const U*>(&uptrRef);
+                    }
                 }
             }
             catch (const std::bad_any_cast&) { /*TODO: log the failure. */ }
-            return std::unique_ptr<_T>();
+            return nullptr;
         }
 
 
@@ -106,9 +118,16 @@ namespace rtl::detail
             try {
                 if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
                 {
-                    using U = detail::RObjectUPtr<T>;
-                    const U& objRef = std::any_cast<const U&>(m_rObj.m_object);
-                    return objRef.m_ptr;
+                    if (m_rObj.m_objectId.m_isWrappingConst) {
+                        using U = detail::RObjectUPtr<const T>;
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        return static_cast<const T*>(uptrRef.get());
+                    }
+                    else {
+                        using U = detail::RObjectUPtr<T>;
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        return static_cast<const T*>(uptrRef.get());
+                    }
                 }
                 if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Shared)
                 {

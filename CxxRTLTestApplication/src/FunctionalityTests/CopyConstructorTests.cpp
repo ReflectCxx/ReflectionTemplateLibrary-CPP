@@ -27,10 +27,10 @@ namespace rtl_tests
             EXPECT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 2);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -50,10 +50,10 @@ namespace rtl_tests
             EXPECT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -73,10 +73,10 @@ namespace rtl_tests
             EXPECT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -97,10 +97,10 @@ namespace rtl_tests
             EXPECT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -141,10 +141,10 @@ namespace rtl_tests
             EXPECT_TRUE(isPassed);
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 2);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -185,10 +185,10 @@ namespace rtl_tests
             EXPECT_TRUE(isPassed);
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -229,10 +229,10 @@ namespace rtl_tests
             EXPECT_TRUE(isPassed);
             
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
     
     
@@ -273,10 +273,10 @@ namespace rtl_tests
             EXPECT_TRUE(isPassed);
             
             EXPECT_TRUE(book::get_book_instance_count() == 2);
-            EXPECT_TRUE(rtl::getReflectedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
         }
         EXPECT_TRUE(book::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -353,7 +353,7 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -430,7 +430,7 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -507,7 +507,7 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -584,6 +584,6 @@ namespace rtl_tests
         EXPECT_TRUE(calender::get_instance_count() == 0);
         EXPECT_TRUE(event::get_instance_count() == 0);
         EXPECT_TRUE(date::get_instance_count() == 0);
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

@@ -20,7 +20,7 @@ namespace rtl::detail
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
-        static const std::size_t reflectedInstanceCount();
+        static const std::size_t rtlManagedInstanceCount();
 
         template <class T, rtl::alloc _allocOn>
         static access::RObject build(T&& pVal, const bool pIsConstCastSafe);
@@ -30,9 +30,9 @@ namespace rtl::detail
 
 namespace rtl
 {
-    inline const std::size_t getReflectedHeapInstanceCount()
+    inline const std::size_t getRtlManagedHeapInstanceCount()
     {
-        return detail::RObjectBuilder::reflectedInstanceCount();
+        return detail::RObjectBuilder::rtlManagedInstanceCount();
     }
 
     template <class T>

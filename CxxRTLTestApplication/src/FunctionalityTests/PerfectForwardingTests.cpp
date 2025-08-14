@@ -69,7 +69,7 @@ namespace rtl_tests
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -113,7 +113,7 @@ namespace rtl_tests
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -158,7 +158,7 @@ namespace rtl_tests
 
         // Ensure that all instances are cleaned up.
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -188,7 +188,7 @@ namespace rtl_tests
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -217,7 +217,7 @@ namespace rtl_tests
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -247,6 +247,6 @@ namespace rtl_tests
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getReflectedHeapInstanceCount() == 0);
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

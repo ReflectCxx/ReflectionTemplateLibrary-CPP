@@ -8,6 +8,7 @@ set(LOCAL_SOURCES
 SET(COMMON_HEADERS
 	
 	"${PROJECT_SOURCE_DIR}/common/view.h"
+	"${PROJECT_SOURCE_DIR}/common/view.hpp"
 	"${PROJECT_SOURCE_DIR}/common/Constants.h"
 	"${PROJECT_SOURCE_DIR}/common/rtl_traits.h"
 	"${PROJECT_SOURCE_DIR}/common/ConversionUtils.h"

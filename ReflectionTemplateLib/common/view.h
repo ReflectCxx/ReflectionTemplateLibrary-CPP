@@ -22,14 +22,43 @@
  * ----------------------------------------------------------------------------
  */
 
+
 #include <optional>
 #include <type_traits>
+#include "rtl_traits.h"
 
 namespace rtl {
 
     template <class _asType, class sfinae_t = void>
     class view;
 }
+
+
+namespace rtl
+{
+    template<class _asType>
+    class view<_asType, std::enable_if_t<traits::is_weak_ptr_v<_asType> || 
+                                         traits::is_shared_ptr_v<_asType>> >
+    {
+        _asType& m_ref;
+
+    public:
+
+        //  Construct from reference (no copy, no default init)
+        view(_asType& pRef) : m_ref(pRef) {}
+
+        //  Delete all forms of copying and moving, enforcing true immutablilty.
+        view(view&&) = delete;
+        view(const view&) = delete;
+        view& operator=(view&&) = delete;
+        view& operator=(const view&) = delete;
+
+        _asType& get() const {
+            return m_ref;
+        }
+    };
+}
+
 
 namespace rtl
 {
@@ -59,7 +88,8 @@ namespace rtl
 namespace rtl
 {
     template<class _asType>
-    class view<_asType, std::enable_if_t<std::is_destructible_v<_asType>> >
+    class view<_asType, std::enable_if_t<std::is_destructible_v<_asType> && 
+                                         traits::std_wrapper<_asType>::type == detail::Wrapper::None> >
     {
     /*  only constructed if we own the value.
     *   order matters: m_value must be declared before m_cref

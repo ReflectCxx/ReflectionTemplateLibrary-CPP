@@ -6,9 +6,9 @@
 
 namespace rtl::detail {
 
-    inline const std::size_t RObjectBuilder::reflectedInstanceCount()
+    inline const std::size_t RObjectBuilder::rtlManagedInstanceCount()
     {
-        return access::RObject::m_rtlOwnedHeapAllocCount;
+        return access::RObject::m_rtlManagedInstancesCount;
     }
     
 
@@ -48,10 +48,9 @@ namespace rtl::detail {
         if constexpr (_allocOn == alloc::Heap)
         {
             static_assert(isRawPointer, "Invalid 'alloc' specified for non-pointer-type 'T'");
-            const _T* objPtr = static_cast<const _T*>(pVal);
-            std::function<void(_T*)> deleter = [](_T* pPtr) { delete pPtr; };
-            const RObjectId& robjId = RObjectId::create<std::unique_ptr<const _T>, _allocOn>(pIsConstCastSafe);
-            return access::RObject(std::any(RObjectUPtr<_T>(const_cast<_T*>(objPtr), deleter)), buildCloner<_T>(), robjId);
+            _T* objPtr = static_cast<_T*>(pVal);
+            const RObjectId& robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
+            return access::RObject(std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(objPtr))), buildCloner<_T>(), robjId);
         }
         else if constexpr (_allocOn == alloc::Stack)
         {
@@ -66,9 +65,7 @@ namespace rtl::detail {
                 if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
                 {
                     using U = traits::std_wrapper<_T>::value_type;
-                    U* objPtr = pVal.release();
-                    std::function<void(U*)> deleter = pVal.get_deleter();
-                    return access::RObject(std::any(RObjectUPtr<U>(objPtr, deleter)), buildCloner<_T>(), robjId);
+                    return access::RObject(std::any(RObjectUPtr<U>(std::move(pVal))), buildCloner<_T>(), robjId);
                 }
                 else 
                 {
