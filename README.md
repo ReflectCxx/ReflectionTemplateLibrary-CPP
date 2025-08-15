@@ -10,7 +10,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Non-Intrusive by Design** – Reflection metadata is defined entirely outside your types. No macros, no base classes, no intrusive annotations — your original declarations stay pure.
 * **Centralized Registration** – All type and member registrations live in one place, cleanly separated from business logic for better organization and maintainability.
-* **Explicit & Macro-Free** – Type registration follows a clear, fluent builder pattern — no hidden or mysterious macro magic, just straightforward C++.
+* **Explicit & Macro-Free** – Type registration follows a clear, fluent builder pattern — no hidden or mysterious MACRO magic, just straightforward C++.
 * **Simple Integration** – Spin up an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 
   ```c++
