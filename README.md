@@ -17,7 +17,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   rtl::CxxMirror cxxReflection({/* register all types here */});
   ```
 
-  The *cxxReflection* object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
+  The ***cxxReflection*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 * **Thread-Safe & Exception-Safe** – Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
 
 ## How To build (Windows/Linux)
