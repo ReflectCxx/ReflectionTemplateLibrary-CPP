@@ -20,6 +20,32 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   The ***cxxReflection*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 * **Thread-Safe & Exception-Safe** – Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
 
+## Reflection Features
+
+* ✅ **Function Reflection**: Register and invoke functions, supporting all overloads.
+* ✅ **Class and Struct Reflection**: Register and dynamically reflect their methods, constructors, and destructors.
+* ✅ **Constructor Invocation**:
+  * Default constructor.
+  * Copy constructors.
+  * Any overloaded constructor.
+  * Heap or Stack allocation.
+    
+* ✅ **Member Function Invocation**:
+  * Non-const, const, and static member functions.
+    
+* ✅ **Supports Move Semantics**:
+  * Implicitly invokes move constructor/assignment when needed.
+    
+* ✅ **Automatic Resource Management**: Destructor calls for heap-created instances.
+* ✅ **Perfect Forwarding**: Binds lvalues/rvalues to correct overloads.
+* ✅ **Zero Overhead Forwarding**: No temporaries or copies during method forwarding.
+* ✅ **Namespace Support**: Group and reflect under namespaces.
+* 🚧 **Reflected Returns**: Type-unknown-at-compile-time return value access. *(In progress)*
+* ❌ **Property Reflection**: Planned.
+* ❌ **Enum Reflection**: Planned.
+* ❌ **Composite Type Reflection**: Planned.
+* ❌ **Inheritance Support**: Planned.
+
 ## How To build (Windows/Linux)
 
 Create a build directory in the project root folder:
@@ -183,32 +209,6 @@ int main()
 
 * See `CxxRTLTypeRegistration/src/MyReflection.cpp` for more type registration examples.
 * See `CxxRTLTestApplication/src` for test cases.
-
-## Reflection Features
-
-* ✅ **Function Reflection**: Register and invoke functions, supporting all overloads.
-* ✅ **Class and Struct Reflection**: Register and dynamically reflect their methods, constructors, and destructors.
-* ✅ **Constructor Invocation**:
-  * Default constructor.
-  * Copy constructors.
-  * Any overloaded constructor.
-  * Heap or Stack allocation.
-    
-* ✅ **Member Function Invocation**:
-  * Non-const, const, and static member functions.
-    
-* ✅ **Supports Move Semantics**:
-  * Implicitly invokes move constructor/assignment when needed.
-    
-* ✅ **Automatic Resource Management**: Destructor calls for heap-created instances.
-* ✅ **Perfect Forwarding**: Binds lvalues/rvalues to correct overloads.
-* ✅ **Zero Overhead Forwarding**: No temporaries or copies during method forwarding.
-* ✅ **Namespace Support**: Group and reflect under namespaces.
-* 🚧 **Reflected Returns**: Type-unknown-at-compile-time return value access. *(In progress)*
-* ❌ **Property Reflection**: Planned.
-* ❌ **Enum Reflection**: Planned.
-* ❌ **Composite Type Reflection**: Planned.
-* ❌ **Inheritance Support**: Planned.
 
 ## License
 
