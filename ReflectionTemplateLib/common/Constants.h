@@ -21,6 +21,8 @@ namespace rtl {
         None,       //assigned to empty/moved-from 'RObject's.
         Heap,       //assigned to only rtl-allocated heap objects
         Stack,      //assigned to return-values & rtl-allocated stack objects
+        UnwrapHeap,
+        UnwrapStack
     };
 
     enum class error
@@ -30,14 +32,14 @@ namespace rtl {
         SignatureMismatch,
         MethodTargetMismatch,
         AmbiguousConstOverload,
+        TypeNotCopyConstructible,
         FunctionNotRegisterdInRtl,
         ConstMethodOverloadNotFound,
         ConstructorNotRegisteredInRtl,
         NonConstMethodOverloadNotFound,
         NonConstMethodCallOnConstTarget,
         TrueConstTargetConstCastDisallowed,
-        ReflectingUniquePtr_copyDisallowed,
-        ReflectingStlWrapper_copyOnHeapDisallowed,
+        StlWrapperHeapCopyDisallowed,
 
         Instantiating_typeVoid,
         Instantiating_typeAbstract,
@@ -71,7 +73,7 @@ namespace rtl {
             return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::Instantiating_typeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
-        case error::ReflectingUniquePtr_copyDisallowed:
+        case error::TypeNotCopyConstructible:
             return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
         case error::NonConstMethodCallOnConstTarget:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";

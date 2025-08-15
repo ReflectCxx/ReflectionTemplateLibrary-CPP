@@ -14,8 +14,8 @@
 ___________________________________________________________________________*/
 
 #pragma once
-
 #include <memory>
+#include <cassert>
 #include <utility>
 #include <functional>
 
@@ -62,7 +62,9 @@ namespace rtl::detail
 
         // Copy constructor: empty, just to trick std::any only. NEVER CALLED!!
         // Required so std::any can store this type on MSVC.
-        RObjectUPtr(const RObjectUPtr& pOther) { }
+        RObjectUPtr(const RObjectUPtr& pOther) {
+            assert(false && "RObjectUPtr(const RObjectUPtr&) must never get called.");
+        }
 
         // Move constructor: transfers ownership as usual.
         RObjectUPtr(RObjectUPtr&& pOther) noexcept

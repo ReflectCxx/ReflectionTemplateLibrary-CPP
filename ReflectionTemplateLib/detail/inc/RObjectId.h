@@ -43,6 +43,7 @@ namespace rtl::detail
         RObjectId& operator=(RObjectId&&) = delete;
         RObjectId& operator=(const RObjectId&) = delete;
 
+
         RObjectId()
             : m_isWrappingConst(false)
             , m_isConstCastSafe(false)
@@ -53,6 +54,7 @@ namespace rtl::detail
             , m_wrapperTypeId(TypeId<>::None)
             , m_converters(m_conversions)
         { }
+
 
         RObjectId(alloc pAllocOn, bool pIsConstCastSafe, Wrapper pWrapperType, bool pIsStoredConst, EntityKind pContainsAs,
                   std::size_t pTypeId, const std::vector<traits::ConverterPair>& pConverters, std::size_t pWrapperTypeId)
@@ -66,6 +68,7 @@ namespace rtl::detail
             , m_converters(pConverters)
         { }
 
+
         void reset() const
         {
             m_isWrappingConst = false;
@@ -76,6 +79,7 @@ namespace rtl::detail
             m_typeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
         }
+
 
         inline std::size_t getConverterIndex(const std::size_t pToTypeId) const
         {
@@ -89,8 +93,9 @@ namespace rtl::detail
             return index_none;
         }
 
+
         template<class T>
-        static constexpr EntityKind getContainingAsType()
+        static constexpr EntityKind getEntityKind()
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -107,10 +112,8 @@ namespace rtl::detail
             else if constexpr (!isWrapper && !isRawPtr) {
                 return EntityKind::Value;
             }
-            else {
-                static_assert(false, "Pointer to STL wrapper (e.g., pointer to smart-pointer) is not supported.");
-            }
         }
+
 
         template<class T, rtl::alloc _allocOn>
         static RObjectId create(bool pIsConstCastSafe)
@@ -119,7 +122,7 @@ namespace rtl::detail
             using _W = traits::std_wrapper<traits::raw_t<T>>;
             // extract Un-Qualified raw type.
             using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
-            constexpr EntityKind containedAs = getContainingAsType<T>();
+            constexpr EntityKind containedAs = getEntityKind<T>();
             
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
