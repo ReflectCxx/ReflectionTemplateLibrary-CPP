@@ -161,9 +161,9 @@ int main()
 
 //  Fetch and invoke another reflected method.
     std::optional<Method> setName = classPerson->getMethod("setName");
-    const char* name = "Todd";  // will convert to std::string due to strict-binding.
+    const char* name = "Todd";  // will get converted to std::string due to strict-binding.
     std::string surname = "Packer";
-//  Example: using bind to specify argument types explicitly. (strict-type-binding for qualifiers.)
+//  use bind to specify strict-argument types explicitly. (enables Perfect-Forwarding.)
     auto [err4, ret4] = setName->bind<string, const string&>(personObj).call(name, surname);
 
 //  Fetch method returning a value.
