@@ -67,19 +67,19 @@ This design ensures:
 
 This rule complements RTL’s exception-free guarantee, giving both **predictability** and **safety** at the API boundary.
 
-### 🏱 Transparent Unwrapping of Smart Pointers
+### 🎁 Transparent Unwrapping of Smart Pointers
 
 Reflection should never feel like a cage.
 In native C++, if you hold a `std::unique_ptr<T>`, `std::shared_ptr<T>`, or `std::weak_ptr<T>`, you can still legally create independent copies of the underlying `T` — as long as it’s constructible. RTL extends this exact intuition into runtime reflection.
 
 Every object created on the heap via RTL is internally managed as a `std::unique_ptr`.
-If you know the type `T`, you can view it either as `std::unique_ptr<T>` **or** directly as `T`. By default, when unwrapping, RTL performs a **deep clone** of the pointee — ensuring you get a completely independent object without altering the original.
+If you know the type `T`, you can view it either as `std::unique_ptr<T>` **or** directly as `T`. By default, when cloning, RTL performs a **deep clone** of the pointee — ensuring you get a completely independent object without altering the original.
 If you don’t know the type, this behavior is entirely transparent — you remain blissfully oblivious, yet safe.
 
 Two new allocation selectors make this intent explicit:
 
-* `alloc::UnwrapOnStack` — create a stack-allocated `T` from the smart pointer’s pointee.
-* `alloc::UnwrapOnHeap` — create a heap-allocated `T` from the smart pointer’s pointee.
+* `alloc::UnwrapStack` — create a stack-allocated `T` from the smart pointer’s pointee.
+* `alloc::UnwrapHeap` — create a heap-allocated `T` from the smart pointer’s pointee.
 
 Native semantics are preserved:
 

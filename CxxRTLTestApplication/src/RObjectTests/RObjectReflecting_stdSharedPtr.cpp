@@ -118,7 +118,7 @@ namespace rtl::unit_test
             {
                 // Clone of RObject reflecting smart-pointer on Heap, not allowed!
                 auto [err, badObj] = robj.clone<alloc::Heap>();
-                EXPECT_TRUE(err == error::StlWrapperHeapCopyDisallowed);
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
                 EXPECT_TRUE(badObj.isEmpty());
 
                 //create copy of RObject itself.

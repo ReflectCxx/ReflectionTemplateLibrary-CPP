@@ -21,7 +21,7 @@ namespace rtl::unit_test
             EXPECT_TRUE(robj.isEmpty());
         } {
             auto [err, robj] = robj0.clone<alloc::Heap>();
-            EXPECT_TRUE(err == error::StlWrapperHeapCopyDisallowed);
+            EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
             EXPECT_TRUE(robj.isEmpty());
         }
     }

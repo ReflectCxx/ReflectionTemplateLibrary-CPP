@@ -8,6 +8,7 @@ using namespace std;
 using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
+using namespace the_reflection;
 
 namespace rtl_tests
 {
@@ -56,12 +57,12 @@ namespace rtl_tests
             {
                 auto [err, ret] = updateLastName->bind<methodQ::Const>(book).call(lastName);
 
-                EXPECT_TRUE(err == error::MethodTargetMismatch);
+                EXPECT_TRUE(err == error::TargetMismatch);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(book).call(lastName);
 
-                EXPECT_TRUE(err == error::MethodTargetMismatch);
+                EXPECT_TRUE(err == error::TargetMismatch);
                 EXPECT_TRUE(ret.isEmpty());
             }
         }
@@ -351,7 +352,7 @@ namespace rtl_tests
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
                 
-                EXPECT_TRUE(err == error::NonConstMethodOverloadNotFound);
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invalid argument
@@ -388,7 +389,7 @@ namespace rtl_tests
             {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(lastName);
                 
-                EXPECT_TRUE(err == error::NonConstMethodOverloadNotFound);
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = updateLastName->bind<methodQ::NonConst>(person).call(0); //invalid argument
@@ -424,7 +425,7 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
                 
-                EXPECT_TRUE(err == error::ConstMethodOverloadNotFound);
+                EXPECT_TRUE(err == error::ConstOverloadMissing);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -460,7 +461,7 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call();
                 
-                EXPECT_TRUE(err == error::ConstMethodOverloadNotFound);
+                EXPECT_TRUE(err == error::ConstOverloadMissing);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::Const>(person).call(0); //invalid argument
@@ -579,12 +580,11 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind(constPerson).call();
 
-                EXPECT_TRUE(err == error::NonConstMethodCallOnConstTarget);
+                EXPECT_TRUE(err == error::ConstCallViolation);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::NonConst>(constPerson).call();
-
-                EXPECT_TRUE(err == error::TrueConstTargetConstCastDisallowed);
+                EXPECT_TRUE(err == error::IllegalConstCast);
                 EXPECT_TRUE(ret.isEmpty());
             }
         }
@@ -619,12 +619,12 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind(constPersonPtr).call();
 
-                EXPECT_TRUE(err == error::NonConstMethodCallOnConstTarget);
+                EXPECT_TRUE(err == error::ConstCallViolation);
                 EXPECT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind<methodQ::NonConst>(constPersonPtr).call();
 
-                EXPECT_TRUE(err == error::TrueConstTargetConstCastDisallowed);
+                EXPECT_TRUE(err == error::IllegalConstCast);
                 EXPECT_TRUE(ret.isEmpty());
             }
             EXPECT_TRUE(person::delete_unmanaged_person_instance_created_via_createPtr(constPersonPtr));

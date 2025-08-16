@@ -19,7 +19,7 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {
-            return { rtl::error::FunctionNotRegisterdInRtl, rtl::access::RObject() };
+            return { rtl::error::FunctionNotRegisterd, rtl::access::RObject() };
         }
         if (orgMethod->hasSignature<_args...>()) {
             return orgMethod->bind(m_originalObj).call(std::forward<_args>(params)...);
@@ -44,7 +44,7 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {
-            return { rtl::error::FunctionNotRegisterdInRtl, rtl::access::RObject() };
+            return { rtl::error::FunctionNotRegisterd, rtl::access::RObject() };
         }
         if (orgMethod->hasSignature<_args...>()) {
             return orgMethod->bind().call(std::forward<_args>(params)...);

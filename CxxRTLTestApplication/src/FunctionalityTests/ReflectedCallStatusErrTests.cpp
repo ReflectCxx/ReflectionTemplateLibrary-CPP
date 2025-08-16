@@ -24,10 +24,11 @@ using namespace std;
 using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
+using namespace the_reflection;
 
 namespace rtl_tests
 {
-    TEST(ReflectedCallStatusError, clone_empty_instance___error_EmptyRObject)
+    TEST(ReflectionOperationStatus, error_EmptyRObject)
     {
         {
             RObject emptyObj;
@@ -46,24 +47,24 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, error_Instantiating_typeNotDefaultConstructible)
+    TEST(ReflectionOperationStatus, error_TypeNotDefaultConstructible)
     {
         optional<Record> classEvent = MyReflection::instance().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<alloc::Stack>();
 
-        EXPECT_TRUE(err0 == error::Instantiating_typeNotDefaultConstructible);
+        EXPECT_TRUE(err0 == error::TypeNotDefaultConstructible);
         EXPECT_TRUE(robj0.isEmpty());
 
         auto [err1, robj1] = classEvent->create<alloc::Heap>();
 
-        EXPECT_TRUE(err1 == error::Instantiating_typeNotDefaultConstructible);
+        EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
         EXPECT_TRUE(robj1.isEmpty());
     }
 
 
-    TEST(ReflectedCallStatusError, error_Instantiating_typeNotCopyConstructible)
+    TEST(ReflectionOperationStatus, copy_construct__error_TypeNotCopyConstructible)
     {
         {
             optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
@@ -87,7 +88,7 @@ namespace rtl_tests
             auto [err2, eventCp] = event.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
-            EXPECT_TRUE(err2 == error::Instantiating_typeNotCopyConstructible);
+            EXPECT_TRUE(err2 == error::TypeNotCopyConstructible);
             EXPECT_TRUE(eventCp.isEmpty());
         }
         EXPECT_TRUE(calender::assert_zero_instance_count());
@@ -95,7 +96,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, on_construction___error_Instantiating_typeNotCopyConstructible)
+    TEST(ReflectionOperationStatus, alloc_on_stack__error_TypeNotCopyConstructible)
     {
         {
             // Fetch the reflected Record for class 'Library'.
@@ -120,14 +121,14 @@ namespace rtl_tests
             *   Creating a stack instance requires storing the actual object inside std::any.
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
             *   and Library's copy constructor is deleted, construction fails.
-            */  EXPECT_TRUE(err == error::Instantiating_typeNotCopyConstructible);
+            */  EXPECT_TRUE(err == error::TypeNotCopyConstructible);
                 EXPECT_TRUE(robj.isEmpty());
             }
         }
     }
 
 
-    TEST(ReflectedCallStatusError, static_method_call_wrong_args___error_SignatureMismatch)
+    TEST(ReflectionOperationStatus, static_method_call__error_SignatureMismatch)
     {
         optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
@@ -143,7 +144,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, method_call_on_empty_instance___error_EmptyRObject)
+    TEST(ReflectionOperationStatus, method_call__error_EmptyRObject)
     {
         {
             RObject emptyObj;
@@ -160,7 +161,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, method_on_wrong_heap_instance___error_MethodTargetMismatch)
+    TEST(ReflectionOperationStatus, method_call_using_heap_object__error_TargetMismatch)
     {
         {
             optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -177,7 +178,7 @@ namespace rtl_tests
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::MethodTargetMismatch);
+            EXPECT_TRUE(err1 == error::TargetMismatch);
             EXPECT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -185,7 +186,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectedCallStatusError, method_on_wrong_stack_instance___error_MethodTargetMismatch)
+    TEST(ReflectionOperationStatus, method_call_using_stack_object__error_TargetMismatch)
     {
         {
             optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
@@ -202,7 +203,7 @@ namespace rtl_tests
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::MethodTargetMismatch);
+            EXPECT_TRUE(err1 == error::TargetMismatch);
             EXPECT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());

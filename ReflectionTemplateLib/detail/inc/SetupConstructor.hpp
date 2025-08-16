@@ -42,7 +42,7 @@ namespace rtl
             {
                 if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>) 
                 {   //default constructor, private or deleted.
-                    pError = error::Instantiating_typeNotDefaultConstructible;
+                    pError = error::TypeNotDefaultConstructible;
                     return access::RObject();
                 }
                 else 
@@ -50,7 +50,7 @@ namespace rtl
                     if (pAllocType == alloc::Stack) {
 
                         if constexpr (!std::is_copy_constructible_v<_recordType>) {
-                            pError = error::Instantiating_typeNotCopyConstructible;
+                            pError = error::TypeNotCopyConstructible;
                             return access::RObject();
                         }
                         else {

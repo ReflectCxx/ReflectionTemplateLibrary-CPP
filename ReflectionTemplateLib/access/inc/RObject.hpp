@@ -53,7 +53,7 @@ namespace rtl::access
         }
         else if (m_objectId.m_containsAs == detail::EntityKind::Wrapper && 
                  m_objectId.m_allocatedOn != alloc::Heap) {
-            return { error::StlWrapperHeapCopyDisallowed, RObject() };
+            return { error::StlWrapperHeapAllocForbidden, RObject() };
         }
         error err = error::None;
         return { err, m_getClone(err, *this, alloc::Heap) };

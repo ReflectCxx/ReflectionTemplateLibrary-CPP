@@ -36,7 +36,7 @@ namespace rtl
             }
             if (m_target.getTypeId() != m_method.getRecordTypeId()) {
                 //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-                return { error::MethodTargetMismatch, RObject() };
+                return { error::TargetMismatch, RObject() };
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
@@ -59,7 +59,7 @@ namespace rtl
                                                                                          _args&&... params)
         {
             if (pMethod.getQualifier() == methodQ::NonConst && !pTarget.isConstCastSafe()) {
-                pError = error::NonConstMethodCallOnConstTarget;
+                pError = error::ConstCallViolation;
                 return RObject();
             }
 
@@ -114,7 +114,7 @@ namespace rtl
             }
             if (m_target.getTypeId() != m_method.getRecordTypeId()) {
                 //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-                return { error::MethodTargetMismatch, RObject() };
+                return { error::TargetMismatch, RObject() };
             }
             if constexpr (sizeof...(_signature) == 0) {
                 error err = error::None;
@@ -148,7 +148,7 @@ namespace rtl
                     using container1 = detail::MethodContainer<methodQ::NonConst, _finalSignature...>;
                     std::size_t index = pMethod.hasSignatureId(container1::getContainerId());
                     if (index != rtl::index_none) {
-                        pError = error::ConstMethodOverloadNotFound;
+                        pError = error::ConstOverloadMissing;
                         return RObject();
                     }
                 }
@@ -156,7 +156,7 @@ namespace rtl
                     using container2 = detail::MethodContainer<methodQ::Const, _finalSignature...>;
                     std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
                     if (index != rtl::index_none) {
-                        pError = error::NonConstMethodOverloadNotFound;
+                        pError = error::NonConstOverloadMissing;
                         return RObject();
                     }
                 }

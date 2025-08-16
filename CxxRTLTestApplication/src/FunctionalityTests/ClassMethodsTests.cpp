@@ -9,6 +9,7 @@ using namespace std;
 using namespace rtl;
 using namespace rtl::access;
 using namespace test_utils;
+using namespace the_reflection;
 
 namespace rtl_tests
 {
@@ -34,7 +35,7 @@ namespace rtl_tests
 			for (const auto& itr1 : namespaceRecordMap)
 			{
 				const std::string& recordName = itr1.first;
-				const std::size_t recordId = getRecordIdFor(recordName);
+				const std::size_t recordId = reflected_id::getRecordIdFor(recordName);
 				const auto& itr = rtl_recordIdMap.find(recordId);
 
 				ASSERT_TRUE(itr != rtl_recordIdMap.end());
@@ -45,22 +46,27 @@ namespace rtl_tests
 
 				if (recordName == event::struct_) {
 					//Event's default constructor is private or deleted.
-					EXPECT_TRUE(err == rtl::error::Instantiating_typeNotDefaultConstructible);
+					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == library::class_) {
 					//Library's copy-constructor is deleted or private.
-					EXPECT_TRUE(err == rtl::error::Instantiating_typeNotCopyConstructible);
+					EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+					EXPECT_TRUE(robj.isEmpty());
+				}
+				else if (recordName == "void") {
+					//no constructor of class std::string is registered in RTL, but the calss is registered.
+					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == "string") {
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == "string_view") {
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegisteredInRtl);
+					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
 					EXPECT_TRUE(robj.isEmpty());
 				}
 				else {
