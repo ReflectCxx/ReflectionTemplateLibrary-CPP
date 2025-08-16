@@ -100,7 +100,7 @@ namespace rtl {
                            //invoke the constructor, forwarding the arguments.
                            ? itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...)
                            //if no constructor found, return with empty 'RObject'.
-                           : std::make_pair(error::ConstructorNotRegisteredInRtl, RObject());
+                           : std::make_pair(error::ConstructorNotRegistered, RObject());
             }
 
             //only class which can create objects of this class & manipulates 'm_methods'.

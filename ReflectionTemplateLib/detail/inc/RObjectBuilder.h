@@ -50,20 +50,31 @@ namespace rtl
         return detail::RObjectBuilder::rtlManagedInstanceCount();
     }
 
-    template <class T>
-    inline access::RObject reflect(T&& pVal)
-    {
-        return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), traits::is_const_v<T>);
-    }
 
     template<class T, std::size_t N>
     inline access::RObject reflect(T(&pArr)[N])
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
-            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), traits::is_const_v<T>);
+            return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
         }
         else {
-            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N), traits::is_const_v<T>);
+            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack>(std::vector(pArr, pArr + N), !traits::is_const_v<T>);
+        }
+    }
+
+
+    template <class T>
+    inline access::RObject reflect(T&& pVal)
+    {
+        using _T = traits::raw_t<T>;
+        if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)
+        {
+            return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), !traits::is_const_v<T>);
+        }
+        else
+        {
+            constexpr bool isConstCastSafe = !traits::is_const_v<typename traits::std_wrapper<_T>::value_type>;
+            return detail::RObjectBuilder::build<T, alloc::Stack>(std::forward<T>(pVal), isConstCastSafe);
         }
     }
 }

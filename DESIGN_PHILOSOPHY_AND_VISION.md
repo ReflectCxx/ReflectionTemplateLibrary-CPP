@@ -66,3 +66,25 @@ This design ensures:
 > *“You can’t change an RTL-managed object unless you loudly tell the compiler and everyone reading your code that you are about to change it.”*
 
 This rule complements RTL’s exception-free guarantee, giving both **predictability** and **safety** at the API boundary.
+
+### 🎁 Transparent Unwrapping of Smart Pointers
+
+Reflection should never feel like a cage.
+In native C++, if you hold a `std::unique_ptr<T>`, `std::shared_ptr<T>`, or `std::weak_ptr<T>`, you can still legally create independent copies of the underlying `T` — as long as it’s constructible. RTL extends this exact intuition into runtime reflection.
+
+Every object created on the heap via RTL is internally managed as a `std::unique_ptr`.
+If you know the type `T`, you can view it either as `std::unique_ptr<T>` **or** directly as `T`. By default, when cloning, RTL performs a **deep clone** of the pointee — ensuring you get a completely independent object without altering the original.
+If you don’t know the type, this behavior is entirely transparent — you remain blissfully oblivious, yet safe.
+
+Two new allocation selectors make this intent explicit:
+
+* `alloc::UnwrapStack` — create a stack-allocated `T` from the smart pointer’s pointee.
+* `alloc::UnwrapHeap` — create a heap-allocated `T` from the smart pointer’s pointee.
+
+Native semantics are preserved:
+
+* For `shared_ptr`, the unwrapped copy is independent and does not share ownership.
+* For `unique_ptr`, the original retains its ownership — your copy is separate.
+* For `weak_ptr`, the pointee is locked and copied, or creation fails gracefully if expired.
+
+> **Why it matters:** This is an “Oh wow!” moment for developers — you don’t have to know what wrapper you’re looking at to still get to the type you care about. It’s transparent, intuitive, and feels exactly like “normal C++ at runtime.”

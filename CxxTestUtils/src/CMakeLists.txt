@@ -10,7 +10,6 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsDate.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsPerson.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsAnimal.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/GlobalTestUtils.cpp"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Book.cpp"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Complex.cpp"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Date.cpp"

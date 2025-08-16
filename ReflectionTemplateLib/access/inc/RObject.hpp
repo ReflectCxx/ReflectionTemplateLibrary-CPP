@@ -68,7 +68,7 @@ namespace rtl::access
         }
         else if (m_objectId.m_containsAs == detail::EntityKind::Wrapper && 
                  m_objectId.m_allocatedOn != alloc::Heap) {
-            return { error::ReflectingStlWrapper_copyOnHeapDisallowed, RObject() };
+            return { error::StlWrapperHeapAllocForbidden, RObject() };
         }
         error err = error::None;
         return { err, m_getClone(err, *this, alloc::Heap) };
@@ -81,9 +81,14 @@ namespace rtl::access
         if (isEmpty()) {
             return { error::EmptyRObject, RObject() };
         }
-        else if (m_objectId.m_allocatedOn == alloc::Stack) {
-            //std::any will call the copy-ctor of the containing type.
-            return { error::None, RObject(*this) };
+        else if (m_objectId.m_allocatedOn == alloc::Stack) 
+        {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
+                return { error::TypeNotCopyConstructible, RObject() };
+            }
+            else {  //std::any will call the copy-ctor of the contained type.
+                return { error::None, RObject(*this) };
+            }
         }
         else if (m_objectId.m_allocatedOn == alloc::Heap) {
             //need to call 'new T()', but T=?, call the cloner-lambda.

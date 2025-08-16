@@ -34,7 +34,7 @@ namespace rtl::detail {
         {
             if constexpr (!std::is_copy_constructible_v<T>)
             {
-                pError = error::Instantiating_typeNotCopyConstructible;
+                pError = error::TypeNotCopyConstructible;
                 return access::RObject();
             }
             else

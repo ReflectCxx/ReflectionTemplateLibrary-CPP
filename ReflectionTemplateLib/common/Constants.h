@@ -15,7 +15,7 @@ ___________________________________________________________________________*/
 
 #pragma once
 
-#include <string_view>
+#include "error_codes.h"
 
 namespace rtl {
 
@@ -36,64 +36,9 @@ namespace rtl {
         None,       //assigned to empty/moved-from 'RObject's.
         Heap,       //assigned to only rtl-allocated heap objects
         Stack,      //assigned to return-values & rtl-allocated stack objects
+        UnwrapHeap,
+        UnwrapStack
     };
-
-    enum class error
-    {
-        None,
-        EmptyRObject,
-        SignatureMismatch,
-        MethodTargetMismatch,
-        AmbiguousConstOverload,
-        FunctionNotRegisterdInRtl,
-        ConstMethodOverloadNotFound,
-        ConstructorNotRegisteredInRtl,
-        NonConstMethodOverloadNotFound,
-        NonConstMethodCallOnConstTarget,
-        TrueConstTargetConstCastDisallowed,
-        ReflectingUniquePtr_copyDisallowed,
-        ReflectingStlWrapper_copyOnHeapDisallowed,
-
-        Instantiating_typeVoid,
-        Instantiating_typeAbstract,
-        Instantiating_typeFunction,
-        Instantiating_typeIncomplete,
-        Instantiating_typeNotDefaultConstructible,
-        Instantiating_typeNotCopyConstructible,
-        Instantiating_typeNotMoveConstructible
-    };
-
-    inline const std::string_view to_string(error err)
-    {
-        switch (err) {
-        case error::None:
-            return "No error (operation successful)";
-        case error::EmptyRObject:
-            return "Empty instance: RObject does not hold any reflected object";
-        case error::SignatureMismatch:
-            return "Signature mismatch: Function parameters do not match the expected signature";
-        case error::FunctionNotRegisterdInRtl:
-            return "Function not registered: The requested method is not registered in the Reflection system";
-        case error::MethodTargetMismatch:
-            return "The object you're trying to bind doesn't match the expected type of the method.";
-        case error::AmbiguousConstOverload:
-            return "Ambiguous overload: Both const and non-const methods are registered; explicitly specify MethodQ to resolve.";
-        case error::ConstMethodOverloadNotFound:
-            return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
-        case error::NonConstMethodOverloadNotFound:
-            return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
-        case error::ConstructorNotRegisteredInRtl:
-            return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
-        case error::Instantiating_typeNotCopyConstructible:
-            return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
-        case error::ReflectingUniquePtr_copyDisallowed:
-            return "Cannot copy RObject reflecting std::unique_ptr - copy disallowed to preserve ownership.";
-        case error::NonConstMethodCallOnConstTarget:
-            return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
-        default:
-            return "Unknown error";
-        }
-    }
 }
 
 

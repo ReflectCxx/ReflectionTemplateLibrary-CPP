@@ -35,7 +35,7 @@ namespace rtl
             {
                 if (!pTargetObj.isConstCastSafe())
                 {
-                    pError = error::TrueConstTargetConstCastDisallowed;
+                    pError = error::IllegalConstCast;
                     return access::RObject();
                 }
 
