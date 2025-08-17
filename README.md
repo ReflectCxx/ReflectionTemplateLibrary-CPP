@@ -22,7 +22,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 ## Reflection Features
 
-* ✅ **Function Reflection**: Register and invoke functions, supporting all overloads.
+* ✅ **Function Reflection**: Register and invoke C-style functions, supporting all kind of overloads.
 * ✅ **Class and Struct Reflection**: Register and dynamically reflect their methods, constructors, and destructors.
 * ✅ **Complete Constructor Support**:
   * Default construction.
@@ -38,11 +38,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   * Static methods.
   * Const/Non-const methods.
   * Any overloaded method, Const & RValue based as well.
-    
-* ✅ **Supports Move Semantics**:
-  * Implicitly invokes move constructor/assignment when needed.
-    
-* ✅ **Automatic Resource Management**: Destructor calls for heap-created instances.
+
 * ✅ **Perfect Forwarding**: Binds lvalues/rvalues to correct overloads.
 * ✅ **Zero Overhead Forwarding**: No temporaries or copies during method forwarding.
 * ✅ **Namespace Support**: Group and reflect under namespaces.
