@@ -43,7 +43,7 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc, rtl::entity)>;
 
         mutable Cloner m_getClone;
         mutable std::any m_object;
@@ -54,7 +54,7 @@ namespace rtl::access
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
 
-        template<rtl::alloc _allocOn, rtl::EntityKind _entityKind>
+        template<rtl::alloc _allocOn, rtl::entity _entityKind>
         std::pair<rtl::error, RObject> createCopy() const;
 
         template<class T>
@@ -71,6 +71,7 @@ namespace rtl::access
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
 
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.
@@ -81,7 +82,7 @@ namespace rtl::access
         template <class _asType>
         bool canViewAs() const;
 
-        template<rtl::alloc _allocOn, rtl::EntityKind _entityKind = rtl::EntityKind::None>
+        template<rtl::alloc _allocOn, rtl::entity _entityKind = rtl::entity::Value>
         std::pair<rtl::error, RObject> clone() const;
 
         template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>

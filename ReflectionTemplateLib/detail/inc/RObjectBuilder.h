@@ -25,7 +25,7 @@ namespace rtl::detail
 {
     class RObjectBuilder
     {
-        using Cloner = std::function<access::RObject(error&, const access::RObject&, rtl::alloc)>;
+        using Cloner = std::function<access::RObject(error&, const access::RObject&, rtl::alloc, rtl::entity)>;
 
         template <class T>
         static Cloner buildCloner();

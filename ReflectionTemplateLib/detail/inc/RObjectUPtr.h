@@ -60,8 +60,7 @@ namespace rtl::detail
         RObjectUPtr& operator=(const RObjectUPtr&) = delete;
         RObjectUPtr& operator=(RObjectUPtr&& other) = delete;
 
-        // Copy constructor: empty, just to trick std::any only. NEVER CALLED!!
-        // Required so std::any can store this type on MSVC.
+        // Copy constructor: empty, just to trick the 'std::any'. NEVER GETS CALLED!!
         RObjectUPtr(const RObjectUPtr& pOther) {
             assert(false && "RObjectUPtr(const RObjectUPtr&) must never get called.");
         }

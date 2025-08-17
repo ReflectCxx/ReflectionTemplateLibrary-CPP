@@ -30,27 +30,35 @@ namespace rtl::detail {
     template<class T>
     inline RObjectBuilder::Cloner RObjectBuilder::buildCloner()
     {
-        return [](error& pError, const access::RObject& pOther, alloc pAllocOn)-> access::RObject
+        using W = traits::std_wrapper<T>;
+        using _T = std::conditional_t<W::type == Wrapper::None, T, typename W::value_type>;
+
+        if constexpr (std::is_copy_constructible_v<_T>)
         {
-            if constexpr (!std::is_copy_constructible_v<T>)
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, entity pEntityKind)-> access::RObject
+            {
+                pError = error::None;
+                const auto& srcObj = pOther.view<_T>()->get();
+                if (pEntityKind == entity::Value)
+                {
+                    if (pAllocOn == alloc::Stack) {
+                        return RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true);
+                    }
+                    else if (pAllocOn == alloc::Heap) {
+                        return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
+                    }
+                }
+                return access::RObject(); //dead code. compiler warning ommited.
+            };
+        }
+        else 
+        {
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, entity pEntityKind)-> access::RObject
             {
                 pError = error::TypeNotCopyConstructible;
                 return access::RObject();
-            }
-            else
-            {
-                pError = error::None;
-                const auto& srcObj = pOther.view<T>()->get();
-                if (pAllocOn == alloc::Stack) {
-                    return RObjectBuilder::template build<T, alloc::Stack>(T(srcObj), true);
-                }
-                else if (pAllocOn == alloc::Heap) {
-                    return RObjectBuilder::template build<T*, alloc::Heap>(new T(srcObj), true);
-                }
-                assert(false && "pAllocOn must never be anything else other than alloc::Stack/Heap here.");
-            }
-            return access::RObject(); //dead code. compiler warning ommited.
-        };
+            };
+        }
     }
 
 

@@ -466,9 +466,9 @@ namespace rtl::unit_test
             // Ensure no copy is made for viewing.
             EXPECT_TRUE(Node::instanceCount() == 1);
         } {
-            //auto [err, robj0] = robj.clone<rtl::alloc::Stack>();
-            //EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-            //EXPECT_TRUE(robj0.isEmpty());
+            auto [err, robj0] = robj.clone<rtl::alloc::Stack>();
+            EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+            EXPECT_TRUE(robj0.isEmpty());
         }
     }
 }

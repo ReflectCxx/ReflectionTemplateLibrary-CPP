@@ -38,7 +38,7 @@ namespace rtl {
         Stack,      //assigned to return-values & rtl-allocated stack objects
     };
 
-    enum class EntityKind
+    enum class entity
     {
         None,
         Value,

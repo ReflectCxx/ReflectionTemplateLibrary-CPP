@@ -35,7 +35,7 @@ namespace rtl::detail
         friend access::RObject;
 
         GETTER(std::size_t, TypeId, m_typeId)
-        GETTER(EntityKind, ContainedAs, m_containsAs)
+        GETTER(entity, ContainedAs, m_containsAs)
 
     private:
 
@@ -46,7 +46,7 @@ namespace rtl::detail
 
         mutable alloc m_allocatedOn;
         mutable Wrapper m_wrapperType;
-        mutable EntityKind m_containsAs;
+        mutable entity m_containsAs;
 
         mutable std::size_t m_typeId;
         mutable std::size_t m_wrapperTypeId;
@@ -64,14 +64,14 @@ namespace rtl::detail
             , m_isConstCastSafe(false)
             , m_allocatedOn(alloc::None)
             , m_wrapperType(Wrapper::None)
-            , m_containsAs(EntityKind::None)
+            , m_containsAs(entity::None)
             , m_typeId(TypeId<>::None)
             , m_wrapperTypeId(TypeId<>::None)
             , m_converters(m_conversions)
         { }
 
 
-        RObjectId(alloc pAllocOn, bool pIsConstCastSafe, Wrapper pWrapperType, bool pIsStoredConst, EntityKind pContainsAs,
+        RObjectId(alloc pAllocOn, bool pIsConstCastSafe, Wrapper pWrapperType, bool pIsStoredConst, entity pContainsAs,
                   std::size_t pTypeId, const std::vector<traits::ConverterPair>& pConverters, std::size_t pWrapperTypeId)
             : m_isWrappingConst(pIsStoredConst)
             , m_isConstCastSafe(pIsConstCastSafe)
@@ -90,7 +90,7 @@ namespace rtl::detail
             m_isConstCastSafe = false;
             m_allocatedOn = alloc::None;
             m_wrapperType = Wrapper::None;
-            m_containsAs = EntityKind::None;
+            m_containsAs = entity::None;
             m_typeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
         }
@@ -98,7 +98,7 @@ namespace rtl::detail
 
         inline std::size_t getConverterIndex(const std::size_t pToTypeId) const
         {
-            if (m_containsAs != EntityKind::None) {
+            if (m_containsAs != entity::None) {
                 for (std::size_t index = 0; index < m_converters.size(); index++) {
                     if (m_converters[index].first == pToTypeId) {
                         return index;
@@ -110,7 +110,7 @@ namespace rtl::detail
 
 
         template<class T>
-        static constexpr EntityKind getEntityKind()
+        static constexpr entity getEntityKind()
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -118,13 +118,13 @@ namespace rtl::detail
             constexpr bool isWrapper = (W::type != Wrapper::None);
 
             if constexpr (isWrapper && !isRawPtr) {
-                return EntityKind::Wrapper;
+                return entity::Wrapper;
             }
             else if constexpr (isRawPtr && !isWrapper) {
-                return EntityKind::Pointer;
+                return entity::Pointer;
             }
             else if constexpr (!isWrapper && !isRawPtr) {
-                return EntityKind::Value;
+                return entity::Value;
             }
         }
 
@@ -136,7 +136,7 @@ namespace rtl::detail
             using _W = traits::std_wrapper<traits::raw_t<T>>;
             // extract Un-Qualified raw type.
             using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
-            constexpr EntityKind containedAs = getEntityKind<T>();
+            constexpr entity containedAs = getEntityKind<T>();
             
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();

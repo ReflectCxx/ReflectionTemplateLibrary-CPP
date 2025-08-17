@@ -13,15 +13,15 @@ namespace rtl::detail
         RObjExtractor(const access::RObject* pRObj) : m_rObj(*pRObj) { }
 
         template<class T>
-        static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind)
+        static const T* getPointer(const std::any& pObject, const entity pEntityKind)
         {
             try {
                 switch (pEntityKind)
                 {
-                case EntityKind::Pointer: {
+                case entity::Pointer: {
                     return std::any_cast<const T*>(pObject);
                 }
-                case EntityKind::Value: {
+                case entity::Value: {
                     const T& valueRef = std::any_cast<const T&>(pObject);
                     return static_cast<const T*>(&valueRef);
                 }
@@ -39,13 +39,13 @@ namespace rtl::detail
             try {
                 switch (m_rObj.m_objectId.m_containsAs)
                 {
-                    case EntityKind::Pointer: {
+                    case entity::Pointer: {
                         return std::any_cast<const T*>(m_rObj.m_object);
                     }
-                    case EntityKind::Wrapper: {
+                    case entity::Wrapper: {
                         return getFromWrapper<T>();
                     }
-                    case EntityKind::Value: {
+                    case entity::Value: {
                         const T& valueRef = std::any_cast<const T&>(m_rObj.m_object);
                         return static_cast<const T*>(&valueRef);
                     }

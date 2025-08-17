@@ -12,6 +12,79 @@ using namespace the_reflection;
 
 namespace rtl_tests
 {
+
+    TEST(Reflecting_pod, construct_char_on_heap_and_stack)
+    {
+        optional<Record> charType = MyReflection::instance().getRecord(reflected_id::char_t);
+        ASSERT_TRUE(charType);
+        {
+    /*      Attempting to construct a POD type('char') with a value directly via Record::create<>().
+            Although the constructor for 'char' is registered, this call is resolved as if invoking
+            a copy constructor(signature: (const char&)), which is implicitly registered.
+
+            Design Restriction :
+                - Direct invocation of copy constructors through Record::create<>() is intentionally disallowed.
+                - Copy construction is only permitted when cloning an existing reflected object
+                using RObject::clone<>().
+
+            Rationale :
+                - If the caller already knows the type 'T', there is no need to reflect its copy constructor
+                through create<>().A normal C++ copy(e.g., `T(other)`) is simpler and clearer.
+                - The only valid scenario for reflecting a copy constructor is when you are handling 'T'
+                as type-erased, for that, RTL provides rtl::reflect(..), which wraps an existing 'T'
+                into an RObject in a type-erased manner. (demonstrated in next test case.)
+            Therefore, this call yields 'SignatureMismatch' by design.
+    */      
+            auto [err, rchar] = charType->create<rtl::alloc::Stack>('Q');
+            EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+            EXPECT_TRUE(rchar.isEmpty());
+        } {
+            auto [err, rchar] = charType->create<rtl::alloc::Stack>();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(rchar.isEmpty());
+        }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+        {
+            auto [err, rchar] = charType->create<rtl::alloc::Heap>();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(rchar.isEmpty());
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+        }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(Reflecting_pod, construct_char_directly_and_clone)
+    {
+        //Now for cases, if you want to handle it type-erased and pass around.
+        RObject reflChar = rtl::reflect('Q');
+        {
+            //Internally calls the copy constructor.
+            auto [err, rchar] = reflChar.clone<rtl::alloc::Stack>();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(rchar.isEmpty());
+            EXPECT_TRUE(rchar.canViewAs<char>());
+
+            char ch = rchar.view<char>()->get();
+            EXPECT_EQ(ch, 'Q');
+        }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+        {
+            //Internally calls the copy constructor.
+            auto [err, rchar] = reflChar.clone<rtl::alloc::Heap>();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(rchar.isEmpty());
+
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rchar.canViewAs<char>());
+
+            char ch = rchar.view<char>()->get();
+            EXPECT_EQ(ch, 'Q');
+        }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+    }
+
+
     TEST(RTLInterfaceCxxMirror, get_global_functions_with_wrong_names)
     {
         CxxMirror& cxxMirror = MyReflection::instance();
@@ -166,87 +239,32 @@ namespace rtl_tests
         }
     }
 
-    TEST(Reflecting_pod, construct_char_on_heap_and_stack)
-    {
-        optional<Record> charType = MyReflection::instance().getRecord(reflected_id::char_t);
-        ASSERT_TRUE(charType);
-		{
-	/*      Attempting to construct a POD type('char') with a value directly via Record::create<>().
-	        Although the constructor for 'char' is registered, this call is resolved as if invoking
-			a copy constructor(signature: (const char&)), which is implicitly registered.
-
-			Design Restriction :
-			  - Direct invocation of copy constructors through Record::create<>() is intentionally disallowed.
-			  - Copy construction is only permitted when cloning an existing reflected object
-			    using RObject::clone<>().
-
-			Rationale :
-			  - If the caller already knows the type 'T', there is no need to reflect its copy constructor
-			    through create<>().A normal C++ copy(e.g., `T(other)`) is simpler and clearer.
-			  - The only valid scenario for reflecting a copy constructor is when you are handling 'T'
-			    as type-erased, for that, RTL provides rtl::reflect(..), which wraps an existing 'T'
-				into an RObject in a type-erased manner.
-			Therefore, this call yields 'SignatureMismatch' by design.
-    */      auto [err, rchar] = charType->create<rtl::alloc::Stack>('Q');
-            EXPECT_TRUE(err == rtl::error::SignatureMismatch);
-            EXPECT_TRUE(rchar.isEmpty());
-        } {
-            auto [err, rchar] = charType->create<rtl::alloc::Stack>();
-            EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
-        }
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-        {
-            auto [err, rchar] = charType->create<rtl::alloc::Heap>();
-            EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
-            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
-        }
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
 
     TEST(Reflecting_STL_class, std_string__no_constructor_registerd__call_method)
     {
         CxxMirror& cxxMirror = MyReflection::instance();
-        
+
         optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
+
+        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(isStringEmpty);
+
+        RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
         {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-            ASSERT_TRUE(isStringEmpty);
-            RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
-            {
-                auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<bool>());
-                EXPECT_TRUE(ret.view<bool>()->get());
-            }
-            RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
-            {
-                auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<bool>());
-                EXPECT_FALSE(ret.view<bool>()->get());
-            }
+            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<bool>());
+            EXPECT_TRUE(ret.view<bool>()->get());
+        }
+        RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
+        {
+            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<bool>());
+            EXPECT_FALSE(ret.view<bool>()->get());
         }
     }
 
@@ -254,44 +272,28 @@ namespace rtl_tests
     TEST(Reflecting_STL_class, std_string_view__no_constructor_registerd__call_method)
     {
         CxxMirror& cxxMirror = MyReflection::instance();
-        
+
         optional<Record> stdStringClass = cxxMirror.getRecord("std", "string_view");
         ASSERT_TRUE(stdStringClass);
+
+        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(isStringEmpty);
+
+        RObject reflected_str0 = rtl::reflect("");	//empty string.
         {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-            ASSERT_TRUE(isStringEmpty);
-            RObject reflected_str0 = rtl::reflect("");	//empty string.
-            {
-                auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<bool>());
-                EXPECT_TRUE(ret.view<bool>()->get());
-            }
-            RObject reflected_str1 = rtl::reflect("not_empty");
-            {
-                auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<bool>());
-                EXPECT_FALSE(ret.view<bool>()->get());
-            }
+            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<bool>());
+            EXPECT_TRUE(ret.view<bool>()->get());
+        }
+        RObject reflected_str1 = rtl::reflect("not_empty");
+        {
+            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<bool>());
+            EXPECT_FALSE(ret.view<bool>()->get());
         }
     }
 }
