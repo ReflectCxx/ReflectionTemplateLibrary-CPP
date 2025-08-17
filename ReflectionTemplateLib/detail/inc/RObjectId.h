@@ -114,12 +114,11 @@ namespace rtl::detail
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
-            constexpr bool isConst = traits::is_const_v<_T>;
             constexpr bool isRawPtr = traits::is_raw_ptr_v<T>;
             constexpr bool isWrapper = (W::type != Wrapper::None);
 
             if constexpr (isWrapper && !isRawPtr) {
-                return (isConst ? EntityKind::ConstValWrapper : EntityKind::Wrapper);
+                return EntityKind::Wrapper;
             }
             else if constexpr (isRawPtr && !isWrapper) {
                 return EntityKind::Pointer;

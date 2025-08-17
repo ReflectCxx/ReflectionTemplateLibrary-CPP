@@ -39,6 +39,7 @@ namespace rtl
         TypeNotCopyConstructible,
         TypeNotDefaultConstructible,
         StlWrapperHeapAllocForbidden,
+        ReflectedObjectIsNotInWrapper
     };
 
 

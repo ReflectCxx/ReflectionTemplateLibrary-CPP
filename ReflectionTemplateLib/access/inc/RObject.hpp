@@ -45,6 +45,7 @@ namespace rtl::access
         pOther.m_getClone = nullptr;
     }
 
+
     template<class T>
     inline bool RObject::canViewAs() const
     {
@@ -61,56 +62,56 @@ namespace rtl::access
 
 
     template<>
-    inline std::pair<error, RObject> RObject::clone<alloc::Heap>() const
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, EntityKind::Wrapper>() const
     {
-        if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
-        }
-        else if (m_objectId.m_containsAs == detail::EntityKind::Wrapper && 
-                 m_objectId.m_allocatedOn != alloc::Heap) {
-            return { error::StlWrapperHeapAllocForbidden, RObject() };
-        }
-        error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Heap) };
+        return { error::None, RObject(*this) };
     }
 
 
     template<>
-    inline std::pair<error, RObject> RObject::clone<alloc::Stack>() const
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, EntityKind::Value>() const
     {
-        if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
-        }
-        else if (m_objectId.m_allocatedOn == alloc::Stack) 
+//        if (m_objectId.m_containsAs == detail::EntityKind::Wrapper && 
+//            m_objectId.m_allocatedOn != alloc::Heap) {
+//            return { error::StlWrapperHeapAllocForbidden, RObject() };
+//        }
+//        else {
+            error err = error::None;
+            return { err, m_getClone(err, *this, alloc::Heap) };
+//        }
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, EntityKind::Value>() const
+    {
+        if (m_objectId.m_allocatedOn == alloc::Stack) 
         {
-            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
-                return { error::TypeNotCopyConstructible, RObject() };
-            }
-            else {  //std::any will call the copy-ctor of the contained type.
-                return { error::None, RObject(*this) };
-            }
+        //  std::any will call the copy-ctor of the contained type.
+            return { error::None, RObject(*this) };
         }
-        else if (m_objectId.m_allocatedOn == alloc::Heap) {
-            //need to call 'new T()', but T=?, call the cloner-lambda.
+        else if (m_objectId.m_allocatedOn == alloc::Heap) 
+        {
+        //  We have pointer here in std::any, to deep-clone we need 'T'(?), call the cloner-lambda.
             error err = error::None;
             return { err, m_getClone(err, *this, alloc::Stack) };
         }
         return { error::None,  RObject() }; //dead code. compiler warning ommited.
     }
-
+    
 
     template<class T>
     inline std::optional<rtl::view<T>> RObject::performConversion(const std::size_t pIndex) const
     {
-        detail::EntityKind newKind = detail::EntityKind::None;
+        EntityKind newKind = EntityKind::None;
         const traits::Converter& convert = m_objectId.m_converters[pIndex].second;
         const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
         
-        if (viewRef != nullptr && newKind == detail::EntityKind::Pointer) {
+        if (viewRef != nullptr && newKind == EntityKind::Pointer) {
             return std::optional<rtl::view<T>>(std::in_place, *viewRef);
         }
-        else if (viewRef != nullptr && newKind == detail::EntityKind::Value) {
+        else if (viewRef != nullptr && newKind == EntityKind::Value) {
             if constexpr (std::is_copy_constructible_v<T>) {
                 return std::optional<rtl::view<T>>(std::in_place, T(*viewRef));
             }
@@ -172,5 +173,42 @@ namespace rtl::access
             }
         }
         return std::nullopt;
+    }
+
+
+    template<alloc _allocOn, EntityKind _entityKind>
+    inline std::pair<error, RObject> RObject::clone() const
+    {
+        if (isEmpty()) {
+            return { error::EmptyRObject, RObject() };
+        }
+        if constexpr (_allocOn == alloc::Heap && _entityKind == EntityKind::Wrapper) {
+            static_assert(false, "Heap allocation forbidden for STL-Wrappers (e.g. smart pointers/optionals/reference_wrappers).");
+        }
+        else if constexpr (_allocOn == alloc::Stack && _entityKind == EntityKind::Wrapper) 
+        {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
+                return { error::TypeNotCopyConstructible, RObject() };
+            }
+            else if (m_objectId.m_wrapperType == detail::Wrapper::None) {
+                return { error::ReflectedObjectIsNotInWrapper, RObject() };
+            }
+            else {
+                return createCopy<alloc::Stack, EntityKind::Wrapper>();
+            }
+        }
+        else if constexpr (_allocOn == alloc::Stack || _allocOn == alloc::Heap)
+        {
+            if (m_objectId.m_wrapperType == detail::Wrapper::Unique && 
+                m_objectId.m_allocatedOn != alloc::Heap) {
+                return { error::TypeNotCopyConstructible, RObject() };
+            }
+            return createCopy<_allocOn, EntityKind::Value>();
+        }
+        else
+        {
+            static_assert(false, "Invalid allocation type (alloc::None) used for cloning.");
+            return { error::EmptyRObject, RObject() };
+        }
     }
 }

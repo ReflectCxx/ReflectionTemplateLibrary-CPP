@@ -54,6 +54,9 @@ namespace rtl::access
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
 
+        template<rtl::alloc _allocOn, rtl::EntityKind _entityKind>
+        std::pair<rtl::error, RObject> createCopy() const;
+
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
@@ -78,8 +81,8 @@ namespace rtl::access
         template <class _asType>
         bool canViewAs() const;
 
-        template<rtl::alloc _allocOn>
-        std::pair<error, RObject> clone() const;
+        template<rtl::alloc _allocOn, rtl::EntityKind _entityKind = rtl::EntityKind::None>
+        std::pair<rtl::error, RObject> clone() const;
 
         template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;

@@ -448,4 +448,27 @@ namespace rtl::unit_test
         EXPECT_TRUE(Node::assertResourcesReleased());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
+
+    TEST(RObject_reflecting_unique_ptr, create_clones)
+    {
+        const int NUM = 45429;
+        RObject robj = reflect(std::make_unique<const Node>(NUM));
+        ASSERT_FALSE(robj.isEmpty());
+
+        // Check if RObject can reflect as `Node`
+        EXPECT_TRUE(robj.canViewAs<Node>());
+        {
+            auto view = robj.view<Node>();
+            ASSERT_TRUE(view);
+
+            const Node& node = view->get();
+            EXPECT_EQ(node.data(), NUM);
+            // Ensure no copy is made for viewing.
+            EXPECT_TRUE(Node::instanceCount() == 1);
+        } {
+            //auto [err, robj0] = robj.clone<rtl::alloc::Stack>();
+            //EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+            //EXPECT_TRUE(robj0.isEmpty());
+        }
+    }
 }

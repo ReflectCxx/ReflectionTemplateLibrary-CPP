@@ -36,8 +36,14 @@ namespace rtl {
         None,       //assigned to empty/moved-from 'RObject's.
         Heap,       //assigned to only rtl-allocated heap objects
         Stack,      //assigned to return-values & rtl-allocated stack objects
-        UnwrapHeap,
-        UnwrapStack
+    };
+
+    enum class EntityKind
+    {
+        None,
+        Value,
+        Pointer,
+        Wrapper
     };
 }
 
@@ -55,16 +61,6 @@ namespace rtl::detail
         Optional,
         Reference
     };
-
-    enum class EntityKind
-    {
-        None,
-        Value,
-        Pointer,
-        Wrapper,
-        ConstValWrapper
-    };
-
 
     inline static const std::string ctor_name(const std::string& pRecordName) {
         return (pRecordName + "::" + pRecordName + "()");
