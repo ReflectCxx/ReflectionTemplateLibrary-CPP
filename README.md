@@ -39,7 +39,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   * Const/Non-const methods.
   * Any overloaded method, Const & RValue based as well.
 
-* ✅ **Perfect Forwarding**: Binds lvalues/rvalues to correct overloads.
+* ✅ **Perfect Forwarding**: Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding**: No temporaries or copies during method forwarding.
 * ✅ **Namespace Support**: Group and reflect under namespaces.
 * 🚧 **Reflected Returns**: Type-unknown-at-compile-time return value access. *(In progress)*
