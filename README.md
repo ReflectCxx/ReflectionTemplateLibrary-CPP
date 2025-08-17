@@ -210,10 +210,6 @@ int main()
 * See `CxxRTLTypeRegistration/src/MyReflection.cpp` for more type registration examples.
 * See `CxxRTLTestApplication/src` for test cases.
 
-## License
-
-Apache License, Version 2.0 — see LICENSE file for details.
-
 ## Contributions
 
 Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
