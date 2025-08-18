@@ -65,7 +65,10 @@ namespace rtl_tests
             EXPECT_FALSE(rchar.isEmpty());
             EXPECT_TRUE(rchar.canViewAs<char>());
 
-            char ch = rchar.view<char>()->get();
+            auto viewCh = rchar.view<char>();
+            ASSERT_TRUE(viewCh);
+
+            char ch = viewCh->get();
             EXPECT_EQ(ch, 'Q');
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -78,7 +81,10 @@ namespace rtl_tests
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             EXPECT_TRUE(rchar.canViewAs<char>());
 
-            char ch = rchar.view<char>()->get();
+            auto viewCh = rchar.view<char>();
+            ASSERT_TRUE(viewCh);
+
+            char ch = viewCh->get();
             EXPECT_EQ(ch, 'Q');
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);

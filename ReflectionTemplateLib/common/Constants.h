@@ -34,11 +34,10 @@ namespace rtl {
         Stack,      //assigned to return-values & rtl-allocated stack objects
     };
 
-    enum class entity
+    enum class copy 
     {
-        None,
+        Auto,
         Value,
-        Pointer,
         Wrapper
     };
 }
@@ -46,6 +45,15 @@ namespace rtl {
 
 namespace rtl::detail 
 {
+    enum class EntityKind
+    {
+        None,
+        Auto,
+        Value,
+        Pointer,
+        Wrapper
+    };
+
     enum class Wrapper
     {
         None,

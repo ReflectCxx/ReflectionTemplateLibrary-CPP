@@ -31,11 +31,11 @@ namespace rtl::detail {
 
         if constexpr (std::is_copy_constructible_v<_T>)
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, entity pEntityKind)-> access::RObject
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, EntityKind pEntityKind)-> access::RObject
             {
                 pError = error::None;
                 const auto& srcObj = pOther.view<_T>()->get();
-                if (pEntityKind == entity::Value)
+                if (pEntityKind == EntityKind::Value)
                 {
                     if (pAllocOn == alloc::Stack) {
                         return RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true);
@@ -49,7 +49,7 @@ namespace rtl::detail {
         }
         else 
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, entity pEntityKind)-> access::RObject
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, EntityKind pEntityKind)-> access::RObject
             {
                 pError = error::TypeNotCopyConstructible;
                 return access::RObject();

@@ -23,11 +23,11 @@ namespace rtl::detail
     {
 //        if constexpr (traits::is_safe_conversion_v<_fromType, _toType>)
         {
-            const auto& conversion = [](const std::any& pSrc, const entity& pSrcEntityKind, entity& pNewEntityKind) -> std::any
+            const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind) -> std::any
             {
                 try
                 {
-                    bool isPointer = (pSrcEntityKind == entity::Pointer);
+                    bool isPointer = (pSrcEntityKind == EntityKind::Pointer);
                     const _fromType& srcRef = (isPointer ? *(std::any_cast<const _fromType*>(pSrc)) : std::any_cast<const _fromType&>(pSrc));
 
                     if constexpr (std::is_convertible_v<_fromType*, _toType*>)
@@ -39,18 +39,18 @@ namespace rtl::detail
                                        !std::is_convertible_v<_fromType&, const _toType&>) ||
                                        std::is_constructible_v<_toType, const _fromType&>) {
 
-                        pNewEntityKind = entity::Value;
+                        pNewEntityKind = EntityKind::Value;
                         return std::any(std::in_place_type<_toType>, _toType(srcRef));
                     }
                     else {
 
-                        pNewEntityKind = entity::None;
+                        pNewEntityKind = EntityKind::None;
                         return std::any();
                     }
                 }
                 catch (const std::bad_any_cast&)
                 {
-                    pNewEntityKind = entity::None;
+                    pNewEntityKind = EntityKind::None;
                     return std::any();
                 }
             };

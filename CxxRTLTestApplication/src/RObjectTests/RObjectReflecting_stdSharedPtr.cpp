@@ -39,10 +39,24 @@ namespace rtl::unit_test
             EXPECT_TRUE(view->get().use_count() == 1);
         }
 
-        // --- Step 2: Clone by default (EntityKind::Value semantics) ---
+        // --- Step 2: Clone by default (entity::Auto semantics) ---
         {
-            // Default cloning copies the underlying value, *not* the wrapper.
+            // Default cloning shallow-copies the wrapper.
             auto [err, robj0] = robj.clone<alloc::Stack>();
+            EXPECT_TRUE(err == error::None);
+
+            // View clone as 'shared_ptr'.
+            EXPECT_TRUE(robj0.canViewAs<std::shared_ptr<int>>());
+
+            // View as the underlying int.
+            EXPECT_TRUE(robj0.canViewAs<int>());
+            EXPECT_EQ(robj0.view<int>()->get(), NUM);
+        }
+
+        // --- Step 3: Clone by 'Value' (entity::Value semantics) ---
+        {
+            // Copies the underlying value, *not* the wrapper.
+            auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
 
             // Cannot view as shared_ptr, because we cloned the contained value.
@@ -53,11 +67,11 @@ namespace rtl::unit_test
             EXPECT_EQ(robj0.view<int>()->get(), NUM);
         }
 
-        // --- Step 3: Clone with explicit wrapper semantics ---
+        // --- Step 4: Clone with explicit wrapper semantics ---
         {
-            // Explicitly request a clone at the wrapper level (EntityKind::Wrapper).
+            // Explicitly request a clone at the wrapper level (entity::Wrapper).
             // This performs a shallow copy of the shared_ptr, incrementing ref count.
-            auto [err, robj0] = robj.clone<alloc::Stack, entity::Wrapper>();
+            auto [err, robj0] = robj.clone<alloc::Stack, copy::Wrapper>();
             EXPECT_TRUE(err == error::None);
 
             // Now the clone can also be viewed as shared_ptr<int>.
@@ -204,14 +218,11 @@ namespace rtl::unit_test
             EXPECT_TRUE(badObj.isEmpty());
 
             // ---------------------------------------------------------------------
-            // 2. Default clone (entity::Value): tries to copy the contained entity.
+            // 2. clone using 'entity::Value': tries to copy the contained entity.
             //    Since Node is explicitly non-copyable, this yields an error.
-            //    By design, RTL treats smart pointers as transparent wrappers unless
-            //    told otherwise, so the underlying T is the clone target here.
-            //    However, Node's copy-constructor is deleted. Hence error::TypeNotCopyConstructible.
             // ---------------------------------------------------------------------
             {
-                auto [err0, robj0] = robj.clone<alloc::Stack>();
+                auto [err0, robj0] = robj.clone<alloc::Stack, copy::Value>();
                 EXPECT_TRUE(err0 == error::TypeNotCopyConstructible);
             }
 
@@ -223,7 +234,7 @@ namespace rtl::unit_test
             //    preserved even when the pointee type itself is non-copyable.
             // ---------------------------------------------------------------------
             {
-                auto [err0, robj0] = robj.clone<alloc::Stack, entity::Wrapper>();
+                auto [err0, robj0] = robj.clone<alloc::Stack, copy::Wrapper>();
                 EXPECT_TRUE(err0 == error::None);
 
                 auto view = robj0.view<std::shared_ptr<Node>>();

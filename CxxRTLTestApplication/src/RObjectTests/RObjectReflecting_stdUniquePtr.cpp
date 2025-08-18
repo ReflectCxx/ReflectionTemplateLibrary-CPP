@@ -13,17 +13,24 @@ namespace rtl::unit_test
     TEST(RObject_reflecting_unique_ptr, clone_on__heap_stack)
     {
         const int NUM = 43728;
-        RObject robj0 = reflect(std::make_unique<Node>(NUM));
-        ASSERT_FALSE(robj0.isEmpty());
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         {
-            auto [err, robj] = robj0.clone<alloc::Stack>();
-            EXPECT_TRUE(err == error::TypeNotCopyConstructible);
-            EXPECT_TRUE(robj.isEmpty());
-        } {
-            auto [err, robj] = robj0.clone<alloc::Heap>();
-            EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-            EXPECT_TRUE(robj.isEmpty());
+            RObject robj0 = reflect(std::make_unique<Node>(NUM));
+            ASSERT_FALSE(robj0.isEmpty());
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            {
+                auto [err, robj] = robj0.clone<alloc::Stack>();
+                EXPECT_TRUE(err == error::TypeNotCopyConstructible);
+                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            } {
+                auto [err, robj] = robj0.clone<alloc::Heap>();
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            }
         }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 

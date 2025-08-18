@@ -28,7 +28,8 @@ namespace rtl::access
         : m_getClone(std::forward<Cloner>(pCloner))
         , m_object(std::forward<std::any>(pObject))
         , m_objectId(pRObjectId)
-    { }
+    {
+    }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
@@ -57,41 +58,18 @@ namespace rtl::access
     }
 
 
-    template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, entity::Value>() const
-    {
-        error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Heap, entity::Value) };
-    }
-
-
-    template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, entity::Wrapper>() const
-    {
-        return { error::None, RObject(*this) };
-    }
-
-
-    template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, entity::Value>() const
-    {
-        error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Stack, entity::Value) };
-    }
-    
-
     template<class T>
     inline std::optional<rtl::view<T>> RObject::performConversion(const std::size_t pIndex) const
     {
-        entity newKind = entity::None;
+        detail::EntityKind newKind = detail::EntityKind::None;
         const traits::Converter& convert = m_objectId.m_converters[pIndex].second;
         const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
-        
-        if (viewRef != nullptr && newKind == entity::Pointer) {
+
+        if (viewRef != nullptr && newKind == detail::EntityKind::Pointer) {
             return std::optional<rtl::view<T>>(std::in_place, *viewRef);
         }
-        else if (viewRef != nullptr && newKind == entity::Value) {
+        else if (viewRef != nullptr && newKind == detail::EntityKind::Value) {
             if constexpr (std::is_copy_constructible_v<T>) {
                 return std::optional<rtl::view<T>>(std::in_place, T(*viewRef));
             }
@@ -154,60 +132,73 @@ namespace rtl::access
         }
         return std::nullopt;
     }
+}
 
 
-    template<alloc _allocOn, entity _entityKind>
+
+namespace rtl::access 
+{
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
+    {
+        error err = error::None;
+        return { err, m_getClone(err, *this, alloc::Heap, detail::EntityKind::Value) };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
+    {
+        error err = error::None;
+        return { err, m_getClone(err, *this, alloc::Stack, detail::EntityKind::Value) };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Wrapper>() const
+    {
+        return { error::StlWrapperHeapAllocForbidden, RObject() };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
+    {
+        if (m_objectId.m_wrapperType == detail::Wrapper::None) {
+            return { error::NotWrapperType, RObject() };
+        }
+        else if (m_objectId.m_wrapperType == detail::Wrapper::Unique) 
+        {
+            return { error::TypeNotCopyConstructible, RObject() };
+        }
+        else {
+            return { error::None, RObject(*this) };
+        }
+    }
+
+
+    template<alloc _allocOn, copy _copyTarget>
     inline std::pair<error, RObject> RObject::clone() const
     {
-        static_assert(_entityKind != entity::None, "Invalid rtl::entity. use rtl::entity::Value or rtl::entity::Wrapper");
-
         if (isEmpty()) {
             return { error::EmptyRObject, RObject() };
         }
-        if constexpr (_allocOn == alloc::Heap && _entityKind == entity::Wrapper) {
-            static_assert(false, "Heap allocation forbidden for STL-Wrappers (e.g. smart pointers/optionals/reference_wrappers).");
+        if constexpr (_copyTarget == copy::Value) {
+            return createCopy<_allocOn, detail::EntityKind::Value>();
         }
-        else if constexpr (_allocOn == alloc::Stack && _entityKind == entity::Wrapper) 
-        {
-            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
-                return { error::TypeNotCopyConstructible, RObject() };
-            }
-            else if (m_objectId.m_wrapperType == detail::Wrapper::None) {
-                return { error::NotWrapperType, RObject() };
+        else if constexpr (_copyTarget == copy::Wrapper) {
+            return createCopy<_allocOn, detail::EntityKind::Wrapper>();
+        }
+        else if constexpr (_copyTarget == copy::Auto) {
+            // RTL wraps the objects allocated on heap in 'std::unique_ptr'. Which by default is transparent to RTL itself.
+            // 'std::unique_ptr' acquired via any other source, (e.g. return value) are not transparent. hence the second condition.
+            if (m_objectId.m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) 
+            {
+                return createCopy<_allocOn, detail::EntityKind::Wrapper>();
             }
             else {
-                return createCopy<_allocOn, _entityKind>();
+                return createCopy<_allocOn, detail::EntityKind::Value>();
             }
-        }
-        else if constexpr (_allocOn == alloc::Stack || _allocOn == alloc::Heap)
-        {
-            if (m_objectId.m_wrapperType != detail::Wrapper::None) 
-            {
-                if (_allocOn == alloc::Stack) {
-                    if (m_objectId.m_wrapperType == detail::Wrapper::Unique)
-                    {
-                        if (isAllocatedByRtl()) {
-                            return createCopy<_allocOn, entity::Value>();
-                        }
-                        else {
-                            return { error::TypeNotCopyConstructible, RObject() };
-                        }
-                    }
-                    else return createCopy<_allocOn, _entityKind>();
-                }
-                else {
-                    if (isAllocatedByRtl()) {
-                        return createCopy<_allocOn, entity::Value>();
-                    }
-                    return { error::StlWrapperHeapAllocForbidden, RObject() };
-                }
-            }
-            else return createCopy<_allocOn, _entityKind>();
-        }
-        else
-        {
-            static_assert(false, "Invalid allocation type (alloc::None) used for cloning.");
-            return { error::EmptyRObject, RObject() };
         }
     }
 }

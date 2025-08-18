@@ -20,10 +20,10 @@ namespace rtl::detail
     template<>
     void ReflectCast<std::string>::pushConversion<char>()
     {
-        const auto& conversion = [](const std::any& pSrc, const entity& pSrcEntityKind, entity& pNewEntityKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
-            pNewEntityKind = entity::Pointer;
-            const auto& isPtr = (pSrcEntityKind == entity::Pointer);
+            pNewEntityKind = EntityKind::Pointer;
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
             return std::any(srcObj.c_str());
         };
@@ -35,10 +35,10 @@ namespace rtl::detail
     template<>
     void ReflectCast<std::string_view>::pushConversion<char>()
     {
-        const auto& conversion = [](const std::any& pSrc, const entity& pSrcEntityKind, entity& pNewEntityKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
-            pNewEntityKind = entity::Pointer;
-            const auto& isPtr = (pSrcEntityKind == entity::Pointer);
+            pNewEntityKind = EntityKind::Pointer;
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(srcObj.data());
         };
@@ -51,10 +51,10 @@ namespace rtl::detail
     void ReflectCast<std::string_view>::pushConversion<std::string>()
     {
         using _toType = std::string;
-        const auto& conversion = [](const std::any& pSrc, const entity& pSrcEntityKind, entity& pNewEntityKind)-> std::any
+        const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
-            pNewEntityKind = entity::Value;
-            const auto& isPtr = (pSrcEntityKind == entity::Pointer);
+            pNewEntityKind = EntityKind::Value;
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Pointer);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(_toType(srcObj));
         };

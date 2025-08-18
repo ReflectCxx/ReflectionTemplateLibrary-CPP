@@ -39,7 +39,7 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc, rtl::entity)>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc, detail::EntityKind)>;
 
         mutable Cloner m_getClone;
         mutable std::any m_object;
@@ -50,7 +50,7 @@ namespace rtl::access
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
 
-        template<rtl::alloc _allocOn, rtl::entity _entityKind>
+        template<rtl::alloc _allocOn, detail::EntityKind _entityKind>
         std::pair<rtl::error, RObject> createCopy() const;
 
         template<class T>
@@ -78,7 +78,7 @@ namespace rtl::access
         template <class _asType>
         bool canViewAs() const;
 
-        template<rtl::alloc _allocOn, rtl::entity _entityKind = rtl::entity::Value>
+        template<rtl::alloc _allocOn, rtl::copy _copyTarget = rtl::copy::Auto>
         std::pair<rtl::error, RObject> clone() const;
 
         template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
