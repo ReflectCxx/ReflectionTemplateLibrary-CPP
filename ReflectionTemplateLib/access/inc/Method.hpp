@@ -18,17 +18,17 @@ namespace rtl
     namespace access
     {
         template<class ..._signature>
-        inline const MethodInvoker<_signature...> Method::bind(const RObject& pTarget) const
+        inline const detail::MethodInvoker<_signature...> Method::bind(const RObject& pTarget) const
         {
-            return MethodInvoker<_signature...>(*this, pTarget);
+            return detail::MethodInvoker<_signature...>(*this, pTarget);
         }
 
 
         template<methodQ _Q, class ..._signature>
-        inline const MethodInvokerQ<_Q, _signature...> Method::bind(const RObject& pTarget) const
+        inline const detail::MethodInvokerQ<_Q, _signature...> Method::bind(const RObject& pTarget) const
         {
             static_assert(_Q != methodQ::None, "Invalid method-qualifier, use 'Const' or 'NonConst'");
-            return MethodInvokerQ<_Q, _signature...>(*this, pTarget);
+            return detail::MethodInvokerQ<_Q, _signature...>(*this, pTarget);
         }
 
 

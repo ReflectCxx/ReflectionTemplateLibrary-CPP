@@ -19,9 +19,9 @@ namespace rtl {
     namespace access
     {
         template<class ..._signature>
-        inline const FunctionCaller<_signature...> Function::bind() const
+        inline const detail::FunctionCaller<_signature...> Function::bind() const
         {
-            return FunctionCaller<_signature...>(*this);
+            return detail::FunctionCaller<_signature...>(*this);
         }
 
     /*  @method: hasSignature<...>()

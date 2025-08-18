@@ -9,8 +9,13 @@ set(LOCAL_SOURCES
 
 
 SET(LOCAL_HEADERS
+
 	"${PROJECT_SOURCE_DIR}/detail/inc/CallReflector.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctionCaller.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctionCaller.hpp"
+	"${PROJECT_SOURCE_DIR}/detail/inc/MethodInvoker.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/MethodInvoker.hpp"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorId.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/RObjectId.h"

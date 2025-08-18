@@ -96,12 +96,13 @@ namespace rtl {
             std::pair<error, RObject> operator()(_args&&...params) const noexcept;
 
             template<class ..._signature>
-            const FunctionCaller<_signature...> bind() const;
+            const detail::FunctionCaller<_signature...> bind() const;
 
-            template<class ..._signature>
-            friend class FunctionCaller;
+
             friend detail::CxxReflection;
             friend detail::ReflectionBuilder;
+            template<class ..._signature>
+            friend class detail::FunctionCaller;
         };
     }
 }

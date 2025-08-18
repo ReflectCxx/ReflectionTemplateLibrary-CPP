@@ -11,27 +11,27 @@
 
 #pragma once
 
-namespace rtl {
+namespace rtl::access
+{
+    class RObject;
+    class Function;
+}
 
-    namespace access
+namespace rtl::detail
+{		
+    template<class ..._signature>
+    class FunctionCaller
     {
-        class RObject;
-        class Function;
-		
-        template<class ..._signature>
-        class FunctionCaller
-        {
-            //the function to be called.
-            const Function& m_function;
+        //the function to be called.
+        const access::Function& m_function;
 
-            FunctionCaller(const Function& pFunction);
+        FunctionCaller(const access::Function& pFunction);
 
-        public:
+    public:
 
-            template<class ..._args>
-            std::pair<error, RObject> call(_args&&...) const noexcept;
+        template<class ..._args>
+        std::pair<error, access::RObject> call(_args&&...) const noexcept;
 
-            friend Function;
-        };
-    }
+        friend access::Function;
+    };
 }
