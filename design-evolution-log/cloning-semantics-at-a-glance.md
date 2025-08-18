@@ -65,6 +65,7 @@ When an object originates from an RTL-managed heap allocation (internally wrappe
 * A deep copy of the contained type only occurs if the user explicitly requests it via clone<Value>().
 
 This ensures maximum efficiency while keeping semantics intuitive.
+
 ---
 
 ## 📌 The `alloc` modes
