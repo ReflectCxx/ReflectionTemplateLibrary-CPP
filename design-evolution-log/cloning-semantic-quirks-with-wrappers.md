@@ -64,7 +64,9 @@ std::pair<rtl::error, RObject> clone() const;
   * If object is a **non-RTL wrapper** (e.g., obtained from user return value): treat wrapper as significant → **Wrapper copy**.
 
 This provides an API that is **intuitive for developers**, while giving them control when they need it.
+
 However, RTL never performs deep copies internally during normal operations. All internal access uses zero-cost, read-only views by reference.
+
 ---
 
 ### Error Handling Philosophy
