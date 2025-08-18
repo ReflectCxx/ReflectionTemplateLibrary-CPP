@@ -58,14 +58,13 @@ RTL decides based on context:
 Behaves like “do what a C++ dev would expect here.”
 You get value-copies for RTL-created objects, wrapper-copies for externally-supplied smart pointers.
 
+This ensures maximum efficiency while keeping semantics intuitive.
+
 ⚠️ Important Clarification
 When an object originates from an RTL-managed heap allocation (internally wrapped in std::unique_ptr), the default copy::Auto resolves to Value semantics.
 
-    👉 However, RTL never performs deep copies internally during normal operations. All internal access uses zero-cost, read-only views by reference.
-
-    ➡️ A deep copy of the contained type only occurs if the user explicitly requests it via clone<Value>().
-
-This ensures maximum efficiency while keeping semantics intuitive.
+* However, RTL never performs deep copies internally during normal operations. All internal access uses zero-cost, read-only views by reference.
+* A deep copy of the contained type only occurs if the user explicitly requests it via clone<Value>().
 
 ---
 
