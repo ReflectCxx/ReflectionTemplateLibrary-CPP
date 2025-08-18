@@ -2,12 +2,13 @@
 /*
 * 
 * Below error codes are covered in ConstMethodOverloadTests.cpp
+*   rtl::error::IllegalConstCast
 * 	rtl::error::AmbiguousConstOverload
-*	rtl::error::ConstMethodOverloadNotFound
-*	rtl::error::NonConstMethodOverloadNotFound
-*   rtl::error::ImplicitCallToNonConstOnConstTarget
+*	rtl::error::ConstOverloadMissing
+*	rtl::error::NonConstOverloadMissing
+*   rtl::error::ConstCallViolation
 * and,
-*	rtl::error::FunctionNotRegisterdInRTL, is not internally used by RTL.
+*	rtl::error::FunctionNotRegisterd, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 
 * be empty if its not in registered in Reflection-system.
 * 
@@ -61,6 +62,107 @@ namespace rtl_tests
 
         EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
         EXPECT_TRUE(robj1.isEmpty());
+    }
+
+
+    TEST(ReflectionOperationStatus, error_ReflectedObjectIsNotInWrapper)
+    {
+        char ch = 'R';
+        RObject rCh = rtl::reflect(ch);
+        EXPECT_FALSE(rCh.isAllocatedByRtl());
+        {
+            auto [err, rch] = rCh.clone<alloc::Stack, copy::Value>();
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(rch.isEmpty());
+            EXPECT_TRUE(rch.canViewAs<char>());
+            EXPECT_EQ(rch.view<char>()->get(), 'R');
+        } 
+        EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+        {
+            auto [err, rch] = rCh.clone<alloc::Heap, copy::Value>();
+            EXPECT_TRUE(err == error::None);
+            EXPECT_FALSE(rch.isEmpty());
+            EXPECT_TRUE(rch.canViewAs<char>());
+            EXPECT_EQ(rch.view<char>()->get(), 'R');
+            EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+        }
+        EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+        {
+            auto [err, rch] = rCh.clone<alloc::Stack, copy::Wrapper>();
+            EXPECT_TRUE(err == error::NotWrapperType);
+            EXPECT_TRUE(rch.isEmpty());
+        /*  this will not compile, fail with message -
+            static_assert failed: 'Heap allocation forbidden for STL-Wrappers (e.g. smart pointers/optionals/reference_wrappers).' */
+        //  auto [err0, rch0] = rChptr.clone<alloc::Heap, entityKind::Wrapper>();
+        }
+    }
+
+
+    TEST(ReflectionOperationStatus, std_unique_ptr__error_TypeNotCopyConstructible)
+    {
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+        std::unique_ptr<char> chPtr = std::make_unique<char>('R');
+
+        {
+            RObject rChptr = rtl::reflect(chPtr);
+
+            EXPECT_FALSE(rChptr.isEmpty());
+            EXPECT_FALSE(rChptr.isAllocatedByRtl());
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            EXPECT_TRUE(rChptr.canViewAs<char>());
+            {
+                auto viewCh = rChptr.view<char>();
+                ASSERT_TRUE(viewCh);
+
+                char ch = viewCh->get();
+                EXPECT_EQ(ch, 'R');
+            } {
+                //Try to create copy of std::unique_ptr on stack.
+                auto [err, rch0] = rChptr.clone<alloc::Stack>();
+                EXPECT_TRUE(err == error::TypeNotCopyConstructible);
+            } {
+                // Try to create copy of std::unique_ptr explicitly on stack.
+                auto [err, rch0] = rChptr.clone<alloc::Stack, copy::Wrapper>();
+                EXPECT_TRUE(err == error::TypeNotCopyConstructible);
+            } {
+                // Try to create copy of std::unique_ptr on heap.
+                auto [err, rch0] = rChptr.clone<alloc::Heap>();
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+            } {
+                // Now try to create copy of std::unique_ptr explicitly on heap.
+                auto [err, rch0] = rChptr.clone<alloc::Heap, copy::Wrapper>();
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+            } {
+                // but we can definitly create the copy of underlying value.
+                auto [err, rch0] = rChptr.clone<alloc::Stack, copy::Value>();
+                EXPECT_TRUE(err == error::None);
+                EXPECT_FALSE(rch0.isEmpty());
+                EXPECT_TRUE(rch0.canViewAs<char>());
+
+                auto viewCh = rChptr.view<char>();
+                ASSERT_TRUE(viewCh);
+
+                char ch = viewCh->get();
+                EXPECT_EQ(ch, 'R');
+            }
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+            {
+                // but we can definitly create the copy of underlying value.
+                auto [err, rch0] = rChptr.clone<alloc::Heap, copy::Value>();
+                EXPECT_TRUE(err == error::None);
+                EXPECT_FALSE(rch0.isEmpty());
+                ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);
+                EXPECT_TRUE(rch0.canViewAs<char>());
+
+                auto viewCh = rChptr.view<char>();
+                ASSERT_TRUE(viewCh);
+
+                char ch = viewCh->get();
+                EXPECT_EQ(ch, 'R');
+            }
+            ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+        }
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
@@ -208,5 +310,31 @@ namespace rtl_tests
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(ReflectionOperationStatus, error_ConstructorNotRegistered)
+    {
+        CxxMirror& cxxMirror = MyReflection::instance();
+
+        optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
+        ASSERT_TRUE(stdStringClass);
+        {
+            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
+            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
+            EXPECT_TRUE(reflected_str.isEmpty());
+        } {
+            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>();
+            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
+            EXPECT_TRUE(reflected_str.isEmpty());
+        } {
+            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>("string_literal_arg");
+            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
+            EXPECT_TRUE(reflected_str.isEmpty());
+        } {
+            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>("string_literal_arg");
+            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
+            EXPECT_TRUE(reflected_str.isEmpty());
+        }
     }
 }

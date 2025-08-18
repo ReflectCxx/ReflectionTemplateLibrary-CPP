@@ -1,17 +1,13 @@
-﻿/*_________________________________________________________________________
-* Copyright 2025 Neeraj Singh
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-___________________________________________________________________________*/
+﻿/*************************************************************************
+ *                                                                       *
+ *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
+ *                                                                       *
+ *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
+ *  SPDX-License-Identifier: MIT                                         *
+ *                                                                       *
+ *************************************************************************/
+
 
 #pragma once
 
@@ -32,7 +28,8 @@ namespace rtl::access
         : m_getClone(std::forward<Cloner>(pCloner))
         , m_object(std::forward<std::any>(pObject))
         , m_objectId(pRObjectId)
-    { }
+    {
+    }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
@@ -44,6 +41,7 @@ namespace rtl::access
         pOther.m_objectId.reset();
         pOther.m_getClone = nullptr;
     }
+
 
     template<class T>
     inline bool RObject::canViewAs() const
@@ -60,45 +58,6 @@ namespace rtl::access
     }
 
 
-    template<>
-    inline std::pair<error, RObject> RObject::clone<alloc::Heap>() const
-    {
-        if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
-        }
-        else if (m_objectId.m_containsAs == detail::EntityKind::Wrapper && 
-                 m_objectId.m_allocatedOn != alloc::Heap) {
-            return { error::StlWrapperHeapAllocForbidden, RObject() };
-        }
-        error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Heap) };
-    }
-
-
-    template<>
-    inline std::pair<error, RObject> RObject::clone<alloc::Stack>() const
-    {
-        if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
-        }
-        else if (m_objectId.m_allocatedOn == alloc::Stack) 
-        {
-            if (m_objectId.m_wrapperType == detail::Wrapper::Unique) {
-                return { error::TypeNotCopyConstructible, RObject() };
-            }
-            else {  //std::any will call the copy-ctor of the contained type.
-                return { error::None, RObject(*this) };
-            }
-        }
-        else if (m_objectId.m_allocatedOn == alloc::Heap) {
-            //need to call 'new T()', but T=?, call the cloner-lambda.
-            error err = error::None;
-            return { err, m_getClone(err, *this, alloc::Stack) };
-        }
-        return { error::None,  RObject() }; //dead code. compiler warning ommited.
-    }
-
-
     template<class T>
     inline std::optional<rtl::view<T>> RObject::performConversion(const std::size_t pIndex) const
     {
@@ -106,7 +65,7 @@ namespace rtl::access
         const traits::Converter& convert = m_objectId.m_converters[pIndex].second;
         const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
-        
+
         if (viewRef != nullptr && newKind == detail::EntityKind::Pointer) {
             return std::optional<rtl::view<T>>(std::in_place, *viewRef);
         }
@@ -172,5 +131,74 @@ namespace rtl::access
             }
         }
         return std::nullopt;
+    }
+}
+
+
+
+namespace rtl::access 
+{
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
+    {
+        error err = error::None;
+        return { err, m_getClone(err, *this, alloc::Heap, detail::EntityKind::Value) };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
+    {
+        error err = error::None;
+        return { err, m_getClone(err, *this, alloc::Stack, detail::EntityKind::Value) };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Wrapper>() const
+    {
+        return { error::StlWrapperHeapAllocForbidden, RObject() };
+    }
+
+
+    template<>
+    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
+    {
+        if (m_objectId.m_wrapperType == detail::Wrapper::None) {
+            return { error::NotWrapperType, RObject() };
+        }
+        else if (m_objectId.m_wrapperType == detail::Wrapper::Unique) 
+        {
+            return { error::TypeNotCopyConstructible, RObject() };
+        }
+        else {
+            return { error::None, RObject(*this) };
+        }
+    }
+
+
+    template<alloc _allocOn, copy _copyTarget>
+    inline std::pair<error, RObject> RObject::clone() const
+    {
+        if (isEmpty()) {
+            return { error::EmptyRObject, RObject() };
+        }
+        if constexpr (_copyTarget == copy::Value) {
+            return createCopy<_allocOn, detail::EntityKind::Value>();
+        }
+        else if constexpr (_copyTarget == copy::Wrapper) {
+            return createCopy<_allocOn, detail::EntityKind::Wrapper>();
+        }
+        else if constexpr (_copyTarget == copy::Auto) {
+            // RTL wraps the objects allocated on heap in 'std::unique_ptr'. Which by default is transparent to RTL itself.
+            // 'std::unique_ptr' acquired via any other source, (e.g. return value) are not transparent. hence the second condition.
+            if (m_objectId.m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) 
+            {
+                return createCopy<_allocOn, detail::EntityKind::Wrapper>();
+            }
+            else {
+                return createCopy<_allocOn, detail::EntityKind::Value>();
+            }
+        }
     }
 }

@@ -1,17 +1,13 @@
-/*_________________________________________________________________________
-* Copyright 2025 Neeraj Singh
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-___________________________________________________________________________*/
+/*************************************************************************
+ *                                                                       *
+ *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
+ *                                                                       *
+ *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
+ *  SPDX-License-Identifier: MIT                                         *
+ *                                                                       *
+ *************************************************************************/
+
 
 #pragma once
 
@@ -21,87 +17,84 @@ ___________________________________________________________________________*/
 #include "Function.h"
 #include "MethodInvoker.h"
 
-namespace rtl {
+namespace rtl::access {
 
-    namespace access
+    class Record;
+
+/*  @class: Method
+    * extends 'Function' class and adds interfaces to call member function.
+    * invokes only static & non-static member functions via reflection.
+    * deletes the base's 'operator()()'.
+    * redefines 'operator()()', to accept only target object and returns lambda.
+    * the returned lambda is then called with the arguments corresponding to the functor associated with it.
+*/  class Method : public Function
     {
-        class Record;
+    private:
 
-    /*  @class: Method
-        * extends 'Function' class and adds interfaces to call member function.
-        * invokes only static & non-static member functions via reflection.
-        * deletes the base's 'operator()()'.
-        * redefines 'operator()()', to accept only target object and returns lambda.
-        * the returned lambda is then called with the arguments corresponding to the functor associated with it.
-    */  class Method : public Function
+        //private ctor, called by 'Record' class.
+        explicit Method(const Function& pFunction)
+            : Function(pFunction)
+        { }
+
+        //private ctor, called by 'Record' class.
+        explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
+            : Function(pFunction, pFunctorId, pFunctorName)
+        { }
+
+        //invokes the constructor associated with this 'Method'
+        template<class ..._args>
+        std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
+
+    public:
+
+        using Function::bind;
+
+        //indicates if a particular set of arguments accepted by the functor associated with it.
+        template<class ..._args>
+        bool hasSignature() const;
+
+        template<methodQ _Q, class ..._signature>
+        const detail::MethodInvokerQ<_Q, _signature...> bind(const RObject& pTarget) const;
+
+        template<class ..._signature>
+        const detail::MethodInvoker<_signature...> bind(const RObject& pTarget) const;
+
+        //friends :)
+        friend Record;
+        friend detail::CxxReflection;
+
+        template<class ..._signature>
+        friend class detail::MethodInvoker;
+
+        template<methodQ _Q, class ..._signature>
+        friend class detail::MethodInvokerQ;
+
+    public:
+
+    /*  @method: operator()()
+        @return: lambda
+        * accepts no arguments for 'target', since associated functor is static-member-functions.
+        * returns a lambda, which forwards the call to finally call the associated static-member-function functor.
+        * provides syntax like,'method()(params...)', first'()' is empty & second'()' takes the actual params.
+    */  constexpr auto operator()() const
         {
-        private:
-
-            //private ctor, called by 'Record' class.
-            explicit Method(const Function& pFunction)
-                : Function(pFunction)
-            { }
-
-            //private ctor, called by 'Record' class.
-            explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
-                : Function(pFunction, pFunctorId, pFunctorName)
-            { }
-
-            //invokes the constructor associated with this 'Method'
-            template<class ..._args>
-            std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
-
-        public:
-
-            using Function::bind;
-
-            //indicates if a particular set of arguments accepted by the functor associated with it.
-            template<class ..._args>
-            bool hasSignature() const;
-
-            template<methodQ _Q, class ..._signature>
-            const MethodInvokerQ<_Q, _signature...> bind(const RObject& pTarget) const;
-
-            template<class ..._signature>
-            const MethodInvoker<_signature...> bind(const RObject& pTarget) const;
-
-            //friends :)
-            friend Record;
-            friend detail::CxxReflection;
-
-            template<class ..._signature>
-            friend class MethodInvoker;
-
-            template<methodQ _Q, class ..._signature>
-            friend class MethodInvokerQ;
-
-        public:
-
-        /*  @method: operator()()
-            @return: lambda
-            * accepts no arguments for 'target', since associated functor is static-member-functions.
-            * returns a lambda, which forwards the call to finally call the associated static-member-function functor.
-            * provides syntax like,'method()(params...)', first'()' is empty & second'()' takes the actual params.
-        */  constexpr auto operator()() const
-            {
-                return [this](auto&&...params) {
-                    return Function::operator()(std::forward<decltype(params)> (params)...);
-                };
-            }
+            return [this](auto&&...params) {
+                return Function::operator()(std::forward<decltype(params)> (params)...);
+            };
+        }
 
 
-        /*  @method: operator()(const RObject&)
-            @param: const RObject& (target object)
-            @return: lambda
-            * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
-            * returns a lambda, which forwards the call to 'call', finally invoking the associated non-static-member-function functor.
-            * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
-        */  constexpr auto operator()(const RObject& pTarget) const
-            {
-                return [&](auto&&...params)-> std::pair<error, RObject> {
-                    return bind(pTarget).call(std::forward<decltype(params)>(params)...);
-                };
-            }
-        };
-    }
+    /*  @method: operator()(const RObject&)
+        @param: const RObject& (target object)
+        @return: lambda
+        * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
+        * returns a lambda, which forwards the call to 'call', finally invoking the associated non-static-member-function functor.
+        * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
+    */  constexpr auto operator()(const RObject& pTarget) const
+        {
+            return [&](auto&&...params)-> std::pair<error, RObject> {
+                return bind(pTarget).call(std::forward<decltype(params)>(params)...);
+            };
+        }
+    };
 }

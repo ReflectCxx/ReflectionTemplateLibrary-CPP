@@ -1,17 +1,13 @@
-/*_________________________________________________________________________
-* Copyright 2025 Neeraj Singh
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-___________________________________________________________________________*/
+/*************************************************************************
+ *                                                                       *
+ *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
+ *                                                                       *
+ *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
+ *  SPDX-License-Identifier: MIT                                         *
+ *                                                                       *
+ *************************************************************************/
+
 
 #pragma once
 
@@ -36,14 +32,28 @@ namespace rtl {
         None,       //assigned to empty/moved-from 'RObject's.
         Heap,       //assigned to only rtl-allocated heap objects
         Stack,      //assigned to return-values & rtl-allocated stack objects
-        UnwrapHeap,
-        UnwrapStack
+    };
+
+    enum class copy 
+    {
+        Auto,
+        Value,
+        Wrapper
     };
 }
 
 
 namespace rtl::detail 
 {
+    enum class EntityKind
+    {
+        None,
+        Auto,
+        Value,
+        Pointer,
+        Wrapper
+    };
+
     enum class Wrapper
     {
         None,
@@ -55,16 +65,6 @@ namespace rtl::detail
         Optional,
         Reference
     };
-
-    enum class EntityKind
-    {
-        None,
-        Value,
-        Pointer,
-        Wrapper,
-        ConstValWrapper
-    };
-
 
     inline static const std::string ctor_name(const std::string& pRecordName) {
         return (pRecordName + "::" + pRecordName + "()");

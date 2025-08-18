@@ -1,3 +1,14 @@
+/*************************************************************************
+ *                                                                       *
+ *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
+ *                                                                       *
+ *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
+ *  SPDX-License-Identifier: MIT                                         *
+ *                                                                       *
+ *************************************************************************/
+
+
 #pragma once
 
 #include "RObject.h"
@@ -18,13 +29,14 @@ namespace rtl::detail
             try {
                 switch (pEntityKind)
                 {
-                case detail::EntityKind::Pointer: {
+                case EntityKind::Pointer: {
                     return std::any_cast<const T*>(pObject);
                 }
-                case detail::EntityKind::Value: {
+                case EntityKind::Value: {
                     const T& valueRef = std::any_cast<const T&>(pObject);
                     return static_cast<const T*>(&valueRef);
                 }
+                default: return nullptr;
                 }
             }
             catch (const std::bad_any_cast&) { /*TODO: log the failure. */ }
@@ -38,16 +50,17 @@ namespace rtl::detail
             try {
                 switch (m_rObj.m_objectId.m_containsAs)
                 {
-                    case detail::EntityKind::Pointer: {
+                    case EntityKind::Pointer: {
                         return std::any_cast<const T*>(m_rObj.m_object);
                     }
-                    case detail::EntityKind::Wrapper: {
+                    case EntityKind::Wrapper: {
                         return getFromWrapper<T>();
                     }
-                    case detail::EntityKind::Value: {
+                    case EntityKind::Value: {
                         const T& valueRef = std::any_cast<const T&>(m_rObj.m_object);
                         return static_cast<const T*>(&valueRef);
                     }
+                    default: return nullptr;
                 }
             }
             catch (const std::bad_any_cast&) { /*TODO: log the failure. */ }

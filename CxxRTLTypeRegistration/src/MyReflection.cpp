@@ -203,11 +203,11 @@ namespace the_reflection
         });
 
         static const auto _ = [&]()
-            {
-                const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-                rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
-                return -1;
-            }();
+        {
+            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+            rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
+            return -1;
+        }();
 
         return cxxMirror;
     }
@@ -228,7 +228,7 @@ namespace the_reflection
     std::size_t reflected_id::std_string = rtl::detail::TypeId<std::string>::get();
     std::size_t reflected_id::std_string_view = rtl::detail::TypeId<std::string_view>::get();
 
-    //Optional setup - mapping unique-ids to string type-names.
+    //Optional setup - mapping unique-ids to string type-names (for Testing-Purposes only).
     const std::size_t reflected_id::getRecordIdFor(const std::string& pRecordName)
     {
         if (pRecordName == book::class_) {

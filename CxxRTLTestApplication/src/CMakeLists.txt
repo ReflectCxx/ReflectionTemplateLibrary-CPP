@@ -10,7 +10,7 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/CopyConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/NameSpaceGlobalsTests.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReflectedCallStatusErrTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReflectionOpErrorCodeTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticMethodTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/PerfectForwardingTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/MoveConstructorTests.cpp"

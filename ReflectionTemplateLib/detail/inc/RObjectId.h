@@ -1,17 +1,13 @@
-/*_________________________________________________________________________
-* Copyright 2025 Neeraj Singh
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-___________________________________________________________________________*/
+/*************************************************************************
+ *                                                                       *
+ *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
+ *                                                                       *
+ *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
+ *  SPDX-License-Identifier: MIT                                         *
+ *                                                                       *
+ *************************************************************************/
+
 
 #pragma once
 
@@ -114,12 +110,11 @@ namespace rtl::detail
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
-            constexpr bool isConst = traits::is_const_v<_T>;
             constexpr bool isRawPtr = traits::is_raw_ptr_v<T>;
             constexpr bool isWrapper = (W::type != Wrapper::None);
 
             if constexpr (isWrapper && !isRawPtr) {
-                return (isConst ? EntityKind::ConstValWrapper : EntityKind::Wrapper);
+                return EntityKind::Wrapper;
             }
             else if constexpr (isRawPtr && !isWrapper) {
                 return EntityKind::Pointer;
