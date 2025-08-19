@@ -1,17 +1,20 @@
-# Reflection — The C++ Way It Should Be
+# Reflection — The Modern C++ Way
 
 **Reflection Template Library (RTL)** is a lightweight, modern C++ runtime reflection system. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
 RTL is a static library built entirely in modern C++, designed around type-safe tables of function pointers registered by the user. These are internally wrapped in lambdas, offering a clean and efficient runtime access mechanism.
 
+[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)
+[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Design Philosophy & Vision](https://img.shields.io/badge/Design%20Doc-Philosophy%20%26%20Vision-blueviolet)](./DESIGN_PHILOSOPHY_AND_VISION.md)
 
-## What Makes RTL Stand Out
+## What RTL Brings to Your Code
 
 * **Non-Intrusive by Design** – Reflection metadata is defined entirely outside your types. No macros, no base classes, no intrusive annotations — your original declarations stay pure.
 * **Centralized Registration** – All type and member registrations live in one place, cleanly separated from business logic for better organization and maintainability.
 * **Explicit & Macro-Free** – Type registration follows a clear, fluent builder pattern — no hidden or mysterious MACRO magic, just straightforward C++.
-* **Simple Integration** – Spin up an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+* **Easy to Get Started** – Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 
   ```c++
   rtl::CxxMirror cxxReflection({/* register all types here */});
