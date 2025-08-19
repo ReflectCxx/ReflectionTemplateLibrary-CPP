@@ -45,10 +45,10 @@ namespace rtl::access
         mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
 
-        static std::atomic<std::size_t> m_rtlManagedInstancesCount;
-
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
+
+        static std::atomic<std::size_t>& getInstanceCounter();
 
         template<rtl::alloc _allocOn, detail::EntityKind _entityKind>
         std::pair<rtl::error, RObject> createCopy() const;

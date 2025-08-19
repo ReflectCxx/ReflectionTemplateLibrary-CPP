@@ -28,8 +28,7 @@ namespace rtl::access
         : m_getClone(std::forward<Cloner>(pCloner))
         , m_object(std::forward<std::any>(pObject))
         , m_objectId(pRObjectId)
-    {
-    }
+    { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
@@ -42,6 +41,11 @@ namespace rtl::access
         pOther.m_getClone = nullptr;
     }
 
+    inline std::atomic<std::size_t>& RObject::getInstanceCounter()
+    {
+        static std::atomic<std::size_t> instanceCounter = {0};
+        return instanceCounter;
+    }
 
     template<class T>
     inline bool RObject::canViewAs() const

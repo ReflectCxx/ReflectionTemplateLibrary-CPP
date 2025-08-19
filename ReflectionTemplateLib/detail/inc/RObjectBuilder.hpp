@@ -19,7 +19,7 @@ namespace rtl::detail {
 
     inline const std::size_t RObjectBuilder::rtlManagedInstanceCount()
     {
-        return access::RObject::m_rtlManagedInstancesCount;
+        return access::RObject::getInstanceCounter();
     }
     
 
