@@ -10,7 +10,7 @@ using namespace rtl::access;
 
 namespace rtl::unit_test
 {
-    TEST(RObject_reflecting_shared_ptr, sharing_semantics_via_assignment)
+    TEST(RObject_reflecting_shared_ptr, cloning_and_sharing_semantics__pod_stack)
     {
         constexpr const int NUM = -20438;
         RObject robj = reflect(std::make_shared<int>(NUM));
@@ -36,7 +36,8 @@ namespace rtl::unit_test
                 EXPECT_TRUE(sptrVal.use_count() == 2);
             }
             // Original view is still valid, back to count 1 after local copy goes out of scope.
-            EXPECT_TRUE(view->get().use_count() == 1);
+            const std::shared_ptr<int>& sptr = view->get();          
+            EXPECT_TRUE(sptr.use_count() == 1);
         }
 
         // --- Step 2: Clone by default (entity::Auto semantics) ---
@@ -48,9 +49,18 @@ namespace rtl::unit_test
             // View clone as 'shared_ptr'.
             EXPECT_TRUE(robj0.canViewAs<std::shared_ptr<int>>());
 
+            auto ptrView = robj0.view<std::shared_ptr<int>>();
+            ASSERT_TRUE(ptrView); 
+
+            const std::shared_ptr<int>& sptr = ptrView->get();
+            EXPECT_EQ(*sptr, NUM);
+
             // View as the underlying int.
             EXPECT_TRUE(robj0.canViewAs<int>());
-            EXPECT_EQ(robj0.view<int>()->get(), NUM);
+
+            auto view = robj0.view<int>();
+            EXPECT_TRUE(view);
+            EXPECT_EQ(view->get(), NUM);
         }
 
         // --- Step 3: Clone by 'Value' (entity::Value semantics) ---
@@ -64,7 +74,10 @@ namespace rtl::unit_test
 
             // Instead, can view as the underlying int.
             EXPECT_TRUE(robj0.canViewAs<int>());
-            EXPECT_EQ(robj0.view<int>()->get(), NUM);
+
+            auto view = robj0.view<int>();
+            EXPECT_TRUE(view);
+            EXPECT_EQ(view->get(), NUM);
         }
 
         // --- Step 4: Clone with explicit wrapper semantics ---
@@ -76,6 +89,12 @@ namespace rtl::unit_test
 
             // Now the clone can also be viewed as shared_ptr<int>.
             EXPECT_TRUE(robj0.canViewAs<std::shared_ptr<int>>());
+
+            auto ptrView = robj0.view<std::shared_ptr<int>>();
+            ASSERT_TRUE(ptrView); 
+
+            const std::shared_ptr<int>& nptr = ptrView->get();
+            EXPECT_EQ(*nptr, NUM);
 
             auto view = robj0.view<std::shared_ptr<int>>();
             ASSERT_TRUE(view.has_value());
@@ -97,7 +116,268 @@ namespace rtl::unit_test
 
         // --- Step 4: Final state check ---
         // At the end, ownership should return to robj alone.
-        ASSERT_TRUE(robj.view<std::shared_ptr<int>>()->get().use_count() == 1);
+        auto view = robj.view<std::shared_ptr<int>>();
+        EXPECT_TRUE(view);
+
+        const std::shared_ptr<int>& sptr = view->get();
+        ASSERT_TRUE(sptr.use_count() == 1);
+    }
+
+
+    TEST(RObject_reflecting_shared_ptr, cloning_and_sharing_semantics__pod_heap)
+    {
+        constexpr const int NUM = -291823;
+        RObject robj = reflect(std::make_shared<int>(NUM));
+        ASSERT_FALSE(robj.isEmpty());
+
+        // --- Step 1: Verify reflection at wrapper level ---
+        // Ensure RObject recognizes it can be viewed as a shared_ptr<int>.
+        EXPECT_TRUE(robj.canViewAs<std::shared_ptr<int>>());
+        {
+            // Obtain a view of the shared_ptr<int>.
+            auto view = robj.view<std::shared_ptr<int>>();
+            ASSERT_TRUE(view.has_value());
+
+            {
+                // Accessing via 'const ref' does not increase reference count.
+                const std::shared_ptr<int>& sptrVal = view->get();
+                EXPECT_EQ(*sptrVal, NUM);
+                EXPECT_TRUE(sptrVal.use_count() == 1);
+            } {
+                // Copying the shared_ptr makes a shallow copy (ref-counted).
+                std::shared_ptr<int> sptrVal = view->get();
+                EXPECT_EQ(*sptrVal, NUM);
+                EXPECT_TRUE(sptrVal.use_count() == 2);
+            }
+            // Original view is still valid, back to count 1 after local copy goes out of scope.
+            const std::shared_ptr<int>& sptr = view->get();          
+            EXPECT_TRUE(sptr.use_count() == 1);
+        }
+
+        // --- Step 2: Clone by default (entity::Auto semantics) ---
+        {
+            // Default cloning shallow-copies the wrapper.
+            auto [err, robj0] = robj.clone<alloc::Heap>();
+            EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+            EXPECT_TRUE(robj0.isEmpty());
+        }
+
+        // --- Step 3: Clone by 'Value' (entity::Value semantics) ---
+        {
+            // Copies the underlying value, *not* the wrapper.
+            auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
+            EXPECT_TRUE(err == error::None);
+
+            // Cannot view as shared_ptr, because we cloned the contained value.
+            EXPECT_FALSE(robj0.canViewAs<std::shared_ptr<int>>());
+
+            // Instead, can view as the underlying int.
+            EXPECT_TRUE(robj0.canViewAs<int>());
+
+            auto view = robj0.view<int>();
+            EXPECT_TRUE(view);
+            EXPECT_EQ(view->get(), NUM);
+        }
+
+        // --- Step 4: Clone with explicit wrapper semantics ---
+        {
+            // Explicitly request a clone at the wrapper level (entity::Wrapper).
+            // This performs a shallow copy of the shared_ptr, incrementing ref count.
+            auto [err, robj0] = robj.clone<alloc::Heap, copy::Wrapper>();
+            EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+            EXPECT_TRUE(robj0.isEmpty());
+        }
+
+        // --- Step 4: Final state check ---
+        // At the end, ownership should return to robj alone.
+        auto view = robj.view<std::shared_ptr<int>>();
+        EXPECT_TRUE(view);
+
+        const std::shared_ptr<int>& sptr = view->get();
+        ASSERT_TRUE(sptr.use_count() == 1);
+    }
+
+
+    TEST(RObject_reflecting_shared_ptr, cloning_and_sharing_semantics__Node_on_stack)
+    {
+        ASSERT_TRUE(Node::instanceCount() == 0);
+        ASSERT_TRUE(Node::assertResourcesReleased());
+        {
+            constexpr const int NUM = -45109;
+            RObject robj = reflect(std::make_shared<Node>(NUM));
+            ASSERT_FALSE(robj.isEmpty());
+            ASSERT_TRUE(Node::instanceCount() == 1);
+
+            // --- Step 1: Verify reflection at wrapper level ---
+            // Ensure RObject recognizes it can be viewed as a shared_ptr<int>.
+            EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
+            {
+                // Obtain a view of the shared_ptr<Node>.
+                auto view = robj.view<std::shared_ptr<Node>>();
+                ASSERT_TRUE(view.has_value());
+
+                {
+                    // Accessing via 'const ref' does not increase reference count.
+                    const std::shared_ptr<Node>& nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 1);
+                    ASSERT_TRUE(Node::instanceCount() == 1);
+                } {
+                    // Copying the shared_ptr makes a shallow copy (ref-counted).
+                    std::shared_ptr<Node> nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 2);
+                    ASSERT_TRUE(Node::instanceCount() == 1);
+                }
+                // Original view is still valid, back to count 1 after local copy goes out of scope.          
+                EXPECT_TRUE(view->get().use_count() == 1);
+            }
+
+            // --- Step 2: Clone by default (entity::Auto semantics) ---
+            {
+                // Default cloning shallow-copies the wrapper.
+                auto [err, robj0] = robj.clone<alloc::Stack>();
+                EXPECT_TRUE(err == error::None);
+                ASSERT_TRUE(Node::instanceCount() == 1);
+
+                // View clone as 'shared_ptr'.
+                EXPECT_TRUE(robj0.canViewAs<std::shared_ptr<Node>>());
+
+                auto ptrView = robj0.view<std::shared_ptr<Node>>();
+                ASSERT_TRUE(ptrView);
+
+                const auto& nptr = ptrView->get();
+                EXPECT_EQ(nptr->data(), NUM);
+
+                // View as the underlying Node.
+                EXPECT_TRUE(robj0.canViewAs<Node>());
+                auto node = robj0.view<Node>();
+                EXPECT_EQ(node->get().data(), NUM);
+            }
+
+            // --- Step 3: Clone by 'Value' (entity::Value semantics) ---
+            {
+                // Copies the underlying value, *not* the wrapper.
+                auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
+                EXPECT_TRUE(err == error::TypeNotCopyConstructible);
+                ASSERT_TRUE(Node::instanceCount() == 1);
+                ASSERT_TRUE(robj0.isEmpty());
+            }
+
+            // --- Step 4: Clone with explicit wrapper semantics ---
+            {
+                // Explicitly request a clone at the wrapper level (entity::Wrapper).
+                // This performs a shallow copy of the shared_ptr, incrementing ref count.
+                auto [err, robj0] = robj.clone<alloc::Stack, copy::Wrapper>();
+                EXPECT_TRUE(err == error::None);
+                ASSERT_TRUE(Node::instanceCount() == 1);
+
+                // Now the clone can also be viewed as shared_ptr<Node>.
+                EXPECT_TRUE(robj0.canViewAs<std::shared_ptr<Node>>());
+                
+                auto view = robj0.view<std::shared_ptr<Node>>();
+                ASSERT_TRUE(view.has_value());
+                {
+                    // Access as const ref: no copy, ref count remains shared between robj & robj0.
+                    const std::shared_ptr<Node>& nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 2); // shared by robj + robj0
+                } {
+                    // Explicit copy makes another shallow copy of the shared_ptr.
+                    std::shared_ptr<Node> nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 3); // shared by robj + robj0 + sptrVal
+                }
+                // After local copy is gone, back to 2 owners (robj + robj0).
+                EXPECT_TRUE(view->get().use_count() == 2);
+            }
+
+            // --- Step 4: Final state check ---
+            // At the end, ownership should return to robj alone.
+            auto view = robj.view<std::shared_ptr<Node>>();
+            EXPECT_TRUE(view);
+
+            const std::shared_ptr<Node>& node = view->get();
+            ASSERT_TRUE(node.use_count() == 1);
+        }
+        ASSERT_TRUE(Node::instanceCount() == 0);
+        ASSERT_TRUE(Node::assertResourcesReleased());
+    }
+
+
+    TEST(RObject_reflecting_shared_ptr, cloning_and_sharing_semantics__Node_on_heap)
+    {
+        ASSERT_TRUE(Node::instanceCount() == 0);
+        ASSERT_TRUE(Node::assertResourcesReleased());
+        {
+            constexpr const int NUM = 241054;
+            RObject robj = reflect(std::make_shared<Node>(NUM));
+            ASSERT_FALSE(robj.isEmpty());
+            ASSERT_TRUE(Node::instanceCount() == 1);
+
+            // --- Step 1: Verify reflection at wrapper level ---
+            // Ensure RObject recognizes it can be viewed as a shared_ptr<Node>.
+            EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
+            {
+                // Obtain a view of the shared_ptr<Node>.
+                auto view = robj.view<std::shared_ptr<Node>>();
+                ASSERT_TRUE(view.has_value());
+
+                {
+                    // Accessing via 'const ref' does not increase reference count.
+                    const std::shared_ptr<Node>& nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 1);
+                    ASSERT_TRUE(Node::instanceCount() == 1);
+                } {
+                    // Copying the shared_ptr makes a shallow copy (ref-counted).
+                    std::shared_ptr<Node> nptr = view->get();
+                    EXPECT_EQ(nptr->data(), NUM);
+                    EXPECT_TRUE(nptr.use_count() == 2);
+                    ASSERT_TRUE(Node::instanceCount() == 1);
+                }
+                // Original view is still valid, back to count 1 after local copy goes out of scope.          
+                EXPECT_TRUE(view->get().use_count() == 1);
+            }
+
+            // --- Step 2: Clone by default (entity::Auto semantics) ---
+            {
+                // Default cloning shallow-copies the wrapper.
+                auto [err, robj0] = robj.clone<alloc::Heap>();
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+                EXPECT_TRUE(robj0.isEmpty());
+                ASSERT_TRUE(Node::instanceCount() == 1);
+            }
+
+            // --- Step 3: Clone by 'Value' (entity::Value semantics) ---
+            {
+                // Copies the underlying value, *not* the wrapper.
+                auto [err, robj0] = robj.clone<alloc::Heap, copy::Value>();
+                EXPECT_TRUE(err == error::TypeNotCopyConstructible);
+                ASSERT_TRUE(Node::instanceCount() == 1);
+                ASSERT_TRUE(robj0.isEmpty());
+            }
+
+            // --- Step 4: Clone with explicit wrapper semantics ---
+            {
+                // Explicitly request a clone at the wrapper level (entity::Wrapper).
+                // This performs a shallow copy of the shared_ptr, incrementing ref count.
+                auto [err, robj0] = robj.clone<alloc::Heap, copy::Wrapper>();
+                EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
+                EXPECT_TRUE(robj0.isEmpty());
+                ASSERT_TRUE(Node::instanceCount() == 1);
+            }
+
+            // --- Step 4: Final state check ---
+            // At the end, ownership should return to robj alone.
+            auto view = robj.view<std::shared_ptr<Node>>();
+            EXPECT_TRUE(view);
+
+            const std::shared_ptr<Node>& node = view->get();
+            ASSERT_TRUE(node.use_count() == 1);
+        }
+        ASSERT_TRUE(Node::instanceCount() == 0);
+        ASSERT_TRUE(Node::assertResourcesReleased());
     }
 
 
