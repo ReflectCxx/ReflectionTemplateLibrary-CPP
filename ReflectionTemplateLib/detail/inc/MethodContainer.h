@@ -31,8 +31,6 @@ namespace rtl {
     {
         //forward decl
         class ReflectionBuilder;
-        //unique id generator.
-        extern std::atomic<std::size_t> g_containerIdCounter;
 
         template<methodQ, class ..._signature>
         class MethodContainer;
@@ -51,12 +49,14 @@ namespace rtl {
 
             //every MethodContainer<methodQ::NonConst,...> will have a unique-id.
             static std::size_t getContainerId() {
-                return m_containerId;
+                //holds unique-id
+                static const std::size_t containerId = generate_unique_id();
+                return containerId;
             }
 
             //get the vector holding lambdas as 'const-ref'
             static const std::vector<MethodLambda>& getMethodFunctors() {
-                return m_methodPtrs;
+                return getFunctorTable();
             }
 
             //get container type as string
@@ -69,11 +69,11 @@ namespace rtl {
 
         private:
 
-            //holds unique-id
-            static const std::size_t m_containerId;
-
             //vector holding lambdas
-            static std::vector<MethodLambda> m_methodPtrs;
+            static std::vector<MethodLambda>& getFunctorTable() {
+                static std::vector<MethodLambda> functorTable;
+                return  functorTable;
+            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing non-const-member-function functor call)
@@ -90,9 +90,9 @@ namespace rtl {
 
                 std::size_t index = pGetIndex();
                 if (index == -1) {
-                    index = m_methodPtrs.size();
+                    index = getFunctorTable().size();
                     pUpdateIndex(index);
-                    m_methodPtrs.push_back(pFunctor);
+                    getFunctorTable().push_back(pFunctor);
                 }
                 return index;
             }
@@ -101,13 +101,6 @@ namespace rtl {
             friend ReflectionBuilder;
             friend SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>;
         };
-
-        template<class ..._signature>
-        const std::size_t MethodContainer<methodQ::NonConst, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
-
-        template<class ..._signature>
-        std::vector<typename MethodContainer<methodQ::NonConst, _signature...>::MethodLambda>
-        MethodContainer<methodQ::NonConst, _signature...>::m_methodPtrs;
     }
 	
 
@@ -127,12 +120,14 @@ namespace rtl {
 
             //every MethodContainer<methodQ::Const,...> will have a unique-id.
             static std::size_t getContainerId() {
-                return m_containerId;
+                //holds unique-id
+                static const std::size_t containerId = generate_unique_id();
+                return containerId;
             }
 
             //get the vector holding lambdas as 'const-ref'
             static const std::vector<MethodLambda>& getMethodFunctors() {
-                return  m_methodPtrs;
+                return  getFunctorTable();
             }
 
             //get container type as string
@@ -145,11 +140,11 @@ namespace rtl {
 
         private:
 
-            //holds unique-id
-            static const std::size_t m_containerId;
-
             //vector holding lambdas
-            static std::vector<MethodLambda> m_methodPtrs;
+            static std::vector<MethodLambda>& getFunctorTable() {
+                static std::vector<MethodLambda> functorTable;
+                return  functorTable;
+            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing const-member-function functor call)
@@ -166,9 +161,9 @@ namespace rtl {
 
                 std::size_t index = pGetIndex();
                 if (index == -1) {
-                    index = m_methodPtrs.size();
+                    index = getFunctorTable().size();
                     pUpdateIndex(index);
-                    m_methodPtrs.push_back(pFunctor);
+                    getFunctorTable().push_back(pFunctor);
                 }
                 return index;
             }
@@ -177,12 +172,5 @@ namespace rtl {
             friend ReflectionBuilder;
             friend SetupMethod<MethodContainer<methodQ::Const, _signature...>>;
         };
-
-        template<class ..._signature>
-        const std::size_t MethodContainer<methodQ::Const, _signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
-
-        template<class ..._signature>
-        std::vector<typename MethodContainer<methodQ::Const, _signature...>::MethodLambda> 
-        MethodContainer<methodQ::Const, _signature...>::m_methodPtrs;
     }
 }

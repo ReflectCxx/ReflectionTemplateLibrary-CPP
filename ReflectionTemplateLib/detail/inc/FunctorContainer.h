@@ -27,8 +27,6 @@ namespace rtl {
     {
         //forward decl
         class ReflectionBuilder;
-        //unique id generator.
-        extern std::atomic<std::size_t> g_containerIdCounter;
 
     /*  @class: FunctorContainer
         @param: '_signature...' (combination of any types)
@@ -44,12 +42,13 @@ namespace rtl {
 
             //every FunctorContainer<...> will have a unique-id.
             static std::size_t getContainerId() {
-                return m_containerId;
+                static const std::size_t containerId = generate_unique_id();
+                return containerId;
             }
 
             //get the vector holding lambdas as 'const-ref'
             const static std::vector<FunctionLambda>& getFunctors() {
-                return m_functors;
+                return getFunctorTable();
             }
 
             //get functor container type(_signature...) as string with given 'returnType'.
@@ -62,11 +61,11 @@ namespace rtl {
 
         private:
 
-            //holds unique-id
-            static const std::size_t m_containerId;
-
             //vector holding lambdas
-            static std::vector<FunctionLambda> m_functors;
+            static std::vector<FunctionLambda>& getFunctorTable() {
+                static std::vector<FunctionLambda> functorTable;
+                return  functorTable;
+            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing functor or constructor call)
@@ -83,9 +82,9 @@ namespace rtl {
 
                 std::size_t index = pGetIndex();
                 if (index == -1) {
-                    index = m_functors.size();
+                    index = getFunctorTable().size();
                     pUpdate(index);
-                    m_functors.push_back(pFunctor);
+                    getFunctorTable().push_back(pFunctor);
                 }
                 return index;
             }
@@ -95,11 +94,5 @@ namespace rtl {
             friend SetupFunction<FunctorContainer<_signature...>>;
             friend SetupConstructor<FunctorContainer<_signature...>>;
         };
-
-        template<class ..._signature>
-        const std::size_t FunctorContainer<_signature...>::m_containerId = g_containerIdCounter.fetch_add(1);
-
-        template<class ..._signature>
-        std::vector<typename FunctorContainer<_signature...>::FunctionLambda> FunctorContainer<_signature...>::m_functors;
     }
 }

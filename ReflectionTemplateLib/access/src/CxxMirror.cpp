@@ -15,11 +15,12 @@
 
 namespace rtl::detail 
 {
-    //type id counter, statically initializes a unique-id to TypeId<...>.
-    std::atomic<std::size_t> g_typeIdCounter = TypeId<>::None + 1;
-
-    //type id counter, statically initializes a unique-id to FunctorContainer<...> and MethodContainer<...>.
-    std::atomic<std::size_t> g_containerIdCounter = TypeId<>::None + 1;
+    std::size_t generate_unique_id()
+    {
+        // Starts with ONE, ZERO denotes TypeId<>::None. [Never change, critical.]
+        static std::atomic<std::size_t> counter{ TypeId<>::None + 1 };
+        return counter.fetch_add(1, std::memory_order_relaxed);
+    }
 }
 
 
