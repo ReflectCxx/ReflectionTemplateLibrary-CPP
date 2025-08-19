@@ -66,7 +66,7 @@ namespace rtl::access
         const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
-        if (viewRef != nullptr && newKind == detail::EntityKind::Pointer) {
+        if (viewRef != nullptr && newKind == detail::EntityKind::Ref) {
             return std::optional<rtl::view<T>>(std::in_place, *viewRef);
         }
         else if (viewRef != nullptr && newKind == detail::EntityKind::Value) {
@@ -142,7 +142,7 @@ namespace rtl::access
     inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
         error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Heap, detail::EntityKind::Value) };
+        return { err, m_getClone(err, *this, alloc::Heap) };
     }
 
 
@@ -150,7 +150,7 @@ namespace rtl::access
     inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
         error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Stack, detail::EntityKind::Value) };
+        return { err, m_getClone(err, *this, alloc::Stack) };
     }
 
 

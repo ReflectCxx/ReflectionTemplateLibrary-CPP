@@ -39,7 +39,7 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc, detail::EntityKind)>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
 
         mutable Cloner m_getClone;
         mutable std::any m_object;
