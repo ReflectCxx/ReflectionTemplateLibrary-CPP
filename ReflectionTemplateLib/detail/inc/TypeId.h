@@ -19,7 +19,7 @@ namespace rtl {
 
     namespace detail 
     {
-        extern std::atomic<std::size_t> g_typeIdCounter;
+        extern std::size_t generate_unique_id();
 
         //class to generate unique type-id for a type or combination of types.
         template<class _type = std::nullptr_t, class ..._rest>
@@ -32,13 +32,13 @@ namespace rtl {
             //represents '_type' or 'std::nullptr_t' for TypeId<> (empty).
             using HEAD = _type;
 
-            //'0' represents no type.
+            //'0' represents no type. [Never change, critical.]
             static constexpr const std::size_t None = 0;
 
-            static std::size_t get() 
+            static std::size_t get()
             {
                 //statically initialize a unique-id.
-                static const std::size_t typeId = g_typeIdCounter.fetch_add(1);
+                static const std::size_t typeId = generate_unique_id();
                 return typeId;
             }
 

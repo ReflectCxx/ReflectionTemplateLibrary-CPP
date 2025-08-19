@@ -1,6 +1,6 @@
-# Reflection — The Modern C++ Way
+# Reflection Template Library — A C++ Reflection Framework
 
-**Reflection Template Library (RTL)** is a lightweight, modern C++ runtime reflection system. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
+**Reflection Template Library (RTL)** is a lightweight, modern C++20 runtime reflection library. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
 RTL is a static library built entirely in modern C++, designed around type-safe tables of function pointers registered by the user. These are internally wrapped in lambdas, offering a clean and efficient runtime access mechanism.
 
@@ -50,8 +50,6 @@ std::cout << ret.view<std::string>()->get();
 ```
 
 The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
-
-Because the API surface is small, the mental model is easy to pick up and remember.
 
 ## Reflection Features
 
