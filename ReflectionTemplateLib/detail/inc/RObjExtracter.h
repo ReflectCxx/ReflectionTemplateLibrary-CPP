@@ -29,7 +29,7 @@ namespace rtl::detail
             try {
                 switch (pEntityKind)
                 {
-                case EntityKind::Pointer: {
+                case EntityKind::Ref: {
                     return std::any_cast<const T*>(pObject);
                 }
                 case EntityKind::Value: {
@@ -50,7 +50,7 @@ namespace rtl::detail
             try {
                 switch (m_rObj.m_objectId.m_containsAs)
                 {
-                    case EntityKind::Pointer: {
+                    case EntityKind::Ref: {
                         return std::any_cast<const T*>(m_rObj.m_object);
                     }
                     case EntityKind::Wrapper: {

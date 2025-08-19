@@ -48,9 +48,8 @@ namespace rtl::detail
     enum class EntityKind
     {
         None,
-        Auto,
+        Ref,
         Value,
-        Pointer,
         Wrapper
     };
 

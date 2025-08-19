@@ -19,7 +19,7 @@ namespace rtl::detail {
 
     inline const std::size_t RObjectBuilder::rtlManagedInstanceCount()
     {
-        return access::RObject::m_rtlManagedInstancesCount;
+        return access::RObject::getInstanceCounter();
     }
     
 
@@ -31,25 +31,22 @@ namespace rtl::detail {
 
         if constexpr (std::is_copy_constructible_v<_T>)
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, EntityKind pEntityKind)-> access::RObject
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn)-> access::RObject
             {
-                pError = error::None;
                 const auto& srcObj = pOther.view<_T>()->get();
-                if (pEntityKind == EntityKind::Value)
-                {
-                    if (pAllocOn == alloc::Stack) {
-                        return RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true);
-                    }
-                    else if (pAllocOn == alloc::Heap) {
-                        return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
-                    }
+                pError = error::None;
+                if (pAllocOn == alloc::Stack) {
+                    return RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true);
+                }
+                else if (pAllocOn == alloc::Heap) {
+                    return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
                 }
                 return access::RObject(); //dead code. compiler warning ommited.
             };
         }
         else 
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn, EntityKind pEntityKind)-> access::RObject
+            return [](error& pError, const access::RObject& pOther, alloc pAllocOn)-> access::RObject
             {
                 pError = error::TypeNotCopyConstructible;
                 return access::RObject();

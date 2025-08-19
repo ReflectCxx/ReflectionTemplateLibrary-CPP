@@ -39,16 +39,16 @@ namespace rtl::access
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc, detail::EntityKind)>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
 
         mutable Cloner m_getClone;
         mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
 
-        static std::atomic<std::size_t> m_rtlManagedInstancesCount;
-
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
+
+        static std::atomic<std::size_t>& getInstanceCounter();
 
         template<rtl::alloc _allocOn, detail::EntityKind _entityKind>
         std::pair<rtl::error, RObject> createCopy() const;

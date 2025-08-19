@@ -27,7 +27,7 @@ namespace rtl::detail
             {
                 try
                 {
-                    bool isPointer = (pSrcEntityKind == EntityKind::Pointer);
+                    bool isPointer = (pSrcEntityKind == EntityKind::Ref);
                     const _fromType& srcRef = (isPointer ? *(std::any_cast<const _fromType*>(pSrc)) : std::any_cast<const _fromType&>(pSrc));
 
                     if constexpr (std::is_convertible_v<_fromType*, _toType*>)

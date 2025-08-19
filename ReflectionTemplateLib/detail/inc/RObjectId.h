@@ -117,7 +117,7 @@ namespace rtl::detail
                 return EntityKind::Wrapper;
             }
             else if constexpr (isRawPtr && !isWrapper) {
-                return EntityKind::Pointer;
+                return EntityKind::Ref;
             }
             else if constexpr (!isWrapper && !isRawPtr) {
                 return EntityKind::Value;

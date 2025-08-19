@@ -70,13 +70,13 @@ namespace rtl::detail
         // Construct directly from std::unique_ptr<T>, tracking RTL-owned heap allocations.
         RObjectUPtr(std::unique_ptr<T>&& pUniquePtr)
             : m_uniquePtr(std::move(pUniquePtr)) {
-            access::RObject::m_rtlManagedInstancesCount.fetch_add(1, std::memory_order_relaxed);
+            access::RObject::getInstanceCounter().fetch_add(1, std::memory_order_relaxed);
         }
 
         // Destructor: decrements allocation count if we still own the object.
         ~RObjectUPtr() {
             if (m_uniquePtr) {
-                access::RObject::m_rtlManagedInstancesCount.fetch_sub(1, std::memory_order_relaxed);
+                access::RObject::getInstanceCounter().fetch_sub(1, std::memory_order_relaxed);
             }
         }
 
@@ -87,7 +87,7 @@ namespace rtl::detail
         std::unique_ptr<T> release() const 
         {
             if (m_uniquePtr) {
-                access::RObject::m_rtlManagedInstancesCount.fetch_sub(1, std::memory_order_relaxed);
+                access::RObject::getInstanceCounter().fetch_sub(1, std::memory_order_relaxed);
                 return std::move(m_uniquePtr);
             }
             return nullptr;
