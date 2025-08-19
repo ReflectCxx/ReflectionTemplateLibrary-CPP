@@ -23,6 +23,36 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
   The ***cxxReflection*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 * **Thread-Safe & Exception-Safe** – Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
 
+## A Quick Preview: Reflection That Feels Like C++
+
+RTL’s API is deliberately small and intuitive. If you know modern C++, you already know how to use RTL. Here’s an example:
+
+```c++
+// Without reflection
+Person p("John", 42);
+p.setAge(43);
+std::cout << p.getName();
+
+// With reflection
+auto classPerson = MyReflection::instance().getRecord("Person");
+
+auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
+
+auto setAge = classPerson->getMethod("setAge");
+
+setAge->bind(robj).call(43);
+
+auto getName = classPerson->getMethod("getName");
+
+auto [err2, ret] = getName->bind(robj).call();
+
+std::cout << ret.view<std::string>()->get();
+```
+
+Notice how the semantics don’t feel foreign: creating, binding, and calling are just natural C++ — the only difference is you’re doing it through reflection.
+
+The low surface area of the API makes it easy to remember and adopt — many users find the mental model *“clicks”* right away.
+
 ## Reflection Features
 
 * ✅ **Function Reflection**: Register and invoke C-style functions, supporting all kind of overloads.
@@ -153,6 +183,7 @@ using namespace rtl::access;
 
 int main()
 {
+//  Lazily-initialized reflection system (singleton-style, pay-only-when-you-use).
 //  Get 'class Person' — returns a 'Record' representing the reflected class.
     std::optional<Record> classPerson = MyReflection().getClass("Person");
 
