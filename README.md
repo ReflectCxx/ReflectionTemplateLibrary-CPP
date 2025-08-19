@@ -25,7 +25,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 ## A Quick Preview: Reflection That Feels Like C++
 
-RTL’s API is deliberately small and intuitive. If you know modern C++, you already know how to use RTL. Here’s an example:
+RTL’s API is designed to be small and intuitive. The syntax follows familiar C++ patterns, so working with reflection feels natural.
 
 ```c++
 // Without reflection
@@ -49,9 +49,9 @@ auto [err2, ret] = getName->bind(robj).call();
 std::cout << ret.view<std::string>()->get();
 ```
 
-Notice how the semantics don’t feel foreign: creating, binding, and calling are just natural C++ — the only difference is you’re doing it through reflection.
+The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
 
-The low surface area of the API makes it easy to remember and adopt — many users find the mental model *“clicks”* right away.
+Because the API surface is small, the mental model is easy to pick up and remember.
 
 ## Reflection Features
 
