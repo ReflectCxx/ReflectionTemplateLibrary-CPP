@@ -15,7 +15,7 @@ namespace rtl_tests
 
     TEST(Reflecting_pod, construct_char_on_heap_and_stack)
     {
-        optional<Record> charType = MyReflection::instance().getRecord(reflected_id::char_t);
+        optional<Record> charType = cxx::mirror().getRecord(reflected_id::char_t);
         ASSERT_TRUE(charType);
         {
     /*      Attempting to construct a POD type('char') with a value directly via Record::create<>().
@@ -81,6 +81,9 @@ namespace rtl_tests
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             EXPECT_TRUE(rchar.canViewAs<char>());
 
+            // Internally, RTL manages all Heap allocated objects with std::unique_ptr.
+            EXPECT_TRUE(rchar.canViewAs<std::unique_ptr<char>>());
+
             auto viewCh = rchar.view<char>();
             ASSERT_TRUE(viewCh);
 
@@ -93,15 +96,14 @@ namespace rtl_tests
 
     TEST(RTLInterfaceCxxMirror, get_global_functions_with_wrong_names)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
         {
-            optional<Function> badFunc = cxxMirror.getFunction("wrong_namespace", "wrong_function");
+            optional<Function> badFunc = cxx::mirror().getFunction("wrong_namespace", "wrong_function");
             EXPECT_FALSE(badFunc);
         } {
-            optional<Function> badFunc = cxxMirror.getFunction(str_complex, "wrong_function");
+            optional<Function> badFunc = cxx::mirror().getFunction(str_complex, "wrong_function");
             EXPECT_FALSE(badFunc);
         } {
-            optional<Function> badFunc = cxxMirror.getFunction("wrong_getComplexNumAsString");
+            optional<Function> badFunc = cxx::mirror().getFunction("wrong_getComplexNumAsString");
             EXPECT_FALSE(badFunc);
         }
     }
@@ -109,12 +111,10 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, get_namespace_function_types)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
 
-        optional<Function> setImaginary = cxxMirror.getFunction(str_complex, str_setImaginary);
+        optional<Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
         ASSERT_TRUE(setImaginary);
 
         EXPECT_TRUE(setReal->getNamespace() == str_complex);
@@ -126,15 +126,13 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Function> getMagnitude = cxxMirror.getFunction(str_complex, str_getMagnitude);
+        optional<Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
         ASSERT_TRUE(getMagnitude);
 
-        optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
 
-        optional<Function> setImaginary = cxxMirror.getFunction(str_complex, str_setImaginary);
+        optional<Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
         ASSERT_TRUE(setImaginary);
 
         EXPECT_TRUE(setReal->hasSignature<double>());
@@ -169,9 +167,7 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Function> setReal = cxxMirror.getFunction(str_complex, str_setReal);
+        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
 
         EXPECT_TRUE(setReal->hasSignature<double>());
@@ -190,9 +186,7 @@ namespace rtl_tests
 
     TEST(GlobalFunction, get_function_execute_return)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Function> getComplexNumAsString = cxxMirror.getFunction(str_getComplexNumAsString);
+        optional<Function> getComplexNumAsString = cxx::mirror().getFunction(str_getComplexNumAsString);
         ASSERT_TRUE(getComplexNumAsString);
 
         auto [err, ret] = (*getComplexNumAsString)();
@@ -209,9 +203,7 @@ namespace rtl_tests
 
     TEST(GlobalFunction, overloaded_function_execute_return)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Function> reverseString = cxxMirror.getFunction(str_reverseString);
+        optional<Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
         {
             //STRA's type is 'consexpr const char*', function accepts 'string',
@@ -248,9 +240,7 @@ namespace rtl_tests
 
     TEST(Reflecting_STL_class, std_string__no_constructor_registerd__call_method)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
+        optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
 
         optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
@@ -277,9 +267,7 @@ namespace rtl_tests
 
     TEST(Reflecting_STL_class, std_string_view__no_constructor_registerd__call_method)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Record> stdStringClass = cxxMirror.getRecord("std", "string_view");
+        optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
         ASSERT_TRUE(stdStringClass);
 
         optional<Method> isStringEmpty = stdStringClass->getMethod("empty");

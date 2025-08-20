@@ -14,9 +14,7 @@ namespace rtl_tests
 {
 	TEST(StaticMethods, unique_method_call)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
 		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
@@ -35,9 +33,7 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_void_call)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
 		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
@@ -56,9 +52,7 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_args_bool_call)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
 		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
@@ -88,9 +82,7 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_args_string_size_t_call)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> recOpt = cxxMirror.getRecord(person::class_);
+		optional<Record> recOpt = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(recOpt.has_value());
 
 		const Record& classPerson = recOpt.value();
@@ -117,9 +109,7 @@ namespace rtl_tests
 
 	TEST(StaticMethods, static_method_call_on_target_instance)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
 		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
@@ -152,9 +142,7 @@ namespace rtl_tests
 
 	TEST(StaticMethods, static_method_call_on_target_instance_with_args)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
 		auto [err0, person] = classPerson->create<alloc::Heap>();

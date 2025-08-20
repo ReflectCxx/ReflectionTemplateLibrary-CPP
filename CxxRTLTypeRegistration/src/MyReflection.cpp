@@ -29,7 +29,7 @@ using namespace rtl::builder;
 
 namespace the_reflection
 {
-    CxxMirror& MyReflection::instance()
+    CxxMirror& cxx::mirror()
     {
         static CxxMirror cxxMirror = CxxMirror(
         {
@@ -79,7 +79,7 @@ namespace the_reflection
 
         /*  Grouping functions under a namespace, which is optional. they can be registered without it as well.
             but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
-            e.g. cxxMirror.getFunction("namespace_name", "function_name") & cxxMirror.getRecord("namespace_name", "record_name")
+            e.g. cxx::mirror().getFunction("namespace_name", "function_name") & cxx::mirror().getRecord("namespace_name", "record_name")
         */  Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
             Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
             Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),

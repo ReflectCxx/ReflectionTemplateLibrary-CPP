@@ -50,7 +50,7 @@ namespace rtl_tests
 
     TEST(ReflectionOperationStatus, error_TypeNotDefaultConstructible)
     {
-        optional<Record> classEvent = MyReflection::instance().getRecord(event::ns, event::struct_);
+        optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<alloc::Stack>();
@@ -169,7 +169,7 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, copy_construct__error_TypeNotCopyConstructible)
     {
         {
-            optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             //Events's constructor not registered, get its instance from 'Calander'.
@@ -202,7 +202,7 @@ namespace rtl_tests
     {
         {
             // Fetch the reflected Record for class 'Library'.
-            optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+            optional<Record> classLibrary = cxx::mirror().getRecord(library::class_);
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
@@ -232,7 +232,7 @@ namespace rtl_tests
 
     TEST(ReflectionOperationStatus, static_method_call__error_SignatureMismatch)
     {
-        optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+        optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
 
         optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
@@ -252,7 +252,7 @@ namespace rtl_tests
             RObject emptyObj;
             ASSERT_TRUE(emptyObj.isEmpty());
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
@@ -266,10 +266,10 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, method_call_using_heap_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Heap>();
@@ -291,10 +291,10 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, method_call_using_stack_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Stack>();
@@ -315,9 +315,7 @@ namespace rtl_tests
 
     TEST(ReflectionOperationStatus, error_ConstructorNotRegistered)
     {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
+        optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
         {
             auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();

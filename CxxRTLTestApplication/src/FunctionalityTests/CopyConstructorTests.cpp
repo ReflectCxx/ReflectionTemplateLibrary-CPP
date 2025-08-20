@@ -15,7 +15,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_heap_source_on_heap)
     {
         {
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->create<alloc::Heap>();
@@ -38,7 +38,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_stack_source_on_stack)
     {
         {
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->create<alloc::Stack>();
@@ -61,7 +61,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_heap_source_on_stack)
     {
         {
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->create<alloc::Stack>();
@@ -85,7 +85,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_stack_source_on_heap)
     {
         {
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->create<alloc::Heap>();
@@ -108,9 +108,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classBook = cxxMirror.getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -152,9 +150,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_stack)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classBook = cxxMirror.getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -196,9 +192,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_stack)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classBook = cxxMirror.getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
             
             optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -239,10 +233,8 @@ namespace rtl_tests
     
     TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_heap)
     {
-        {
-            CxxMirror& cxxMirror = MyReflection::instance();
-            
-            optional<Record> classBook = cxxMirror.getRecord(book::class_);
+        {   
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
             
             optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -284,10 +276,8 @@ namespace rtl_tests
     TEST(CopyConstructor, sharing_semantics__clone_on_stack_src_on_stack_mutate_after)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -336,7 +326,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
@@ -361,10 +351,8 @@ namespace rtl_tests
     TEST(CopyConstructor, sharing_semantics__clone_on_heap_src_on_stack_mutate_after)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -412,7 +400,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
@@ -438,10 +426,8 @@ namespace rtl_tests
     TEST(CopyConstructor, sharing_semantics__clone_on_stack_src_on_heap_mutate_after)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -489,7 +475,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
@@ -515,10 +501,8 @@ namespace rtl_tests
     TEST(CopyConstructor, sharing_semantics__clone_on_heap_src_on_heap_mutate_after)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -566,7 +550,7 @@ namespace rtl_tests
                 // both objects must be equal, created via default-constructor, different instances, not shared.
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxxMirror.getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);

@@ -15,10 +15,8 @@ namespace rtl_tests
     TEST(MoveSemantics, move_reflected_type_allocated_on_stack)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -75,10 +73,8 @@ namespace rtl_tests
     TEST(MoveSemantics, move_reflected_type_allocated_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -125,10 +121,8 @@ namespace rtl_tests
     TEST(MoveSemantics, move_returned_RObject_reflecting_const_refOrPtr)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             optional<Method> getTheEvent = classCalender->getMethod(calender::str_getTheEvent);
@@ -179,10 +173,8 @@ namespace rtl_tests
     TEST(MoveSemantics, move_returned_RObject_reflecting_stack_object)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxxMirror.getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             optional<Method> createCalender = classCalender->getMethod(calender::str_create);

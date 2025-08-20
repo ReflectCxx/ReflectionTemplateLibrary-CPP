@@ -15,9 +15,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_static_method)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
@@ -36,9 +34,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_wrong_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classBook = cxxMirror.getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, book] = classBook->create<alloc::Stack>();
@@ -46,7 +42,7 @@ namespace rtl_tests
             EXPECT_TRUE(book.isConstCastSafe());
             EXPECT_FALSE(book.isEmpty());
 
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -72,9 +68,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_empty_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 			
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -100,9 +94,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, implicit_method_resolution__only_const_method_exists__on_heap_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -139,9 +131,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, implicit_method_resolution__only_const_method_exists__on_stack_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -178,9 +168,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, implicit_method_resolution__overloads_exists__on_heap_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
@@ -216,9 +204,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, implicit_method_resolution__overloads_exists__on_stack_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
@@ -254,9 +240,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_const_method_resolution__only_const_method_exists__on_heap_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -292,9 +276,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_const_method_resolution__only_const_method_exists__on_stack_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -330,10 +312,8 @@ namespace rtl_tests
 
     TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_const_method_exists__on_heap_target)
     {
-        {
-            CxxMirror& cxxMirror = MyReflection::instance();
-            
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+        {   
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
             
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -368,10 +348,8 @@ namespace rtl_tests
 
 	TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_const_method_exists__on_stack_target)
     {
-        {
-            CxxMirror& cxxMirror = MyReflection::instance();
-            
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+        {   
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
             
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
@@ -406,9 +384,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_const_method_resolution__only_non_const_method_exists__on_heap_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+			optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
             
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
@@ -441,10 +417,8 @@ namespace rtl_tests
 
     TEST(ConstMethodOverload, explicit_const_method_resolution__only_non_const_method_exists__on_stack_target)
     {
-        {
-            CxxMirror& cxxMirror = MyReflection::instance();
-            
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+        {   
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
             
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
@@ -476,10 +450,8 @@ namespace rtl_tests
 
     TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_heap_target)
     {
-        {
-            CxxMirror& cxxMirror = MyReflection::instance();
-            
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+        {   
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
             
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
@@ -517,9 +489,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_stack_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
@@ -558,9 +528,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
@@ -596,9 +564,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_pointer_target)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classPerson = cxxMirror.getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
             optional<Method> createConstPtrPerson = classPerson->getMethod(person::str_createPtr);

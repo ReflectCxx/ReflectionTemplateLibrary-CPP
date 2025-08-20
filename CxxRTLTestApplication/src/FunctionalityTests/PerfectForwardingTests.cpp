@@ -38,10 +38,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -83,10 +81,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, rvalue_ref_only_binds_to_rvalue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -127,10 +123,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, const_lvalue_ref_only_binds_to_const_lvaue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -166,9 +160,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
@@ -196,9 +188,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_rvalue_ref_only_binds_to_rvalue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
@@ -225,9 +215,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);

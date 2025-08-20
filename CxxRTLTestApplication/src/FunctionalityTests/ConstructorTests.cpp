@@ -14,12 +14,10 @@ namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_record_types_with_wrong_names)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Function> badFunc = cxxMirror.getFunction(date::ns, "wrong_date_struct");
+		optional<Function> badFunc = cxx::mirror().getFunction(date::ns, "wrong_date_struct");
 		EXPECT_FALSE(badFunc);
 
-		optional<Record> badRec = cxxMirror.getRecord(date::ns, "wrong" + std::string(date::struct_));
+		optional<Record> badRec = cxx::mirror().getRecord(date::ns, "wrong" + std::string(date::struct_));
 		EXPECT_FALSE(badRec);
 	}
 
@@ -27,9 +25,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Heap>("wrong", "args0", 10);
@@ -45,9 +41,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Stack>("wrong", "args0", 10);
@@ -63,9 +57,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Heap>();
@@ -82,9 +74,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Stack>();
@@ -101,9 +91,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			string dateStr = date::DATE_STR0;
@@ -121,9 +109,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			string dateStr = date::DATE_STR0;
@@ -141,9 +127,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			unsigned day = date::DAY;
@@ -166,9 +150,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			unsigned day = date::DAY;
@@ -191,9 +173,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_heap)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Heap>();
@@ -210,9 +190,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_stack)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classDate = cxxMirror.getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->create<alloc::Stack>();
@@ -229,9 +207,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Heap>(19.0, 87.5);
@@ -247,9 +223,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Stack>(19.0, 87.5);
@@ -265,9 +239,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_default)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Heap>();
@@ -284,9 +256,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_default)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Stack>();
@@ -303,9 +273,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			double price = book::PRICE;
@@ -326,9 +294,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			double price = book::PRICE;
@@ -349,9 +315,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_heap)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Heap>();
@@ -368,9 +332,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_stack)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->create<alloc::Stack>();

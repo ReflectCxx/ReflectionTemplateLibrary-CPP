@@ -15,9 +15,7 @@ namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classBook = cxxMirror.getRecord(book::class_);
+		optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 		ASSERT_TRUE(classBook);
 
 		optional<Method> badMethod = classBook->getMethod("no_method");
@@ -27,9 +25,9 @@ namespace rtl_tests
 
 	TEST(RTLInterfaceCxxMirror, verify_typeIds_of_registered_records)
 	{
-		const auto& rtl_recordIdMap = MyReflection::instance().getRecordIdMap();
+		const auto& rtl_recordIdMap = cxx::mirror().getRecordIdMap();
 
-		for (const auto& itr0 : MyReflection::instance().getNamespaceRecordMap())
+		for (const auto& itr0 : cxx::mirror().getNamespaceRecordMap())
 		{
 			const auto& namespaceRecordMap = itr0.second;
 			for (const auto& itr1 : namespaceRecordMap)
@@ -82,9 +80,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_heapInstance, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -110,9 +106,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_stackInstance, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -138,9 +132,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
@@ -169,9 +161,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
@@ -200,9 +190,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -229,9 +217,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -258,9 +244,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -286,9 +270,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -314,9 +296,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_string_double_charPtr)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -350,9 +330,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_string_double_charPtr)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -386,9 +364,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_charPtr_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -422,9 +398,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_charPtr_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -458,9 +432,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
@@ -492,9 +464,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
@@ -526,9 +496,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
@@ -573,9 +541,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
