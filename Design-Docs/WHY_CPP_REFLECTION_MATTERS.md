@@ -62,9 +62,9 @@ These instincts are valid—but not disqualifiers. Instead, they set requirement
 const rtl::CxxMirror& m = MyReflection();
 
 auto cls = m.record("engine::Audio");
-auto [err, inst] = cls->create<rtl::alloc::Stack>(/* args */);
+auto [err, inst] = cls->create<rtl::alloc::Stack>(/* args */);  // heap or stack as requested
 auto setVolume = cls->getMethod("setVolume");
-auto [err, vol]  = setVolume->bind(inst).call(0.75);
+auto [err, vol]  = setVolume->bind(inst).call(0.75);  // conservative conversions apply
 ```
 
 **Serializer Sketch (pseudo‑code)**
@@ -73,7 +73,7 @@ auto [err, vol]  = setVolume->bind(inst).call(0.75);
 json to_json(const rtl::RObject& obj) {
   auto t = obj.record();
   json j;
-  for (auto& field : t.fields()) {
+  for (auto& field : t.fields()) {    // planned field/property reflection
     j[field.name()] = to_json(obj.get(field));
   }
   return j;
