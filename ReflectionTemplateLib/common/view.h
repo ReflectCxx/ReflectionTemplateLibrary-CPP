@@ -64,7 +64,7 @@ namespace rtl
         view& operator=(view&&) = delete;
         view& operator=(const view&) = delete;
 
-        _asType& get() const {
+        const _asType& get() const {
             return m_ref;
         }
     };
