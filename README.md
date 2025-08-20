@@ -14,11 +14,11 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, just like in Java or .NET, but in modern C++.
 
-* **Single Source of Truth** – All metadata is exposed through one immutable rtl::CxxMirror object, ensuring ABI stability and consistency across plugins, tools, and modules.
+* **Single Source of Truth** – All metadata is exposed through one immutable `rtl::CxxMirror` object, ensuring ABI stability and consistency across plugins, tools, and modules.
 
 * **Non-Intrusive & Macro-Free** – Register reflection data externally with a clean builder pattern; no macros, no base classes, no global registries.
 
-* **Tooling-Friendly** – The same rtl::CxxMirror powers serializers, debuggers, test frameworks, scripting layers, and editor integrations without needing compiler context.
+* **Tooling-Friendly** – The same `rtl::CxxMirror` powers serializers, debuggers, test frameworks, scripting layers, and editor integrations without needing compiler context.
 
 * **Const-By-Default Safety** – Everything is immutable unless explicitly mutable, preventing unintended side-effects in reflective code.
 
