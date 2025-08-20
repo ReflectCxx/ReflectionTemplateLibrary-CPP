@@ -7,7 +7,8 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)
 [![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Design Philosophy & Vision](https://img.shields.io/badge/Design%20Doc-Philosophy%20%26%20Vision-blueviolet)](./DESIGN_PHILOSOPHY_AND_VISION.md)
+[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blueviolet)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
+[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blueviolet)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
 
 ## What RTL Brings to Your Code
 

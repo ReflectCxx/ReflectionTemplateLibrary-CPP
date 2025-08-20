@@ -16,7 +16,7 @@ namespace rtl::unit_test
         RObject robj = reflect(std::make_shared<int>(NUM));
         ASSERT_FALSE(robj.isEmpty());
 
-        // --- Step 1: Verify reflection at wrapper level ---
+        // Verify reflection at wrapper level.
         // Ensure RObject recognizes it can be viewed as a shared_ptr<int>.
         EXPECT_TRUE(robj.canViewAs<std::shared_ptr<int>>());
         {
@@ -40,13 +40,13 @@ namespace rtl::unit_test
             EXPECT_TRUE(sptr.use_count() == 1);
         }
 
-        // --- Step 2: Final state check ---
+        // Final state check.
         // At the end, ownership should return to robj alone.
         auto view = robj.view<std::shared_ptr<int>>();
         EXPECT_TRUE(view);
 
         const std::shared_ptr<int>& sptr = view->get();
-        ASSERT_TRUE(sptr.use_count() == 1);
+        EXPECT_TRUE(sptr.use_count() == 1);
     }
 
 
@@ -60,8 +60,8 @@ namespace rtl::unit_test
             ASSERT_FALSE(robj.isEmpty());
             ASSERT_TRUE(Node::instanceCount() == 1);
 
-            // --- Step 1: Verify reflection at wrapper level ---
-            // Ensure RObject recognizes it can be viewed as a shared_ptr<int>.
+            // Verify reflection at wrapper level.
+            // Ensure RObject recognizes it can be viewed as a shared_ptr<Node>.
             EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
             {
                 // Obtain a view of the shared_ptr<Node>.
@@ -84,13 +84,13 @@ namespace rtl::unit_test
                 // Original view is still valid, back to count 1 after local copy goes out of scope.          
                 EXPECT_TRUE(view->get().use_count() == 1);
             }
-            // --- Step 4: Final state check ---
+            // Final state check.
             // At the end, ownership should return to robj alone.
             auto view = robj.view<std::shared_ptr<Node>>();
             EXPECT_TRUE(view);
 
             const std::shared_ptr<Node>& node = view->get();
-            ASSERT_TRUE(node.use_count() == 1);
+            EXPECT_TRUE(node.use_count() == 1);
         }
         ASSERT_TRUE(Node::instanceCount() == 0);
         ASSERT_TRUE(Node::assertResourcesReleased());
@@ -461,6 +461,107 @@ namespace rtl::unit_test
     }
 
 
+    TEST(RObject_reflecting_shared_ptr, move_semantics_pod)
+    {
+        constexpr const int NUM = 25738;
+        RObject robj = reflect(std::make_shared<int>(NUM));
+        ASSERT_FALSE(robj.isEmpty());
+
+        // Check if RObject can reflect as `shared_ptr<int>`
+        EXPECT_TRUE(robj.canViewAs<std::shared_ptr<int>>());
+        {
+            // Get a view of the value as `shared_ptr<int>`
+            auto view = robj.view<std::shared_ptr<int>>();
+            // Ensure the view is valid
+            ASSERT_TRUE(view.has_value());
+            {
+                std::shared_ptr<int> sptrVal = view->get();
+
+                EXPECT_EQ(*sptrVal, NUM);
+                //being shared by robj & sptrVal.
+                EXPECT_TRUE(sptrVal.use_count() == 2);
+            }
+            //here owned by 'robj' alone.
+            EXPECT_TRUE(view->get().use_count() == 1);
+        } {
+            //create copy of RObject itself.
+            RObject robj0 = std::move(robj);
+            //robj should be empty now.
+            ASSERT_TRUE(robj.isEmpty());
+
+            auto view = robj0.view<std::shared_ptr<int>>();
+            ASSERT_TRUE(view.has_value());
+            {
+                const std::shared_ptr<int>& sptrVal = view->get();
+
+                EXPECT_EQ(*sptrVal, NUM);
+                //single owner now, just robj0.
+                EXPECT_TRUE(sptrVal.use_count() == 1);
+            } {
+                //copy of shared_ptr got created.
+                std::shared_ptr<int> sptrVal = view->get();
+
+                EXPECT_EQ(*sptrVal, NUM);
+                //being shared by two entities- robj0 & sptrVal.
+                EXPECT_TRUE(sptrVal.use_count() == 2);
+            }
+            //now owned by 'robj0' alone.
+            EXPECT_TRUE(view->get().use_count() == 1);
+        }
+    }
+
+
+    TEST(RObject_reflecting_shared_ptr, move_semantics_Node)
+    {
+        {
+            constexpr const int NUM = -15442;
+            RObject robj = reflect(std::make_shared<Node>(NUM));
+            ASSERT_FALSE(robj.isEmpty());
+            EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
+            {
+                // Get a view of the value as `shared_ptr<int>`
+                auto view = robj.view<std::shared_ptr<Node>>();
+                // Ensure the view is valid
+                ASSERT_TRUE(view.has_value());
+                {
+                    std::shared_ptr<Node> sptrNode = view->get();
+                    EXPECT_EQ(sptrNode->data(), NUM);
+                    // Being shared by robj & sptrVal.
+                    EXPECT_TRUE(sptrNode.use_count() == 2);
+                }
+                // Here owned by 'robj' alone.
+                EXPECT_TRUE(view->get().use_count() == 1);
+            } {
+                //create copy of RObject itself.
+                RObject robj0 = std::move(robj);
+                //robj should be empty now.
+                ASSERT_TRUE(robj.isEmpty());
+
+                auto view = robj0.view<std::shared_ptr<Node>>();
+                ASSERT_TRUE(view.has_value());
+                {
+                    const std::shared_ptr<Node>& sptrNode = view->get();
+
+                    EXPECT_EQ(sptrNode->data(), NUM);
+                    //single owner now, just robj0.
+                    EXPECT_TRUE(sptrNode.use_count() == 1);
+                } {
+                    //copy of shared_ptr got created.
+                    std::shared_ptr<Node> sptrNode = view->get();
+
+                    EXPECT_EQ(sptrNode->data(), NUM);
+                    //being shared by two entities- robj0 & sptrVal.
+                    EXPECT_TRUE(sptrNode.use_count() == 2);
+                }
+                //now owned by 'robj0' alone.
+                EXPECT_TRUE(view->get().use_count() == 1);
+            }
+        }
+        EXPECT_TRUE(Node::instanceCount() == 0);
+        EXPECT_TRUE(Node::assertResourcesReleased());
+    }
+
+
     TEST(RObject_reflecting_shared_ptr, reflect_and_create_copies)
     {
         {
@@ -530,107 +631,5 @@ namespace rtl::unit_test
         // After leaving scope: no leaks, all resources released
         EXPECT_TRUE(Node::instanceCount() == 0);
         EXPECT_TRUE(Node::assertResourcesReleased());
-    }
-
-
-
-    TEST(RObject_reflecting_shared_ptr, reflect_and_move_copies)
-    {
-        {
-            constexpr const int NUM = -15442;
-            RObject robj = reflect(std::make_shared<Node>(NUM));
-            ASSERT_FALSE(robj.isEmpty());
-            EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());
-            {
-                // Get a view of the value as `shared_ptr<int>`
-                auto view = robj.view<std::shared_ptr<Node>>();
-                // Ensure the view is valid
-                ASSERT_TRUE(view.has_value());
-                {
-                    std::shared_ptr<Node> sptrNode = view->get();
-                    EXPECT_EQ(sptrNode->data(), NUM);
-                    // Being shared by robj & sptrVal.
-                    EXPECT_TRUE(sptrNode.use_count() == 2);
-                }
-                // Here owned by 'robj' alone.
-                EXPECT_TRUE(view->get().use_count() == 1);
-            } {
-                //create copy of RObject itself.
-                RObject robj0 = std::move(robj);
-                //robj should be empty now.
-                ASSERT_TRUE(robj.isEmpty());
-
-                auto view = robj0.view<std::shared_ptr<Node>>();
-                ASSERT_TRUE(view.has_value());
-                {
-                    const std::shared_ptr<Node>& sptrNode = view->get();
-
-                    EXPECT_EQ(sptrNode->data(), NUM);
-                    //single owner now, just robj0.
-                    EXPECT_TRUE(sptrNode.use_count() == 1);
-                } {
-                    //copy of shared_ptr got created.
-                    std::shared_ptr<Node> sptrNode = view->get();
-
-                    EXPECT_EQ(sptrNode->data(), NUM);
-                    //being shared by two entities- robj0 & sptrVal.
-                    EXPECT_TRUE(sptrNode.use_count() == 2);
-                }
-                //now owned by 'robj0' alone.
-                EXPECT_TRUE(view->get().use_count() == 1);
-            }
-        }
-        EXPECT_TRUE(Node::instanceCount() == 0);
-        EXPECT_TRUE(Node::assertResourcesReleased());
-    }
-
-
-    TEST(RObject_reflecting_shared_ptr, reflect_pod_and_move_copies)
-    {
-        constexpr const int NUM = 25738;
-        RObject robj = reflect(std::make_shared<int>(NUM));
-        ASSERT_FALSE(robj.isEmpty());
-
-        // Check if RObject can reflect as `shared_ptr<int>`
-        EXPECT_TRUE(robj.canViewAs<std::shared_ptr<int>>());
-        {
-            // Get a view of the value as `shared_ptr<int>`
-            auto view = robj.view<std::shared_ptr<int>>();
-            // Ensure the view is valid
-            ASSERT_TRUE(view.has_value());
-            {
-                std::shared_ptr<int> sptrVal = view->get();
-
-                EXPECT_EQ(*sptrVal, NUM);
-                //being shared by robj & sptrVal.
-                EXPECT_TRUE(sptrVal.use_count() == 2);
-            }
-            //here owned by 'robj' alone.
-            EXPECT_TRUE(view->get().use_count() == 1);
-        } {
-            //create copy of RObject itself.
-            RObject robj0 = std::move(robj);
-            //robj should be empty now.
-            ASSERT_TRUE(robj.isEmpty());
-
-            auto view = robj0.view<std::shared_ptr<int>>();
-            ASSERT_TRUE(view.has_value());
-            {
-                const std::shared_ptr<int>& sptrVal = view->get();
-
-                EXPECT_EQ(*sptrVal, NUM);
-                //single owner now, just robj0.
-                EXPECT_TRUE(sptrVal.use_count() == 1);
-            } {
-                //copy of shared_ptr got created.
-                std::shared_ptr<int> sptrVal = view->get();
-
-                EXPECT_EQ(*sptrVal, NUM);
-                //being shared by two entities- robj0 & sptrVal.
-                EXPECT_TRUE(sptrVal.use_count() == 2);
-            }
-            //now owned by 'robj0' alone.
-            EXPECT_TRUE(view->get().use_count() == 1);
-        }
     }
 }
