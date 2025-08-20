@@ -104,9 +104,13 @@ Minimal, Concrete Patterns With RTL
 Reflective Call (method invoke)
 
 const rtl::CxxMirror& m = MyReflection();
+
 auto cls = m.record("engine::Audio");
+
 auto inst = cls.create<rtl::alloc::Stack>({/* args */});           // heap or stack as requested
+
 auto setVolume = cls.getMethod("setVolume");
+
 auto vol  = setVolume->bind(inst).call(0.75);     // conservative conversions apply
 
 Serializer Sketch (pseudo‑code)
