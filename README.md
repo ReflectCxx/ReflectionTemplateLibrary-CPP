@@ -12,19 +12,33 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 ## What RTL Brings to Your Code
 
-* **Non-Intrusive by Design** – Reflection metadata is defined entirely outside your types. No macros, no base classes, no intrusive annotations — your original declarations stay pure.
-* **Centralized Registration** – All type and member registrations live in one place, cleanly separated from business logic for better organization and maintainability.
-* **Explicit & Macro-Free** – Type registration follows a clear, fluent builder pattern — no hidden or mysterious MACRO magic, just straightforward C++.
-* **Easy to Get Started** – Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+* **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, just like in Java or .NET, but in modern C++.
 
-  ```c++
-  rtl::CxxMirror cxxReflection({/* register all types here */});
-  ```
+* **Single Source of Truth** – All metadata is exposed through one immutable rtl::CxxMirror object, ensuring ABI stability and consistency across plugins, tools, and modules.
 
-  The ***cxxReflection*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
-* **Thread-Safe & Exception-Safe** – Designed for robustness, the library ensures thread safety and uses error codes to handle failures gracefully without throwing exceptions.
+* **Non-Intrusive & Macro-Free** – Register reflection data externally with a clean builder pattern; no macros, no base classes, no global registries.
+
+* **Tooling-Friendly** – The same rtl::CxxMirror powers serializers, debuggers, test frameworks, scripting layers, and editor integrations without needing compiler context.
+
+* **Const-By-Default Safety** – Everything is immutable unless explicitly mutable, preventing unintended side-effects in reflective code.
+
+* **Exception-Free Surface** – All predictable failures return error codes; no hidden throws.
+
+* **Deterministic Lifetimes** – Automatic ownership tracking of heap, stack, and smart pointer instances with zero hidden deep copies.
+
+* **Cross-Compiler Consistency** – Built entirely on standard C++20, no reliance on compiler extensions.
+
+* **Path to Higher-Level Abstractions** – The architecture unlocks the same extensibility as Java/.NET reflection, enabling ORMs, serializers, plugin systems, game editors, and live scripting directly in C++.
 
 ## A Quick Preview: Reflection That Feels Like C++
+
+Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+
+  ```c++
+  rtl::CxxMirror cxx_mirror({/* register all types here */});
+  ```
+
+  The ***cxx_mirror*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 
 RTL’s API is designed to be small and intuitive. The syntax follows familiar C++ patterns, so working with reflection feels natural.
 
@@ -35,19 +49,19 @@ p.setAge(43);
 std::cout << p.getName();
 
 // With reflection
-auto classPerson = MyReflection::instance().getRecord("Person");
+auto classPerson = cxx_mirror.getRecord("Person");      // Get the class as 'rtl::Record'.
 
-auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
+auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);   // Get the instance (robj) as 'rtl::RObject'.
 
-auto setAge = classPerson->getMethod("setAge");
+auto setAge = classPerson->getMethod("setAge");     // Get the method as 'rtl::Method'.
 
-setAge->bind(robj).call(43);
+setAge->bind(robj).call(43);    // Bind the rtl::RObject with rtl::Method and make the call with arguments.
 
 auto getName = classPerson->getMethod("getName");
 
-auto [err2, ret] = getName->bind(robj).call();
+auto [err2, ret] = getName->bind(robj).call();      // Get return value as rtl::RObject.
 
-std::cout << ret.view<std::string>()->get();
+std::cout << ret.view<std::string>()->get();    // access return value as std::string.
 ```
 
 The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
