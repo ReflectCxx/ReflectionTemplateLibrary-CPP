@@ -38,7 +38,7 @@ Create an instance of `CxxMirror`, passing all type information directly to its 
   rtl::CxxMirror cxx_mirror({/* register all types here */});
   ```
 
-  The ***cxx_mirror*** object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
+  The `cxx_mirror` object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
 
 RTL’s API is designed to be small and intuitive. The syntax follows familiar C++ patterns, so working with reflection feels natural.
 
