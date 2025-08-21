@@ -11,9 +11,9 @@ namespace singleton_test
     {
         static std::optional<rtl::access::Record> reflectedClass = CxxMirror(
             {
-                Reflect().record<Singleton>("Singleton").methodStatic("getInstance").build(&Singleton::getInstance),
+                Reflect().record<Singleton>().methodStatic("getInstance").build(&Singleton::getInstance),
 
-                Reflect().record<Singleton>("Singleton").methodConst("getHelloString").build(&Singleton::getHelloString)
+                Reflect().record<Singleton>().methodConst("getHelloString").build(&Singleton::getHelloString)
 
             }).getRecord("Singleton");
 

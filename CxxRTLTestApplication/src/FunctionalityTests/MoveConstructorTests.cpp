@@ -118,7 +118,7 @@ namespace rtl_tests
     }
 
 
-    TEST(MoveSemantics, move_returned_RObject_reflecting_const_refOrPtr)
+    TEST(MoveSemantics, move_returned_RObject_reflecting_true_const)
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
@@ -142,7 +142,22 @@ namespace rtl_tests
                 auto [err0, event0] = getTheEvent->bind(calender).call();
                 EXPECT_TRUE(err0 == error::None);
                 EXPECT_FALSE(event0.isEmpty());
-                EXPECT_FALSE(event0.isConstCastSafe());
+                EXPECT_FALSE(event0.isConstCastSafe()); // Retured as True-Const from reflected call, even RTL will not const_cast it.
+
+                optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
+                ASSERT_TRUE(classEvent);
+                {
+                    optional<Method> eventReset = classEvent->getMethod(event::str_reset);
+                    ASSERT_TRUE(eventReset);
+
+                    auto [e0, r0] = eventReset->bind(event0).call();
+                    EXPECT_TRUE(e0 == error::ConstCallViolation);
+                    EXPECT_TRUE(r0.isEmpty());
+
+                    auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event0).call();
+                    EXPECT_TRUE(e1 == error::IllegalConstCast);
+                    EXPECT_TRUE(r2.isEmpty());
+                }
 
                 // RObject reflecting reference/pointer, stores pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
@@ -154,6 +169,21 @@ namespace rtl_tests
                 // 'event0' must be empty now.
                 EXPECT_TRUE(event0.isEmpty());
                 EXPECT_NE(event0.getTypeId(), event1.getTypeId());
+                {
+                    // Event::reset() is a non-const method. can't be called on const-object.
+                    optional<Method> eventReset = classEvent->getMethod(event::str_reset);
+                    ASSERT_TRUE(eventReset);
+
+                    // So here, call to 'non-const' method on 'const' target fails here.
+                    auto [e0, r0] = eventReset->bind(event1).call();
+                    EXPECT_TRUE(e0 == error::ConstCallViolation);
+                    EXPECT_TRUE(r0.isEmpty());
+
+                    // Since the  here, call to 'non-const' method on 'const' target fails here.
+                    auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event1).call();
+                    EXPECT_TRUE(e1 == error::IllegalConstCast);
+                    EXPECT_TRUE(r2.isEmpty());
+                }
             }
             // After move, these instance count must remain same.
             EXPECT_TRUE(calender::get_instance_count() == 1);

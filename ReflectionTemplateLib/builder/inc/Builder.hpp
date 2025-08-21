@@ -15,13 +15,39 @@
 #include "Builder.h"
 #include "ReflectionBuilder.hpp"
 
-namespace rtl {
-
+namespace rtl
+{
     namespace builder
     {
-        inline Builder<methodQ::None>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                             const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
+        inline CtorBuilder::CtorBuilder(const std::string_view pNamespace, const std::string_view pRecord,
+                                        const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pRecord, pNamespace, pFunction) {
+        }
+
+    /*  @method: build()
+        @param: none
+        @return: 'access::Function' object.
+        * accepts no arguments, builds copy constructor which takes const object source.
+        * called on object returned by 'RecordBuilder<_recordType>::constructor<...>()'
+        * template params <...>, explicitly specified.
+        * calling with zero template params will build the default constructor ie, 'RecordBuilder<_recordType>::constructor()'
+    */  template<class _recordType, class ..._signature>
+        inline const access::Function CtorBuilder::build() const
+        {
+            constexpr bool isCopyCtorSignature = (sizeof...(_signature) == 1 && traits::is_first_type_same_v<_recordType, _signature...>);
+            static_assert(!isCopyCtorSignature, "Copy-constructor registration detected! It is implicitly registered with other constructors.");
+            return buildConstructor<_recordType, _signature...>();
+        }
+    }
+}
+
+
+namespace rtl
+{
+    namespace builder
+    {
+        inline Builder<methodQ::None>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+            : ReflectionBuilder(pRecordId, pFunction, pNamespace) {
         }
 
     /*  @method: build()
@@ -40,10 +66,9 @@ namespace rtl {
 
     namespace builder
     {
-        inline Builder<methodQ::None, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                   const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::None, void>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+            : ReflectionBuilder(pRecordId, pFunction, pNamespace)
+        { }
 
     /*  @method: build()
         @param: _returnType(*)()
@@ -62,10 +87,9 @@ namespace rtl {
     namespace builder
     {
         template<class ..._signature>
-        inline Builder<methodQ::None, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                            const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::None, _signature...>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+            : ReflectionBuilder(pRecordId, pFunction, pNamespace)
+        { }
 
 
     /*  @method: build()
@@ -85,10 +109,9 @@ namespace rtl {
 
     namespace builder
     {
-        inline Builder<methodQ::Const>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                              const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::Const>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction)
+        { }
 
     /*  @method: build()
         @param: _returnType(_recordType::*)(_signature...) const.
@@ -106,10 +129,9 @@ namespace rtl {
 
     namespace builder
     {
-        inline Builder<methodQ::Const, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                    const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::Const, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction)
+        { }
 
     /*  @method: build()
         @param: _returnType(_recordType::*)() const.
@@ -128,10 +150,9 @@ namespace rtl {
     namespace builder 
     {
         template<class ..._signature>
-        inline Builder<methodQ::Const, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                             const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::Const, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction)
+        { }
 
     /*  @method: build()
         @param: _returnType(_recordType::*)(_signature...) const.
@@ -150,26 +171,9 @@ namespace rtl {
 
     namespace builder
     {
-        inline Builder<methodQ::NonConst>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                             const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
-
-
-    /*  @method: build()
-        @param: none
-        @return: 'access::Function' object.
-        * accepts no arguments, builds copy constructor which takes const object source.
-        * called on object returned by 'RecordBuilder<_recordType>::constructor<...>()'
-        * template params <...>, explicitly specified.
-        * calling with zero template params will build the default constructor ie, 'RecordBuilder<_recordType>::constructor()'
-    */  template<class _recordType, class ..._signature>
-        inline const access::Function Builder<methodQ::NonConst>::build() const
-        {
-            constexpr bool isCopyCtorSignature = (sizeof...(_signature) == 1 && traits::is_first_type_same_v<_recordType, _signature...>);
-            static_assert(!isCopyCtorSignature, "Copy-constructor registration detected! It is implicitly registered with other constructors.");
-            return buildConstructor<_recordType, _signature...>();
-        }
+        inline Builder<methodQ::NonConst>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction) 
+        { }
 
 
     /*  @method: build()
@@ -188,10 +192,9 @@ namespace rtl {
   
     namespace builder
     {
-        inline Builder<methodQ::NonConst, void>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                   const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::NonConst, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction)
+        { }
 
 
     /*  @method: build()
@@ -211,10 +214,9 @@ namespace rtl {
     namespace builder
     {
         template<class ..._signature>
-        inline Builder<methodQ::NonConst, _signature...>::Builder(const std::string& pNamespace, const std::string& pRecord,
-                                                            const std::string& pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pNamespace, pRecord, pFunction, pRecordId) {
-        }
+        inline Builder<methodQ::NonConst, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pRecordId, pFunction)
+        { }
 		
     /*  @method: build()
         @param: _returnType(_recordType::*)(_signature...)

@@ -35,7 +35,7 @@ namespace rtl {
         * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
           check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
           if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
-    */  inline Reflect& Reflect::nameSpace(const std::string& pNamespace)
+    */  inline Reflect& Reflect::nameSpace(const std::string_view pNamespace)
         {
             m_namespace = pNamespace;
             return *this;
@@ -49,9 +49,9 @@ namespace rtl {
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if member function pointer is passed.
     */  template<>
-        inline const Builder<methodQ::None> Reflect::function(const std::string& pFunction)
+        inline const Builder<methodQ::None> Reflect::function(const std::string_view pFunction)
         {
-            return Builder<methodQ::None>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
+            return Builder<methodQ::None>(detail::TypeId<>::None, pFunction, m_namespace);
         }
 
 		
@@ -62,9 +62,16 @@ namespace rtl {
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- '_recordType'.
     */  template<class _recordType>
-        inline constexpr const RecordBuilder<_recordType> Reflect::record(const std::string& pClass)
+        inline constexpr const RecordBuilder<_recordType> Reflect::record(const std::string_view pClass)
         {
             return RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
+        }
+
+
+        template<class _recordType>
+        inline constexpr const MethodBuilder<_recordType> Reflect::record()
+        {
+            return MethodBuilder<_recordType>();
         }
 
 		
@@ -77,9 +84,9 @@ namespace rtl {
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if any member function pointer is passed.
     */  template<class ..._signature>
-        inline constexpr const Builder<methodQ::None, _signature...> Reflect::function(const std::string& pFunction) 
+        inline constexpr const Builder<methodQ::None, _signature...> Reflect::function(const std::string_view pFunction) 
         {
-            return Builder<methodQ::None, _signature...>(m_namespace, m_record, pFunction, detail::TypeId<>::None);
+            return Builder<methodQ::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
         }
     }
 }

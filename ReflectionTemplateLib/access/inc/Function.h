@@ -56,8 +56,8 @@ namespace rtl {
 
         private:
 
-            Function(const std::string& pNamespace, const std::string& pClassName, 
-                     const std::string& pFuncName, const detail::FunctorId& pFunctorId,
+            Function(const std::string_view pNamespace, const std::string_view pClassName, 
+                     const std::string_view pFuncName, const detail::FunctorId& pFunctorId,
                      const std::size_t pRecordTypeId, const methodQ pQualifier);
 
             void addOverload(const Function& pOtherFunc) const;
@@ -67,7 +67,7 @@ namespace rtl {
         protected:
 
             Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-                     const std::string& pFunctorName);
+                     const std::string_view pFunctorName);
 
             std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
@@ -101,6 +101,7 @@ namespace rtl {
 
             friend detail::CxxReflection;
             friend detail::ReflectionBuilder;
+
             template<class ..._signature>
             friend class detail::FunctionCaller;
         };

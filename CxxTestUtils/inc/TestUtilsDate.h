@@ -18,6 +18,7 @@ namespace test_utils
 		static constexpr const char* ns = "nsdate";
 		static constexpr const char* struct_ = "Event";
 		static constexpr const char* str_getDate = "getDate";
+		static constexpr const char* str_reset = "reset";
 
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();

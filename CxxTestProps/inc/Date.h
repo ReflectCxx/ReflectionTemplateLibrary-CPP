@@ -78,6 +78,8 @@ namespace nsdate
 
 		const Date& getEventDate();
 
+		void reset();
+
 	private:
 
 		Event();

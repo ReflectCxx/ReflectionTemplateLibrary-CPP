@@ -92,6 +92,13 @@ namespace nsdate
 		return *m_date;
 	}
 
+
+	void Event::reset()
+	{
+		//does nothing yet.
+	}
+
+
 	std::size_t Event::instanceCount()
 	{
 		return m_instanceCount;

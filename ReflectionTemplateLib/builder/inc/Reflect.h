@@ -17,20 +17,23 @@
 
 namespace rtl {
 
-    namespace builder 
+    namespace builder
     {
         template<class _recordType>
         class RecordBuilder;
+
+        template<class _recordType>
+        class MethodBuilder;
 
     /*  @class: Reflect
         * provides interface to register all kinds of functions (member/non-member).
     */  class Reflect
         {
             //name of the class, struct being registered.
-            std::string m_record;
+            std::string_view m_record;
 
             //name of the namespace being registered.
-            std::string m_namespace;
+            std::string_view m_namespace;
 
         public:
 
@@ -38,13 +41,16 @@ namespace rtl {
             Reflect(const Reflect&) = delete;
             Reflect& operator=(const Reflect&) = delete;
 
-            Reflect& nameSpace(const std::string& pNamespace);
-
-            template<class ..._signature>
-            constexpr const Builder<methodQ::None, _signature...> function(const std::string& pFunction);
+            Reflect& nameSpace(const std::string_view pNamespace);
 
             template<class _recordType>
-            constexpr const RecordBuilder<_recordType> record(const std::string& pClass);
+            constexpr const MethodBuilder<_recordType> record();
+
+            template<class _recordType>
+            constexpr const RecordBuilder<_recordType> record(const std::string_view pClass);
+
+            template<class ..._signature>
+            constexpr const Builder<methodQ::None, _signature...> function(const std::string_view pFunction);
         };
     }
 }

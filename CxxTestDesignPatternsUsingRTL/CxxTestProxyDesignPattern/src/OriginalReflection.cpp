@@ -26,19 +26,19 @@ namespace proxy_test
                 Reflect().record<Original>("Original").constructor().build(),
 
                 // Register the instance method: getClassName
-                Reflect().record<Original>("Original").method("getClassName").build(&Original::getClassName),
+                Reflect().record<Original>().method("getClassName").build(&Original::getClassName),
 
                 // Register the instance method: getSquareRoot
-                Reflect().record<Original>("Original").method("getSquareRoot").build(&Original::getSquareRoot),
+                Reflect().record<Original>().method("getSquareRoot").build(&Original::getSquareRoot),
 
                 // Register the instance method: setNodeName
-                Reflect().record<Original>("Original").method("setNodeName").build(&Original::setNodeName),
+                Reflect().record<Original>().method("setNodeName").build(&Original::setNodeName),
 
                 // Register the instance method: getNodeName
-                Reflect().record<Original>("Original").method("getNodeName").build(&Original::getNodeName),
+                Reflect().record<Original>().method("getNodeName").build(&Original::getNodeName),
 
                 // Register the static method: getInstanceCount
-                Reflect().record<Original>("Original").methodStatic("getInstanceCount").build(&Original::getInstanceCount)
+                Reflect().record<Original>().methodStatic("getInstanceCount").build(&Original::getInstanceCount)
             }).getRecord("Original");
 
         // Return the reflection data for the "Original" class

@@ -65,8 +65,8 @@ namespace rtl::detail
         Reference
     };
 
-    inline static const std::string ctor_name(const std::string& pRecordName) {
-        return (pRecordName + "::" + pRecordName + "()");
+    inline static const std::string ctor_name(const std::string_view pRecordName) {
+        return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }
 
 #define GETTER(_varType, _name, _var)                       \
