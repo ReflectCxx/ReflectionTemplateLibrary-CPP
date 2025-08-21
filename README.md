@@ -18,8 +18,6 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Non-Intrusive & Macro-Free** – Register reflection data externally with a clean builder pattern; no macros, no base classes, no global registries.
 
-* **Tooling-Friendly** – The same `rtl::CxxMirror` powers serializers, debuggers, test frameworks, scripting layers, and editor integrations without needing compiler context.
-
 * **Const-By-Default Safety** – Everything is immutable unless explicitly mutable, preventing unintended side-effects in reflective code.
 
 * **Exception-Free Surface** – All predictable failures return error codes; no hidden throws.
@@ -28,7 +26,9 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Cross-Compiler Consistency** – Built entirely on standard C++20, no reliance on compiler extensions.
 
-* **Path to Higher-Level Abstractions** – The architecture unlocks the same extensibility as Java/.NET reflection, enabling ORMs, serializers, plugin systems, game editors, and live scripting directly in C++.
+* **Tooling-Friendly** – Designed so that `rtl::CxxMirror` can power serializers, debuggers, test frameworks, scripting layers, and editor integrations without compiler context.
+
+* **Path to Higher-Level Abstractions** – The architecture is built to unlock the same extensibility as Java/.NET reflection, paving the way for ORMs, plugin systems, game editors, and live scripting directly in C++.
 
 ## A Quick Preview: Reflection That Feels Like C++
 
