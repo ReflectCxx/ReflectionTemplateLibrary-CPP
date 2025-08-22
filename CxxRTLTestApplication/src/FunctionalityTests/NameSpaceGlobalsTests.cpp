@@ -37,17 +37,17 @@ namespace rtl_tests
     */      
             auto [err, rchar] = charType->create<rtl::alloc::Stack>('Q');
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
-            EXPECT_TRUE(rchar.isEmpty());
+            ASSERT_TRUE(rchar.isEmpty());
         } {
             auto [err, rchar] = charType->create<rtl::alloc::Stack>();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
+            ASSERT_FALSE(rchar.isEmpty());
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         {
             auto [err, rchar] = charType->create<rtl::alloc::Heap>();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
+            ASSERT_FALSE(rchar.isEmpty());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -62,7 +62,7 @@ namespace rtl_tests
             //Internally calls the copy constructor.
             auto [err, rchar] = reflChar.clone<rtl::alloc::Stack>();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
+            ASSERT_FALSE(rchar.isEmpty());
             EXPECT_TRUE(rchar.canViewAs<char>());
 
             auto viewCh = rchar.view<char>();
@@ -76,7 +76,7 @@ namespace rtl_tests
             //Internally calls the copy constructor.
             auto [err, rchar] = reflChar.clone<rtl::alloc::Heap>();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(rchar.isEmpty());
+            ASSERT_FALSE(rchar.isEmpty());
 
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             EXPECT_TRUE(rchar.canViewAs<char>());
@@ -141,7 +141,7 @@ namespace rtl_tests
                                  //its type will be inferred 'const double' instead of 'double'.
         auto [err0, ret0] = (*setReal)(real);
         EXPECT_TRUE(err0 == rtl::error::None);
-        EXPECT_TRUE(ret0.isEmpty());
+        ASSERT_TRUE(ret0.isEmpty());
 
         EXPECT_TRUE(setImaginary->hasSignature<double>());
 
@@ -149,14 +149,14 @@ namespace rtl_tests
                                            //its type will be inferred 'const double' instead of 'double'.
         auto [err1, ret1] = (*setImaginary)(imaginary);
         EXPECT_TRUE(err1 == rtl::error::None);
-        EXPECT_TRUE(ret1.isEmpty());
+        ASSERT_TRUE(ret1.isEmpty());
 
         EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
         auto [err2, ret2] = (*getMagnitude)();
 
         EXPECT_TRUE(err2 == rtl::error::None);
-        EXPECT_FALSE(ret2.isEmpty());
+        ASSERT_FALSE(ret2.isEmpty());
         EXPECT_TRUE(ret2.canViewAs<double>());
 
         double retVal = ret2.view<double>()->get();
@@ -192,7 +192,7 @@ namespace rtl_tests
         auto [err, ret] = (*getComplexNumAsString)();
 
         EXPECT_TRUE(err == rtl::error::None);
-        EXPECT_FALSE(ret.isEmpty());
+        ASSERT_FALSE(ret.isEmpty());
         EXPECT_TRUE(ret.canViewAs<string>());
 
         string retVal = ret.view<std::string>()->get();
@@ -210,7 +210,7 @@ namespace rtl_tests
             //so type-casting in place as 'string'
             auto [err, ret] = (*reverseString)(string(STRA));
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
             string retVal = ret.view<std::string>()->get();
@@ -221,7 +221,7 @@ namespace rtl_tests
             auto [err, ret] = reverseString->bind<string>().call(STRB);
 
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
            string retVal = ret.view<std::string>()->get();
@@ -229,7 +229,7 @@ namespace rtl_tests
         } {
             auto [err, ret] = (*reverseString)();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
             
             string retVal = ret.view<std::string>()->get();
@@ -238,7 +238,7 @@ namespace rtl_tests
     }
 
 
-    TEST(Reflecting_STL_class, std_string__no_constructor_registerd__call_method)
+    TEST(Reflecting_STL_class, std_string__call_reflected_method)
     {
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
@@ -250,7 +250,7 @@ namespace rtl_tests
         {
             auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
             EXPECT_TRUE(ret.view<bool>()->get());
         }
@@ -258,14 +258,14 @@ namespace rtl_tests
         {
             auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
             EXPECT_FALSE(ret.view<bool>()->get());
         }
     }
 
 
-    TEST(Reflecting_STL_class, std_string_view__no_constructor_registerd__call_method)
+    TEST(Reflecting_STL_class, std_string_view__call_reflected_method)
     {
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
         ASSERT_TRUE(stdStringClass);
@@ -277,7 +277,7 @@ namespace rtl_tests
         {
             auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
             EXPECT_TRUE(ret.view<bool>()->get());
         }
@@ -285,7 +285,7 @@ namespace rtl_tests
         {
             auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
             EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
             EXPECT_FALSE(ret.view<bool>()->get());
         }

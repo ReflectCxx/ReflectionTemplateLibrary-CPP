@@ -198,7 +198,7 @@ namespace rtl::unit_test
             // Default cloning shallow-copies the wrapper.
             auto [err, robj0] = robj.clone<alloc::Heap>();
             EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-            EXPECT_TRUE(robj0.isEmpty());
+            ASSERT_TRUE(robj0.isEmpty());
         }
 
         // --- Step 2: Clone by 'Value' (entity::Value semantics) ---
@@ -224,7 +224,7 @@ namespace rtl::unit_test
             // This performs a shallow copy of the shared_ptr, incrementing ref count.
             auto [err, robj0] = robj.clone<alloc::Heap, copy::Wrapper>();
             EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-            EXPECT_TRUE(robj0.isEmpty());
+            ASSERT_TRUE(robj0.isEmpty());
         }
 
         // --- Step 4: Final state check ---
@@ -334,7 +334,7 @@ namespace rtl::unit_test
                 // Default cloning shallow-copies the wrapper.
                 auto [err, robj0] = robj.clone<alloc::Heap>();
                 EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-                EXPECT_TRUE(robj0.isEmpty());
+                ASSERT_TRUE(robj0.isEmpty());
                 ASSERT_TRUE(Node::instanceCount() == 1);
             }
 
@@ -353,7 +353,7 @@ namespace rtl::unit_test
                 // This performs a shallow copy of the shared_ptr, incrementing ref count.
                 auto [err, robj0] = robj.clone<alloc::Heap, copy::Wrapper>();
                 EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-                EXPECT_TRUE(robj0.isEmpty());
+                ASSERT_TRUE(robj0.isEmpty());
                 ASSERT_TRUE(Node::instanceCount() == 1);
             }
 
@@ -585,7 +585,7 @@ namespace rtl::unit_test
             // ---------------------------------------------------------------------
             auto [err, badObj] = robj.clone<alloc::Heap>();
             EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-            EXPECT_TRUE(badObj.isEmpty());
+            ASSERT_TRUE(badObj.isEmpty());
 
             // ---------------------------------------------------------------------
             // 2. clone using 'entity::Value': tries to copy the contained entity.

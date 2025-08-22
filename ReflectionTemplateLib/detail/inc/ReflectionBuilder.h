@@ -30,7 +30,7 @@ namespace rtl {
             const std::string_view m_function;
             const std::string_view m_namespace;
 
-            ReflectionBuilder(std::size_t pRecordId, const std::string_view pFunction,
+            ReflectionBuilder(const std::string_view pFunction, std::size_t pRecordId,
                               const std::string_view pNamespace = "",
                               const std::string_view pRecord = "");
 

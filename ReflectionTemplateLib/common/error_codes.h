@@ -24,7 +24,6 @@ namespace rtl
         TargetMismatch,
         SignatureMismatch,
         FunctionNotRegisterd,
-        ConstructorNotRegistered,
 
         IllegalConstCast,
         ConstCallViolation,
@@ -57,8 +56,6 @@ namespace rtl
             return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
         case error::NonConstOverloadMissing:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
-        case error::ConstructorNotRegistered:
-            return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::TypeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::TypeNotDefaultConstructible:

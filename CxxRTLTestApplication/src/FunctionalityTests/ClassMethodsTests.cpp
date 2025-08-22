@@ -45,31 +45,21 @@ namespace rtl_tests
 				if (recordName == event::struct_) {
 					//Event's default constructor is private or deleted.
 					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == library::class_) {
 					//Library's copy-constructor is deleted or private.
 					EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == "void") {
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
 					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == "string") {
-					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == "string_view") {
-					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else {
 					EXPECT_TRUE(err == rtl::error::None);
-					EXPECT_FALSE(robj.isEmpty());
+					ASSERT_FALSE(robj.isEmpty());
 					EXPECT_TRUE(robj.getTypeId() == recordId);
 				}
 			}
@@ -89,13 +79,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -115,13 +105,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -141,13 +131,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 			// Slower. bind<>().call() syntax is faster.
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_FALSE(ret.isEmpty());
+			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
@@ -170,13 +160,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_FALSE(ret.isEmpty());
+			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
@@ -199,14 +189,14 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -226,14 +216,14 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -253,13 +243,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -279,13 +269,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -305,7 +295,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -317,7 +307,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
@@ -339,7 +329,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -351,7 +341,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
@@ -373,7 +363,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -385,7 +375,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
@@ -407,7 +397,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -419,7 +409,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
@@ -441,7 +431,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -451,7 +441,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
@@ -473,7 +463,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -483,7 +473,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
@@ -505,7 +495,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -528,7 +518,7 @@ namespace rtl_tests
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);
@@ -550,7 +540,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -573,7 +563,7 @@ namespace rtl_tests
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);

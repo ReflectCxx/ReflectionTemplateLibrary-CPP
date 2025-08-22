@@ -21,7 +21,7 @@ namespace rtl
     {
         inline CtorBuilder::CtorBuilder(const std::string_view pNamespace, const std::string_view pRecord,
                                         const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pRecord, pNamespace, pFunction) {
+            : ReflectionBuilder(pFunction, pRecordId, pNamespace, pRecord) {
         }
 
     /*  @method: build()
@@ -47,7 +47,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::None>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
-            : ReflectionBuilder(pRecordId, pFunction, pNamespace) {
+            : ReflectionBuilder(pFunction, pRecordId, pNamespace) {
         }
 
     /*  @method: build()
@@ -67,7 +67,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::None, void>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
-            : ReflectionBuilder(pRecordId, pFunction, pNamespace)
+            : ReflectionBuilder(pFunction, pRecordId, pNamespace)
         { }
 
     /*  @method: build()
@@ -88,7 +88,7 @@ namespace rtl
     {
         template<class ..._signature>
         inline Builder<methodQ::None, _signature...>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
-            : ReflectionBuilder(pRecordId, pFunction, pNamespace)
+            : ReflectionBuilder(pFunction, pRecordId, pNamespace)
         { }
 
 
@@ -110,7 +110,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::Const>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction)
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 
     /*  @method: build()
@@ -130,7 +130,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::Const, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction)
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 
     /*  @method: build()
@@ -151,7 +151,7 @@ namespace rtl
     {
         template<class ..._signature>
         inline Builder<methodQ::Const, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction)
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 
     /*  @method: build()
@@ -172,7 +172,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::NonConst>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction) 
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 
 
@@ -193,7 +193,7 @@ namespace rtl
     namespace builder
     {
         inline Builder<methodQ::NonConst, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction)
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 
 
@@ -215,7 +215,7 @@ namespace rtl
     {
         template<class ..._signature>
         inline Builder<methodQ::NonConst, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
-            : ReflectionBuilder(pRecordId, pFunction)
+            : ReflectionBuilder(pFunction, pRecordId)
         { }
 		
     /*  @method: build()

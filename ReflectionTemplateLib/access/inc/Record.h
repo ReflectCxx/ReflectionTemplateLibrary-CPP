@@ -41,13 +41,15 @@ namespace rtl {
             using MethodMap = std::unordered_map< std::string, access::Method >;
 
             mutable std::size_t m_recordId;
+            mutable std::string m_namespace;
             mutable std::string m_recordName;
             mutable MethodMap m_methods;
 
         private:
 
-            Record(const std::string& pRecordName, const std::size_t pRecordId)
+            Record(const std::string& pRecordName, const std::size_t pRecordId, const std::string& pNamespace)
                 : m_recordId(pRecordId)
+                , m_namespace(pNamespace)
                 , m_recordName(pRecordName)
             { }
 
@@ -92,11 +94,7 @@ namespace rtl {
                 static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
                 const auto& itr = m_methods.find(detail::ctor_name(m_recordName));
                 //if registered constructor is found for the class/struct represented by this 'Record' object.
-                return itr != m_methods.end()
-                           //invoke the constructor, forwarding the arguments.
-                           ? itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...)
-                           //if no constructor found, return with empty 'RObject'.
-                           : std::make_pair(error::ConstructorNotRegistered, RObject());
+                return itr->second.invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
             }
 
             //only class which can create objects of this class & manipulates 'm_methods'.

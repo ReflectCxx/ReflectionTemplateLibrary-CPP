@@ -20,12 +20,12 @@ namespace rtl_tests
 
             auto [err0, book0] = classBook->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book0.isEmpty());
+            ASSERT_FALSE(book0.isEmpty());
 
             auto [err1, book1] = book0.clone<alloc::Heap>();
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_FALSE(book1.isEmpty());
+            ASSERT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);
@@ -43,12 +43,12 @@ namespace rtl_tests
 
             auto [err0, book0] = classBook->create<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book0.isEmpty());
+            ASSERT_FALSE(book0.isEmpty());
 
             auto [err1, book1] = book0.clone<alloc::Stack>();
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_FALSE(book1.isEmpty());
+            ASSERT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -66,12 +66,12 @@ namespace rtl_tests
 
             auto [err0, book0] = classBook->create<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book0.isEmpty());
+            ASSERT_FALSE(book0.isEmpty());
 
             auto [err1, book1] = book0.clone<alloc::Heap>();
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_FALSE(book1.isEmpty());
+            ASSERT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
@@ -90,12 +90,12 @@ namespace rtl_tests
 
             auto [err0, book0] = classBook->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book0.isEmpty());
+            ASSERT_FALSE(book0.isEmpty());
 
             auto [err1, book1] = book0.clone<alloc::Stack>();
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_FALSE(book1.isEmpty());
+            ASSERT_FALSE(book1.isEmpty());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
@@ -124,7 +124,7 @@ namespace rtl_tests
 
             auto [err0, book] = classBook->create<alloc::Heap>(price, title);
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book.isEmpty());
+            ASSERT_FALSE(book.isEmpty());
 
             auto [err1, ret1] = (*setAuthor)(book)(author);
             EXPECT_TRUE(err1 == error::None);
@@ -134,7 +134,7 @@ namespace rtl_tests
 
             auto [err3, bookCopy] = book.clone<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(bookCopy.isEmpty());
+            ASSERT_FALSE(bookCopy.isEmpty());
 
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
             EXPECT_TRUE(isPassed);
@@ -166,7 +166,7 @@ namespace rtl_tests
 
             auto [err0, book] = classBook->create<alloc::Stack>(price, title);
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book.isEmpty());
+            ASSERT_FALSE(book.isEmpty());
 
             auto [err1, ret1] = (*setAuthor)(book)(author);
             EXPECT_TRUE(err1 == error::None);
@@ -176,7 +176,7 @@ namespace rtl_tests
 
             auto [err3, bookCopy] = book.clone<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(bookCopy.isEmpty());
+            ASSERT_FALSE(bookCopy.isEmpty());
 
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
             EXPECT_TRUE(isPassed);
@@ -208,7 +208,7 @@ namespace rtl_tests
             
             auto [err0, book] = classBook->create<alloc::Stack>(price, title);
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book.isEmpty());
+            ASSERT_FALSE(book.isEmpty());
             
             auto [err1, ret1] = (*setAuthor)(book)(author);
             EXPECT_TRUE(err1 == error::None);
@@ -218,7 +218,7 @@ namespace rtl_tests
             
             auto [err3, bookCopy] = book.clone<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(bookCopy.isEmpty());
+            ASSERT_FALSE(bookCopy.isEmpty());
             
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
             EXPECT_TRUE(isPassed);
@@ -250,7 +250,7 @@ namespace rtl_tests
             
             auto [err0, book] = classBook->create<alloc::Heap>(price, title);
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(book.isEmpty());
+            ASSERT_FALSE(book.isEmpty());
             
             auto [err1, ret1] = (*setAuthor)(book)(author);
             EXPECT_TRUE(err1 == error::None);
@@ -260,7 +260,7 @@ namespace rtl_tests
             
             auto [err3, bookCopy] = book.clone<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(bookCopy.isEmpty());
+            ASSERT_FALSE(bookCopy.isEmpty());
             
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
             EXPECT_TRUE(isPassed);
@@ -284,7 +284,7 @@ namespace rtl_tests
             auto [err0, calender0] = typeCalender->create<alloc::Stack>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -298,7 +298,7 @@ namespace rtl_tests
             
             EXPECT_TRUE(err1 == error::None);
             // Verify the object created is valid and on stack.
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_FALSE(calender1.isOnHeap());
             EXPECT_TRUE(calender0.getTypeId() == calender1.getTypeId());
 
@@ -315,13 +315,13 @@ namespace rtl_tests
                 auto [err_0, date0] = getTheDate->bind(calender0).call();
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
-                EXPECT_FALSE(date0.isEmpty());
+                ASSERT_FALSE(date0.isEmpty());
                 EXPECT_TRUE(date0.isConstCastSafe());
 
                 auto [err_1, date1] = getTheDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
-                EXPECT_FALSE(date1.isEmpty());
+                ASSERT_FALSE(date1.isEmpty());
 
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -334,7 +334,7 @@ namespace rtl_tests
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
-                    EXPECT_TRUE(err == error::None && ret.isEmpty());
+                    ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
                 }
@@ -359,7 +359,7 @@ namespace rtl_tests
             auto [err0, calender0] = typeCalender->create<alloc::Stack>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -373,7 +373,7 @@ namespace rtl_tests
 
             EXPECT_TRUE(err1 == error::None);
             // Verify the object created is valid and on stack.
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isOnHeap());
             EXPECT_TRUE(calender0.getTypeId() == calender1.getTypeId());
 
@@ -390,12 +390,12 @@ namespace rtl_tests
                 auto [err_0, date0] = getTheDate->bind(calender0).call();
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
-                EXPECT_FALSE(date0.isEmpty());
+                ASSERT_FALSE(date0.isEmpty());
 
                 auto [err_1, date1] = getTheDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
-                EXPECT_FALSE(date1.isEmpty());
+                ASSERT_FALSE(date1.isEmpty());
 
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -409,7 +409,7 @@ namespace rtl_tests
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
-                    EXPECT_TRUE(err == error::None && ret.isEmpty());
+                    ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
                 }
@@ -434,7 +434,7 @@ namespace rtl_tests
             auto [err0, calender0] = typeCalender->create<alloc::Heap>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_TRUE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -448,7 +448,7 @@ namespace rtl_tests
 
             EXPECT_TRUE(err1 == error::None);
             // Verify the object created is valid and on stack.
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_FALSE(calender1.isOnHeap());
             EXPECT_TRUE(calender0.getTypeId() == calender1.getTypeId());
 
@@ -465,12 +465,12 @@ namespace rtl_tests
                 auto [err_0, date0] = getTheDate->bind(calender0).call();
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
-                EXPECT_FALSE(date0.isEmpty());
+                ASSERT_FALSE(date0.isEmpty());
 
                 auto [err_1, date1] = getTheDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
-                EXPECT_FALSE(date1.isEmpty());
+                ASSERT_FALSE(date1.isEmpty());
 
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -484,7 +484,7 @@ namespace rtl_tests
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
-                    EXPECT_TRUE(err == error::None && ret.isEmpty());
+                    ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
                 }
@@ -509,7 +509,7 @@ namespace rtl_tests
             auto [err0, calender0] = typeCalender->create<alloc::Heap>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_TRUE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -523,7 +523,7 @@ namespace rtl_tests
 
             EXPECT_TRUE(err1 == error::None);
             // Verify the object created is valid and on stack.
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isOnHeap());
             EXPECT_TRUE(calender0.getTypeId() == calender1.getTypeId());
 
@@ -540,12 +540,12 @@ namespace rtl_tests
                 auto [err_0, date0] = getSavedDate->bind(calender0).call();
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
-                EXPECT_FALSE(date0.isEmpty());
+                ASSERT_FALSE(date0.isEmpty());
 
                 auto [err_1, date1] = getSavedDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
-                EXPECT_FALSE(date1.isEmpty());
+                ASSERT_FALSE(date1.isEmpty());
 
                 // both objects must be equal, created via default-constructor, different instances, not shared.
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -559,7 +559,7 @@ namespace rtl_tests
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
-                    EXPECT_TRUE(err == error::None && ret.isEmpty());
+                    ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
                     EXPECT_FALSE(date::test_if_obejcts_are_equal(date0, date1));
                 }

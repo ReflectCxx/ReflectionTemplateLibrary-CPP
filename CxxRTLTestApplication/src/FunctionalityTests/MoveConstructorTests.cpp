@@ -23,7 +23,7 @@ namespace rtl_tests
             auto [err0, calender0] = classCalender->create<alloc::Stack>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
@@ -36,12 +36,12 @@ namespace rtl_tests
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
 
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
-            EXPECT_TRUE(calender0.isEmpty());
+            ASSERT_TRUE(calender0.isEmpty());
             EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.
@@ -54,12 +54,12 @@ namespace rtl_tests
                 // Cloning a moved-from object ie an empty object;
                 auto [err, ret] = calender0.clone<alloc::Stack>();
                 EXPECT_TRUE(err == error::EmptyRObject);
-                EXPECT_TRUE(ret.isEmpty());
+                ASSERT_TRUE(ret.isEmpty());
             } {
                 // Cloning a moved-from object ie an empty object;
                 auto [err, ret] = calender0.clone<alloc::Heap>();
                 EXPECT_TRUE(err == error::EmptyRObject);
-                EXPECT_TRUE(ret.isEmpty());
+                ASSERT_TRUE(ret.isEmpty());
             }
         }
         // After scope exit, stack instances are cleaned up automatically
@@ -81,7 +81,7 @@ namespace rtl_tests
             auto [err0, calender0] = classCalender->create<alloc::Heap>();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_TRUE(calender0.isOnHeap());
 
@@ -95,12 +95,12 @@ namespace rtl_tests
             // address wrapped in std::any inside Robject is moved. Calender's move constructor is not called.
             RObject calender1 = std::move(calender0);
 
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_TRUE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
-            EXPECT_TRUE(calender0.isEmpty());
+            ASSERT_TRUE(calender0.isEmpty());
             EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.
@@ -131,7 +131,7 @@ namespace rtl_tests
             // Create a stack-allocated object via reflection
             auto [err, calender] = classCalender->create<alloc::Stack>();
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(calender.isEmpty());
+            ASSERT_FALSE(calender.isEmpty());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
             // 'Calender' has 2 'Event' instances, shared_ptr<Event> and a std::unique_ptr<Event>.
@@ -141,7 +141,7 @@ namespace rtl_tests
             {
                 auto [err0, event0] = getTheEvent->bind(calender).call();
                 EXPECT_TRUE(err0 == error::None);
-                EXPECT_FALSE(event0.isEmpty());
+                ASSERT_FALSE(event0.isEmpty());
                 EXPECT_FALSE(event0.isConstCastSafe()); // Retured as True-Const from reflected call, even RTL will not const_cast it.
 
                 optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
@@ -152,22 +152,22 @@ namespace rtl_tests
 
                     auto [e0, r0] = eventReset->bind(event0).call();
                     EXPECT_TRUE(e0 == error::ConstCallViolation);
-                    EXPECT_TRUE(r0.isEmpty());
+                    ASSERT_TRUE(r0.isEmpty());
 
                     auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event0).call();
                     EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    EXPECT_TRUE(r2.isEmpty());
+                    ASSERT_TRUE(r2.isEmpty());
                 }
 
                 // RObject reflecting reference/pointer, stores pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
                 RObject event1 = std::move(event0);
 
-                EXPECT_FALSE(event1.isEmpty());
+                ASSERT_FALSE(event1.isEmpty());
                 EXPECT_FALSE(event1.isConstCastSafe());
 
                 // 'event0' must be empty now.
-                EXPECT_TRUE(event0.isEmpty());
+                ASSERT_TRUE(event0.isEmpty());
                 EXPECT_NE(event0.getTypeId(), event1.getTypeId());
                 {
                     // Event::reset() is a non-const method. can't be called on const-object.
@@ -177,12 +177,12 @@ namespace rtl_tests
                     // So here, call to 'non-const' method on 'const' target fails here.
                     auto [e0, r0] = eventReset->bind(event1).call();
                     EXPECT_TRUE(e0 == error::ConstCallViolation);
-                    EXPECT_TRUE(r0.isEmpty());
+                    ASSERT_TRUE(r0.isEmpty());
 
                     // Since the  here, call to 'non-const' method on 'const' target fails here.
                     auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event1).call();
                     EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    EXPECT_TRUE(r2.isEmpty());
+                    ASSERT_TRUE(r2.isEmpty());
                 }
             }
             // After move, these instance count must remain same.
@@ -215,7 +215,7 @@ namespace rtl_tests
             auto [err0, calender0] = (*createCalender)()();
 
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender0.isEmpty());
+            ASSERT_FALSE(calender0.isEmpty());
             EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
@@ -228,12 +228,12 @@ namespace rtl_tests
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
 
-            EXPECT_FALSE(calender1.isEmpty());
+            ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
-            EXPECT_TRUE(calender0.isEmpty());
+            ASSERT_TRUE(calender0.isEmpty());
             EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.

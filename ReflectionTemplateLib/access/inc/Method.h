@@ -32,12 +32,12 @@ namespace rtl::access {
     private:
 
         //private ctor, called by 'Record' class.
-        explicit Method(const Function& pFunction)
+        Method(const Function& pFunction)
             : Function(pFunction)
         { }
 
         //private ctor, called by 'Record' class.
-        explicit Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
+        Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
             : Function(pFunction, pFunctorId, pFunctorName)
         { }
 

@@ -21,7 +21,7 @@
 namespace rtl::detail 
 {	
 
-    inline ReflectionBuilder::ReflectionBuilder(std::size_t pRecordId, const std::string_view pFunction,
+    inline ReflectionBuilder::ReflectionBuilder(const std::string_view pFunction, std::size_t pRecordId,
                                                 const std::string_view pNamespace /* = ""*/, 
                                                 const std::string_view pRecord /* = ""*/)
         : m_recordId(pRecordId)
