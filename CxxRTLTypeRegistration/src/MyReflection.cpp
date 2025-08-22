@@ -232,39 +232,23 @@ namespace the_reflection
     //Optional setup - mapping unique-ids to string type-names (for Testing-Purposes only).
     const std::size_t reflected_id::getRecordIdFor(const std::string& pRecordName)
     {
-        if (pRecordName == book::class_) {
-            return book;
-        }
-        else if (pRecordName == person::class_) {
-            return person;
-        }
-        else if (pRecordName == animal::class_) {
-            return animal;
-        }
-        else if (pRecordName == date::struct_) {
-            return date;
-        }
-        else if (pRecordName == event::struct_) {
-            return event;
-        }
-        else if (pRecordName == calender::struct_) {
-            return calender;
-        }
-        else if (pRecordName == library::class_) {
-            return library;
-        }
-        else if (pRecordName == "char") {
-            return char_t;
-        }
-        else if (pRecordName == "void") {
-            return void_t;
-        }
-        else if (pRecordName == "string") {
-            return std_string;
-        }
-        else if (pRecordName == "string_view") {
-            return std_string_view;
-        }
-        else return rtl::index_none;
+        static std::unordered_map<std::string, std::size_t> nameIdMap(
+        {
+            { "char", char_t },
+            { "void", void_t },
+            { "string", std_string },
+            { "string_view", std_string_view },
+
+            { book::class_, book },
+            { date::struct_, date },
+            { event::struct_, event },
+            { animal::class_, animal },
+            { person::class_, person },
+            { library::class_, library }
+            { calender::struct_, calender}
+        });
+
+        const auto& itr = nameIdMap.find(pRecordName);
+        return (itr == nameIdMap.end() ? rtl::index_none:itr->second);
     }
 }
