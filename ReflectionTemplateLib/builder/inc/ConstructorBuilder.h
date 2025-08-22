@@ -34,9 +34,12 @@ namespace rtl {
             //given name of the namespace.
             const std::string_view m_namespace;
 
-            ConstructorBuilder() = delete;
-
         public:
+
+            ConstructorBuilder()
+                : m_record("")
+                , m_namespace("")
+            { }
 
             ConstructorBuilder(const std::string_view pNamespace, const std::string_view pRecord)
                 : m_record(pRecord)

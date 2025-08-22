@@ -36,8 +36,7 @@ namespace rtl {
 
             RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, std::size_t pRecordId);
 
-            template<class ..._signature>
-            constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
+            const access::Function build() const;
         };
 
 
@@ -61,6 +60,9 @@ namespace rtl {
 
             template<class ..._signature>
             const Builder<methodQ::None, _signature...> methodStatic(const std::string_view pFunction) const;
+
+            template<class ..._signature>
+            constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
         };
     }
 }

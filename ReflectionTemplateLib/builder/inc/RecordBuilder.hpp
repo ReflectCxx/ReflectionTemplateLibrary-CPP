@@ -23,6 +23,16 @@ namespace rtl::builder
         , m_recordId(pRecordId) {
     }
 
+    template<class _recordType>
+    inline const access::Function RecordBuilder<_recordType>::build() const
+    {
+        return ConstructorBuilder<_recordType>(m_namespace, m_record).build();
+    }
+}
+
+
+namespace rtl::builder 
+{
 
 /*  @method: constructor<...>()
     @param: none
@@ -31,16 +41,12 @@ namespace rtl::builder
     * template params <...> - any combination of parameters.
 */  template<class _recordType>
     template<class ..._signature>
-    inline constexpr const ConstructorBuilder<_recordType, _signature...> RecordBuilder<_recordType>::constructor() const
+    inline constexpr const ConstructorBuilder<_recordType, _signature...> MethodBuilder<_recordType>::constructor() const
     {
-        return ConstructorBuilder<_recordType, _signature...>(m_namespace, m_record);
+        return ConstructorBuilder<_recordType, _signature...>();
     }
 
-}
 
-
-namespace rtl::builder 
-{
 /*  @method: methodStatic()
     @param: std::string, name of function as string.
     @return: Builder<methodQ::None, _signature...>

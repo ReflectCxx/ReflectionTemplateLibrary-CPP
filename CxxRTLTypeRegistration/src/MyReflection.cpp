@@ -38,10 +38,10 @@ namespace the_reflection
             ---------------------------------  */
 
         //  Registering void, valid but not useful at all.
-            Reflect().record<void>("void").constructor().build(),
+            Reflect().record<void>("void").build(),
 
         //  Registering pod, reflecting- constructor, copy-constructor & destructor.
-            Reflect().record<char>("char").constructor().build(),
+            Reflect().record<char>("char").build(),
 
         //  Registers std::string class, but no constructor.
             Reflect().nameSpace("std").record<std::string>().methodConst("empty").build(&std::string::empty),
@@ -91,13 +91,13 @@ namespace the_reflection
 
         //  Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         //  Registers default constructor with implicit registration of destructor & copy-constructor.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),
+            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).build(),
 
         //  Overloaded constructor, taking 'string' as argument, signature must be specified as template parameter.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),
+            Reflect().nameSpace(date::ns).record<nsdate::Date>().constructor<string>().build(),
 
         //  Again, register an overloaded constructor with diffeent signature.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),
+            Reflect().nameSpace(date::ns).record<nsdate::Date>().constructor<unsigned, unsigned, unsigned>().build(),
         
         //  Registring, Unique method, no overloads. Taking param 'std::string', auto deduced via function-pointer.
             Reflect().nameSpace(date::ns).record<nsdate::Date>().method(date::str_updateDate).build(&nsdate::Date::updateDate),
@@ -106,7 +106,7 @@ namespace the_reflection
             Reflect().nameSpace(date::ns).record<nsdate::Date>().methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),
 
         //  class Calender, default constructor.
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
+            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).build(),
         
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.
             Reflect().nameSpace(calender::ns).record<nsdate::Calender>().methodStatic(calender::str_create).build(&nsdate::Calender::create),
@@ -119,13 +119,13 @@ namespace the_reflection
 
         //  Registering 'Event' for reflection; instance creation fails since its default constructor is private or deleted.
         //  At least one member must be registered for RTL to recognize the type. be it property, member-function or constructor.
-            Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).constructor().build(),
+            Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).build(),
             Reflect().nameSpace(event::ns).record<nsdate::Event>().method(event::str_reset).build(&nsdate::Event::reset),
 
         //  Registering Library's constructor. Stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted 
         //  and its required by 'std::any' to store its object via copy-construction. But instance on heap (rtl::alloc::HEAP) can be
         //  constructed since, in that case, 'std::any' stores only the poiner which does not requires copy constructor to be called.
-            Reflect().record<Library>(library::class_).constructor().build(),
+            Reflect().record<Library>(library::class_).build(),
         
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.
             Reflect().record<Library>().methodStatic(library::str_addBook).build(&Library::addBook),
@@ -133,10 +133,10 @@ namespace the_reflection
 
         //  class 'Book', methods & constructors.
         //  Registering default constructor.
-            Reflect().record<Book>(book::class_).constructor().build(),
+            Reflect().record<Book>(book::class_).build(),
         
         //  Registering overloaded constructor, signature must be specified as template parameter.
-            Reflect().record<Book>(book::class_).constructor<double, string>().build(),
+            Reflect().record<Book>().constructor<double, string>().build(),
         
         //  Unique methods, no overloads.
             Reflect().record<Book>().method(book::str_setAuthor).build(&Book::setAuthor),
@@ -155,8 +155,8 @@ namespace the_reflection
             Reflect().record<Book>().method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
         //  class 'Person', methods & constructors.
-            Reflect().record<Person>(person::class_).constructor().build(),
-            Reflect().record<Person>(person::class_).constructor<string>().build(),
+            Reflect().record<Person>(person::class_).build(),
+            Reflect().record<Person>().constructor<string>().build(),
             Reflect().record<Person>().methodStatic(person::str_createPtr).build(&Person::createPtr),
             Reflect().record<Person>().method<void>(person::str_updateAddress).build(&Person::updateAddress),
             Reflect().record<Person>().method<string>(person::str_updateAddress).build(&Person::updateAddress),
@@ -175,8 +175,8 @@ namespace the_reflection
             Reflect().record<Person>().methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
 
         //  class 'Animal', methods & constructors.
-            Reflect().record<Animal>(animal::class_).constructor().build(),
-            Reflect().record<Animal>(animal::class_).constructor<string>().build(),  //overloaded constructor.
+            Reflect().record<Animal>(animal::class_).build(),
+            Reflect().record<Animal>().constructor<string>().build(),  //overloaded constructor.
             Reflect().record<Animal>().method(animal::str_setFamilyName).build(&Animal::setFamilyName),  //unique method, no overloads.
             
         //  Unique const-method, no overloads.
