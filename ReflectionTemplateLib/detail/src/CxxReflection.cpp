@@ -26,9 +26,10 @@ namespace rtl {
         * initiates grouping of each 'Function' object under namespace, class/struct.
     */  CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
         {
+            buildRecordIdMap(pFunctions);
             for (const auto& function : pFunctions) 
             {
-                if (validateFunctionByRecordId(function) && insertFunctionToRecordIdMap(function)) 
+                if (validateFunctionByRecordId(function) && !insertFunctionToRecordIdMap(function)) 
                 {
                     insertFunctionToNamespaceMap(function);
                 }
@@ -76,26 +77,50 @@ namespace rtl {
         }
 
 
+        void CxxReflection::buildRecordIdMap(const std::vector<access::Function>& pFunctions)
+        {
+            for(const auto& function : pFunctions)
+            {
+                const auto& recordName = function.getRecordName();
+                const std::size_t recordId = function.getRecordTypeId();
+                if(recordId != TypeId<>::None && !recordName.empty())
+                {
+                    const auto& itr = m_recordIdMap.find(recordId);
+                    if (itr == m_recordIdMap.end()) {
+                        const auto& record = m_recordIdMap.emplace(recordId, access::Record(recordName, recordId)).first->second;
+                        addMethod(record.getFunctionsMap(), function);
+                    }
+                    else {
+                        std::cout << "\n[WARNING] Multiple registrations of the same type detected."
+                                  << "\n          Type already registered as \"" << itr->second.m_recordName << "\""
+                                  << "\n          Attempted re-registration as \"" << function.getRecordName() << "\""
+                                  << "\n          This registration is ignored.\n";
+                    }
+                }
+            }
+        }
+
+
         bool CxxReflection::insertFunctionToRecordIdMap(const access::Function& pFunction)
         {
             const std::size_t recordId = pFunction.getRecordTypeId();
-            if (recordId != TypeId<>::None) 
+            if (recordId != TypeId<>::None)
             {
                 const auto& itr = m_recordIdMap.find(recordId);
                 const std::string& recordName = pFunction.getRecordName();
-                if (itr == m_recordIdMap.end()) {
-                    const auto& record = m_recordIdMap.emplace(recordId, access::Record(recordName, recordId)).first->second;
+                if (itr != m_recordIdMap.end()) {
+                    const auto& record = itr->second;
                     addMethod(record.getFunctionsMap(), pFunction);
                 }
                 else {
-                    const auto& record = itr->second;
-                    if (validateFunctionByRecordName(record, pFunction)) {
-                        addMethod(record.getFunctionsMap(), pFunction);
-                    }
-                    else return false;
+                    std::cout << "\n[WARNING] The class/struct for this member-function is not registered."
+                              << "\n          While registering \"" << pFunction.getRecordName() << "\""
+                              << "\n          Make sure to register the Type first before its members.\n"
+                              << "\n          This registration is ignored.\n";
                 }
+                return true;
             }
-            return true;
+            return false;
         }
 
 
@@ -179,18 +204,19 @@ namespace rtl {
     * Both use the same type: record<std::string>, but with different names ("string" vs. "std_string").
     * RTL will retain the first registration and ignore the subsequent ones.
     * A warning is emitted to alert the user about the name conflict.
-    */  const bool CxxReflection::validateFunctionByRecordName(const access::Record& pRecord, const access::Function& pFunction)
-        {
-            if (pRecord.m_recordName != pFunction.getRecordName())
-            {
-                std::cout << "\n[WARNING] Multiple registrations of the same type with different names detected."
-                          << "\n          Type already registered as \"" << pRecord.m_recordName << "\""
-                          << "\n          Attempted re-registration as \"" << pFunction.getRecordName() << "\""
-                          << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
-                          << "\n          This function is ignored and not registered.\n";
-                return false;
-            }
-            return true;
-        }
+    */  
+    // const bool CxxReflection::validateFunctionByRecordName(const access::Record& pRecord, const access::Function& pFunction)
+    //     {
+    //         if (pRecord.m_recordName != pFunction.getRecordName())
+    //         {
+    //             std::cout << "\n[WARNING] Multiple registrations of the same type with different names detected."
+    //                       << "\n          Type already registered as \"" << pRecord.m_recordName << "\""
+    //                       << "\n          Attempted re-registration as \"" << pFunction.getRecordName() << "\""
+    //                       << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
+    //                       << "\n          This function is ignored and not registered.\n";
+    //             return false;
+    //         }
+    //         return true;
+    //     }
     }
 }

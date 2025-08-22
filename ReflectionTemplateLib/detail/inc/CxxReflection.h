@@ -38,13 +38,14 @@ namespace rtl {
             //contains 'Function' (non-member-function) objects, mapped with given namespace name.
             std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
 
+            void buildRecordIdMap(const std::vector<access::Function>& pFunctions);
             void insertFunctionToNamespaceMap(const access::Function& pFunction);
             bool insertFunctionToRecordIdMap(const access::Function& pFunction);
 
             static void addMethod(MethodMap& pMethodMap, const access::Function& pFunction);
             static void addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction);
             static const bool validateFunctionByRecordId(const access::Function& pFunction);
-            static const bool validateFunctionByRecordName(const access::Record& pRecord, const access::Function& pFunction);
+            //static const bool validateFunctionByRecordName(const access::Record& pRecord, const access::Function& pFunction);
 
         protected:
 
