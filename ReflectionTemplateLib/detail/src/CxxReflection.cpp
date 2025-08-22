@@ -192,17 +192,17 @@ namespace rtl {
             for (auto& itr : m_recordIdMap) {
 
                 auto& record = itr.second;
-                const auto& itr = m_recordNamespaceMap.find(record.m_namespace);
-                if (itr == m_recordNamespaceMap.end())
+                const auto& itr0 = m_recordNamespaceMap.find(record.m_namespace);
+                if (itr0 == m_recordNamespaceMap.end())
                 {
                     RecordMap& recordStrMap = m_recordNamespaceMap.emplace(record.m_namespace, RecordMap()).first->second;
                     recordStrMap.emplace(record.m_recordName, std::ref(record));
                 }
                 else
                 {
-                    RecordMap& recordStrMap = itr->second;
-                    const auto& itr0 = recordStrMap.find(record.m_recordName);
-                    if (itr0 == recordStrMap.end()) {
+                    RecordMap& recordStrMap = itr0->second;
+                    const auto& itr1 = recordStrMap.find(record.m_recordName);
+                    if (itr1 == recordStrMap.end()) {
                         recordStrMap.emplace(record.m_recordName, std::ref(record));
                     }
                 }

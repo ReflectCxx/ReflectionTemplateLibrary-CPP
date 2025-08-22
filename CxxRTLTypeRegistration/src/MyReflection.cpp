@@ -205,19 +205,19 @@ namespace the_reflection
             #if defined(__GNUC__) && !defined(__clang__)
             /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
                 we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
-            */  Reflect().record<Animal>()
+            */  Reflect().member<Animal>()
                          .method<std::string&>(animal::str_setAnimalName)
                          .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
                 
-                Reflect().record<Animal>()
+                Reflect().member<Animal>()
                          .method<std::string&&>(animal::str_setAnimalName)
                          .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
                 
-                Reflect().record<Animal>()
+                Reflect().member<Animal>()
                          .methodStatic<std::string&>(animal::str_updateZooKeeper)
                          .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
                 
-                Reflect().record<Animal>()
+                Reflect().member<Animal>()
                          .methodStatic<std::string&&>(animal::str_updateZooKeeper)
                          .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
             #else
