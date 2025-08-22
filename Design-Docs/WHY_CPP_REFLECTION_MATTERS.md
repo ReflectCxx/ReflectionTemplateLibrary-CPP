@@ -33,7 +33,7 @@ These instincts are valid—but not disqualifiers. Instead, they set requirement
   * 🚫 Exception‑free surfaces (errors via codes).
   * 🔒 Const‑by‑default to avoid accidental mutation.
   * 🎯 Conservative parameter matching (safe widenings, string‑like conversions, smart‑pointer transparencies) with clear rules.
-* **Deterministic lifetimes** – `RObject` is a type‑erased, lifetime‑aware handle. It preserves stack/heap ownership and never hides deep copies.
+* **Deterministic lifetimes** – `RObject` is a type‑erased, lifetime‑aware handle. It preserves `Heap`/`Stack` ownership and never hides deep copies.
 * **Tooling‑friendly split** – Metadata providers and runtime consumers are decoupled; the mirror is swappable per build/mode and load‑on‑touch.
 
 📌 **Bottom line:** RTL preserves the values of C++ (control, performance, explicitness) while offering runtime shape where it’s needed.
