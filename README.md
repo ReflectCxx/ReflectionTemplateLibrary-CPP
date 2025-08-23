@@ -24,7 +24,7 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Exception-Free Surface** – All predictable failures return error codes; no hidden throws.
 
-* **Deterministic Lifetimes** – Automatic ownership tracking of `Heap`, `Stack`, and `Smart-Pointer` instances with zero hidden deep copies.
+* **Deterministic Lifetimes** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
 * **Cross-Compiler Consistency** – Built entirely on standard C++20, no reliance on compiler extensions.
 
