@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "rtl_traits.h"
 #include "RecordBuilder.h"
 #include "ConstructorBuilder.h"
 
@@ -20,8 +21,8 @@ namespace rtl::builder
     inline RecordBuilder<_recordType>::RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, std::size_t pRecordId)
         : m_record(pRecord)
         , m_namespace(pNamespace)
-        , m_recordId(pRecordId) {
-    }
+        , m_recordId(pRecordId) 
+    { }
 
     template<class _recordType>
     inline const access::Function RecordBuilder<_recordType>::build() const
@@ -33,7 +34,6 @@ namespace rtl::builder
 
 namespace rtl::builder 
 {
-
 /*  @method: constructor<...>()
     @param: none
     @return: ConstructorBuilder<_recordType, _signature...>
@@ -41,9 +41,17 @@ namespace rtl::builder
     * template params <...> - any combination of parameters.
 */  template<class _recordType>
     template<class ..._signature>
-    inline constexpr const ConstructorBuilder<_recordType, _signature...> MethodBuilder<_recordType>::constructor() const
+    inline constexpr const ConstructorBuilder<_recordType, traits::remove_const_n_ref_t<_signature>...> MethodBuilder<_recordType>::constructor() const
     {
-        return ConstructorBuilder<_recordType, _signature...>();
+        constexpr bool isDefaultCtor = (sizeof...(_signature) == 0);
+        constexpr bool isCopyOrMoveCtor = (sizeof...(_signature) == 1 && traits::is_first_type_same_v<_recordType, _signature...>);
+        constexpr bool isDeclearedCtor = rtl::traits::has_constructor<_recordType, _signature...>;
+
+        static_assert(!isDefaultCtor, "Default-constructor registration detected! It is implicitly registered with the Type.");
+        static_assert(!isCopyOrMoveCtor, "Copy/Move-constructor registration detected! It is implicitly registered with the Type.");
+        static_assert(isDeclearedCtor, "Constructor with given signature is not decleared.");
+
+        return ConstructorBuilder<_recordType, traits::remove_const_n_ref_t<_signature>...>();
     }
 
 

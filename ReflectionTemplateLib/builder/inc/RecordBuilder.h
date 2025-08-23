@@ -62,7 +62,7 @@ namespace rtl {
             const Builder<methodQ::None, _signature...> methodStatic(const std::string_view pFunction) const;
 
             template<class ..._signature>
-            constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
+            constexpr const ConstructorBuilder<_recordType, traits::remove_const_n_ref_t<_signature>...> constructor() const;
         };
     }
 }

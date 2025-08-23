@@ -38,7 +38,7 @@ namespace rtl {
             //contains 'Function' (non-member-function) objects, mapped with given namespace name.
             std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
 
-            void buildNamespaceMap();
+            void addInNamespaceMap(access::Record& pRecord);
             void buildRecordIdMap(const std::vector<access::Function>& pFunctions);
             void insertFunctionToNamespaceMap(const access::Function& pFunction);
             bool insertFunctionToRecordIdMap(const access::Function& pFunction);

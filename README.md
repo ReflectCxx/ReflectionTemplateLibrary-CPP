@@ -83,7 +83,7 @@ The semantics don’t feel foreign: creating, binding, and calling are the same 
 * ✅ **Member Function Invocation** 🎯:
   * Static methods.
   * Const/Non-const methods.
-  * Any overloaded method, Const & RValue*(In Progress)* based as well.
+  * Any overloaded method, Const/Non-Const based as well.
 
 * ✅ **Perfect Forwarding** 🚀 – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** ⚡ – No temporaries or copies during method forwarding.

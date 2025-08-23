@@ -13,6 +13,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/Complex.h"
 	"${PROJECT_SOURCE_DIR}/inc/Date.h"
 	"${PROJECT_SOURCE_DIR}/inc/Animal.h"
+	"${PROJECT_SOURCE_DIR}/inc/Person.h"
 	"${PROJECT_SOURCE_DIR}/inc/Library.h"
 )
 
