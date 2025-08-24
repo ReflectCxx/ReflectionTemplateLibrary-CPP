@@ -33,7 +33,7 @@ namespace registration_test
             and destructor. Explicitly registering these members is not allowed and
             will result in a compile-time error.
          
-            The order of registration does not matter — the type can be registered before
+            The order of registration does not matter- the type can be registered before
             or after its members. However, the type itself must be registered; otherwise,
             any attempted member registrations will be ignored and a warning will be
             displayed on the console.
@@ -53,8 +53,8 @@ namespace registration_test
             handling in RTL.  
          
             If the class provides only a `std::string&` constructor (and no `const std::string&`),  
-            then this registration will fail to compile. Similarly, if three overloads exist —  
-            `std::string`, `std::string&`, and `const std::string&` — the compiler itself will report  
+            then this registration will fail to compile. Similarly, if three overloads exist-  
+            `std::string`, `std::string&`, and `const std::string&`- the compiler itself will report  
             an ambiguity error.  
          
             You may explicitly register with `std::string&` or `const std::string&`, but RTL will  

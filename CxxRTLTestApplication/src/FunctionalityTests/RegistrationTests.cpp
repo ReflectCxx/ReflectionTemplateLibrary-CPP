@@ -76,20 +76,20 @@ namespace registration_test
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        // Create a Person instance the regular way.
+        //  Create a Person instance the regular way.
         Person orgTim("Tim");
 
-        // Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
+        //  Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
         rtl::access::RObject robjTim = rtl::reflect(orgTim);
 
         std::optional<rtl::access::Method> setProfile = classPerson->getMethod("setProfile");
         ASSERT_TRUE(setProfile);
 
-        // NOTE for documentation:
-        // Calling with a constant-size array (like `"profStr"`) will not compile, 
-        // because array-to-pointer decay is not supported here.
-        // Instead, use a `const char*` or `std::string`.
-        // auto [err, ret] = setProfile->bind(robjTim).call("profStr");
+    //  NOTE for documentation:
+    //  Calling with a constant-size array (like `"profStr"`) will not compile, 
+    //  because array-to-pointer decay is not supported here.
+    //  Instead, use a `const char*` or `std::string`.
+    //  auto [err, ret] = setProfile->bind(robjTim).call("profStr");
 
         {
             auto [err, ret] = setProfile->bind(robjTim).call(std::string("Tim's prof"));
@@ -142,18 +142,18 @@ namespace registration_test
         ASSERT_TRUE(setTitle);
 
         {
-            // Attempt to call 'setTitle' with an rvalue string.
-            // This fails because reflection will first attempt to resolve the call
-            // against a by-value parameter (`std::string`) instead of the actual
-            // registered signature (`std::string&&`).
+        //  Attempt to call 'setTitle' with an rvalue string.
+        //  This fails because reflection will first attempt to resolve the call
+        //  against a by-value parameter (`std::string`) instead of the actual
+        //  registered signature (`std::string&&`).
             auto [err, ret] = setTitle->bind(robjTim).call(std::string("Mr."));
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             EXPECT_TRUE(ret.isEmpty());
         } {
-            // To invoke the method successfully, we must perfectly forward `std::string` as an rvalue-ref.  
-            // This requires explicitly specifying `std::string&&` in the template parameter pack of `bind`.  
-            // Note: passing a string literal works fine here, since it is implicitly convertible to `std::string`;  
-            // wrapping with `std::string("Mr.")` is unnecessary.  
+        //  To invoke the method successfully, we must perfectly forward `std::string` as an rvalue-ref.  
+        //  This requires explicitly specifying `std::string&&` in the template parameter pack of `bind`.  
+        //  Note: passing a string literal works fine here, since it is implicitly convertible to `std::string`;  
+        //  wrapping with `std::string("Mr.")` is unnecessary.  
             auto [err, ret] = setTitle->bind<std::string&&>(robjTim).call("Mr.");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -187,24 +187,24 @@ namespace registration_test
         ASSERT_TRUE(setOccupation);
 
         {
-            // Attempt to call 'setOccupation' with an rvalue string.
-            // Expectation: should match the rvalue-ref overload (`std::string&&`).
-            // Actual: fails because reflection first attempts to match a by-value
-            // parameter (`std::string`) instead of the registered signature.
+        //  Attempt to call 'setOccupation' with an rvalue string.
+        //  Expectation: should match the rvalue-ref overload (`std::string&&`).
+        //  Actual: fails because reflection first attempts to match a by-value
+        //  parameter (`std::string`) instead of the registered signature.
             auto [err, ret] = setOccupation->bind(robjTim).call(std::string("Teacher"));
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             EXPECT_TRUE(ret.isEmpty());
         } {
-            // Attempt to call 'setOccupation' with a const-lvalue string.
-            // Expectation: should match the const-lvalue-ref overload (`const std::string&`).
-            // Actual: fails for the same reason—reflection attempts by-value resolution first.
+        //  Attempt to call 'setOccupation' with a const-lvalue string.
+        //  Expectation: should match the const-lvalue-ref overload (`const std::string&`).
+        //  Actual: fails for the same reasonï¿½reflection attempts by-value resolution first.
             const std::string occupationStr = "Teacher";
             auto [err, ret] = setOccupation->bind(robjTim).call(std::string(occupationStr));
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             EXPECT_TRUE(ret.isEmpty());
         } {
-            // Correctly invoke the rvalue-ref overload by explicitly binding
-            // `std::string&&` in the template parameter pack and perfectly forwarding.
+        //  Correctly invoke the rvalue-ref overload by explicitly binding
+        //  `std::string&&` in the template parameter pack and perfectly forwarding.
             auto [err, ret] = setOccupation->bind<std::string&&>(robjTim).call("Teacher");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -219,8 +219,8 @@ namespace registration_test
             // Confirms that the `setOccupation(std::string&&)` overload was correctly invoked.
             EXPECT_EQ(retStr, "called_by_rvalue_ref");
         } {
-            // Correctly invoke the const-lvalue-ref overload by explicitly binding
-            // `const std::string&` in the template parameter pack and perfectly forwarding.
+        //  Correctly invoke the const-lvalue-ref overload by explicitly binding
+        //  `const std::string&` in the template parameter pack and perfectly forwarding.
             auto [err, ret] = setOccupation->bind<const std::string&>(robjTim).call("Teacher");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());

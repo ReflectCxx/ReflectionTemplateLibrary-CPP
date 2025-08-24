@@ -239,12 +239,12 @@ namespace the_reflection
             #endif
         });
 
-        static const auto _ = [&]()
-        {
-            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-            rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
-            return -1;
-        }();
+        // static const auto _ = [&]()
+        // {
+        //     const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+        //     rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
+        //     return -1;
+        // }();
 
         return cxxMirror;
     }
