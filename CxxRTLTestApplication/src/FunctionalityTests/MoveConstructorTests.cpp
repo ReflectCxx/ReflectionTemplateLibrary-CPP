@@ -154,7 +154,7 @@ namespace rtl_tests
                     EXPECT_TRUE(e0 == error::ConstCallViolation);
                     ASSERT_TRUE(r0.isEmpty());
 
-                    auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event0).call();
+                    auto [e1, r2] = eventReset->bind(constCast(event0)).call();
                     EXPECT_TRUE(e1 == error::IllegalConstCast);
                     ASSERT_TRUE(r2.isEmpty());
                 }
@@ -180,7 +180,7 @@ namespace rtl_tests
                     ASSERT_TRUE(r0.isEmpty());
 
                     // Since the  here, call to 'non-const' method on 'const' target fails here.
-                    auto [e1, r2] = eventReset->bind<methodQ::NonConst>(event1).call();
+                    auto [e1, r2] = eventReset->bind(constCast(event1)).call();
                     EXPECT_TRUE(e1 == error::IllegalConstCast);
                     ASSERT_TRUE(r2.isEmpty());
                 }

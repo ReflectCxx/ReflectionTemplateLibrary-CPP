@@ -266,9 +266,9 @@ namespace registration_test
                 // Now we explicitly try to bind the const-object to call the 'non-const' method
                 // this will force RTL to const_cast the reflected object (i.e, 'constPerson')
                 // internally and make the call. But since the 'constPerson' is 'true-const', on
-                // which const-cast is not safe, so it returns the error.
-                // use methodQ::NonConst, to explicitly specify to cons_cast the reflected object and ten make the call.
-                auto [err, ret] = getName->bind<rtl::methodQ::NonConst>(robj).call();
+                // which const-cast is not safe, so it returns an error.
+                // use 'constCast<RObject>' as argument, to explicitly specify to cons_cast the internal reflected object and then make the call.
+                auto [err, ret] = getName->bind(rtl::constCast(robj)).call();
                 // Now since 'robj' is reflecting 'const Person' and 'getName' is non-const method,
                 // which is allowed to only be called on 'const' objects. hence the error- IllegalConstCast.
                 EXPECT_TRUE(err == rtl::error::IllegalConstCast);
@@ -308,7 +308,8 @@ namespace registration_test
                 // this will force RTL to const_cast the reflected object internally,
                 // which is safe because RTL treats all object const-logically but honors the 
                 // fact that whether the object being reflected is safe to const_cast or not.
-                auto [err, ret] = getName->bind<rtl::methodQ::NonConst>(robj).call();
+                // use 'constCast<RObject>' as argument, to explicitly specify to cons_cast the internal reflected object and ten make the call.
+                auto [err, ret] = getName->bind(rtl::constCast(robj)).call();
                 EXPECT_TRUE(err == rtl::error::None);
                 EXPECT_FALSE(ret.isEmpty());
 

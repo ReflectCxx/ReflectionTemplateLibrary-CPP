@@ -20,7 +20,7 @@ namespace rtl::access {
 namespace rtl::detail {
 
     template<class ..._signature>
-    class MethodInvoker
+    class DefaultInvoker
     {
         //the method to be called.
         const access::Method& m_method;
@@ -28,7 +28,7 @@ namespace rtl::detail {
         //the object on which, the method needs to be called.
         const access::RObject& m_target;
 
-        MethodInvoker(const access::Method& pMethod, const access::RObject& pTarget);
+        DefaultInvoker(const access::Method& pMethod, const access::RObject& pTarget);
 
         template<class ..._invokSignature>
         struct Invoker {
@@ -46,8 +46,8 @@ namespace rtl::detail {
     };
 
 
-    template<methodQ _Q, class ..._signature>
-    class MethodInvokerQ
+    template<class ..._signature>
+    class NonConstInvoker
     {
         //the method to be called.
         const access::Method& m_method;
@@ -55,7 +55,7 @@ namespace rtl::detail {
         //the object on which, the method needs to be called.
         const access::RObject& m_target;
 
-        MethodInvokerQ(const access::Method& pMethod, const access::RObject& pTarget);
+        NonConstInvoker(const access::Method& pMethod, const access::RObject& pTarget);
 
         template<class ..._invokSignature>
         struct Invoker {

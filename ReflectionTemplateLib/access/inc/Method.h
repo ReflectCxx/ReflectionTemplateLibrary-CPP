@@ -53,21 +53,21 @@ namespace rtl::access {
         template<class ..._args>
         bool hasSignature() const;
 
-        template<methodQ _Q, class ..._signature>
-        const detail::MethodInvokerQ<_Q, _signature...> bind(const RObject& pTarget) const;
+        template<class ..._signature>
+        const detail::DefaultInvoker<_signature...> bind(const RObject& pTarget) const;
 
         template<class ..._signature>
-        const detail::MethodInvoker<_signature...> bind(const RObject& pTarget) const;
+        const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
         //friends :)
         friend Record;
         friend detail::CxxReflection;
 
         template<class ..._signature>
-        friend class detail::MethodInvoker;
+        friend class detail::DefaultInvoker;
 
-        template<methodQ _Q, class ..._signature>
-        friend class detail::MethodInvokerQ;
+        template<class ..._signature>
+        friend class detail::NonConstInvoker;
 
     public:
 

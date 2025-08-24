@@ -18,9 +18,9 @@
 
 namespace rtl::detail
 {
-    //MethodInvoker, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
+    //DefaultInvoker, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
     template<class ..._signature>
-    inline MethodInvoker<_signature...>::MethodInvoker(const access::Method& pMethod, const access::RObject& pTarget)
+    inline DefaultInvoker<_signature...>::DefaultInvoker(const access::Method& pMethod, const access::RObject& pTarget)
         : m_method(pMethod)
         , m_target(pTarget) {
     }
@@ -32,7 +32,7 @@ namespace rtl::detail
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, access::RObject> MethodInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline std::pair<error, access::RObject> DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         //Only static-member-functions have Qualifier- 'methodQ::None'
         if (m_method.getQualifier() == methodQ::None) {
@@ -63,10 +63,11 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline access::RObject MethodInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                                             const access::Method& pMethod,
-                                                                                             const access::RObject& pTarget,
-                                                                                             _args&&... params)
+    inline access::RObject 
+    DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
+                                                                       const access::Method& pMethod,
+                                                                       const access::RObject& pTarget,
+                                                                       _args&&... params)
     {
         using containerConst = detail::MethodContainer<methodQ::Const, _invokSignature...>;
         std::size_t constMethodIndex = pMethod.hasSignatureId(containerConst::getContainerId());
@@ -99,9 +100,9 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    //MethodInvokerQ, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
-    template<methodQ _Q, class ..._signature>
-    inline MethodInvokerQ<_Q, _signature...>::MethodInvokerQ(const access::Method& pMethod, const access::RObject& pTarget)
+    //NonConstInvoker, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
+    template<class ..._signature>
+    inline NonConstInvoker<_signature...>::NonConstInvoker(const access::Method& pMethod, const access::RObject& pTarget)
         : m_method(pMethod)
         , m_target(pTarget) {
     }
@@ -111,9 +112,9 @@ namespace rtl::detail
     @params: params... (corresponding to functor associated with 'm_method')
     @return: access::RObject, indicating success of the reflected call.
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-*/  template<methodQ _Q, class ..._signature>
+*/  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, access::RObject> MethodInvokerQ<_Q, _signature...>::call(_args&& ...params) const noexcept
+    inline std::pair<error, access::RObject> NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_method.getQualifier() == methodQ::None) {
             return static_cast<access::Function>(m_method).bind().call(std::forward<_args>(params)...);
@@ -139,21 +140,15 @@ namespace rtl::detail
 
 
     // Invoker struct's static method definition
-    template<methodQ _Q, class ..._signature>
+    template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline access::RObject MethodInvokerQ<_Q, _signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                                                  const access::Method& pMethod,
-                                                                                                  const access::RObject& pTarget,
-                                                                                                  _args&&... params)
+    inline access::RObject
+    NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
+                                                                        const access::Method& pMethod,
+                                                                        const access::RObject& pTarget,
+                                                                        _args&&... params)
     {
-
-        if constexpr (_Q == methodQ::Const)
-        {
-            pError = error::ConstOverloadMissing;
-            return access::RObject();
-        }
-
         using container0 = detail::MethodContainer<methodQ::NonConst, _invokSignature...>;
         const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
         if (index != rtl::index_none) {

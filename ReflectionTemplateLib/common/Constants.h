@@ -42,16 +42,15 @@ namespace rtl {
     };
 
 
-    namespace access { class RObject; }
 
+    template<class T>
     struct constCast
     {
-        const access::RObject& m_target;
-
+        const T& m_target;
         constCast() = delete;
         constCast(constCast&&) = delete;
         constCast(const constCast&) = delete;
-        constCast(const access::RObject& pTarget) : m_target(pTarget) { }
+        constCast(const T& pTarget) : m_target(pTarget) { }
     };
 }
 

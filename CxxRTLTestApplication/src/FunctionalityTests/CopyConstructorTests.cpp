@@ -333,7 +333,7 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
+                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -408,7 +408,7 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
+                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -483,7 +483,7 @@ namespace rtl_tests
                 EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
+                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -558,7 +558,7 @@ namespace rtl_tests
                 ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind<methodQ::NonConst>(date0).call(dateStr);
+                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
                     EXPECT_FALSE(date::test_if_obejcts_are_equal(date0, date1));
