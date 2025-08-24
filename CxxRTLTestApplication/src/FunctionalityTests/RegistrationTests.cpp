@@ -64,7 +64,7 @@ namespace registration_test
             EXPECT_TRUE(view);
 
             const Person& person = view->get();
-            EXPECT_EQ(("cref_" + name), person.name);
+            EXPECT_EQ(name, person.name);
         }
     }
 
@@ -234,6 +234,95 @@ namespace registration_test
             const std::string& retStr = strView->get();
             // Confirms that the `setOccupation(const std::string&)` overload was correctly invoked.
             EXPECT_EQ(retStr, "called_by_ref_lvalue");
+        }
+    }
+
+
+    TEST(RegistrationTest, non_const_method_call_resolution)
+    {
+        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        std::optional<rtl::access::Method> getName = classPerson->getMethod("getName");
+        ASSERT_TRUE(getName);
+        {
+            // const Person, the regular way.
+            const Person constPerson = Person("Const Sam");
+
+            // Reflecting 'const Person' in RObject.
+            rtl::access::RObject robj = rtl::reflect(constPerson);
+            
+            // RTL will not perform const_cast on the reflected object (i.e, 'constPerson') intrnally/silently.
+            // Since the object is originally const, so the const-ness is honoured by RTL.
+            // This applies to the reflected object returned by any reflective call. 
+            EXPECT_FALSE(robj.isConstCastSafe());
+            {
+                auto [err, ret] = getName->bind(robj).call();
+                // Now since 'robj' is reflecting 'const Person' and 'getName' is non-const method,
+                // which is allowed to only be called on 'const' objects. hence the error- ConstCallViolation.
+                EXPECT_TRUE(err == rtl::error::ConstCallViolation);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                // Now we explicitly try to bind the const-object to call the 'non-const' method
+                // this will force RTL to const_cast the reflected object (i.e, 'constPerson')
+                // internally and make the call. But since the 'constPerson' is 'true-const', on
+                // which const-cast is not safe, so it returns the error.
+                // use methodQ::NonConst, to explicitly specify to cons_cast the reflected object and ten make the call.
+                auto [err, ret] = getName->bind<rtl::methodQ::NonConst>(robj).call();
+                // Now since 'robj' is reflecting 'const Person' and 'getName' is non-const method,
+                // which is allowed to only be called on 'const' objects. hence the error- IllegalConstCast.
+                EXPECT_TRUE(err == rtl::error::IllegalConstCast);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+        } {
+            // const Person, the regular way.
+            Person mutablePerson = Person("Mutable Sam");
+
+            // Reflecting 'non-const Person' in RObject. creates copy on stack.
+            rtl::access::RObject robj = rtl::reflect(mutablePerson);
+            
+            // RTL will treat this object 'const' by default internally, but to call non-const method
+            // it will perform const_cast on the reflected object (i.e, 'mutablePerson') intrnally/silently.
+            // Since the object is not-originally const, so the const_cast can be safely performed by RTL when needed.
+            // This applies to the reflected object returned by any reflective call.
+            EXPECT_TRUE(robj.isConstCastSafe());
+            {
+                auto [err, ret] = getName->bind(robj).call();
+                // Now since 'robj' is reflecting 'const Person' and 'getName' is non-const method,
+                // which is allowed to only be called on 'const' objects. hence the error- ConstCallViolation.
+                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_FALSE(ret.isEmpty());
+
+                // We know the return type is std::string.
+                EXPECT_TRUE(ret.canViewAs<std::string>());
+
+                // Extract the std::string view from `ret`.
+                std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+                ASSERT_TRUE(strView);
+
+                const std::string& retStr = strView->get();
+                // Confirms that the overload taking `std::string` by value was invoked.
+                EXPECT_EQ(retStr, "Mutable Sam");
+            } {
+                // The same code-flow with explicitly binding of 'methodQ::NonConst'
+                // this will force RTL to const_cast the reflected object internally,
+                // which is safe because RTL treats all object const-logically but honors the 
+                // fact that whether the object being reflected is safe to const_cast or not.
+                auto [err, ret] = getName->bind<rtl::methodQ::NonConst>(robj).call();
+                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_FALSE(ret.isEmpty());
+
+                // We know the return type is std::string.
+                EXPECT_TRUE(ret.canViewAs<std::string>());
+
+                // Extract the std::string view from `ret`.
+                std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+                ASSERT_TRUE(strView);
+
+                const std::string& retStr = strView->get();
+                // Confirms that the overload taking `std::string` by value was invoked.
+                EXPECT_EQ(retStr, "Mutable Sam");
+            }
         }
     }
 }

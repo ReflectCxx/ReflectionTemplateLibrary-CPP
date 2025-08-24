@@ -10,7 +10,7 @@ namespace registration_test
 
         Person(std::string& pName) : name("ref_" + pName) {}
 
-        Person(const std::string& pName) : name("cref_" + pName) {}
+        Person(const std::string& pName) : name(pName) {}
 
         std::string getName() { return name; }
 
