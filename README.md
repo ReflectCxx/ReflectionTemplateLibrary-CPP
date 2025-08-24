@@ -1,8 +1,8 @@
-# Reflection Template Library C++
+# Reflection Template Library (RTL) - Modern C++ Reflection Framework
 
-**Reflection Template Library (RTL)** is a lightweight, modern C++20 runtime reflection library. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
+**Reflection Template Library (RTL)** is a lightweight C++ runtime reflection library that enables introspection and dynamic manipulation of user-defined types — allowing you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
-RTL is a static library built entirely in modern C++, designed around type-safe tables of function pointers registered by the user, providing constant-time lookup `O(1)`. These are internally wrapped in lambdas, offering a clean and efficient runtime access mechanism.
+RTL is implemented as a static library using type-safe function-pointer tables (internally wrapped in lambdas), providing constant-time`O(1)` lookup and efficient runtime access.
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)
 [![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)
