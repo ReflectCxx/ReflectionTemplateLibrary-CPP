@@ -30,7 +30,7 @@ namespace rtl::detail {
 
         MethodInvoker(const access::Method& pMethod, const access::RObject& pTarget);
 
-        template<class ..._finalSignature>
+        template<class ..._invokSignature>
         struct Invoker {
 
             template<class ..._args>
@@ -57,7 +57,7 @@ namespace rtl::detail {
 
         MethodInvokerQ(const access::Method& pMethod, const access::RObject& pTarget);
 
-        template<class ..._finalSignature>
+        template<class ..._invokSignature>
         struct Invoker {
 
             template<class ..._args>

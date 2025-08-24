@@ -179,7 +179,11 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
+            // RTL treats objects created via reflection as logically immutable (i.e., 'const' by default).
+            // For such objects, applying a logical 'const_cast' is always safe, hence the check below is true.
+            // However, RTL respects the const-ness of objects originating outside RTL (e.g., return values).
+            // If an object is provided to RTL as 'const', a 'const_cast' would not be safe, and the check
+            // would return false. RTL never performs such unsafe casts internally.
             EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateAddress->hasSignature<string>());
             {

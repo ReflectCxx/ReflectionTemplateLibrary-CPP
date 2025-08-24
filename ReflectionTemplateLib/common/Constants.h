@@ -40,6 +40,19 @@ namespace rtl {
         Value,
         Wrapper
     };
+
+
+    namespace access { class RObject; }
+
+    struct constCast
+    {
+        const access::RObject& m_target;
+
+        constCast() = delete;
+        constCast(constCast&&) = delete;
+        constCast(const constCast&) = delete;
+        constCast(const access::RObject& pTarget) : m_target(pTarget) { }
+    };
 }
 
 
@@ -64,6 +77,7 @@ namespace rtl::detail
         Optional,
         Reference
     };
+
 
     inline static const std::string ctor_name(const std::string_view pRecordName = "") {
     //  [critical] Must not change. Constructors are identified using this format.
