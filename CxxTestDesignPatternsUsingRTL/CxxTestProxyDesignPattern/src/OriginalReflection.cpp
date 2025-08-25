@@ -3,7 +3,7 @@
 #include "Original.h"
 
 using namespace rtl::builder;
-using namespace rtl::access;
+using namespace rtl;
 
 namespace proxy_test
 {
@@ -14,13 +14,13 @@ namespace proxy_test
      * including its constructor, instance methods, and static methods. The reflection data is stored
      * as a static optional object to ensure it is initialized only once and reused across multiple calls.
      *
-     * @return const std::optional<rtl::access::Record>& A reference to the optional reflection data
+     * @return const std::optional<rtl::Record>& A reference to the optional reflection data
      * for the "Original" class. If the reflection data is unavailable, the optional will be empty.
      */
-    const std::optional<rtl::access::Record>& OriginalReflection::getClass()
+    const std::optional<rtl::Record>& OriginalReflection::getClass()
     {
         // Static reflection data for the "Original" class
-        static std::optional<rtl::access::Record> reflectedClass = CxxMirror(
+        static std::optional<rtl::Record> reflectedClass = CxxMirror(
             {
                 // Register the default constructor of the "Original" class
                 Reflect().nameSpace().record<Original>("Original").build(),

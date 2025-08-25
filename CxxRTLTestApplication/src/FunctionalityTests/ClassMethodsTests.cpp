@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace rtl;
-using namespace rtl::access;
+using namespace rtl;
 using namespace test_utils;
 using namespace the_reflection;
 
@@ -38,7 +38,7 @@ namespace rtl_tests
 
 				ASSERT_TRUE(itr != rtl_recordIdMap.end());
 
-				const rtl::access::Record& reflectedClass = itr->second;
+				const rtl::Record& reflectedClass = itr->second;
 
 				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
 

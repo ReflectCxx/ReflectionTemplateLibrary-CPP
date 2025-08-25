@@ -3,13 +3,13 @@
 #include "SingletonReflection.h"
 
 using namespace rtl::builder;
-using namespace rtl::access;
+using namespace rtl;
 
 namespace singleton_test
 {
-    const std::optional<rtl::access::Record>& Reflection::getSingletonClass()
+    const std::optional<rtl::Record>& Reflection::getSingletonClass()
     {
-        static std::optional<rtl::access::Record> reflectedClass = CxxMirror(
+        static std::optional<rtl::Record> reflectedClass = CxxMirror(
             {
                 Reflect().nameSpace().record<Singleton>("Singleton").build(),
 

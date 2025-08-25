@@ -47,6 +47,6 @@ namespace proxy_test {
          * for the "Original" class. If the reflection data is unavailable, the optional
          * will be empty.
          */
-        static const std::optional<rtl::access::Record>& getClass();
+        static const std::optional<rtl::Record>& getClass();
     };
 }

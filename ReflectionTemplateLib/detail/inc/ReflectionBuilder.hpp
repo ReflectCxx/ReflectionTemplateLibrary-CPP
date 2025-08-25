@@ -39,12 +39,12 @@ namespace rtl::detail
     * accepts only a non-member or static-member function pointer.
     * builds the 'Function' object containing hash-key & meta-data for the given functor.
 */  template<class _returnType, class ..._signature>
-    inline const access::Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
+    inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
     {
         using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
         //assert(functorId.getRecordId() == m_recordId && "function pointer is not member-function of specified record type");
-        return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
     }
 
 
@@ -56,11 +56,11 @@ namespace rtl::detail
     * accepts only a non-static, non-const member function pointer.
     * builds the 'Function' object containing hash-key & meta-data for the given functor.
 */  template<class _recordType, class _returnType, class ..._signature>
-    inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
+    inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
         using Container = MethodContainer<methodQ::NonConst, traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
+        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
     }
 
 
@@ -72,11 +72,11 @@ namespace rtl::detail
     * accepts only a const member function pointer.
     * builds the 'Function' object containing hash-key & meta-data for the given functor.
 */  template<class _recordType, class _returnType, class ..._signature>
-    inline const access::Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
+    inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
         using Container = MethodContainer<methodQ::Const, traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
+        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
     }
 
 
@@ -86,11 +86,11 @@ namespace rtl::detail
     * adds the lambda invoking constructor (type-erased) in 'FunctorContainer'
     * builds the 'Function' object containing hash-key & meta-data for the constructor.
 */  template<typename _recordType, class ..._ctorSignature>
-    inline const access::Function ReflectionBuilder::buildConstructor() const
+    inline const Function ReflectionBuilder::buildConstructor() const
     {
         using Container = FunctorContainer<rtl::alloc, traits::remove_const_if_not_reference<_ctorSignature>...>;
         const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
             
-        return access::Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
     }
 }

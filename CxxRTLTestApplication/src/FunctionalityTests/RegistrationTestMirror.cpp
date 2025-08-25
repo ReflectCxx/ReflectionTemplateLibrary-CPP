@@ -12,9 +12,9 @@ using namespace rtl::builder;
 
 namespace registration_test
 {
-    const rtl::access::CxxMirror& cxx_mirror()
+    const rtl::CxxMirror& cxx_mirror()
     {
-        static rtl::access::CxxMirror cxxMirror(
+        static rtl::CxxMirror cxxMirror(
         {
 
         /*  Register a free(C - style) function within a namespace.

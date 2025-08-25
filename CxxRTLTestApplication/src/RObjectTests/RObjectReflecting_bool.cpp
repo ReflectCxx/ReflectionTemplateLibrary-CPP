@@ -3,7 +3,7 @@
 
 #include "MyReflection.h"
 
-using namespace rtl::access;
+using namespace rtl;
 
 
 namespace rtl_tests

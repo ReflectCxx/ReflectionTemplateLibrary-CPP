@@ -11,7 +11,7 @@
 
 #pragma once
 
-namespace rtl::access {
+namespace rtl {
 
     //forward decls
     class Method;
@@ -23,26 +23,26 @@ namespace rtl::detail {
     class DefaultInvoker
     {
         //the method to be called.
-        const access::Method& m_method;
+        const Method& m_method;
 
         //the object on which, the method needs to be called.
-        const access::RObject& m_target;
+        const RObject& m_target;
 
-        DefaultInvoker(const access::Method& pMethod, const access::RObject& pTarget);
+        DefaultInvoker(const Method& pMethod, const RObject& pTarget);
 
         template<class ..._invokSignature>
         struct Invoker {
 
             template<class ..._args>
-            static access::RObject invoke(error& pError, const access::Method& pMethod, const access::RObject& pTarget, _args&&...);
+            static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
         };
 
     public:
 
         template<class ..._args>
-        std::pair<error, access::RObject> call(_args&&...) const noexcept;
+        std::pair<error, RObject> call(_args&&...) const noexcept;
 
-        friend access::Method;
+        friend Method;
     };
 
 
@@ -50,25 +50,25 @@ namespace rtl::detail {
     class NonConstInvoker
     {
         //the method to be called.
-        const access::Method& m_method;
+        const Method& m_method;
 
         //the object on which, the method needs to be called.
-        const access::RObject& m_target;
+        const RObject& m_target;
 
-        NonConstInvoker(const access::Method& pMethod, const access::RObject& pTarget);
+        NonConstInvoker(const Method& pMethod, const RObject& pTarget);
 
         template<class ..._invokSignature>
         struct Invoker {
 
             template<class ..._args>
-            static access::RObject invoke(error& pError, const access::Method& pMethod, const access::RObject& pTarget, _args&&...);
+            static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
         };
 
     public:
 
         template<class ..._args>
-        std::pair<error, access::RObject> call(_args&&...) const noexcept;
+        std::pair<error, RObject> call(_args&&...) const noexcept;
 
-        friend access::Method;
+        friend Method;
     };
 }

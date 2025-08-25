@@ -17,11 +17,11 @@ namespace rtl::detail
 {
     class RObjExtractor
     {
-        friend access::RObject;
+        friend RObject;
         
-        const access::RObject& m_rObj;
+        const RObject& m_rObj;
         
-        RObjExtractor(const access::RObject* pRObj) : m_rObj(*pRObj) { }
+        RObjExtractor(const RObject* pRObj) : m_rObj(*pRObj) { }
 
         template<class T>
         static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind)

@@ -36,19 +36,19 @@ namespace rtl {
 
             //adds constructor (any overload) to the 'FunctorContainer'.
             template<class _recordType, class ..._ctorSignature>
-            const access::Function buildConstructor() const;
+            const Function buildConstructor() const;
 
             //adds 'pFunctor' to the 'FunctorContainer'.
             template<class _returnType, class ..._signature>
-            const access::Function buildFunctor(_returnType(*pFunctor)(_signature...)) const;
+            const Function buildFunctor(_returnType(*pFunctor)(_signature...)) const;
 
             //adds 'pFunctor' to the 'MethodContainer'.
             template<class _recordType, class _returnType, class ..._signature>
-            const access::Function buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const;
+            const Function buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const;
 
             //adds 'pFunctor' to the 'MethodContainer'.
             template<class _recordType, class _returnType, class ..._signature>
-            const access::Function buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+            const Function buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const;
         };
     }
 }

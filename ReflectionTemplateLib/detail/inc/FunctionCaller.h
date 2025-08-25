@@ -11,7 +11,7 @@
 
 #pragma once
 
-namespace rtl::access
+namespace rtl
 {
     class RObject;
     class Function;
@@ -23,15 +23,15 @@ namespace rtl::detail
     class FunctionCaller
     {
         //the function to be called.
-        const access::Function& m_function;
+        const Function& m_function;
 
-        FunctionCaller(const access::Function& pFunction);
+        FunctionCaller(const Function& pFunction);
 
     public:
 
         template<class ..._args>
-        std::pair<error, access::RObject> call(_args&&...) const noexcept;
+        std::pair<error, RObject> call(_args&&...) const noexcept;
 
-        friend access::Function;
+        friend Function;
     };
 }

@@ -18,9 +18,9 @@
 
 namespace rtl::detail
 {
-    //DefaultInvoker, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
+    //DefaultInvoker, holds const-ref of the 'Method' and 'RObject' on which it will be invoked.
     template<class ..._signature>
-    inline DefaultInvoker<_signature...>::DefaultInvoker(const access::Method& pMethod, const access::RObject& pTarget)
+    inline DefaultInvoker<_signature...>::DefaultInvoker(const Method& pMethod, const RObject& pTarget)
         : m_method(pMethod)
         , m_target(pTarget) {
     }
@@ -28,24 +28,24 @@ namespace rtl::detail
 
 /*  @method: call()
     @params: params... (corresponding to functor associated with 'm_method')
-    @return: access::RObject, indicating success of the reflected call.
+    @return: RObject, indicating success of the reflected call.
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, access::RObject> DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline std::pair<error, RObject> DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         //Only static-member-functions have Qualifier- 'methodQ::None'
         if (m_method.getQualifier() == methodQ::None) {
-            return static_cast<access::Function>(m_method).bind().call(std::forward<_args>(params)...);
+            return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
         }
 
         if (m_target.isEmpty()) {
             //if the target is empty.
-            return { error::EmptyRObject, access::RObject() };
+            return { error::EmptyRObject, RObject() };
         }
         if (m_target.getTypeId() != m_method.getRecordTypeId()) {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, access::RObject() };
+            return { error::TargetMismatch, RObject() };
         }
         if constexpr (sizeof...(_signature) == 0) {
             // executes when bind doesn't have any explicit signature types specified. (e.g. perfect-forwaring)
@@ -63,10 +63,10 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline access::RObject 
+    inline RObject 
     DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                       const access::Method& pMethod,
-                                                                       const access::RObject& pTarget,
+                                                                       const Method& pMethod,
+                                                                       const RObject& pTarget,
                                                                        _args&&... params)
     {
         using containerConst = detail::MethodContainer<methodQ::Const, _invokSignature...>;
@@ -85,7 +85,7 @@ namespace rtl::detail
             {
                 if (pMethod.getQualifier() == methodQ::NonConst && !pTarget.isConstCastSafe()) {
                     pError = error::ConstCallViolation;
-                    return access::RObject();
+                    return RObject();
                 }
                 return containerNonConst::template forwardCall<_args...>(pError, pTarget, nonConstMethodIndex, std::forward<_args>(params)...);
             }
@@ -93,16 +93,16 @@ namespace rtl::detail
                 pError = error::SignatureMismatch;
             }
         }
-        return access::RObject();
+        return RObject();
     }
 }
 
 
 namespace rtl::detail
 {
-    //NonConstInvoker, holds const-ref of the 'access::Method' and 'access::RObject' on which it will be invoked.
+    //NonConstInvoker, holds const-ref of the 'Method' and 'RObject' on which it will be invoked.
     template<class ..._signature>
-    inline NonConstInvoker<_signature...>::NonConstInvoker(const access::Method& pMethod, const access::RObject& pTarget)
+    inline NonConstInvoker<_signature...>::NonConstInvoker(const Method& pMethod, const RObject& pTarget)
         : m_method(pMethod)
         , m_target(pTarget) {
     }
@@ -110,23 +110,23 @@ namespace rtl::detail
 
 /*  @method: call()
     @params: params... (corresponding to functor associated with 'm_method')
-    @return: access::RObject, indicating success of the reflected call.
+    @return: RObject, indicating success of the reflected call.
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, access::RObject> NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline std::pair<error, RObject> NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_method.getQualifier() == methodQ::None) {
-            return static_cast<access::Function>(m_method).bind().call(std::forward<_args>(params)...);
+            return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
         }
 
         if (m_target.isEmpty()) {
             //if the target is empty.
-            return { error::EmptyRObject, access::RObject() };
+            return { error::EmptyRObject, RObject() };
         }
         if (m_target.getTypeId() != m_method.getRecordTypeId()) {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, access::RObject() };
+            return { error::TargetMismatch, RObject() };
         }
         if constexpr (sizeof...(_signature) == 0) {
             error err = error::None;
@@ -143,10 +143,10 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline access::RObject
+    inline RObject
     NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                        const access::Method& pMethod,
-                                                                        const access::RObject& pTarget,
+                                                                        const Method& pMethod,
+                                                                        const RObject& pTarget,
                                                                         _args&&... params)
     {
         using container0 = detail::MethodContainer<methodQ::NonConst, _invokSignature...>;
@@ -162,11 +162,11 @@ namespace rtl::detail
             if (index != rtl::index_none) {
                 // So, const-overload is present and non-const overload is not registered or doesn't exists.
                 pError = error::NonConstOverloadMissing;
-                return access::RObject();
+                return RObject();
             }
             // else the signature might be wrong.
             pError = error::SignatureMismatch;
-            return access::RObject();
+            return RObject();
         }
     }
 }

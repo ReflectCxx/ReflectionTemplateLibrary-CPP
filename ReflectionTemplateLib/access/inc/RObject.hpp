@@ -22,7 +22,7 @@
 #include "RObjExtracter.h"
 #include "RObjectBuilder.h"
 
-namespace rtl::access
+namespace rtl
 {
     inline RObject::RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId)
         : m_getClone(std::forward<Cloner>(pCloner))
@@ -140,7 +140,7 @@ namespace rtl::access
 
 
 
-namespace rtl::access 
+namespace rtl 
 {
     template<>
     inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const

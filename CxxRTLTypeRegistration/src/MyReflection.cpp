@@ -24,7 +24,7 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 
 using namespace std;
 using namespace test_utils;
-using namespace rtl::access;
+using namespace rtl;
 using namespace rtl::builder;
 
 namespace the_reflection

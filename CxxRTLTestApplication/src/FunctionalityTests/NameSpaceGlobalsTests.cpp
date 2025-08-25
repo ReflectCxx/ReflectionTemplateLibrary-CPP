@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace test_utils;
-using namespace rtl::access;
+using namespace rtl;
 using namespace the_reflection;
 
 namespace rtl_tests

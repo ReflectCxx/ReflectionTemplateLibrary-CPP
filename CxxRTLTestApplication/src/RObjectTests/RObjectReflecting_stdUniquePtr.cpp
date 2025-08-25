@@ -6,7 +6,7 @@
 #include "MyReflection.h"
 
 using namespace test_utils;
-using namespace rtl::access;
+using namespace rtl;
 
 namespace rtl::unit_test
 {

@@ -51,7 +51,7 @@ namespace rtl {
             @return: 'Function' object.
             * constructs temparory object of class Builder<methodQ::NonConst> with given class/struct, namespace name & constructor type.
             * forwards the call to Builder<methodQ::NonConst>::build().
-        */  const access::Function build() const
+        */  const Function build() const
             {
                 // Check if the constructor is not deleted and publicly accessible (excluding default constructor).
                 const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);

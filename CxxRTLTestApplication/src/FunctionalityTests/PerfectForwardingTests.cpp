@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace rtl;
-using namespace rtl::access;
+using namespace rtl;
 using namespace test_utils;
 using namespace the_reflection;
 

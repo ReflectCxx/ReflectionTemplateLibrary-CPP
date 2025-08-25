@@ -25,7 +25,7 @@ namespace rtl {
         @params: 'const std::vector<Function>&'
         * recieves vector of 'Function' objects, forwarded from 'CxxMirror' constructor.
         * initiates grouping of each 'Function' object under namespace, class/struct.
-    */  CxxReflection::CxxReflection(const std::vector<access::Function>& pFunctions)
+    */  CxxReflection::CxxReflection(const std::vector<Function>& pFunctions)
         {
             buildRecordIdMap(pFunctions);
             for (const auto& function : pFunctions) 
@@ -41,7 +41,7 @@ namespace rtl {
     /*  @method: addFunction
         @params: FunctionMap, Function
         * adds the 'Function' object as non-member function mapped to the given namespace name.
-    */  void CxxReflection::addFunction(FunctionMap& pFunctionMap, const access::Function& pFunction)
+    */  void CxxReflection::addFunction(FunctionMap& pFunctionMap, const Function& pFunction)
         {
             const auto& fname = pFunction.getFunctionName();
             const auto& itr = pFunctionMap.find(fname);
@@ -62,13 +62,13 @@ namespace rtl {
         * if the function name already exists in the map, then 'FunctorId' from the param 'pFunction' is added to already existing 'Function'.
         * if a 'Function' object represents a Constructor, it might have the copy-constructor 'FunctorId' as well.
         * if copy-constructor 'FunctorId' is found, 'Function' object is created and added to the 'MethodMap' for the same.
-    */  void CxxReflection::addMethod(MethodMap& pMethodMap, const access::Function& pFunction)
+    */  void CxxReflection::addMethod(MethodMap& pMethodMap, const Function& pFunction)
         {
             const auto& fname = pFunction.getFunctionName();
             const auto& itr = pMethodMap.find(fname);
             if (itr == pMethodMap.end()) {
                 //construct 'Method' obejct and add.
-                pMethodMap.emplace(fname, access::Method(pFunction));
+                pMethodMap.emplace(fname, Method(pFunction));
             }
             else {
                 const auto& function = itr->second;
@@ -81,7 +81,7 @@ namespace rtl {
     /*  @method: organizeFunctorsMetaData
         @params: Function
         * seggregates all the 'Function' objects and builds 'Record' & 'Method' objects.
-    */  void CxxReflection::insertFunctionToNamespaceMap(const access::Function& pFunction)
+    */  void CxxReflection::insertFunctionToNamespaceMap(const Function& pFunction)
         {
             const std::string& nameSpace = pFunction.getNamespace();
             const std::string& recordName = pFunction.getRecordName();
@@ -101,7 +101,7 @@ namespace rtl {
         }
 
 
-        void CxxReflection::addInNamespaceMap(access::Record& pRecord)
+        void CxxReflection::addInNamespaceMap(Record& pRecord)
         {
             const auto& itr = m_recordNamespaceMap.find(pRecord.m_namespace);
             if (itr == m_recordNamespaceMap.end())
@@ -120,7 +120,7 @@ namespace rtl {
         }
 
 
-        void CxxReflection::buildRecordIdMap(const std::vector<access::Function>& pFunctions)
+        void CxxReflection::buildRecordIdMap(const std::vector<Function>& pFunctions)
         {
             for (auto& function : pFunctions) {
 
@@ -132,14 +132,14 @@ namespace rtl {
                     const auto& itr = m_recordIdMap.find(recordId);
                     if (itr == m_recordIdMap.end()) {
 
-                        auto& record = m_recordIdMap.emplace(recordId, access::Record(recordName, recordId, function.m_namespace)).first->second;
+                        auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespace)).first->second;
                         addMethod(record.getFunctionsMap(), function);
                         addInNamespaceMap(record);
                     }
                     else if (isCtorOverload) {
 
-                        const access::Record& record = itr->second;
-                        access::Function constructor = function;
+                        const Record& record = itr->second;
+                        Function constructor = function;
 
                         constructor.m_record = record.m_recordName;
                         constructor.m_namespace = record.m_namespace;
@@ -170,7 +170,7 @@ namespace rtl {
     *   Example of incorrect usage (caught by this validation):
     *   Reflect().nameSpace("std").record<std::string_view>("string").methodConst("empty").build(&std::string::empty);
     *   Here, the record is being created for `std::string_view`, but the method pointer belongs to `std::string`.
-    */  const bool CxxReflection::validateFunctionByRecordId(const access::Function& pFunction)
+    */  const bool CxxReflection::validateFunctionByRecordId(const Function& pFunction)
         {
             const std::size_t givenRecordId = pFunction.getRecordTypeId();
             const std::size_t actualRecordId = pFunction.getFunctorIds()[0].getRecordId(); //Index 0 is always guaranteed to reference a valid functor.
@@ -184,7 +184,7 @@ namespace rtl {
         }
 
 
-        bool CxxReflection::insertFunctionToRecordIdMap(const access::Function& pFunction)
+        bool CxxReflection::insertFunctionToRecordIdMap(const Function& pFunction)
         {
             const std::size_t recordId = pFunction.getRecordTypeId();
             if (recordId != TypeId<>::None && pFunction.m_record.empty() && pFunction.m_function != ctor_name())
@@ -193,7 +193,7 @@ namespace rtl {
                 if (itr != m_recordIdMap.end()) {
 
                     const auto& record = itr->second;
-                    access::Function memberFunc = pFunction;
+                    Function memberFunc = pFunction;
 
                     memberFunc.m_record = record.m_recordName;
                     memberFunc.m_namespace = record.m_namespace;

@@ -14,15 +14,13 @@
 #include "Function.h"
 #include "FunctionCaller.hpp"
 
-namespace rtl {
-
-    namespace access
+namespace rtl 
+{
+    template<class ..._signature>
+    inline const detail::FunctionCaller<_signature...> Function::bind() const
     {
-        template<class ..._signature>
-        inline const detail::FunctionCaller<_signature...> Function::bind() const
-        {
-            return detail::FunctionCaller<_signature...>(*this);
-        }
+        return detail::FunctionCaller<_signature...>(*this);
+    }
 
     /*  @method: hasSignature<...>()
         @param: set of arguments, explicitly specified as template parameter.
@@ -30,11 +28,11 @@ namespace rtl {
         * a single 'Function' object can be associated with multiple overloads of same function.
         * the set of arguments passed is checked agains all registered overloads, returns true if matched with any one.
     */  template<class ..._args>
-        inline bool Function::hasSignature() const
-        {
-            //hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
-            return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);
-        }
+    inline bool Function::hasSignature() const
+    {
+        //hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
+        return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);
+    }
 
 
     /*  @method: operator()()
@@ -43,10 +41,10 @@ namespace rtl {
         * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
-        inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept
-        {
-            return bind().call(std::forward<_args>(params)...);
-        }
+    inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept
+    {
+        return bind().call(std::forward<_args>(params)...);
+    }
 
 
     /*  @method: hasSignatureId()
@@ -56,14 +54,13 @@ namespace rtl {
         * every overload will have unique 'FunctorId', contained by one 'Function' object.
         * given signatureId is compared against the signatureId of all overloads registered.
     */  inline std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
-        {
-            //simple linear-search, efficient for small set of elements.
-            for (const auto& functorId : m_functorIds) {
-                if (functorId.getSignatureId() == pSignatureId) {
-                    return functorId.getIndex();
-                }
+    {
+        //simple linear-search, efficient for small set of elements.
+        for (const auto& functorId : m_functorIds) {
+            if (functorId.getSignatureId() == pSignatureId) {
+                return functorId.getIndex();
             }
-            return rtl::index_none;
         }
+        return rtl::index_none;
     }
 }

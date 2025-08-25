@@ -8,7 +8,7 @@ Provides interface for Testing/Comparing the class "Animal" objects states/retur
 
 #include <string>
 
-namespace rtl::access {
+namespace rtl {
 	class RObject;
 }
 
@@ -32,11 +32,11 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAnimalName_rvalue_args(const rtl::access::RObject& pInstance);
+		static const bool test_method_setAnimalName_rvalue_args(const rtl::RObject& pInstance);
 
-		static const bool test_method_setAnimalName_const_lvalue_ref_args(const rtl::access::RObject& pInstance);
+		static const bool test_method_setAnimalName_const_lvalue_ref_args(const rtl::RObject& pInstance);
 
-		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::access::RObject& pInstance);
+		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::RObject& pInstance);
 
 		template<class ..._signature>
 		static const bool test_method_updateZooKeeper(const std::string& pZooKeeper);

@@ -17,7 +17,7 @@
 
 #include "rtl_traits.h"
 
-namespace rtl::access {
+namespace rtl {
     class CxxMirror;
 }
 
@@ -26,7 +26,7 @@ namespace rtl::detail
     class ReflectedConversions
     {
         static void init();
-        friend rtl::access::CxxMirror;
+        friend rtl::CxxMirror;
     };
 
 

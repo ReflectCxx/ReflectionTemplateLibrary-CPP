@@ -27,12 +27,12 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  return [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
+        */  return [=](error& pError, const RObject& pTargetObj, _signature&&...params)-> RObject
             {
                 if (!pTargetObj.isConstCastSafe())
                 {
                     pError = error::IllegalConstCast;
-                    return access::RObject();
+                    return RObject();
                 }
 
                 //call on 'pFunctor' will definitely be successful, since the object type, signature type has already been validated.
@@ -43,7 +43,7 @@ namespace rtl
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RObject();
+                    return RObject();
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
@@ -66,7 +66,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<methodQ::Const, _signature...>) vector holding lambda's.
-        */  return [=](error& pError, const access::RObject& pTargetObj, _signature&&...params)-> access::RObject
+        */  return [=](error& pError, const RObject& pTargetObj, _signature&&...params)-> RObject
             {
                 //call will definitely be successful, since the object type, signature type has already been validated.
                 pError = error::None;
@@ -77,7 +77,7 @@ namespace rtl
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return access::RObject();
+                    return RObject();
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.

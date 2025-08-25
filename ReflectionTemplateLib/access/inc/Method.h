@@ -17,7 +17,7 @@
 #include "Function.h"
 #include "MethodInvoker.h"
 
-namespace rtl::access {
+namespace rtl {
 
     class Record;
 

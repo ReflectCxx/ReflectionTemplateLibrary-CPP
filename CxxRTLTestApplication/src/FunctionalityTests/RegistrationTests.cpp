@@ -4,11 +4,11 @@
 #include "RTLibInterface.h"
 #include "RegistrationTestProp.h"
 
-using namespace rtl::access;
+using namespace rtl;
 
 namespace registration_test
 {
-    extern const rtl::access::CxxMirror& cxx_mirror();
+    extern const rtl::CxxMirror& cxx_mirror();
 
     TEST(RegistrationTest, invoking_semantics__C_style_function_with_no_overload)
     {
@@ -151,11 +151,11 @@ namespace registration_test
     TEST(RegistrationTest, invoking_static_member_function_semantics)
     {
         // Retrieve the reflected class metadata.
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Retrieve the static method from the class.
-        std::optional<rtl::access::Method> getDefaults = classPerson->getMethod("getDefaults");
+        std::optional<rtl::Method> getDefaults = classPerson->getMethod("getDefaults");
         ASSERT_TRUE(getDefaults);
 
         auto expectReturnStr = std::string("Person_defaults_returned");
@@ -181,7 +181,7 @@ namespace registration_test
             EXPECT_EQ(retStr, expectReturnStr);
         } {
             // Now create a `Person` object and reflect it into RTL.
-            rtl::access::RObject robj = rtl::reflect(Person(""));
+            rtl::RObject robj = rtl::reflect(Person(""));
 
             // Even if we bind a target object before calling the static function,
             // it has no effect — the call remains valid and succeeds.
@@ -207,7 +207,7 @@ namespace registration_test
 
     TEST(RegistrationTest, overload_resolution_semantics__constructor)
     {
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         std::string name = "Charlie";
@@ -236,16 +236,16 @@ namespace registration_test
     {
         // Tests runtime overload resolution between `std::string` (by value)
         // and `std::string&` overloads of Person::setProfile.
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         //  Create a Person instance the regular way.
         Person orgTim("Tim");
 
         //  Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
-        rtl::access::RObject robjTim = rtl::reflect(orgTim);
+        rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::access::Method> setProfile = classPerson->getMethod("setProfile");
+        std::optional<rtl::Method> setProfile = classPerson->getMethod("setProfile");
         ASSERT_TRUE(setProfile);
 
         //  NOTE for documentation:
@@ -292,16 +292,16 @@ namespace registration_test
 
     TEST(RegistrationTest, perfect_forwarding_seamantics__rvalue_ref)
     {
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Create a Person instance the regular way.
         Person orgTim("Tim");
 
         // Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
-        rtl::access::RObject robjTim = rtl::reflect(orgTim);
+        rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::access::Method> setTitle = classPerson->getMethod("setTitle");
+        std::optional<rtl::Method> setTitle = classPerson->getMethod("setTitle");
         ASSERT_TRUE(setTitle);
 
         {
@@ -337,16 +337,16 @@ namespace registration_test
     
     TEST(RegistrationTest, perfect_forwarding_semantics__overload_resolution)
     {
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Create a Person instance the regular way.
         Person orgTim("Tim");
 
         // Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
-        rtl::access::RObject robjTim = rtl::reflect(orgTim);
+        rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::access::Method> setOccupation = classPerson->getMethod("setOccupation");
+        std::optional<rtl::Method> setOccupation = classPerson->getMethod("setOccupation");
         ASSERT_TRUE(setOccupation);
 
         {
@@ -403,17 +403,17 @@ namespace registration_test
 
     TEST(RegistrationTest, non_const_method_resolution_semantics__on_true_const_target)
     {
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::optional<rtl::access::Method> getName = classPerson->getMethod("getName");
+        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         ASSERT_TRUE(getName);
         {
             // Case 1: Reflecting a true-const Person.
-            const Person constPerson = Person("Const Sam");
+            const Person constPerson = Person("Const-Sam");
 
             // Reflect 'const Person' into RObject.
-            rtl::access::RObject robj = rtl::reflect(constPerson);
+            rtl::RObject robj = rtl::reflect(constPerson);
 
             // RTL never performs an implicit const_cast on externally provided true-const objects.
             // Since 'constPerson' is genuinely const, RTL preserves that constness.
@@ -441,16 +441,16 @@ namespace registration_test
 
     TEST(RegistrationTest, non_const_method_resolution_semantics__on_logical_const_target)
     {
-        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::optional<rtl::access::Method> getName = classPerson->getMethod("getName");
+        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         ASSERT_TRUE(getName);
         // Case 2: Reflecting a mutable Person.
-        Person mutablePerson = Person("Mutable Sam");
+        Person mutablePerson = Person("Mutable-Sam");
 
         // Reflect 'Person' into RObject (copy created on stack).
-        rtl::access::RObject robj = rtl::reflect(mutablePerson);
+        rtl::RObject robj = rtl::reflect(mutablePerson);
 
         // RTL treats reflection-created objects as logically immutable by default.
         // For such objects, const_cast is always safe, since RTL controls their lifetime.
@@ -468,7 +468,7 @@ namespace registration_test
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
-            EXPECT_EQ(retStr, "Mutable Sam");
+            EXPECT_EQ(retStr, "Mutable-Sam");
         } {
             // Same as above, but this time we explicitly request the non-const overload.
             // `rtl::constCast()` signals intent to call the non-const variant.
@@ -483,7 +483,7 @@ namespace registration_test
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
-            EXPECT_EQ(retStr, "Mutable Sam");
+            EXPECT_EQ(retStr, "Mutable-Sam");
         }
     }
 }

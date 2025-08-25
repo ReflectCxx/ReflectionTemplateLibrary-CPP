@@ -49,12 +49,12 @@ namespace rtl
             };
 
             //lambda containing constructor call.
-            const auto& functor = [=](error& pError, alloc pAllocType, _signature&&...params)-> access::RObject
+            const auto& functor = [=](error& pError, alloc pAllocType, _signature&&...params)-> RObject
             {
                 if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>) 
                 {   //default constructor, private or deleted.
                     pError = error::TypeNotDefaultConstructible;
-                    return access::RObject();
+                    return RObject();
                 }
                 else 
                 {
@@ -62,7 +62,7 @@ namespace rtl
 
                         if constexpr (!std::is_copy_constructible_v<_recordType>) {
                             pError = error::TypeNotCopyConstructible;
-                            return access::RObject();
+                            return RObject();
                         }
                         else {
                             pError = error::None;
@@ -73,7 +73,7 @@ namespace rtl
                         return RObjectBuilder::build<_recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true);
                     }
                 }
-                return access::RObject();   //dead code. compiler warning ommited.
+                return RObject();   //dead code. compiler warning ommited.
             };
 
             //add the lambda in 'FunctorContainer'.

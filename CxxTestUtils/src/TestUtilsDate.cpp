@@ -35,7 +35,7 @@ namespace test_utils
 		return Date::instanceCount();
 	}
 
-	const bool date::test_if_obejcts_are_equal(const rtl::access::RObject& pInstance0, const rtl::access::RObject& pInstance1)
+	const bool date::test_if_obejcts_are_equal(const rtl::RObject& pInstance0, const rtl::RObject& pInstance1)
 	{
 		if (pInstance0.canViewAs<Date>() && pInstance1.canViewAs<Date>()) 
 		{
@@ -47,7 +47,7 @@ namespace test_utils
 	}
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<>(const rtl::access::RObject& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Date>()) {
 			const Date& rdate = pInstance.view<Date>()->get();
@@ -57,7 +57,7 @@ namespace test_utils
 	}
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<string>(const rtl::access::RObject& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<string>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Date>()) {
 			const Date& rdate = pInstance.view<Date>()->get();
@@ -68,7 +68,7 @@ namespace test_utils
 
 
 	template<>
-	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const rtl::access::RObject& pInstance)
+	const bool date::test_dynamic_alloc_instance_ctor<unsigned, unsigned, unsigned>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Date>()) {
 			const Date& rdate = pInstance.view<Date>()->get();

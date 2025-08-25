@@ -6,7 +6,7 @@ namespace the_reflection
 {
 	struct cxx
 	{
-		static rtl::access::CxxMirror& mirror();
+		static rtl::CxxMirror& mirror();
 	};
 
 

@@ -19,6 +19,6 @@ namespace singleton_test {
 
         Reflection& operator=(const Reflection&) = delete;
 
-        static const std::optional<rtl::access::Record>& getSingletonClass();
+        static const std::optional<rtl::Record>& getSingletonClass();
     };
 }

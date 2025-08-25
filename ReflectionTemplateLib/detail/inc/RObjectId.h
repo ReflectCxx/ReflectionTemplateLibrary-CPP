@@ -15,7 +15,7 @@
 #include <vector>
 #include "ReflectCast.h"
 
-namespace rtl::access {
+namespace rtl {
     class RObject;
 }
 
@@ -28,7 +28,7 @@ namespace rtl::detail
     {
         friend RObjExtractor;
         friend RObjectBuilder;
-        friend access::RObject;
+        friend RObject;
 
         GETTER(std::size_t, TypeId, m_typeId)
         GETTER(EntityKind, ContainedAs, m_containsAs)

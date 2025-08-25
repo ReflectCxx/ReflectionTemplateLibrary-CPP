@@ -25,7 +25,7 @@ namespace rtl::builder
     { }
 
     template<class _recordType>
-    inline const access::Function RecordBuilder<_recordType>::build() const
+    inline const Function RecordBuilder<_recordType>::build() const
     {
         return ConstructorBuilder<_recordType>(m_namespace, m_record).build();
     }

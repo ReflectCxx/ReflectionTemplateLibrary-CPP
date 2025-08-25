@@ -36,7 +36,7 @@ namespace rtl {
 
             RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, std::size_t pRecordId);
 
-            const access::Function build() const;
+            const Function build() const;
         };
 
 
