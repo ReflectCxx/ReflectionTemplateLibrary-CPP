@@ -156,36 +156,21 @@ using namespace rtl::builder;
 
 const CxxMirror& MyReflection()
 {
-    static const CxxMirror cxxReflection({
-        // Register member functions
-        Reflect().record<Person>("Person").method("setAge").build(&Person::setAge),
-        Reflect().record<Person>("Person").method("getAge").build(&Person::getAge),
-        Reflect().record<Person>("Person").method("setName").build(&Person::setName),
-        Reflect().record<Person>("Person").method("getName").build(&Person::getName),
-
-        // Registering any method (including but not limited to constructors) will  
-        // automatically reflect the copy-constructor & destructor (if accessible).
-        Reflect().record<Person>("Person").constructor().build(),  // Default constructor
-        Reflect().record<Person>("Person").constructor<std::string, int>().build() // Parameterized constructor
+    static const CxxMirror cxxReflection(
+	{
+        // Register the class. implicitly registers copy-constructor & destructor (if accessible).
+        Reflect().nameSpace().record<Person>("Person").build(),
+        Reflect().member<Person>().constructor<std::string, int>().build() // Parameterized constructor
+        Reflect().member<Person>().method("setAge").build(&Person::setAge),
+        Reflect().member<Person>().method("getAge").build(&Person::getAge),
+        Reflect().member<Person>().method("setName").build(&Person::setName),
+        Reflect().member<Person>().method("getName").build(&Person::getName),
     });
 
     return cxxReflection;
 }
 ```
-
-Registration syntax:
-
-```c++
-Reflect().nameSpace("..")   // Optional: specify namespace if the type is enclosed in one.
-         .record<..>("..")  // Register class/struct type (template parameter) and its name (string).
-         .method("..")      // Register function by name.
-         .build(*);         // Pass function pointer.
-
-Reflect().nameSpace("..")
-         .record<..>("..")
-         .constructor<..>() // Register constructor with template parameters as signature.
-         .build();          // No function pointer needed for constructors.
-```
+Explore in detail - [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ### Step 2: Use the `Person` Class via Reflection
 
