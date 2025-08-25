@@ -69,25 +69,37 @@ namespace registration_test
         */  Reflect().member<Person>().method("getName").build(&Person::getName),
 
 
-        /*  Static member - functions must be registered via `.methodStatic()`, otherwise it is a compile - time error.
-            `.methodStatic()` returns an object that restricts `build()` to only accept static-member-function pointers.  
-        */  Reflect().member<Person>().methodStatic("getDefaults").build(&Person::getDefaults),
+        /*  Registering a static member-function.
+            Must be registered via `.methodStatic()`, otherwise it is a compile-time error.
+            `.methodStatic()` restricts `build()` to only accept static member-function pointers.
+
+            Runtime semantics:
+            Static methods are independent of object state, so they can always be invoked
+            regardless of whether the reflected context is const or non-const.
+        */ Reflect().member<Person>().methodStatic("getDefaults").build(&Person::getDefaults),
 
 
-        /*  Non-const member-functions must be registered via `.method()`, otherwise it is a compile-time error.  
-            The non-const overload of `updateAddress` is automatically selected here, because  
-            `.method()` returns an object that restricts `build()` to only accept non-const-member-function pointers.  
-            Overload resolution (if multiple overloads exist) is handled at runtime.  
-            See test case: `const_based_overload_resolution`.  
-        */  Reflect().member<Person>().method("updateAddress").build(&Person::updateAddress),
+        /*  Registering a non-const member-function.
+            Must be registered via `.method()`, otherwise it is a compile-time error.
+            The non-const overload of `updateAddress` is automatically selected here, because
+            `.method()` restricts `build()` to only accept non-const member-function pointers.
+
+            If multiple overloads are available, the correct one is resolved at runtime.
+            See test case: `non_const_method_call_resolution__on_true_const_target` &
+                           `non_const_method_call_resolution__on_logical_const_target`
+        */ Reflect().member<Person>().method("updateAddress").build(&Person::updateAddress),
 
 
-        /*  Const member - functions must be registered via `.methodConst()`, otherwise it is a compile - time error.
-            The const overload of `updateAddress` is automatically selected here, because  
-            `.methodConst()` returns an object that restricts `build()` to only accept const-member-function pointers.  
-            Overload resolution (if multiple overloads exist) is handled at runtime.  
-            See test case: `const_based_overload_resolution`.  
-        */  Reflect().member<Person>().methodConst("updateAddress").build(&Person::updateAddress),
+        /*  Registering a const member-function.
+            Must be registered via `.methodConst()`, otherwise it is a compile-time error.
+            The const overload of `updateAddress` is automatically selected here, because
+            `.methodConst()` restricts `build()` to only accept const member-function pointers.
+
+            If multiple overloads are available, the correct one is resolved at runtime.
+            See test case: `non_const_method_call_resolution__on_true_const_target` &
+                           `non_const_method_call_resolution__on_logical_const_target`
+        */ Reflect().member<Person>().methodConst("updateAddress").build(&Person::updateAddress),
+
 
 
         /*  Registers the member function `setTitle`, which only accepts an rvalue reference (`std::string&&`).

@@ -17,15 +17,6 @@ namespace rtl {
 
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
-    // MethodQ: Method qualifier + static marker.
-    enum class methodQ
-    {
-        None,       // Static method (no const/non-const qualifier)
-        Const,      // Const-qualified instance method
-        NonConst    // Non-const instance method
-    };
-
-
     //Allocation type.
     enum class alloc
     {
@@ -34,6 +25,7 @@ namespace rtl {
         Stack,      //assigned to return-values & rtl-allocated stack objects
     };
 
+
     enum class copy 
     {
         Auto,
@@ -41,6 +33,14 @@ namespace rtl {
         Wrapper
     };
 
+
+    // MethodQ: Method qualifier + static marker.
+    enum class methodQ
+    {
+        None,       // Static method (no const/non-const qualifier)
+        Const,      // Const-qualified instance method
+        NonConst    // Non-const instance method
+    };
 
 
     template<class T>
@@ -64,6 +64,7 @@ namespace rtl::detail
         Value,
         Wrapper
     };
+
 
     enum class Wrapper
     {
