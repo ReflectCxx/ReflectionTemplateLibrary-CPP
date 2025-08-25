@@ -29,7 +29,8 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Path to Higher-Level Abstractions** – The architecture unlocks the same extensibility as Java/.NET reflection, enabling ORMs, serializers, plugin systems, game editors, and live scripting directly in C++.
 
-[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)    [![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
+[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
+[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
 
 ## A Quick Preview: Reflection That Feels Like C++
 
@@ -171,6 +172,7 @@ const CxxMirror& MyReflection()
 }
 ```
 * Explore in detail-
+
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ### Step 2: Use the `Person` Class via Reflection
