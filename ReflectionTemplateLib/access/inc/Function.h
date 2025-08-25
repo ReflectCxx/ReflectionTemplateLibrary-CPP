@@ -27,82 +27,79 @@ namespace rtl {
         class ReflectionBuilder;
     }
 
-    namespace access
-    {
     /*  @class: Function, (callable object)
         * every functor (function/method pointer), constructor registered will produce a 'Function' object
         * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
-        * once the Function object is obtained, it can be called with the correct set of arguments, which will finally 
+        * once the Function object is obtained, it can be called with the correct set of arguments, which will finally
         * perform call on the functor represented by this object.
     */  class Function
-        {
-            //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
-            methodQ m_qualifier;
+    {
+        //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
+        methodQ m_qualifier;
 
-            //type id of class/struct (if it represents a member-function, else always '0')
-            std::size_t m_recordTypeId;
+        //type id of class/struct (if it represents a member-function, else always '0')
+        std::size_t m_recordTypeId;
 
-            //name of the class/struct it belongs to, empty for non-member function.
-            std::string m_record;
+        //name of the class/struct it belongs to, empty for non-member function.
+        std::string m_record;
 
-            //name of the function as supplied by the user.
-            std::string m_function;
+        //name of the function as supplied by the user.
+        std::string m_function;
 
-            //name of the namespace as supplied by the user.
-            std::string m_namespace;
+        //name of the namespace as supplied by the user.
+        std::string m_namespace;
 
-            //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
-            mutable std::vector<detail::FunctorId> m_functorIds;
+        //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
+        mutable std::vector<detail::FunctorId> m_functorIds;
 
-        private:
+    private:
 
-            Function(const std::string& pNamespace, const std::string& pClassName, 
-                     const std::string& pFuncName, const detail::FunctorId& pFunctorId,
-                     const std::size_t pRecordTypeId, const methodQ pQualifier);
+        Function(const std::string_view pNamespace, const std::string_view pClassName,
+            const std::string_view pFuncName, const detail::FunctorId& pFunctorId,
+            const std::size_t pRecordTypeId, const methodQ pQualifier);
 
-            void addOverload(const Function& pOtherFunc) const;
+        void addOverload(const Function& pOtherFunc) const;
 
-            GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
+        GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
-        protected:
+    protected:
 
-            Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-                     const std::string& pFunctorName);
+        Function(const Function& pOther, const detail::FunctorId& pFunctorId,
+            const std::string_view pFunctorName);
 
-            std::size_t hasSignatureId(const std::size_t pSignatureId) const;
+        std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
-        public:
+    public:
 
-            //simple inlined getters.
-            GETTER(methodQ, Qualifier, m_qualifier)
-            GETTER(std::string, RecordName, m_record)
-            GETTER(std::string, Namespace, m_namespace)
-            GETTER(std::string, FunctionName, m_function)
-            GETTER(std::size_t, RecordTypeId, m_recordTypeId)
-            GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds)
+        //simple inlined getters.
+        GETTER(methodQ, Qualifier, m_qualifier);
+        GETTER(std::string, RecordName, m_record);
+        GETTER(std::string, Namespace, m_namespace);
+        GETTER(std::string, FunctionName, m_function);
+        GETTER(std::size_t, RecordTypeId, m_recordTypeId);
+        GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
-            Function(Function&&) = default;
-            Function(const Function&) = default;
-            Function& operator=(Function&&) = default;
-            Function& operator=(const Function&) = default;
+        Function(Function&&) = default;
+        Function(const Function&) = default;
+        Function& operator=(Function&&) = default;
+        Function& operator=(const Function&) = default;
 
-            //indicates if a functor associated with it takes zero arguments.
-            bool hasSignature() const;
+        //indicates if a functor associated with it takes zero arguments.
+        bool hasSignature() const;
 
-            template<class ..._args>
-            bool hasSignature() const;
+        template<class ..._args>
+        bool hasSignature() const;
 
-            template<class ..._args>
-            std::pair<error, RObject> operator()(_args&&...params) const noexcept;
+        template<class ..._args>
+        std::pair<error, RObject> operator()(_args&&...params) const noexcept;
 
-            template<class ..._signature>
-            const detail::FunctionCaller<_signature...> bind() const;
+        template<class ..._signature>
+        const detail::FunctionCaller<_signature...> bind() const;
 
+        friend detail::CxxReflection;
+        friend detail::ReflectionBuilder;
 
-            friend detail::CxxReflection;
-            friend detail::ReflectionBuilder;
-            template<class ..._signature>
-            friend class detail::FunctionCaller;
-        };
-    }
+        template<class ..._signature>
+        friend class detail::FunctionCaller;
+    };
 }

@@ -32,7 +32,7 @@ namespace rtl::detail
 }
 
 
-namespace rtl::access
+namespace rtl
 {
     class Function;
 

@@ -19,7 +19,7 @@ namespace rtl::detail {
 
     inline const std::size_t RObjectBuilder::rtlManagedInstanceCount()
     {
-        return access::RObject::getInstanceCounter();
+        return RObject::getInstanceCounter();
     }
     
 
@@ -31,7 +31,7 @@ namespace rtl::detail {
 
         if constexpr (std::is_copy_constructible_v<_T>)
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn)-> access::RObject
+            return [](error& pError, const RObject& pOther, alloc pAllocOn)-> RObject
             {
                 const auto& srcObj = pOther.view<_T>()->get();
                 pError = error::None;
@@ -41,22 +41,22 @@ namespace rtl::detail {
                 else if (pAllocOn == alloc::Heap) {
                     return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
                 }
-                return access::RObject(); //dead code. compiler warning ommited.
+                return RObject(); //dead code. compiler warning ommited.
             };
         }
         else 
         {
-            return [](error& pError, const access::RObject& pOther, alloc pAllocOn)-> access::RObject
+            return [](error& pError, const RObject& pOther, alloc pAllocOn)-> RObject
             {
                 pError = error::TypeNotCopyConstructible;
-                return access::RObject();
+                return RObject();
             };
         }
     }
 
 
     template<class T, rtl::alloc _allocOn>
-    inline access::RObject RObjectBuilder::build(T&& pVal, const bool pIsConstCastSafe)
+    inline RObject RObjectBuilder::build(T&& pVal, const bool pIsConstCastSafe)
     {
         using _T = traits::raw_t<T>;
         constexpr bool isRawPointer = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
@@ -66,14 +66,14 @@ namespace rtl::detail {
             static_assert(isRawPointer, "Invalid 'alloc' specified for non-pointer-type 'T'");
             _T* objPtr = static_cast<_T*>(pVal);
             const RObjectId& robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
-            return access::RObject(std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(objPtr))), buildCloner<_T>(), robjId);
+            return RObject(std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(objPtr))), buildCloner<_T>(), robjId);
         }
         else if constexpr (_allocOn == alloc::Stack)
         {
             if constexpr (isRawPointer)
             {
                 const RObjectId& robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
-                return access::RObject(std::any(static_cast<const _T*>(pVal)), buildCloner<_T>(), robjId);
+                return RObject(std::any(static_cast<const _T*>(pVal)), buildCloner<_T>(), robjId);
             }
             else
             {
@@ -81,12 +81,12 @@ namespace rtl::detail {
                 if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
                 {
                     using U = traits::std_wrapper<_T>::value_type;
-                    return access::RObject(std::any(RObjectUPtr<U>(std::move(pVal))), buildCloner<_T>(), robjId);
+                    return RObject(std::any(RObjectUPtr<U>(std::move(pVal))), buildCloner<_T>(), robjId);
                 }
                 else 
                 {
                     static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-                    return access::RObject(std::any(std::forward<T>(pVal)), buildCloner<_T>(), robjId);
+                    return RObject(std::any(std::forward<T>(pVal)), buildCloner<_T>(), robjId);
                 }
             }
         }

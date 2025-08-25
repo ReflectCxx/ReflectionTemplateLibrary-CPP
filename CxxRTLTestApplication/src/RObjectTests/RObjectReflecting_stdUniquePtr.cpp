@@ -6,7 +6,7 @@
 #include "MyReflection.h"
 
 using namespace test_utils;
-using namespace rtl::access;
+using namespace rtl;
 
 namespace rtl::unit_test
 {
@@ -21,12 +21,12 @@ namespace rtl::unit_test
             {
                 auto [err, robj] = robj0.clone<alloc::Stack>();
                 EXPECT_TRUE(err == error::TypeNotCopyConstructible);
-                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(robj.isEmpty());
                 ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             } {
                 auto [err, robj] = robj0.clone<alloc::Heap>();
                 EXPECT_TRUE(err == error::StlWrapperHeapAllocForbidden);
-                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(robj.isEmpty());
                 ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             }
         }
@@ -159,7 +159,7 @@ namespace rtl::unit_test
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
 
         // RObject still exists with correct metadata, but the stored unique_ptr is now empty
-        EXPECT_FALSE(robj.isEmpty());
+        ASSERT_FALSE(robj.isEmpty());
 
         // Any subsequent view will still be obtainable
         auto view3 = robj.view<std::unique_ptr<int>>();
@@ -228,7 +228,7 @@ namespace rtl::unit_test
             EXPECT_EQ(uptr0.get(), &node);
 
             // RObject still exists with correct metadata, but the stored unique_ptr is now empty
-            EXPECT_FALSE(robj.isEmpty());
+            ASSERT_FALSE(robj.isEmpty());
 
             // RTL gave up the ownership after move-op.
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -364,7 +364,7 @@ namespace rtl::unit_test
             {
                 auto view = robj.view<std::unique_ptr<Node>>();
                 ASSERT_TRUE(view);
-                EXPECT_FALSE(robj.isEmpty());
+                ASSERT_FALSE(robj.isEmpty());
 
                 std::unique_ptr<Node> uptrNode = std::move(view->get());
                 EXPECT_EQ(uptrNode->data(), NUM);
@@ -475,7 +475,7 @@ namespace rtl::unit_test
         } {
             auto [err, robj0] = robj.clone<rtl::alloc::Stack>();
             EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-            EXPECT_TRUE(robj0.isEmpty());
+            ASSERT_TRUE(robj0.isEmpty());
         }
     }
 }

@@ -24,7 +24,7 @@ namespace rtl::detail
 }
 
 
-namespace rtl::access {
+namespace rtl {
 
 /*  @Constructor: CxxMirror
     @params: 'const std::vector<Function>&'

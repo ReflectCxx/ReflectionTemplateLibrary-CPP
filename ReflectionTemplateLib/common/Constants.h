@@ -17,6 +17,23 @@ namespace rtl {
 
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 
+    //Allocation type.
+    enum class alloc
+    {
+        None,       //assigned to empty/moved-from 'RObject's.
+        Heap,       //assigned to only rtl-allocated heap objects
+        Stack,      //assigned to return-values & rtl-allocated stack objects
+    };
+
+
+    enum class copy 
+    {
+        Auto,
+        Value,
+        Wrapper
+    };
+
+
     // MethodQ: Method qualifier + static marker.
     enum class methodQ
     {
@@ -26,19 +43,14 @@ namespace rtl {
     };
 
 
-    //Allocation type.
-    enum class alloc
+    template<class T>
+    struct constCast
     {
-        None,       //assigned to empty/moved-from 'RObject's.
-        Heap,       //assigned to only rtl-allocated heap objects
-        Stack,      //assigned to return-values & rtl-allocated stack objects
-    };
-
-    enum class copy 
-    {
-        Auto,
-        Value,
-        Wrapper
+        const T& m_target;
+        constCast() = delete;
+        constCast(constCast&&) = delete;
+        constCast(const constCast&) = delete;
+        constCast(const T& pTarget) : m_target(pTarget) { }
     };
 }
 
@@ -53,6 +65,7 @@ namespace rtl::detail
         Wrapper
     };
 
+
     enum class Wrapper
     {
         None,
@@ -65,8 +78,10 @@ namespace rtl::detail
         Reference
     };
 
-    inline static const std::string ctor_name(const std::string& pRecordName) {
-        return (pRecordName + "::" + pRecordName + "()");
+
+    inline static const std::string ctor_name(const std::string_view pRecordName = "") {
+    //  [critical] Must not change. Constructors are identified using this format.
+        return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }
 
 #define GETTER(_varType, _name, _var)                       \

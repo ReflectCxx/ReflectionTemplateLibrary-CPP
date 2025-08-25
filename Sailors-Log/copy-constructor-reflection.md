@@ -12,7 +12,7 @@ In C++, copy constructors are universally available (unless explicitly deleted),
 During testing with POD types like `char`, it became clear that exposing direct copy constructor calls through `Record::create<>()` added no value and introduced ambiguity:
 
 ```cpp
-optional<Record> charType = MyReflection::instance().getRecord(reflected_id::char_t);
+optional<Record> charType = cxx::mirror().getRecord(reflected_id::char_t);
 auto [err, rchar] = charType->create<rtl::alloc::Stack>('Q');
 EXPECT_TRUE(err == rtl::error::SignatureMismatch);
 ```

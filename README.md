@@ -1,20 +1,19 @@
-# Reflection Template Library C++
+# Reflection Template Library (RTL) - Modern C++ Reflection Framework
 
-**Reflection Template Library (RTL)** is a lightweight, modern C++20 runtime reflection library. It allows introspection and dynamic manipulation of user-defined types — enabling you to access, modify, and invoke objects at runtime without compile-time type knowledge.
+**Reflection Template Library (RTL)** is a lightweight C++ runtime reflection library that enables introspection and dynamic manipulation of user-defined types — allowing you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
-RTL is a static library built entirely in modern C++, designed around type-safe tables of function pointers registered by the user. These are internally wrapped in lambdas, offering a clean and efficient runtime access mechanism.
+RTL is implemented as a static library that organizes type-safe function pointers into tables `(std::vector)`, with each pointer wrapped in a lambda. This design enables constant-time `O(1)` lookup and efficient runtime access.
 
-[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)
-[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blueviolet)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
-[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blueviolet)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
+[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org) 
+[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE) 
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ## What RTL Brings to Your Code
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, just like in Java or .NET, but in modern C++.
 
-* **Single Source of Truth** – All metadata is exposed through one immutable `rtl::CxxMirror` object, ensuring ABI stability and consistency across plugins, tools, and modules.
+* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, giving plugins and tools a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
 * **Non-Intrusive & Macro-Free** – Register reflection data externally with a clean builder pattern; no macros, no base classes, no global registries.
 
@@ -22,13 +21,16 @@ RTL is a static library built entirely in modern C++, designed around type-safe 
 
 * **Exception-Free Surface** – All predictable failures return error codes; no hidden throws.
 
-* **Deterministic Lifetimes** – Automatic ownership tracking of `Heap`, `Stack`, and `Smart-Pointer` instances with zero hidden deep copies.
+* **Deterministic Lifetimes** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
 * **Cross-Compiler Consistency** – Built entirely on standard C++20, no reliance on compiler extensions.
 
 * **Tooling-Friendly** – Architecture designed to power serializers, debuggers, test frameworks, scripting, and editor integrations without compiler context.
 
 * **Path to Higher-Level Abstractions** – Lays the foundation for ORMs, plugin systems, game editors, and live scripting directly in C++.
+
+[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
+[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
 
 ## A Quick Preview: Reflection That Feels Like C++
 
@@ -83,7 +85,7 @@ The semantics don’t feel foreign: creating, binding, and calling are the same 
 * ✅ **Member Function Invocation** 🎯:
   * Static methods.
   * Const/Non-const methods.
-  * Any overloaded method, Const & RValue based as well.
+  * Any overloaded method, Const/Non-Const based as well.
 
 * ✅ **Perfect Forwarding** 🚀 – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** ⚡ – No temporaries or copies during method forwarding.
@@ -155,36 +157,23 @@ using namespace rtl::builder;
 
 const CxxMirror& MyReflection()
 {
-    static const CxxMirror cxxReflection({
-        // Register member functions
-        Reflect().record<Person>("Person").method("setAge").build(&Person::setAge),
-        Reflect().record<Person>("Person").method("getAge").build(&Person::getAge),
-        Reflect().record<Person>("Person").method("setName").build(&Person::setName),
-        Reflect().record<Person>("Person").method("getName").build(&Person::getName),
-
-        // Registering any method (including but not limited to constructors) will  
-        // automatically reflect the copy-constructor & destructor (if accessible).
-        Reflect().record<Person>("Person").constructor().build(),  // Default constructor
-        Reflect().record<Person>("Person").constructor<std::string, int>().build() // Parameterized constructor
+    static const CxxMirror cxxReflection(
+	{
+        // Register the class. implicitly registers copy-constructor & destructor (if accessible).
+        Reflect().nameSpace().record<Person>("Person").build(),
+        Reflect().member<Person>().constructor<std::string, int>().build() // Parameterized constructor
+        Reflect().member<Person>().method("setAge").build(&Person::setAge),
+        Reflect().member<Person>().method("getAge").build(&Person::getAge),
+        Reflect().member<Person>().method("setName").build(&Person::setName),
+        Reflect().member<Person>().method("getName").build(&Person::getName),
     });
 
     return cxxReflection;
 }
 ```
+* Explore in detail-
 
-Registration syntax:
-
-```c++
-Reflect().nameSpace("..")   // Optional: specify namespace if the type is enclosed in one.
-         .record<..>("..")  // Register class/struct type (template parameter) and its name (string).
-         .method("..")      // Register function by name.
-         .build(*);         // Pass function pointer.
-
-Reflect().nameSpace("..")
-         .record<..>("..")
-         .constructor<..>() // Register constructor with template parameters as signature.
-         .build();          // No function pointer needed for constructors.
-```
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ### Step 2: Use the `Person` Class via Reflection
 

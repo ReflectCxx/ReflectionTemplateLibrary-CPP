@@ -14,22 +14,22 @@ namespace rtl_tests
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
         //I don't know if the 'Event' is class or struct..Reflection YaY!. :P
-        auto classEvent = MyReflection::instance().getRecord(reflected_id::event);
+        auto classEvent = cxx::mirror().getRecord(reflected_id::event);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<rtl::alloc::Stack>();
 
         //Event's constructor is private, not accessible, Hence the error.
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
-        EXPECT_TRUE(robj0.isEmpty());
+        ASSERT_TRUE(robj0.isEmpty());
         {
-            auto classCalender = MyReflection::instance().getRecord(reflected_id::calender);
+            auto classCalender = cxx::mirror().getRecord(reflected_id::calender);
             ASSERT_TRUE(classCalender);
 
             auto [err1, calender] = classCalender->create<rtl::alloc::Stack>();
 
             EXPECT_TRUE(err1 == rtl::error::None);
-            EXPECT_FALSE(calender.isEmpty());
+            ASSERT_FALSE(calender.isEmpty());
 
             // 'Calender' instance created.
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -43,20 +43,20 @@ namespace rtl_tests
             // get the Event's object from the 'Calender' object.
             auto [err2, event] = getEvent->bind(calender).call();
             EXPECT_TRUE(err2 == rtl::error::None);
-            EXPECT_FALSE(event.isEmpty());
+            ASSERT_FALSE(event.isEmpty());
             EXPECT_TRUE(event.getTypeId() == reflected_id::event);
             {
                 auto [err, robj] = event.clone<rtl::alloc::Heap>();
                 //Event's copy-constructor private or deleted.
                 EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(robj.isEmpty());
                 // Two 'Event' instances, owned by 'Calender'
                 EXPECT_TRUE(event::get_instance_count() == 2);
             } {
                 auto [err, robj] = event.clone<rtl::alloc::Stack>();
                 //Event's copy-constructor private or deleted.
                 EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(robj.isEmpty());
                 // Still, two 'Event' instances, owned by 'Calender'
                 EXPECT_TRUE(event::get_instance_count() == 2);
             }

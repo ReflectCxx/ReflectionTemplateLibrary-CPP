@@ -1,7 +1,7 @@
-#include "Person.h"
-#include "Person.h"
+
 #include <iostream>
 #include <cassert>
+
 #include "Person.h"
 
 static long g_instanceCount = 0;

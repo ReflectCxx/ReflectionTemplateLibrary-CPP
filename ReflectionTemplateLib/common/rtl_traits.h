@@ -15,6 +15,7 @@
 #include <array>
 #include <string>
 #include <memory>
+#include <utility>
 #include <functional>
 #include <type_traits>
 
@@ -124,6 +125,11 @@ namespace rtl
 
     namespace traits 
     {
+        template<typename T, typename... Args>
+        concept has_constructor = requires(Args&&... args) {
+            T{ std::forward<Args>(args)... };
+        };
+
         template<class T>
         constexpr bool is_bare_type()
         {

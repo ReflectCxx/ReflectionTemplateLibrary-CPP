@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace rtl;
-using namespace rtl::access;
+using namespace rtl;
 using namespace test_utils;
 using namespace the_reflection;
 
@@ -37,11 +37,11 @@ namespace rtl_tests
             {
                 auto [err, person] = emptyObj.clone<alloc::Stack>();
                 EXPECT_TRUE(err == error::EmptyRObject);
-                EXPECT_TRUE(person.isEmpty());
+                ASSERT_TRUE(person.isEmpty());
             } {
                 auto [err, person] = emptyObj.clone<alloc::Heap>();
                 EXPECT_TRUE(err == error::EmptyRObject);
-                EXPECT_TRUE(person.isEmpty());
+                ASSERT_TRUE(person.isEmpty());
             }
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -50,18 +50,18 @@ namespace rtl_tests
 
     TEST(ReflectionOperationStatus, error_TypeNotDefaultConstructible)
     {
-        optional<Record> classEvent = MyReflection::instance().getRecord(event::ns, event::struct_);
+        optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<alloc::Stack>();
 
         EXPECT_TRUE(err0 == error::TypeNotDefaultConstructible);
-        EXPECT_TRUE(robj0.isEmpty());
+        ASSERT_TRUE(robj0.isEmpty());
 
         auto [err1, robj1] = classEvent->create<alloc::Heap>();
 
         EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
-        EXPECT_TRUE(robj1.isEmpty());
+        ASSERT_TRUE(robj1.isEmpty());
     }
 
 
@@ -73,7 +73,7 @@ namespace rtl_tests
         {
             auto [err, rch] = rCh.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(rch.isEmpty());
+            ASSERT_FALSE(rch.isEmpty());
             EXPECT_TRUE(rch.canViewAs<char>());
             EXPECT_EQ(rch.view<char>()->get(), 'R');
         } 
@@ -81,7 +81,7 @@ namespace rtl_tests
         {
             auto [err, rch] = rCh.clone<alloc::Heap, copy::Value>();
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(rch.isEmpty());
+            ASSERT_FALSE(rch.isEmpty());
             EXPECT_TRUE(rch.canViewAs<char>());
             EXPECT_EQ(rch.view<char>()->get(), 'R');
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
@@ -90,7 +90,7 @@ namespace rtl_tests
         {
             auto [err, rch] = rCh.clone<alloc::Stack, copy::Wrapper>();
             EXPECT_TRUE(err == error::NotWrapperType);
-            EXPECT_TRUE(rch.isEmpty());
+            ASSERT_TRUE(rch.isEmpty());
         /*  this will not compile, fail with message -
             static_assert failed: 'Heap allocation forbidden for STL-Wrappers (e.g. smart pointers/optionals/reference_wrappers).' */
         //  auto [err0, rch0] = rChptr.clone<alloc::Heap, entityKind::Wrapper>();
@@ -106,7 +106,7 @@ namespace rtl_tests
         {
             RObject rChptr = rtl::reflect(chPtr);
 
-            EXPECT_FALSE(rChptr.isEmpty());
+            ASSERT_FALSE(rChptr.isEmpty());
             EXPECT_FALSE(rChptr.isAllocatedByRtl());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
             EXPECT_TRUE(rChptr.canViewAs<char>());
@@ -136,7 +136,7 @@ namespace rtl_tests
                 // but we can definitly create the copy of underlying value.
                 auto [err, rch0] = rChptr.clone<alloc::Stack, copy::Value>();
                 EXPECT_TRUE(err == error::None);
-                EXPECT_FALSE(rch0.isEmpty());
+                ASSERT_FALSE(rch0.isEmpty());
                 EXPECT_TRUE(rch0.canViewAs<char>());
 
                 auto viewCh = rChptr.view<char>();
@@ -150,7 +150,7 @@ namespace rtl_tests
                 // but we can definitly create the copy of underlying value.
                 auto [err, rch0] = rChptr.clone<alloc::Heap, copy::Value>();
                 EXPECT_TRUE(err == error::None);
-                EXPECT_FALSE(rch0.isEmpty());
+                ASSERT_FALSE(rch0.isEmpty());
                 ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);
                 EXPECT_TRUE(rch0.canViewAs<char>());
 
@@ -169,7 +169,7 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, copy_construct__error_TypeNotCopyConstructible)
     {
         {
-            optional<Record> classCalender = MyReflection::instance().getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
             //Events's constructor not registered, get its instance from 'Calander'.
@@ -179,19 +179,19 @@ namespace rtl_tests
             // Create Calender, which will create a Event's instance.
             auto [err0, calender] = classCalender->create<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(calender.isEmpty());
+            ASSERT_FALSE(calender.isEmpty());
 
             // Get the Event's instance.
             auto [err1, event] = getEvent->bind(calender).call();
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_FALSE(event.isEmpty());
+            ASSERT_FALSE(event.isEmpty());
 
             // Try to call copy-constructor of class Event.
             auto [err2, eventCp] = event.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
             EXPECT_TRUE(err2 == error::TypeNotCopyConstructible);
-            EXPECT_TRUE(eventCp.isEmpty());
+            ASSERT_TRUE(eventCp.isEmpty());
         }
         EXPECT_TRUE(calender::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -202,7 +202,7 @@ namespace rtl_tests
     {
         {
             // Fetch the reflected Record for class 'Library'.
-            optional<Record> classLibrary = MyReflection::instance().getRecord(library::class_);
+            optional<Record> classLibrary = cxx::mirror().getRecord(library::class_);
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
@@ -212,7 +212,7 @@ namespace rtl_tests
             *   the pointer directly inside std::any (type-erased), without requiring the type T
             *   to be copy-constructible.
             */  EXPECT_TRUE(err == error::None);
-                EXPECT_FALSE(robj.isEmpty());
+                ASSERT_FALSE(robj.isEmpty());
             }
             // Ensure no leaked or lingering reflected instances.
             EXPECT_TRUE(library::assert_zero_instance_count());
@@ -224,7 +224,7 @@ namespace rtl_tests
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
             *   and Library's copy constructor is deleted, construction fails.
             */  EXPECT_TRUE(err == error::TypeNotCopyConstructible);
-                EXPECT_TRUE(robj.isEmpty());
+                ASSERT_TRUE(robj.isEmpty());
             }
         }
     }
@@ -232,7 +232,7 @@ namespace rtl_tests
 
     TEST(ReflectionOperationStatus, static_method_call__error_SignatureMismatch)
     {
-        optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+        optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
 
         optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
@@ -242,7 +242,7 @@ namespace rtl_tests
         auto [err, robj] = getProfile->bind().call(std::string());
 
         EXPECT_TRUE(err == error::SignatureMismatch);
-        EXPECT_TRUE(robj.isEmpty());
+        ASSERT_TRUE(robj.isEmpty());
     }
 
 
@@ -252,12 +252,12 @@ namespace rtl_tests
             RObject emptyObj;
             ASSERT_TRUE(emptyObj.isEmpty());
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
             EXPECT_TRUE(err == error::EmptyRObject);
-            EXPECT_TRUE(ret.isEmpty());
+            ASSERT_TRUE(ret.isEmpty());
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
@@ -266,22 +266,22 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, method_call_using_heap_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(person.isEmpty());
+            ASSERT_FALSE(person.isEmpty());
 
             optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
             EXPECT_TRUE(err1 == error::TargetMismatch);
-            EXPECT_TRUE(ret.isEmpty());
+            ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -291,50 +291,24 @@ namespace rtl_tests
     TEST(ReflectionOperationStatus, method_call_using_stack_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = MyReflection::instance().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = MyReflection::instance().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->create<alloc::Stack>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(person.isEmpty());
+            ASSERT_FALSE(person.isEmpty());
 
             optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
             ASSERT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn->bind(person).call();
             EXPECT_TRUE(err1 == error::TargetMismatch);
-            EXPECT_TRUE(ret.isEmpty());
+            ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ReflectionOperationStatus, error_ConstructorNotRegistered)
-    {
-        CxxMirror& cxxMirror = MyReflection::instance();
-
-        optional<Record> stdStringClass = cxxMirror.getRecord("std", "string");
-        ASSERT_TRUE(stdStringClass);
-        {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>();
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Stack>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        } {
-            auto [err, reflected_str] = stdStringClass->create<rtl::alloc::Heap>("string_literal_arg");
-            EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-            EXPECT_TRUE(reflected_str.isEmpty());
-        }
     }
 }

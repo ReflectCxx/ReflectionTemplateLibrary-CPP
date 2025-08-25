@@ -23,13 +23,10 @@ namespace rtl
 
         TargetMismatch,
         SignatureMismatch,
-        FunctionNotRegisterd,
-        ConstructorNotRegistered,
+        FunctionNotRegisterd,   //Not used by RTL at all, for external purpose only.
 
         IllegalConstCast,
         ConstCallViolation,
-        ConstOverloadMissing,
-        AmbiguousConstOverload,
         NonConstOverloadMissing,
 
         TypeNotCopyConstructible,
@@ -51,14 +48,8 @@ namespace rtl
             return "Function not registered: The requested function/method is not registered in the Reflection system";
         case error::TargetMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
-        case error::AmbiguousConstOverload:
-            return "Ambiguous overload: Both const and non-const methods are registered; explicitly specify MethodQ to resolve.";
-        case error::ConstOverloadMissing:
-            return "Const-qualified method not found: The method does not have a const-qualified overload as explicitly requested.";
         case error::NonConstOverloadMissing:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
-        case error::ConstructorNotRegistered:
-            return "Constructor not registered: No constructor registered for the requested type in the Reflection system";
         case error::TypeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::TypeNotDefaultConstructible:

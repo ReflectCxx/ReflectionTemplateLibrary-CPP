@@ -36,7 +36,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<>(const rtl::access::RObject& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>()) 
 		{
@@ -48,7 +48,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const rtl::access::RObject& pInstance)
+	const bool book::test_dynamic_alloc_instance_ctor<double, string>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -59,7 +59,7 @@ namespace test_utils
 	}
 
 
-	const bool book::test_method_setAuthor(const rtl::access::RObject& pInstance)
+	const bool book::test_method_setAuthor(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -71,7 +71,7 @@ namespace test_utils
 		return false;
 	}
 
-	const bool book::test_method_addCopyrightTag(const rtl::access::RObject& pInstance)
+	const bool book::test_method_addCopyrightTag(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -84,7 +84,7 @@ namespace test_utils
 	}
 
 
-	const bool book::test_method_addPreface(const rtl::access::RObject& pInstance)
+	const bool book::test_method_addPreface(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -98,7 +98,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<>(const rtl::access::RObject& pInstance)
+	const bool book::test_method_updateBookInfo<>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -112,7 +112,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<const char*, double, string>(const rtl::access::RObject& pInstance)
+	const bool book::test_method_updateBookInfo<const char*, double, string>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -126,7 +126,7 @@ namespace test_utils
 
 
 	template<>
-	const bool book::test_method_updateBookInfo<string, double, const char*>(const rtl::access::RObject& pInstance)
+	const bool book::test_method_updateBookInfo<string, double, const char*>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{
@@ -139,7 +139,7 @@ namespace test_utils
 	}
 
 
-	const bool test_utils::book::test_copy_ctor_with_mutated_object(const rtl::access::RObject& pInstance)
+	const bool test_utils::book::test_copy_ctor_with_mutated_object(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Book>())
 		{

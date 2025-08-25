@@ -23,9 +23,7 @@
 
 namespace rtl {
 
-	namespace access {
-        class RObject;
-	}
+    class RObject;
 
     namespace detail
     {
@@ -43,7 +41,7 @@ namespace rtl {
         class MethodContainer<methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>,
                                                                   public CallReflector<MethodContainer<methodQ::NonConst, _signature...>>
         {
-            using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
+            using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
 
         public:
 
@@ -114,7 +112,7 @@ namespace rtl {
         class MethodContainer<methodQ::Const, _signature...> : public SetupMethod<MethodContainer<methodQ::Const, _signature...>>,
                                                                public CallReflector<MethodContainer<methodQ::Const, _signature...>>
         {
-            using MethodLambda = std::function < access::RObject (error&, const rtl::access::RObject&, _signature...) >;
+            using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
 
         public:
 

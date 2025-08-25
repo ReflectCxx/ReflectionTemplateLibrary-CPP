@@ -22,4 +22,12 @@ namespace test_utils
         int* m_data;
         std::function<void(int*)> m_deleter;
     };
+
+
+    struct Edge
+    {
+
+    private:
+        Node* m_data;
+    };
 }

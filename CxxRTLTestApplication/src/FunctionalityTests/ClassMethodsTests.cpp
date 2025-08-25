@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace rtl;
-using namespace rtl::access;
+using namespace rtl;
 using namespace test_utils;
 using namespace the_reflection;
 
@@ -15,9 +15,7 @@ namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
-		CxxMirror& cxxMirror = MyReflection::instance();
-
-		optional<Record> classBook = cxxMirror.getRecord(book::class_);
+		optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 		ASSERT_TRUE(classBook);
 
 		optional<Method> badMethod = classBook->getMethod("no_method");
@@ -27,9 +25,9 @@ namespace rtl_tests
 
 	TEST(RTLInterfaceCxxMirror, verify_typeIds_of_registered_records)
 	{
-		const auto& rtl_recordIdMap = MyReflection::instance().getRecordIdMap();
+		const auto& rtl_recordIdMap = cxx::mirror().getRecordIdMap();
 
-		for (const auto& itr0 : MyReflection::instance().getNamespaceRecordMap())
+		for (const auto& itr0 : cxx::mirror().getNamespaceRecordMap())
 		{
 			const auto& namespaceRecordMap = itr0.second;
 			for (const auto& itr1 : namespaceRecordMap)
@@ -40,38 +38,28 @@ namespace rtl_tests
 
 				ASSERT_TRUE(itr != rtl_recordIdMap.end());
 
-				const rtl::access::Record& reflectedClass = itr->second;
+				const rtl::Record& reflectedClass = itr->second;
 
 				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
 
 				if (recordName == event::struct_) {
 					//Event's default constructor is private or deleted.
 					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == library::class_) {
 					//Library's copy-constructor is deleted or private.
 					EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else if (recordName == "void") {
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
 					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == "string") {
-					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-					EXPECT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == "string_view") {
-					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::ConstructorNotRegistered);
-					EXPECT_TRUE(robj.isEmpty());
+					ASSERT_TRUE(robj.isEmpty());
 				}
 				else {
 					EXPECT_TRUE(err == rtl::error::None);
-					EXPECT_FALSE(robj.isEmpty());
+					ASSERT_FALSE(robj.isEmpty());
 					EXPECT_TRUE(robj.getTypeId() == recordId);
 				}
 			}
@@ -82,9 +70,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_heapInstance, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -93,13 +79,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -110,9 +96,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_stackInstance, wrong_args)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -121,13 +105,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
 			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_FALSE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -138,9 +122,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
@@ -149,13 +131,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 			// Slower. bind<>().call() syntax is faster.
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_FALSE(ret.isEmpty());
+			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
@@ -169,9 +151,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
@@ -180,13 +160,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*getPublishedOn)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_FALSE(ret.isEmpty());
+			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const std::string& retStr = ret.view<std::string>()->get();
@@ -200,9 +180,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -211,14 +189,14 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -229,9 +207,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
@@ -240,14 +216,14 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(setAuthor->hasSignature<std::string>());
 
 			auto author = std::string(book::AUTHOR);
 			auto [err1, ret] = setAuthor->bind(book).call(author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_setAuthor(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -258,9 +234,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -269,13 +243,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -286,9 +260,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_void)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -297,13 +269,13 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
 			auto [err1, ret] = (*updateBookInfo)(book)();
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 			EXPECT_TRUE(book::test_method_updateBookInfo(book));
 		}
 		EXPECT_TRUE(book::assert_zero_instance_count());
@@ -314,9 +286,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_string_double_charPtr)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -325,7 +295,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -337,7 +307,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
@@ -350,9 +320,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_string_double_charPtr)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -361,7 +329,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<string, double, const char*>();
 			EXPECT_TRUE(signatureValid);
@@ -373,7 +341,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<string, double, const char*>(book);
 			EXPECT_TRUE(isSuccess);
@@ -386,9 +354,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_charPtr_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -397,7 +363,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -409,7 +375,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
@@ -422,9 +388,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_charPtr_double_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
@@ -433,7 +397,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = updateBookInfo->hasSignature<const char*, double, string>();
 			EXPECT_TRUE(signatureValid);
@@ -445,7 +409,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_updateBookInfo<const char*, double, string>(book);
 			EXPECT_TRUE(isSuccess);
@@ -458,9 +422,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
@@ -469,7 +431,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -479,7 +441,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
@@ -492,9 +454,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
@@ -503,7 +463,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			const bool signatureValid = addCopyrightTag->hasSignature<string>();
 			EXPECT_TRUE(signatureValid);
@@ -513,7 +473,7 @@ namespace rtl_tests
 			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addCopyrightTag(book);
 			EXPECT_TRUE(isSuccess);
@@ -526,9 +486,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
@@ -537,7 +495,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Stack>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -560,7 +518,7 @@ namespace rtl_tests
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);
@@ -573,9 +531,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			CxxMirror& cxxMirror = MyReflection::instance();
-
-			optional<Record> classBook = cxxMirror.getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
@@ -584,7 +540,7 @@ namespace rtl_tests
 			auto [err0, book] = classBook->create<alloc::Heap>();
 
 			EXPECT_TRUE(err0 == error::None);
-			EXPECT_FALSE(book.isEmpty());
+			ASSERT_FALSE(book.isEmpty());
 
 			bool invalidSignature = addPreface->hasSignature<string, string&>();
 			EXPECT_FALSE(invalidSignature);
@@ -607,7 +563,7 @@ namespace rtl_tests
 			auto [err1, ret] = addPreface->bind<string, const string&>(book).call(acknowledgements, preface);
 
 			EXPECT_TRUE(err1 == error::None);
-			EXPECT_TRUE(ret.isEmpty());
+			ASSERT_TRUE(ret.isEmpty());
 
 			const bool isSuccess = book::test_method_addPreface(book);
 			EXPECT_TRUE(isSuccess);

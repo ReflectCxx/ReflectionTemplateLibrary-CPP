@@ -19,7 +19,7 @@
 #include "CxxMirror.h"
 #include "CxxMirrorToJson.h"
 
-using namespace rtl::access;
+using namespace rtl;
 using namespace rtl::detail;
 
 namespace

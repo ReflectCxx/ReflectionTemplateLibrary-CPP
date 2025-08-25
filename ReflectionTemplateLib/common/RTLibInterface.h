@@ -29,7 +29,7 @@
 * Interface to access user defined class/struct(s) and its members(variables, functions & constructor).
 * it encapsulates all the member's information and provides objects (Function/Method) to access them.
 * the Record objects are obtained from reflection object ie, CxxMirror, querying by string.
-* decleared in namespace rtl::access.*/
+* decleared in namespace rtl.*/
 #include "Record.h"
 
 
@@ -37,7 +37,7 @@
 * Provides interface to call global functions (may or not be in a namespace), static member functions of class/struct(s).
 * it overloads "operator()". can be called as functionObj(..args..), where functionObj is object of "class Function"
 * the global Function objects can be directly obtained from reflection object ie, CxxMirror, querying by string.
-* decleared in namespace rtl::access.*/
+* decleared in namespace rtl.*/
 #include "Function.hpp"
 
 
@@ -53,7 +53,7 @@
 *       Function call:	function(..args..);
 *       Method call:	method(targetObj).invoke(..args..);
 * 
-* decleared in namespace rtl::access. */
+* decleared in namespace rtl. */
 #include "Method.hpp"
 
 

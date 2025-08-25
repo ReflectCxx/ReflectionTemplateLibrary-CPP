@@ -54,18 +54,20 @@ RTL validates all critical assumptions before proceeding, ensuring predictable b
 
 ### 🛡 Const-By-Default Discipline
 
-RTL enforces a *const-by-default* philosophy.
-All objects instantiated via RTL are treated as **immutable** unless the caller explicitly requests mutation.
+RTL enforces a *const-by-default* discipline.
+All objects **created by RTL through reflection** are treated as immutable unless the caller explicitly requests mutation.
 
-This design ensures:
+This means:
 
-* **No accidental state changes** — methods that modify state must be consciously invoked.
-* **Immediate code clarity** — mutable calls are visually obvious during code review.
-* **Defensive programming** — the default assumption is safety, mutation is a deliberate opt-in.
+* **No accidental state changes** — reflected objects default to safe, immutable views.
+* **Immediate clarity** — mutable access is visually deliberate in the code.
+* **Defensive by design** — the default assumption is safety; mutation is always an opt-in.
 
-> *“You can’t change an RTL-managed object unless you loudly tell the compiler and everyone reading your code that you are about to change it.”*
+At the same time, RTL **respects the declared constness of external objects** (e.g., return values or user-provided instances). If an object is handed to RTL as `const`, RTL will not attempt to override that contract. Only RTL-created objects guarantee that a logical `const_cast` is always safe.
 
-This rule complements RTL’s exception-free guarantee, giving both **predictability** and **safety** at the API boundary.
+> *“You can’t change an RTL-managed object with true-constness unless you explicitly opt into mutability—and RTL will never silently bypass constness on objects it doesn’t own. For RTL-created objects, mutable access requires an explicit cast (rtl::constCast()), making intent unmistakable.”*
+
+This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 
 ### 🎁 Transparent Handling of Smart Pointers
 

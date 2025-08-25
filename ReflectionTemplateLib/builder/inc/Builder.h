@@ -18,6 +18,16 @@ namespace rtl {
 
     namespace builder
     {
+        struct CtorBuilder : protected detail::ReflectionBuilder
+        {
+            CtorBuilder(const std::string_view pNamespace, const std::string_view pRecord, 
+                        const std::string_view pFunction, std::size_t pRecordId);
+
+            template<class _recordType, class ..._signature>
+            const Function build() const;
+        };
+
+
     /*  @struct: Builder<methodQ, args...>
         @param: specialized with methodQ,
         *   methodQ::NonConst - provides interface to register member funtion.
@@ -44,11 +54,11 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::None, void> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(std::size_t pRecordId, const std::string_view pFunction,
+                    const std::string_view pNamespace);
 
             template<class _returnType>
-            const access::Function build(_returnType(*pFunctor)()) const;
+            const Function build(_returnType(*pFunctor)()) const;
         };
 
 
@@ -61,11 +71,11 @@ namespace rtl {
     */  template<class ..._signature>
         struct Builder<methodQ::None, _signature...> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(std::size_t pRecordId, const std::string_view pFunction,
+                    const std::string_view pNamespace);
 
             template<class _returnType>
-            const access::Function build(_returnType(*pFunctor)(_signature...)) const;
+            const Function build(_returnType(*pFunctor)(_signature...)) const;
         };
 
 
@@ -78,11 +88,11 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::None> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(std::size_t pRecordId, const std::string_view pFunction,
+                    const std::string_view pNamespace);
 
             template<class _returnType, class ..._signature>
-            const access::Function build(_returnType(*pFunctor)(_signature...)) const;
+            const Function build(_returnType(*pFunctor)(_signature...)) const;
         };
     }
 
@@ -97,11 +107,10 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::Const, void> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType>
-            const access::Function build(_returnType(_recordType::* pFunctor)() const) const;
+            const Function build(_returnType(_recordType::* pFunctor)() const) const;
         };
 
 
@@ -113,11 +122,10 @@ namespace rtl {
     */  template<class ..._signature>
         struct Builder<methodQ::Const, _signature...> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType>
-            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+            const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
         };
 
 
@@ -129,11 +137,10 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::Const> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType, class ..._signature>
-            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+            const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
         };
     }
 
@@ -148,11 +155,10 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::NonConst, void> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType>
-            const access::Function build(_returnType(_recordType::* pFunctor)()) const;
+            const Function build(_returnType(_recordType::* pFunctor)()) const;
         };
 
 
@@ -164,11 +170,10 @@ namespace rtl {
     */  template<class ..._signature>
         struct Builder<methodQ::NonConst, _signature...> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType>
-            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+            const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
         };
 
 
@@ -180,14 +185,10 @@ namespace rtl {
     */  template<>
         struct Builder<methodQ::NonConst> : protected detail::ReflectionBuilder
         {
-            Builder(const std::string& pNamespace, const std::string& pRecord,
-                    const std::string& pFunction, std::size_t pRecordId);
-
-            template<class _recordType, class ..._signature>
-            const access::Function build() const;
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
 
             template<class _recordType, class _returnType, class ..._signature>
-            const access::Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+            const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
         };
     }
 }

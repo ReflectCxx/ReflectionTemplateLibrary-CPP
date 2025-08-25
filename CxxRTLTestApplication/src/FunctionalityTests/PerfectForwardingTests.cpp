@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace rtl;
-using namespace rtl::access;
+using namespace rtl;
 using namespace test_utils;
 using namespace the_reflection;
 
@@ -38,10 +38,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -51,7 +49,7 @@ namespace rtl_tests
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(animal.isEmpty());
+            ASSERT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for a non-const L-value reference.
             const auto& isValid = setAnimalName->hasSignature<std::string&>();
@@ -62,7 +60,7 @@ namespace rtl_tests
             auto [err1, ret1] = setAnimalName->bind<std::string&>(animal).call(nameStr);
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_TRUE(ret1.isEmpty());
+            ASSERT_TRUE(ret1.isEmpty());
 
             // Validate the behavior of the method.
             EXPECT_TRUE(animal::test_method_setAnimalName_non_const_lvalue_ref_args(animal));
@@ -83,10 +81,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, rvalue_ref_only_binds_to_rvalue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -96,7 +92,7 @@ namespace rtl_tests
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(animal.isEmpty());
+            ASSERT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for an R-value reference.
             const auto& isValid = setAnimalName->hasSignature<std::string&&>();
@@ -106,7 +102,7 @@ namespace rtl_tests
             auto [err1, ret1] = setAnimalName->bind<std::string&&>(animal).call(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
-            EXPECT_TRUE(ret1.isEmpty());
+            ASSERT_TRUE(ret1.isEmpty());
 
             // Validate the behavior of the method.
             EXPECT_TRUE(animal::test_method_setAnimalName_rvalue_args(animal));
@@ -127,10 +123,8 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, const_lvalue_ref_only_binds_to_const_lvaue_ref_overload_on_heap)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             // Retrieve the "setAnimalName" method.
@@ -140,7 +134,7 @@ namespace rtl_tests
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->create<alloc::Heap>();
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_FALSE(animal.isEmpty());
+            ASSERT_FALSE(animal.isEmpty());
 
             // Verify that the method has the correct signature for a const L-value reference.
             const auto& isValid = setAnimalName->hasSignature<const std::string&>();
@@ -166,9 +160,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_const_lvalue_ref_only_binds_to_const_lvaue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
@@ -181,7 +173,7 @@ namespace rtl_tests
             auto [err, ret] = updateZooKeeper->bind<const std::string&>().call(zookeeper);
 
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();
@@ -196,9 +188,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_rvalue_ref_only_binds_to_rvalue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
@@ -210,7 +200,7 @@ namespace rtl_tests
             auto [err, ret] = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
 
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();
@@ -225,9 +215,7 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_non_const_lvalue_ref_only_binds_to_non_const_lvaue_ref_overload)
     {
         {
-            CxxMirror& cxxMirror = MyReflection::instance();
-
-            optional<Record> classAnimal = cxxMirror.getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
             optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
@@ -240,7 +228,7 @@ namespace rtl_tests
             auto [err, ret] = updateZooKeeper->bind<std::string&>().call(zookeeper);
 
             EXPECT_TRUE(err == error::None);
-            EXPECT_FALSE(ret.isEmpty());
+            ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
             const string& retStr = ret.view<string>()->get();

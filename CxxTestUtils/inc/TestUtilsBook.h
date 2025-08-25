@@ -8,7 +8,7 @@ Provides interface for Testing/Comparing the class "Book" objects states/returns
 
 #include <string>
 
-namespace rtl::access {
+namespace rtl {
 	class RObject;
 }
 
@@ -46,20 +46,20 @@ namespace test_utils
 
 		static const bool assert_zero_instance_count();
 
-		static const bool test_method_setAuthor(const rtl::access::RObject& pInstance);
+		static const bool test_method_setAuthor(const rtl::RObject& pInstance);
 
-		static const bool test_method_addPreface(const rtl::access::RObject& pInstance);
+		static const bool test_method_addPreface(const rtl::RObject& pInstance);
 
-		static const bool test_method_addCopyrightTag(const rtl::access::RObject& pInstance);
+		static const bool test_method_addCopyrightTag(const rtl::RObject& pInstance);
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 
 		template<class ..._signature>
-		static const bool test_method_updateBookInfo(const rtl::access::RObject& pInstance);
+		static const bool test_method_updateBookInfo(const rtl::RObject& pInstance);
 
 		template<class ..._ctorArgs>
-		static const bool test_dynamic_alloc_instance_ctor(const rtl::access::RObject& pInstance);
+		static const bool test_dynamic_alloc_instance_ctor(const rtl::RObject& pInstance);
 
-		static const bool test_copy_ctor_with_mutated_object(const rtl::access::RObject& pInstance);
+		static const bool test_copy_ctor_with_mutated_object(const rtl::RObject& pInstance);
 	};
 }

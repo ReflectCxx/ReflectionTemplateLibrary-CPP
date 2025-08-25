@@ -4,9 +4,9 @@
 
 namespace the_reflection
 {
-	struct MyReflection
+	struct cxx
 	{
-		static rtl::access::CxxMirror& instance();
+		static rtl::CxxMirror& mirror();
 	};
 
 

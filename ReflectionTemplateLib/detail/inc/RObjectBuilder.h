@@ -13,7 +13,7 @@
 
 #include "rtl_traits.h"
 
-namespace rtl::access {
+namespace rtl {
     class RObject;
 }
 
@@ -21,7 +21,7 @@ namespace rtl::detail
 {
     class RObjectBuilder
     {
-        using Cloner = std::function<access::RObject(error&, const access::RObject&, rtl::alloc)>;
+        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
 
         template <class T>
         static Cloner buildCloner();
@@ -34,7 +34,7 @@ namespace rtl::detail
         static const std::size_t rtlManagedInstanceCount();
 
         template <class T, rtl::alloc _allocOn>
-        static access::RObject build(T&& pVal, const bool pIsConstCastSafe);
+        static RObject build(T&& pVal, const bool pIsConstCastSafe);
     };
 }
 
@@ -48,7 +48,7 @@ namespace rtl
 
 
     template<class T, std::size_t N>
-    inline access::RObject reflect(T(&pArr)[N])
+    inline RObject reflect(T(&pArr)[N])
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
             return detail::RObjectBuilder::build<std::string_view, alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
@@ -60,7 +60,7 @@ namespace rtl
 
 
     template <class T>
-    inline access::RObject reflect(T&& pVal)
+    inline RObject reflect(T&& pVal)
     {
         using _T = traits::raw_t<T>;
         if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)

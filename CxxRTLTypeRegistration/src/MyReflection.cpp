@@ -24,12 +24,12 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 
 using namespace std;
 using namespace test_utils;
-using namespace rtl::access;
+using namespace rtl;
 using namespace rtl::builder;
 
 namespace the_reflection
 {
-    CxxMirror& MyReflection::instance()
+    CxxMirror& cxx::mirror()
     {
         static CxxMirror cxxMirror = CxxMirror(
         {
@@ -38,27 +38,41 @@ namespace the_reflection
             ---------------------------------  */
 
         //  Registering void, valid but not useful at all.
-            Reflect().record<void>("void").constructor().build(),
+            Reflect().nameSpace().record<void>("void").build(),
+
+        //  Registering type 'void' again, ignored & emits-
+        //  [WARNING] Multiple registrations of the same type detected.
+            Reflect().nameSpace().record<void>("void").build(),
+
+        //  Registering type 'void' again, but with different name. ignored & emits-
+        //  [WARNING] Multiple registrations of the same type detected.
+            Reflect().nameSpace().record<void>("ccvoid").build(),
 
         //  Registering pod, reflecting- constructor, copy-constructor & destructor.
-            Reflect().record<char>("char").constructor().build(),
+            Reflect().nameSpace().record<char>("char").build(),
 
-        //  Registers std::string class, but no constructor.
-            Reflect().nameSpace("std").record<std::string>("string").methodConst("empty").build(&std::string::empty),
+            Reflect().nameSpace("std").record<std::string_view>("string_view").build(),
+
+        //  Registers std::string class
+            Reflect().member<std::string>().methodConst("empty").build(&std::string::empty),
 
         /*  Attempting to register the same type(`std::string`) again under a different name.
         *   RTL will ignore this duplicate registration and retain the first one. Emits a warning on the console:
         *   "[WARNING] Multiple registrations of the same type with different names detected."
-        */  Reflect().nameSpace("std").record<std::string>("std_string").methodConst("empty").build(&std::string::empty),
+        */  Reflect().member<std::string>().methodConst("empty").build(&std::string::empty),
 
+            Reflect().nameSpace("std").record<std::string>("string").build(),
 
         /*  Attempting to register std::string_view, but the provided member function pointer belongs to std::string.
         *   RTL will ignore this registration. Emits a warning on the console:
         *   "[WARNING] Member function pointer does not belong to the class being registered!"
-        */  Reflect().nameSpace("std").record<std::string_view>("string_view").methodConst("empty").build(&std::string::empty),
+        */  Reflect().member<std::string_view>().methodConst("empty").build(&std::string::empty),
+
+        ////  Finally, register std::string_view with correct member-function-pointer
+        //    Reflect().nameSpace("ccstd").record<std::string_view>().methodConst("empty").build(&std::string_view::empty),
 
         //  Finally, register std::string_view with correct member-function-pointer
-            Reflect().nameSpace("std").record<std::string_view>("string_view").methodConst("empty").build(&std::string_view::empty),
+            Reflect().member<std::string_view>().methodConst("empty").build(&std::string_view::empty),
 
 
         /*  -----------------------------------------------------------------
@@ -66,20 +80,20 @@ namespace the_reflection
             -----------------------------------------------------------------  */
 
         //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
-            Reflect().function<void>(str_reverseString).build(reverseString),
+            Reflect().nameSpace().function<void>(str_reverseString).build(reverseString),
 
         //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
-            Reflect().function<string>(str_reverseString).build(reverseString),
+            Reflect().nameSpace().function<string>(str_reverseString).build(reverseString),
 
         //  Overloaded function, takes 'const char*' arguments.
-            Reflect().function<const char*>(str_reverseString).build(reverseString),
+            Reflect().nameSpace().function<const char*>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
-            Reflect().function(str_getComplexNumAsString).build(getComplexNumAsString),
+            Reflect().nameSpace().function(str_getComplexNumAsString).build(getComplexNumAsString),
 
         /*  Grouping functions under a namespace, which is optional. they can be registered without it as well.
             but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
-            e.g. cxxMirror.getFunction("namespace_name", "function_name") & cxxMirror.getRecord("namespace_name", "record_name")
+            e.g. cxx::mirror().getFunction("namespace_name", "function_name") & cxx::mirror().getRecord("namespace_name", "record_name")
         */  Reflect().nameSpace(str_complex).function(str_setReal).build(complex::setReal),
             Reflect().nameSpace(str_complex).function(str_setImaginary).build(complex::setImaginary),
             Reflect().nameSpace(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
@@ -91,128 +105,155 @@ namespace the_reflection
 
         //  Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         //  Registers default constructor with implicit registration of destructor & copy-constructor.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor().build(),
+            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).build(),
 
         //  Overloaded constructor, taking 'string' as argument, signature must be specified as template parameter.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<string>().build(),
+            Reflect().member<nsdate::Date>().constructor<string>().build(),
 
         //  Again, register an overloaded constructor with diffeent signature.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).constructor<unsigned, unsigned, unsigned>().build(),
+            Reflect().member<nsdate::Date>().constructor<unsigned, unsigned, unsigned>().build(),
         
         //  Registring, Unique method, no overloads. Taking param 'std::string', auto deduced via function-pointer.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).method(date::str_updateDate).build(&nsdate::Date::updateDate),
+            Reflect().member<nsdate::Date>().method(date::str_updateDate).build(&nsdate::Date::updateDate),
         
         //  Registring const-method, 'methodConst()' function must be used. compiler error otherwise.
-            Reflect().nameSpace(date::ns).record<nsdate::Date>(date::struct_).methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),
-
-        //  class Calender, default constructor.
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).constructor().build(),
+            Reflect().member<nsdate::Date>().methodConst(date::str_getAsString).build(&nsdate::Date::getAsString),
         
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).methodStatic(calender::str_create).build(&nsdate::Calender::create),
+            Reflect().member<nsdate::Calender>().methodStatic(calender::str_create).build(&nsdate::Calender::create),
         
         //  Registring unique methods of class Calender, no overloads.
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheEvent).build(&nsdate::Calender::getTheEvent),
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getTheDate).build(&nsdate::Calender::getTheDate),
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),
-            Reflect().nameSpace(calender::ns).record<nsdate::Calender>(calender::struct_).method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate),
+            Reflect().member<nsdate::Calender>().method(calender::str_getTheEvent).build(&nsdate::Calender::getTheEvent),
+            Reflect().member<nsdate::Calender>().method(calender::str_getTheDate).build(&nsdate::Calender::getTheDate),
+            Reflect().member<nsdate::Calender>().method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),
+            Reflect().member<nsdate::Calender>().method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate),
+
+        //  class Calender, registering after the methods. (order doesn't matter)
+            Reflect().nameSpace(date::ns).record<nsdate::Calender>(calender::struct_).build(),
 
         //  Registering 'Event' for reflection; instance creation fails since its default constructor is private or deleted.
         //  At least one member must be registered for RTL to recognize the type. be it property, member-function or constructor.
-            Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).constructor().build(),
+            Reflect().nameSpace(event::ns).record<nsdate::Event>(event::struct_).build(),
+            Reflect().member<nsdate::Event>().method(event::str_reset).build(&nsdate::Event::reset),
 
         //  Registering Library's constructor. Stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted 
         //  and its required by 'std::any' to store its object via copy-construction. But instance on heap (rtl::alloc::HEAP) can be
         //  constructed since, in that case, 'std::any' stores only the poiner which does not requires copy constructor to be called.
-            Reflect().record<Library>(library::class_).constructor().build(),
+            Reflect().nameSpace().record<Library>(library::class_).build(),
         
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.
-            Reflect().record<Library>(library::class_).methodStatic(library::str_addBook).build(&Library::addBook),
-            Reflect().record<Library>(library::class_).methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle),
+            Reflect().member<Library>().methodStatic(library::str_addBook).build(&Library::addBook),
+            Reflect().member<Library>().methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle),
 
         //  class 'Book', methods & constructors.
         //  Registering default constructor.
-            Reflect().record<Book>(book::class_).constructor().build(),
+            Reflect().nameSpace().record<Book>(book::class_).build(),
         
         //  Registering overloaded constructor, signature must be specified as template parameter.
-            Reflect().record<Book>(book::class_).constructor<double, string>().build(),
+            Reflect().member<Book>().constructor<double, string>().build(),
         
         //  Unique methods, no overloads.
-            Reflect().record<Book>(book::class_).method(book::str_setAuthor).build(&Book::setAuthor),
+            Reflect().member<Book>().method(book::str_setAuthor).build(&Book::setAuthor),
         
         //  Unique method, taking 'std::string' & 'const std::string&' as argument, auto deduced via function-pointer.
-            Reflect().record<Book>(book::class_).method(book::str_addPreface).build(&Book::addPreface),
+            Reflect().member<Book>().method(book::str_addPreface).build(&Book::addPreface),
         
         //  Furthur registrations of unique-menthods, signature auto-deduced via function pointer.
-            Reflect().record<Book>(book::class_).method(book::str_setDescription).build(&Book::setDescription),
-            Reflect().record<Book>(book::class_).method(book::str_getPublishedOn).build(&Book::getPublishedOn),
-            Reflect().record<Book>(book::class_).method(book::str_addCopyrightTag).build(&Book::addCopyrightTag),
+            Reflect().member<Book>().method(book::str_setDescription).build(&Book::setDescription),
+            Reflect().member<Book>().method(book::str_getPublishedOn).build(&Book::getPublishedOn),
+            Reflect().member<Book>().method(book::str_addCopyrightTag).build(&Book::addCopyrightTag),
 
         //  Registering overloaded methods, signature must be specified as template params since other overloads exists, else compiler error.
-            Reflect().record<Book>(book::class_).method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
-            Reflect().record<Book>(book::class_).method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
-            Reflect().record<Book>(book::class_).method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+            Reflect().member<Book>().method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+            Reflect().member<Book>().method<const char*, double, string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+            Reflect().member<Book>().method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
         //  class 'Person', methods & constructors.
-            Reflect().record<Person>(person::class_).constructor().build(),
-            Reflect().record<Person>(person::class_).constructor<string>().build(),
-            Reflect().record<Person>(person::class_).methodStatic(person::str_createPtr).build(&Person::createPtr),
-            Reflect().record<Person>(person::class_).method<void>(person::str_updateAddress).build(&Person::updateAddress),
-            Reflect().record<Person>(person::class_).method<string>(person::str_updateAddress).build(&Person::updateAddress),
-            Reflect().record<Person>(person::class_).method(person::str_getFirstName).build(&Person::getFirstName),
+            Reflect().nameSpace().record<Person>(person::class_).build(),
+            Reflect().member<Person>().constructor<string>().build(),
+            Reflect().member<Person>().methodStatic(person::str_createPtr).build(&Person::createPtr),
+            Reflect().member<Person>().method<void>(person::str_updateAddress).build(&Person::updateAddress),
+            Reflect().member<Person>().method<string>(person::str_updateAddress).build(&Person::updateAddress),
+            Reflect().member<Person>().method(person::str_getFirstName).build(&Person::getFirstName),
 
         //  Registring const-method, 'methodConst()' function must be used. compiler error otherwise.
-            Reflect().record<Person>(person::class_).methodConst(person::str_updateLastName).build(&Person::updateLastName),
+            Reflect().member<Person>().methodConst(person::str_updateLastName).build(&Person::updateLastName),
 
         //  Registring const-method overload, non-const overloaded method already registered above.
-            Reflect().record<Person>(person::class_).methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
-            Reflect().record<Person>(person::class_).methodConst<string>(person::str_updateAddress).build(&Person::updateAddress),
-            Reflect().record<Person>(person::class_).methodStatic(person::str_getDefaults).build(&Person::getDefaults),
-            Reflect().record<Person>(person::class_).methodStatic(person::str_createConst).build(&Person::createConst),
-            Reflect().record<Person>(person::class_).methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
-            Reflect().record<Person>(person::class_).methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
-            Reflect().record<Person>(person::class_).methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
+            Reflect().member<Person>().methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
+            Reflect().member<Person>().methodConst<string>(person::str_updateAddress).build(&Person::updateAddress),
+            Reflect().member<Person>().methodStatic(person::str_getDefaults).build(&Person::getDefaults),
+            Reflect().member<Person>().methodStatic(person::str_createConst).build(&Person::createConst),
+            Reflect().member<Person>().methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
+            Reflect().member<Person>().methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
+            Reflect().member<Person>().methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
 
         //  class 'Animal', methods & constructors.
-            Reflect().record<Animal>(animal::class_).constructor().build(),
-            Reflect().record<Animal>(animal::class_).constructor<string>().build(),  //overloaded constructor.
-            Reflect().record<Animal>(animal::class_).method(animal::str_setFamilyName).build(&Animal::setFamilyName),  //unique method, no overloads.
+            Reflect().nameSpace().record<Animal>(animal::class_).build(),
+            Reflect().member<Animal>().constructor<string>().build(),  //overloaded constructor.
+            Reflect().member<Animal>().method(animal::str_setFamilyName).build(&Animal::setFamilyName),  //unique method, no overloads.
             
         //  Unique const-method, no overloads.
-            Reflect().record<Animal>(animal::class_).methodConst(animal::str_getFamilyName).build(&Animal::getFamilyName),
+            Reflect().member<Animal>().methodConst(animal::str_getFamilyName).build(&Animal::getFamilyName),
         
         //  Overloaded method, taking const-ref as argument.
-            Reflect().record<Animal>(animal::class_).method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),
+            Reflect().member<Animal>().method<const std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),
         
         //  Static method, taking const-ref as argument.
-            Reflect().record<Animal>(animal::class_).methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),
+            Reflect().member<Animal>().methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),
 
             #if defined(__GNUC__) && !defined(__clang__)
-            /*  GCC fails to automatically identify the correct overloaded functor (method) to pick. (non-const-lvalue-ref & rvalue as argument)
+            /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
                 we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
-            */  Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
+            */  Reflect().member<Animal>()
+                         .method<std::string&>(animal::str_setAnimalName)
+                         .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .method<std::string&&>(animal::str_setAnimalName)
+                         .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .methodStatic<std::string&>(animal::str_updateZooKeeper)
+                         .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .methodStatic<std::string&&>(animal::str_updateZooKeeper)
+                         .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
             #else
-                Reflect().record<Animal>(animal::class_).method<std::string&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).method<std::string&&>(animal::str_setAnimalName).build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).methodStatic<std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
-                Reflect().record<Animal>(animal::class_).methodStatic<std::string&&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
+                Reflect().member<Animal>()
+                         .method<std::string&>(animal::str_setAnimalName)
+                         .build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .method<std::string&&>(animal::str_setAnimalName)
+                         .build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .methodStatic<std::string&>(animal::str_updateZooKeeper)
+                         .build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
+                
+                Reflect().member<Animal>()
+                         .methodStatic<std::string&&>(animal::str_updateZooKeeper)
+                         .build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
             #endif
         });
 
-        static const auto _ = [&]()
-        {
-            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-            rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
-            return -1;
-        }();
+        // static const auto _ = [&]()
+        // {
+        //     const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+        //     rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
+        //     return -1;
+        // }();
 
         return cxxMirror;
     }
+}
 
 
+
+namespace the_reflection
+{
     //Optional setup for accessing registered types via unique-ids.
     std::size_t reflected_id::book = rtl::detail::TypeId<Book>::get();
     std::size_t reflected_id::person = rtl::detail::TypeId<Person>::get();
@@ -231,39 +272,23 @@ namespace the_reflection
     //Optional setup - mapping unique-ids to string type-names (for Testing-Purposes only).
     const std::size_t reflected_id::getRecordIdFor(const std::string& pRecordName)
     {
-        if (pRecordName == book::class_) {
-            return book;
-        }
-        else if (pRecordName == person::class_) {
-            return person;
-        }
-        else if (pRecordName == animal::class_) {
-            return animal;
-        }
-        else if (pRecordName == date::struct_) {
-            return date;
-        }
-        else if (pRecordName == event::struct_) {
-            return event;
-        }
-        else if (pRecordName == calender::struct_) {
-            return calender;
-        }
-        else if (pRecordName == library::class_) {
-            return library;
-        }
-        else if (pRecordName == "char") {
-            return char_t;
-        }
-        else if (pRecordName == "void") {
-            return void_t;
-        }
-        else if (pRecordName == "string") {
-            return std_string;
-        }
-        else if (pRecordName == "string_view") {
-            return std_string_view;
-        }
-        else return rtl::index_none;
+        static std::unordered_map<std::string, std::size_t> nameIdMap(
+        {
+            { "char", char_t },
+            { "void", void_t },
+            { "string", std_string },
+            { "string_view", std_string_view },
+
+            { book::class_, book },
+            { date::struct_, date },
+            { event::struct_, event },
+            { animal::class_, animal },
+            { person::class_, person },
+            { library::class_, library },
+            { calender::struct_, calender }
+        });
+
+        const auto& itr = nameIdMap.find(pRecordName);
+        return (itr == nameIdMap.end() ? rtl::index_none:itr->second);
     }
 }

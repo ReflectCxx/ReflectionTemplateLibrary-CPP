@@ -42,7 +42,7 @@ namespace test_utils
 	}
 
 
-	const bool person::test_method_updateLastName_const(const rtl::access::RObject& pInstance)
+	const bool person::test_method_updateLastName_const(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -56,7 +56,7 @@ namespace test_utils
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_const_obj(const rtl::access::RObject& pInstance)
+	const bool person::test_copy_constructor_overload_src_const_obj(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -69,7 +69,7 @@ namespace test_utils
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const rtl::access::RObject& pInstance)
+	const bool person::test_copy_constructor_overload_src_non_const_obj(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -83,7 +83,7 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress<string>(const rtl::access::RObject& pInstance)
+	const bool person::test_method_updateAddress<string>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -96,7 +96,7 @@ namespace test_utils
 	}
 
 
-	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const rtl::access::RObject& pInstance)
+	const bool person::delete_unmanaged_person_instance_created_via_createPtr(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -109,7 +109,7 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress_const<string>(const rtl::access::RObject& pInstance)
+	const bool person::test_method_updateAddress_const<string>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -123,7 +123,7 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress<>(const rtl::access::RObject& pInstance)
+	const bool person::test_method_updateAddress<>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
@@ -137,7 +137,7 @@ namespace test_utils
 
 
 	template<>
-	const bool person::test_method_updateAddress_const<>(const rtl::access::RObject& pInstance)
+	const bool person::test_method_updateAddress_const<>(const rtl::RObject& pInstance)
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{

@@ -36,7 +36,7 @@ const bool test_utils::animal::test_method_updateZooKeeper<const std::string&>(c
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const rtl::access::RObject& pInstance)
+const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const rtl::RObject& pInstance)
 {
 	if (pInstance.canViewAs<Animal>()) 
 	{
@@ -50,7 +50,7 @@ const bool test_utils::animal::test_method_setAnimalName_rvalue_args(const rtl::
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const rtl::access::RObject& pInstance)
+const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(const rtl::RObject& pInstance)
 {
 	if (pInstance.canViewAs<Animal>()) 
 	{
@@ -65,7 +65,7 @@ const bool test_utils::animal::test_method_setAnimalName_const_lvalue_ref_args(c
 }
 
 
-const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::access::RObject& pInstance)
+const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::RObject& pInstance)
 {
 	if (pInstance.canViewAs<Animal>()) 
 	{
