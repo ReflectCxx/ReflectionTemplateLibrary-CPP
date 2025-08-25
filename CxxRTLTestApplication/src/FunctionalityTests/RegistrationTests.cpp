@@ -10,20 +10,28 @@ namespace registration_test
 {
     extern const rtl::access::CxxMirror& cxx_mirror();
 
-    TEST(RegistrationTest, C_style_function)
+    TEST(RegistrationTest, invoking_semantics__C_style_function_with_no_overload)
     {
         {
             // Attempt to retrieve the C-style function without specifying a namespace.
-            auto sendAsStr = cxx_mirror().getFunction("sendAsString");
+            auto sendString = cxx_mirror().getFunction("sendString");
             // Not found, since it was registered under the 'ext' namespace.
-            EXPECT_FALSE(sendAsStr);
+            EXPECT_FALSE(sendString);
         } {
             // Retrieve the function with its correct namespace.
-            auto sendAsStr = cxx_mirror().getFunction("ext", "sendAsString");
+            auto sendString = cxx_mirror().getFunction("ext", "sendString");
             // Found successfully.
-            ASSERT_TRUE(sendAsStr);
+            ASSERT_TRUE(sendString);
 
-            auto [err, ret] = sendAsStr->bind().call(Person("Alex"));
+            auto theStr = std::string("Initiating reflection tests.");
+            auto expectReturnStr = ("sent_string_" + theStr);
+
+            // Nothing to bind here, since this is a non-member (C-style) function.  
+            // However, if the function takes reference parameters that require perfect forwarding,  
+            // the binding can be specified explicitly using `bind<T&>()`, `bind<T&&>()`, or `bind<const T&>()`.  
+            // In essence, `bind()` enables correct forwarding semantics for function calls.  
+            auto [err, ret] = sendString->bind().call(theStr);
+
             // Reflected call executes successfully.
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
@@ -37,23 +45,178 @@ namespace registration_test
 
             const std::string& retStr = strView->get();
             // Confirms that the expected function was invoked.
-            EXPECT_EQ(retStr, "sendAsString_called.");
+            EXPECT_EQ(retStr, expectReturnStr);
         }
     }
 
 
-    TEST(RegistrationTest, constructor_overload_resolution)
+    TEST(RegistrationTest, overload_resolution_semantics__arg_const_char_ptr)
+    {
+        // Retrieve the function with its correct namespace.
+        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        // Found successfully.
+        ASSERT_TRUE(sendAsString);
+
+        auto theStr = std::string("const_char_ptr.");
+        auto expectReturnStr = ("sent_string_literal_" + theStr);
+
+        // Nothing to bind here, since this is a non-member (C-style) function and it does not  
+        // require arguments to be perfectly forwarded.  
+        // The argument passed is `const char*`, and the corresponding overload has been registered.  
+        // The reflective call succeeds. If a mismatched argument is passed,  
+        // `error::SignatureMismatch` will be returned.
+        auto [err, ret] = sendAsString->bind().call(theStr.c_str());
+
+        // Reflected call executes successfully.
+        EXPECT_TRUE(err == rtl::error::None);
+        EXPECT_FALSE(ret.isEmpty());
+
+        // We know the return type is std::string.
+        EXPECT_TRUE(ret.canViewAs<std::string>());
+
+        // Extract the std::string view from `ret`.
+        std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+        ASSERT_TRUE(strView);
+
+        const std::string& retStr = strView->get();
+        // Confirms that the expected function was invoked.
+        EXPECT_EQ(retStr, expectReturnStr);
+    }
+
+
+    TEST(RegistrationTest, overload_resolution_semantics__arg_lvalue)
+    {
+        // Retrieve the function from its namespace.
+        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(sendAsString); // Function found successfully.
+
+        auto nameStr = std::string("person_Eric");
+        auto person = Person(nameStr);
+        auto expectReturnStr = ("sent_string_lvalue_" + nameStr);
+
+        // Nothing to bind here: the call is with a regular lvalue.
+        // This resolves to the overload `sendAsString(Person)`.
+        // The overload was registered, so the reflective call will succeed.
+        // If the argument type mismatches, `error::SignatureMismatch` will be returned.
+        auto [err, ret] = sendAsString->bind().call(person);
+
+        // Validate reflective call succeeded.
+        EXPECT_TRUE(err == rtl::error::None);
+        EXPECT_FALSE(ret.isEmpty());
+
+        // Verify return type and extract result.
+        EXPECT_TRUE(ret.canViewAs<std::string>());
+        std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+        ASSERT_TRUE(strView);
+
+        const std::string& retStr = strView->get();
+        // Confirms the correct overload was invoked.
+        EXPECT_EQ(retStr, expectReturnStr);
+    }
+
+
+    TEST(RegistrationTest, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
+    {
+        // Retrieve the function from its namespace.
+        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(sendAsString); // Function found successfully.
+
+        auto nameStr = std::string("person_Logan");
+        auto expectReturnStr = ("sent_string_rvalue_" + nameStr);
+
+        // Now invoke the rvalue-ref overload: `sendAsString(Person&&)`.
+        // To ensure this overload is selected, we must explicitly bind
+        // with `Person&&`. This is achieved through perfect forwarding,
+        // since overload resolution cannot deduce rvalue-ref automatically.
+        //
+        // The overload was registered, so the reflective call will succeed.
+        // If the argument type mismatches, `error::SignatureMismatch` will be returned.
+        auto [err, ret] = sendAsString->bind<Person&&>().call(Person(nameStr));
+
+        // Validate reflective call succeeded.
+        EXPECT_TRUE(err == rtl::error::None);
+        EXPECT_FALSE(ret.isEmpty());
+
+        // Verify return type and extract result.
+        EXPECT_TRUE(ret.canViewAs<std::string>());
+        std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+        ASSERT_TRUE(strView);
+
+        const std::string& retStr = strView->get();
+        // Confirms the correct overload was invoked.
+        EXPECT_EQ(retStr, expectReturnStr);
+    }
+
+
+    TEST(RegistrationTest, invoking_static_member_function_semantics)
+    {
+        // Retrieve the reflected class metadata.
+        std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        // Retrieve the static method from the class.
+        std::optional<rtl::access::Method> getDefaults = classPerson->getMethod("getDefaults");
+        ASSERT_TRUE(getDefaults);
+
+        auto expectReturnStr = std::string("Person_defaults_returned");
+
+        {
+            // Call the static member function directly.
+            // Semantics are the same as a free function:
+            // nothing to bind unless perfect-forwarding arguments are involved.
+            // Since it's static, no instance of the class is required.
+            auto [err, ret] = getDefaults->bind().call();
+
+            // Validate reflective call succeeded.
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            // Confirms the expected static function was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        } {
+            // Now create a `Person` object and reflect it into RTL.
+            rtl::access::RObject robj = rtl::reflect(Person(""));
+
+            // Even if we bind a target object before calling the static function,
+            // it has no effect — the call remains valid and succeeds.
+            // This matches C++ native semantics: binding an instance is irrelevant
+            // for static member functions.
+            auto [err, ret] = getDefaults->bind(robj).call();
+
+            // Validate reflective call succeeded.
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            // Confirms the expected static function was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        }
+    }
+
+
+    TEST(RegistrationTest, overload_resolution_semantics__constructor)
     {
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         std::string name = "Charlie";
         {
-        //  Invokes the overloaded constructor that takes 'const std::string&'.
-        //  It will not match the overload with 'std::string&', because arguments
-        //  are forwarded as universal references (&&), which bind only to 
-        //  'const std::string&'. This resolution is handled by the compiler,
-        //  not by RTL.
+            //  Invokes the overloaded constructor that takes 'const std::string&'.
+            //  It will not match the overload with 'std::string&', because arguments
+            //  are forwarded as universal references (&&), which bind only to 
+            //  'const std::string&'. This resolution is handled by the compiler,
+            //  not by RTL.
             auto [err, robj] = classPerson->create<rtl::alloc::Stack>(name);
 
             EXPECT_TRUE(err == rtl::error::None);
@@ -69,7 +232,7 @@ namespace registration_test
     }
 
 
-    TEST(RegistrationTest, overload_resolution__setProfile)
+    TEST(RegistrationTest, overload_resolution_semantics__method)
     {
         // Tests runtime overload resolution between `std::string` (by value)
         // and `std::string&` overloads of Person::setProfile.
@@ -85,12 +248,12 @@ namespace registration_test
         std::optional<rtl::access::Method> setProfile = classPerson->getMethod("setProfile");
         ASSERT_TRUE(setProfile);
 
-    //  NOTE for documentation:
-    //  Calling with a constant-size array (like `"profStr"`) will not compile, 
-    //  because array-to-pointer decay is not supported here.
-    //  Instead, use a `const char*` or `std::string`.
-    //  auto [err, ret] = setProfile->bind(robjTim).call("profStr");
-
+        //  NOTE for documentation:
+        //  Calling with a constant-size array (like `"profStr"`) will not compile, 
+        //  because array-to-pointer decay is not supported here.
+        //  Instead, use a `const char*` or `std::string`.
+        //  auto [err, ret] = setProfile->bind(robjTim).call("profStr");
+        
         {
             auto [err, ret] = setProfile->bind(robjTim).call(std::string("Tim's prof"));
             EXPECT_TRUE(err == rtl::error::None);
@@ -127,7 +290,7 @@ namespace registration_test
     }
 
 
-    TEST(RegistrationTest, perfect_forwarding_rvalue_ref)
+    TEST(RegistrationTest, perfect_forwarding_seamantics__rvalue_ref)
     {
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -142,18 +305,18 @@ namespace registration_test
         ASSERT_TRUE(setTitle);
 
         {
-        //  Attempt to call 'setTitle' with an rvalue string.
-        //  This fails because reflection will first attempt to resolve the call
-        //  against a by-value parameter (`std::string`) instead of the actual
-        //  registered signature (`std::string&&`).
+            //  Attempt to call 'setTitle' with an rvalue string.
+            //  This fails because reflection will first attempt to resolve the call
+            //  against a by-value parameter (`std::string`) instead of the actual
+            //  registered signature (`std::string&&`).
             auto [err, ret] = setTitle->bind(robjTim).call(std::string("Mr."));
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             EXPECT_TRUE(ret.isEmpty());
         } {
-        //  To invoke the method successfully, we must perfectly forward `std::string` as an rvalue-ref.  
-        //  This requires explicitly specifying `std::string&&` in the template parameter pack of `bind`.  
-        //  Note: passing a string literal works fine here, since it is implicitly convertible to `std::string`;  
-        //  wrapping with `std::string("Mr.")` is unnecessary.  
+            //  To invoke the method successfully, we must perfectly forward `std::string` as an rvalue-ref.  
+            //  This requires explicitly specifying `std::string&&` in the template parameter pack of `bind`.  
+            //  Note: passing a string literal works fine here, since it is implicitly convertible to `std::string`;  
+            //  wrapping with `std::string("Mr.")` is unnecessary.  
             auto [err, ret] = setTitle->bind<std::string&&>(robjTim).call("Mr.");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -172,7 +335,7 @@ namespace registration_test
     }
 
     
-    TEST(RegistrationTest, perfect_forwarding_overload_resolution)
+    TEST(RegistrationTest, perfect_forwarding_semantics__overload_resolution)
     {
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -238,7 +401,7 @@ namespace registration_test
     }
 
 
-    TEST(RegistrationTest, non_const_method_call_resolution__on_true_const_target)
+    TEST(RegistrationTest, non_const_method_resolution_semantics__on_true_const_target)
     {
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -276,7 +439,7 @@ namespace registration_test
     }
 
 
-    TEST(RegistrationTest, non_const_method_call_resolution__on_logical_const_target)
+    TEST(RegistrationTest, non_const_method_resolution_semantics__on_logical_const_target)
     {
         std::optional<rtl::access::Record> classPerson = cxx_mirror().getRecord("Person");
         ASSERT_TRUE(classPerson);

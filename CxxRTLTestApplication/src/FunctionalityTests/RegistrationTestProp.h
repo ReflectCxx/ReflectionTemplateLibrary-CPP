@@ -8,7 +8,7 @@ namespace registration_test
     {
         const std::string name;
 
-        Person(std::string& pName) : name("ref_" + pName) {}
+        Person(std::string& pName) : name(pName) {}
 
         Person(const std::string& pName) : name(pName) {}
 
@@ -28,12 +28,18 @@ namespace registration_test
 
         std::string setOccupation(const std::string& pProfStr) { return "called_by_ref_lvalue"; }
 
-        static std::string getDefaults() { return std::string(); }
+        static std::string getDefaults() { return "Person_defaults_returned"; }
     };
 
 
     namespace ext {
 
-        static std::string sendAsString(const Person pPerson) { return "sendAsString_called."; }
+        static std::string sendString(std::string pString) { return ("sent_string_" + pString); }
+
+        static std::string sendAsString(Person pPerson) { return "sent_string_lvalue_" + pPerson.name; }
+
+        static std::string sendAsString(Person&& pPerson) { return "sent_string_rvalue_" + pPerson.name; }
+
+        static std::string sendAsString(const char* pCString) { return "sent_string_literal_" + std::string(pCString); }
     }
 }

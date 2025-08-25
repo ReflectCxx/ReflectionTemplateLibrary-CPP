@@ -19,10 +19,40 @@ namespace registration_test
 
         /*  Register a free(C - style) function within a namespace.
             If registered with a namespace, it must also be specified when querying:
-                cxx_mirror().getFunction("ext", "convertToString")
+                cxx_mirror().getFunction("ext", "sendString")
             Note: when registering free functions, the '&' operator is not required
             when passing the function pointer to build().
-        */  Reflect().nameSpace("ext").function("sendAsString").build(ext::sendAsString),
+        */  Reflect().nameSpace("ext").function("sendString").build(ext::sendString),
+
+
+        /*  Another free (C-style) function inside a namespace.
+            This example demonstrates overloaded function registration.
+            Available overloads are:
+                void sendAsString(Person)
+                void sendAsString(Person&&)
+                void sendAsString(const char*)
+
+            Since multiple overloads exist, the compiler cannot automatically deduce
+            the correct function pointer. Therefore, the parameter type must be explicitly
+            specified with `.function<>()`.
+
+            This guides `.build()` to correctly resolve the intended overload.
+            Omitting the template type will result in a compile-time error.
+        */  Reflect().nameSpace("ext").function<const char*>("sendAsString").build(ext::sendAsString),
+
+
+        /*  Next overload registration:
+                void sendAsString(Person)
+            As with other overloads, the signature must be explicitly specified
+            so that `.build()` can select the correct function pointer.
+        */  Reflect().nameSpace("ext").function<Person>("sendAsString").build(ext::sendAsString),
+
+
+        /*  And finally, the overload with an rvalue parameter:
+                void sendAsString(Person&&)
+            Again, the signature must be explicitly specified
+            to ensure `.build()` resolves to the correct function pointer.
+        */  Reflect().nameSpace("ext").function<Person&&>("sendAsString").build(ext::sendAsString),
 
 
         /*  Register a class/struct type without a namespace.
