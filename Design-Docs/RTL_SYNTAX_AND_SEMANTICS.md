@@ -8,18 +8,21 @@ This guide walks you step by step through RTL’s reflection syntax.
 Before registering anything, we need a central place to hold all reflection metadata: the `rtl::CxxMirror`. Its constructor takes an initializer list containing all the type metadata.
 
 ```cpp
-const rtl::CxxMirror& cxx_mirror()
+namespace cxx
 {
-    static rtl::CxxMirror cxxMirror({
-        // .. all the registrations go here, comma separated ..
-    });
-    return cxxMirror;
+    const rtl::CxxMirror& mirror()
+    {
+        static rtl::CxxMirror cxxmirror({
+            // .. all the registrations go here, comma separated ..
+        });
+        return cxxmirror;
+    }
 }
 ```
 
 The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
 
-> *Tip: Always use the singleton pattern for ************`CxxMirror`************. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
+> *Tip: Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
 
 **Note:** Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
@@ -101,10 +104,10 @@ Once a function is registered in `rtl::CxxMirror`, you can query it and perform 
 
 ```cpp
 // Function without a namespace
-std::optional<rtl::Function> popMessage = cxx_mirror().getFunction("popMessage");
+std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
 
 // Function registered with a namespace
-std::optional<rtl::Function> sendMessage = cxx_mirror().getFunction("utils", "sendMessage");
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
 ```
 
 * If a function is registered **without a namespace**, it can only be retrieved without specifying a namespace.
@@ -170,7 +173,7 @@ Member functions require an instance of the class to call upon. RTL provides a t
 
 ```cpp
 // Retrieve the record for the class
-std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
 if (classPerson)
 {
@@ -208,8 +211,8 @@ setProfile->bind<double>(targetObj).call(10);  // 10 forwarded as double (10.0)
 setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 ```
 
-* The \*\*template parameter in \*\***`bind<...signature...>()`** tells RTL how to perceive and forward the arguments.
-* RTL uses the template signature as a **unique ID** to select the correct method from the registration.
+* The \*\*template parameter in \*\***`bind<..signature..>()`** tells RTL how to perceive and forward the arguments.
+* RTL uses the template signature to ***figure out*** which method (and which overload, if multiple exist) to select from the registration.
 * All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (by-value, by-ref, const-ref).
 
 ### Return Values
