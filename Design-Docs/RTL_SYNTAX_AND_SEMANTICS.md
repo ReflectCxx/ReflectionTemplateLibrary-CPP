@@ -19,7 +19,7 @@ const rtl::CxxMirror& cxx_mirror()
 
 The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
 
-> *Tip: Always use the singleton pattern for **`CxxMirror`**. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
+> *Tip: Always use the singleton pattern for ************`CxxMirror`************. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
 
 **Note:** Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
@@ -44,8 +44,9 @@ If multiple overloads exist, you must specify the signature in the template argu
 For example:
 
 ```cpp
-void sendMessage(int, std::string);
+
 bool sendMessage(const char*);
+void sendMessage(int, std::string);
 
 rtl::Reflect().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
 rtl::Reflect().nameSpace("ns").function<int, std::string>("sendMessage").build(sendMessage);
@@ -146,10 +147,18 @@ if (err == rtl::error::None)
 }
 ```
 
-* `isEmpty()` checks whether the function returned anything.
-* `canViewAs<T>()` ensures the returned type matches the expected type.
-* `view<T>()` returns an `std::optional<rtl::view<T>>`, which is empty if the types do not match.
-* `.get()` extracts the underlying value safely from the view.
+**Return Handling Summary** 📦
+
+When dealing with `RObject` results:
+
+| Function           | Purpose                                                                                                                 |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `isEmpty()`        | Checks if the function returned anything (i.e., non-`void`).                                                            |
+| `canViewAs<T>()`   | Quick type check: returns `true` if the stored type is exactly `T` or safely convertible.                               |
+| `view<T>()`        | Retrieves a typed **view** of the stored value if possible. Returns an empty `std::optional` if the type doesn’t match. |
+| `view<T>()->get()` | Extracts a const reference or value of `T` from the view, safely typed.                                                 |
+
+👉 **Tip:** Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
 
 ---
 
@@ -199,7 +208,7 @@ setProfile->bind<double>(targetObj).call(10);  // 10 forwarded as double (10.0)
 setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 ```
 
-* The **template parameter in `bind<...signature...>()`** tells RTL how to perceive and forward the arguments.
+* The \*\*template parameter in \*\***`bind<...signature...>()`** tells RTL how to perceive and forward the arguments.
 * RTL uses the template signature as a **unique ID** to select the correct method from the registration.
 * All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (by-value, by-ref, const-ref).
 
