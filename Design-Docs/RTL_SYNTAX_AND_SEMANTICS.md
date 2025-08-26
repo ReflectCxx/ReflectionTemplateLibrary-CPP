@@ -132,10 +132,10 @@ auto [err, retObj] = popMessage->bind().call();
 * **`.bind<>()`**: Associates an object for member functions and allows explicit specification of the **signature** of the arguments to be forwarded. For non-member functions, you can simply call `.bind()` without arguments.
 * **`.call(args...)`**: Executes the function with the provided arguments.
 
-Every reflective call returns a `std::pair<rtl::error, RObject>`:
+Every reflective call returns a `std::pair<rtl::error, rtl::RObject>`:
 
 * `rtl::error` indicates whether the call was successful (`rtl::error::None`) or if an error occurred.
-* `RObject` contains the return value if the function returns something, or is empty if the function returns `void`.
+* `rtl::RObject` contains the return value if the function returns something, or is empty if the function returns `void`.
 
 ### Extracting Return Values
 
@@ -152,7 +152,7 @@ if (err == rtl::error::None)
 
 **Return Handling Summary** 📦
 
-When dealing with `RObject` results:
+When dealing with `rtl::RObject` results:
 
 | Function           | Purpose                                                                                                                 |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
@@ -199,7 +199,7 @@ auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
 
 * **`.bind(targetObj)`**: binds the target instance for the method.
 
-  * `targetObj` is an `RObject` instance representing the object.
+  * `targetObj` is an `rtl::RObject` instance representing the object.
   * You can create this instance reflectively using the `rtl::Record`’s constructor (we’ll cover this shortly).
 * **`.call(args...)`**: executes the method on the bound object with the provided arguments.
 
@@ -228,7 +228,7 @@ if (err == rtl::error::None)
 }
 ```
 
-* `RObject` contains the return value, or is empty if the method returns `void`.
+* `rtl::RObject` contains the return value, or is empty if the method returns `void`.
 
 ---
 
