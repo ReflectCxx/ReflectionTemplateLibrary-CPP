@@ -44,7 +44,7 @@ If multiple overloads exist, you must specify the signature in the template argu
 For example:
 
 ```cpp
-void sendMessage(int id, std::string msg);
+void sendMessage(int, std::string);
 bool sendMessage(const char*);
 
 Reflect().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
