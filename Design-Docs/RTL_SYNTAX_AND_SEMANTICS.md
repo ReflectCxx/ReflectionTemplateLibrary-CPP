@@ -1,7 +1,6 @@
 # RTL at a Glance: Syntax & Semantics ⚡
 
-**"RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks."**
-
+RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
 This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
