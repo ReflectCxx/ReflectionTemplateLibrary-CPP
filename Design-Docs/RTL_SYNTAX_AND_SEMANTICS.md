@@ -1,3 +1,163 @@
+# RTL at a Glance: Syntax & Semantics ⚡
+
+**"RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks."**
+
+This guide walks you step by step through RTL’s reflection syntax.
+
+## Building the Mirror 🪞
+
+Before registering anything, we need a central place to hold all reflection metadata: the `rtl::CxxMirror`. Its constructor takes an initializer list containing all the type metadata.
+
+```cpp
+const rtl::CxxMirror& cxx_mirror()
+{
+    static rtl::CxxMirror cxxMirror({
+        // .. all the registrations go here, comma separated ..
+    });
+    return cxxMirror;
+}
+```
+
+The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
+
+> *Tip: Always use the singleton pattern for **`CxxMirror`**. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
+
+**Note:** Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+
+## Getting Started with Registration
+
+The fundamental pattern of registration in RTL is a **builder combination**. You chain together parts to declare what you are reflecting, and then call `.build()` to complete it.
+
+### Non-Member Functions
+
+```cpp
+Reflect().nameSpace("ns").function<..signature..>("func").build(ptr);
+```
+
+* **`nameSpace("ns")`**: specifies the namespace under which the function lives. If you want global scope, pass an empty string: `.nameSpace("")`. The call itself cannot be omitted when registering functions or records.
+* **`function<..signature..>("func")`**: declares the function by name. If overloaded, the template parameter `<..signature..>` disambiguates which overload to pick.
+* **`.build(ptr)`**: supplies the actual function pointer to complete the registration.
+
+### Handling Overloads
+
+If multiple overloads exist, you must specify the signature in the template argument. Otherwise, the compiler cannot resolve which function pointer you mean.
+
+For example:
+
+```cpp
+void sendMessage(int id, std::string msg);
+bool sendMessage(const char*);
+
+Reflect().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
+Reflect().nameSpace("ns").function<int, std::string>("sendMessage").build(sendMessage);
+```
+
+### Classes / Structs
+
+```cpp
+Reflect().nameSpace("ns").record<T>("Name").build();
+```
+
+* Registers a type by reflective name under a namespace.
+* This step is **mandatory** to register any of its members.
+* Default, copy, and move constructors, along with the destructor, are automatically registered. Explicit registration of these special members is disallowed and will result in a compile error.
+
+### Constructors
+
+```cpp
+Reflect().member<T>().constructor<..signature..>().build();
+```
+
+* **`.member<T>()`**: enters the scope of class/struct `T`.
+* **`.constructor<..signature..>()`**: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function pointer is available for deduction, and this also disambiguates overloads.
+
+### Member Functions
+
+```cpp
+Reflect().member<T>().method<..signature..>("method").build(&T::f);
+```
+
+* **`.member<T>()`**: enters the scope of class/struct `T`.
+* **`.method<..signature..>(...)`**: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
+* Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
+
+> **Note:** The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.
+
+---
+
+With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
+
+## Our Playground: `struct Person` and `namespace ext` 🛠️
+
+Throughout this guide, we’ll reflect over the following class and namespace. All registration and semantic examples come from these declarations:
+
+```cpp
+struct Person
+{
+    const std::string name;          // identity locked in once constructed
+
+    Person(std::string&);            // construct from mutable string
+    Person(const std::string&);      // construct from const string
+
+    std::string getName();           // returns the name
+
+    std::string setTitle(std::string&&);        // rvalue overload
+    std::string setProfile(std::string);        // by value
+    std::string setProfile(std::string&);       // lvalue overload
+    std::string setOccupation(std::string&&);   // rvalue overload
+    std::string setOccupation(const std::string&); // const-ref overload
+
+    std::string updateAddress();     // non-const version
+    std::string updateAddress() const; // const version
+
+    static std::string getDefaults(); // handy static function
+};
+
+namespace ext
+{
+    static std::string sendAsString(Person);      // pass by value
+    static std::string sendAsString(Person&&);    // pass by rvalue
+    static std::string sendAsString(const char*); // convenience overload
+
+    static std::string sendString(std::string);   // another free helper
+}
+```
+
+With this as our foundation, we can explore how RTL reflects each piece.
+
+RTL exposes a **fluent API** that lets you describe C++ constructs as if you were writing in a small reflective DSL. The syntax declares intent, while the semantics follow C++ language rules.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # RTL at a Glance: Syntax & Semantics
 
 **"RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks."**
@@ -57,7 +217,7 @@ The syntax declares intent; the semantics follow C++ language rules.
 
 The fundamental pattern of registration in RTL is a **builder combination**. You chain together parts to declare what you are reflecting, and then call `.build()` to complete it.
 
-### Free (C-style) Functions
+### Non-Member Functions,
 
 ```cpp
 Reflect().nameSpace("ns").function<Signature>("func").build(ptr);
