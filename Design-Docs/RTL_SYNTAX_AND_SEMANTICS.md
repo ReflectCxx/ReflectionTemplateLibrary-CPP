@@ -88,15 +88,15 @@ rtl::Reflect().member<T>().method<..signature..>("method").build(&T::f);
 
 With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
 
-# Reflective Programming with RTL ⚡
+## Reflective Programming with RTL ⚡
 
 Discover how to query, invoke, and manipulate functions and objects at runtime using RTL’s powerful reflection API.
 
-## Accessing and Invoking Functions
+### Accessing and Invoking Functions
 
 Once a function is registered in `rtl::CxxMirror`, you can query it and perform reflective calls dynamically.
 
-### Querying Functions
+#### Querying Functions
 
 ```cpp
 // Function without a namespace
@@ -117,7 +117,7 @@ if (popMessage)
 }
 ```
 
-### Performing Reflective Calls
+#### Performing Reflective Calls
 
 Once you have a `rtl::Function`, a complete reflective call involves two steps:
 
@@ -135,7 +135,7 @@ Every reflective call returns a `std::pair<rtl::error, rtl::RObject>`:
   * `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
 * `rtl::RObject` contains the return value if the function returns something, or is empty if the function returns `void`.
 
-### Extracting Return Values
+#### Extracting Return Values
 
 ```cpp
 if (err == rtl::error::None)
@@ -148,7 +148,7 @@ if (err == rtl::error::None)
 }
 ```
 
-### Return Handling Summary 📦
+##### Return Handling Summary 📦
 
 When dealing with `rtl::RObject` results:
 
@@ -161,11 +161,11 @@ When dealing with `rtl::RObject` results:
 
 👉 **Tip:** Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
 
-## Accessing and Invoking Member Functions 🧩
+### Accessing and Invoking Member Functions 🧩
 
 Member functions require an instance of the class to call upon. RTL provides a two-step process: first retrieve the `rtl::Record` for the type, then get the `rtl::Method` from that record.
 
-### Querying a Member Function
+#### Querying a Member Function
 
 ```cpp
 // Retrieve the record for the class
@@ -187,7 +187,7 @@ if (classPerson)
 * `getMethod("methodName")` retrieves a member function from the record. Returns `std::optional<rtl::Method>`.
 * An empty optional indicates the method was not found.
 
-### Binding an Object and Calling
+#### Binding an Object and Calling
 
 ```cpp
 auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
@@ -205,7 +205,7 @@ Errors specific to member function calls:
 * `rtl::error::EmptyTarget` → when attempting to bind an empty `RObject`.
 * `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
 
-### Binding Signatures and Perfect Forwarding
+#### Binding Signatures and Perfect Forwarding
 
 ```cpp
 setProfile->bind(targetObj).call(10);          // 10 forwarded as int
@@ -217,7 +217,7 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 * RTL uses the template signature to ***figure out*** which method (and which overload, if multiple exist) to select from the registration.
 * All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (`lvalue`, `rvalue`, `const-lvalue-ref`).
 
-### Return Values
+#### Return Values
 
 ```cpp
 if (err == rtl::error::None)
@@ -234,11 +234,94 @@ if (err == rtl::error::None)
 
 > By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.
 
-## Reflective Construction and Destruction 🏗️
+### Const vs Non-Const Method Binding ⚡
+
+When binding methods reflectively, RTL enforces const-correctness in a way that mirrors C++ itself, but with an extra layer of runtime safety. Let’s walk through how this works.
+
+#### Default Behavior
+
+Whenever both `const` and `non-const` overloads of a method exist, RTL prefers the **const overload**. This is consistent with RTL’s *const-by-default* philosophy: reflective calls always begin from the safest stance possible.
+
+```cpp
+Person p("Sam");
+rtl::RObject robj = rtl::reflect(p);
+
+// If both overloads exist, RTL selects the const one.
+auto [err, ret] = someMethod->bind(robj).call();
+```
+
+#### Choosing the Non-Const Path
+
+Sometimes you really do want the non-const overload. RTL requires you to be explicit in that case, by using `rtl::constCast()`:
+
+```cpp
+auto [err, ret] = someMethod->bind(rtl::constCast(robj)).call();
+```
+
+This signals intent clearly: *“Treat this object as non-const for this call.”* If the object is safe to cast, RTL allows it.
+
+#### Fallback to Non-Const
+
+If a class only defines a non-const method and no const variant exists, RTL will safely fall back and bind to the non-const overload. No extra steps are required, and this remains safe so long as the object wasn’t originally declared `const`.
+
+#### Declared-Const Objects
+
+Things change when the reflected object itself was declared `const` in the first place:
+
+```cpp
+const Person constSam("Const-Sam");
+rtl::RObject robj = rtl::reflect(constSam);
+```
+
+Here, RTL preserves that constness strictly. Non-const methods cannot be invoked on such an object. Attempts to do so will result in `rtl::error::IllegalConstCast`.
+
+If you attempt a method where **no const overload exists**, RTL reports `rtl::error::ConstOverloadNotFound`.
+
+#### Checking Provenance
+
+Because reflective calls may hand back new `RObject`s, you may sometimes wonder whether an object is safe to cast. That’s what `isConstCastSafe()` is for:
+
+```cpp
+bool safe = robj.isConstCastSafe();
+```
+
+* `false` → The object was originally declared const; treating it as mutable is unsafe.
+* `true` → The object wasn’t originally const; RTL may relax constness internally if needed.
+
+#### Summary
+
+* RTL defaults to the const overload when both exist.
+* Explicitly request the non-const overload with `rtl::constCast()`.
+* If only non-const exists, RTL uses it safely (unless the object was declared const).
+* Declared-const objects reject non-const calls (`IllegalConstCast`) and fail if no const overload is present (`ConstOverloadNotFound`).
+* `isConstCastSafe()` tells you whether relaxation is permitted.
+* Reflective objects are always const-first; declared-const objects are strictly immutable.
+
+### Const-by-Default Discipline
+
+Finally, let’s connect the dots. Objects constructed reflectively (via `alloc::Stack` or `alloc::Heap`) are always treated as **const-first**. If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because those objects were never originally declared const.
+
+Externally provided const objects, on the other hand, remain **strictly const**—RTL will never apply a cast, ensuring you never slip into undefined behavior.
+
+#### Quick Comparison with Native C++
+
+* **C++ const object:** can only call const members; non-const requires `const_cast`, and mutating a truly const object is UB.
+* **C++ non-const object:** prefers non-const overload; can call const if that’s the only one.
+
+👉 RTL mirrors this baseline, but adds provenance-aware safety:
+
+* **True-const** → strict const, no unsafe casts.
+* **Logical-const** → treated as const-first, but safe to relax if needed.
+
+#### Bottom Line ✅
+
+*“RTL codifies C++’s const rules at runtime: true-const objects are strictly immutable, logical-const objects are const-first but can be safely relaxed. Overload resolution is predictable, safe, and explicit via `rtl::constCast()`.”*
+
+### Reflective Construction and Destruction 🏗️
 
 Reflection in RTL doesn’t stop at functions and methods — you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
 
-### Constructing Objects
+#### Constructing Objects
 
 To construct a reflected object, first grab the `Record` that represents the type, then call one of its `create` helpers:
 
@@ -270,7 +353,7 @@ Key takeaways:
   * An instance created via a reflected constructor.
   * A return value from any reflected call (as we have already seen earlier).
 
-### Destruction Semantics
+#### Destruction Semantics
 
 RTL does **not** give you a “destroy” API. All lifetime management is pure **RAII**:
 
@@ -285,11 +368,27 @@ This design is intentional:
 
 **Bottom line:** you never destroy a reflected object yourself — RAII does it for you.
 
-## Move Semantics in RTL ⚡
+#### Creating Reflected Objects With Visible-Type
+
+Besides constructing objects via reflective calls (`create<Heap>()` or `create<Stack>()`), RTL also lets you create an `RObject` by **reflecting an existing object**:
+
+```cpp
+Person mutableSam("Mutable-Sam");
+const Person constSam("Const-Sam");
+
+rtl::RObject robj1 = rtl::reflect(mutableSam);
+rtl::RObject robj2 = rtl::reflect(constSam);
+```
+
+* This always creates a **copy on the stack** inside the `RObject`.
+* These stack-based reflections are **scope bound** and never heap-managed.
+* Useful for **testing**, since you can quickly reflect arbitrary visible objects.
+
+### Move Semantics in RTL ⚡
 
 Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
 
-### Moving Stack-Allocated Objects 🟦
+#### Moving Stack-Allocated Objects 🟦
 
 When you create an object reflectively with `alloc::Stack`, the underlying instance lives directly inside the `RObject`. Moving such an `RObject` looks just like a regular C++ move:
 
@@ -306,7 +405,7 @@ RObject obj2 = std::move(obj1);
 
 👉 **Key idea:** *Stack move = reflected type’s move constructor is called.*
 
-### Moving Heap-Allocated Objects 🟩
+#### Moving Heap-Allocated Objects 🟩
 
 When you create an object reflectively with `alloc::Heap`, the instance is managed inside a **`std::unique_ptr<T>`**. Moving such an `RObject` also uses standard C++ move semantics:
 
@@ -324,7 +423,7 @@ RObject obj2 = std::move(obj1);
 
 👉 **Key idea:** *Heap move = `unique_ptr` move semantics (cheap pointer transfer).*
 
-### Consistent Guarantees 🟨
+#### Consistent Guarantees 🟨
 
 Across both stack and heap moves:
 
@@ -333,92 +432,8 @@ Across both stack and heap moves:
 * RAII ensures proper cleanup — objects are destroyed once and only once.
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
-### Bottom Line ✅
+#### Bottom Line ✅
 
 *“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”*
-
-## Creating Reflected Objects With Visible-Type
-
-Besides constructing objects via reflective calls (`create<Heap>()` or `create<Stack>()`), RTL also lets you create an `RObject` by **reflecting an existing object**:
-
-```cpp
-Person mutableSam("Mutable-Sam");
-const Person constSam("Const-Sam");
-
-rtl::RObject robj1 = rtl::reflect(mutableSam);
-rtl::RObject robj2 = rtl::reflect(constSam);
-```
-
-* This always creates a **copy on the stack** inside the `RObject`.
-* These stack-based reflections are **scope bound** and never heap-managed.
-* Useful for **testing**, since you can quickly reflect arbitrary visible objects.
-
-## Const vs Non-Const Method Binding ⚡
-
-Let’s walk through how RTL handles **constness** when binding to methods. This is where RTL introduces its **const-by-default philosophy**, while distinguishing between *true-const* and *logical-const* objects.
-
-### Const-by-Default Discipline 🟨
-
-RTL enforces a **const-by-default** model:
-
-* Objects created **reflectively** (via `create<Heap/Stack>`) are treated as **const-first**. RTL resolves overloads from a const perspective by default.
-* Objects provided **externally** (via direct initialization or returned from reflective calls) retain their **original constness**.
-* RTL never performs a `const_cast` internally without verifying `isConstCastSafe()`.
-
-### 🟦 True-Const \(e.g. `constSam`)
-
-* Comes from externally provided `const` objects.
-* RTL strictly preserves this constness.
-* No implicit or internal `const_cast` is ever applied.
-* Attempts to relax constness result in errors.
-
-### 🟩 Logical-Const \(e.g. `mutableSam`)
-
-* Comes from externally provided **non-const** objects.
-* RTL reflects them as **logically const-first** to ensure safe overload resolution.
-* Because the object was never originally `const`, RTL may safely apply an internal `const_cast` if needed.
-* RObjects created via reflective construction calls (either `alloc::Stack` or `alloc::Heap`) are also treated as logical-const.
-
-### Using `rtl::constCast` ✨
-
-Sometimes you want to explicitly express intent to call a **non-const method** on a reflected object. RTL provides:
-
-```cpp
-auto [err, ret] = someMethod->bind(rtl::constCast(robj)).call();
-```
-
-* `rtl::constCast()` signals that you intend to treat the object as non-const.
-* For **true-const objects**, this results in `rtl::error::IllegalConstCast`.
-* For **logical-const objects**, this is perfectly safe and allowed.
-
-### Overload Resolution 🔄
-
-Here’s how const vs non-const overloads are handled:
-
-* **True-const (`constSam`)**
-
-  * Only `const` overloads are eligible.
-  * If no `const` overload exists → `rtl::error::ConstOverloadMissing`.
-  * Attempting `rtl::constCast()` → `rtl::error::IllegalConstCast`.
-
-* **Logical-const (`mutableSam`)**
-
-  * Defaults to `const` overload when both exist → conservative by design.
-  * If only non-const exists → RTL safely falls back to non-const (safe internal const\_cast, since object was never originally const).
-  * If you explicitly want the non-const overload → use `rtl::constCast()`.
-
-### Quick Comparison with Native C++
-
-* **C++ const object:** can only call const members; non-const requires `const_cast`, and mutating a truly const object is UB.
-* **C++ non-const object:** prefers non-const overload; can call const if that’s the only one.
-
-👉 RTL mirrors this baseline, but adds provenance-aware safety:
-
-* **True-const** → strict const, no unsafe casts.
-* **Logical-const** → treated as const-first, but safe to relax if needed.
-
-### Bottom Line ✅
-
-*“RTL codifies C++’s const rules at runtime: true-const objects are strictly immutable, logical-const objects are const-first but can be safely relaxed. Overload resolution is predictable, safe, and explicit via `rtl::constCast()`.”*
 
 > ***More to come...***
