@@ -243,8 +243,8 @@ When binding methods reflectively, RTL enforces const-correctness in a way that 
 Whenever both `const` and `non-const` overloads of a method exist, RTL prefers the **const overload**. This is consistent with RTL’s *const-by-default* philosophy: reflective calls always begin from the safest stance possible.
 
 ```cpp
-Person p("Sam");
-rtl::RObject robj = rtl::reflect(p);
+Person john("John");
+rtl::RObject robj = rtl::reflect(john);    // Reflect object with visible-type; details covered later.
 
 // If both overloads exist, RTL selects the const one.
 auto [err, ret] = someMethod->bind(robj).call();
@@ -269,7 +269,7 @@ If a class only defines a non-const method and no const variant exists, RTL will
 Things change when the reflected object itself was declared `const` in the first place:
 
 ```cpp
-const Person constSam("Const-Sam");
+const Person constSam("Const-Sam");    // Reflect 'const' with visible-type; details covered later.
 rtl::RObject robj = rtl::reflect(constSam);
 ```
 
