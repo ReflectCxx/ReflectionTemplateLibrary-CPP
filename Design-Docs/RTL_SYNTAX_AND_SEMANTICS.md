@@ -365,14 +365,14 @@ RTL enforces a **const-by-default** model:
 * Objects provided **externally** (via direct initialization or returned from reflective calls) retain their **original constness**.
 * RTL never performs a `const_cast` internally without verifying `isConstCastSafe()`.
 
-### 🟦 True-Const (e.g. `constSam`)
+### 🟦 True-Const \(e.g. `constSam`)
 
 * Comes from externally provided `const` objects.
 * RTL strictly preserves this constness.
 * No implicit or internal `const_cast` is ever applied.
 * Attempts to relax constness result in errors.
 
-### 🟩 Logical-Const (e.g. `mutableSam`)
+### 🟩 Logical-Const \(e.g. `mutableSam`)
 
 * Comes from externally provided **non-const** objects.
 * RTL reflects them as **logically const-first** to ensure safe overload resolution.

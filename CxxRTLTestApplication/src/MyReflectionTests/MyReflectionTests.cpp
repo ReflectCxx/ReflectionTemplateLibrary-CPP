@@ -2,24 +2,25 @@
 #include <gtest/gtest.h>
 
 #include "RTLibInterface.h"
-#include "RegistrationTestProp.h"
+#include "MyReflectingType.h"
 
 using namespace rtl;
+using namespace my_type;
 
-namespace registration_test
+namespace my_type { extern const rtl::CxxMirror& MyReflection(); }
+
+namespace
 {
-    extern const rtl::CxxMirror& cxx_mirror();
-
     TEST(RegistrationTest, invoking_semantics__C_style_function_with_no_overload)
     {
         {
             // Attempt to retrieve the C-style function without specifying a namespace.
-            auto sendString = cxx_mirror().getFunction("sendString");
+            auto sendString = MyReflection().getFunction("sendString");
             // Not found, since it was registered under the 'ext' namespace.
             EXPECT_FALSE(sendString);
         } {
             // Retrieve the function with its correct namespace.
-            auto sendString = cxx_mirror().getFunction("ext", "sendString");
+            auto sendString = MyReflection().getFunction("ext", "sendString");
             // Found successfully.
             ASSERT_TRUE(sendString);
 
@@ -53,7 +54,7 @@ namespace registration_test
     TEST(RegistrationTest, overload_resolution_semantics__arg_const_char_ptr)
     {
         // Retrieve the function with its correct namespace.
-        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
         // Found successfully.
         ASSERT_TRUE(sendAsString);
 
@@ -87,7 +88,7 @@ namespace registration_test
     TEST(RegistrationTest, overload_resolution_semantics__arg_lvalue)
     {
         // Retrieve the function from its namespace.
-        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
         ASSERT_TRUE(sendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Eric");
@@ -118,7 +119,7 @@ namespace registration_test
     TEST(RegistrationTest, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
     {
         // Retrieve the function from its namespace.
-        auto sendAsString = cxx_mirror().getFunction("ext", "sendAsString");
+        auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
         ASSERT_TRUE(sendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Logan");
@@ -151,7 +152,7 @@ namespace registration_test
     TEST(RegistrationTest, invoking_static_member_function_semantics)
     {
         // Retrieve the reflected class metadata.
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Retrieve the static method from the class.
@@ -207,7 +208,7 @@ namespace registration_test
 
     TEST(RegistrationTest, overload_resolution_semantics__constructor)
     {
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         std::string name = "Charlie";
@@ -236,7 +237,7 @@ namespace registration_test
     {
         // Tests runtime overload resolution between `std::string` (by value)
         // and `std::string&` overloads of Person::setProfile.
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         //  Create a Person instance the regular way.
@@ -292,7 +293,7 @@ namespace registration_test
 
     TEST(RegistrationTest, perfect_forwarding_seamantics__rvalue_ref)
     {
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Create a Person instance the regular way.
@@ -337,7 +338,7 @@ namespace registration_test
     
     TEST(RegistrationTest, perfect_forwarding_semantics__overload_resolution)
     {
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         // Create a Person instance the regular way.
@@ -403,7 +404,7 @@ namespace registration_test
 
     TEST(RegistrationTest, non_const_method_resolution_semantics__on_true_const_target)
     {
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");
@@ -441,7 +442,7 @@ namespace registration_test
 
     TEST(RegistrationTest, non_const_method_resolution_semantics__on_logical_const_target)
     {
-        std::optional<rtl::Record> classPerson = cxx_mirror().getRecord("Person");
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");

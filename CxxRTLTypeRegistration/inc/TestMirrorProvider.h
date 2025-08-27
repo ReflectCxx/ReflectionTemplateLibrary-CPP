@@ -2,7 +2,7 @@
 
 #include "RTLibInterface.h"
 
-namespace the_reflection
+namespace test_mirror
 {
 	struct cxx
 	{

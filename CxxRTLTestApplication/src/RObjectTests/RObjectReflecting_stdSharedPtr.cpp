@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "Node.h"
-#include "MyReflection.h"
+#include "RTLibInterface.h"
 
 using namespace test_utils;
 using namespace rtl;

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace registration_test
+namespace my_type
 {
     struct Person
     {

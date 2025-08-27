@@ -1,20 +1,14 @@
 
-#include <complex>
-#include <iostream>
-#include <gtest/gtest.h>
-#include <filesystem>
-
-#include "RegistrationTestProp.h"
-
 #include "RTLibInterface.h"
+#include "MyReflectingType.h"
 
-using namespace rtl::builder;
+using namespace rtl;
 
-namespace registration_test
+namespace my_type
 {
-    const rtl::CxxMirror& cxx_mirror()
+    const CxxMirror& MyReflection()
     {
-        static rtl::CxxMirror cxxMirror(
+        static CxxMirror cxxMirror(
         {
 
         /*  Register a free(C - style) function within a namespace.
@@ -116,7 +110,7 @@ namespace registration_test
 
             If multiple overloads are available, the correct one is resolved at runtime.
             See test case: `non_const_method_call_resolution__on_true_const_target` &
-                           `non_const_method_call_resolution__on_logical_const_target`
+                            `non_const_method_call_resolution__on_logical_const_target`
         */ Reflect().member<Person>().method("updateAddress").build(&Person::updateAddress),
 
 
@@ -127,7 +121,7 @@ namespace registration_test
 
             If multiple overloads are available, the correct one is resolved at runtime.
             See test case: `non_const_method_call_resolution__on_true_const_target` &
-                           `non_const_method_call_resolution__on_logical_const_target`
+                            `non_const_method_call_resolution__on_logical_const_target`
         */ Reflect().member<Person>().methodConst("updateAddress").build(&Person::updateAddress),
 
 
@@ -164,13 +158,13 @@ namespace registration_test
             Person person("Tim");
             person.setProfile(std::string("Tim's prof"));
                 - This compiles fine, as it binds to `setProfile(std::string)`
-                  (the version taking the argument by value).
+                    (the version taking the argument by value).
 
             std::string profStr = "Tim's profile";
             person.setProfile(profStr);
                 - This does not compile, because `profStr` is an lvalue.
-                  It could bind to either `setProfile(std::string)` or
-                  `setProfile(std::string&)`, creating ambiguity.
+                    It could bind to either `setProfile(std::string)` or
+                    `setProfile(std::string&)`, creating ambiguity.
 
             However, RTL can successfully register both overloads by explicitly specifying
             the reference type in `method()`s template parameter, e.g. `method<std::string&>(...)`.

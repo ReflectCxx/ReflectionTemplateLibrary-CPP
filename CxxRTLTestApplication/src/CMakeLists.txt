@@ -9,7 +9,6 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ConstMethodOverloadTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/CopyConstructorTests.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/RegistrationTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/NameSpaceGlobalsTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReflectionOpErrorCodeTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticMethodTests.cpp"
@@ -30,9 +29,10 @@ set(LOCAL_SOURCES_1
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectImplicitConversions.cpp"
 )
 
-set(LOCAL_PROVIDER
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/RegistrationTestProp.h"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/RegistrationTestMirror.cpp"
+set(LOCAL_MY_REFLECTION
+	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyReflectingType.h"
+	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyReflectionTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyCxxMirrorProvider.cpp"
 )
 
 # Add any additional source files if needed
@@ -40,9 +40,9 @@ target_sources(CxxRTLTestApplication
     PRIVATE
 		"${LOCAL_SOURCES_0}"
 		"${LOCAL_SOURCES_1}"
-		"${LOCAL_PROVIDER}"
+		"${LOCAL_MY_REFLECTION}"
 )
 
 SOURCE_GROUP("Source Files\\FunctionalityTests" FILES ${LOCAL_SOURCES_0})
 SOURCE_GROUP("Source Files\\RObjectTests" FILES ${LOCAL_SOURCES_1})
-SOURCE_GROUP("Source Files\\MirrorProvider" FILES ${LOCAL_PROVIDER})
+SOURCE_GROUP("Source Files\\MyReflectionTests" FILES ${LOCAL_MY_REFLECTION})

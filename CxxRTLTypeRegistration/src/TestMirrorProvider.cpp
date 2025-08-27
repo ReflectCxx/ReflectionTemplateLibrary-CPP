@@ -1,7 +1,7 @@
 
 #include <filesystem>
 
-#include "MyReflection.h"
+#include "TestMirrorProvider.h"
 #include "CxxMirrorToJson.h"
 
 //User defined types to be reflected.
@@ -23,11 +23,11 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 
 
 using namespace std;
-using namespace test_utils;
 using namespace rtl;
-using namespace rtl::builder;
 
-namespace the_reflection
+using namespace test_utils;
+
+namespace test_mirror
 {
     CxxMirror& cxx::mirror()
     {
@@ -239,12 +239,12 @@ namespace the_reflection
             #endif
         });
 
-        // static const auto _ = [&]()
-        // {
-        //     const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-        //     rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
-        //     return -1;
-        // }();
+        static const auto _ = [&]()
+        {
+            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+            rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
+            return -1;
+        }();
 
         return cxxMirror;
     }
@@ -252,7 +252,7 @@ namespace the_reflection
 
 
 
-namespace the_reflection
+namespace test_mirror
 {
     //Optional setup for accessing registered types via unique-ids.
     std::size_t reflected_id::book = rtl::detail::TypeId<Book>::get();

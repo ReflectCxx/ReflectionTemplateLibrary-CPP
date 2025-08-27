@@ -1,13 +1,13 @@
 
 #include <gtest/gtest.h>
 
-#include "MyReflection.h"
+#include "TestMirrorProvider.h"
 #include "TestUtilsDate.h"
-#include "TestUtilsBook.h"
-#include "GlobalTestUtils.h"
+//#include "TestUtilsBook.h"
+//#include "GlobalTestUtils.h"
 
 using namespace test_utils;
-using namespace the_reflection;
+using namespace test_mirror;
 
 namespace rtl_tests
 {

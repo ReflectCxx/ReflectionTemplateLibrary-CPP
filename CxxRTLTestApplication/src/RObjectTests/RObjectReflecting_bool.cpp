@@ -1,7 +1,7 @@
 ﻿
 #include <gtest/gtest.h>
 
-#include "MyReflection.h"
+#include "RTLibInterface.h"
 
 using namespace rtl;
 

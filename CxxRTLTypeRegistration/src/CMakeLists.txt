@@ -5,11 +5,11 @@ project(CxxRTLTypeRegistration)
 
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
-	"${CMAKE_CURRENT_LIST_DIR}/MyReflection.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/TestMirrorProvider.cpp"
 )
 
 SET(LOCAL_HEADERS
-	"${PROJECT_SOURCE_DIR}/inc/MyReflection.h"
+	"${PROJECT_SOURCE_DIR}/inc/TestMirrorProvider.h"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Book.h"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Complex.h"
 	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Date.h"

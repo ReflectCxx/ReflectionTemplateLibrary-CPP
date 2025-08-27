@@ -15,77 +15,73 @@
 #include "Builder.hpp"
 #include "RecordBuilder.hpp"
 
-namespace rtl {
+namespace rtl 
+{
+    inline ReflectNs::ReflectNs(const std::string_view pNamespace)
+        : m_record("")
+        , m_namespace(pNamespace)
+    { }
 
-    namespace builder
+		
+/*  @function: nameSpace()
+    @param: std::string, name of the 'namespace' as string.
+    @return: '*this', Reflect.
+    * used to group registered function, class/struct under a namespace name.
+    * its an internal grouping of registered types under a 'namespace' name.
+    * providing a namespace is optional. registration can be done without a namespace name, even if a type exists in one.
+    * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
+        check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
+        if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
+*/  inline ReflectNs Reflect::nameSpace(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
     {
-        inline ReflectNs::ReflectNs(const std::string_view pNamespace)
-            : m_record("")
-            , m_namespace(pNamespace)
-        {
-        }
+        return ReflectNs(pNamespace);
+    }
+
+
+/*  @function: function()
+    @param: std::string (name of the function).
+    @return: Builder<methodQ::None>
+    * registers only non-member functions.
+    * the 'build(..)' called on return object accepts non-member function pointer only.
+    * compiler error on 'build(..)' if member function pointer is passed.
+*/  template<>
+    inline const builder::Builder<methodQ::None> ReflectNs::function(const std::string_view pFunction)
+    {
+        return builder::Builder<methodQ::None>(detail::TypeId<>::None, pFunction, m_namespace);
+    }
 
 		
-    /*  @function: nameSpace()
-        @param: std::string, name of the 'namespace' as string.
-        @return: '*this', Reflect.
-        * used to group registered function, class/struct under a namespace name.
-        * its an internal grouping of registered types under a 'namespace' name.
-        * providing a namespace is optional. registration can be done without a namespace name, even if a type exists in one.
-        * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
-          check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
-          if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
-    */  inline ReflectNs Reflect::nameSpace(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
-        {
-            return ReflectNs(pNamespace);
-        }
+/*  @function: record()
+    @param: std::string (name of class/struct)
+    @return: RecordBuilder<_recordType>
+    * provides object of 'RecordBuilder', which provides interface to registers member functions of class/struct of '_recordType'.
+    * the 'build(..)' called on return object accepts non-member function pointer only.
+    * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- '_recordType'.
+*/  template<class _recordType>
+    inline constexpr const builder::RecordBuilder<_recordType> ReflectNs::record(const std::string_view pClass)
+    {
+        return builder::RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
+    }
 
 
-    /*  @function: function()
-        @param: std::string (name of the function).
-        @return: Builder<methodQ::None>
-        * registers only non-member functions.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if member function pointer is passed.
-    */  template<>
-        inline const Builder<methodQ::None> ReflectNs::function(const std::string_view pFunction)
-        {
-            return Builder<methodQ::None>(detail::TypeId<>::None, pFunction, m_namespace);
-        }
+    template<class _recordType>
+    inline constexpr const builder::MethodBuilder<_recordType> Reflect::member()
+    {
+        return builder::MethodBuilder<_recordType>();
+    }
 
 		
-    /*  @function: record()
-        @param: std::string (name of class/struct)
-        @return: RecordBuilder<_recordType>
-        * provides object of 'RecordBuilder', which provides interface to registers member functions of class/struct of '_recordType'.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- '_recordType'.
-    */  template<class _recordType>
-        inline constexpr const RecordBuilder<_recordType> ReflectNs::record(const std::string_view pClass)
-        {
-            return RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
-        }
-
-
-        template<class _recordType>
-        inline constexpr const MethodBuilder<_recordType> Reflect::member()
-        {
-            return MethodBuilder<_recordType>();
-        }
-
-		
-    /*  @method: function<...>()
-        @param: std::string (name of function)
-        @return: Builder<methodQ::None, _signature...>
-        * registers only non-member functions.
-        * used for registering overloads, if unique member function, use non-templated version 'function()'.
-        * template parameters must be explicitly specified, should be exactly same as the function being registered.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if any member function pointer is passed.
-    */  template<class ..._signature>
-        inline constexpr const Builder<methodQ::None, _signature...> ReflectNs::function(const std::string_view pFunction) 
-        {
-            return Builder<methodQ::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
-        }
+/*  @method: function<...>()
+    @param: std::string (name of function)
+    @return: Builder<methodQ::None, _signature...>
+    * registers only non-member functions.
+    * used for registering overloads, if unique member function, use non-templated version 'function()'.
+    * template parameters must be explicitly specified, should be exactly same as the function being registered.
+    * the 'build(..)' called on return object accepts non-member function pointer only.
+    * compiler error on 'build(..)' if any member function pointer is passed.
+*/  template<class ..._signature>
+    inline constexpr const builder::Builder<methodQ::None, _signature...> ReflectNs::function(const std::string_view pFunction)
+    {
+        return builder::Builder<methodQ::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
     }
 }
