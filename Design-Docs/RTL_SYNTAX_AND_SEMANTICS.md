@@ -148,7 +148,7 @@ if (err == rtl::error::None)
 }
 ```
 
-##### Return Handling Summary 📦
+#### Return Handling Summary 📦
 
 When dealing with `rtl::RObject` results:
 
