@@ -3,51 +3,14 @@
 RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
 This guide walks you step by step through RTL’s reflection syntax.
 
-### Index
+### 📖 Index
 
-1. Building the Mirror 🪞
-2. Getting Started with Registration
-
-   * Non-Member Functions
-   * Handling Overloads
-   * Classes / Structs
-   * Constructors
-   * Member Functions
-3. Reflective Programming with RTL ⚡
-
-   * Accessing and Invoking Functions
-
-     * Querying Functions
-     * Performing Reflective Calls
-     * Extracting Return Values
-     * Return Handling Summary 📦
-   * Accessing and Invoking Member Functions 🧩
-
-     * Querying a Member Function
-     * Binding an Object and Calling
-     * Binding Signatures and Perfect Forwarding
-     * Return Values
-   * Const vs Non-Const Method Binding ⚡
-
-     * Default Behavior
-     * Choosing the Non-Const Path
-     * Fallback to Non-Const
-     * Declared-Const Objects
-     * Checking Provenance
-     * Summary
-   * Const-by-Default Discipline
-
-     * Quick Comparison with Native C++
-4. Reflective Construction and Destruction 🏗️
-
-   * Constructing Objects
-   * Destruction Semantics
-   * Creating Reflected Objects With Visible-Type
-5. Move Semantics in RTL ⚡
-
-   * Moving Stack-Allocated Objects 🟦
-   * Moving Heap-Allocated Objects 🟩
-   * Consistent Guarantees 🟨
+1. [Building the Mirror 🪞](#building-the-mirror-)
+2. [Getting Started with Registration 📝](#getting-started-with-registration-)
+3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
+4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline-)
+5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction-)
+6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl-)
 
 ---
 
@@ -72,9 +35,9 @@ The `CxxMirror` remains immutable throughout the application. Declaring it as a 
 
 > *Tip: Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
 
-**Note:** Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
-## Getting Started with Registration
+## Getting Started with Registration 📝
 
 The fundamental pattern of registration in RTL is a **builder combination**. You chain together parts to declare what you are reflecting, and then call `.build()` to complete it.
 
@@ -136,7 +99,7 @@ rtl::Reflect().member<T>().method<..signature..>("method").build(&T::f);
 
 With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
 
-## Reflective Programming with RTL ⚡
+## Reflective Invocations with RTL ⚡
 
 Discover how to query, invoke, and manipulate functions and objects at runtime using RTL’s powerful reflection API.
 
@@ -196,7 +159,7 @@ if (err == rtl::error::None)
 }
 ```
 
-#### Return Handling Summary 📦
+#### Return Handling Summary
 
 When dealing with `rtl::RObject` results:
 
@@ -345,25 +308,41 @@ bool safe = robj.isConstCastSafe();
 * `isConstCastSafe()` tells you whether relaxation is permitted.
 * Reflective objects are always const-first; declared-const objects are strictly immutable.
 
-### Const-by-Default Discipline
+### Const-by-Default Discipline 🛡️
 
-Finally, let’s connect the dots. Objects constructed reflectively (via `alloc::Stack` or `alloc::Heap`, covered next) are always treated as **const-first**. If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because those objects were never originally declared const.
+C++ treats **const** as a contract: a `const` object can only invoke `const` methods, and any attempt to mutate it without an explicit `const_cast` leads to undefined behavior. A non-const object, by contrast, freely chooses non-const overloads but can fall back to const ones when needed.
 
-Externally provided const objects, on the other hand, remain **strictly const**—RTL will never apply a cast, ensuring you never slip into undefined behavior.
+RTL mirrors this model but strengthens it with **provenance-aware constness**. In other words, RTL distinguishes between objects it created itself and objects provided externally, applying rules that match their origin.
 
-#### Quick Comparison with Native C++
+#### Two Kinds of Constness in RTL
 
-* **C++ const object:** can only call const members; non-const requires `const_cast`, and mutating a truly const object is UB.
-* **C++ non-const object:** prefers non-const overload; can call const if that’s the only one.
+* **Logically-Const (RTL-Created)**
 
-👉 RTL mirrors this baseline, but adds provenance-aware safety:
+  * Objects constructed reflectively—whether on the stack or heap—are treated as *const-first*.
+  * If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because these objects were never originally declared `const`.
+  * Users can still opt into non-const explicitly via `rtl::constCast()` if both overloads exist.
 
-* **True-const** → strict const, no unsafe casts.
-* **Logical-const** → treated as const-first, but safe to relax if needed.
+* **True-Const (Externally Provided)**
 
-#### Bottom Line ✅
+  * Objects passed into RTL with declared `const` remain **strictly const**.
+  * RTL will never cast them internally, ensuring you can’t accidentally mutate something the compiler itself forbids.
+  * Missing const overloads result in `rtl::error::ConstOverloadMissing`. Forcing a non-const call results in `rtl::error::IllegalConstCast`.
 
-*“RTL codifies C++’s const rules at runtime: true-const objects are strictly immutable, logical-const objects are const-first but can be safely relaxed. Overload resolution is predictable, safe, and explicit via `rtl::constCast()`.”*
+#### Quick Comparison
+
+| Case                 | Native C++                                                             | RTL Behavior                                                                                                                                           |
+| -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Const object**     | Only const overload allowed; non-const requires cast; mutation is UB.  | **True-const**: only const overload allowed; missing const → `ConstOverloadMissing`; forcing non-const → `IllegalConstCast`.                           |
+| **Non-const object** | Prefers non-const overload, but may call const if that’s the only one. | **Logically-const**: defaults to const; missing const but non-const present → safe fallback; both present → explicit non-const via `rtl::constCast()`. |
+
+#### Key Takeaway ✅
+
+RTL codifies C++’s const rules at runtime:
+
+* **True-const** objects are strictly immutable.
+* **Logically-const** objects default to immutability but can be safely relaxed when overload resolution requires it.
+
+This makes overload resolution **predictable, safe, and explicit**, giving you runtime reflection that behaves like C++—but with added clarity.
 
 ### Reflective Construction and Destruction 🏗️
 
@@ -432,7 +411,7 @@ rtl::RObject robj2 = rtl::reflect(constSam);
 * These stack-based reflections are **scope bound** and never heap-managed.
 * Useful for **testing**, since you can quickly reflect arbitrary visible objects.
 
-### Move Semantics in RTL ⚡
+### Move Semantics in RTL 🔀
 
 Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
 
