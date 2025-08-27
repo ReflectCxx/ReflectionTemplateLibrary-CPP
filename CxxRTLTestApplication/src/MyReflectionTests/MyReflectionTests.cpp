@@ -11,7 +11,7 @@ namespace my_type { extern const rtl::CxxMirror& MyReflection(); }
 
 namespace
 {
-    TEST(RegistrationTest, invoking_semantics__C_style_function_with_no_overload)
+    TEST(MyReflectionTests, invoking_semantics__C_style_function_with_no_overload)
     {
         {
             // Attempt to retrieve the C-style function without specifying a namespace.
@@ -51,7 +51,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, overload_resolution_semantics__arg_const_char_ptr)
+    TEST(MyReflectionTests, overload_resolution_semantics__arg_const_char_ptr)
     {
         // Retrieve the function with its correct namespace.
         auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
@@ -85,7 +85,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, overload_resolution_semantics__arg_lvalue)
+    TEST(MyReflectionTests, overload_resolution_semantics__arg_lvalue)
     {
         // Retrieve the function from its namespace.
         auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
@@ -116,7 +116,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
+    TEST(MyReflectionTests, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
     {
         // Retrieve the function from its namespace.
         auto sendAsString = MyReflection().getFunction("ext", "sendAsString");
@@ -149,7 +149,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, invoking_static_member_function_semantics)
+    TEST(MyReflectionTests, invoking_static_member_function_semantics)
     {
         // Retrieve the reflected class metadata.
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
@@ -206,7 +206,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, overload_resolution_semantics__constructor)
+    TEST(MyReflectionTests, overload_resolution_semantics__constructor)
     {
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -233,7 +233,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, overload_resolution_semantics__method)
+    TEST(MyReflectionTests, overload_resolution_semantics__method)
     {
         // Tests runtime overload resolution between `std::string` (by value)
         // and `std::string&` overloads of Person::setProfile.
@@ -291,7 +291,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, perfect_forwarding_seamantics__rvalue_ref)
+    TEST(MyReflectionTests, perfect_forwarding_seamantics__rvalue_ref)
     {
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -336,7 +336,7 @@ namespace
     }
 
     
-    TEST(RegistrationTest, perfect_forwarding_semantics__overload_resolution)
+    TEST(MyReflectionTests, perfect_forwarding_semantics__overload_resolution)
     {
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -402,7 +402,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, non_const_method_resolution_semantics__on_true_const_target)
+    TEST(MyReflectionTests, non_const_method_semantics__on_true_const_target)
     {
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -411,13 +411,13 @@ namespace
         ASSERT_TRUE(getName);
         {
             // Case 1: Reflecting a true-const Person.
-            const Person constPerson = Person("Const-Sam");
+            const Person constSam = Person("Const-Sam");
 
             // Reflect 'const Person' into RObject.
-            rtl::RObject robj = rtl::reflect(constPerson);
+            rtl::RObject robj = rtl::reflect(constSam);
 
             // RTL never performs an implicit const_cast on externally provided true-const objects.
-            // Since 'constPerson' is genuinely const, RTL preserves that constness.
+            // Since 'constSam' is genuinely const, RTL preserves that constness.
             // This applies equally to any object returned by reflective calls.
             EXPECT_FALSE(robj.isConstCastSafe());
             {
@@ -440,7 +440,7 @@ namespace
     }
 
 
-    TEST(RegistrationTest, non_const_method_resolution_semantics__on_logical_const_target)
+    TEST(MyReflectionTests, non_const_method_semantics__on_logical_const_target)
     {
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
@@ -448,10 +448,10 @@ namespace
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         ASSERT_TRUE(getName);
         // Case 2: Reflecting a mutable Person.
-        Person mutablePerson = Person("Mutable-Sam");
+        Person mutableSam = Person("Mutable-Sam");
 
         // Reflect 'Person' into RObject (copy created on stack).
-        rtl::RObject robj = rtl::reflect(mutablePerson);
+        rtl::RObject robj = rtl::reflect(mutableSam);
 
         // RTL treats reflection-created objects as logically immutable by default.
         // For such objects, const_cast is always safe, since RTL controls their lifetime.
@@ -485,6 +485,105 @@ namespace
 
             const std::string& retStr = strView->get();
             EXPECT_EQ(retStr, "Mutable-Sam");
+        }
+    }
+
+
+    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_true_const_target)
+    {
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        std::optional<rtl::Method> updateAddress = classPerson->getMethod("updateAddress");
+        ASSERT_TRUE(updateAddress);
+        {
+            // Case 1: Reflecting a true-const Person.
+            const Person constSam = Person("Const-Sam");
+
+            // Reflect 'const Person' into RObject.
+            rtl::RObject robj = rtl::reflect(constSam);
+
+            // RTL never performs an implicit const_cast on externally provided true-const objects.
+            // Since 'constSam' is genuinely const, RTL preserves that constness.
+            // This applies equally to any object returned by reflective calls.
+            EXPECT_FALSE(robj.isConstCastSafe());
+            {
+                std::string expectReturnStr = "called_const_overload";
+                // 'robj' reflects a true-const and for 'updateAddress' both overloads (const/non-const) 
+                // are registered. So it will automatically invoke the 'const' overload of 'updateAddress'.
+                auto [err, ret] = updateAddress->bind(robj).call();
+                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_FALSE(ret.isEmpty());
+
+                // Validate return type and value.
+                EXPECT_TRUE(ret.canViewAs<std::string>());
+                std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+                ASSERT_TRUE(strView);
+
+                const std::string& retStr = strView->get();
+                EXPECT_EQ(retStr, expectReturnStr);
+            } {
+                // Attempt to explicitly treat the true-const object as non-const,
+                // and tries to call the non-const version of 'updateAddress'.
+                // This requests RTL to const_cast the reflected object.
+                // Since the underlying object is true-const, the cast is unsafe.
+                auto [err, ret] = updateAddress->bind(rtl::constCast(robj)).call();
+                // Expected: IllegalConstCast.
+                EXPECT_TRUE(err == rtl::error::IllegalConstCast);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+        }
+    }
+
+
+    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_logical_const_target)
+    {
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        std::optional<rtl::Method> updateAddress = classPerson->getMethod("updateAddress");
+        ASSERT_TRUE(updateAddress);
+        // Case 2: Reflecting a mutable Person.
+        Person mutableSam = Person("Mutable-Sam");
+
+        // Reflect 'Person' into RObject (copy created on stack).
+        rtl::RObject robj = rtl::reflect(mutableSam);
+
+        // RTL treats reflection-created objects as logically immutable by default.
+        // For such objects, const_cast is always safe, since RTL controls their lifetime.
+        EXPECT_TRUE(robj.isConstCastSafe());
+        {
+            std::string expectReturnStr = "called_const_overload";
+            // For 'updateAddress' both overloads (const/non-const) are registered.
+            // Since 'robj' is logically-const, it will automatically invoke the 'const' overload.
+            auto [err, ret] = updateAddress->bind(robj).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Validate return type and value.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            EXPECT_EQ(retStr, expectReturnStr);
+        } {
+            std::string expectReturnStr = "called_non_const_overload";
+            // Now this time we explicitly request for the non-const overload.
+            // `rtl::constCast()` signals intent to call the non-const variant.
+            // const_cast is safe here, since the underlying object is not truly const.
+            // This will explicitly make the call to non-const version of 'updateAddress'
+            auto [err, ret] = updateAddress->bind(rtl::constCast(robj)).call();
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Validate return type and value.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            EXPECT_EQ(retStr, expectReturnStr);
         }
     }
 }
