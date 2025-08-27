@@ -298,7 +298,7 @@ RObject obj1 = /* created on stack */;
 RObject obj2 = std::move(obj1);
 ```
 
-** What happens here: **
+* ** What happens here: **
 
 * The reflected type’s **move constructor** is invoked.
 * Ownership of the object transfers into `obj2`.
@@ -316,7 +316,7 @@ RObject obj1 = /* created on heap */;
 RObject obj2 = std::move(obj1);
 ```
 
-** What happens here: **
+* ** What happens here: **
 
 * The internal `unique_ptr` is moved.
 * No move constructor of the reflected type is called.
