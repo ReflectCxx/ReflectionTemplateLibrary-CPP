@@ -118,7 +118,7 @@ namespace rtl_tests
     }
 
 
-    TEST(MoveSemantics, move_returned_RObject_reflecting_true_const)
+    TEST(MoveSemantics, move_returned_RObject_reflecting_true_const_ref)
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
@@ -139,6 +139,7 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
             {
+                // getTheEvent() returns 'const Event&', hence Reflecetd as true-const. 
                 auto [err0, event0] = getTheEvent->bind(calender).call();
                 EXPECT_TRUE(err0 == error::None);
                 ASSERT_FALSE(event0.isEmpty());
@@ -149,6 +150,8 @@ namespace rtl_tests
                 {
                     optional<Method> eventReset = classEvent->getMethod(event::str_reset);
                     ASSERT_TRUE(eventReset);
+                    // 'Event::reset()' Method is non-const.
+                    EXPECT_TRUE(eventReset->getQualifier() == methodQ::NonConst);
 
                     auto [e0, r0] = eventReset->bind(event0).call();
                     EXPECT_TRUE(e0 == error::ConstCallViolation);
@@ -159,7 +162,7 @@ namespace rtl_tests
                     ASSERT_TRUE(r2.isEmpty());
                 }
 
-                // RObject reflecting reference/pointer, stores pointer to reflected type internally, So just the
+                // RObject reflecting 'const Event&', storing pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
                 RObject event1 = std::move(event0);
 
