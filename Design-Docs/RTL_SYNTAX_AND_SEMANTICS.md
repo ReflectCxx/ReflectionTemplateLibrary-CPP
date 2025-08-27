@@ -3,6 +3,54 @@
 RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
 This guide walks you step by step through RTL’s reflection syntax.
 
+### Index
+
+1. Building the Mirror 🪞
+2. Getting Started with Registration
+
+   * Non-Member Functions
+   * Handling Overloads
+   * Classes / Structs
+   * Constructors
+   * Member Functions
+3. Reflective Programming with RTL ⚡
+
+   * Accessing and Invoking Functions
+
+     * Querying Functions
+     * Performing Reflective Calls
+     * Extracting Return Values
+     * Return Handling Summary 📦
+   * Accessing and Invoking Member Functions 🧩
+
+     * Querying a Member Function
+     * Binding an Object and Calling
+     * Binding Signatures and Perfect Forwarding
+     * Return Values
+   * Const vs Non-Const Method Binding ⚡
+
+     * Default Behavior
+     * Choosing the Non-Const Path
+     * Fallback to Non-Const
+     * Declared-Const Objects
+     * Checking Provenance
+     * Summary
+   * Const-by-Default Discipline
+
+     * Quick Comparison with Native C++
+4. Reflective Construction and Destruction 🏗️
+
+   * Constructing Objects
+   * Destruction Semantics
+   * Creating Reflected Objects With Visible-Type
+5. Move Semantics in RTL ⚡
+
+   * Moving Stack-Allocated Objects 🟦
+   * Moving Heap-Allocated Objects 🟩
+   * Consistent Guarantees 🟨
+
+---
+
 ## Building the Mirror 🪞
 
 Before registering anything, we need a central place to hold all reflection metadata: the `rtl::CxxMirror`. Its constructor takes an initializer list containing all the type metadata.
