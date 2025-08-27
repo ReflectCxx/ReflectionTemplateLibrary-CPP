@@ -353,17 +353,17 @@ rtl::RObject robj2 = rtl::reflect(constSam);
 * These stack-based reflections are **scope bound** and never heap-managed.
 * Useful for **testing**, since you can quickly reflect arbitrary visible objects.
 
-## Const-by-Default Discipline 🟨
+## Const vs Non-Const Method Binding ⚡
+
+Let’s walk through how RTL handles **constness** when binding to methods. This is where RTL introduces its **const-by-default philosophy**, while distinguishing between *true-const* and *logical-const* objects.
+
+### Const-by-Default Discipline 🟨
 
 RTL enforces a **const-by-default** model:
 
 * Objects created **reflectively** (via `create<Heap/Stack>`) are treated as **const-first**. RTL resolves overloads from a const perspective by default.
 * Objects provided **externally** (via direct initialization or returned from reflective calls) retain their **original constness**.
 * RTL never performs a `const_cast` internally without verifying `isConstCastSafe()`.
-
-## Const vs Non-Const Method Binding ⚡
-
-Let’s walk through how RTL handles **constness** when binding to methods. This is where RTL introduces its **const-by-default philosophy**, while distinguishing between *true-const* and *logical-const* objects.
 
 ### 🟦 True-Const (e.g. `constSam`)
 
