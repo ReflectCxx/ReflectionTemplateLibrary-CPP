@@ -299,7 +299,7 @@ bool safe = robj.isConstCastSafe();
 
 ### Const-by-Default Discipline
 
-Finally, let’s connect the dots. Objects constructed reflectively (via `alloc::Stack` or `alloc::Heap`) are always treated as **const-first**. If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because those objects were never originally declared const.
+Finally, let’s connect the dots. Objects constructed reflectively (via `alloc::Stack` or `alloc::Heap`, covered next) are always treated as **const-first**. If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because those objects were never originally declared const.
 
 Externally provided const objects, on the other hand, remain **strictly const**—RTL will never apply a cast, ensuring you never slip into undefined behavior.
 
