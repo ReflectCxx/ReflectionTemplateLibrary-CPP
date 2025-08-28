@@ -257,7 +257,7 @@ Whenever both `const` and `non-const` overloads of a method exist, RTL prefers t
 
 ```cpp
 Person john("John");
-rtl::RObject robj = rtl::reflect(john);    // Reflect object with strict-type; details covered later.
+rtl::RObject robj = rtl::reflect(john);    // Reflect object with statically-type; details covered later.
 
 // If both overloads exist, RTL selects the const one.
 auto [err, ret] = someMethod->bind(robj).call();
