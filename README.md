@@ -66,7 +66,7 @@ std::cout << p.getName();
 // Look up the class by name
 std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
 
-if (classPerson)	// Check has_value() before use.
+if (classPerson)  // Check has_value() before use.
 {
     // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
     auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
@@ -76,7 +76,7 @@ if (classPerson)	// Check has_value() before use.
         std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
         if (setAge) {
 			// Binds rtl::RObject & rtl::Method, calls with args.
-            auto [err, ret] = setAge->bind(robj).call(43);	//'setAge' is void ('ret' empty).
+            auto [err, ret] = setAge->bind(robj).call(43);  //'setAge' is void ('ret' empty).
 			if (err == rtl::error::None) { /* Operation succeeded. */ }
         }
 
@@ -88,7 +88,7 @@ if (classPerson)	// Check has_value() before use.
             if (err == rtl::error::None && ret.canViewAs<std::string>())
             {
                 std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                std::cout << viewStr->get();	// safe. validated above.
+                std::cout << viewStr->get();  // safe. validated above.
             }
         }
     }
