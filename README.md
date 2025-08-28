@@ -32,58 +32,58 @@ RTL is implemented as a static library that organizes type-safe function pointer
 [![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
 [![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
 
-## A Quick Preview: Reflection That Feels Like C++
+## A Quick Preview: Reflection That Looks and Feels Like C++
 
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 
-  ```c++
-  rtl::CxxMirror cxx_mirror({/* register all types here */});
-  ```
+```c++
+rtl::CxxMirror cxx_mirror({/* register all types here */});
+```
 
-  The `cxx_mirror` object acts as your gateway to query, introspect, and instantiate all registered types at runtime.
+With just this line, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime.
 
-RTL’s API is designed to be small and intuitive. The syntax follows familiar C++ patterns, so working with reflection feels natural.
+RTL’s API is designed to be small and intuitive. Its syntax mirrors familiar C++ patterns — but with strong safety guarantees. Every reflective operation checks types, ownership, and errors explicitly, so moving forward with reflection feels just as safe and predictable as writing normal C++ code.
 
 ***Without reflection:***
+
 ```c++
 Person p("John", 42);
 p.setAge(43);
 std::cout << p.getName();
 ```
+
 ***With reflection:***
+
 ```c++
-// Get class as 'rtl::Record'
+// Look up the class by name
 std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
-if (classPerson) // check has_value()
+if (classPerson)
 {
-    // Create instance as 'rtl::RObject'. Returns- std::pair<rtl::error, rtl::RObject>.
+    // Create a stack-allocated instance
     auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
-    if (err == rtl::error::None) // construction succeeded
+    if (err == rtl::error::None)
     {
-        // Get method as 'rtl::Method'
+        // Call setAge(43) on the reflected object
         std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
         if (setAge) {
-            // Binds rtl::RObject & rtl::Method, calls with args; 'setAge' is void ('ret' empty).
             auto [err, ret] = setAge->bind(robj).call(43);
-            if (err == rtl::error::None) { /* success */ }
         }
-        // Get another method, that returns std::string.
+
+        // Call getName(), which returns std::string
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         if (getName) {
-            // bind & call. Returns- std::pair<rtl::error, rtl::RObject>.
             auto [err, ret] = getName->bind(robj).call();
             if (err == rtl::error::None && ret.canViewAs<std::string>())
             {
-                // View return as std::string
                 std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                std::cout << viewStr->get(); // safe, validated above
+                std::cout << viewStr->get();
             }
         }
     }
 }
 ```
 
-The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
+Reflection in RTL doesn’t force a new paradigm — it extends the one you already know. You create objects, call methods, and work with types exactly as you would in C++ — only now, you can do it at runtime, with the same level of type safety and clarity.
 
 ## Reflection Features
 
