@@ -65,8 +65,8 @@ std::cout << p.getName();
 ```c++
 // Look up the class by name
 std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
-// Check has_value() before use.
-if (classPerson)
+
+if (classPerson)	// Check has_value() before use.
 {
     // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>.
     auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
