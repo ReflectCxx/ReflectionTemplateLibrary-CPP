@@ -44,26 +44,43 @@ Create an instance of `CxxMirror`, passing all type information directly to its 
 
 RTL’s API is designed to be small and intuitive. The syntax follows familiar C++ patterns, so working with reflection feels natural.
 
+***Without reflection:***
 ```c++
-// Without reflection
 Person p("John", 42);
 p.setAge(43);
 std::cout << p.getName();
-
-// With reflection
-auto classPerson = cxx_mirror.getRecord("Person");      // Get the class as 'rtl::Record'. Returns std::optional<rtl::Record>.
-
-auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);   // Get the instance (robj) as 'rtl::RObject'. if(err == rtl::error::None) - Operation successful.
-
-auto setAge = classPerson->getMethod("setAge");     // Get the method as 'rtl::Method'.  Returns std::optional<rtl::Method>.
-
-auto [err0, ret0] = setAge->bind(robj).call(43);    // Bind the rtl::RObject with rtl::Method and make the call with arguments. 'setAge' is 'void', 'ret0' will be empty.
- 
-auto getName = classPerson->getMethod("getName");
-
-auto [err1, ret1] = getName->bind(robj).call();      // Get return value as rtl::RObject.
-
-std::cout << ret1.view<std::string>()->get();    // access return value as std::string.	Returns std::optional<rtl::view<T>>.
+```
+***With reflection:***
+```c++
+// Get class as 'rtl::Record'
+std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
+if (classPerson) // check has_value()
+{
+    // Create instance as 'rtl::RObject'. Returns- std::pair<rtl::error, rtl::RObject>.
+    auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
+    if (err == rtl::error::None) // construction succeeded
+    {
+        // Get method as 'rtl::Method'
+        std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
+        if (setAge) {
+            // Binds rtl::RObject & rtl::Method, calls with args; 'setAge' is void ('ret' empty).
+            auto [err, ret] = setAge->bind(robj).call(43);
+            if (err == rtl::error::None) { /* success */ }
+        }
+        // Get another method, that returns std::string.
+        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
+        if (getName) {
+            // bind & call. Returns- std::pair<rtl::error, rtl::RObject>.
+            auto [err, ret] = getName->bind(robj).call();
+            if (err == rtl::error::None && ret.canViewAs<std::string>())
+            {
+                // View return as std::string
+                std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
+                std::cout << viewStr->get(); // safe, validated above
+            }
+        }
+    }
+}
 ```
 
 The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
