@@ -35,6 +35,9 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+```c++
+#include "RTLibInterface.h" // Reflection access interface.
+```
 
 ```c++
 rtl::CxxMirror cxx_mirror({
@@ -63,6 +66,7 @@ std::cout << p.getName();
 ```c++
 // Look up the class by name
 std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
+// Check has_value() before use.
 if (classPerson)
 {
     // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>.
@@ -74,6 +78,7 @@ if (classPerson)
         if (setAge) {
 			// Binds rtl::RObject & rtl::Method, calls with args; 'setAge' is void ('ret' empty).
             auto [err, ret] = setAge->bind(robj).call(43);	//Returns- std::pair<rtl::error, rtl::RObject>.
+			if (err == rtl::error::None) { /* Operation succeeded. */ }
         }
 
         // Call getName(), which returns std::string
@@ -84,12 +89,23 @@ if (classPerson)
             if (err == rtl::error::None && ret.canViewAs<std::string>())
             {
                 std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                std::cout << viewStr->get();
+                std::cout << viewStr->get();	// safe. validated above.
             }
         }
     }
 }
 ```
+### Heap vs Stack Allocation and Lifetime Management
+
+RTL allows you to create reflected objects on either the heap or the stack, with automatic lifetime handling:
+
+* **Heap allocation (`alloc::Heap`)** creates objects owned by an internal `std::unique_ptr`; the object is automatically destroyed when the `RObject` goes out of scope.
+* **Stack allocation (`alloc::Stack`)** creates independent copies of the object; these behave like normal stack values and are cleaned up at scope exit.
+* **Copy/Move semantics:**
+
+  * Heap objects follow `unique_ptr` rules (move transfers ownership, copy creates a new heap instance if supported).
+  * Stack objects copy/move like normal values.
+* **Method return values** are stored in `RObject` as unmanaged temporaries on stack; they are cleaned up automatically when the wrapper goes out of scope.
 
 Reflection in RTL doesn’t force a new paradigm — it extends the one you already know. You create objects, call methods, and work with types exactly as you would in C++ — only now, you can do it at runtime, with the same level of type safety and clarity.
 
