@@ -68,9 +68,9 @@ std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
 
 if (classPerson)	// Check has_value() before use.
 {
-    // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>.
+    // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
     auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
-    if (err == rtl::error::None)
+    if (err == rtl::error::None)  //Construction successful.
     {
         // Call setAge(43) on the reflected object
         std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
@@ -83,7 +83,7 @@ if (classPerson)	// Check has_value() before use.
         // Call getName(), which returns std::string
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         if (getName) {
-			//Returns- std::pair<rtl::error, rtl::RObject>.
+			//Returns- std::pair<rtl::error, rtl::RObject>
             auto [err, ret] = getName->bind(robj).call();
             if (err == rtl::error::None && ret.canViewAs<std::string>())
             {
