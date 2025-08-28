@@ -257,7 +257,7 @@ Whenever both `const` and `non-const` overloads of a method exist, RTL prefers t
 
 ```cpp
 Person john("John");
-rtl::RObject robj = rtl::reflect(john);    // Reflect object with visible-type; details covered later.
+rtl::RObject robj = rtl::reflect(john);    // Reflect object with strict-type; details covered later.
 
 // If both overloads exist, RTL selects the const one.
 auto [err, ret] = someMethod->bind(robj).call();
@@ -282,7 +282,7 @@ If a class only defines a non-const method and no const variant exists, RTL will
 Things change when the reflected object itself was declared `const` in the first place:
 
 ```cpp
-const Person constSam("Const-Sam");    // Reflect 'const' with visible-type; details covered later.
+const Person constSam("Const-Sam");    // Reflect 'const' with statically-type; details covered later.
 rtl::RObject robj = rtl::reflect(constSam);
 ```
 
@@ -319,13 +319,13 @@ bool safe = robj.isConstCastSafe();
 
 ---
 
-### Const-by-Default Discipline 🛡️
+## Const-by-Default Discipline 🛡️
 
 C++ treats **const** as a contract: a `const` object can only invoke `const` methods, and any attempt to mutate it without an explicit `const_cast` leads to undefined behavior. A non-const object, by contrast, freely chooses non-const overloads but can fall back to const ones when needed.
 
 RTL mirrors this model but strengthens it with **provenance-aware constness**. In other words, RTL distinguishes between objects it created itself and objects provided externally, applying rules that match their origin.
 
-#### Two Kinds of Constness in RTL
+### Two Kinds of Constness in RTL
 
 * **Logically-Const (RTL-Created)**
 
@@ -339,14 +339,14 @@ RTL mirrors this model but strengthens it with **provenance-aware constness**. I
   * RTL will never cast them internally, ensuring you can’t accidentally mutate something the compiler itself forbids.
   * Missing const overloads result in `rtl::error::ConstOverloadMissing`. Forcing a non-const call results in `rtl::error::IllegalConstCast`.
 
-#### Quick Comparison
+### Quick Comparison
 
 | Case                 | Native C++                                                             | RTL Behavior                                                                                                                                           |
 | -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Const object**     | Only const overload allowed; non-const requires cast; mutation is UB.  | **True-const**: only const overload allowed; missing const → `ConstOverloadMissing`; forcing non-const → `IllegalConstCast`.                           |
 | **Non-const object** | Prefers non-const overload, but may call const if that’s the only one. | **Logically-const**: defaults to const; missing const but non-const present → safe fallback; both present → explicit non-const via `rtl::constCast()`. |
 
-#### Key Takeaway ✅
+### Key Takeaway ✅
 
 RTL codifies C++’s const rules at runtime:
 
@@ -355,11 +355,11 @@ RTL codifies C++’s const rules at runtime:
 
 This makes overload resolution **predictable, safe, and explicit**, giving you runtime reflection that behaves like C++—but with added clarity.
 
-### Reflective Construction and Destruction 🏗️
+## Reflective Construction and Destruction 🏗️
 
 Reflection in RTL doesn’t stop at functions and methods — you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
 
-#### Constructing Objects
+### Constructing Objects
 
 To construct a reflected object, first grab the `Record` that represents the type, then call one of its `create` helpers:
 
@@ -391,7 +391,7 @@ Key takeaways:
   * An instance created via a reflected constructor.
   * A return value from any reflected call (as we have already seen earlier).
 
-#### Destruction Semantics
+### Destruction Semantics
 
 RTL does **not** give you a “destroy” API. All lifetime management is pure **RAII**:
 
@@ -406,7 +406,7 @@ This design is intentional:
 
 **Bottom line:** you never destroy a reflected object yourself — RAII does it for you.
 
-#### Creating Reflected Objects With Visible-Type
+### Creating Reflected Objects With Static-Type
 
 Besides constructing objects via reflective calls (`create<Heap>()` or `create<Stack>()`), RTL also lets you create an `RObject` by **reflecting an existing object**:
 
@@ -420,13 +420,13 @@ rtl::RObject robj2 = rtl::reflect(constSam);
 
 * This always creates a **copy on the stack** inside the `RObject`.
 * These stack-based reflections are **scope bound** and never heap-managed.
-* Useful for **testing**, since you can quickly reflect arbitrary visible objects.
+* Useful for **testing**, since you can quickly reflect arbitrary statically-typed objects.
 
-### Move Semantics in RTL 🔀
+## Move Semantics in RTL 🔀
 
 Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
 
-#### Moving Stack-Allocated Objects 🟦
+### Moving Stack-Allocated Objects 🟦
 
 When you create an object reflectively with `alloc::Stack`, the underlying instance lives directly inside the `RObject`. Moving such an `RObject` looks just like a regular C++ move:
 
@@ -443,7 +443,7 @@ RObject obj2 = std::move(obj1);
 
 👉 **Key idea:** *Stack move = reflected type’s move constructor is called.*
 
-#### Moving Heap-Allocated Objects 🟩
+### Moving Heap-Allocated Objects 🟩
 
 When you create an object reflectively with `alloc::Heap`, the instance is managed inside a **`std::unique_ptr<T>`**. Moving such an `RObject` also uses standard C++ move semantics:
 
@@ -461,7 +461,7 @@ RObject obj2 = std::move(obj1);
 
 👉 **Key idea:** *Heap move = `unique_ptr` move semantics (cheap pointer transfer).*
 
-#### Consistent Guarantees 🟨
+### Consistent Guarantees 🟨
 
 Across both stack and heap moves:
 
@@ -470,7 +470,7 @@ Across both stack and heap moves:
 * RAII ensures proper cleanup — objects are destroyed once and only once.
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
-#### Bottom Line ✅
+### Bottom Line ✅
 
 *“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”*
 
