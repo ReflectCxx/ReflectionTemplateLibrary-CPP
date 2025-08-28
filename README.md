@@ -100,10 +100,10 @@ RTL allows you to create reflected objects on either the heap or the stack, with
 
 * **Heap allocation (`alloc::Heap`)** creates objects owned by an internal `std::unique_ptr`; the object is automatically destroyed when the `RObject` goes out of scope.
 * **Stack allocation (`alloc::Stack`)** creates independent copies of the object; these behave like normal stack values and are cleaned up at scope exit.
-* **Copy/Move semantics:**
+* **Move semantics:**
 
-  * Heap objects follow `unique_ptr` rules (move transfers ownership, copy creates a new heap instance if supported).
-  * Stack objects copy/move like normal values.
+  * Heap objects follow `unique_ptr` rules (move transfers ownership, copy construction & assignment is disabled for `rtl::RObject`).
+  * Stack objects move like normal values.
 * **Method return values** are stored in `RObject` as unmanaged temporaries on stack; they are cleaned up automatically when the wrapper goes out of scope.
 
 Reflection in RTL doesn’t force a new paradigm — it extends the one you already know. You create objects, call methods, and work with types exactly as you would in C++ — only now, you can do it at runtime, with the same level of type safety and clarity.
