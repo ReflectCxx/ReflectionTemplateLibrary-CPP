@@ -8,8 +8,8 @@ This guide walks you step by step through RTL’s reflection syntax.
 1. [Building the Mirror 🪞](#building-the-mirror-)
 2. [Getting Started with Registration 📝](#getting-started-with-registration-)
 3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
-4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline-)
-5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction-)
+4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline)
+5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
 6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl-)
 
 ---
