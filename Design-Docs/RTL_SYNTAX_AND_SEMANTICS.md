@@ -8,9 +8,9 @@ This guide walks you step by step through RTL’s reflection syntax.
 1. [Building the Mirror 🪞](#building-the-mirror-)
 2. [Getting Started with Registration 📝](#getting-started-with-registration-)
 3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
-4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline-)
-5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction-)
-6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl-)
+4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline)
+5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
+6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl)
 
 ---
 
@@ -288,7 +288,7 @@ rtl::RObject robj = rtl::reflect(constSam);
 
 Here, RTL preserves that constness strictly. Non-const methods cannot be invoked on such an object. Attempts to do so will result in `rtl::error::IllegalConstCast`.
 
-If you attempt a method where **no const overload exists**, RTL reports `rtl::error::ConstOverloadNotFound`.
+If you attempt a method where **no const overload exists**, RTL reports `rtl::error::ConstOverloadMissing`.
 
 #### Checking Provenance
 
@@ -301,6 +301,13 @@ bool safe = robj.isConstCastSafe();
 * `false` → The object was originally declared const; treating it as mutable is unsafe.
 * `true` → The object wasn’t originally const; RTL may relax constness internally if needed.
 
+#### Error Codes
+
+* **None** → Success; call resolved safely.
+* **ConstOverloadMissing** → A const-qualified overload was required but not found.
+* **NonConstOverloadMissing** → A non-const overload was explicitly requested but not found.
+* **IllegalConstCast** → Attempted to cast away `const` from a true-const object.
+
 #### Summary
 
 * RTL defaults to the const overload when both exist.
@@ -309,6 +316,8 @@ bool safe = robj.isConstCastSafe();
 * Declared-const objects reject non-const calls (`rtl::error::IllegalConstCast`) and fail if no const overload is present (`rtl::error::ConstOverloadMissing`).
 * `isConstCastSafe()` tells you whether relaxation is permitted.
 * Reflective objects are always const-first; declared-const objects are strictly immutable.
+
+---
 
 ### Const-by-Default Discipline 🛡️
 
