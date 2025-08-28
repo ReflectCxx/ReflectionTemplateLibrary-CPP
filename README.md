@@ -39,7 +39,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ```
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 ```c++
-rtl::CxxMirror cxx_mirror({
+auto cxx_mirror = rtl::CxxMirror({
 	/* register all types here */
 	rtl::Reflect().record<Person>("Person").build(),
 	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
