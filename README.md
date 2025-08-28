@@ -157,5 +157,6 @@ Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
 ## Contact
 
 GitHub issues or email at `reflectcxx@outlook.com`.
+
 ---
 ***C++ joins the reflection party! — why should Java & .NET have all the fun?***
