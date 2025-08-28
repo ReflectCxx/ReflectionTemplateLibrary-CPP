@@ -25,7 +25,7 @@ namespace rtl
     template<class ..._signature>
     inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
-        return detail::NonConstInvoker<_signature...>(*this, const_cast<RObject&>(pTarget.m_target));
+        return detail::NonConstInvoker<_signature...>(*this, pTarget.m_target);
     }
 
 
