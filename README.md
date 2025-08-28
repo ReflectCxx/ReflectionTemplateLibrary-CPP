@@ -59,19 +59,21 @@ std::cout << p.getName();
 std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
 if (classPerson)
 {
-    // Create a stack-allocated instance
+    // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>.
     auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
     if (err == rtl::error::None)
     {
         // Call setAge(43) on the reflected object
         std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
         if (setAge) {
-            auto [err, ret] = setAge->bind(robj).call(43);
+			// Binds rtl::RObject & rtl::Method, calls with args; 'setAge' is void ('ret' empty).
+            auto [err, ret] = setAge->bind(robj).call(43);	//Returns- std::pair<rtl::error, rtl::RObject>.
         }
 
         // Call getName(), which returns std::string
         std::optional<rtl::Method> getName = classPerson->getMethod("getName");
         if (getName) {
+			//Returns- std::pair<rtl::error, rtl::RObject>.
             auto [err, ret] = getName->bind(robj).call();
             if (err == rtl::error::None && ret.canViewAs<std::string>())
             {
