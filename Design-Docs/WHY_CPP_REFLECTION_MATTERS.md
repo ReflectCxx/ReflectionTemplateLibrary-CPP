@@ -128,16 +128,6 @@ extern "C" const rtl::CxxMirror& PluginReflection();
 
 ---
 
-## 📈 Adoption Strategy (Pragmatic)
-
-1. Start with tooling‑only (inspectors, consoles, test discovery).
-2. Introduce scripting/serialization at the edges, not in hot loops.
-3. Cache/bind reflective calls; avoid repeated lookups.
-4. Gate with build flags: enable mirrors in dev; ship minimal sets in prod.
-5. Measure & document reflective costs.
-
----
-
 ## 🔚 Final Take
 
 *C++ can do runtime reflection responsibly. The choice is not “templates or chaos.” With RTL’s explicit, lazy, exception‑free design and deterministic lifetimes, you get the power of runtime shape when you want it, and zero cost when you don’t. That is the C++ way.*
