@@ -34,7 +34,7 @@ namespace cxx
 The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
 
 👉 **Tip**
-> Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.*
+> Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
 
 Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
