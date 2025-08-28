@@ -8,8 +8,8 @@ This guide walks you step by step through RTL’s reflection syntax.
 1. [Building the Mirror 🪞](#building-the-mirror-)
 2. [Getting Started with Registration 📝](#getting-started-with-registration-)
 3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
-4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline)
-5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
+4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline-)
+5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction-)
 6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl-)
 
 ---
@@ -319,7 +319,7 @@ bool safe = robj.isConstCastSafe();
 
 ---
 
-## Const-by-Default Discipline 🛡️
+## Const-by-Default Discipline 🛡️ <a id="const-by-default-discipline"></a>
 
 C++ treats **const** as a contract: a `const` object can only invoke `const` methods, and any attempt to mutate it without an explicit `const_cast` leads to undefined behavior. A non-const object, by contrast, freely chooses non-const overloads but can fall back to const ones when needed.
 
@@ -355,7 +355,7 @@ RTL codifies C++’s const rules at runtime:
 
 This makes overload resolution **predictable, safe, and explicit**, giving you runtime reflection that behaves like C++—but with added clarity.
 
-## Reflective Construction and Destruction 🏗️
+## Reflective Construction and Destruction 🏗️ <a id="reflective-construction-and-destruction"></a>
 
 Reflection in RTL doesn’t stop at functions and methods — you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
 
