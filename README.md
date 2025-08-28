@@ -37,10 +37,16 @@ RTL is implemented as a static library that organizes type-safe function pointer
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 
 ```c++
-rtl::CxxMirror cxx_mirror({/* register all types here */});
+rtl::CxxMirror cxx_mirror({
+	/* register all types here */
+	rtl::Reflect().record<Person>("Person").build(),
+	retl::Reflect().member<Person>().constructor<std::string, int>().build(),
+	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge).build(),
+	rtl::Reflect().member<Person>().method("getName").build(&Person::setName).build()
+});
 ```
 
-With just this line, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime.
+With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime.
 
 RTL’s API is designed to be small and intuitive. Its syntax mirrors familiar C++ patterns — but with strong safety guarantees. Every reflective operation checks types, ownership, and errors explicitly, so moving forward with reflection feels just as safe and predictable as writing normal C++ code.
 
@@ -140,136 +146,8 @@ To build, use any IDE applicable to the generator, or build straight from CMake:
 cmake --build .
 ```
 
-Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested with Visual Studio 2022, GNU 14 & Clang 19)*
-
-## How To Use
-
-In this example, we'll reflect a simple Person class. `Person.h`:
-
-```c++
-class Person {
-    int age;
-    std::string name;
-	
-public:
-    Person();
-    Person(const std::string, int);
-
-    void setAge(int);
-    void setName(const std::string, const std::string&);
-
-    int getAge() const;
-    std::string getName() const;
-};
-```
-
-### Step 1: Register the Class with `CxxMirror`
-
-Manually register the class and its members when creating a **`CxxMirror`** object.
-
-```c++
-#include "RTLibInterface.h" // Single header: provides all registration & access interfaces.
-#include "Person.h"         // User-defined types to be reflected.
-
-using namespace rtl::access;
-using namespace rtl::builder;
-
-const CxxMirror& MyReflection()
-{
-    static const CxxMirror cxxReflection(
-	{
-        // Register the class. implicitly registers copy-constructor & destructor (if accessible).
-        Reflect().nameSpace().record<Person>("Person").build(),
-        Reflect().member<Person>().constructor<std::string, int>().build() // Parameterized constructor
-        Reflect().member<Person>().method("setAge").build(&Person::setAge),
-        Reflect().member<Person>().method("getAge").build(&Person::getAge),
-        Reflect().member<Person>().method("setName").build(&Person::setName),
-        Reflect().member<Person>().method("getName").build(&Person::getName),
-    });
-
-    return cxxReflection;
-}
-```
-* Explore in detail-
-
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
-
-### Step 2: Use the `Person` Class via Reflection
-
-In `main.cpp`, use the **`Person`** class without directly exposing its type:
-
-```c++
-#include "RTLibInterface.h" // Reflection access interface.
-
-// True runtime reflection – no compile-time access to types.
-// Works without even knowing what it's reflecting.
-extern const rtl::CxxMirror& MyReflection();
-
-using namespace rtl::access;
-
-int main()
-{
-//  Lazily-initialized reflection system (singleton-style, pay-only-when-you-use).
-//  Get 'class Person' — returns a 'Record' representing the reflected class.
-    std::optional<Record> classPerson = MyReflection().getClass("Person");
-
-/*  Create an instance of 'class Person' using the default constructor.
-    Choose between heap or stack allocation with 'alloc::Heap' or 'alloc::Stack'.
-    Returns: std::pair<error, RObject>. RObject is empty if:
-       * error != error::None (creation or reflection call failure).
-       * OR the reflected function is 'void'.
-    'RObject' wraps a type-erased object, which can be:
-        * An instance created via reflection (constructor).
-        * OR a value returned from any reflection-based call.
-     Internally:
-        * Uses std::unique_ptr for heap-allocated reflection-created instances.
-        * Return values are unmanaged.
-        * Copy/move behave as value-type copies:
-            - Heap: follows semantics of unique_ptr.
-            - Stack: creates distinct object copies.
-*/  auto [err0, person0] = classPerson->create<alloc::Heap>();
-
-//  Ensure object was created successfully.
-    if (err0 != error::None)
-        return -1;
-
-//  Create instance via parameterized constructor.
-    auto [err1, person1] = classPerson->create<alloc::Stack>(std::string("John Doe"), int(42));
-
-//  Fetch a reflected method — returns optional 'Method'.
-    std::optional<Method> setAge = classPerson->getMethod("setAge");
-    if(!setAge)
-        return -1;
-
-//  Call method: returns [error code, return value].
-    auto [err2, ret2] = setAge->bind(person0).call(42);
-
-//  Alternative syntax (without bind, slightly slower).
-    auto [err3, ret3] = (*setAge)(person1)(42);
-
-//  Fetch and invoke another reflected method.
-    std::optional<Method> setName = classPerson->getMethod("setName");
-    const char* name = "Todd";  // will get converted to std::string due to strict-binding.
-    std::string surname = "Packer";
-//  use bind to specify strict-argument types explicitly. (enables Perfect-Forwarding.)
-    auto [err4, ret4] = setName->bind<string, const string&>(personObj).call(name, surname);
-
-//  Fetch method returning a value.
-    std::optional<Method> getName = classPerson->getMethod("getName");
-
-//  Call and retrieve return value.
-    auto [err5, retName] = getName->bind(personObj).call();
-
-    if (err5 == error::None && retName.canViewAs<std::string>())
-    {
-        const std::string& nameStr = retName.view<std::string>()->get();
-        std::cout << nameStr << std::endl;
-    }
-    return 0; // Heap/Stack instances cleaned up via scope-based lifetime.
-}
-```
-
-* See `CxxRTLTypeRegistration/src/MyReflection.cpp` for more type registration examples.
+Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
+* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for more type registration & reflective programming examples.
 * See `CxxRTLTestApplication/src` for test cases.
 
 ## Contributions
