@@ -334,7 +334,7 @@ namespace rtl_tests
             
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
+            // Objects created through reflection are considered logically-immutable by default. So const_cast on them is safe
             EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
@@ -443,7 +443,6 @@ namespace rtl_tests
             ASSERT_FALSE(person.isEmpty());
             // Objects created through reflection are considered mutable (non-const) by default.
             EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind(constCast(person)).call(0); //invalid argument
@@ -489,7 +488,10 @@ namespace rtl_tests
             {
                 auto [err, ret] = getFirstName->bind(constPerson).call();
 
-                EXPECT_TRUE(err == error::ConstCallViolation);
+                // A non-const version exists, but the object itself is truly const.
+                // Therefore, only const-qualified methods can be called on it.
+                // However, no const-overload is available.
+                EXPECT_TRUE(err == error::ConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind(constCast(constPerson)).call();
@@ -525,8 +527,10 @@ namespace rtl_tests
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind(constPersonPtr).call();
-
-                EXPECT_TRUE(err == error::ConstCallViolation);
+                // A non-const version exists, but the object itself is truly const.
+                // Therefore, only const-qualified methods can be called on it.
+                // However, no const-overload is available.
+                EXPECT_TRUE(err == error::ConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = getFirstName->bind(constCast(constPersonPtr)).call();

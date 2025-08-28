@@ -12,7 +12,7 @@ namespace my_type
 
         Person(const std::string& pName) : name(pName) {}
 
-        std::string getName() { return name; }
+        std::string getName() { return ("called_non_const__" + name); }
 
         std::string setTitle(std::string&&) { return "called_by_ref_rvalue"; }
 
@@ -23,6 +23,8 @@ namespace my_type
         std::string setProfile(std::string pProfStr) { return "called_by_val"; }
 
         std::string setProfile(std::string& pProfStr) { return "called_by_ref"; }
+
+        std::string getProfile() const { return "only_const_method_version_exists"; }
 
         std::string setOccupation(std::string&& pProfStr) { return "called_by_rvalue_ref"; }
 

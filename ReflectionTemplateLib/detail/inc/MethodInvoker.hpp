@@ -83,8 +83,8 @@ namespace rtl::detail
 
             if (nonConstMethodIndex != rtl::index_none) 
             {
-                if (pMethod.getQualifier() == methodQ::NonConst && !pTarget.isConstCastSafe()) {
-                    pError = error::ConstCallViolation;
+                if (!pTarget.isConstCastSafe()) {
+                    pError = error::ConstOverloadMissing;
                     return RObject();
                 }
                 return containerNonConst::template forwardCall<_args...>(pError, pTarget, nonConstMethodIndex, std::forward<_args>(params)...);

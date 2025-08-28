@@ -26,7 +26,7 @@ namespace rtl
         FunctionNotRegisterd,   //Not used by RTL at all, for external purpose only.
 
         IllegalConstCast,
-        ConstCallViolation,
+        ConstOverloadMissing,
         NonConstOverloadMissing,
 
         TypeNotCopyConstructible,
@@ -54,7 +54,7 @@ namespace rtl
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::TypeNotDefaultConstructible:
             return "Type cannot be default constructed - std::is_default_constructible<T> validation failed";
-        case error::ConstCallViolation:
+        case error::ConstOverloadMissing:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         case error::IllegalConstCast:
             return "Illegal const_cast attempt - cannot remove const qualifier from originally-const object";

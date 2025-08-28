@@ -154,7 +154,7 @@ namespace rtl_tests
                     EXPECT_TRUE(eventReset->getQualifier() == methodQ::NonConst);
 
                     auto [e0, r0] = eventReset->bind(event0).call();
-                    EXPECT_TRUE(e0 == error::ConstCallViolation);
+                    EXPECT_TRUE(e0 == error::ConstOverloadMissing);
                     ASSERT_TRUE(r0.isEmpty());
 
                     auto [e1, r2] = eventReset->bind(constCast(event0)).call();
@@ -179,7 +179,7 @@ namespace rtl_tests
 
                     // So here, call to 'non-const' method on 'const' target fails here.
                     auto [e0, r0] = eventReset->bind(event1).call();
-                    EXPECT_TRUE(e0 == error::ConstCallViolation);
+                    EXPECT_TRUE(e0 == error::ConstOverloadMissing);
                     ASSERT_TRUE(r0.isEmpty());
 
                     // Since the  here, call to 'non-const' method on 'const' target fails here.
