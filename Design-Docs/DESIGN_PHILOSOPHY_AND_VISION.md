@@ -65,7 +65,7 @@ This means:
 
 At the same time, RTL **respects the declared constness of external objects** (e.g., return values or user-provided instances). If an object is handed to RTL as `const`, RTL will not attempt to override that contract. Only RTL-created objects guarantee that a logical `const_cast` is always safe.
 
-> *“You can’t change an RTL-managed object with logical-constness unless you explicitly opt into mutability—and RTL will never silently bypass constness on objects it doesn’t own. For RTL-created objects, mutable access requires an explicit cast (rtl::constCast()), making intent unmistakable.”*
+> *"You cannot modify an RTL-managed object, even if it's only logically-const, without explicitly opting into mutability. For true-const objects not owned by RTL, the framework will never silently bypass constness. To mutate an RTL-created object, you must use an explicit rtl::constCast(), making your intent clear and unambiguous."*
 
 This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 
