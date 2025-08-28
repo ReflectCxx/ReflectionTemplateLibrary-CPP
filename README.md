@@ -41,8 +41,8 @@ rtl::CxxMirror cxx_mirror({
 	/* register all types here */
 	rtl::Reflect().record<Person>("Person").build(),
 	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
-	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge).build(),
-	rtl::Reflect().member<Person>().method("getName").build(&Person::getName).build()
+	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge),
+	rtl::Reflect().member<Person>().method("getName").build(&Person::getName)
 });
 ```
 
