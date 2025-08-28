@@ -8,6 +8,14 @@ This guide walks you step by step through RTL’s reflection syntax.
 1. [Building the Mirror 🪞](#building-the-mirror-)
 2. [Getting Started with Registration 📝](#getting-started-with-registration-)
 3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
+
+   * [Querying C-Style Functions 🔍](#querying-c-style-functions)
+   * [Performing Reflective Calls ⚙️](#performing-reflective-calls)
+   * [Extracting Return Values 📤](#extracting-return-values)
+   * [Querying Member Functions 👤](#querying-member-functions)
+   * [Binding an Object and Calling 🔗](#binding-an-object-and-calling)
+   * [Binding Signatures and Perfect Forwarding 🎯](#binding-signatures-and-perfect-forwarding)
+   * [Const vs Non-Const Method Binding ⚡](#const-vs-non-const-method-binding)
 4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline)
 5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
 6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl)
@@ -37,6 +45,8 @@ The `CxxMirror` remains immutable throughout the application. Declaring it as a 
 > Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
 
 Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+
+---
 
 ## Getting Started with Registration 📝
 
@@ -100,15 +110,16 @@ rtl::Reflect().member<T>().method<..signature..>("method").build(&T::f);
 
 With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
 
+---
+
 ## Reflective Invocations with RTL ⚡
 
 Discover how to query, invoke, and manipulate functions and objects at runtime using RTL’s powerful reflection API.
-
-### Accessing and Invoking Functions
-
 Once a function is registered in `rtl::CxxMirror`, you can query it and perform reflective calls dynamically.
 
-#### Querying Functions
+<a id="querying-c-style-functions" name="querying-c-style-functions"></a>
+
+### Querying C-Style Functions 🔍
 
 ```cpp
 // Function without a namespace
@@ -129,7 +140,11 @@ if (popMessage)
 }
 ```
 
-#### Performing Reflective Calls
+---
+
+<a id="performing-reflective-calls" name="performing-reflective-calls"></a>
+
+### Performing Reflective Calls ⚙️
 
 Once you have a `rtl::Function`, a complete reflective call involves two steps:
 
@@ -147,7 +162,11 @@ Every reflective call returns a `std::pair<rtl::error, rtl::RObject>`:
   * `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
 * `rtl::RObject` contains the return value if the function returns something, or is empty if the function returns `void`.
 
-#### Extracting Return Values
+---
+
+<a id="extracting-return-values" name="extracting-return-values"></a>
+
+### Extracting Return Values 📤
 
 ```cpp
 if (err == rtl::error::None)
@@ -160,7 +179,7 @@ if (err == rtl::error::None)
 }
 ```
 
-#### Return Handling Summary
+* Return Handling Summary
 
 When dealing with `rtl::RObject` results:
 
@@ -172,13 +191,16 @@ When dealing with `rtl::RObject` results:
 | `view<T>()->get()` | Extracts a const reference or value of `T` from the view, safely typed.                                                 |
 
 👉 **Tip**
+
 > Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
 
-### Accessing and Invoking Member Functions 🧩
+---
+
+<a id="querying-member-functions" name="querying-member-functions"></a>
+
+### Querying Member Functions 👤
 
 Member functions require an instance of the class to call upon. RTL provides a two-step process: first retrieve the `rtl::Record` for the type, then get the `rtl::Method` from that record.
-
-#### Querying a Member Function
 
 ```cpp
 // Retrieve the record for the class
@@ -200,7 +222,11 @@ if (classPerson)
 * `getMethod("methodName")` retrieves a member function from the record. Returns `std::optional<rtl::Method>`.
 * An empty optional indicates the method was not found.
 
-#### Binding an Object and Calling
+---
+
+<a id="binding-an-object-and-calling" name="binding-an-object-and-calling"></a>
+
+### Binding an Object and Calling 🔗
 
 ```cpp
 auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
@@ -218,7 +244,11 @@ Errors specific to member function calls:
 * `rtl::error::EmptyTarget` → when attempting to bind an empty `RObject`.
 * `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
 
-#### Binding Signatures and Perfect Forwarding
+---
+
+<a id="binding-signatures-and-perfect-forwarding" name="binding-signatures-and-perfect-forwarding"></a>
+
+### Binding Signatures and Perfect Forwarding 🎯
 
 ```cpp
 setProfile->bind(targetObj).call(10);          // 10 forwarded as int
@@ -229,23 +259,13 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 * The template parameter in `bind<..signature..>()` tells RTL how to perceive and forward the arguments.
 * RTL uses the template signature to ***figure out*** which method (and which overload, if multiple exist) to select from the registration.
 * All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (`lvalue`, `rvalue`, `const-lvalue-ref`).
-
-#### Return Values
-
-```cpp
-if (err == rtl::error::None)
-{
-    if (!retObj.isEmpty() && retObj.canViewAs<std::string>())
-    {
-        std::optional<rtl::view<std::string>> viewStr = retObj.view<std::string>();
-        std::string retStr = viewStr->get(); // fully-typed return value
-    }
-}
-```
-
 * `rtl::RObject` contains the return value, or is empty if the method returns `void`.
 
 > By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.
+
+---
+
+<a id="const-vs-non-const-method-binding" name="const-vs-non-const-method-binding"></a>
 
 ### Const vs Non-Const Method Binding ⚡
 
@@ -347,7 +367,7 @@ RTL mirrors this model but strengthens it with **provenance-aware constness**. I
 | **Const object**     | Only const overload allowed; non-const requires cast; mutation is UB.  | **True-const**: only const overload allowed; missing const → `ConstOverloadMissing`; forcing non-const → `IllegalConstCast`.                           |
 | **Non-const object** | Prefers non-const overload, but may call const if that’s the only one. | **Logically-const**: defaults to const; missing const but non-const present → safe fallback; both present → explicit non-const via `rtl::constCast()`. |
 
-### Key Takeaway ✅
+✅ Key Takeaway
 
 RTL codifies C++’s const rules at runtime:
 
@@ -355,6 +375,8 @@ RTL codifies C++’s const rules at runtime:
 * **Logically-const** objects default to immutability but can be safely relaxed when overload resolution requires it.
 
 This makes overload resolution **predictable, safe, and explicit**, giving you runtime reflection that behaves like C++—but with added clarity.
+
+---
 
 <a id="reflective-construction-and-destruction" name="reflective-construction-and-destruction"></a>
 ## Reflective Construction and Destruction 🏗️
@@ -424,12 +446,14 @@ rtl::RObject robj2 = rtl::reflect(constSam);
 * These stack-based reflections are **scope bound** and never heap-managed.
 * Useful for **testing**, since you can quickly reflect arbitrary statically-typed objects.
 
+---
+
 <a id="move-semantics-in-rtl" name="move-semantics-in-rtl"></a>
 ## Move Semantics in RTL 🔀
 
 Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
 
-### Moving Stack-Allocated Objects 🟦
+### Moving Stack-Allocated Objects
 
 When you create an object reflectively with `alloc::Stack`, the underlying instance lives directly inside the `RObject`. Moving such an `RObject` looks just like a regular C++ move:
 
@@ -444,9 +468,10 @@ RObject obj2 = std::move(obj1);
 * The moved-from object (`obj1`) becomes **empty**.
 * No duplication or destruction happens — the object is simply relocated.
 
-👉 **Key idea:** *Stack move = reflected type’s move constructor is called.*
+👉 **Key idea:** 
+> *Stack move = reflected type’s move constructor is called.*
 
-### Moving Heap-Allocated Objects 🟩
+### Moving Heap-Allocated Objects
 
 When you create an object reflectively with `alloc::Heap`, the instance is managed inside a **`std::unique_ptr<T>`**. Moving such an `RObject` also uses standard C++ move semantics:
 
@@ -462,7 +487,8 @@ RObject obj2 = std::move(obj1);
 * The moved-from object (`obj1`) becomes **empty**.
 * The underlying heap object remains untouched and alive until its final owner is destroyed.
 
-👉 **Key idea:** *Heap move = `unique_ptr` move semantics (cheap pointer transfer).*
+👉 **Key idea** 
+> *Heap move = `unique_ptr` move semantics (cheap pointer transfer).*
 
 ### Consistent Guarantees 🟨
 
@@ -473,8 +499,9 @@ Across both stack and heap moves:
 * RAII ensures proper cleanup — objects are destroyed once and only once.
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
-### Bottom Line ✅
+✅ Bottom Line
+> *“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”*
 
-*“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”*
+---
 
-> ***More to come...***
+***More to come...***
