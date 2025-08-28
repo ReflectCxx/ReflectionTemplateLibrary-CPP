@@ -53,17 +53,17 @@ std::cout << p.getName();
 // With reflection
 auto classPerson = cxx_mirror.getRecord("Person");      // Get the class as 'rtl::Record'.
 
-auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);   // Get the instance (robj) as 'rtl::RObject'.
+auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);   // Get the instance (robj) as 'rtl::RObject'. if(err == rtl::error::None) - Operation successful.
 
 auto setAge = classPerson->getMethod("setAge");     // Get the method as 'rtl::Method'.
 
-setAge->bind(robj).call(43);    // Bind the rtl::RObject with rtl::Method and make the call with arguments.
-
+auto [err0, ret0] = setAge->bind(robj).call(43);    // Bind the rtl::RObject with rtl::Method and make the call with arguments. 'setAge' is 'void', 'ret0' will be empty.
+ 
 auto getName = classPerson->getMethod("getName");
 
-auto [err2, ret] = getName->bind(robj).call();      // Get return value as rtl::RObject.
+auto [err1, ret1] = getName->bind(robj).call();      // Get return value as rtl::RObject.
 
-std::cout << ret.view<std::string>()->get();    // access return value as std::string.
+std::cout << ret1.view<std::string>()->get();    // access return value as std::string.
 ```
 
 The semantics don’t feel foreign: creating, binding, and calling are the same ideas you already use in C++ — just expressed through reflection.
