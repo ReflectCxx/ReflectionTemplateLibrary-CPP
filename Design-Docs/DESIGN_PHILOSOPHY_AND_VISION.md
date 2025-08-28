@@ -84,4 +84,4 @@ When you ask RTL to clone, it adapts to the situation in the most intuitive way:
 
 The key idea is that RTL doesn’t force you into a wrapper-first mindset. Instead, it makes wrappers feel transparent — you can still reason in terms of *your type*, just as you would in normal C++.
 
-> **Why it matters:** Developers shouldn’t have to think about “reflection semantics” versus “normal C++ semantics.” With RTL, the two worlds are aligned. Whether you’re holding a raw object or a smart pointer, the same intuition applies — reflection just works the way you expect.
+> *"Developers shouldn’t have to think about “reflection semantics” versus “normal C++ semantics.” With RTL, the two worlds are aligned. Whether you’re holding a raw object or a smart pointer, the same intuition applies — reflection just works the way you expect."*
