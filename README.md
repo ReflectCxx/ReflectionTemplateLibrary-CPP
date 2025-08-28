@@ -42,7 +42,7 @@ rtl::CxxMirror cxx_mirror({
 	rtl::Reflect().record<Person>("Person").build(),
 	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
 	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge).build(),
-	rtl::Reflect().member<Person>().method("getName").build(&Person::setName).build()
+	rtl::Reflect().member<Person>().method("getName").build(&Person::getName).build()
 });
 ```
 
