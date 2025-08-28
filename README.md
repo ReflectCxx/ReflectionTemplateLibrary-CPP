@@ -75,8 +75,8 @@ if (classPerson)	// Check has_value() before use.
         // Call setAge(43) on the reflected object
         std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
         if (setAge) {
-			// Binds rtl::RObject & rtl::Method, calls with args; 'setAge' is void ('ret' empty).
-            auto [err, ret] = setAge->bind(robj).call(43);	//Returns- std::pair<rtl::error, rtl::RObject>.
+			// Binds rtl::RObject & rtl::Method, calls with args.
+            auto [err, ret] = setAge->bind(robj).call(43);	//'setAge' is void ('ret' empty).
 			if (err == rtl::error::None) { /* Operation succeeded. */ }
         }
 
