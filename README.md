@@ -94,7 +94,7 @@ if (classPerson)  // Check has_value() before use.
     }
 }
 ```
-### Heap vs Stack Allocation and Lifetime Management
+### `Heap` vs `Stack` Allocation and Lifetime Management
 
 RTL allows you to create reflected objects on either the heap or the stack, with automatic lifetime handling:
 
