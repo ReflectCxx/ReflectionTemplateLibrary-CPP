@@ -171,7 +171,8 @@ When dealing with `rtl::RObject` results:
 | `view<T>()`        | Retrieves a typed **view** of the stored value if possible. Returns an empty `std::optional` if the type doesn’t match. |
 | `view<T>()->get()` | Extracts a const reference or value of `T` from the view, safely typed.                                                 |
 
-👉 **Tip:** Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
+👉 **Tip:**
+> Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
 
 ### Accessing and Invoking Member Functions 🧩
 
