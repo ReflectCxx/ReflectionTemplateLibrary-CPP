@@ -306,7 +306,7 @@ bool safe = robj.isConstCastSafe();
 * RTL defaults to the const overload when both exist.
 * Explicitly request the non-const overload with `rtl::constCast()`.
 * If only non-const exists, RTL uses it safely (unless the object was declared const).
-* Declared-const objects reject non-const calls (`IllegalConstCast`) and fail if no const overload is present (`ConstOverloadNotFound`).
+* Declared-const objects reject non-const calls (`rtl::error::IllegalConstCast`) and fail if no const overload is present (`rtl::error::ConstOverloadMissing`).
 * `isConstCastSafe()` tells you whether relaxation is permitted.
 * Reflective objects are always const-first; declared-const objects are strictly immutable.
 
