@@ -29,9 +29,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    CxxMirror& cxx::mirror()
+    const TestMirror& cxx::mirror()
     {
-        static CxxMirror cxxMirror = CxxMirror(
+        static auto& cxx_mirror = TestMirror::reflect(
         {
         /*  ---------------------------------
             Registering pod & few STL types.
@@ -242,11 +242,11 @@ namespace test_mirror
         static const auto _ = [&]()
         {
             const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-            rtl::CxxMirrorToJson::dump(cxxMirror, pathStr);
+            rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
             return -1;
         }();
 
-        return cxxMirror;
+        return cxx_mirror;
     }
 }
 

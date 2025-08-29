@@ -2,11 +2,13 @@
 
 #include "RTLibInterface.h"
 
+using TestMirror = rtl::CxxMirror<1>;
+
 namespace test_mirror
 {
 	struct cxx
 	{
-		static rtl::CxxMirror& mirror();
+		static const TestMirror& mirror();
 	};
 
 

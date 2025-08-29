@@ -6,11 +6,10 @@ using namespace rtl;
 
 namespace my_type
 {
-    const CxxMirror& MyReflection()
+    const CxxMirror<0>& MyReflection()
     {
-        static CxxMirror cxxMirror(
+        static auto& cxx_mirror = CxxMirror<0>::reflect(
         {
-
         /*  Register a free(C - style) function within a namespace.
             If registered with a namespace, it must also be specified when querying:
                 cxx_mirror().getFunction("ext", "sendString")
@@ -182,6 +181,6 @@ namespace my_type
         */  Reflect().member<Person>().methodConst("getProfile").build(&Person::getProfile),
         });
 
-        return cxxMirror;
+        return cxx_mirror;
     }
 }

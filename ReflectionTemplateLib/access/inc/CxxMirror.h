@@ -41,12 +41,14 @@ namespace rtl
     *   - Functor objects are shared and static.
     *   - `Function` keys are per-instance.
     *   - Functor storage remains unaffected by the number of `CxxMirror` instances.
-*/  class CxxMirror : public detail::CxxReflection
+*/  
+    template<unsigned int N>
+    class CxxMirror : public detail::CxxReflection
     {
-    public:
-
         // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
         CxxMirror(const std::vector<Function>& pFunctions);
+
+    public:
 
         // Returns a Record containing function hash-keys for the given record ID.
         std::optional<Record> getRecord(const std::size_t pRecordId) const;
@@ -62,5 +64,10 @@ namespace rtl
 
         // Returns a Function object for the given function name, within the specified namespace.
         std::optional<Function> getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const;
+
+        static const CxxMirror<N>& reflect(const std::vector<Function>& pFunctions) {
+            static auto cxx_mirror = CxxMirror<N>(pFunctions);
+            return cxx_mirror;
+        }
     };
 }

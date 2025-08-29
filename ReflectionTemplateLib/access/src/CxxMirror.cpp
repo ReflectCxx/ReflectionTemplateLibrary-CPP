@@ -22,19 +22,3 @@ namespace rtl::detail
         return counter.fetch_add(1, std::memory_order_relaxed);
     }
 }
-
-
-namespace rtl {
-
-/*  @Constructor: CxxMirror
-    @params: 'const std::vector<Function>&'
-    * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
-    * the only constructor to construct 'CxxMirror' object.
-    * Syntax for constructing - CxxMirror({ Reflect().function("func_name").build(), ..., ... })
-    * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
-    * the vector is simply forwarded to the base class constructor.
-*/  CxxMirror::CxxMirror(const std::vector<Function>& pFunctions) : detail::CxxReflection(pFunctions)
-    {
-        rtl::detail::ReflectedConversions::init();
-    }
-}

@@ -84,7 +84,50 @@ const rtl::CxxMirror<1>& mirror1() {
 
 ---
 
+## Developer Responsibility — Managing Indices
+
+While this model solves thread-safety and singleton concerns at the compiler level, it shifts one piece of responsibility onto the developer:
+
+* Developers must **choose and manage unique indices** (`<0>, <1>, <2>…`).
+* The indices themselves carry **no semantic meaning** — they are just numbers.
+* This requires conventions or aliases to avoid confusion.
+
+### Pros
+
+* ✅ **Compiler-enforced singleton** — no duplicate mirrors.
+* ✅ **Zero runtime overhead** — nothing to lock or check.
+* ✅ **Simple mental model** — index = isolated reflective universe.
+* ✅ **Flexible** — multiple independent mirrors for core, plugins, tests, etc.
+* ✅ **Self-documenting at call site** — seeing `<2>` makes it clear you’re in a separate universe.
+
+### Cons
+
+* ❌ **Developer-managed indices** — requires discipline.
+* ❌ **No built-in meaning** — `<0>` doesn’t tell you if it’s core, plugin, or test.
+* ❌ **Risk of collisions** — two teams may both pick `<1>` without coordination.
+* ❌ **Scalability issues** — managing many indices becomes cumbersome.
+* ❌ **No intent guarantee** — compiler enforces uniqueness, not semantics.
+
+---
+
+## Mitigations
+
+To soften the developer burden, idioms can be introduced:
+
+```cpp
+enum Universe { Core=0, Plugin=1, Tests=2 };
+using CoreMirror   = rtl::CxxMirror<Universe::Core>;
+using PluginMirror = rtl::CxxMirror<Universe::Plugin>;
+```
+
+* Aliases or enums give **semantic meaning** to indices.
+* Keeps code self-explanatory without relying on magic numbers.
+
+---
+
 ## Key Takeaway
 
 > **CxxMirror is now a templated, static, compiler-enforced singleton.**
-> Each instantiation `<N>` represents a unique reflective universe, guaranteed thread-safe by design. No locks, no ambiguity, no footguns.
+> Each instantiation `<N>` represents a unique reflective universe, guaranteed thread-safe by design.
+> Developers must manage indices, but conventions (aliases, enums) make this simple and maintainable.
+> In practice, most users will only ever need a single universe (`<0>`), making the resolution effectively **no trade-off**.
