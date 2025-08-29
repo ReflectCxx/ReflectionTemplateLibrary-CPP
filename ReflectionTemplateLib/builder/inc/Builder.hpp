@@ -44,7 +44,7 @@ namespace rtl
 {
     namespace builder
     {
-        inline Builder<methodQ::None>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+        inline Builder<detail::methodQ::None>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
             : ReflectionBuilder(pFunction, pRecordId, pNamespace) {
         }
 
@@ -55,7 +55,7 @@ namespace rtl
         * called on the objects returned by 'Reflect::function()' & 'RecordBuilder<_recordType>::methodStatic(..)'.
         * template params are auto deduced from the function pointer passed.
     */	template<class _returnType, class ..._signature>
-        inline const Function Builder<methodQ::None>::build(_returnType(*pFunctor)(_signature...)) const
+        inline const Function Builder<detail::methodQ::None>::build(_returnType(*pFunctor)(_signature...)) const
         {
             return buildFunctor(pFunctor);
         }
@@ -64,7 +64,7 @@ namespace rtl
 
     namespace builder
     {
-        inline Builder<methodQ::None, void>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+        inline Builder<detail::methodQ::None, void>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
             : ReflectionBuilder(pFunction, pRecordId, pNamespace)
         { }
 
@@ -75,7 +75,7 @@ namespace rtl
         * called on objects returned by 'Reflect::function<void>(..)' & 'RecordBuilder<_recordType>::methodStatic<void>(..)'
         * template param 'void' is explicitly specified.
     */  template<class _returnType>
-        inline const Function Builder<methodQ::None, void>::build(_returnType(*pFunctor)()) const
+        inline const Function Builder<detail::methodQ::None, void>::build(_returnType(*pFunctor)()) const
         {
             return buildFunctor(pFunctor);
         }
@@ -85,7 +85,7 @@ namespace rtl
     namespace builder
     {
         template<class ..._signature>
-        inline Builder<methodQ::None, _signature...>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+        inline Builder<detail::methodQ::None, _signature...>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
             : ReflectionBuilder(pFunction, pRecordId, pNamespace)
         { }
 
@@ -98,7 +98,7 @@ namespace rtl
         * template params are explicitly specified.
     */  template<class ..._signature>
         template<class _returnType>
-        inline const Function Builder<methodQ::None, _signature...>::build(_returnType(*pFunctor)(_signature...)) const
+        inline const Function Builder<detail::methodQ::None, _signature...>::build(_returnType(*pFunctor)(_signature...)) const
         {
             return buildFunctor(pFunctor);
         }
@@ -107,7 +107,7 @@ namespace rtl
 
     namespace builder
     {
-        inline Builder<methodQ::Const>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::Const>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 
@@ -118,7 +118,7 @@ namespace rtl
         * called on object returned by 'RecordBuilder<_recordType>::methodConst()'
         * template params will be auto deduced from the function pointer passed.
     */  template<class _recordType, class _returnType, class ..._signature>
-        inline const Function Builder<methodQ::Const>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
+        inline const Function Builder<detail::methodQ::Const>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -127,7 +127,7 @@ namespace rtl
 
     namespace builder
     {
-        inline Builder<methodQ::Const, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::Const, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 
@@ -138,7 +138,7 @@ namespace rtl
         * called on object returned by 'RecordBuilder<_recordType>::methodConst<void>()'
         * template param 'void' is explicitly specified.
     */  template<class _recordType, class _returnType>
-        inline const Function Builder<methodQ::Const, void>::build(_returnType(_recordType::* pFunctor)() const) const
+        inline const Function Builder<detail::methodQ::Const, void>::build(_returnType(_recordType::* pFunctor)() const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -148,7 +148,7 @@ namespace rtl
     namespace builder 
     {
         template<class ..._signature>
-        inline Builder<methodQ::Const, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::Const, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 
@@ -160,7 +160,7 @@ namespace rtl
         * template param are explicitly specified.
     */  template<class ..._signature>
         template<class _recordType, class _returnType>
-        inline const Function Builder<methodQ::Const, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
+        inline const Function Builder<detail::methodQ::Const, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...) const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -169,7 +169,7 @@ namespace rtl
 
     namespace builder
     {
-        inline Builder<methodQ::NonConst>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::NonConst>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 
@@ -181,7 +181,7 @@ namespace rtl
         * called on object returned by 'RecordBuilder<_recordType>::method()'
         * template params are auto deduced from the pointer passed.
     */  template<class _recordType, class _returnType, class ..._signature>
-        inline const Function Builder<methodQ::NonConst>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
+        inline const Function Builder<detail::methodQ::NonConst>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -190,7 +190,7 @@ namespace rtl
   
     namespace builder
     {
-        inline Builder<methodQ::NonConst, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::NonConst, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 
@@ -202,7 +202,7 @@ namespace rtl
         * called on object returned by 'RecordBuilder<_recordType>::method<void>()'
         * template param 'void' is explicitly specified.
     */  template<class _recordType, class _returnType>
-        inline const Function Builder<methodQ::NonConst, void>::build(_returnType(_recordType::* pFunctor)()) const
+        inline const Function Builder<detail::methodQ::NonConst, void>::build(_returnType(_recordType::* pFunctor)()) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -212,7 +212,7 @@ namespace rtl
     namespace builder
     {
         template<class ..._signature>
-        inline Builder<methodQ::NonConst, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+        inline Builder<detail::methodQ::NonConst, _signature...>::Builder(const std::string_view pFunction, std::size_t pRecordId)
             : ReflectionBuilder(pFunction, pRecordId)
         { }
 		
@@ -224,7 +224,7 @@ namespace rtl
         * template params are explicitly specified.
     */  template<class ..._signature>
         template<class _recordType, class _returnType>
-        inline const Function Builder<methodQ::NonConst, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
+        inline const Function Builder<detail::methodQ::NonConst, _signature...>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
         {
             return buildMethodFunctor(pFunctor);
         }

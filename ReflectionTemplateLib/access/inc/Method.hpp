@@ -49,15 +49,15 @@ namespace rtl
     {
         switch (getQualifier())
         {
-        case methodQ::None: {
+        case detail::methodQ::None: {
             return Function::hasSignature<_args...>();
         }
-        case methodQ::NonConst: {
-            using Container = detail::MethodContainer<methodQ::NonConst, _args...>;
+        case detail::methodQ::NonConst: {
+            using Container = detail::MethodContainer<detail::methodQ::NonConst, _args...>;
             return (hasSignatureId(Container::getContainerId()) != -1);
         }
-        case methodQ::Const: {
-            using Container = detail::MethodContainer<methodQ::Const, _args...>;
+        case detail::methodQ::Const: {
+            using Container = detail::MethodContainer<detail::methodQ::Const, _args...>;
             return (hasSignatureId(Container::getContainerId()) != -1);
         }
         }

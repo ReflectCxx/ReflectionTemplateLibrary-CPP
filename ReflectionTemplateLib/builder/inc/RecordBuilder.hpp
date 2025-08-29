@@ -57,21 +57,21 @@ namespace rtl::builder
 
 /*  @method: methodStatic()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::None, _signature...>
+    @return: Builder<detail::methodQ::None, _signature...>
     * registers only static member functions.
     * used for registering unique static member function, if overload exists, use templated version 'methodStatic<...>()'.
     * the 'build(..)' called on return object will accepts static member function pointer only.
     * compiler error on 'build(..)' if non-static member or non-member function pointer is passed.
 */  template<class _recordType>
-    inline const Builder<methodQ::None> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::None> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<methodQ::None>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::methodQ::None>(detail::TypeId<_recordType>::get(), pFunction, "");
     }
 
 
 /*  @method: methodStatic<...>()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::None, _signature...>
+    @return: Builder<detail::methodQ::None, _signature...>
     * registers only static member functions.
     * used for registering overloads, if unique member function, use non-templated version 'methodStatic()'.
     * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -79,43 +79,43 @@ namespace rtl::builder
     * compiler error on 'build(..)' if const member or non-member function pointer is passed.
 */  template<class _recordType>
     template<class ..._signature>
-    inline const Builder<methodQ::None, _signature...> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::None, _signature...> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<methodQ::None, _signature...>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::methodQ::None, _signature...>(detail::TypeId<_recordType>::get(), pFunction, "");
     }
 
 
 /*  @method: method()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::NonConst>
+    @return: Builder<detail::methodQ::NonConst>
     * registers non-const, non-static member functions.
     * the 'build(..)' called on return object will accepts non-const, non-static member-function-pointer only.
     * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
 */  template<class _recordType>
-    inline const Builder<methodQ::NonConst> MethodBuilder<_recordType>::method(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::NonConst> MethodBuilder<_recordType>::method(const std::string_view pFunction) const
     {
-        return Builder<methodQ::NonConst>(pFunction, detail::TypeId<_recordType>::get());
+        return Builder<detail::methodQ::NonConst>(pFunction, detail::TypeId<_recordType>::get());
     }
 
 
 /*  @method: methodConst()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::Const>
+    @return: Builder<detail::methodQ::Const>
     * registers const member functions.
     * used for registering unique member function, if overload exists, use templated version 'methodConst<...>()'.
     * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
     * the 'build(..)' called on return object will accepts non-const member-function-pointer only.
     * compiler error 'build(..)' if non-const, static member or non-member function pointer is passed.
 */  template<class _recordType>
-    inline const Builder<methodQ::Const> MethodBuilder<_recordType>::methodConst(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::Const> MethodBuilder<_recordType>::methodConst(const std::string_view pFunction) const
     {
-        return Builder<methodQ::Const>(pFunction, detail::TypeId<_recordType>::get());
+        return Builder<detail::methodQ::Const>(pFunction, detail::TypeId<_recordType>::get());
     }
 
 
 /*  @method: method()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::NonConst, _signature...>
+    @return: Builder<detail::methodQ::NonConst, _signature...>
     * registers non-const member functions.
     * used for registering overloads, for unique member function, use non-templated version 'method()'.
     * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -123,15 +123,15 @@ namespace rtl::builder
     * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
 */  template<class _recordType>
     template<class ..._signature>
-    inline const Builder<methodQ::NonConst, _signature...> MethodBuilder<_recordType>::method(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::NonConst, _signature...> MethodBuilder<_recordType>::method(const std::string_view pFunction) const
     {
-        return Builder<methodQ::NonConst, _signature...>(pFunction, detail::TypeId<_recordType>::get());
+        return Builder<detail::methodQ::NonConst, _signature...>(pFunction, detail::TypeId<_recordType>::get());
     }
 
 
 /*  @method: methodConst<...>()
     @param: std::string, name of function as string.
-    @return: Builder<methodQ::Const, _signature...>
+    @return: Builder<detail::methodQ::Const, _signature...>
     * registers const member functions.
     * used for registering overloads, for unique member function, use non-templated version 'methodConst()'.
     * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -139,8 +139,8 @@ namespace rtl::builder
     * compiler error on 'build(..)' if non-const, static member or non-member function pointer is passed.
 */  template<class _recordType>
     template<class ..._signature>
-    inline const Builder<methodQ::Const, _signature...> MethodBuilder<_recordType>::methodConst(const std::string_view pFunction) const
+    inline const Builder<detail::methodQ::Const, _signature...> MethodBuilder<_recordType>::methodConst(const std::string_view pFunction) const
     {
-        return Builder<methodQ::Const, _signature...>(pFunction, detail::TypeId<_recordType>::get());
+        return Builder<detail::methodQ::Const, _signature...>(pFunction, detail::TypeId<_recordType>::get());
     }
 }

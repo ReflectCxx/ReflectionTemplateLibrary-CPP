@@ -58,7 +58,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
-        using Container = MethodContainer<methodQ::NonConst, traits::remove_const_if_not_reference<_signature>...>;
+        using Container = MethodContainer<detail::methodQ::NonConst, traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
         return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
     }
@@ -74,7 +74,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
-        using Container = MethodContainer<methodQ::Const, traits::remove_const_if_not_reference<_signature>...>;
+        using Container = MethodContainer<detail::methodQ::Const, traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
         return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
     }

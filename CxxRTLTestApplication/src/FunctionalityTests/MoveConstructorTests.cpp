@@ -151,7 +151,7 @@ namespace rtl_tests
                     optional<Method> eventReset = classEvent->getMethod(event::str_reset);
                     ASSERT_TRUE(eventReset);
                     // 'Event::reset()' Method is non-const.
-                    EXPECT_TRUE(eventReset->getQualifier() == methodQ::NonConst);
+                    EXPECT_FALSE(eventReset->isConst());
 
                     auto [e0, r0] = eventReset->bind(event0).call();
                     EXPECT_TRUE(e0 == error::ConstOverloadMissing);

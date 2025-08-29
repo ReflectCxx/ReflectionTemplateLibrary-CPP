@@ -11,52 +11,94 @@
 
 #pragma once
 
+
 /*
-* Provides interface to register all types.
-* Reflect().nameSpace("namespaceName").function<>("funcName").build(funcPtr)
-* Reflect().nameSpace("namespaceName").record("className").constructor<>("methodName").build()
-* Reflect().nameSpace("namespaceName").record("className").method<>("methodName").build(&MethodPtr) 
-* 
-* template params are for overloading the different signatures (of method/function/constructors).
-* if the function/method is unique, no need to specify the signature as templete params. if they
-* are overloaded and any one of them takes zero params, then that function must be registered by specifying <void> as
-* template parameter. Constructor overloads do not need to specify <void> as tempelate params even if other overload exists.
-* decleared in namespace rtl::builder. */
+* Provides the interface to register types and functions with RTL.
+*
+* Example usage:
+*   rtl::Reflect().nameSpace("ns").function<int(std::string)>("func").build(&func);
+*   rtl::Reflect().nameSpace("ns").record<MyClass>("MyClass").build();
+*   rtl::Reflect().member<MyClass>().constructor<std::string, int>().build();
+*   rtl::Reflect().member<MyClass>().method<void(const std::string&)>("setName").build(&MyClass::setName);
+*
+* Template parameters are required only for overload resolution:
+*   - If the function/method is unique, template parameters are optional.
+*   - If overloads exist and one of them has zero parameters, that overload
+*     must be registered with <void>.
+*   - Constructor overloads never require <void>, even if a zero-argument
+*     constructor exists.
+*
+* Declared in namespace rtl::builder.
+*/
 #include "Reflect.hpp"
 
 
 /*
-* Interface to access user defined class/struct(s) and its members(variables, functions & constructor).
-* it encapsulates all the member's information and provides objects (Function/Method) to access them.
-* the Record objects are obtained from reflection object ie, CxxMirror, querying by string.
-* decleared in namespace rtl.*/
+* Interface for accessing user-defined classes/structs and their members
+* (constructors, methods, and fields).
+*
+* A Record encapsulates all metadata for a reflected type and provides
+* objects (Method, Function) to access its members.
+*
+* Record instances are retrieved from the global reflection mirror:
+*   std::optional<rtl::Record> rec = cxx::mirror().getRecord("MyClass");
+*
+* Declared in namespace rtl.
+*/
 #include "Record.h"
 
 
 /*
-* Provides interface to call global functions (may or not be in a namespace), static member functions of class/struct(s).
-* it overloads "operator()". can be called as functionObj(..args..), where functionObj is object of "class Function"
-* the global Function objects can be directly obtained from reflection object ie, CxxMirror, querying by string.
-* decleared in namespace rtl.*/
+* Provides the interface for invoking global functions (optionally within
+* a namespace) and static member functions of classes/structs.
+*
+* The class overloads operator(), allowing direct invocation:
+*   auto [err, ret] = funcObj.bind().call(arg1, arg2);
+*
+* Global Function objects are obtained from the reflection mirror:
+*   std::optional<rtl::Function> func = cxx::mirror().getFunction("ns", "funcName");
+*
+* Declared in namespace rtl.
+*/
 #include "Function.hpp"
 
 
-/* 
-* Provides interface to call methods on objects created via reflection of classes/structs.
-* it also overloads "operator()", but this takes the object (type 'Instance') instead of the method arguments and returns
-* the obeject of class 'MethodInvoker, which provides 'invoke' function to finally call the method with arguments.
-* 
-* Difference between Method & Function class:
-*   - They both overload the operator(), but when calling via "Function" object, it takes parameters to be passed.
-*   - When calling via "Method", it takes target object on which the reflected method needs to be called and then provides
-*     interface 'invoke()' on the return value, which takes the actual parameters. So,
-*       Function call:	function(..args..);
-*       Method call:	method(targetObj).invoke(..args..);
-* 
-* decleared in namespace rtl. */
+/*
+* Provides the interface for invoking member functions on reflected objects.
+*
+* Like Function, it overloads operator(), but instead of taking arguments
+* directly, it first binds a target object and then allows calling with
+* invoke(..args..).
+*
+* Example usage:
+*   auto [err, ret] = methodObj.bind(targetObj).call(arg1, arg2);
+*
+* Difference between Function and Method:
+*   - Function: bind() -> call(..args..)
+*       Example -> funcObj.bind().call(..args..);
+*
+*   - Method: bind(targetObj) -> call(..args..)
+*       Example -> methodObj.bind(targetObj).call(..args..);
+*
+* Declared in namespace rtl.
+*/
 #include "Method.hpp"
 
 
-/* Class containing everything required to provide reflection interface and functionality.
-* Users are required to instantiate this class and pass all registration as constructor parameter. */
+/*
+* The root reflection container that aggregates all registrations.
+* Users are expected to define a singleton CxxMirror that holds all
+* records and functions:
+*
+*   namespace cxx {
+*       const rtl::CxxMirror& mirror() {
+*           static rtl::CxxMirror m = rtl::CxxMirror({
+*               // registrations here...
+*           });
+*           return m;
+*       }
+*   }
+*
+* Declared in namespace rtl.
+*/
 #include "CxxMirror.hpp"

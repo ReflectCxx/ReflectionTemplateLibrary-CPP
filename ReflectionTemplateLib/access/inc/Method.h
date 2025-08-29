@@ -71,6 +71,8 @@ namespace rtl {
 
     public:
 
+        GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
+
     /*  @method: operator()()
         @return: lambda
         * accepts no arguments for 'target', since associated functor is static-member-functions.
