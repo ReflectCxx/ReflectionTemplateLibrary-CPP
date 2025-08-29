@@ -27,15 +27,15 @@ namespace rtl {
         class ReflectionBuilder;
     }
 
-    /*  @class: Function, (callable object)
-        * every functor (function/method pointer), constructor registered will produce a 'Function' object
-        * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
-        * once the Function object is obtained, it can be called with the correct set of arguments, which will finally
-        * perform call on the functor represented by this object.
-    */  class Function
+/*  @class: Function, (callable object)
+    * every functor (function/method pointer), constructor registered will produce a 'Function' object
+    * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.
+    * once the Function object is obtained, it can be called with the correct set of arguments, which will finally
+    * perform call on the functor represented by this object.
+*/  class Function
     {
         //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
-        methodQ m_qualifier;
+        detail::methodQ m_qualifier;
 
         //type id of class/struct (if it represents a member-function, else always '0')
         std::size_t m_recordTypeId;
@@ -55,8 +55,8 @@ namespace rtl {
     private:
 
         Function(const std::string_view pNamespace, const std::string_view pClassName,
-            const std::string_view pFuncName, const detail::FunctorId& pFunctorId,
-            const std::size_t pRecordTypeId, const methodQ pQualifier);
+                 const std::string_view pFuncName, const detail::FunctorId& pFunctorId,
+                 const std::size_t pRecordTypeId, const detail::methodQ pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
@@ -65,14 +65,15 @@ namespace rtl {
     protected:
 
         Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-            const std::string_view pFunctorName);
+                 const std::string_view pFunctorName);
 
         std::size_t hasSignatureId(const std::size_t pSignatureId) const;
+
+        GETTER(detail::methodQ, Qualifier, m_qualifier);
 
     public:
 
         //simple inlined getters.
-        GETTER(methodQ, Qualifier, m_qualifier);
         GETTER(std::string, RecordName, m_record);
         GETTER(std::string, Namespace, m_namespace);
         GETTER(std::string, FunctionName, m_function);

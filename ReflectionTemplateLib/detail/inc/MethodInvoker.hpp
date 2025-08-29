@@ -69,7 +69,7 @@ namespace rtl::detail
                                                                        const RObject& pTarget,
                                                                        _args&&... params)
     {
-        using containerConst = detail::MethodContainer<methodQ::Const, _invokSignature...>;
+        using containerConst = detail::MethodContainer<detail::methodQ::Const, _invokSignature...>;
         std::size_t constMethodIndex = pMethod.hasSignatureId(containerConst::getContainerId());
 
         if (constMethodIndex != rtl::index_none)
@@ -78,7 +78,7 @@ namespace rtl::detail
         }
         else
         {
-            using containerNonConst = detail::MethodContainer<methodQ::NonConst, _invokSignature...>;
+            using containerNonConst = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
             std::size_t nonConstMethodIndex = pMethod.hasSignatureId(containerNonConst::getContainerId());
 
             if (nonConstMethodIndex != rtl::index_none) 
@@ -149,7 +149,7 @@ namespace rtl::detail
                                                                         const RObject& pTarget,
                                                                         _args&&... params)
     {
-        using container0 = detail::MethodContainer<methodQ::NonConst, _invokSignature...>;
+        using container0 = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
         const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
         if (index != rtl::index_none) {
             return container0::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
@@ -157,7 +157,7 @@ namespace rtl::detail
         else 
         {
             // check if the const-overload method is present.
-            using container2 = detail::MethodContainer<methodQ::Const, _invokSignature...>;
+            using container2 = detail::MethodContainer<detail::methodQ::Const, _invokSignature...>;
             std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
             if (index != rtl::index_none) {
                 // So, const-overload is present and non-const overload is not registered or doesn't exists.

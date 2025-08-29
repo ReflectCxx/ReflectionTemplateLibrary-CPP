@@ -30,22 +30,22 @@ namespace rtl {
         //forward decl
         class ReflectionBuilder;
 
-        template<methodQ, class ..._signature>
+        template<detail::methodQ, class ..._signature>
         class MethodContainer;
 
-    /*  @class: MethodContainer<methodQ::NonConst, _signature...>
+    /*  @class: MethodContainer<detail::methodQ::NonConst, _signature...>
         @param: '_signature...' (combination of any types)
         * container class for holding lambda's wrapping non-const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>,
-                                                                  public CallReflector<MethodContainer<methodQ::NonConst, _signature...>>
+        class MethodContainer<detail::methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<detail::methodQ::NonConst, _signature...>>,
+                                                                          public CallReflector<MethodContainer<detail::methodQ::NonConst, _signature...>>
         {
             using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
 
         public:
 
-            //every MethodContainer<methodQ::NonConst,...> will have a unique-id.
+            //every MethodContainer<detail::methodQ::NonConst,...> will have a unique-id.
             static std::size_t getContainerId() {
                 //holds unique-id
                 static const std::size_t containerId = generate_unique_id();
@@ -97,26 +97,26 @@ namespace rtl {
 
             //friends :)
             friend ReflectionBuilder;
-            friend SetupMethod<MethodContainer<methodQ::NonConst, _signature...>>;
+            friend SetupMethod<MethodContainer<detail::methodQ::NonConst, _signature...>>;
         };
     }
 	
 
     namespace detail
     {
-    /*  @class: MethodContainer<methodQ::Const, _signature...>
+    /*  @class: MethodContainer<detail::methodQ::Const, _signature...>
         @param: '_signature...' (combination of any types)
         * container class for holding lambda's wrapping const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<methodQ::Const, _signature...> : public SetupMethod<MethodContainer<methodQ::Const, _signature...>>,
-                                                               public CallReflector<MethodContainer<methodQ::Const, _signature...>>
+        class MethodContainer<detail::methodQ::Const, _signature...> : public SetupMethod<MethodContainer<detail::methodQ::Const, _signature...>>,
+                                                                       public CallReflector<MethodContainer<detail::methodQ::Const, _signature...>>
         {
             using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
 
         public:
 
-            //every MethodContainer<methodQ::Const,...> will have a unique-id.
+            //every MethodContainer<detail::methodQ::Const,...> will have a unique-id.
             static std::size_t getContainerId() {
                 //holds unique-id
                 static const std::size_t containerId = generate_unique_id();
@@ -168,7 +168,7 @@ namespace rtl {
 
             //friends :)
             friend ReflectionBuilder;
-            friend SetupMethod<MethodContainer<methodQ::Const, _signature...>>;
+            friend SetupMethod<MethodContainer<detail::methodQ::Const, _signature...>>;
         };
     }
 }

@@ -23,8 +23,8 @@ namespace rtl
     *        pQualifier - whether the member-function is const or non-const. methodQ::None for non-member & static-member functions.
     * 'Function' object is created for every functor (member/non-member) being registered.
 */  Function::Function(const std::string_view pNamespace, const std::string_view pRecord,
-                        const std::string_view pFunction, const detail::FunctorId& pFunctorId,
-                        const std::size_t pRecordTypeId, const methodQ pQualifier)
+                       const std::string_view pFunction, const detail::FunctorId& pFunctorId,
+                       const std::size_t pRecordTypeId, const detail::methodQ pQualifier)
         : m_qualifier(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_record(pRecord)
@@ -43,7 +43,7 @@ namespace rtl
     * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
         'FunctorId' with the 'Function' object associated with a constructor.
 */  Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
-                        const std::string_view pFunctorName)
+                       const std::string_view pFunctorName)
         : m_qualifier(pOther.m_qualifier)
         , m_recordTypeId(pOther.m_recordTypeId)
         , m_record(pOther.m_record)

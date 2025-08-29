@@ -330,7 +330,7 @@ namespace rtl_tests
                 ASSERT_TRUE(structDate);
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
-                EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
+                EXPECT_FALSE(updateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
@@ -405,7 +405,7 @@ namespace rtl_tests
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
+                EXPECT_FALSE(updateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
@@ -480,7 +480,7 @@ namespace rtl_tests
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
+                EXPECT_FALSE(updateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
@@ -555,7 +555,7 @@ namespace rtl_tests
                 optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(updateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                ASSERT_TRUE(updateDate->getQualifier() == methodQ::NonConst);
+                EXPECT_FALSE(updateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
                     auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);

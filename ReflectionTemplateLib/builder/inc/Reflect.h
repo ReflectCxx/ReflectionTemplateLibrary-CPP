@@ -62,7 +62,7 @@ namespace rtl
         constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass);
 
         template<class ..._signature>
-        constexpr const builder::Builder<methodQ::None, _signature...> function(const std::string_view pFunction);
+        constexpr const builder::Builder<detail::methodQ::None, _signature...> function(const std::string_view pFunction);
 
     private:
 
