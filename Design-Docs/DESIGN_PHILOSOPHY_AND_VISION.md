@@ -69,6 +69,14 @@ At the same time, RTL **respects the declared constness of external objects** (e
 
 This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 
+### 🛡 Thread-Safe by Design
+
+RTL achieves thread-safety through a combination of compiler guarantees and immutability. Each `CxxMirror` is constructed as a `static` local, relying on C++11’s atomic, thread-safe initialization. Once constructed, a mirror becomes immutable, ensuring that all subsequent queries and operations are inherently safe across threads.
+
+Multiple independent reflective universes can coexist by instantiating `CxxMirror` with different template indices. Each universe is isolated, self-contained, and guaranteed to be thread-safe by design.
+
+> *"You can think of **`CxxMirror<0>, CxxMirror<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
+
 ### 🎁 Transparent Handling of Smart Pointers
 
 Reflection should never feel like a cage.
