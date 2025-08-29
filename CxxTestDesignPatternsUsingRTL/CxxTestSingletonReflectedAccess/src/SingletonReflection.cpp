@@ -9,7 +9,7 @@ namespace singleton_test
 {
     const std::optional<rtl::Record>& Reflection::getSingletonClass()
     {
-        static std::optional<rtl::Record> reflectedClass = CxxMirror(
+        static std::optional<rtl::Record> reflectedClass = CxxMirror<0>::reflect(
             {
                 Reflect().nameSpace().record<Singleton>("Singleton").build(),
 
