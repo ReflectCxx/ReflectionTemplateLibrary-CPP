@@ -7,7 +7,7 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 1. [Building the Mirror 🪞](#building-the-mirror-)
 2. [Getting Started with Registration 📝](#getting-started-with-registration-)
-3. [Reflective Invocations with RTL ⚡](#reflective-invocations-with-rtl-)
+3. [Reflective Invocations with RTL ✨](#reflective-invocations-with-rtl-)
 
    * [Querying C-Style Functions 🔍](#querying-c-style-functions)
    * [Performing Reflective Calls ⚙️](#performing-reflective-calls)
@@ -112,7 +112,7 @@ With these constructs—namespaces, non-member functions, overloads, records `(c
 
 ---
 
-## Reflective Invocations with RTL ⚡
+## Reflective Invocations with RTL ✨
 
 Discover how to query, invoke, and manipulate functions and objects at runtime using RTL’s powerful reflection API.
 Once a function is registered in `rtl::CxxMirror`, you can query it and perform reflective calls dynamically.
