@@ -35,7 +35,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ```c++
 #include "RTLibInterface.h" // Reflection access interface.
 ```
-Create an instance of `CxxMirror` using its factory method `reflect()`, passing all type metadata through an initializer list — and you’re done!
+Create an instance of `CxxMirror` using its factory method `reflect<N>()`, passing all type metadata through an initializer list — and you’re done!
 ```c++
 auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
 	/* register all types here */
