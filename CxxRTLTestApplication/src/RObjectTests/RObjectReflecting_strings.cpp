@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "RTLibInterface.h"
+#include "GlobalTestUtils.h"
 
 using namespace rtl;
 
@@ -16,7 +17,7 @@ namespace
     static const std::string_view STR_STD_STRING_VIEW = "string_type: std::string_view";
 
     //initialize RTL, necessary for RObject conversions to work.
-    static auto& _= CxxMirror<2>::reflect({ });
+    static auto& _= CxxMirror<test_utils::MirrorId::Empty>::reflect({ });
 }
 
 

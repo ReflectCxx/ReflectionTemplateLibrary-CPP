@@ -29,9 +29,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    const TestMirror& cxx::mirror()
+    const rtl::CxxMirror<cxx::ID>& cxx::mirror()
     {
-        static auto& cxx_mirror = TestMirror::reflect(
+        static auto& cxx_mirror = rtl::CxxMirror<ID>::reflect(
         {
         /*  ---------------------------------
             Registering pod & few STL types.

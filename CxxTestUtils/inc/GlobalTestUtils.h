@@ -10,6 +10,11 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 */
 namespace test_utils {
 
+	enum MirrorId {
+		Empty = 1,
+		Test = 2
+	};
+
 	extern const char* REV_STR_VOID_RET;
 
 	static constexpr double g_real = 3.92;
