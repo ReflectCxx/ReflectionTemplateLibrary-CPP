@@ -29,7 +29,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Path to Higher-Level Abstractions** – Lays the foundation for ORMs, plugin systems, game editors, and live scripting directly in C++.
 
-[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
+[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Design%20Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
 [![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
