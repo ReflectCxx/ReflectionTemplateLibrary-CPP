@@ -50,7 +50,7 @@ auto& cxx_mirror = rtl::CxxMirror<0>::reflect({
 
 With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
 
-* RTL’s API is small and intuitive, mirroring standard C++ syntax while enforcing strict safety. Every reflective operation validates types, ownership, and errors, making reflection as safe and predictable as writing regular C++.
+RTL’s API is small and intuitive, mirroring standard C++ syntax while enforcing strict safety. Every reflective operation validates types, ownership, and errors, making reflection as safe and predictable as writing regular C++.
 
 ***Without reflection:***
 
