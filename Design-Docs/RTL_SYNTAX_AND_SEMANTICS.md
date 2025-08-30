@@ -24,14 +24,14 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
 
-Before registering anything, we need a central place to hold all reflection metadata: the `rtl::CxxMirror`. Its constructor takes an initializer list containing all the type metadata.
+Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror<>`. You can create an instance using its factory method `reflect()`, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
 
 ```cpp
 namespace cxx
 {
-    const rtl::CxxMirror& mirror()
+    const rtl::CxxMirror<0>& mirror()
     {
-        static rtl::CxxMirror cxxmirror({
+        static auto& cxxmirror = rtl::CxxMirror<0>::reflect({
             // .. all the registrations go here, comma separated ..
         });
         return cxxmirror;
@@ -39,7 +39,7 @@ namespace cxx
 }
 ```
 
-The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
+The `CxxMirror<>` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
 
 👉 **Tip**
 > Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
@@ -55,7 +55,7 @@ The fundamental pattern of registration in RTL is a **builder combination**. You
 ### Non-Member Functions
 
 ```cpp
-rtl::Reflect().nameSpace("ns").function<..signature..>("func").build(ptr);
+rtl::type().nameSpace("ns").function<..signature..>("func").build(ptr);
 ```
 
 * **`nameSpace("ns")`**: specifies the namespace under which the function lives. If you want global scope, pass an empty string: `.nameSpace("")`. The call itself cannot be omitted when registering functions or records.
@@ -73,14 +73,14 @@ For example:
 bool sendMessage(const char*);
 void sendMessage(int, std::string);
 
-rtl::Reflect().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
-rtl::Reflect().nameSpace("ns").function<int, std::string>("sendMessage").build(sendMessage);
+rtl::type().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
+rtl::type().nameSpace("ns").function<int, std::string>("sendMessage").build(sendMessage);
 ```
 
 ### Classes / Structs
 
 ```cpp
-rtl::Reflect().nameSpace("ns").record<T>("Name").build();
+rtl::type().nameSpace("ns").record<T>("Name").build();
 ```
 
 * Registers a type by reflective name under a namespace.
@@ -90,7 +90,7 @@ rtl::Reflect().nameSpace("ns").record<T>("Name").build();
 ### Constructors
 
 ```cpp
-rtl::Reflect().member<T>().constructor<..signature..>().build();
+rtl::type().member<T>().constructor<..signature..>().build();
 ```
 
 * **`.member<T>()`**: enters the scope of class/struct `T`.
@@ -99,7 +99,7 @@ rtl::Reflect().member<T>().constructor<..signature..>().build();
 ### Member Functions
 
 ```cpp
-rtl::Reflect().member<T>().method<..signature..>("method").build(&T::f);
+rtl::type().member<T>().method<..signature..>("method").build(&T::f);
 ```
 
 * **`.member<T>()`**: enters the scope of class/struct `T`.
@@ -277,7 +277,7 @@ Whenever both `const` and `non-const` overloads of a method exist, RTL prefers t
 
 ```cpp
 Person john("John");
-rtl::RObject robj = rtl::reflect(john);    // Reflect object with statically-type; details covered later.
+rtl::RObject robj = rtl::type(john);    // Reflect object with statically-type; details covered later.
 
 // If both overloads exist, RTL selects the const one.
 auto [err, ret] = someMethod->bind(robj).call();
@@ -303,7 +303,7 @@ Things change when the reflected object itself was declared `const` in the first
 
 ```cpp
 const Person constSam("Const-Sam");    // Reflect 'const' with statically-type; details covered later.
-rtl::RObject robj = rtl::reflect(constSam);
+rtl::RObject robj = rtl::type(constSam);
 ```
 
 Here, RTL preserves that constness strictly. Non-const methods cannot be invoked on such an object. Attempts to do so will result in `rtl::error::IllegalConstCast`.
@@ -438,8 +438,8 @@ Besides constructing objects via reflective calls (`create<Heap>()` or `create<S
 Person mutableSam("Mutable-Sam");
 const Person constSam("Const-Sam");
 
-rtl::RObject robj1 = rtl::reflect(mutableSam);
-rtl::RObject robj2 = rtl::reflect(constSam);
+rtl::RObject robj1 = rtl::type(mutableSam);
+rtl::RObject robj2 = rtl::type(constSam);
 ```
 
 * This always creates a **copy on the stack** inside the `RObject`.
