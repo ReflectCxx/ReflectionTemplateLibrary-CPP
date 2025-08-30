@@ -13,7 +13,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
 
-* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror<N>`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
+* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
 * **Non-Intrusive & Macro-Free** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
 
@@ -35,9 +35,9 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ```c++
 #include "RTLibInterface.h" // Reflection access interface.
 ```
-Create an instance of `CxxMirror<0>` using its factory method `reflect()`, passing all type metadata through an initializer list — and you’re done!
+Create an instance of `CxxMirror` using its factory method `reflect()`, passing all type metadata through an initializer list — and you’re done!
 ```c++
-auto& cxx_mirror = rtl::CxxMirror<0>::reflect({
+auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
 	/* register all types here */
 	rtl::type().record<Person>("Person").build(),
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
@@ -160,8 +160,8 @@ cmake --build .
 ```
 
 Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
-* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for more type registration & reflective programming examples.
-* See `CxxRTLTestApplication/src` for test cases.
+* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
+* See `CxxRTLTestApplication/src` for detailed test cases.
 
 ## Contributions
 
