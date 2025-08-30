@@ -41,7 +41,7 @@ Create an instance of `CxxMirror`, passing all type information directly to its 
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	/* register all types here */
-	rtl::Reflect().record<Person>("Person").build(),
+	rtl::Reflect().nameSpace().record<Person>("Person").build(),
 	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
 	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge),
 	rtl::Reflect().member<Person>().method("getName").build(&Person::getName)
