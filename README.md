@@ -102,7 +102,7 @@ RTL lets you create reflected objects on the `Heap` or `Stack` with automatic li
 
 * Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
 
-* Return values — stored wrapped in `rtl::RObject` as unmanaged stack temporaries, cleaned up automatically.
+* Return values — All returns are propagated back wrapped in `rtl::RObject`, with temporaries (e.g. smart pointers) cleaned up automatically at scope exit.
 
 RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at runtime.
 
