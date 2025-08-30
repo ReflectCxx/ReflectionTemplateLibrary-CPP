@@ -15,7 +15,7 @@ namespace my_type
                 cxx_mirror().getFunction("ext", "sendString")
             Note: when registering free functions, the '&' operator is not required
             when passing the function pointer to build().
-        */  Reflect().nameSpace("ext").function("sendString").build(ext::sendString),
+        */  type().nameSpace("ext").function("sendString").build(ext::sendString),
 
 
         /*  Another free (C-style) function inside a namespace.
@@ -31,21 +31,21 @@ namespace my_type
 
             This guides `.build()` to correctly resolve the intended overload.
             Omitting the template type will result in a compile-time error.
-        */  Reflect().nameSpace("ext").function<const char*>("sendAsString").build(ext::sendAsString),
+        */  type().nameSpace("ext").function<const char*>("sendAsString").build(ext::sendAsString),
 
 
         /*  Next overload registration:
                 void sendAsString(Person)
             As with other overloads, the signature must be explicitly specified
             so that `.build()` can select the correct function pointer.
-        */  Reflect().nameSpace("ext").function<Person>("sendAsString").build(ext::sendAsString),
+        */  type().nameSpace("ext").function<Person>("sendAsString").build(ext::sendAsString),
 
 
         /*  And finally, the overload with an rvalue parameter:
                 void sendAsString(Person&&)
             Again, the signature must be explicitly specified
             to ensure `.build()` resolves to the correct function pointer.
-        */  Reflect().nameSpace("ext").function<Person&&>("sendAsString").build(ext::sendAsString),
+        */  type().nameSpace("ext").function<Person&&>("sendAsString").build(ext::sendAsString),
 
 
         /*  Register a class/struct type without a namespace.
@@ -60,11 +60,11 @@ namespace my_type
             or after its members. However, the type itself must be registered; otherwise,
             any attempted member registrations will be ignored and a warning will be
             displayed on the console.
-        */  Reflect().nameSpace().record<Person>("Person").build(),
+        */  type().nameSpace().record<Person>("Person").build(),
 
-        //  Reflect().member<Person>().constructor().build(), // Default constructor, will not compile.
-        //  Reflect().member<Person>().constructor<Person&>().build(),  // Copy constructor, will not compile.
-        //  Reflect().member<Person>().constructor<Person&&>().build(), // Move constructor, will not compile.
+        //  type().member<Person>().constructor().build(), // Default constructor, will not compile.
+        //  type().member<Person>().constructor<Person&>().build(),  // Copy constructor, will not compile.
+        //  type().member<Person>().constructor<Person&&>().build(), // Move constructor, will not compile.
 
 
         /*  Legal registration of an overloaded constructor.
@@ -82,7 +82,7 @@ namespace my_type
          
             You may explicitly register with `std::string&` or `const std::string&`, but RTL will  
             normalize types by stripping `const` and reference qualifiers during registration.  
-        */  Reflect().member<Person>().constructor<std::string>().build(),
+        */  type().member<Person>().constructor<std::string>().build(),
 
 
         /*  Registers a regular non-const member-function.
@@ -90,7 +90,7 @@ namespace my_type
             Attempting to call it on a true-const `Person` object will result in `error::ConstCallViolation`.
             See test case: `non_const_method_semantics__on_true_const_target`.
                            `non_const_method_semantics__on_logical_const_target`
-        */  Reflect().member<Person>().method("getName").build(&Person::getName),
+        */  type().member<Person>().method("getName").build(&Person::getName),
 
 
         /*  Registering a static member-function.
@@ -100,7 +100,7 @@ namespace my_type
             Runtime semantics:
             Static methods are independent of object state, so they can always be invoked
             regardless of whether the reflected context is const or non-const.
-        */ Reflect().member<Person>().methodStatic("getDefaults").build(&Person::getDefaults),
+        */ type().member<Person>().methodStatic("getDefaults").build(&Person::getDefaults),
 
 
         /*  Registering a non-const member-function.
@@ -111,7 +111,7 @@ namespace my_type
             If multiple overloads are available, the correct one is resolved at runtime.
             See test case: `const_based_overload_resolution_semantics__on_true_const_target` &
                            `const_based_overload_resolution_semantics__on_logical_const_target`
-        */ Reflect().member<Person>().method("updateAddress").build(&Person::updateAddress),
+        */ type().member<Person>().method("updateAddress").build(&Person::updateAddress),
 
 
         /*  Registering a const member-function.
@@ -122,35 +122,35 @@ namespace my_type
             If multiple overloads are available, the correct one is resolved at runtime.
             See test case: `const_based_overload_resolution_semantics__on_true_const_target` &
                            `const_based_overload_resolution_semantics__on_logical_const_target`
-        */ Reflect().member<Person>().methodConst("updateAddress").build(&Person::updateAddress),
+        */ type().member<Person>().methodConst("updateAddress").build(&Person::updateAddress),
 
 
 
         /*  Registers the member function `setTitle`, which only accepts an rvalue reference (`std::string&&`).
             To invoke this method reflectively, the argument type `std::string&&` must be explicitly specified.
             See test case: `perfect_forwarding_seamantics__rvalue_ref`.
-        */  Reflect().member<Person>().method("setTitle").build(&Person::setTitle),
+        */  type().member<Person>().method("setTitle").build(&Person::setTitle),
 
 
         /*  Registers the overloaded member function `setOccupation` that accepts an rvalue-reference (`std::string&&`).
             Since this method has multiple overloads, RTL cannot automatically deduce the correct one (unlike `setTitle`,
             which had no overloads). Therefore, we must explicitly specify the rvalue-ref type in the `method` template parameter.
             For overload resolution, see test case: `perfect_forwarding_semantics__overload_resolution`.
-        */  Reflect().member<Person>().method<std::string&&>("setOccupation").build(&Person::setOccupation),
+        */  type().member<Person>().method<std::string&&>("setOccupation").build(&Person::setOccupation),
 
 
         /*  Registers the other overloaded version of `setOccupation` that accepts a const-lvalue-reference (`const std::string&`).
             Similar to the rvalue-ref case, this overload cannot be picked automatically, so we explicitly specify the
             `const std::string&` type in the `method` template parameter.
             For overload resolution, see test case: `perfect_forwarding_semantics__overload_resolution`.
-        */  Reflect().member<Person>().method<const std::string&>("setOccupation").build(&Person::setOccupation),
+        */  type().member<Person>().method<const std::string&>("setOccupation").build(&Person::setOccupation),
 
 
         /*  The method `setProfile` has two overloads.
             To register one, you must explicitly specify the parameter type in the template argument.  
             For example: `method<std::string>(...)`. Without this, compilation will fail.  
             Note: overload resolution happens at runtime (see test cases `overload_resolution_semantics__*`).  
-        */  Reflect().member<Person>().method<std::string>("setProfile").build(&Person::setProfile),
+        */  type().member<Person>().method<std::string>("setProfile").build(&Person::setProfile),
 
 
         /*  Example to illustrate overload behavior:
@@ -172,13 +172,13 @@ namespace my_type
             which shows that even when explicitly registering the `std::string&` overload, a reflective call
             with an rvalue will still resolve to the `std::string` (by value) version, because that is the
             only syntactically valid match.
-        */  Reflect().member<Person>().method<std::string&>("setProfile").build(&Person::setProfile),
+        */  type().member<Person>().method<std::string&>("setProfile").build(&Person::setProfile),
 
 
         /*  The method `getProfile` has only 'const' version, No non-const overload.
             Must be registered via `.methodConst()`, otherwise it is a compile-time error.
             Note: overload resolution happens at runtime (see test case `overload_resolution__setProfile`).  
-        */  Reflect().member<Person>().methodConst("getProfile").build(&Person::getProfile),
+        */  type().member<Person>().methodConst("getProfile").build(&Person::getProfile),
         });
 
         return cxx_mirror;

@@ -23,22 +23,22 @@ namespace proxy_test
         static std::optional<rtl::Record> reflectedClass = CxxMirror<0>::reflect(
             {
                 // Register the default constructor of the "Original" class
-                Reflect().nameSpace().record<Original>("Original").build(),
+                type().nameSpace().record<Original>("Original").build(),
 
                 // Register the instance method: getClassName
-                Reflect().member<Original>().method("getClassName").build(&Original::getClassName),
+                type().member<Original>().method("getClassName").build(&Original::getClassName),
 
                 // Register the instance method: getSquareRoot
-                Reflect().member<Original>().method("getSquareRoot").build(&Original::getSquareRoot),
+                type().member<Original>().method("getSquareRoot").build(&Original::getSquareRoot),
 
                 // Register the instance method: setNodeName
-                Reflect().member<Original>().method("setNodeName").build(&Original::setNodeName),
+                type().member<Original>().method("setNodeName").build(&Original::setNodeName),
 
                 // Register the instance method: getNodeName
-                Reflect().member<Original>().method("getNodeName").build(&Original::getNodeName),
+                type().member<Original>().method("getNodeName").build(&Original::getNodeName),
 
                 // Register the static method: getInstanceCount
-                Reflect().member<Original>().methodStatic("getInstanceCount").build(&Original::getInstanceCount)
+                type().member<Original>().methodStatic("getInstanceCount").build(&Original::getInstanceCount)
 
             }).getRecord("Original");
 

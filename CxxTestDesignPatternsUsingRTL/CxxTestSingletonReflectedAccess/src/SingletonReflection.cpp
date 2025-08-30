@@ -11,11 +11,11 @@ namespace singleton_test
     {
         static std::optional<rtl::Record> reflectedClass = CxxMirror<0>::reflect(
             {
-                Reflect().nameSpace().record<Singleton>("Singleton").build(),
+                type().nameSpace().record<Singleton>("Singleton").build(),
 
-                Reflect().member<Singleton>().methodStatic("getInstance").build(&Singleton::getInstance),
+                type().member<Singleton>().methodStatic("getInstance").build(&Singleton::getInstance),
 
-                Reflect().member<Singleton>().methodConst("getHelloString").build(&Singleton::getHelloString)
+                type().member<Singleton>().methodConst("getHelloString").build(&Singleton::getHelloString)
 
             }).getRecord("Singleton");
 

@@ -27,19 +27,19 @@ namespace rtl::builder
 
 namespace rtl
 {
-    class ReflectNs;
+    class type_ns;
 
 /*  @class: Reflect
     * provides interface to register all kinds of functions (member/non-member).
-*/  struct Reflect
+*/  struct type
     {
-        Reflect() = default;
-        Reflect(Reflect&&) = delete;
-        Reflect(const Reflect&) = delete;
-        Reflect& operator=(Reflect&&) = delete;
-        Reflect& operator=(const Reflect&) = delete;
+        type() = default;
+        type(type&&) = delete;
+        type(const type&) = delete;
+        type& operator=(type&&) = delete;
+        type& operator=(const type&) = delete;
 
-        ReflectNs nameSpace(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
+        type_ns nameSpace(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
 
         template<class _recordType>
         constexpr const builder::MethodBuilder<_recordType> member();
@@ -48,15 +48,15 @@ namespace rtl
 
 /*  @class: Reflect
     * provides interface to register all kinds of functions (member/non-member).
-*/  struct ReflectNs
+*/  struct type_ns
     {
-        ReflectNs() = delete;
-        ReflectNs(ReflectNs&&) = delete;
-        ReflectNs(const ReflectNs&) = delete;
-        ReflectNs& operator=(ReflectNs&&) = delete;
-        ReflectNs& operator=(const ReflectNs&) = delete;
+        type_ns() = delete;
+        type_ns(type_ns&&) = delete;
+        type_ns(const type_ns&) = delete;
+        type_ns& operator=(type_ns&&) = delete;
+        type_ns& operator=(const type_ns&) = delete;
 
-        ReflectNs(const std::string_view pNamespace);
+        type_ns(const std::string_view pNamespace);
 
         template<class _recordType>
         constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass);

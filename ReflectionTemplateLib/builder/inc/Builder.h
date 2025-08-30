@@ -48,7 +48,7 @@ namespace rtl {
     /*  @struct: Builder<detail::methodQ::None, void>
         * specialized specifically to register overloaded non-member & static member functions with no arguments.
         * Objects of this class will be created & returned by these functions,
-        *   - Reflect::function<void>(..)
+        *   - type::function<void>(..)
         *   - RecordBuilder<_recordType>::methodStatic<void>(..)
         * with template parameter is only 'void', explicitly specified.
     */  template<>
@@ -65,7 +65,7 @@ namespace rtl {
     /*  @struct: Builder<detail::methodQ::None, _signature...>
         * specialized specifically to register overloaded non-member  & static member functions with any arguments.
         * Objects of this class will be created & returned by these functions,
-        *   - Reflect::function<...>(..)
+        *   - type::function<...>(..)
         *   - RecordBuilder<_recordType>::methodStatic<...>(..)
         * with template parameters can be anything, explicitly specified.
     */  template<class ..._signature>
@@ -82,7 +82,7 @@ namespace rtl {
     /*  @struct: Builder<detail::methodQ::None>
         * specialized specifically to register non-member functions with any signature and with no overloads.
         * Objects of this class will be created & returned by these functions,
-        *   - Reflect::function(..)
+        *   - type::function(..)
         *   - RecordBuilder<_recordType>::methodStatic(..)
         * with no template parameters specified.
     */  template<>

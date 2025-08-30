@@ -16,10 +16,10 @@
 * Provides the interface to register types and functions with RTL.
 *
 * Example usage:
-*   rtl::Reflect().nameSpace("ns").function<int(std::string)>("func").build(&func);
-*   rtl::Reflect().nameSpace("ns").record<MyClass>("MyClass").build();
-*   rtl::Reflect().member<MyClass>().constructor<std::string, int>().build();
-*   rtl::Reflect().member<MyClass>().method<void(const std::string&)>("setName").build(&MyClass::setName);
+*   rtl::type().nameSpace("ns").function<int(std::string)>("func").build(&func);
+*   rtl::type().nameSpace("ns").record<MyClass>("MyClass").build();
+*   rtl::type().member<MyClass>().constructor<std::string, int>().build();
+*   rtl::type().member<MyClass>().method<void(const std::string&)>("setName").build(&MyClass::setName);
 *
 * Template parameters are required only for overload resolution:
 *   - If the function/method is unique, template parameters are optional.
