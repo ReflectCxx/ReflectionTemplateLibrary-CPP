@@ -32,7 +32,8 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
-###🪶 No Static Globals, No Macros, No Surprises
+
+### 🪶 No Static Globals, No Macros, No Surprises
 
 RTL does not rely on:
 
@@ -52,6 +53,7 @@ Instead, registration is explicit and lazy:
 
 > *“Metadata is materialized once when you ask for it, then stays put for predictable, constant-time lookups.”*
 
+
 ### ⚡ Reflective Call Performance
 
 Reflective calls in RTL are designed to be explicit, predictable, and minimal. The mechanism unfolds in three clear steps:
@@ -66,6 +68,7 @@ The net overhead of a reflective call is thus a handful of integer comparisons, 
 
 > *"A reflective call in RTL is not free, but its cost is explicit, transparent, and no greater than what you would write by hand."*
 
+
 ### 🛡 Exception-Free Guarantee
 
 RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only one scenario could theoretically throw:
@@ -75,6 +78,7 @@ RTL is designed to be virtually exception-free. If an exception ever emerges fro
 This is extremely unlikely, but not absolutely impossible — no system is perfect.
 For every predictable failure case, RTL returns explicit error codes instead of throwing.
 RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
+
 
 ### 🛡 Const-By-Default Discipline
 
@@ -93,6 +97,7 @@ At the same time, RTL **respects the declared constness of external objects** (e
 
 This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 
+
 ### 🛡 Thread-Safe by Design
 
 RTL achieves thread-safety through a combination of compiler guarantees and immutability. Each `CxxMirror` is constructed as a `static` local, relying on C++11’s atomic, thread-safe initialization. Once constructed, a mirror becomes immutable, ensuring that all subsequent queries and operations are inherently safe across threads.
@@ -100,6 +105,7 @@ RTL achieves thread-safety through a combination of compiler guarantees and immu
 Multiple independent reflective universes can coexist by instantiating `CxxMirror` with different template indices. Each universe is isolated, self-contained, and guaranteed to be thread-safe by design.
 
 > *"You can think of **`CxxMirror<0>, CxxMirror<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
+
 
 ### 🎁 Transparent Handling of Smart Pointers
 
