@@ -18,7 +18,7 @@
 #include "rtl_traits.h"
 
 namespace rtl {
-    template<unsigned int N>
+
     class CxxMirror;
 }
 
@@ -28,8 +28,7 @@ namespace rtl::detail
     {
         static void init();
 
-        template<unsigned int N>
-        friend class rtl::CxxMirror;
+        friend rtl::CxxMirror;
     };
 
 

@@ -3,6 +3,7 @@
 
 #include "TestMirrorProvider.h"
 #include "CxxMirrorToJson.h"
+#include "GlobalTestUtils.h"
 
 //User defined types to be reflected.
 #include "Date.h"
@@ -19,7 +20,6 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
 #include "TestUtilsAnimal.h"
-#include "GlobalTestUtils.h"
 
 
 using namespace std;
@@ -29,9 +29,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    const rtl::CxxMirror<cxx::ID>& cxx::mirror()
+    const rtl::CxxMirror& cxx::mirror()
     {
-        static auto& cxx_mirror = rtl::CxxMirror<ID>::reflect(
+        static auto& cxx_mirror = rtl::CxxMirror::reflect<MirrorId::Test>(
         {
         /*  ---------------------------------
             Registering pod & few STL types.
@@ -239,11 +239,16 @@ namespace test_mirror
             #endif
         });
 
+
         static const auto _ = [&]()
         {
-            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-            rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
-            return -1;
+            // Tests the assigned-id. will never fail here.
+            if (cxx_mirror.getId() == MirrorId::Test)
+            {
+                const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+                rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
+            }
+            return 0;
         }();
 
         return cxx_mirror;

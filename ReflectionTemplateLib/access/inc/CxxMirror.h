@@ -18,7 +18,7 @@ namespace rtl
     // Forward declarations
     class Record;
     class Function;
-    
+
 /*  @class CxxMirror
     * Provides the primary interface to access registered functions and methods by name.
     * This is the single point of access to the entire reflection system.
@@ -42,13 +42,16 @@ namespace rtl
     *   - `Function` keys are per-instance.
     *   - Functor storage remains unaffected by the number of `CxxMirror` instances.
 */  
-    template<unsigned int N>
     class CxxMirror : public detail::CxxReflection
     {
+        const unsigned int m_reflectionId;
+
         // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
-        CxxMirror(const std::vector<Function>& pFunctions);
+        CxxMirror(const unsigned int pReflectionId, const std::vector<Function>& pFunctions);
 
     public:
+
+        GETTER(unsigned int, Id, m_reflectionId)
 
         // Returns a Record containing function hash-keys for the given record ID.
         std::optional<Record> getRecord(const std::size_t pRecordId) const;
@@ -65,9 +68,11 @@ namespace rtl
         // Returns a Function object for the given function name, within the specified namespace.
         std::optional<Function> getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const;
 
-        static const CxxMirror<N>& reflect(const std::vector<Function>& pFunctions) {
-            static auto cxx_mirror = CxxMirror<N>(pFunctions);
-            return cxx_mirror;
+        template<std::size_t N>
+        static const CxxMirror& reflect(const std::vector<Function>& pFunctions)
+        {
+            static CxxMirror cxxmirror = CxxMirror(N, pFunctions);
+            return cxxmirror;
         }
     };
 }

@@ -1,16 +1,12 @@
 #pragma once
 
 #include "RTLibInterface.h"
-#include "GlobalTestUtils.h"
-
 
 namespace test_mirror
 {
 	struct cxx
 	{
-		static constexpr auto ID = test_utils::MirrorId::Test;
-		
-		static const rtl::CxxMirror<ID>& mirror();
+		static const rtl::CxxMirror& mirror();
 	};
 
 

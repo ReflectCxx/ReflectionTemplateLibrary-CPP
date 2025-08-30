@@ -6,7 +6,7 @@
 
 using namespace my_type;
 
-namespace my_type { extern const rtl::CxxMirror<0>& MyReflection(); }
+namespace my_type { extern const rtl::CxxMirror& MyReflection(); }
 
 namespace
 {
