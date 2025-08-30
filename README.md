@@ -50,7 +50,7 @@ auto cxx_mirror = rtl::CxxMirror<0>::reflect({
 
 With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
 
-RTL’s API is designed to be small and intuitive. Its syntax mirrors regular C++ patterns — but with strong safety guarantees. Every reflective operation checks types, ownership, and errors explicitly, so moving forward with reflection feels just as safe and predictable as writing normal C++ code.
+* RTL’s API is small and intuitive, mirroring standard C++ syntax while enforcing strict safety. Every reflective operation validates types, ownership, and errors, making reflection as safe and predictable as writing regular C++.
 
 ***Without reflection:***
 
@@ -96,17 +96,17 @@ if (classPerson)  // Check has_value() before use.
 ```
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
-RTL allows you to create reflected objects on either the heap or the stack, with automatic lifetime handling:
+RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:
 
-* **Heap allocation (`alloc::Heap`)** creates objects owned by an internal `std::unique_ptr`; the object is automatically destroyed when the `RObject` goes out of scope.
-* **Stack allocation (`alloc::Stack`)** creates independent copies of the object; these behave like normal stack values and are cleaned up at scope exit.
-* **Move semantics:**
+* Heap (`alloc::Heap`) — objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
 
-  * `alloc::Heap` objects follow `unique_ptr` rules (move transfers ownership, copy construction & assignment is disabled for `rtl::RObject`).
-  * `alloc::Stack` objects move like normal values.
-* **Method return values** are stored in `RObject` as unmanaged temporaries on stack; they are cleaned up automatically when the wrapper goes out of scope.
+* Stack (`alloc::Stack`) — independent copies behave like normal stack values and clean up at scope exit.
 
-Reflection in RTL doesn’t force a new paradigm — it extends the one you already know. You create objects, call methods, and work with types exactly as you would in C++ — only now, you can do it at runtime, with the same level of type safety and clarity.
+* Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+
+* Return values — stored wrapped in `rtl::RObject` as unmanaged stack temporaries, cleaned up automatically.
+
+RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at runtime.
 
 ## Reflection Features
 
