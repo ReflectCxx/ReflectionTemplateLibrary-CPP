@@ -29,17 +29,17 @@ Before registering anything, you need a central place to hold all reflection met
 ```cpp
 namespace cxx
 {
-    const rtl::CxxMirror<0>& mirror()
+    const rtl::CxxMirror& mirror()
     {
-        static auto& cxxmirror = rtl::CxxMirror<0>::reflect({
+        static auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
             // .. all the registrations go here, comma separated ..
         });
-        return cxxmirror;
+        return cxx_mirror;
     }
 }
 ```
 
-The `CxxMirror<>` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
+The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
 
 👉 **Tip**
 > Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
