@@ -7,7 +7,7 @@
 * Game or UI editors
 * Live scripting or plugin systems
 
-### ✨ The Mirror & The Reflection
+#### ✨ The Mirror & The Reflection
 
 > A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.
 
@@ -23,7 +23,7 @@ This function is:
 * **Lazy** — doesn’t require metadata unless explicitly accessed
 * **Pure** — returns a complete, immutable view of reflection metadata
 
-### 📎 Why This Matters for Tooling
+#### 📎 Why This Matters for Tooling
 
 This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadata. You can:
 
@@ -32,7 +32,7 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
-### 🗉 No Static Globals, No Macros, No Surprises
+#### 🗉 No Static Globals, No Macros, No Surprises
 
 RTL does not rely on:
 
