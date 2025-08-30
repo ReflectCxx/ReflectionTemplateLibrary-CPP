@@ -32,7 +32,7 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
-#### 🗉 No Static Globals, No Macros, No Surprises
+###🪶 No Static Globals, No Macros, No Surprises
 
 RTL does not rely on:
 
@@ -40,7 +40,17 @@ RTL does not rely on:
 * Centralized global registries
 * Preprocessor hacks
 
-Instead, you choose *when* and *how* to expose the metadata. The reflection engine remains lightweight, predictable, and truly **zero-overhead until used**.
+Instead, registration is explicit and lazy:
+
+* **Lambda Registry** — Each registration unit contributes a lambda placed in a process-local static vector. This lambda wraps the canonical function pointer and knows how to materialize its metadata when requested.
+
+* **Pointer Table** — The raw function pointer is also stored in a static vector used for identity and deduplication, preventing redundant registrations.
+
+* **Lazy Mirror Assembly** — On first access, `rtl::CxxMirror` initializes these static tables first, then assembles its metadata from them and retains only the minimal POD structures (IDs, indices, small records) required to locate the right lambda and function pointer at runtime.
+
+* **Lifetime & Footprint** — After the first access, the assembled CxxMirror and its compact metadata remain resident for the lifetime of the application (or until the owning module is unloaded), enabling constant-time indexing with no further hidden work.
+
+> *“Metadata is materialized once when you ask for it, then stays put for predictable, constant-time lookups.”*
 
 ### ⚡ Reflective Call Performance
 
