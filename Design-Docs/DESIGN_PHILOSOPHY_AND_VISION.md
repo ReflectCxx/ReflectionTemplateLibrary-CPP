@@ -32,6 +32,7 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Expose your reflection system to scripts or tools without tight coupling
 * Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
 
+---
 
 ### 🪶 No Static Globals, No Macros, No Surprises
 
@@ -53,6 +54,7 @@ Instead, registration is explicit and lazy:
 
 > *“Metadata is materialized once when you ask for it, then stays put for predictable, constant-time lookups.”*
 
+---
 
 ### ⚡ Reflective Call Performance
 
@@ -68,6 +70,7 @@ The net overhead of a reflective call is thus a handful of integer comparisons, 
 
 > *"A reflective call in RTL is not free, but its cost is explicit, transparent, and no greater than what you would write by hand."*
 
+---
 
 ### 🛡 Exception-Free Guarantee
 
@@ -79,6 +82,7 @@ This is extremely unlikely, but not absolutely impossible — no system is perfe
 For every predictable failure case, RTL returns explicit error codes instead of throwing.
 RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
 
+---
 
 ### 🛡 Const-By-Default Discipline
 
@@ -97,6 +101,7 @@ At the same time, RTL **respects the declared constness of external objects** (e
 
 This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 
+---
 
 ### 🛡 Thread-Safe by Design
 
@@ -106,6 +111,7 @@ Multiple independent reflective universes can coexist by instantiating `CxxMirro
 
 > *"You can think of **`CxxMirror<0>, CxxMirror<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
 
+---
 
 ### 🎁 Transparent Handling of Smart Pointers
 
