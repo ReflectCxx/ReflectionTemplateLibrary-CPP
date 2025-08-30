@@ -26,7 +26,7 @@ Reflective calls in RTL are designed to be explicit, predictable, and minimal. T
 
 1. **Signature Matching** — Each function or method overload is assigned a compact integer signature ID. When a reflective call is made, the provided arguments are matched against this ID through a single integer comparison. In the common case where only one overload exists, resolution completes immediately.
 
-2. **Overload Resolution** — If multiple overloads are registered, RTL performs a short linear scan over a very small `std::vector` of candidate IDs. This vector is typically of size `1` and rarely larger than `8~9`. The resolution process is simply a series of integer equality checks, which the compiler optimizes as efficiently as a hand-written `if/else` chain.
+2. **Overload Resolution** — If multiple overloads are registered, RTL performs a short linear scan over a very small `std::vector` of candidate IDs. This vector is typically of size `1` and rarely larger than `8~9`.
 
 3. **Call Dispatch** — Once the correct overload is identified, RTL performs constant-time vector indexing to retrieve the associated lambda wrapper. This wrapper executes a single hop to the underlying function pointer, forwarding the provided arguments perfectly.
 
