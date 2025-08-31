@@ -39,6 +39,6 @@ namespace rtl::detail
             return { err, Container::template forwardCall<_args...>(err, index, std::forward<_args>(params)...) };
         }
 
-        return { error::SignatureMismatch, RObject{} };
+        return { error::SignatureMismatch, RObject() };
     }
 }

@@ -2,8 +2,6 @@
 #include "Singleton.h"
 #include "SingletonReflection.h"
 
-using namespace rtl::builder;
-
 namespace singleton_test
 {
     const std::optional<rtl::Record>& Reflection::getSingletonClass()

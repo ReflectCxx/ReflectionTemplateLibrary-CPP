@@ -2,7 +2,6 @@
 #include "OriginalReflection.h"
 #include "Original.h"
 
-using namespace rtl::builder;
 
 namespace proxy_test
 {

@@ -38,7 +38,6 @@ namespace rtl::detail
         if (m_method.getQualifier() == methodQ::None) {
             return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
         }
-
         if (m_target.isEmpty()) {
             //if the target is empty.
             return { error::EmptyRObject, RObject() };
@@ -119,7 +118,6 @@ namespace rtl::detail
         if (m_method.getQualifier() == methodQ::None) {
             return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
         }
-
         if (m_target.isEmpty()) {
             //if the target is empty.
             return { error::EmptyRObject, RObject() };
