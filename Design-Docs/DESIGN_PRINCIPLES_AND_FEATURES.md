@@ -14,7 +14,7 @@ Instead, registration is explicit and lazy:
 
 * **Lazy Mirror Assembly** — On first access, `rtl::CxxMirror` initializes these static tables first, then assembles its metadata from them and retains only the minimal POD structures (IDs, indices, small records) required to locate the right lambda and function pointer at runtime.
 
-* **Lifetime & Footprint** — After the first access, the assembled CxxMirror and its compact metadata remain resident for the lifetime of the application (or until the owning module is unloaded), enabling constant-time indexing with no further hidden work.
+* **Lifetime & Footprint** — After the first access, the assembled `rtl::CxxMirror` and its compact metadata remain resident for the lifetime of the application (or until the owning module is unloaded), enabling constant-time indexing with no further hidden work.
 
 > *“Metadata is materialized once when you ask for it, then stays put for predictable, constant-time lookups.”*
 
