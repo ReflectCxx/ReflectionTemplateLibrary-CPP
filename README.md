@@ -27,8 +27,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
-[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Design%20Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
-[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
+[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
