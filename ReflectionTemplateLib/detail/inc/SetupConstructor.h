@@ -25,6 +25,12 @@ namespace rtl {
     */  template<class _derivedType>
         class SetupConstructor
         {	
+            template<class ..._signature>
+            using CtorLambda = std::function < RObject(error&, alloc, _signature...) >;
+
+            template<class _recordType, class ..._signature>
+            static CtorLambda<_signature...> getConstructorCaller();
+
         protected:
 
             //adds the lambda, wrapping constructor call, recordType(_signature...), to '_derivedType' (FunctorContainer)

@@ -6,8 +6,8 @@ namespace my_type
 {
     const rtl::CxxMirror& MyReflection()
     {
-        static auto& cxx_mirror = rtl::CxxMirror::reflect<0>(
-        {
+        static auto cxx_mirror = rtl::CxxMirror( {
+
         /*  Register a free(C - style) function within a namespace.
             If registered with a namespace, it must also be specified when querying:
                 cxx_mirror().getFunction("ext", "sendString")

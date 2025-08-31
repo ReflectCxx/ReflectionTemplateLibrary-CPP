@@ -23,15 +23,14 @@ without exposing the actual type objects to "CxxReflectionTests" project.*/
 
 
 using namespace std;
-
 using namespace test_utils;
 
 namespace test_mirror
 {
     const rtl::CxxMirror& cxx::mirror()
     {
-        static auto& cxx_mirror = rtl::CxxMirror::reflect<MirrorId::Test>(
-        {
+        static auto cxx_mirror = rtl::CxxMirror({
+
         /*  ---------------------------------
             Registering pod & few STL types.
             ---------------------------------  */
@@ -241,12 +240,8 @@ namespace test_mirror
 
         static const auto _ = [&]()
         {
-            // Tests the assigned-id. will never fail here.
-            if (cxx_mirror.getId() == MirrorId::Test)
-            {
-                const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-                rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
-            }
+            const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
+            rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
             return 0;
         }();
 

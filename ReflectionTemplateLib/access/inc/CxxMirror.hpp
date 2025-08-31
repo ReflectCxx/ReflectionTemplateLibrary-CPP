@@ -26,9 +26,8 @@ namespace rtl
     * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
     * the vector is simply forwarded to the base class constructor.
 */  
-    inline CxxMirror::CxxMirror(const unsigned int pReflectionId, const std::vector<Function>& pFunctions)
+    inline CxxMirror::CxxMirror(const std::vector<Function>& pFunctions)
         : detail::CxxReflection(pFunctions)
-        , m_reflectionId(pReflectionId) 
     {
         rtl::detail::ReflectedConversions::init();
     }

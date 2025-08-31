@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <mutex>
 #include <vector>
 #include <functional>
 
@@ -80,12 +81,9 @@ namespace rtl {
                                         std::function<const std::size_t()> pGetIndex,
                                         std::function<void(const std::size_t&)> pUpdateIndex)
             {
-                // Old design, using locks, now thread-safety is enforced by scoped-static initialization
-                // No need of locks now but keeping 'pGetIndex' & 'pUpdate' as is. could be refactored.
-
                 //critical section, thread safe.
-                //static std::mutex mtx;
-                //std::lock_guard<std::mutex> lock(mtx);
+                static std::mutex mtx;
+                std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
                 if (index == -1) {
@@ -154,12 +152,9 @@ namespace rtl {
                                         std::function<const std::size_t()> pGetIndex,
                                         std::function<void(const std::size_t&)> pUpdateIndex)
             {
-                // Old design, using locks, now thread-safety is enforced by scoped-static initialization
-                // No need of locks now but keeping 'pGetIndex' & 'pUpdate' as is. could be refactored.
-
                 //critical section, thread safe.
-                //static std::mutex mtx;
-                //std::lock_guard<std::mutex> lock(mtx);
+                static std::mutex mtx;
+                std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
                 if (index == -1) {
