@@ -10,7 +10,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ---
 [![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
----
+
 ## What RTL Brings to Your Code
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
