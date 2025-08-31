@@ -38,10 +38,10 @@ Create an instance of `CxxMirror` using its factory method `reflect<N>()`, passi
 ```c++
 auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
 	/* register all types here */
-	rtl::type().record<Person>("Person").build(),
-	rtl::type().member<Person>().constructor<std::string, int>().build(),
-	rtl::type().member<Person>().method("setAge").build(&Person::setAge),
-	rtl::type().member<Person>().method("getName").build(&Person::getName)
+	rtl::Reflect().nameSpace().record<Person>("Person").build(),
+	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
+	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge),
+	rtl::Reflect().member<Person>().method("getName").build(&Person::getName)
 });
 ```
 
