@@ -63,13 +63,6 @@ namespace rtl
         return builder::RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
     }
 
-
-    template<class _recordType>
-    inline constexpr const builder::MethodBuilder<_recordType> type::member()
-    {
-        return builder::MethodBuilder<_recordType>();
-    }
-
 		
 /*  @method: function<...>()
     @param: std::string (name of function)

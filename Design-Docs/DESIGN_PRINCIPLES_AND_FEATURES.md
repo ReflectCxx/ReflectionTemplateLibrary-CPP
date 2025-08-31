@@ -6,29 +6,32 @@ RTL does not rely on:
 * Centralized global registries
 * Preprocessor hacks
 
-Instead, registration is explicit and lazy:
+Instead, registration is explicit and lazy.
 
-* **Lambda Registry** — Each registration unit contributes a lambda placed in a process-local static `std::vector`. This lambda wraps the canonical function pointer.
+For each registered type, RTL contributes **two lightweight entries** into its process-local tables:
 
-* **Pointer Table** — The raw function pointer is also stored in a static `std::vector` used for preventing redundant registrations.
+* A **lambda wrapper** placed in a `static std::vector`, responsible for calling the actual function or constructor with perfect forwarding.
+* A **raw function pointer** stored in a parallel `static std::vector`, used to detect and prevent redundant registrations.
 
-* **Lazy Mirror Assembly** — On first access, `rtl::CxxMirror` initializes these static tables first, then assembles its metadata from them and retains only the minimal POD structures (IDs, indices, small records) required to locate the right lambda and function pointer at runtime.
+From there, `rtl::CxxMirror` does not hold onto heavyweight state. It is **as ordinary as any local variable** — you can construct one, keep it alive for the entire application, or discard it after a short-lived query. The same `rtl::CxxMirror` can be materialized again with the same or different set of types. RTL guarantees that **materializing the same registration sequence multiple times** (for example):
 
-* **Lifetime & Footprint** — After the first access, the assembled `rtl::CxxMirror` and its compact metadata remain resident for the lifetime of the application (or until the owning module is unloaded), enabling constant-time indexing with no further hidden work.
+```cpp
+rtl::type().member<Person>().method("getName").build(Person::getName);
+```
 
-> *“Metadata is materialized once when you ask for it, then stays put for predictable, constant-time lookups.”*
+will always yield **exactly the same metadata**, without ever admitting redundant lambdas or function pointers into the static tables.
+
+> *"Mirrors are **cheap and repeatable**: the metadata is stable, redundant entries are never entertained, and the user remains in full control of a mirror’s lifetime."*
 
 ---
 
 ### ⚡ Reflective Call Performance
 
-Reflective calls in RTL are designed to be explicit, predictable, and minimal. The mechanism unfolds in three clear steps:
+Reflective calls in RTL are designed to be explicit, predictable, and minimal. The mechanism unfolds in two clear steps:
 
-1. **Signature Matching** — Each function or method overload is assigned a compact integer signature ID. When a reflective call is made, the provided arguments are matched against this ID through a single integer comparison. In the common case where only one overload exists, resolution completes immediately.
+1. **Signature Matching** — Each call signature yields a unique type-ID, compared directly against the ID of the lambda-table holding the final call. With a single overload this resolves immediately; if multiple overloads exist, RTL just scans a tiny `std::vector` of candidate IDs.
 
-2. **Overload Resolution** — If multiple overloads are registered, RTL performs a short linear scan over a very small `std::vector` of candidate IDs. This vector is typically of size `1` and rarely larger than `8~9`.
-
-3. **Call Dispatch** — Once the correct overload is identified, RTL performs constant-time vector indexing to retrieve the associated lambda wrapper. This wrapper executes a single hop to the underlying function pointer, forwarding the provided arguments perfectly.
+2. **Call Dispatch** — Once the correct overload is identified, RTL performs constant-time `std::vector` indexing to retrieve the associated lambda wrapper. This wrapper executes a single hop to the underlying function pointer, forwarding the provided arguments perfectly.
 
 The net overhead of a reflective call is thus a handful of integer comparisons, one direct `std::vector` access, and one lambda-to-function-pointer indirection. There are no dynamic allocations, RTTI lookups, or hidden metadata traversals at call time. The cost is transparent and limited to exactly what is required for overload resolution and safe forwarding — no more, no less.
 
@@ -69,9 +72,9 @@ This means:
 * **Immediate clarity** — mutable access is visually deliberate in the code.
 * **Defensive by design** — the default assumption is safety; mutation is always an opt-in.
 
-At the same time, RTL **respects the declared constness of external objects** (e.g., return values or user-provided instances). If an object is handed to RTL as `const`, RTL will not attempt to override that contract. Only RTL-created objects guarantee that a logical `const_cast` is always safe.
+At the same time, RTL **respects the declared constness of external objects** (e.g., return values or user-provided instances). If an object is handed to RTL as `const` *(true-const)*, RTL will not attempt to override that contract. Only RTL-created objects guarantee that a logical `const_cast` is always safe.
 
-> *"You cannot modify an RTL-managed object, even if it's only logically-const, without explicitly opting into mutability. For true-const objects not owned by RTL, the framework will never silently bypass constness. To mutate an RTL-created object, you must use an explicit rtl::constCast(), making your intent clear and unambiguous."*
+> *"RTL never mutates true-const objects, and for RTL-created ones it defaults to const, falling back only if needed — explicit rtl::constCast() is required when both overloads exist."*
 
 This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
 

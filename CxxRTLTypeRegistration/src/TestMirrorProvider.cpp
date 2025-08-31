@@ -36,18 +36,18 @@ namespace test_mirror
             ---------------------------------  */
 
         //  Registering void, valid but not useful at all.
-            rtl::type().ns().record<void>("void").build(),
+            rtl::type().record<void>("void").build(),
 
         //  Registering type 'void' again, ignored & emits-
         //  [WARNING] Multiple registrations of the same type detected.
-            rtl::type().ns().record<void>("void").build(),
+            rtl::type().record<void>("void").build(),
 
         //  Registering type 'void' again, but with different name. ignored & emits-
         //  [WARNING] Multiple registrations of the same type detected.
-            rtl::type().ns().record<void>("ccvoid").build(),
+            rtl::type().record<void>("ccvoid").build(),
 
         //  Registering pod, reflecting- constructor, copy-constructor & destructor.
-            rtl::type().ns().record<char>("char").build(),
+            rtl::type().record<char>("char").build(),
 
             rtl::type().ns("std").record<std::string_view>("string_view").build(),
 
@@ -78,16 +78,16 @@ namespace test_mirror
             -----------------------------------------------------------------  */
 
         //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
-            rtl::type().ns().function<void>(str_reverseString).build(reverseString),
+            rtl::type().function<void>(str_reverseString).build(reverseString),
 
         //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
-            rtl::type().ns().function<string>(str_reverseString).build(reverseString),
+            rtl::type().function<string>(str_reverseString).build(reverseString),
 
         //  Overloaded function, takes 'const char*' arguments.
-            rtl::type().ns().function<const char*>(str_reverseString).build(reverseString),
+            rtl::type().function<const char*>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
-            rtl::type().ns().function(str_getComplexNumAsString).build(getComplexNumAsString),
+            rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
 
         /*  Grouping functions under a namespace, which is optional. they can be registered without it as well.
             but if registered under namspace, then to retrieve it from CxxMirror object, namespace name must be passed,
@@ -137,7 +137,7 @@ namespace test_mirror
         //  Registering Library's constructor. Stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted 
         //  and its required by 'std::any' to store its object via copy-construction. But instance on heap (rtl::alloc::HEAP) can be
         //  constructed since, in that case, 'std::any' stores only the poiner which does not requires copy constructor to be called.
-            rtl::type().ns().record<Library>(library::class_).build(),
+            rtl::type().record<Library>(library::class_).build(),
         
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.
             rtl::type().member<Library>().methodStatic(library::str_addBook).build(&Library::addBook),
@@ -145,7 +145,7 @@ namespace test_mirror
 
         //  class 'Book', methods & constructors.
         //  Registering default constructor.
-            rtl::type().ns().record<Book>(book::class_).build(),
+            rtl::type().record<Book>(book::class_).build(),
         
         //  Registering overloaded constructor, signature must be specified as template parameter.
             rtl::type().member<Book>().constructor<double, string>().build(),
@@ -167,7 +167,7 @@ namespace test_mirror
             rtl::type().member<Book>().method<string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo),
 
         //  class 'Person', methods & constructors.
-            rtl::type().ns().record<Person>(person::class_).build(),
+            rtl::type().record<Person>(person::class_).build(),
             rtl::type().member<Person>().constructor<string>().build(),
             rtl::type().member<Person>().methodStatic(person::str_createPtr).build(&Person::createPtr),
             rtl::type().member<Person>().method<void>(person::str_updateAddress).build(&Person::updateAddress),
@@ -187,7 +187,7 @@ namespace test_mirror
             rtl::type().member<Person>().methodStatic<string, size_t>(person::str_getProfile).build(&Person::getProfile),
 
         //  class 'Animal', methods & constructors.
-            rtl::type().ns().record<Animal>(animal::class_).build(),
+            rtl::type().record<Animal>(animal::class_).build(),
             rtl::type().member<Animal>().constructor<string>().build(),  //overloaded constructor.
             rtl::type().member<Animal>().method(animal::str_setFamilyName).build(&Animal::setFamilyName),  //unique method, no overloads.
             

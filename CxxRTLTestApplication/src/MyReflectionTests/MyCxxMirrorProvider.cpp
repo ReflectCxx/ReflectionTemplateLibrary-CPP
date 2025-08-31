@@ -58,7 +58,7 @@ namespace my_type
             or after its members. However, the type itself must be registered; otherwise,
             any attempted member registrations will be ignored and a warning will be
             displayed on the console.
-        */  rtl::type().ns().record<Person>("Person").build(),
+        */  rtl::type().record<Person>("Person").build(),
 
         //  rtl::type().member<Person>().constructor().build(), // Default constructor, will not compile.
         //  rtl::type().member<Person>().constructor<Person&>().build(),  // Copy constructor, will not compile.

@@ -6,9 +6,11 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org) 
 [![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org) 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+---
+[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
-
+---
 ## What RTL Brings to Your Code
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
@@ -27,8 +29,6 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
-[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 ```c++
@@ -36,9 +36,9 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ```
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 ```c++
-auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
-	// register all types here.
-	rtl::type().ns().record<Person>("Person").build(),
+auto cxx_mirror = rtl::CxxMirror({
+	/* ...register all types here... */
+	rtl::type().record<Person>("Person").build(),
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
 	rtl::type().member<Person>().method("setAge").build(Person::setAge),
 	rtl::type().member<Person>().method("getName").build(Person::getName)
