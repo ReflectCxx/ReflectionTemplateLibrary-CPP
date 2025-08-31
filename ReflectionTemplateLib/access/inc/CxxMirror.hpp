@@ -15,8 +15,23 @@
 #include "CxxMirror.h"
 
 
-namespace rtl 
+namespace rtl
 {    
+
+/*  @Constructor: CxxMirror
+    @params: 'const std::vector<Function>&'
+    * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
+    * the only constructor to construct 'CxxMirror' object.
+    * Syntax for constructing - CxxMirror({ type().function("func_name").build(), ..., ... })
+    * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
+    * the vector is simply forwarded to the base class constructor.
+*/  
+    inline CxxMirror::CxxMirror(const std::vector<Function>& pFunctions)
+        : detail::CxxReflection(pFunctions)
+    {
+        rtl::detail::ReflectedConversions::init();
+    }
+
 
 /*  @method: getRecord
     @param: const std::string& (name of the class/struct)
@@ -24,7 +39,8 @@ namespace rtl
     * if the class/struct isn't found by the given name, std::nullopt is returned.
     * every class/struct's is grouped under a namespace.
     * if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
-*/  inline std::optional<Record> CxxMirror::getRecord(const std::string& pRecord) const
+*/  
+    inline std::optional<Record> CxxMirror::getRecord(const std::string& pRecord) const
     {
         return getRecord(std::string(detail::NAMESPACE_GLOBAL), pRecord);
     }
@@ -36,12 +52,14 @@ namespace rtl
     * if the function isn't found by the given name, std::nullopt is returned.
     * every function is grouped under a namespace.
     * if no namespace is specified while registration, NAMESPACE_GLOBAL is used.
-*/  inline std::optional<Function> CxxMirror::getFunction(const std::string& pFunction) const
+*/  
+    inline std::optional<Function> CxxMirror::getFunction(const std::string& pFunction) const
     {
         return getFunction(std::string(detail::NAMESPACE_GLOBAL), pFunction);
     }
 
 
+    
     inline std::optional<Record> CxxMirror::getRecord(const std::size_t pRecordId) const
     {
         const auto& recordMap = getRecordIdMap();
@@ -55,7 +73,8 @@ namespace rtl
     @return: std::optional<Record>
     * retrieves the class/struct (as Record) registered under the given namespace.
     * if the class/struct isn't found by the given name, std::nullopt is returned.
-*/  inline std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpace, const std::string& pRecord) const
+*/  
+    inline std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpace, const std::string& pRecord) const
     {
         const auto& nsRecordMap = getNamespaceRecordMap();
         const auto& itr = nsRecordMap.find(pNameSpace);
@@ -76,7 +95,8 @@ namespace rtl
     @return: std::optional<Function>
     * retrieves the function (as 'Function' object) registered under the given namespace.
     * if the function isn't found by the given name, std::nullopt is returned.
-*/  inline std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpace, const std::string& pFunction) const
+*/   
+    inline std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpace, const std::string& pFunction) const
     {
         const auto& nsFunctionMap = getNamespaceFunctionsMap();
         const auto& itr = nsFunctionMap.find(pNameSpace);

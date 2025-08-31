@@ -52,7 +52,7 @@ namespace rtl
         @param: _returnType(*)(_signature...)
         @return: 'Function' object.
         * accepts all non-member and static-member function pointer.
-        * called on the objects returned by 'Reflect::function()' & 'RecordBuilder<_recordType>::methodStatic(..)'.
+        * called on the objects returned by 'type::function()' & 'RecordBuilder<_recordType>::methodStatic(..)'.
         * template params are auto deduced from the function pointer passed.
     */	template<class _returnType, class ..._signature>
         inline const Function Builder<detail::methodQ::None>::build(_returnType(*pFunctor)(_signature...)) const
@@ -72,7 +72,7 @@ namespace rtl
         @param: _returnType(*)()
         @return: 'Function' object.
         * accepts a non-member or static-member function pointer with no arguments.
-        * called on objects returned by 'Reflect::function<void>(..)' & 'RecordBuilder<_recordType>::methodStatic<void>(..)'
+        * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<_recordType>::methodStatic<void>(..)'
         * template param 'void' is explicitly specified.
     */  template<class _returnType>
         inline const Function Builder<detail::methodQ::None, void>::build(_returnType(*pFunctor)()) const
@@ -94,7 +94,7 @@ namespace rtl
         @param: _returnType(*)(_signature...)
         @return: 'Function' object.
         * it accepts a non-member or static-member function pointer.
-        * called on objects returned by 'Reflect::function<...>(..)' & 'RecordBuilder<_recordType>::methodStatic<...>(..)'.
+        * called on objects returned by 'type::function<...>(..)' & 'RecordBuilder<_recordType>::methodStatic<...>(..)'.
         * template params are explicitly specified.
     */  template<class ..._signature>
         template<class _returnType>

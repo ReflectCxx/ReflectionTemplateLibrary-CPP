@@ -6,16 +6,17 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org) 
 [![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org) 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE) 
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## What RTL Brings to Your Code
+[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
-* **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, just like in Java or .NET, but in modern C++.
+* **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
 
-* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, giving plugins and tools a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
+* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
-* **Non-Intrusive & Macro-Free** – Register reflection data externally with a clean builder pattern; no macros, no base classes, no global registries.
+* **Non-Intrusive & Macro-Free** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
 
 * **Const-By-Default Safety** – Everything is immutable unless explicitly mutable, preventing unintended side-effects in reflective code.
 
@@ -23,14 +24,9 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Deterministic Lifetimes** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
-* **Cross-Compiler Consistency** – Built entirely on standard C++20, no reliance on compiler extensions.
+* **Cross-Compiler Consistency** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
 
-* **Tooling-Friendly** – Architecture designed to power serializers, debuggers, test frameworks, scripting, and editor integrations without compiler context.
-
-* **Path to Higher-Level Abstractions** – Lays the foundation for ORMs, plugin systems, game editors, and live scripting directly in C++.
-
-[![Design Philosophy & Vision](https://img.shields.io/badge/Doc-Philosophy%20%26%20Vision-blue)](./Design-Docs/DESIGN_PHILOSOPHY_AND_VISION.md)
-[![Why RTL Matters](https://img.shields.io/badge/Doc-Why%20RTL%20Matters-blue)](./Design-Docs/WHY_CPP_REFLECTION_MATTERS.md)
+* **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
@@ -40,17 +36,17 @@ RTL is implemented as a static library that organizes type-safe function pointer
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
-	/* register all types here */
-	rtl::Reflect().nameSpace().record<Person>("Person").build(),
-	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
-	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge),
-	rtl::Reflect().member<Person>().method("getName").build(&Person::getName)
+	/* ...register all types here... */
+	rtl::type().record<Person>("Person").build(),
+	rtl::type().member<Person>().constructor<std::string, int>().build(),
+	rtl::type().member<Person>().method("setAge").build(Person::setAge),
+	rtl::type().member<Person>().method("getName").build(Person::getName)
 });
 ```
 
 With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
 
-RTL’s API is designed to be small and intuitive. Its syntax mirrors regular C++ patterns — but with strong safety guarantees. Every reflective operation checks types, ownership, and errors explicitly, so moving forward with reflection feels just as safe and predictable as writing normal C++ code.
+RTL’s API is small and intuitive, mirroring standard C++ syntax while enforcing strict safety. Every reflective operation validates types, ownership, and errors, making reflection as safe and predictable as writing regular C++.
 
 ***Without reflection:***
 
@@ -96,17 +92,17 @@ if (classPerson)  // Check has_value() before use.
 ```
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
-RTL allows you to create reflected objects on either the heap or the stack, with automatic lifetime handling:
+RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:
 
-* **Heap allocation (`alloc::Heap`)** creates objects owned by an internal `std::unique_ptr`; the object is automatically destroyed when the `RObject` goes out of scope.
-* **Stack allocation (`alloc::Stack`)** creates independent copies of the object; these behave like normal stack values and are cleaned up at scope exit.
-* **Move semantics:**
+* Heap (`alloc::Heap`) — objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
 
-  * `alloc::Heap` objects follow `unique_ptr` rules (move transfers ownership, copy construction & assignment is disabled for `rtl::RObject`).
-  * `alloc::Stack` objects move like normal values.
-* **Method return values** are stored in `RObject` as unmanaged temporaries on stack; they are cleaned up automatically when the wrapper goes out of scope.
+* Stack (`alloc::Stack`) — independent copies behave like normal stack values and clean up at scope exit.
 
-Reflection in RTL doesn’t force a new paradigm — it extends the one you already know. You create objects, call methods, and work with types exactly as you would in C++ — only now, you can do it at runtime, with the same level of type safety and clarity.
+* Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+
+* Return values — All returns are propagated back wrapped in `rtl::RObject`, with temporaries (e.g. smart pointers) cleaned up automatically at scope exit.
+
+RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at runtime.
 
 ## Reflection Features
 
@@ -162,8 +158,8 @@ cmake --build .
 ```
 
 Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
-* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for more type registration & reflective programming examples.
-* See `CxxRTLTestApplication/src` for test cases.
+* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
+* See `CxxRTLTestApplication/src` for detailed test cases.
 
 ## Contributions
 

@@ -157,5 +157,5 @@ namespace rtl::detail
         return _var;                          \
     }
 
-    constexpr const std::string_view NAMESPACE_GLOBAL = "namespace_global";
+    constexpr const std::string_view NAMESPACE_GLOBAL = "global";
 }

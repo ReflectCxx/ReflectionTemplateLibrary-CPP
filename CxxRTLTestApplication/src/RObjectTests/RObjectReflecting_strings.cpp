@@ -16,7 +16,7 @@ namespace
     static const std::string_view STR_STD_STRING_VIEW = "string_type: std::string_view";
 
     //initialize RTL, necessary for RObject conversions to work.
-    static const rtl::CxxMirror _({});
+    static auto _= rtl::CxxMirror({/*..empty..*/});
 }
 
 

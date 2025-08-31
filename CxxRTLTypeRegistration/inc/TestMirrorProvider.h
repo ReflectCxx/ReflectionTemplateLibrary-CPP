@@ -6,7 +6,7 @@ namespace test_mirror
 {
 	struct cxx
 	{
-		static rtl::CxxMirror& mirror();
+		static const rtl::CxxMirror& mirror();
 	};
 
 

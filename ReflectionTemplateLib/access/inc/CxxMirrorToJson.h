@@ -17,6 +17,6 @@ namespace rtl {
 
 	struct CxxMirrorToJson
 	{
-		static void dump(CxxMirror& pCxxMirror, const std::string& pFilePathStr);
+		static void dump(const CxxMirror& pCxxMirror, const std::string& pFilePathStr);
 	};
 }

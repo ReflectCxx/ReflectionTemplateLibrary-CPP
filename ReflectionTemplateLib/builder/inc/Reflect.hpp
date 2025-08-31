@@ -17,13 +17,13 @@
 
 namespace rtl 
 {
-    inline ReflectNs::ReflectNs(const std::string_view pNamespace)
+    inline type_ns::type_ns(const std::string_view pNamespace)
         : m_record("")
         , m_namespace(pNamespace)
     { }
 
 		
-/*  @function: nameSpace()
+/*  @function: ns()
     @param: std::string, name of the 'namespace' as string.
     @return: '*this', Reflect.
     * used to group registered function, class/struct under a namespace name.
@@ -32,9 +32,9 @@ namespace rtl
     * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
         check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
         if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
-*/  inline ReflectNs Reflect::nameSpace(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
+*/  inline type_ns type::ns(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
     {
-        return ReflectNs(pNamespace);
+        return type_ns(pNamespace);
     }
 
 
@@ -45,7 +45,7 @@ namespace rtl
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if member function pointer is passed.
 */  template<>
-    inline const builder::Builder<detail::methodQ::None> ReflectNs::function(const std::string_view pFunction)
+    inline const builder::Builder<detail::methodQ::None> type_ns::function(const std::string_view pFunction)
     {
         return builder::Builder<detail::methodQ::None>(detail::TypeId<>::None, pFunction, m_namespace);
     }
@@ -58,16 +58,9 @@ namespace rtl
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- '_recordType'.
 */  template<class _recordType>
-    inline constexpr const builder::RecordBuilder<_recordType> ReflectNs::record(const std::string_view pClass)
+    inline constexpr const builder::RecordBuilder<_recordType> type_ns::record(const std::string_view pClass)
     {
         return builder::RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
-    }
-
-
-    template<class _recordType>
-    inline constexpr const builder::MethodBuilder<_recordType> Reflect::member()
-    {
-        return builder::MethodBuilder<_recordType>();
     }
 
 		
@@ -80,7 +73,7 @@ namespace rtl
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if any member function pointer is passed.
 */  template<class ..._signature>
-    inline constexpr const builder::Builder<detail::methodQ::None, _signature...> ReflectNs::function(const std::string_view pFunction)
+    inline constexpr const builder::Builder<detail::methodQ::None, _signature...> type_ns::function(const std::string_view pFunction)
     {
         return builder::Builder<detail::methodQ::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
     }

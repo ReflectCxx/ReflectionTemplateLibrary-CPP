@@ -2,8 +2,6 @@
 #include "OriginalReflection.h"
 #include "Original.h"
 
-using namespace rtl::builder;
-using namespace rtl;
 
 namespace proxy_test
 {
@@ -20,27 +18,27 @@ namespace proxy_test
     const std::optional<rtl::Record>& OriginalReflection::getClass()
     {
         // Static reflection data for the "Original" class
-        static std::optional<rtl::Record> reflectedClass = CxxMirror(
-            {
-                // Register the default constructor of the "Original" class
-                Reflect().nameSpace().record<Original>("Original").build(),
+        static std::optional<rtl::Record> reflectedClass = rtl::CxxMirror( {
 
-                // Register the instance method: getClassName
-                Reflect().member<Original>().method("getClassName").build(&Original::getClassName),
+            // Register the default constructor of the "Original" class
+            rtl::type().record<Original>("Original").build(),
 
-                // Register the instance method: getSquareRoot
-                Reflect().member<Original>().method("getSquareRoot").build(&Original::getSquareRoot),
+            // Register the instance method: getClassName
+            rtl::type().member<Original>().method("getClassName").build(&Original::getClassName),
 
-                // Register the instance method: setNodeName
-                Reflect().member<Original>().method("setNodeName").build(&Original::setNodeName),
+            // Register the instance method: getSquareRoot
+            rtl::type().member<Original>().method("getSquareRoot").build(&Original::getSquareRoot),
 
-                // Register the instance method: getNodeName
-                Reflect().member<Original>().method("getNodeName").build(&Original::getNodeName),
+            // Register the instance method: setNodeName
+            rtl::type().member<Original>().method("setNodeName").build(&Original::setNodeName),
 
-                // Register the static method: getInstanceCount
-                Reflect().member<Original>().methodStatic("getInstanceCount").build(&Original::getInstanceCount)
+            // Register the instance method: getNodeName
+            rtl::type().member<Original>().method("getNodeName").build(&Original::getNodeName),
 
-            }).getRecord("Original");
+            // Register the static method: getInstanceCount
+            rtl::type().member<Original>().methodStatic("getInstanceCount").build(&Original::getInstanceCount)
+
+        }).getRecord("Original");
 
         // Return the reflection data for the "Original" class
         return reflectedClass;

@@ -27,36 +27,17 @@ namespace rtl::builder
 
 namespace rtl
 {
-    class ReflectNs;
-
 /*  @class: Reflect
     * provides interface to register all kinds of functions (member/non-member).
-*/  struct Reflect
+*/  struct type_ns
     {
-        Reflect() = default;
-        Reflect(Reflect&&) = delete;
-        Reflect(const Reflect&) = delete;
-        Reflect& operator=(Reflect&&) = delete;
-        Reflect& operator=(const Reflect&) = delete;
+        type_ns() = delete;
+        type_ns(type_ns&&) = delete;
+        type_ns(const type_ns&) = delete;
+        type_ns& operator=(type_ns&&) = delete;
+        type_ns& operator=(const type_ns&) = delete;
 
-        ReflectNs nameSpace(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
-
-        template<class _recordType>
-        constexpr const builder::MethodBuilder<_recordType> member();
-    };
-
-
-/*  @class: Reflect
-    * provides interface to register all kinds of functions (member/non-member).
-*/  struct ReflectNs
-    {
-        ReflectNs() = delete;
-        ReflectNs(ReflectNs&&) = delete;
-        ReflectNs(const ReflectNs&) = delete;
-        ReflectNs& operator=(ReflectNs&&) = delete;
-        ReflectNs& operator=(const ReflectNs&) = delete;
-
-        ReflectNs(const std::string_view pNamespace);
+        type_ns(const std::string_view pNamespace);
 
         template<class _recordType>
         constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass);
@@ -71,5 +52,35 @@ namespace rtl
 
         //name of the namespace being registered.
         std::string_view m_namespace;
+    };
+
+
+
+/*  @class: Reflect
+    * provides interface to register all kinds of functions (member/non-member).
+*/  struct type
+    {
+        type() = default;
+        type(type&&) = delete;
+        type(const type&) = delete;
+        type& operator=(type&&) = delete;
+        type& operator=(const type&) = delete;
+
+        type_ns ns(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
+
+        template<class _recordType>
+        constexpr const builder::MethodBuilder<_recordType> member() {
+            return builder::MethodBuilder<_recordType>();
+        }
+
+        template<class _recordType>
+        constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass) {
+            return ns().record<_recordType>(pClass);
+        }
+
+        template<class ..._signature>
+        constexpr const builder::Builder<detail::methodQ::None, _signature...> function(const std::string_view pFunction) {
+            return ns().function<_signature...>(pFunction);
+        }
     };
 }

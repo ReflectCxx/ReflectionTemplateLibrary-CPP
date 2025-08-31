@@ -12,7 +12,6 @@
 #pragma once
 
 #include <mutex>
-#include <atomic>
 #include <vector>
 #include <functional>
 

@@ -66,7 +66,7 @@ namespace
 	}
 
 
-	const std::string toJson(CxxMirror& pCxxMirror)
+	const std::string toJson(const CxxMirror& pCxxMirror)
 	{
 		std::stringstream sout;
 		sout << "[";
@@ -106,7 +106,7 @@ namespace
 
 namespace rtl 
 {
-	void CxxMirrorToJson::dump(CxxMirror& pCxxMirror, const std::string& pFilePathStr)
+	void CxxMirrorToJson::dump(const CxxMirror& pCxxMirror, const std::string& pFilePathStr)
 	{
 		std::string fileStr = pFilePathStr;
 		std::replace(fileStr.begin(), fileStr.end(), '\\', '/');
