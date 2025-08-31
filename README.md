@@ -7,7 +7,6 @@ RTL is implemented as a static library that organizes type-safe function pointer
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org) 
 [![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
----
 
 ## What RTL Brings to Your Code
 [![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
