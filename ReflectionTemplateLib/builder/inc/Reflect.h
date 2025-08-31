@@ -39,7 +39,7 @@ namespace rtl
         type& operator=(type&&) = delete;
         type& operator=(const type&) = delete;
 
-        type_ns nameSpace(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
+        type_ns ns(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
 
         template<class _recordType>
         constexpr const builder::MethodBuilder<_recordType> member();

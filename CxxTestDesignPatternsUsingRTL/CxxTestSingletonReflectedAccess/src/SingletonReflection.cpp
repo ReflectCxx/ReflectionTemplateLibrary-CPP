@@ -8,7 +8,7 @@ namespace singleton_test
     {
         static std::optional<rtl::Record> reflectedClass = rtl::CxxMirror(
         {
-            rtl::type().nameSpace().record<Singleton>("Singleton").build(),
+            rtl::type().ns().record<Singleton>("Singleton").build(),
 
             rtl::type().member<Singleton>().methodStatic("getInstance").build(&Singleton::getInstance),
 

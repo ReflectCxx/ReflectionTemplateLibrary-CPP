@@ -34,14 +34,14 @@ RTL is implemented as a static library that organizes type-safe function pointer
 ```c++
 #include "RTLibInterface.h" // Reflection access interface.
 ```
-Create an instance of `CxxMirror` using its factory method `reflect<N>()`, passing all type metadata through an initializer list — and you’re done!
+Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 ```c++
 auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
-	/* register all types here */
-	rtl::Reflect().nameSpace().record<Person>("Person").build(),
-	rtl::Reflect().member<Person>().constructor<std::string, int>().build(),
-	rtl::Reflect().member<Person>().method("setAge").build(&Person::setAge),
-	rtl::Reflect().member<Person>().method("getName").build(&Person::getName)
+	// register all types here.
+	rtl::type().ns().record<Person>("Person").build(),
+	rtl::type().member<Person>().constructor<std::string, int>().build(),
+	rtl::type().member<Person>().method("setAge").build(Person::setAge),
+	rtl::type().member<Person>().method("getName").build(Person::getName)
 });
 ```
 

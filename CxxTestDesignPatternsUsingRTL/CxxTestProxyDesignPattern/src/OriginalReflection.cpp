@@ -21,7 +21,7 @@ namespace proxy_test
         static std::optional<rtl::Record> reflectedClass = rtl::CxxMirror( {
 
             // Register the default constructor of the "Original" class
-            rtl::type().nameSpace().record<Original>("Original").build(),
+            rtl::type().ns().record<Original>("Original").build(),
 
             // Register the instance method: getClassName
             rtl::type().member<Original>().method("getClassName").build(&Original::getClassName),

@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include "RTLibInterface.h"
-#include "GlobalTestUtils.h"
 
 using namespace rtl;
 

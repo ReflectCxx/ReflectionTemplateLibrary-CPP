@@ -24,14 +24,14 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
 
-Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror<>`. You can create an instance using its factory method `reflect()`, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
+Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror`. You can create an instance using its factory method `reflect()`, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
 
 ```cpp
 namespace cxx
 {
     const rtl::CxxMirror& mirror()
     {
-        static auto& cxx_mirror = rtl::CxxMirror::reflect<0>({
+        static auto cxx_mirror = rtl::CxxMirror({
             // .. all the registrations go here, comma separated ..
         });
         return cxx_mirror;
@@ -39,7 +39,7 @@ namespace cxx
 }
 ```
 
-The `CxxMirror` remains immutable throughout the application. Declaring it as a `static` local instance ensures one-time initialization and global availability, making initialization inherently thread-safe. RTL internally manages registration safety, but this design also leverages compiler guarantees for automatic thread-safety.
+The `CxxMirror` remains immutable once initialized. Declaring it as a `static` local instance ensures one-time construction and global availability, with thread-safe initialization guaranteed by the compiler. Internally, RTL adds an additional safety layer: it synchronizes registration across threads and prevents duplicate registration of the same entity (method, function, or constructor), but this design also leverages compiler guarantees for automatic thread-safety.
 
 👉 **Tip**
 > Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
@@ -55,10 +55,10 @@ The fundamental pattern of registration in RTL is a **builder combination**. You
 ### Non-Member Functions
 
 ```cpp
-rtl::type().nameSpace("ns").function<..signature..>("func").build(ptr);
+rtl::type().ns("ext").function<..signature..>("func").build(ptr);
 ```
 
-* **`nameSpace("ns")`**: specifies the namespace under which the function lives. If you want global scope, pass an empty string: `.nameSpace("")`. The call itself cannot be omitted when registering functions or records.
+* **`ns("ext")`**: specifies the namespace under which the function lives. If you want global scope, pass an empty string: `.ns("")`. The call itself cannot be omitted when registering functions or records.
 * **`function<..signature..>("func")`**: declares the function by name. If overloaded, the template parameter `<..signature..>` disambiguates which overload to pick.
 * **`.build(ptr)`**: supplies the actual function pointer to complete the registration.
 
@@ -73,14 +73,14 @@ For example:
 bool sendMessage(const char*);
 void sendMessage(int, std::string);
 
-rtl::type().nameSpace("ns").function<const char*>("sendMessage").build(sendMessage);
-rtl::type().nameSpace("ns").function<int, std::string>("sendMessage").build(sendMessage);
+rtl::type().ns("ext").function<const char*>("sendMessage").build(ext::sendMessage);
+rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendMessage);
 ```
 
 ### Classes / Structs
 
 ```cpp
-rtl::type().nameSpace("ns").record<T>("Name").build();
+rtl::type().ns("ext").record<T>("Name").build();
 ```
 
 * Registers a type by reflective name under a namespace.

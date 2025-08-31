@@ -16,8 +16,8 @@
 * Provides the interface to register types and functions with RTL.
 *
 * Example usage:
-*   rtl::type().nameSpace("ns").function<int(std::string)>("func").build(&func);
-*   rtl::type().nameSpace("ns").record<MyClass>("MyClass").build();
+*   rtl::type().ns("ns").function<int(std::string)>("func").build(&func);
+*   rtl::type().ns("ns").record<MyClass>("MyClass").build();
 *   rtl::type().member<MyClass>().constructor<std::string, int>().build();
 *   rtl::type().member<MyClass>().method<void(const std::string&)>("setName").build(&MyClass::setName);
 *

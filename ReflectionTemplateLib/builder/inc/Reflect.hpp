@@ -23,7 +23,7 @@ namespace rtl
     { }
 
 		
-/*  @function: nameSpace()
+/*  @function: ns()
     @param: std::string, name of the 'namespace' as string.
     @return: '*this', Reflect.
     * used to group registered function, class/struct under a namespace name.
@@ -32,7 +32,7 @@ namespace rtl
     * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
         check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
         if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
-*/  inline type_ns type::nameSpace(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
+*/  inline type_ns type::ns(const std::string_view pNamespace /* = detail::NAMESPACE_GLOBAL*/)
     {
         return type_ns(pNamespace);
     }
