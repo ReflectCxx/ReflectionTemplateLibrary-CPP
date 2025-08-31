@@ -73,7 +73,7 @@ RTL achieves thread-safety through a combination of compiler guarantees and immu
 
 Multiple independent reflective universes can coexist by instantiating `CxxMirror` with different template indices. Each universe is isolated, self-contained, and guaranteed to be thread-safe by design.
 
-> *"You can think of **`CxxMirror::reflect<0>, CxxMirror::relect<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
+> *"You can think of **`CxxMirror::reflect<0>, CxxMirror::reflect<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
 
 ---
 
