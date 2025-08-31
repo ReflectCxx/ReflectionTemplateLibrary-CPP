@@ -24,7 +24,7 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
 
-Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror`. You can create an instance using its factory method `reflect()`, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
+Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror`. You can create an instance, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
 
 ```cpp
 namespace cxx
