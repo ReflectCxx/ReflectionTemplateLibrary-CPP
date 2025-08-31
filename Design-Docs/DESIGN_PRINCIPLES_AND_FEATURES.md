@@ -39,16 +39,6 @@ The net overhead of a reflective call is thus a handful of integer comparisons, 
 
 ---
 
-### 🧵 Thread-Safe by Design
-
-RTL achieves thread-safety through a combination of compiler guarantees and immutability. Each `CxxMirror` is constructed as a `static` local, relying on C++11’s atomic, thread-safe initialization. Once constructed, a mirror becomes immutable, ensuring that all subsequent queries and operations are inherently safe across threads.
-
-Multiple independent reflective universes can coexist by instantiating `CxxMirror` with different template indices. Each universe is isolated, self-contained, and guaranteed to be thread-safe by design.
-
-> *"You can think of **`CxxMirror::reflect<0>, CxxMirror::reflect<1>, ...`** as distinct reflective universes — singletons enforced by the compiler, safe by default, and free of runtime locking overhead."*
-
----
-
 ### 🛡 Exception-Free Guarantee
 
 RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only one scenario could theoretically throw:
