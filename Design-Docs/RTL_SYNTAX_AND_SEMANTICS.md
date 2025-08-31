@@ -27,24 +27,27 @@ This guide walks you step by step through RTL’s reflection syntax.
 Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror`. You can create an instance, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
 
 ```cpp
-namespace cxx
-{
-    const rtl::CxxMirror& mirror()
-    {
-        static auto cxx_mirror = rtl::CxxMirror({
-            // .. all the registrations go here, comma separated ..
-        });
-        return cxx_mirror;
-    }
-}
+  auto cxx_mirror = rtl::CxxMirror({
+      // .. all the registrations go here, comma separated ..
+    });
 ```
 
-The `CxxMirror` remains immutable once initialized. Declaring it as a `static` local instance ensures one-time construction and global availability, with thread-safe initialization guaranteed by the compiler. Internally, RTL adds an additional safety layer: it synchronizes registration across threads and prevents duplicate registration of the same entity (method, function, or constructor), but this design also leverages compiler guarantees for automatic thread-safety.
+Every registration you make using the builder pattern is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+
+### A few key points about managing this object
+
+* **Dispensable by design** → The `rtl::CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
+
+* **Duplicate registration is harmless** → Identical registrations always materialize the same metadata. If a canonical function pointer or constructor is already registered, it is not added again to the pointer/lambda table — the metadata simply refers back to the existing entry.
+
+* **Thread-safety guaranteed by RTL** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
+
+* **Overhead is deliberate** → Each registration carries a small cost in memory and initialization time. This overhead exists to provide thread-safety, robustness, and avoidance of redundant registration, and should be considered when creating many mirrors or registering large numbers of types.
+
+You are free to manage mirrors however your design requires: one mirror for the whole program, multiple mirrors for modularity, or transient mirrors in local scopes. RTL is designed to work correctly in all cases, while keeping its small, deliberate overhead in mind to ensure safety and efficiency.
 
 👉 **Tip**
-> Always use the singleton pattern for ***`CxxMirror`***. It guarantees stability, thread-safe lazy initialization, and provides a predictable reflective universe.
-
-Every registration you make using the builder pattern is collected into the `CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+> When many types need registering for the full application lifetime, a singleton `rtl::CxxMirror` is your safest and simplest choice — one instance, zero surprises.
 
 ---
 
@@ -58,7 +61,7 @@ The fundamental pattern of registration in RTL is a **builder combination**. You
 rtl::type().ns("ext").function<..signature..>("func").build(ptr);
 ```
 
-* **`ns("ext")`**: specifies the namespace under which the function lives. If you want global scope, pass an empty string: `.ns("")`. The call itself cannot be omitted when registering functions or records.
+* **`ns("ext")`**: specifies the namespace under which the function lives. Omitting `.ns()` or passing an empty string `.ns("")` keeps the function in the global namespace.
 * **`function<..signature..>("func")`**: declares the function by name. If overloaded, the template parameter `<..signature..>` disambiguates which overload to pick.
 * **`.build(ptr)`**: supplies the actual function pointer to complete the registration.
 
