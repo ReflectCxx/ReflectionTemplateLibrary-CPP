@@ -16,7 +16,7 @@ For each registered type, RTL contributes **two lightweight entries** into its p
 From there, `rtl::CxxMirror` does not hold onto heavyweight state. It is **as ordinary as any local variable** — you can construct one, keep it alive for the entire application, or discard it after a short-lived query. The same `rtl::CxxMirror` can be materialized again with the same or different set of types. RTL guarantees that **materializing the same registration sequence multiple times** (for example):
 
 ```cpp
-rtl::type().member<Person>().method("getName").build(Person::getName);
+rtl::type().member<Person>().method("getName").build(&Person::getName);
 ```
 
 will always yield **exactly the same metadata**, without ever admitting redundant lambdas or function pointers into the static tables.
