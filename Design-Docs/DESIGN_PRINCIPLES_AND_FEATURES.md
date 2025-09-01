@@ -53,16 +53,11 @@ RTL validates all critical assumptions before proceeding, ensuring predictable b
 
 ### 🔒 Const-By-Default Discipline
 
-RTL enforces a *const-by-default* discipline.
-All objects **created by RTL through reflection** are treated as immutable unless the caller explicitly requests mutation.
-
-This means:
-
-* **No accidental state changes** — reflected objects default to safe, immutable views.
-* **Immediate clarity** — mutable access is visually deliberate in the code.
-* **Defensive by design** — the default assumption is safety; mutation is always an opt-in.
-
-At the same time, RTL **respects the declared constness of external objects** (e.g., return values or user-provided instances). If an object is handed to RTL as `const` *(true-const)*, RTL will not attempt to override that contract. Only RTL-created objects guarantee that a logical `const_cast` is always safe.
+RTL enforces a *const-by-default* discipline. All objects **created through reflection** start as *logically-const* — they default to immutability. If no const overload exists, RTL will **automatically fall back** to the non-const overload, since these objects were never originally declared `const`. Explicit `rtl::constCast()` is only required when both const and non-const overloads are present.
+ 
+The guiding principle is simple: reflective objects are safe by default, and any mutation must be a conscious, visible decision by the caller.
+ 
+At the same time, RTL strictly respects **true-const** objects (e.g., declared-`const` instances or const return values). Such objects remain immutable inside RTL — any attempt to force mutation results in predictable error code (`rtl::error::IllegalConstCast`).
 
 > *"RTL never mutates true-const objects, and for RTL-created ones it defaults to const, falling back only if needed — explicit rtl::constCast() is required when both overloads exist."*
 
