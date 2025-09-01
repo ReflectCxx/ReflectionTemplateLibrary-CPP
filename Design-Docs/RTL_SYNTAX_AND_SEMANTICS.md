@@ -47,7 +47,7 @@ Every registration you make using the builder pattern is collected into the `rtl
 You are free to manage mirrors however your design requires: one mirror for the whole program, multiple mirrors for modularity, or transient mirrors in local scopes. RTL is designed to work correctly in all cases, while keeping its small, deliberate overhead in mind to ensure safety and efficiency.
 
 👉 **Tip**
-> *When many types need registering for the full application lifetime, a singleton `rtl::CxxMirror` is your safest and simplest choice — one instance, zero surprises.*
+> ***When many types need registering for the full application lifetime, a singleton `rtl::CxxMirror` is your safest and simplest choice — one instance, zero surprises.***
 
 ---
 
