@@ -109,7 +109,8 @@ rtl::type().member<T>().method<..signature..>("method").build(&T::f);
 * **`.method<..signature..>(...)`**: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
-> **Note:** The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.
+👉 **Note:** 
+> ***The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.***
 
 With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
 
@@ -195,7 +196,7 @@ When dealing with `rtl::RObject` results:
 
 👉 **Tip**
 
-> Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.
+> ***Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.***
 
 ---
 
@@ -264,7 +265,7 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 * All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (`lvalue`, `rvalue`, `const-lvalue-ref`).
 * `rtl::RObject` contains the return value, or is empty if the method returns `void`.
 
-> By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.
+> ***By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.***
 
 ---
 
@@ -491,7 +492,7 @@ RObject obj2 = std::move(obj1);
 * The underlying heap object remains untouched and alive until its final owner is destroyed.
 
 👉 **Key idea** 
-> *Heap move = `unique_ptr` move semantics (cheap pointer transfer).*
+> ***Heap move = `unique_ptr` move semantics (cheap pointer transfer).***
 
 ### Consistent Guarantees 🟨
 
@@ -503,7 +504,7 @@ Across both stack and heap moves:
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
 ✅ Bottom Line
-> *“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”*
+> ***“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”***
 
 ---
 
