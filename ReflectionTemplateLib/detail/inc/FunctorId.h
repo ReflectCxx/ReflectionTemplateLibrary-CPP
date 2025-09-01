@@ -74,6 +74,13 @@ namespace rtl
             GETTER(std::size_t, SignatureId, m_containerId)
             GETTER(std::string, SignatureStr, m_signature)
 			
+            const bool operator==(const FunctorId& pOther) const
+            {
+                return (m_index == pOther.m_index && m_returnId == pOther.m_returnId &&
+                        m_recordId == pOther.m_recordId && m_containerId == pOther.m_containerId &&
+                        m_signature == pOther.m_signature);
+            }
+
             //get a unique hascode representing a functor.
             std::size_t getHashCode() const;
         };

@@ -80,7 +80,7 @@ namespace rtl {
                 std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
-                if (index == -1) {
+                if (index == rtl::index_none) {
                     index = getFunctorTable().size();
                     pUpdate(index);
                     getFunctorTable().push_back(pFunctor);

@@ -18,7 +18,7 @@ set(LOCAL_SOURCES_0
 )
 
 # Create a variable containing the source files for your target
-set(LOCAL_SOURCES_1
+set(LOCAL_ROBJECT
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_bool.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_char.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectTests/RObjectReflecting_strings.cpp"
@@ -35,14 +35,22 @@ set(LOCAL_MY_REFLECTION
 	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyCxxMirrorProvider.cpp"
 )
 
+
+set(LOCAL_CXXMIRROR
+	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorTests/CxxMirrorObjectTest.cpp"
+)
+
+
 # Add any additional source files if needed
 target_sources(CxxRTLTestApplication
     PRIVATE
 		"${LOCAL_SOURCES_0}"
-		"${LOCAL_SOURCES_1}"
+		"${LOCAL_ROBJECT}"
+		"${LOCAL_CXXMIRROR}"
 		"${LOCAL_MY_REFLECTION}"
 )
 
 SOURCE_GROUP("Source Files\\FunctionalityTests" FILES ${LOCAL_SOURCES_0})
-SOURCE_GROUP("Source Files\\RObjectTests" FILES ${LOCAL_SOURCES_1})
+SOURCE_GROUP("Source Files\\RObjectTests" FILES ${LOCAL_ROBJECT})
+SOURCE_GROUP("Source Files\\CxxMirrorTests" FILES ${LOCAL_CXXMIRROR})
 SOURCE_GROUP("Source Files\\MyReflectionTests" FILES ${LOCAL_MY_REFLECTION})

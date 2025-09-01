@@ -49,7 +49,7 @@ namespace rtl::builder
 
         static_assert(!isDefaultCtor, "Default-constructor registration detected! It is implicitly registered with the Type.");
         static_assert(!isCopyOrMoveCtor, "Copy/Move-constructor registration detected! It is implicitly registered with the Type.");
-        static_assert(isDeclearedCtor, "Constructor with given signature is not decleared.");
+        static_assert(isDeclearedCtor, "Constructor with given signature is not valid or declearation not found.");
 
         return ConstructorBuilder<_recordType, traits::remove_const_n_ref_t<_signature>...>();
     }
