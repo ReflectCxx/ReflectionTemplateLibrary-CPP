@@ -9,11 +9,12 @@
  *************************************************************************/
 
 
+#include <iostream>
+
 #include "Function.h"
 
 namespace rtl 
 {
-
 /*  @constructor: Function()
     @params: pNamespace - given namespace while registering the type.
     *        pRecord - given class/struct name, empty if this 'Function' represents a non-member functor
@@ -64,6 +65,11 @@ namespace rtl
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
             if (functorId.getSignatureId() == otherFuncSignId) {
+
+                std::cout << "\n[WARNING] Multiple registrations of the same function-pointer detected."
+                          << "\n          function-pointer already registered as \"" << m_function << "\""
+                          << "\n          This registration is ignored.\n";
+
                 return; //ignore and return since its already registered.
             }
         }

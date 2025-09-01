@@ -54,8 +54,8 @@ namespace rtl {
         public:
 
             CxxReflection() = delete;
-            CxxReflection(CxxReflection&&) = delete;
-            CxxReflection(const CxxReflection&) = delete;
+            CxxReflection(CxxReflection&&) = default;
+            CxxReflection(const CxxReflection&) = default;
             CxxReflection& operator=(CxxReflection&&) = delete;
             CxxReflection& operator=(const CxxReflection&) = delete;
 
