@@ -25,8 +25,10 @@ RTL is implemented as a static library that organizes type-safe function pointer
 * **Cross-Compiler Consistency** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
 
 * **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
+
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
+
 ---
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
