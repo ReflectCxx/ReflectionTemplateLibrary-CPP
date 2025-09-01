@@ -9,8 +9,6 @@ RTL is implemented as a static library that organizes type-safe function pointer
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## What RTL Brings to Your Code
-[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 * **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
 
@@ -28,6 +26,9 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
+[![Design Principles & Features](https://img.shields.io/badge/Doc-Design%20Principles%20%26%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-RTL_at_a_Glance:_Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
+---
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 ```c++
