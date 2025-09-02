@@ -10,7 +10,7 @@ Instead, registration is explicit and lazy.
 
 For each registered type, RTL contributes **two lightweight entries** into its process-local tables:
 
-* A **lambda wrapper** placed in a scoped `static` `std::vector` and is responsible for making the final call using the actual function pointer with perfect forwarding.
+* A **lambda wrapper** placed in a scoped `static` `std::vector` and is responsible for making the final call using the actual functor.
 * A **raw function pointer** stored in a parallel scoped `static` `std::vector`, used to detect and prevent redundant registrations.
 
 From there, `rtl::CxxMirror` does not hold onto heavyweight state. It is **as ordinary as any local variable** — you can construct one, keep it alive for the entire application, or discard it after a short-lived query. The same `rtl::CxxMirror` can be materialized again with the same or different set of types. RTL guarantees that **materializing the same registration sequence multiple times** (for example):
@@ -48,6 +48,8 @@ RTL is designed to be virtually exception-free. If an exception ever emerges fro
 This is extremely unlikely, but not absolutely impossible — no system is perfect.
 For every predictable failure case, RTL returns explicit error codes instead of throwing.
 RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
+
+> *"Exceptions should never surprise you — in RTL, failures are explicit, validated, and reported as error codes, not as hidden runtime traps."*
 
 ---
 
