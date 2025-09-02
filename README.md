@@ -10,21 +10,21 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 ## What RTL Brings to Your Code
 
-* **Runtime Reflection for C++** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
+* ***Runtime Reflection for C++*** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
 
 * **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
-* **Non-Intrusive & Macro-Free** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
+* ***Non-Intrusive & Macro-Free*** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
 
-* **Const-By-Default Safety** – Everything is immutable unless explicitly mutable, preventing unintended side-effects in reflective code.
+* ***Zero-Overhead by Design*** – Metadata is registered and resolved only when used. Reflection introduces no cost beyond the features you explicitly employ.
 
-* **Exception-Free Surface** – All predictable failures return error codes; no hidden throws.
+* ***Exception-Free Surface*** – All predictable failures return error codes; no hidden throws.
 
-* **Deterministic Lifetimes** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
+* ***Deterministic Lifetimes*** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
-* **Cross-Compiler Consistency** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
+* ***Cross-Compiler Consistency*** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
 
-* **Tooling-Friendly Architecture** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
+* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
