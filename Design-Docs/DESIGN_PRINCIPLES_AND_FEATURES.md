@@ -95,7 +95,7 @@ The key idea is that RTL doesn’t force you into a wrapper-first mindset. Inste
 
 #### ✨ The Mirror & The Reflection
 
-> A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.
+> *A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.*
 
 That’s it. The mirror is a **single object**, typically returned from a function like:
 
