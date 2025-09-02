@@ -38,7 +38,7 @@ Every registration you make using the builder pattern is collected into the `rtl
 
 * **Dispensable by design** → The `rtl::CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
 
-* **Duplicate registration is harmless** → Identical registrations always materialize the same metadata. If a canonical function pointer or constructor is already registered, it is not added again to the pointer/lambda table — the metadata simply refers back to the existing entry.
+* **Duplicate registration is harmless** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the pointer/lambda table — the metadata simply refers back to the existing entry.
 
 * **Thread-safety guaranteed by RTL** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
 
@@ -47,7 +47,7 @@ Every registration you make using the builder pattern is collected into the `rtl
 You are free to manage mirrors however your design requires: one mirror for the whole program, multiple mirrors for modularity, or transient mirrors in local scopes. RTL is designed to work correctly in all cases, while keeping its small, deliberate overhead in mind to ensure safety and efficiency.
 
 👉 **Tip**
-> ***When many types need registering for the full application lifetime, a singleton `rtl::CxxMirror` is your safest and simplest choice — one instance, zero surprises.***
+> *You are free to manage `rtl::CxxMirror` however your design demands — but remember that each registration carries a small overhead, negligible in isolation yet significant when compounded across many types.*
 
 ---
 
