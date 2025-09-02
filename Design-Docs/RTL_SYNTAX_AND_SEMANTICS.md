@@ -43,9 +43,9 @@ Every registration you make using the builder pattern is collected into the `rtl
 * **Thread-safety guaranteed by RTL** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
 
 * **Overhead is deliberate** → Each registration carries a small cost in memory and initialization time. Concretely:
-*     Every registration statement acquires a lock on the functor table.
-*     It checks whether the function or lambda is already present.
-*     If not, it adds the new entry to the lambda table and updates the functor table.
+  * Every registration statement acquires a lock on the functor table.
+  * It checks whether the function or lambda is already present.
+  * If not, it adds the new entry to the lambda table and updates the functor table.
   
 This ensures thread-safety and prevents redundant entries. While negligible for isolated registrations, this cost can accumulate when creating many mirrors or registering large numbers of types.
 
