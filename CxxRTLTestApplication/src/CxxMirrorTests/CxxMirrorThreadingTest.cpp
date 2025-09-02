@@ -9,7 +9,7 @@
 #include "../../CxxTestProps/inc/Person.h"
 #include "../../CxxTestProps/inc/Library.h"
 #include "../../CxxTestProps/inc/Complex.h"
-#include "../src/MyReflectionTests/MyReflectingType.h"
+#include "../MyReflectionTests/MyReflectingType.h"
 
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
