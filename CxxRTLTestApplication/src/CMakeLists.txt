@@ -38,12 +38,15 @@ set(LOCAL_MY_REFLECTION
 
 set(LOCAL_CXXMIRROR
 	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorTests/CxxMirrorObjectTest.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorTests/CxxMirrorThreadingTest.h"
+	"${CMAKE_CURRENT_LIST_DIR}/CxxMirrorTests/CxxMirrorThreadingTest.cpp"
 )
 
 
 # Add any additional source files if needed
 target_sources(CxxRTLTestApplication
     PRIVATE
+		"${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 		"${LOCAL_SOURCES_0}"
 		"${LOCAL_ROBJECT}"
 		"${LOCAL_CXXMIRROR}"

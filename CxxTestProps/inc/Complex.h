@@ -18,4 +18,3 @@ namespace complex
 
 	void setImaginary(double pNum);
 }
-

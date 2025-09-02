@@ -1,3 +1,4 @@
+
 #include <gtest/gtest.h>
 
 #include <cstring>
@@ -35,7 +36,7 @@ namespace
             // Register std::vector<int> itself as a record with name "vector_int".
             rtl::type().record<std::vector<int>>("vector_int").build(),
 
-            // Register strlen again, showing multiple overloads can exist in the mirror.
+            // Register strlen again, redundant and gets ignored.
             rtl::type().function("strlen").build(std::strlen)
         });
     }
@@ -209,7 +210,7 @@ namespace rtl_tests
                           function-pointer already registered as "strlen"
                           This registration is ignored.
             */
-            });
+        });
 
         // Retrieve the reflected function "strlen" from the mirror.
         std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
@@ -310,7 +311,7 @@ namespace rtl_tests
             // Both map to the same underlying function-pointer, so FunctorIds match.
             rtl::type().function("cStrlen").build(strlen),
             rtl::type().function("stdStrlen").build(std::strlen)
-            });
+        });
 
         // Lookup function registered as "cStrlen".
         std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("cStrlen");
