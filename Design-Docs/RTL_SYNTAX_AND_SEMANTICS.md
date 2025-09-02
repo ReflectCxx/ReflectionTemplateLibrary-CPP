@@ -36,7 +36,7 @@ Every registration you make using the builder pattern is collected into the `rtl
 
 ### A few key points about managing this object
 
-* **Dispensable by design** → The `rtl::CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
+* **Dispensable by design** → The `CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
 
 * **Duplicate registration is harmless** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the lambda/functor table — the metadata simply refers back to the existing entry.
 
@@ -50,7 +50,7 @@ Every registration you make using the builder pattern is collected into the `rtl
 This ensures thread-safety and prevents redundant entries. While negligible for isolated registrations, this cost can accumulate when creating many mirrors or registering large numbers of types.
 
 👉 Bottom Line
-> *"Manage rtl::CxxMirror however your design requires — singleton, multiple, or transient. Each registration incurs a lock and table lookup, but the cost is negligible in normal use and only noticeable when scaling to very large numbers of types."*
+> *"Manage `CxxMirror` however your design requires — singleton, multiple, or transient. Each registration incurs a lock and table lookup, but the cost is negligible in normal use and only noticeable when scaling to very large numbers of types."*
 
 ---
 
