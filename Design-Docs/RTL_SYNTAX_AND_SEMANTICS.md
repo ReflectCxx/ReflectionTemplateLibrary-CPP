@@ -36,13 +36,13 @@ Every registration you make using the builder pattern is collected into the `rtl
 
 ### A few key points about managing this object
 
-* **Dispensable by design** → The `CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
+* ***Dispensable by design*** → The `CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
 
-* **Duplicate registration is harmless** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the lambda/functor table — the metadata simply refers back to the existing entry.
+* ***Duplicate registration is harmless*** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the lambda/functor table — the metadata simply refers back to the existing entry.
 
-* **Thread-safety guaranteed by RTL** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
+* ***Thread-safety guaranteed by RTL*** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
 
-* **Overhead is deliberate** → Each registration carries a small cost in memory and initialization time. Concretely:
+* ***Overhead is deliberate*** → Each registration carries a small cost in memory and initialization time. Concretely:
   * Every registration statement acquires a lock on the functor table.
   * It checks whether the function or lambda is already present.
   * If not, it adds the new entry to the lambda table and updates the functor table.
