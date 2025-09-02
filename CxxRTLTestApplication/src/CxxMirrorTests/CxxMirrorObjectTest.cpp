@@ -35,7 +35,7 @@ namespace
             // Register std::vector<int> itself as a record with name "vector_int".
             rtl::type().record<std::vector<int>>("vector_int").build(),
 
-            // Register strlen again, showing multiple overloads can exist in the mirror.
+            // Register strlen again, redundant and gets ignored.
             rtl::type().function("strlen").build(std::strlen)
         });
     }
