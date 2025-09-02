@@ -1,3 +1,4 @@
+
 #include <gtest/gtest.h>
 
 #include <cstring>
@@ -209,7 +210,7 @@ namespace rtl_tests
                           function-pointer already registered as "strlen"
                           This registration is ignored.
             */
-            });
+        });
 
         // Retrieve the reflected function "strlen" from the mirror.
         std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
@@ -310,7 +311,7 @@ namespace rtl_tests
             // Both map to the same underlying function-pointer, so FunctorIds match.
             rtl::type().function("cStrlen").build(strlen),
             rtl::type().function("stdStrlen").build(std::strlen)
-            });
+        });
 
         // Lookup function registered as "cStrlen".
         std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("cStrlen");
