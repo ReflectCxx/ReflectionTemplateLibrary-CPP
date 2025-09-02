@@ -12,7 +12,7 @@ RTL is implemented as a static library that organizes type-safe function pointer
 
 * ***Runtime Reflection for C++*** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
 
-* **Single Source of Truth** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
+* ***Single Source of Truth*** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
 * ***Non-Intrusive & Macro-Free*** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
 
