@@ -19,7 +19,7 @@ From there, `rtl::CxxMirror` does not hold onto heavyweight state. It is **as or
 rtl::type().member<Person>().method("getName").build(&Person::getName);
 ```
 
-will always yield **exactly the same metadata**, without ever admitting redundant lambdas or function pointers into the static tables.
+will always yield **exactly the same metadata**, without ever admitting redundant lambdas or functors into the static tables.
 
 > *"Mirrors are **cheap and repeatable**: the metadata is stable, redundant entries are never entertained, and the user remains in full control of a mirror’s lifetime."*
 
