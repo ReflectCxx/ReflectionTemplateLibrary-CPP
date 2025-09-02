@@ -30,7 +30,6 @@ RTL is implemented as a static library that organizes type-safe function pointer
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
----
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 ```c++
