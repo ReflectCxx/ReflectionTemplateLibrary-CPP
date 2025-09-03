@@ -5,8 +5,8 @@
 RTL is implemented as a *static library* that organizes function pointers into `std::vector` tables, with each functor wrapped in a lambda. This design enables constant-time `O(1)` lookups while ensuring type-safe and efficient runtime access.
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org) 
-[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org) 
-[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)
+[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)  
+[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## What RTL Brings to Your Code
