@@ -1,23 +1,28 @@
 # CMakeLists.txt for ReflectionTemplateLib
 
-# Set the minimum required CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# Set the project name
-project(ReflectionTemplateLib)
+# Project definition
+project(ReflectionTemplateLib LANGUAGES CXX)
 
+# Require C++20
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-SET(CXX_LIB_NAME ReflectionTemplateLib)
+# Library target
+add_library(${PROJECT_NAME} STATIC)
 
-ADD_LIBRARY(${PROJECT_NAME} STATIC "")
+# Public include directories
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/common
+        ${CMAKE_CURRENT_SOURCE_DIR}/detail/inc
+        ${CMAKE_CURRENT_SOURCE_DIR}/access/inc
+        ${CMAKE_CURRENT_SOURCE_DIR}/builder/inc
+)
 
-INCLUDE_DIRECTORIES(common)
-INCLUDE_DIRECTORIES(detail/inc)
-INCLUDE_DIRECTORIES(access/inc)
-INCLUDE_DIRECTORIES(builder/inc)
-
-# Add the source directory
-INCLUDE(detail/src/CMakeLists.txt)
-INCLUDE(access/src/CMakeLists.txt)
-INCLUDE(builder/CMakeLists.txt)
+# Add subdirectories for sources
+add_subdirectory(detail/src)
+add_subdirectory(access/src)
+add_subdirectory(builder)
