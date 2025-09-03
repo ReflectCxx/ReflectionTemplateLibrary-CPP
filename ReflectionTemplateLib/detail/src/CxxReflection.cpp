@@ -177,7 +177,7 @@ namespace rtl {
             if (givenRecordId != actualRecordId) {
                 std::cout << "\n[WARNING] Member function pointer does not belong to the class being registered."
                           << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
-                          << "\n          This function is ignored and not registered.\n\n";
+                          << "\n          This function is ignored and not registered.\n";
                 return false;
             }
             return true;
