@@ -32,7 +32,7 @@ Before registering anything, you need a central place to hold all reflection met
     });
 ```
 
-Every registration you make using the builder pattern is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+Every registration statement you add here is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
 ### A few key points about managing this object
 
