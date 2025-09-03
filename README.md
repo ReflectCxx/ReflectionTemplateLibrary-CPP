@@ -1,4 +1,4 @@
-# Reflection Template Library (RTL) - Modern C++ Reflection Framework
+# Reflection Template Library - Modern C++ Reflection Framework
 
 **Reflection Template Library (RTL)** is a lightweight C++ runtime reflection library that enables introspection and dynamic manipulation of types *(not limited to user-defined)* — allowing you to access, modify, and invoke objects at runtime without compile-time type knowledge.
 
