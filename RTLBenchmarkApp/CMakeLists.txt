@@ -30,8 +30,6 @@ endif()
 # ===============================
 set(RTL_INCLUDE_DIRS
     inc
-    "${CMAKE_SOURCE_DIR}/CxxTestUtils/inc"
-    "${CMAKE_SOURCE_DIR}/CxxRTLTypeRegistration/inc"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc"
@@ -39,24 +37,24 @@ set(RTL_INCLUDE_DIRS
 )
 
 # ===============================
+# Test Executable
+# ===============================
+set(CXX_EXE_NAME RTLBenchmarkApp)
+
+# ===============================
 # Benchmarks (only target)
 # ===============================
-# ===============================
-# Benchmarks (only target)
-# ===============================
-add_executable(RTLBenchmarkApp
+add_executable(${CXX_EXE_NAME}
     src/main.cpp
     src/BenchMark.cpp        # <-- added
     src/BenchMark.h          # <-- optional (for IDE visibility)
 )
 
 
-target_include_directories(RTLBenchmarkApp PRIVATE ${RTL_INCLUDE_DIRS})
+target_include_directories(${CXX_EXE_NAME} PRIVATE ${RTL_INCLUDE_DIRS})
 
-target_link_libraries(RTLBenchmarkApp
+target_link_libraries(${CXX_EXE_NAME}
     PRIVATE
         benchmark
-        CxxTestUtils
         ReflectionTemplateLib
-        CxxRTLTypeRegistration
 )
