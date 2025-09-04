@@ -242,8 +242,8 @@ namespace test_mirror
         static const auto _ = [&]()
         {
             const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
-            std::cout << "\n[ OUTPUT] test_mirror::cxx::mirror()==> dumping metadata as JSON."
-                      << "\n          file path: " << pathStr << std::endl;
+            std::cout << "\n[ OUTPUT] test_mirror::cxx::mirror() ==> dumping 'CxxMirror' as JSON."
+                      << "\n          file path: " << pathStr << "\n" << std::endl;
             rtl::CxxMirrorToJson::dump(cxx_mirror, pathStr);
             return 0;
         }();

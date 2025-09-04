@@ -33,8 +33,14 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
 
+            // Sets Calender's move operation counter to zero
+            calender::reset_move_ops_counter();
+
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
+            
+            // Calender's move-constructor called once.
+            EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
@@ -91,9 +97,15 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
 
+            // Sets Calender's move operation counter to zero
+            calender::reset_move_ops_counter();
+
             // RObject created via alloc::HEAP, contains pointer to reflected type internally, So just the
             // address wrapped in std::any inside Robject is moved. Calender's move constructor is not called.
             RObject calender1 = std::move(calender0);
+
+            // Calender's move constructor isn't called.
+            EXPECT_TRUE(calender::get_move_ops_count() == 0);
 
             ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
@@ -228,8 +240,14 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
 
+            // Sets Calender's move operation counter to zero
+            calender::reset_move_ops_counter();
+
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
+
+            // Calender's move-constructor called once.
+            EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
             EXPECT_TRUE(calender1.isConstCastSafe());
