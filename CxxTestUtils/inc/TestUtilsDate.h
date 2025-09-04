@@ -34,8 +34,10 @@ namespace test_utils
 		static constexpr const char* str_getTheEvent = "getTheEvent";
 		static constexpr const char* str_getSavedEvent = "getSavedEvent";
 
+		static void reset_move_ops_counter();
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
+		static const std::size_t get_move_ops_count();
 	};
 
 	struct date

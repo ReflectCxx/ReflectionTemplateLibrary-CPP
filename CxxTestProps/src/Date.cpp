@@ -10,6 +10,7 @@ namespace nsdate
 	std::size_t Date::m_instanceCount = 0;
 	std::size_t Event::m_instanceCount = 0;
 	std::size_t Calender::m_instanceCount = 0;
+	std::size_t Calender::m_moveOpsCount = 0;
 
 	Calender::~Calender()
 	{
@@ -34,6 +35,7 @@ namespace nsdate
 		: m_theEvent(std::move(pOther.m_theEvent))
 		, m_savedEvent(std::move(pOther.m_savedEvent))
 	{
+		m_moveOpsCount++;
 		m_instanceCount++;
 	}
 
@@ -65,6 +67,16 @@ namespace nsdate
 	std::size_t Calender::instanceCount()
 	{
 		return m_instanceCount;
+	}
+
+	std::size_t Calender::getMoveOpsCount()
+	{
+		return m_moveOpsCount;
+	}
+
+	void Calender::resetMoveOpsCounter()
+	{
+		m_moveOpsCount = 0;
 	}
 }
 

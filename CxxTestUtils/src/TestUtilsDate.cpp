@@ -20,6 +20,16 @@ namespace test_utils
 		return Calender::instanceCount();
 	}
 
+	void calender::reset_move_ops_counter()
+	{
+		Calender::resetMoveOpsCounter();
+	}
+
+	const std::size_t calender::get_move_ops_count()
+	{
+		return Calender::getMoveOpsCount();
+	}
+
 	const bool event::assert_zero_instance_count()
 	{
 		return (Event::instanceCount() == 0);

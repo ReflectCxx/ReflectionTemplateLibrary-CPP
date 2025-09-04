@@ -54,7 +54,9 @@ namespace nsdate
 		const Event& getTheEvent();
 		const Event& getSavedEvent();
 
+		static void resetMoveOpsCounter();
 		static std::size_t instanceCount();
+		static std::size_t getMoveOpsCount();
 
 		static Calender create();
 
@@ -65,6 +67,8 @@ namespace nsdate
 		std::unique_ptr<Event> m_savedEvent;
 
 		static std::size_t m_instanceCount;
+
+		static std::size_t m_moveOpsCount;
 	};
 
 
