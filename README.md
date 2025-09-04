@@ -106,31 +106,31 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 ## Reflection Features
 
 * ✅ **Function Reflection** 🔧 – Register and invoke C-style functions, supporting all kinds of overloads.
-* ✅ **Class and Struct Reflection** 🏗️ – Register and dynamically reflect their methods, constructors, and destructors.
-* ✅ **Complete Constructor Support** 🏗️:
+* ✅ **Class and Struct Reflection** – Register and dynamically reflect their methods, constructors, and destructors.
+* ✅ **Complete Constructor Support** :
   * Default construction.
   * Copy/Move construction.
   * Any overloaded constructor.
 
-* ✅ **Allocation Strategies & Ownership** 📂:
+* ✅ **Allocation Strategies & Ownership** :
   * Choose between `Heap` or `Stack` allocation.
   * Automatic move semantics for ownership transfers.
   * Scope-based destruction for `Heap` allocated instances.
 
-* ✅ **Member Function Invocation** 🎯:
+* ✅ **Member Function Invocation** :
   * Static methods.
   * Const/Non-const methods.
   * Any overloaded method, Const/Non-Const based as well.
 
-* ✅ **Perfect Forwarding** 🚀 – Binds LValue/RValue to correct overload.
-* ✅ **Zero Overhead Forwarding** ⚡ – No temporaries or copies during method forwarding.
-* ✅ **Namespace Support** 🗂️ – Group and reflect under namespaces.
-* ✅ **Reflected Returns** 🔍 – Access return values whose types are unknown at compile time. Validate against the expected type and extract the content safely.
-* ✅ **Smart Pointer Reflection** 🔗 – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
-* 🟨 **Conservative Conversions** 🛡️ – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
-* 🟨 **Materialize New Types** 🔄 – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
-* 🚧 **STL Wrapper Support** 📦 – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
-* 🚧 **Relaxed Argument Matching** ⚙️ – Flexible parameter matching for reflective calls, enabling intuitive conversions and overload resolution. *(In Progress)*
+* ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
+* ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
+* ✅ **Namespace Support** – Group and reflect under namespaces.
+* ✅ **Reflected Returns** – Access return values whose types are unknown at compile time. Validate against the expected type and extract the content safely.
+* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
+* 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
+* 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
+* 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
+* 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling intuitive conversions and overload resolution. *(In Progress)*
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Composite Type Reflection**: Planned.
