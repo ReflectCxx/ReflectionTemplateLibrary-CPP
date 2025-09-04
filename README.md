@@ -105,7 +105,7 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 
 ## Reflection Features
 
-* ✅ **Function Reflection** 🔧 – Register and invoke C-style functions, supporting all kinds of overloads.
+* ✅ **Function Reflection** – Register and invoke C-style functions, supporting all kinds of overloads.
 * ✅ **Class and Struct Reflection** – Register and dynamically reflect their methods, constructors, and destructors.
 * ✅ **Complete Constructor Support** :
   * Default construction.
