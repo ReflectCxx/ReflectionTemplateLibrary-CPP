@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(CxxPerfRTLTestApplication LANGUAGES CXX)
+project(RTLBenchmarkApp LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,11 +41,19 @@ set(RTL_INCLUDE_DIRS
 # ===============================
 # Benchmarks (only target)
 # ===============================
-add_executable(CxxPerfRTLTestApplication src/main_bench.cpp)
+# ===============================
+# Benchmarks (only target)
+# ===============================
+add_executable(RTLBenchmarkApp
+    src/main.cpp
+    src/BenchMark.cpp        # <-- added
+    src/BenchMark.h          # <-- optional (for IDE visibility)
+)
 
-target_include_directories(CxxPerfRTLTestApplication PRIVATE ${RTL_INCLUDE_DIRS})
 
-target_link_libraries(CxxPerfRTLTestApplication
+target_include_directories(RTLBenchmarkApp PRIVATE ${RTL_INCLUDE_DIRS})
+
+target_link_libraries(RTLBenchmarkApp
     PRIVATE
         benchmark
         CxxTestUtils
