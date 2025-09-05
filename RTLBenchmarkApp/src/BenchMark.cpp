@@ -103,7 +103,7 @@ namespace rtl_bench
 	{
 		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
 		static rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
-		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().robj;
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
 
 		for (auto _ : state)
 		{
@@ -148,7 +148,7 @@ namespace rtl_bench
 	{
 		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
 		static rtl::Method getMsg = rNode.getMethod("getMessage").value();
-		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().robj;
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
 
 		for (auto _ : state)
 		{
