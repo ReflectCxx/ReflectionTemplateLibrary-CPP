@@ -43,7 +43,7 @@ namespace rtl {
 
         //invokes the constructor associated with this 'Method'
         template<class ..._args>
-        std::pair<error, RObject> invokeCtor(alloc&& pAllocType, _args&&...params) const;
+        Return invokeCtor(alloc&& pAllocType, _args&&...params) const;
 
     public:
 
@@ -94,7 +94,7 @@ namespace rtl {
         * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
     */  constexpr auto operator()(const RObject& pTarget) const
         {
-            return [&](auto&&...params)-> std::pair<error, RObject> {
+            return [&](auto&&...params)-> Return {
                 return bind(pTarget).call(std::forward<decltype(params)>(params)...);
             };
         }

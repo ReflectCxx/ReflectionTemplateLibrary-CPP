@@ -15,7 +15,7 @@ namespace proxy_test
      * @return The result of the function call as a std::any object. If the method does not exist or the signature does not match, returns an empty std::any object.
      */
     template<class ..._args>
-    inline std::pair<rtl::error, rtl::RObject> Proxy::forwardCall(const std::string& pFunctionName, _args&& ...params)
+    inline rtl::Return Proxy::forwardCall(const std::string& pFunctionName, _args&& ...params)
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {
@@ -40,7 +40,7 @@ namespace proxy_test
      * @return The result of the function call as a std::any object. If the method does not exist or the signature does not match, returns an empty std::any object.
      */
     template<class ..._args>
-    inline std::pair<rtl::error, rtl::RObject> Proxy::forwardStaticCall(const std::string& pFunctionName, _args&& ...params)
+    inline rtl::Return Proxy::forwardStaticCall(const std::string& pFunctionName, _args&& ...params)
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {

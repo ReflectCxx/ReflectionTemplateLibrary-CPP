@@ -37,11 +37,11 @@ namespace rtl
 
     /*  @method: operator()()
         @param: variadic arguments.
-        @return: std::pair<error, RObject>, possible error & return value of from the reflected call.
+        @return: Return, possible error & return value of from the reflected call.
         * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
         * providing optional syntax, Function::call() does the exact same thing.
     */  template<class ..._args>
-    inline std::pair<error, RObject> Function::operator()(_args&& ...params) const noexcept
+    inline Return Function::operator()(_args&& ...params) const noexcept
     {
         return bind().call(std::forward<_args>(params)...);
     }

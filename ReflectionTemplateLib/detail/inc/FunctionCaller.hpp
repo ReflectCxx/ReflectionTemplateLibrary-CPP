@@ -26,7 +26,7 @@ namespace rtl::detail
 
     template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, RObject> FunctionCaller<_signature...>::call(_args&&...params) const noexcept
+    inline Return FunctionCaller<_signature...>::call(_args&&...params) const
     {
         using Container = std::conditional_t<sizeof...(_signature) == 0,
                                              FunctorContainer<std::remove_reference_t<_args>...>,
@@ -34,11 +34,8 @@ namespace rtl::detail
 
         std::size_t index = m_function.hasSignatureId(Container::getContainerId());
         if (index != rtl::index_none) {
-
-            error err = error::None;
-            return { err, Container::template forwardCall<_args...>(err, index, std::forward<_args>(params)...) };
+            return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
         }
-
         return { error::SignatureMismatch, RObject{ } };
     }
 }

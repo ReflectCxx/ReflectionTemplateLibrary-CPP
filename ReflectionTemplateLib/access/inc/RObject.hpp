@@ -41,7 +41,7 @@ namespace rtl
         // Explicitly clear moved-from source
         pOther.m_object.reset();
         pOther.m_objectId = { };
-        pOther.m_getClone = nullptr;
+        //pOther.m_getClone = nullptr;
         pOther.m_converters = nullptr;
     }
 
@@ -161,37 +161,39 @@ namespace rtl
 namespace rtl 
 {
     template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
+    inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
         error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Heap) };
+        RObject robj/*;//*/ = m_getClone(err, *this, alloc::Heap);
+        return { err, std::move(robj) };
     }
 
 
     template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
+    inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
         error err = error::None;
-        return { err, m_getClone(err, *this, alloc::Stack) };
+        RObject robj/*;//*/ = m_getClone(err, *this, alloc::Stack);
+        return { err, std::move(robj) };
     }
 
 
     template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Wrapper>() const
+    inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Wrapper>() const
     {
-        return { error::StlWrapperHeapAllocForbidden, RObject{ } };
+        return { error::StlWrapperHeapAllocForbidden, RObject{} };
     }
 
 
     template<>
-    inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
+    inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
     {
         if (m_objectId.m_wrapperType == detail::Wrapper::None) {
-            return { error::NotWrapperType, RObject{ } };
+            return { error::NotWrapperType, RObject{} };
         }
         else if (m_objectId.m_wrapperType == detail::Wrapper::Unique) 
         {
-            return { error::TypeNotCopyConstructible, RObject{ } };
+            return { error::TypeNotCopyConstructible, RObject{} };
         }
         else {
             return { error::None, RObject(*this) };
@@ -200,7 +202,7 @@ namespace rtl
 
 
     template<alloc _allocOn, copy _copyTarget>
-    inline std::pair<error, RObject> RObject::clone() const
+    inline Return RObject::clone() const
     {
         if (isEmpty()) {
             return { error::EmptyRObject, RObject{ } };

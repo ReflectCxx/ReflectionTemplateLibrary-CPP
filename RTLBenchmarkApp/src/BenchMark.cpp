@@ -94,21 +94,21 @@ namespace rtl_bench
 		static auto sendMsgCall = sendMsg.bind<const char*>();
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(sendMsgCall.call("reflected"));//*/.call("reflected"));
+			benchmark::DoNotOptimize(sendMsgCall.call("reflected"));
 		}
 	}
 
 
 	void BenchMark::reflectedMethodCall_noReturn(benchmark::State& state)
 	{
-		//rtl::Record rNode = cxx_mirror().getRecord("node").value();
-		//rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
-		//rtl::RObject robj = rNode.create<rtl::alloc::Stack>().second;
+		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
+		static rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().robj;
 
-		//for (auto _ : state)
-		//{
-		//	benchmark::DoNotOptimize(sendMsg.bind<const char*>(robj).call("reflected"));
-		//}
+		for (auto _ : state)
+		{
+			benchmark::DoNotOptimize(sendMsg.bind<const char*>(robj).call("reflected"));
+		}
 	}
 
 
@@ -146,13 +146,13 @@ namespace rtl_bench
 
 	void BenchMark::reflectedMethodCall_withReturn(benchmark::State& state)
 	{
-		//rtl::Record rNode = cxx_mirror().getRecord("node").value();
-		//rtl::Method getMsg = rNode.getMethod("getMessage").value();
-		//rtl::RObject robj = rNode.create<rtl::alloc::Stack>().second;
+		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
+		static rtl::Method getMsg = rNode.getMethod("getMessage").value();
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().robj;
 
-		//for (auto _ : state)
-		//{
-		//	benchmark::DoNotOptimize(getMsg.bind<const char*>(robj).call("reflected"));
-		//}
+		for (auto _ : state)
+		{
+			benchmark::DoNotOptimize(getMsg.bind<const char*>(robj).call("reflected"));
+		}
 	}
 }
