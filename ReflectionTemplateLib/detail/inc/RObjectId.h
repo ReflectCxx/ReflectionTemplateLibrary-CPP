@@ -35,8 +35,6 @@ namespace rtl::detail
 
     private:
 
-        static std::vector<traits::ConverterPair> m_conversions;
-
         mutable bool m_isWrappingConst;
         mutable bool m_isConstCastSafe;
 
@@ -46,8 +44,6 @@ namespace rtl::detail
 
         mutable std::size_t m_typeId;
         mutable std::size_t m_wrapperTypeId;
-
-        const std::vector<traits::ConverterPair>& m_converters;
 
         RObjectId(RObjectId&&) = default;
         RObjectId(const RObjectId&) = default;
@@ -63,12 +59,11 @@ namespace rtl::detail
             , m_containsAs(EntityKind::None)
             , m_typeId(TypeId<>::None)
             , m_wrapperTypeId(TypeId<>::None)
-            , m_converters(m_conversions)
         { }
 
 
         RObjectId(alloc pAllocOn, bool pIsConstCastSafe, Wrapper pWrapperType, bool pIsStoredConst, EntityKind pContainsAs,
-                  std::size_t pTypeId, const std::vector<traits::ConverterPair>& pConverters, std::size_t pWrapperTypeId)
+                  std::size_t pTypeId, std::size_t pWrapperTypeId)
             : m_isWrappingConst(pIsStoredConst)
             , m_isConstCastSafe(pIsConstCastSafe)
             , m_allocatedOn(pAllocOn)
@@ -76,7 +71,6 @@ namespace rtl::detail
             , m_containsAs(pContainsAs)
             , m_typeId(pTypeId)
             , m_wrapperTypeId(pWrapperTypeId)
-            , m_converters(pConverters)
         { }
 
 
@@ -89,19 +83,6 @@ namespace rtl::detail
             m_containsAs = EntityKind::None;
             m_typeId = TypeId<>::None;
             m_wrapperTypeId = TypeId<>::None;
-        }
-
-
-        inline std::size_t getConverterIndex(const std::size_t pToTypeId) const
-        {
-            if (m_containsAs != EntityKind::None) {
-                for (std::size_t index = 0; index < m_converters.size(); index++) {
-                    if (m_converters[index].first == pToTypeId) {
-                        return index;
-                    }
-                }
-            }
-            return index_none;
         }
 
 
@@ -136,10 +117,9 @@ namespace rtl::detail
             
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-            const auto& conversions = rtl::detail::ReflectCast<_T>::getConversions();
             const bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
             return RObjectId(_allocOn, pIsConstCastSafe, _W::type, 
-                             isWrappingConst, containedAs, typeId, conversions, wrapperId);
+                             isWrappingConst, containedAs, typeId, wrapperId);
         }
     };
 }

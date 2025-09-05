@@ -24,21 +24,25 @@
 
 namespace rtl
 {
-    inline RObject::RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId)
+    inline RObject::RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId,
+                            const std::vector<traits::ConverterPair>& pConverters)
         : m_getClone(std::forward<Cloner>(pCloner))
         , m_object(std::forward<std::any>(pObject))
         , m_objectId(pRObjectId)
+        , m_converters(&pConverters)
     { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
         , m_getClone(std::move(pOther.m_getClone))
         , m_objectId(pOther.m_objectId)
+        , m_converters(pOther.m_converters)
     {
         // Explicitly clear moved-from source
         pOther.m_object.reset();
         pOther.m_objectId.reset();
         pOther.m_getClone = nullptr;
+        pOther.m_converters = nullptr;
     }
 
     inline std::atomic<std::size_t>& RObject::getInstanceCounter()
@@ -46,6 +50,20 @@ namespace rtl
         static std::atomic<std::size_t> instanceCounter = {0};
         return instanceCounter;
     }
+
+
+    inline std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
+    {
+        if (m_objectId.m_containsAs != detail::EntityKind::None) {
+            for (std::size_t index = 0; index < m_converters->size(); index++) {
+                if ((*m_converters)[index].first == pToTypeId) {
+                    return index;
+                }
+            }
+        }
+        return index_none;
+    }
+
 
     template<class T>
     inline bool RObject::canViewAs() const
@@ -57,7 +75,7 @@ namespace rtl
                 }
             }
             const auto& typeId = detail::TypeId<T>::get();
-            return (m_objectId.m_typeId == typeId || m_objectId.getConverterIndex(typeId) != index_none);
+            return (m_objectId.m_typeId == typeId || getConverterIndex(typeId) != index_none);
         }
     }
 
@@ -66,7 +84,7 @@ namespace rtl
     inline std::optional<rtl::view<T>> RObject::performConversion(const std::size_t pIndex) const
     {
         detail::EntityKind newKind = detail::EntityKind::None;
-        const traits::Converter& convert = m_objectId.m_converters[pIndex].second;
+        const traits::Converter& convert = (*m_converters)[pIndex].second;
         const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
@@ -128,7 +146,7 @@ namespace rtl
             }
             else
             {
-                const std::size_t index = m_objectId.getConverterIndex(asTypeId);
+                const std::size_t index = getConverterIndex(asTypeId);
                 if (index != index_none) {
                     return performConversion<T>(index);
                 }

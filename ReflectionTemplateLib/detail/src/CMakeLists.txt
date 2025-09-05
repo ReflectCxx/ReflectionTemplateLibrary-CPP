@@ -2,7 +2,6 @@
 set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/CxxReflection.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctorId.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/RObjectId.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/ReflectCast.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/RObjectConverters_string.cpp"
 )

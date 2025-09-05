@@ -45,10 +45,15 @@ namespace rtl
         mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
 
+        mutable const std::vector<traits::ConverterPair>* m_converters;
+
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
+        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId,
+                const std::vector<traits::ConverterPair>& pConverters);
 
         static std::atomic<std::size_t>& getInstanceCounter();
+
+        std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
         template<rtl::alloc _allocOn, detail::EntityKind _entityKind>
         std::pair<rtl::error, RObject> createCopy() const;

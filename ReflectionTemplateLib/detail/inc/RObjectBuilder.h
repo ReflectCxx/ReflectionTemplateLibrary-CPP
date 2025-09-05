@@ -26,6 +26,9 @@ namespace rtl::detail
         template <class T>
         static Cloner buildCloner();
 
+        template <class T>
+        static const std::vector<traits::ConverterPair>& getConverters();
+
     public:
 
         RObjectBuilder() = delete;
