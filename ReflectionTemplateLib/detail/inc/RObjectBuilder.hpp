@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "RObject.hpp"
 #include "RObjectUPtr.h"
 #include "RObjectBuilder.h"
@@ -33,35 +35,41 @@ namespace rtl::detail {
     }
 
     template<class T>
-    inline RObjectBuilder::Cloner RObjectBuilder::buildCloner()
+    inline const RObjectBuilder::Cloner& RObjectBuilder::buildCloner()
     {
         using W = traits::std_wrapper<T>;
         using _T = std::conditional_t<W::type == Wrapper::None, T, typename W::value_type>;
 
         if constexpr (std::is_copy_constructible_v<_T>)
         {
-            return [](error& pError, const RObject& pOther, alloc pAllocOn)-> RObject
+            static const Cloner cloner = [](const RObject& pOther, alloc pAllocOn) -> Return
             {
                 const auto& srcObj = pOther.view<_T>()->get();
-                pError = error::None;
-                if (pAllocOn == alloc::Stack) {
-                    return RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true);
+                switch (pAllocOn)
+                {
+                case alloc::Stack:
+                    return { error::None,
+                             RObjectBuilder::template build<_T, alloc::Stack>(_T(srcObj), true) };
+
+                case alloc::Heap:
+                    return { error::None,
+                             RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true) };
+
+                default:
+                    return { error::EmptyRObject, RObject{} };
                 }
-                else if (pAllocOn == alloc::Heap) {
-                    return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
-                }
-                return RObject{ }; //dead code. compiler warning ommited.
             };
+            return cloner;
         }
-        else 
+        else
         {
-            return [](error& pError, const RObject& pOther, alloc pAllocOn)-> RObject
-            {
-                pError = error::TypeNotCopyConstructible;
-                return RObject{ };
+            static const Cloner cloner = [](const RObject&, alloc) -> Return {
+                return { error::TypeNotCopyConstructible, RObject{} };
             };
+            return cloner;
         }
     }
+
 
 
     template<class T, rtl::alloc _allocOn>
@@ -73,32 +81,37 @@ namespace rtl::detail {
         if constexpr (_allocOn == alloc::Heap)
         {
             static_assert(isRawPointer, "Invalid 'alloc' specified for non-pointer-type 'T'");
-            _T* objPtr = static_cast<_T*>(pVal);
-            const RObjectId robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
-            const std::vector<traits::ConverterPair>& conversions = getConverters<std::unique_ptr<_T>>();
-            return RObject(std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(objPtr))), buildCloner<_T>(), robjId, conversions);
+            return RObject(RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe), 
+                           std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(static_cast<_T*>(pVal)))),
+                           buildCloner<_T>(),
+                           getConverters<std::unique_ptr<_T>>());
         }
         else if constexpr (_allocOn == alloc::Stack)
         {
             if constexpr (isRawPointer)
             {
-                const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
-                const std::vector<traits::ConverterPair>& conversions = getConverters<T>();
-                return RObject(std::any(static_cast<const _T*>(pVal)), buildCloner<_T>(), robjId, conversions);
+                return RObject(RObjectId::create<T, _allocOn>(pIsConstCastSafe),
+                               std::any(static_cast<const _T*>(pVal)),
+                               buildCloner<_T>(),
+                               getConverters<T>());
             }
             else
             {
-                const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
-                const std::vector<traits::ConverterPair>& conversions = getConverters<T>();
                 if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
                 {
                     using U = traits::std_wrapper<_T>::value_type;
-                    return RObject(std::any(RObjectUPtr<U>(std::move(pVal))), buildCloner<_T>(), robjId, conversions);
+                    return RObject(RObjectId::create<T, _allocOn>(pIsConstCastSafe),
+                                   std::any(RObjectUPtr<U>(std::move(pVal))),
+                                   buildCloner<_T>(),
+                                   getConverters<T>());
                 }
                 else 
                 {
                     static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-                    return RObject(std::any(std::forward<T>(pVal)), buildCloner<_T>(), robjId, conversions);
+                    return RObject(RObjectId::create<T, _allocOn>(pIsConstCastSafe),
+                                   std::any(std::forward<T>(pVal)),
+                                   buildCloner<_T>(),
+                                   getConverters<T>());
                 }
             }
         }

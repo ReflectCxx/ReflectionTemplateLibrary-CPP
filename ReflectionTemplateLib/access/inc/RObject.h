@@ -40,15 +40,16 @@ namespace rtl
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
-        mutable Cloner m_getClone;
-        mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
+
+        mutable std::any m_object;
+        mutable const Cloner* m_getClone;
         mutable const std::vector<traits::ConverterPair>* m_converters;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId,
+        RObject(const detail::RObjectId& pRObjId, std::any&& pObject, const Cloner& pCloner,
                 const std::vector<traits::ConverterPair>& pConverters);
 
         static std::atomic<std::size_t>& getInstanceCounter();
@@ -104,6 +105,6 @@ namespace rtl
 
     struct [[nodiscard]] Return {
         error err;
-        RObject robj;
+        RObject rObject;
     };
 }

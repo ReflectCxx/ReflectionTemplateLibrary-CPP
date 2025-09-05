@@ -24,24 +24,24 @@
 
 namespace rtl
 {
-    inline RObject::RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId,
+    inline RObject::RObject(const detail::RObjectId& pRObjId, std::any&& pObject, const Cloner& pCloner,
                             const std::vector<traits::ConverterPair>& pConverters)
-        : m_getClone(std::forward<Cloner>(pCloner))
+        : m_objectId(pRObjId)
         , m_object(std::forward<std::any>(pObject))
-        , m_objectId(pRObjectId)
+        , m_getClone(&pCloner)
         , m_converters(&pConverters)
     { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
-        , m_getClone(std::move(pOther.m_getClone))
+        , m_getClone(pOther.m_getClone)
         , m_objectId(pOther.m_objectId)
         , m_converters(pOther.m_converters)
     {
         // Explicitly clear moved-from source
         pOther.m_object.reset();
-        pOther.m_objectId = { };
-        //pOther.m_getClone = nullptr;
+        pOther.m_objectId = {};
+        pOther.m_getClone = nullptr;
         pOther.m_converters = nullptr;
     }
 
@@ -163,18 +163,14 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
-        error err = error::None;
-        RObject robj/*;//*/ = m_getClone(err, *this, alloc::Heap);
-        return { err, std::move(robj) };
+        return (*m_getClone)(*this, alloc::Heap);
     }
 
 
     template<>
     inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
-        error err = error::None;
-        RObject robj/*;//*/ = m_getClone(err, *this, alloc::Stack);
-        return { err, std::move(robj) };
+        return (*m_getClone)(*this, alloc::Stack);
     }
 
 
@@ -205,7 +201,7 @@ namespace rtl
     inline Return RObject::clone() const
     {
         if (isEmpty()) {
-            return { error::EmptyRObject, RObject{ } };
+            return { error::EmptyRObject, RObject{} };
         }
         if constexpr (_copyTarget == copy::Value) {
             return createCopy<_allocOn, detail::EntityKind::Value>();

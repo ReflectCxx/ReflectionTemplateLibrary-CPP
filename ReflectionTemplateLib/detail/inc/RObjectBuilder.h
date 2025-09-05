@@ -15,16 +15,17 @@
 
 namespace rtl {
     class RObject;
+    struct Return;
 }
 
 namespace rtl::detail
 {
     class RObjectBuilder
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
         template <class T>
-        static Cloner buildCloner();
+        static const Cloner& buildCloner();
 
         template <class T>
         static const std::vector<traits::ConverterPair>& getConverters();
