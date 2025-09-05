@@ -123,7 +123,7 @@ namespace rtl_bench
 
 	void BenchMark::lambdaCall_withReturn(benchmark::State& state)
 	{
-		std::function getMsg = [](const char* pMsg) {
+		static std::function getMsg = [](const char* pMsg) {
 			return getMessage(pMsg);
 		};
 
@@ -136,7 +136,7 @@ namespace rtl_bench
 
 	void BenchMark::reflectedCall_withReturn(benchmark::State& state)
 	{
-		rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
+		static rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
 		for (auto _ : state)
 		{
 			benchmark::DoNotOptimize(getMsg.bind<const char*>().call("reflected"));
