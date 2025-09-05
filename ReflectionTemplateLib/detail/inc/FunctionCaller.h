@@ -15,6 +15,7 @@ namespace rtl
 {
     class RObject;
     class Function;
+    class Return;
 }
 
 namespace rtl::detail
@@ -30,7 +31,7 @@ namespace rtl::detail
     public:
 
         template<class ..._args>
-        std::pair<error, RObject> call(_args&&...) const noexcept;
+        rtl::Return call(_args&&...) const;
 
         friend Function;
     };

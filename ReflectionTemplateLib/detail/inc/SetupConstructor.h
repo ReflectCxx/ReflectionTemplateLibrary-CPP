@@ -26,7 +26,7 @@ namespace rtl {
         class SetupConstructor
         {	
             template<class ..._signature>
-            using CtorLambda = std::function < RObject(error&, alloc, _signature...) >;
+            using CtorLambda = std::function < Return(alloc, _signature...) >;
 
             template<class _recordType, class ..._signature>
             static CtorLambda<_signature...> getConstructorCaller();

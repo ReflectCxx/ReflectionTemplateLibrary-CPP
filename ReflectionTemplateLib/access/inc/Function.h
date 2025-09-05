@@ -92,7 +92,7 @@ namespace rtl {
         bool hasSignature() const;
 
         template<class ..._args>
-        std::pair<error, RObject> operator()(_args&&...params) const noexcept;
+        Return operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
         const detail::FunctionCaller<_signature...> bind() const;

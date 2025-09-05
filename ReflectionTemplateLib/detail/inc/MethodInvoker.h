@@ -34,13 +34,13 @@ namespace rtl::detail {
         struct Invoker {
 
             template<class ..._args>
-            static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
+            static Return invoke(const Method& pMethod, const RObject& pTarget, _args&&...);
         };
 
     public:
 
         template<class ..._args>
-        std::pair<error, RObject> call(_args&&...) const noexcept;
+        Return call(_args&&...) const noexcept;
 
         friend Method;
     };
@@ -61,13 +61,13 @@ namespace rtl::detail {
         struct Invoker {
 
             template<class ..._args>
-            static RObject invoke(error& pError, const Method& pMethod, const RObject& pTarget, _args&&...);
+            static Return invoke(const Method& pMethod, const RObject& pTarget, _args&&...);
         };
 
     public:
 
         template<class ..._args>
-        std::pair<error, RObject> call(_args&&...) const noexcept;
+        Return call(_args&&...) const noexcept;
 
         friend Method;
     };

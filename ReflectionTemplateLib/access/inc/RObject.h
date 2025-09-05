@@ -34,24 +34,30 @@ namespace rtl::detail
 
 namespace rtl
 {
+    struct Return;
     class Function;
 
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function<RObject(error&, const RObject&, rtl::alloc)>;
+        using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
-        mutable Cloner m_getClone;
-        mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
 
+        mutable std::any m_object;
+        mutable const Cloner* m_getClone;
+        mutable const std::vector<traits::ConverterPair>* m_converters;
+
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, Cloner&& pCloner, const detail::RObjectId& pRObjectId);
+        RObject(const detail::RObjectId& pRObjId, std::any&& pObject, const Cloner& pCloner,
+                const std::vector<traits::ConverterPair>& pConverters);
 
         static std::atomic<std::size_t>& getInstanceCounter();
 
+        std::size_t getConverterIndex(const std::size_t pToTypeId) const;
+
         template<rtl::alloc _allocOn, detail::EntityKind _entityKind>
-        std::pair<rtl::error, RObject> createCopy() const;
+        Return createCopy() const;
 
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
@@ -79,7 +85,7 @@ namespace rtl
         bool canViewAs() const;
 
         template<rtl::alloc _allocOn, rtl::copy _copyTarget = rtl::copy::Auto>
-        std::pair<rtl::error, RObject> clone() const;
+        Return clone() const;
 
         template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;
@@ -95,5 +101,10 @@ namespace rtl
         friend struct detail::RObjectUPtr;
         friend detail::RObjExtractor;
         friend detail::RObjectBuilder;
+    };
+
+    struct [[nodiscard]] Return {
+        error err;
+        RObject rObject;
     };
 }

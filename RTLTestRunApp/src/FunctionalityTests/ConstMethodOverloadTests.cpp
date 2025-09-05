@@ -76,12 +76,12 @@ namespace rtl_tests
 
             string lastName = person::LAST_NAME;
             {
-                auto [err, ret] = updateLastName->bind(constCast(RObject())).call(lastName);
+                auto [err, ret] = updateLastName->bind(constCast(RObject{ })).call(lastName);
 
                 EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateLastName->bind(constCast(RObject())).call(lastName);
+                auto [err, ret] = updateLastName->bind(constCast(RObject{ })).call(lastName);
 
                 EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());

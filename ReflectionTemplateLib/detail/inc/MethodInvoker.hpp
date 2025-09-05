@@ -32,7 +32,7 @@ namespace rtl::detail
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, RObject> DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         //Only static-member-functions have Qualifier- 'methodQ::None'
         if (m_method.getQualifier() == methodQ::None) {
@@ -40,20 +40,18 @@ namespace rtl::detail
         }
         if (m_target.isEmpty()) {
             //if the target is empty.
-            return { error::EmptyRObject, RObject() };
+            return { error::EmptyRObject, RObject{ } };
         }
         if (m_target.getTypeId() != m_method.getRecordTypeId()) {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, RObject() };
+            return { error::TargetMismatch, RObject{ } };
         }
         if constexpr (sizeof...(_signature) == 0) {
             // executes when bind doesn't have any explicit signature types specified. (e.g. perfect-forwaring)
-            error err = error::None;
-            return { err, Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+            return Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(m_method, m_target, std::forward<_args>(params)...);
         }
         else {
-            error err = error::None;
-            return { err, Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+            return Invoker<_signature...>::invoke(m_method, m_target, std::forward<_args>(params)...);
         }
     }
 
@@ -62,9 +60,8 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline RObject 
-    DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                       const Method& pMethod,
+    inline Return 
+    DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
                                                                        const RObject& pTarget,
                                                                        _args&&... params)
     {
@@ -73,7 +70,7 @@ namespace rtl::detail
 
         if (constMethodIndex != rtl::index_none)
         {
-            return containerConst::template forwardCall<_args...>(pError, pTarget, constMethodIndex, std::forward<_args>(params)...);
+            return containerConst::template forwardCall<_args...>(pTarget, constMethodIndex, std::forward<_args>(params)...);
         }
         else
         {
@@ -83,16 +80,12 @@ namespace rtl::detail
             if (nonConstMethodIndex != rtl::index_none) 
             {
                 if (!pTarget.isConstCastSafe()) {
-                    pError = error::ConstOverloadMissing;
-                    return RObject();
+                    return { error::ConstOverloadMissing, RObject{} };
                 }
-                return containerNonConst::template forwardCall<_args...>(pError, pTarget, nonConstMethodIndex, std::forward<_args>(params)...);
-            }
-            else {
-                pError = error::SignatureMismatch;
+                return containerNonConst::template forwardCall<_args...>(pTarget, nonConstMethodIndex, std::forward<_args>(params)...);
             }
         }
-        return RObject();
+        return { error::SignatureMismatch, RObject{} };
     }
 }
 
@@ -113,26 +106,24 @@ namespace rtl::detail
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    inline std::pair<error, RObject> NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_method.getQualifier() == methodQ::None) {
             return static_cast<Function>(m_method).bind().call(std::forward<_args>(params)...);
         }
         if (m_target.isEmpty()) {
             //if the target is empty.
-            return { error::EmptyRObject, RObject() };
+            return { error::EmptyRObject, RObject{} };
         }
         if (m_target.getTypeId() != m_method.getRecordTypeId()) {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, RObject() };
+            return { error::TargetMismatch, RObject{} };
         }
         if constexpr (sizeof...(_signature) == 0) {
-            error err = error::None;
-            return { err, Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+            return Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(m_method, m_target, std::forward<_args>(params)...);
         }
         else {
-            error err = error::None;
-            return { err, Invoker<_signature...>::invoke(err, m_method, m_target, std::forward<_args>(params)...) };
+            return Invoker<_signature...>::invoke(m_method, m_target, std::forward<_args>(params)...);
         }
     }
 
@@ -141,16 +132,15 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    inline RObject
-    NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(error& pError,
-                                                                        const Method& pMethod,
+    inline Return
+    NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
                                                                         const RObject& pTarget,
                                                                         _args&&... params)
     {
         using container0 = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
         const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
         if (index != rtl::index_none) {
-            return container0::template forwardCall<_args...>(pError, pTarget, index, std::forward<_args>(params)...);
+            return container0::template forwardCall<_args...>(pTarget, index, std::forward<_args>(params)...);
         }
         else 
         {
@@ -159,12 +149,10 @@ namespace rtl::detail
             std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
             if (index != rtl::index_none) {
                 // So, const-overload is present and non-const overload is not registered or doesn't exists.
-                pError = error::NonConstOverloadMissing;
-                return RObject();
+                return { error::NonConstOverloadMissing, RObject{} };
             }
             // else the signature might be wrong.
-            pError = error::SignatureMismatch;
-            return RObject();
+            return { error::SignatureMismatch , RObject{} };
         }
     }
 }

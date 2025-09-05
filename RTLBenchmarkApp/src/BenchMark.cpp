@@ -76,7 +76,7 @@ namespace rtl_bench
 
 	void BenchMark::lambdaCall_noReturn(benchmark::State& state)
 	{
-		std::function sendMsg = [](const char* pMsg) {
+		static std::function sendMsg = [](const char* pMsg) {
 			sendMessage(pMsg);
 		};
 
@@ -90,19 +90,20 @@ namespace rtl_bench
 
 	void BenchMark::reflectedCall_noReturn(benchmark::State& state)
 	{
-		rtl::Function sendMsg = cxx_mirror().getFunction("sendMessage").value();
+		static rtl::Function sendMsg = cxx_mirror().getFunction("sendMessage").value();
+		static auto sendMsgCall = sendMsg.bind<const char*>();
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(sendMsg.bind<const char*>().call("reflected"));
+			benchmark::DoNotOptimize(sendMsgCall.call("reflected"));
 		}
 	}
 
 
 	void BenchMark::reflectedMethodCall_noReturn(benchmark::State& state)
 	{
-		rtl::Record rNode = cxx_mirror().getRecord("node").value();
-		rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
-		rtl::RObject robj = rNode.create<rtl::alloc::Stack>().second;
+		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
+		static rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
 
 		for (auto _ : state)
 		{
@@ -122,7 +123,7 @@ namespace rtl_bench
 
 	void BenchMark::lambdaCall_withReturn(benchmark::State& state)
 	{
-		std::function getMsg = [](const char* pMsg) {
+		static std::function getMsg = [](const char* pMsg) {
 			return getMessage(pMsg);
 		};
 
@@ -135,7 +136,7 @@ namespace rtl_bench
 
 	void BenchMark::reflectedCall_withReturn(benchmark::State& state)
 	{
-		rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
+		static rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
 		for (auto _ : state)
 		{
 			benchmark::DoNotOptimize(getMsg.bind<const char*>().call("reflected"));
@@ -145,9 +146,9 @@ namespace rtl_bench
 
 	void BenchMark::reflectedMethodCall_withReturn(benchmark::State& state)
 	{
-		rtl::Record rNode = cxx_mirror().getRecord("node").value();
-		rtl::Method getMsg = rNode.getMethod("getMessage").value();
-		rtl::RObject robj = rNode.create<rtl::alloc::Stack>().second;
+		static rtl::Record rNode = cxx_mirror().getRecord("node").value();
+		static rtl::Method getMsg = rNode.getMethod("getMessage").value();
+		static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
 
 		for (auto _ : state)
 		{

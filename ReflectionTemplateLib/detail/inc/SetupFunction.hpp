@@ -25,27 +25,29 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  return [=](error& pError, _signature&&...params)-> RObject
+        */  return [=](_signature&&...params)-> Return
             {
-                //call will definitely be successful, since the signature type has alrady been validated.
-                pError = error::None;
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (*pFunctor)(std::forward<_signature>(params)...);
-                    return RObject();
+                    return { error::None,  RObject{} };
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
-                    return RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj, isConstCastSafe);
+                    return { error::None,
+                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj,
+                                                                                          isConstCastSafe) };
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    return RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...), isConstCastSafe);
+                    return { error::None, 
+                             RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...),
+                                                                                   isConstCastSafe) };
                 }
             };
         }

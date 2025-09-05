@@ -40,7 +40,7 @@ namespace rtl {
         class MethodContainer<detail::methodQ::NonConst, _signature...> : public SetupMethod<MethodContainer<detail::methodQ::NonConst, _signature...>>,
                                                                           public CallReflector<MethodContainer<detail::methodQ::NonConst, _signature...>>
         {
-            using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
+            using MethodLambda = std::function < Return (const rtl::RObject&, _signature...) >;
 
         public:
 
@@ -111,7 +111,7 @@ namespace rtl {
         class MethodContainer<detail::methodQ::Const, _signature...> : public SetupMethod<MethodContainer<detail::methodQ::Const, _signature...>>,
                                                                        public CallReflector<MethodContainer<detail::methodQ::Const, _signature...>>
         {
-            using MethodLambda = std::function < RObject (error&, const rtl::RObject&, _signature...) >;
+            using MethodLambda = std::function < Return (const rtl::RObject&, _signature...) >;
 
         public:
 

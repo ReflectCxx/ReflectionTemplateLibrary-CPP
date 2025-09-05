@@ -81,7 +81,7 @@ namespace rtl {
 
         /*      @method: create
                 @param: ...params (any number/type of arguments)
-                @return: std::pair<error, RObject>
+                @return: Return
                 * calls the constructor of the calss/struct represented by this 'Record' object.
                 * returns the dynamically allocated object of the calss/struct along with the status.
                 * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
@@ -89,7 +89,7 @@ namespace rtl {
                 * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
                 * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
         */      template<alloc _alloc, class ..._ctorArgs>
-        std::pair<error, RObject> create(_ctorArgs&& ...params) const
+        Return create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
             return m_methods.at(detail::ctor_name(m_recordName)).invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);

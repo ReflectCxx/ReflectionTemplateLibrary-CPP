@@ -30,7 +30,7 @@ namespace proxy_test {
          * @return The result of the function call as a std::any object.
          */
         template<class ..._args>
-        std::pair<rtl::error, rtl::RObject> forwardCall(const std::string& pFunctionName, _args&& ...params);
+        rtl::Return forwardCall(const std::string& pFunctionName, _args&& ...params);
 
         /**
          * @brief Forwards a call to a static method of the "Original" class.
@@ -41,6 +41,6 @@ namespace proxy_test {
          * @return The result of the function call as a std::any object.
          */
         template<class ..._args>
-        static std::pair<rtl::error, rtl::RObject> forwardStaticCall(const std::string& pFunctionName, _args&& ...params);
+        static rtl::Return forwardStaticCall(const std::string& pFunctionName, _args&& ...params);
     };
 }

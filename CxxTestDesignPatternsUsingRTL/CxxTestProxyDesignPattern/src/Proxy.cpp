@@ -15,7 +15,7 @@ namespace proxy_test
     Proxy::Proxy()
     : m_originalObj([&]() {
             auto [err, robj] = OriginalReflection::getClass()->create<rtl::alloc::Heap>();
-            return (err == rtl::error::None ? std::move(robj) : rtl::RObject());
+            return (err == rtl::error::None ? std::move(robj) : rtl::RObject{ });
         }())
     {
         assert(!m_originalObj.isEmpty() && "Reflected instance creation failed.");
