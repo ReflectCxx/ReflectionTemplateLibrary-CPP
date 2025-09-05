@@ -22,7 +22,7 @@ namespace rtl {
     // cleanup is always automatic.
     enum class alloc
     {
-        None,   /*
+        None = 0,/*
                  * Assigned to empty or moved-from RObjects.
                  * - Represents an invalid / non-owning state.
                  * - Any attempt to call or clone results in rtl::error::EmptyRObject.
@@ -104,7 +104,7 @@ namespace rtl::detail
 {
     enum class EntityKind
     {
-        None,
+        None = 0,
         Ref,
         Value,
         Wrapper
@@ -112,7 +112,7 @@ namespace rtl::detail
 
     enum class Wrapper
     {
-        None,
+        None = 0,
         Any,
         Weak,
         Unique,
@@ -126,7 +126,7 @@ namespace rtl::detail
     // MethodQ: Method qualifier + static marker.
     enum class methodQ
     {
-        None,       // Static method (no const/non-const qualifier)
+        None = 0,       // Static method (no const/non-const qualifier)
         Const,      // Const-qualified instance method
         NonConst    // Non-const instance method
     };

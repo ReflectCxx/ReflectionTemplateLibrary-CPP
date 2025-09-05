@@ -22,6 +22,15 @@ namespace rtl::detail {
         return RObject::getInstanceCounter();
     }
     
+    template<class T>
+    inline const std::vector<traits::ConverterPair>& RObjectBuilder::getConverters()
+    {
+        // extract wrapper info.
+        using _W = traits::std_wrapper<traits::raw_t<T>>;
+        // extract Un-Qualified raw type.
+        using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
+        return rtl::detail::ReflectCast<_T>::getConversions();
+    }
 
     template<class T>
     inline RObjectBuilder::Cloner RObjectBuilder::buildCloner()
@@ -41,7 +50,7 @@ namespace rtl::detail {
                 else if (pAllocOn == alloc::Heap) {
                     return RObjectBuilder::template build<_T*, alloc::Heap>(new _T(srcObj), true);
                 }
-                return RObject(); //dead code. compiler warning ommited.
+                return RObject{ }; //dead code. compiler warning ommited.
             };
         }
         else 
@@ -49,20 +58,9 @@ namespace rtl::detail {
             return [](error& pError, const RObject& pOther, alloc pAllocOn)-> RObject
             {
                 pError = error::TypeNotCopyConstructible;
-                return RObject();
+                return RObject{ };
             };
         }
-    }
-
-    template<class T>
-    inline const std::vector<traits::ConverterPair>& RObjectBuilder::getConverters()
-    {
-        // extract wrapper info.
-        using _W = traits::std_wrapper<traits::raw_t<T>>;
-        // extract Un-Qualified raw type.
-        using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
-
-        return rtl::detail::ReflectCast<_T>::getConversions();
     }
 
 
@@ -76,7 +74,7 @@ namespace rtl::detail {
         {
             static_assert(isRawPointer, "Invalid 'alloc' specified for non-pointer-type 'T'");
             _T* objPtr = static_cast<_T*>(pVal);
-            const RObjectId& robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
+            const RObjectId robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
             const std::vector<traits::ConverterPair>& conversions = getConverters<std::unique_ptr<_T>>();
             return RObject(std::any(RObjectUPtr<_T>(std::unique_ptr<_T>(objPtr))), buildCloner<_T>(), robjId, conversions);
         }
@@ -84,13 +82,13 @@ namespace rtl::detail {
         {
             if constexpr (isRawPointer)
             {
-                const RObjectId& robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
+                const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
                 const std::vector<traits::ConverterPair>& conversions = getConverters<T>();
                 return RObject(std::any(static_cast<const _T*>(pVal)), buildCloner<_T>(), robjId, conversions);
             }
             else
             {
-                const RObjectId& robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
+                const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
                 const std::vector<traits::ConverterPair>& conversions = getConverters<T>();
                 if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
                 {

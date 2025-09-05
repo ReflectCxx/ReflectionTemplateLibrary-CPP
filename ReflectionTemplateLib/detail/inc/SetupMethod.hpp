@@ -32,7 +32,7 @@ namespace rtl
                 if (!pTargetObj.isConstCastSafe())
                 {
                     pError = error::IllegalConstCast;
-                    return RObject();
+                    return RObject{ };
                 }
 
                 //call on 'pFunctor' will definitely be successful, since the object type, signature type has already been validated.
@@ -43,7 +43,7 @@ namespace rtl
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return RObject();
+                    return RObject{ };
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
@@ -77,7 +77,7 @@ namespace rtl
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return RObject();
+                    return RObject{ };
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.

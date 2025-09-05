@@ -19,12 +19,12 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {
-            return { rtl::error::FunctionNotRegisterd, rtl::RObject() };
+            return { rtl::error::FunctionNotRegisterd, rtl::RObject{ } };
         }
         if (orgMethod->hasSignature<_args...>()) {
             return orgMethod->bind(m_originalObj).call(std::forward<_args>(params)...);
         }
-        return { rtl::error::SignatureMismatch, rtl::RObject() };
+        return { rtl::error::SignatureMismatch, rtl::RObject{ } };
     }
 
 
@@ -44,11 +44,11 @@ namespace proxy_test
     {
         const auto orgMethod = OriginalReflection::getClass()->getMethod(pFunctionName);
         if (!orgMethod.has_value()) {
-            return { rtl::error::FunctionNotRegisterd, rtl::RObject() };
+            return { rtl::error::FunctionNotRegisterd, rtl::RObject{ } };
         }
         if (orgMethod->hasSignature<_args...>()) {
             return orgMethod->bind().call(std::forward<_args>(params)...);
         }
-        return { rtl::error::SignatureMismatch, rtl::RObject() };
+        return { rtl::error::SignatureMismatch, rtl::RObject{ } };
     }
 }

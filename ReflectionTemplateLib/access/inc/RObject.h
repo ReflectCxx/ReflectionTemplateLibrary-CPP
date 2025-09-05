@@ -44,7 +44,6 @@ namespace rtl
         mutable Cloner m_getClone;
         mutable std::any m_object;
         mutable detail::RObjectId m_objectId;
-
         mutable const std::vector<traits::ConverterPair>* m_converters;
 
         RObject(const RObject&) = default;

@@ -27,7 +27,7 @@ namespace rtl::detail
             if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>)
             {   //default constructor, private or deleted.
                 pError = error::TypeNotDefaultConstructible;
-                return RObject();
+                return RObject{ };
             }
             else
             {
@@ -35,7 +35,7 @@ namespace rtl::detail
 
                     if constexpr (!std::is_copy_constructible_v<_recordType>) {
                         pError = error::TypeNotCopyConstructible;
-                        return RObject();
+                        return RObject{ };
                     }
                     else {
                         pError = error::None;
@@ -46,7 +46,7 @@ namespace rtl::detail
                     return RObjectBuilder::build<_recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true);
                 }
             }
-            return RObject();   //dead code. compiler warning ommited.
+            return RObject{ };   //dead code. compiler warning ommited.
         };
     }
 

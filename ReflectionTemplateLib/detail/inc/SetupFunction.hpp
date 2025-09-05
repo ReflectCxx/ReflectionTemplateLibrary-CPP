@@ -34,7 +34,7 @@ namespace rtl
                 if constexpr (std::is_same_v<_returnType, void>) {
                     //if the function do not returns anything, this block will be retained by compiler.
                     (*pFunctor)(std::forward<_signature>(params)...);
-                    return RObject();
+                    return RObject{ };
                 }
                 else if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.

@@ -40,7 +40,7 @@ namespace rtl
     {
         // Explicitly clear moved-from source
         pOther.m_object.reset();
-        pOther.m_objectId.reset();
+        pOther.m_objectId = { };
         pOther.m_getClone = nullptr;
         pOther.m_converters = nullptr;
     }
@@ -179,7 +179,7 @@ namespace rtl
     template<>
     inline std::pair<error, RObject> RObject::createCopy<alloc::Heap, detail::EntityKind::Wrapper>() const
     {
-        return { error::StlWrapperHeapAllocForbidden, RObject() };
+        return { error::StlWrapperHeapAllocForbidden, RObject{ } };
     }
 
 
@@ -187,11 +187,11 @@ namespace rtl
     inline std::pair<error, RObject> RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
     {
         if (m_objectId.m_wrapperType == detail::Wrapper::None) {
-            return { error::NotWrapperType, RObject() };
+            return { error::NotWrapperType, RObject{ } };
         }
         else if (m_objectId.m_wrapperType == detail::Wrapper::Unique) 
         {
-            return { error::TypeNotCopyConstructible, RObject() };
+            return { error::TypeNotCopyConstructible, RObject{ } };
         }
         else {
             return { error::None, RObject(*this) };
@@ -203,7 +203,7 @@ namespace rtl
     inline std::pair<error, RObject> RObject::clone() const
     {
         if (isEmpty()) {
-            return { error::EmptyRObject, RObject() };
+            return { error::EmptyRObject, RObject{ } };
         }
         if constexpr (_copyTarget == copy::Value) {
             return createCopy<_allocOn, detail::EntityKind::Value>();
