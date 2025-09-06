@@ -49,8 +49,8 @@ namespace rtl
         mutable const std::vector<traits::ConverterPair>* m_converters;
 
         RObject(const RObject&) = default;
-        RObject(const detail::RObjectId& pRObjId, std::any&& pObject, const Cloner& pCloner,
-                const std::vector<traits::ConverterPair>& pConverters);
+        RObject(detail::RObjectId&& pRObjId, std::any&& pObject, const Cloner* pCloner,
+                const std::vector<traits::ConverterPair>* pConverters);
 
         static std::atomic<std::size_t>& getInstanceCounter();
 
