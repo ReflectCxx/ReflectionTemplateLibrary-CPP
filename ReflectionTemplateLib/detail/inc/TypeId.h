@@ -35,7 +35,7 @@ namespace rtl {
             //'0' represents no type. [Never change, critical.]
             static constexpr const std::size_t None = 0;
 
-            static std::size_t get()
+            static const std::size_t get()
             {
                 //statically initialize a unique-id.
                 static const std::size_t typeId = generate_unique_id();

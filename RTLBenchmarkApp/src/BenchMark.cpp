@@ -1,5 +1,4 @@
 
-#include <string>
 #include <optional>
 
 #include "BenchMark.h"
@@ -13,6 +12,11 @@
 #  define NOINLINE
 #endif
 
+static const std::string LONG_STR =
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 namespace {
 
@@ -33,7 +37,7 @@ namespace {
 	{
 		NOINLINE void sendMessage(const char* pMsg) 
 		{ 
-			g_msg = pMsg; 
+			g_msg = pMsg;
 		}
 
 		NOINLINE std::string getMessage(const char* pMsg)
@@ -68,7 +72,7 @@ namespace rtl_bench
 	{
 		for (auto _ : state) 
 		{
-			sendMessage("direct");
+			sendMessage(LONG_STR.c_str());
 			benchmark::DoNotOptimize(g_msg);
 		}
 	}
@@ -82,7 +86,7 @@ namespace rtl_bench
 
 		for (auto _ : state) 
 		{
-			sendMsg("lambda");
+			sendMsg(LONG_STR.c_str());
 			benchmark::DoNotOptimize(g_msg);
 		}
 	}
@@ -91,10 +95,9 @@ namespace rtl_bench
 	void BenchMark::reflectedCall_noReturn(benchmark::State& state)
 	{
 		static rtl::Function sendMsg = cxx_mirror().getFunction("sendMessage").value();
-		static auto sendMsgCall = sendMsg.bind<const char*>();
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(sendMsgCall.call("reflected"));
+			benchmark::DoNotOptimize(sendMsg.bind().call(LONG_STR.c_str()));
 		}
 	}
 
@@ -107,7 +110,7 @@ namespace rtl_bench
 
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(sendMsg.bind<const char*>(robj).call("reflected"));
+			benchmark::DoNotOptimize(sendMsg.bind(robj).call(LONG_STR.c_str()));
 		}
 	}
 
@@ -116,7 +119,7 @@ namespace rtl_bench
 	{
 		for (auto _ : state) 
 		{
-			benchmark::DoNotOptimize(getMessage("direct"));
+			benchmark::DoNotOptimize(getMessage(LONG_STR.c_str()));
 		}
 	}
 	
@@ -129,7 +132,7 @@ namespace rtl_bench
 
 		for (auto _ : state) 
 		{
-			benchmark::DoNotOptimize(getMsg("lambda"));
+			benchmark::DoNotOptimize(getMsg(LONG_STR.c_str()));
 		}
 	}
 
@@ -139,7 +142,7 @@ namespace rtl_bench
 		static rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(getMsg.bind<const char*>().call("reflected"));
+			benchmark::DoNotOptimize(getMsg.bind().call(LONG_STR.c_str()));
 		}
 	}
 
@@ -152,7 +155,7 @@ namespace rtl_bench
 
 		for (auto _ : state)
 		{
-			benchmark::DoNotOptimize(getMsg.bind<const char*>(robj).call("reflected"));
+			benchmark::DoNotOptimize(getMsg.bind(robj).call(LONG_STR.c_str()));
 		}
 	}
 }

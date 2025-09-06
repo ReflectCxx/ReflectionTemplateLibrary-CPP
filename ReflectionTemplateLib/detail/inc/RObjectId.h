@@ -37,7 +37,7 @@ namespace rtl::detail
         GETTER(EntityKind, ContainedAs, m_containsAs)
 
         template<class T>
-        static constexpr EntityKind getEntityKind()
+        FORCE_INLINE static constexpr EntityKind getEntityKind()
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -56,8 +56,8 @@ namespace rtl::detail
         }
 
 
-        template<class T, rtl::alloc _allocOn>
-        static RObjectId create(bool pIsConstCastSafe)
+        template<class T, rtl::alloc _allocOn, bool _isConstCastSafe>
+        FORCE_INLINE static RObjectId create()
         {
             // extract wrapper info.
             using _W = traits::std_wrapper<traits::raw_t<T>>;
@@ -67,8 +67,8 @@ namespace rtl::detail
             
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-            const bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
-            return RObjectId{ isWrappingConst, pIsConstCastSafe, typeId, wrapperId, _allocOn,  _W::type, entityKind };
+            constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
+            return RObjectId{ isWrappingConst, _isConstCastSafe, typeId, wrapperId, _allocOn,  _W::type, entityKind };
         }
     };
 }

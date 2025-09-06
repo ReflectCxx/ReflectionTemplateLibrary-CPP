@@ -40,14 +40,15 @@ namespace rtl
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj,
-                                                                                          isConstCastSafe) };
+                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack, isConstCastSafe>(&retObj)
+                    };
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    return { error::None, 
-                             RObjectBuilder::build<_returnType, rtl::alloc::Stack>((*pFunctor)(std::forward<_signature>(params)...),
-                                                                                   isConstCastSafe) };
+                    return { error::None,
+                             RObjectBuilder::build<_returnType, rtl::alloc::Stack, isConstCastSafe>(
+                                 (*pFunctor)(std::forward<_signature>(params)...))
+                    };
                 }
             };
         }

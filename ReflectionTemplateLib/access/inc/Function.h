@@ -67,7 +67,7 @@ namespace rtl {
         Function(const Function& pOther, const detail::FunctorId& pFunctorId,
                  const std::string_view pFunctorName);
 
-        std::size_t hasSignatureId(const std::size_t pSignatureId) const;
+        const std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
         GETTER(detail::methodQ, Qualifier, m_qualifier);
 

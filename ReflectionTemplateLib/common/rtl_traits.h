@@ -70,7 +70,7 @@ namespace rtl
         {
             using value_type = std::nullptr_t;
             static constexpr const auto type = detail::Wrapper::None;
-            static auto id() { return detail::TypeId<>::None; }
+            static constexpr std::size_t id() { return detail::TypeId<>::None; }
         };
 
 
@@ -79,7 +79,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Shared;
-            static auto id() { return detail::TypeId<std::shared_ptr<T>>::get(); }
+            static constexpr std::size_t id() { return detail::TypeId<std::shared_ptr<T>>::get(); }
         };
 
 
@@ -88,7 +88,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Unique;
-            static auto id() { return detail::TypeId<std::unique_ptr<T>>::get(); }
+            static constexpr std::size_t id() { return detail::TypeId<std::unique_ptr<T>>::get(); }
         };
 
 
@@ -97,7 +97,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Weak;
-            static auto id() { return detail::TypeId<std::weak_ptr<T>>::get(); }
+            static constexpr std::size_t id() { return detail::TypeId<std::weak_ptr<T>>::get(); }
         };
 
         template<typename T>

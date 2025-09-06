@@ -131,6 +131,7 @@ namespace rtl::detail
         NonConst    // Non-const instance method
     };
 
+    constexpr const std::string_view NAMESPACE_GLOBAL = "global";
 
     inline static const std::string ctor_name(const std::string_view pRecordName = "") {
     //  [critical] Must not change. Constructors are identified using this format.
@@ -157,5 +158,11 @@ namespace rtl::detail
         return _var;                          \
     }
 
-    constexpr const std::string_view NAMESPACE_GLOBAL = "global";
+#if defined(_MSC_VER)
+#define FORCE_INLINE __forceinline
+#elif defined(__GNUC__) || defined(__clang__)
+#define FORCE_INLINE inline __attribute__((always_inline))
+#else
+#define FORCE_INLINE inline
+#endif
 }
