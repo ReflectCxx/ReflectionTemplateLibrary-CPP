@@ -21,10 +21,16 @@ namespace rtl_bench
     static std::optional<std::string> g_msg;
 
     NOINLINE static void sendMessage(str_type pMsg) {
+        std::string result = pMsg + pMsg;
+        result = result + result;
+        result = result + result;
         g_msg = pMsg;
     }
 
     NOINLINE static str_type getMessage(str_type pMsg) {
+        std::string result = pMsg + pMsg;
+        result = result + result;
+        result = result + result;
         g_msg = pMsg;
         return str_type(pMsg);
     }
@@ -32,12 +38,20 @@ namespace rtl_bench
     struct Node
     {
         NOINLINE void sendMessage(str_type pMsg) {
+            std::string result = pMsg + pMsg;
+            result = result + result;
+            result = result + result;
+            g_msg = pMsg;
             g_msg = pMsg;
         }
 
-        NOINLINE str_type getMessage(str_type pMsg) {
+        NOINLINE str_type getMessage(str_type pMsg) 
+        {
+            std::string result = pMsg + pMsg;
+            result = result + result;
+            result = result + result;
             g_msg = pMsg;
-            return str_type(pMsg);
+            return pMsg;
         }
     };
 
@@ -83,6 +97,7 @@ namespace rtl_bench
 		static void reflectedMethodCall_withReturn(benchmark::State& state);
 
         static void BM_FunctionCall(benchmark::State& state);
-        static void BM_AnyCast(benchmark::State& state);
+
+        static void BM_LambdaFunc(benchmark::State& state);
 	};
 }
