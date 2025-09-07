@@ -11,13 +11,6 @@ namespace
     const rtl::CxxMirror cxx_mirror() 
     {
         return rtl::CxxMirror({
-            
-            // Registering void as a record type (valid type but has no members/constructors).
-            // Demonstrates that RTL can explicitly represent even fundamental non-instantiable types.
-            rtl::type().record<void>("void").build(),
-
-            // Example of compile-time safety: constructors for void are invalid, RTL enforces this.
-            // rtl::type().member<void>().constructor<int>().build(), // <- will not compile
 
             // Register char as a record type (fundamental but instantiable).
             rtl::type().record<char>("char").build(),

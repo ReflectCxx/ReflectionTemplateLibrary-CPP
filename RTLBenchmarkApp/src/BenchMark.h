@@ -12,44 +12,30 @@
 #  define NOINLINE
 #endif
 
-using str_type = /*std::string; //*/ std::string_view;
+using argStr_t = std::string_view;
+using retStr_t = std::string;
 
 namespace rtl_bench
 {
     static std::optional<std::string> g_msg;
 
-    NOINLINE static void sendMessage(str_type pMsg) {
-        std::string result = std::string(pMsg) + std::string(pMsg);
-        result = result + result;
-        result = result + result;
+    NOINLINE static void sendMessage(argStr_t pMsg) {
         g_msg = pMsg;
     }
 
-    NOINLINE static str_type getMessage(str_type pMsg) {
-        std::string result = std::string(pMsg) + std::string(pMsg);
-        result = result + result;
-        result = result + result;
-        g_msg = pMsg;
-        return str_type(g_msg->c_str());
+    NOINLINE static retStr_t getMessage(argStr_t pMsg) {
+        return retStr_t(pMsg);
     }
 
     struct Node
     {
-        NOINLINE void sendMessage(str_type pMsg) {
-            std::string result = std::string(pMsg) + std::string(pMsg);
-            result = result + result;
-            result = result + result;
-            g_msg = pMsg;
+        NOINLINE void sendMessage(argStr_t pMsg) {
             g_msg = pMsg;
         }
 
-        NOINLINE str_type getMessage(str_type pMsg) 
+        NOINLINE retStr_t getMessage(argStr_t pMsg)
         {
-            std::string result = std::string(pMsg) + std::string(pMsg);
-            result = result + result;
-            result = result + result;
-            g_msg = pMsg;
-            return str_type(g_msg->c_str());
+            return retStr_t(pMsg);
         }
     };
 
@@ -60,7 +46,7 @@ namespace rtl_bench
 
             rtl::type().record<Node>("Node").build(),
 
-            rtl::type().function<str_type>("sendMessage").build(sendMessage),
+            rtl::type().function("sendMessage").build(sendMessage),
 
             rtl::type().member<Node>().method("sendMessage").build(&Node::sendMessage),
 
@@ -76,8 +62,6 @@ namespace rtl_bench
 	{
 		static void directCall_noReturn(benchmark::State& state);
 
-		static void autoLambdaCall_noReturn(benchmark::State& state);
-
 		static void stdFunctionCall_noReturn(benchmark::State& state);
 
 		static void reflectedCall_noReturn(benchmark::State& state);
@@ -85,8 +69,6 @@ namespace rtl_bench
 		static void reflectedMethodCall_noReturn(benchmark::State& state);
 
 		static void directCall_withReturn(benchmark::State& state);
-
-		static void autoLambdaCall_withReturn(benchmark::State& state);
 
 		static void stdFunctionCall_withReturn(benchmark::State& state);
 

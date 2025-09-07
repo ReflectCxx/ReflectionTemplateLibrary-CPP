@@ -28,6 +28,7 @@ namespace rtl::detail
 
     class RObjExtractor;
 
+    template<class  T>
     struct RObjectBuilder;
 }
 
@@ -42,17 +43,15 @@ namespace rtl
     {
         using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
-        mutable detail::RObjectId m_objectId;
-
         mutable std::any m_object;
+
         mutable const Cloner* m_getClone;
+        mutable const detail::RObjectId* m_objectId;
         mutable const std::vector<traits::ConverterPair>* m_converters;
 
         RObject(const RObject&) = default;
-        RObject(detail::RObjectId&& pRObjId, std::any&& pObject, const Cloner* pCloner,
-                const std::vector<traits::ConverterPair>* pConverters);
-
-        static std::atomic<std::size_t>& getInstanceCounter();
+        RObject(const detail::RObjectId* pRObjId, std::any&& pObject, const Cloner* pCloner,
+                const std::vector<traits::ConverterPair>* pConverters) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
@@ -70,16 +69,16 @@ namespace rtl
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
-        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
-        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
-        GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(OnHeap, (m_objectId && m_objectId->m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(AllocatedByRtl, (m_objectId && m_objectId->m_allocatedOn == alloc::Heap))
+        GETTER(std::size_t, TypeId, (m_objectId ? m_objectId->m_typeId : detail::TypeId<>::None))
 
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.
     *   - RTL may 'const_cast' its own objects(allocated via RTL) but preserves logical constness.
     *   - External objects (e.g. returned via Reflected call) keep original qualifier; if const, then const_cast is unsafe.
-    */  GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
+    */  GETTER_BOOL(ConstCastSafe, (m_objectId && m_objectId->m_isConstCastSafe))
 
         template <class _asType>
         bool canViewAs() const;
@@ -96,11 +95,15 @@ namespace rtl
         template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;
 
+        static std::atomic<std::size_t>& getInstanceCounter();
+
         //friends :)
         template<class T>
         friend struct detail::RObjectUPtr;
         friend detail::RObjExtractor;
-        friend detail::RObjectBuilder;
+
+        template<class T>
+        friend struct detail::RObjectBuilder;
     };
 
     struct [[nodiscard]] Return {

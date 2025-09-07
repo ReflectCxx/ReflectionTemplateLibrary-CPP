@@ -11,15 +11,15 @@
 
 namespace {
 
-    static const char* LONG_STR = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
-    "do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
-    "nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
-    "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
-    "eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id";
+    static const char* LONG_STR = "Lorem ipsum";// dolor sit amet, consectetur adipiscing elit, sed do";
+    //"do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
+    //"nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
+    //"dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
+    //"eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id";
 }
 
 // Pre-created string to isolate call overhead
-static const std::string g_longStr(LONG_STR);
+static argStr_t g_longStr(LONG_STR);
 
 namespace rtl_bench
 {
@@ -33,23 +33,9 @@ namespace rtl_bench
     }
 
 
-    void BenchMark::autoLambdaCall_noReturn(benchmark::State& state)
-    {
-        static auto sendMsg = [](const str_type& pMsg) {
-            sendMessage(pMsg);
-        };
-
-        for (auto _ : state)
-        {
-            sendMsg(g_longStr);
-            benchmark::DoNotOptimize(g_msg);
-        }
-    }
-
-
     void BenchMark::stdFunctionCall_noReturn(benchmark::State& state)
     {
-        static std::function sendMsg = [](const str_type& pMsg) {
+        static std::function sendMsg = [](argStr_t& pMsg) {
             sendMessage(pMsg);
         };
 
@@ -59,6 +45,7 @@ namespace rtl_bench
             benchmark::DoNotOptimize(g_msg);
         }
     }
+
 
     void BenchMark::directCall_withReturn(benchmark::State& state)
     {
@@ -70,33 +57,22 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(getMessage(g_longStr));
-        }
-    }
-
-
-    void BenchMark::autoLambdaCall_withReturn(benchmark::State& state)
-    {
-        auto getMsg = [](const str_type& pMsg) {
-            return getMessage(pMsg);
-        };
-
-        for (auto _ : state)
-        {
-            benchmark::DoNotOptimize(getMsg(g_longStr));
+            volatile std::string forced = std::move(getMessage(g_longStr));  // ensures real move
+            benchmark::DoNotOptimize(forced);
         }
     }
 
 
     void BenchMark::stdFunctionCall_withReturn(benchmark::State& state)
     {
-        static std::function getMsg = [](const str_type& pMsg) {
+        static std::function getMsg = [](argStr_t& pMsg) {
             return getMessage(pMsg);
         };
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(getMsg(g_longStr));
+            volatile std::string forced = std::move(getMsg(g_longStr));  // ensures real move
+            benchmark::DoNotOptimize(forced);
         }
     }
 }
@@ -109,7 +85,7 @@ namespace rtl_bench
         static rtl::Function sendMsg = cxx_mirror().getFunction("sendMessage").value();
 
         static auto _ = []() {
-            if (sendMsg.bind<str_type>().call(g_longStr).err == rtl::error::None) {
+            if (sendMsg.bind().call(g_longStr).err == rtl::error::None) {
                 std::cout << "[rtl:0] call success.\n";
             }
             else {
@@ -120,7 +96,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(sendMsg.bind<str_type>().call(g_longStr));
+            benchmark::DoNotOptimize(sendMsg.bind().call(g_longStr));
         }
     }
 
@@ -131,7 +107,7 @@ namespace rtl_bench
         static rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
         static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
         static auto _ = []() {
-            if (sendMsg.bind<str_type>(robj).call(g_longStr).err == rtl::error::None) {
+            if (sendMsg.bind(robj).call(g_longStr).err == rtl::error::None) {
                 std::cout << "[rtl:1] call success.\n";
             }
             else {
@@ -142,7 +118,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(sendMsg.bind<str_type>(robj).call(g_longStr));
+            benchmark::DoNotOptimize(sendMsg.bind(robj).call(g_longStr));
         }
     }
 
@@ -151,7 +127,7 @@ namespace rtl_bench
     {
         static rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
         static auto _ = []() {
-            if (getMsg.bind<str_type>().call(g_longStr).err == rtl::error::None) {
+            if (getMsg.bind().call(g_longStr).err == rtl::error::None) {
                 std::cout << "[rtl:2] call success.\n";
             }
             else {
@@ -162,7 +138,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(getMsg.bind<str_type>().call(g_longStr));
+            benchmark::DoNotOptimize(getMsg.bind().call(g_longStr));
         }
     }
 
@@ -173,7 +149,7 @@ namespace rtl_bench
         static rtl::Method getMsg = rNode.getMethod("getMessage").value();
         static rtl::RObject robj = rNode.create<rtl::alloc::Heap>().rObject;
         static auto _ = []() {
-            if (getMsg.bind<str_type>(robj).call(g_longStr).err == rtl::error::None) {
+            if (getMsg.bind(robj).call(g_longStr).err == rtl::error::None) {
                 std::cout << "[rtl:3] call success.\n";
             }
             else {
@@ -184,7 +160,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            benchmark::DoNotOptimize(getMsg.bind<str_type>(robj).call(g_longStr));
+            benchmark::DoNotOptimize(getMsg.bind(robj).call(g_longStr));
         }
     }
 }

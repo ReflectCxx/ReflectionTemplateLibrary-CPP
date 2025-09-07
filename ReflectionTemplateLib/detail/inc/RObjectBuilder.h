@@ -20,25 +20,17 @@ namespace rtl {
 
 namespace rtl::detail
 {
-    class RObjectBuilder
+    template<class T>
+    struct RObjectBuilder
     {
-        using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
-
-        template <class T>
-        static const Cloner& buildCloner();
-
-        template <class T>
-        static const std::vector<traits::ConverterPair>& getConverters();
-
-    public:
-
         RObjectBuilder() = delete;
         RObjectBuilder(const RObjectBuilder&) = delete;
 
-        static const std::size_t rtlManagedInstanceCount();
+        template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
+        static RObject build(T&& pVal, bool pIsConstCastSafe) noexcept;
 
-        template <class T, rtl::alloc _allocOn, bool _isConstCastSafe>
-        static RObject build(T&& pVal);
+        template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
+        static RObject build(T&& pVal, bool pIsConstCastSafe) noexcept;
     };
 }
 
@@ -47,34 +39,34 @@ namespace rtl
 {
     inline const std::size_t getRtlManagedHeapInstanceCount()
     {
-        return detail::RObjectBuilder::rtlManagedInstanceCount();
+        return RObject::getInstanceCounter();
     }
 
 
     template<class T, std::size_t N>
-    inline RObject reflect(T(&pArr)[N])
+    inline RObject reflect(T(&pArr)[N]) noexcept
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
-            return detail::RObjectBuilder::build<std::string_view, alloc::Stack, !traits::is_const_v<T>>(std::string_view(pArr, N - 1));
+            return detail::RObjectBuilder<std::string_view>::build<alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
         }
         else {
-            return detail::RObjectBuilder::build<std::vector<T>, alloc::Stack, !traits::is_const_v<T>>(std::vector(pArr, pArr + N));
+            return detail::RObjectBuilder<std::vector<T>>::build<alloc::Stack>(std::vector(pArr, pArr + N), !traits::is_const_v<T>);
         }
     }
 
 
     template <class T>
-    inline RObject reflect(T&& pVal)
+    inline RObject reflect(T&& pVal) noexcept
     {
         using _T = traits::raw_t<T>;
         if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)
         {
-            return detail::RObjectBuilder::build<T, alloc::Stack, !traits::is_const_v<T>>(std::forward<T>(pVal));
+            return detail::RObjectBuilder<T>::build<alloc::Stack>(std::forward<T>(pVal), !traits::is_const_v<T>);
         }
         else
         {
             constexpr bool isConstCastSafe = !traits::is_const_v<typename traits::std_wrapper<_T>::value_type>;
-            return detail::RObjectBuilder::build<T, alloc::Stack, isConstCastSafe>(std::forward<T>(pVal));
+            return detail::RObjectBuilder<T>::build<alloc::Stack>(std::forward<T>(pVal), isConstCastSafe);
         }
     }
 }

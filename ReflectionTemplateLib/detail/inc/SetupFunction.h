@@ -35,6 +35,9 @@ namespace rtl {
             template<class ..._signature>
             using FunctionLambda = std::function < Return(_signature...) >;
 
+            template<class... _signature>
+            static FunctionLambda<_signature...> getCaller(void(*pFunctor)(_signature...));
+
             template<class _returnType, class ..._signature>
             static FunctionLambda<_signature...> getCaller(_returnType(*pFunctor)(_signature...));
 

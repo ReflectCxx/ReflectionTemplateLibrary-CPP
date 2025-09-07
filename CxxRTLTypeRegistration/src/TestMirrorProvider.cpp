@@ -37,15 +37,15 @@ namespace test_mirror
             ---------------------------------  */
 
         //  Registering void, valid but not useful at all.
-            rtl::type().record<void>("void").build(),
+            rtl::type().record<int>("int").build(),
 
         //  Registering type 'void' again, ignored & emits-
         //  [WARNING] Multiple registrations of the same type detected.
-            rtl::type().record<void>("void").build(),
+            rtl::type().record<int>("int").build(),
 
         //  Registering type 'void' again, but with different name. ignored & emits-
         //  [WARNING] Multiple registrations of the same type detected.
-            rtl::type().record<void>("ccvoid").build(),
+            rtl::type().record<int>("ccint").build(),
 
         //  Registering pod, reflecting- constructor, copy-constructor & destructor.
             rtl::type().record<char>("char").build(),
@@ -266,7 +266,7 @@ namespace test_mirror
     std::size_t reflected_id::event = rtl::detail::TypeId<nsdate::Event>::get();
     std::size_t reflected_id::calender = rtl::detail::TypeId<nsdate::Calender>::get();
 
-    std::size_t reflected_id::void_t = rtl::detail::TypeId<void>::get();
+    std::size_t reflected_id::int_t = rtl::detail::TypeId<int>::get();
     std::size_t reflected_id::char_t = rtl::detail::TypeId<char>::get();
     std::size_t reflected_id::std_string = rtl::detail::TypeId<std::string>::get();
     std::size_t reflected_id::std_string_view = rtl::detail::TypeId<std::string_view>::get();
@@ -277,7 +277,7 @@ namespace test_mirror
         static std::unordered_map<std::string, std::size_t> nameIdMap(
         {
             { "char", char_t },
-            { "void", void_t },
+            { "int", int_t },
             { "string", std_string },
             { "string_view", std_string_view },
 

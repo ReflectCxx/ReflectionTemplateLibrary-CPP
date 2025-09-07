@@ -19,6 +19,19 @@ namespace rtl
     namespace detail
     {
         template<class _derivedType>
+        template<class... _signature>
+        inline SetupFunction<_derivedType>::FunctionLambda<_signature...>
+               SetupFunction<_derivedType>::getCaller(void(*pFunctor)(_signature...)) 
+        {
+            return [=](_signature&&... params) -> Return 
+            {
+                pFunctor(std::forward<_signature>(params)...);
+                return { error::None, RObject{} };
+            };
+        }
+
+
+        template<class _derivedType>
         template<class _returnType, class ..._signature>
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...> 
                SetupFunction<_derivedType>::getCaller(_returnType(*pFunctor)(_signature...))
@@ -29,25 +42,21 @@ namespace rtl
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
-                if constexpr (std::is_same_v<_returnType, void>) {
-                    //if the function do not returns anything, this block will be retained by compiler.
-                    (*pFunctor)(std::forward<_signature>(params)...);
-                    return { error::None,  RObject{} };
-                }
-                else if constexpr (std::is_reference_v<_returnType>) {
+                if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
-                    const _rawRetType& retObj = (*pFunctor)(std::forward<_signature>(params)...);
+                    const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack, isConstCastSafe>(&retObj)
+                             RObjectBuilder<const _rawRetType*>::build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
                     };
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
+                    _returnType&& retObj = std::move(pFunctor(std::forward<_signature>(params)...));
                     return { error::None,
-                             RObjectBuilder::build<_returnType, rtl::alloc::Stack, isConstCastSafe>(
-                                 (*pFunctor)(std::forward<_signature>(params)...))
+                             RObjectBuilder<_returnType>::build<rtl::alloc::Stack>(
+                                 std::forward<_returnType>(retObj), isConstCastSafe)
                     };
                 }
             };
