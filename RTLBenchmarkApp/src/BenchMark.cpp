@@ -34,9 +34,9 @@ namespace rtl_bench
 
     void BenchMark::autoLambdaCall_noReturn(benchmark::State& state)
     {
-        auto sendMsg = [](const str_type& pMsg) {
+        static auto sendMsg = [](const str_type& pMsg) {
             sendMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -50,7 +50,7 @@ namespace rtl_bench
     {
         static std::function sendMsg = [](const str_type& pMsg) {
             sendMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -91,7 +91,7 @@ namespace rtl_bench
     {
         static std::function getMsg = [](const str_type& pMsg) {
             return getMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -99,6 +99,30 @@ namespace rtl_bench
         }
     }
 
+}
+
+
+namespace rtl_bench
+{
+    void BenchMark::BM_FunctionCall(benchmark::State& state)
+    {
+        static std::function func = [](const str_type& pMsg) {
+            return getMessage(pMsg);
+        };
+        
+        for (auto _ : state) {
+            benchmark::DoNotOptimize(func(g_longStr));
+        }
+    }
+
+    void BenchMark::BM_AnyCast(benchmark::State& state) 
+    {
+        std::any a = getMessage;
+        for (auto _ : state) {
+            auto anyfunc = std::any_cast<decltype(&getMessage)>(a);
+            benchmark::DoNotOptimize(anyfunc(g_longStr));
+        }
+    }
 }
 
 

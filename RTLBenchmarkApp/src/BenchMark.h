@@ -81,5 +81,8 @@ namespace rtl_bench
 		static void reflectedCall_withReturn(benchmark::State& state);
 
 		static void reflectedMethodCall_withReturn(benchmark::State& state);
+
+        static void BM_FunctionCall(benchmark::State& state);
+        static void BM_AnyCast(benchmark::State& state);
 	};
 }
