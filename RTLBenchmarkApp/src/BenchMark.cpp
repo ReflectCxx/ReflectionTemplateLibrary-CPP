@@ -54,8 +54,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            volatile std::string forced = std::move(getMessage(g_longStr));  // ensures real move
-            benchmark::DoNotOptimize(forced);
+            benchmark::DoNotOptimize(getMessage(g_longStr));
         }
     }
 
@@ -68,8 +67,7 @@ namespace rtl_bench
 
         for (auto _ : state)
         {
-            volatile std::string forced = std::move(getMsg(g_longStr));  // ensures real move
-            benchmark::DoNotOptimize(forced);
+            benchmark::DoNotOptimize(getMsg(g_longStr));
         }
     }
 }

@@ -69,7 +69,7 @@ namespace rtl
                 }
                 else {
 
-                    _returnType&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    _returnType&& retObj = std::move((target.*pFunctor)(std::forward<_signature>(params)...));
                     return { error::None,
                              RObjectBuilder<_returnType>::build<alloc::Stack>(
                                  std::forward<_returnType>(retObj), isConstCastSafe)
@@ -118,7 +118,7 @@ namespace rtl
                     };
                 }
                 else {
-                    _returnType&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    _returnType&& retObj = std::move((target.*pFunctor)(std::forward<_signature>(params)...));
                     return { error::None,
                              RObjectBuilder<_returnType>::build<alloc::Stack>(
                                  std::forward<_returnType>(retObj), isConstCastSafe)

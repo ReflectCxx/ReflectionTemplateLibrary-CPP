@@ -13,7 +13,7 @@
 #endif
 
 using argStr_t = std::string_view;
-using retStr_t = std::string;
+using retStr_t = std::string_view;
 
 namespace rtl_bench
 {
@@ -24,7 +24,8 @@ namespace rtl_bench
     }
 
     NOINLINE static retStr_t getMessage(argStr_t pMsg) {
-        return retStr_t(pMsg);
+        g_msg = pMsg;
+        return retStr_t(g_msg->c_str());
     }
 
     struct Node
@@ -35,7 +36,8 @@ namespace rtl_bench
 
         NOINLINE retStr_t getMessage(argStr_t pMsg)
         {
-            return retStr_t(pMsg);
+            g_msg = pMsg;
+            return retStr_t(g_msg->c_str());
         }
     };
 
