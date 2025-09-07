@@ -4,10 +4,10 @@
 
 namespace rtl::detail 
 {
-    template<class... _signature>
+    template<class _retT, class... _signature>
     struct LambdaFunction 
     {
-        using Invoker = std::string(*)(void* , _signature&...);
+        using Invoker = _retT(*)(void* , _signature&...);
 
         Invoker m_invoker = nullptr;
         void* m_storage = nullptr;
@@ -26,14 +26,14 @@ namespace rtl::detail
             static auto holder = Holder{ pFunctor };
             m_storage = &holder;
 
-            m_invoker = +[](void* stor, _signature&... params) -> std::string {
+            m_invoker = +[](void* stor, _signature&... params) -> _retT {
 
                 auto h = static_cast<Holder*>(stor);
                 return (h->m_functor)(params...);
             };
         }
 
-        std::string operator()(_signature&... params)
+        _retT operator()(_signature&... params)
         {
             return m_invoker(m_storage, params...);
         }

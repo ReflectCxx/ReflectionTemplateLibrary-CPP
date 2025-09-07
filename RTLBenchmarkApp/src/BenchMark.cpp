@@ -118,15 +118,16 @@ namespace rtl_bench
 
     void BenchMark::BM_LambdaFunc(benchmark::State& state) 
     {
-        static rtl::detail::LambdaFunction<const std::string> obj;
-
+        static rtl::detail::LambdaFunction<str_type, str_type> obj;
+        static str_type str = std::string_view(g_longStr.c_str());
         static auto _ = []() {
             obj.init(getMessage);
             return 0;
         }();
 
         for (auto _ : state) {
-            benchmark::DoNotOptimize(obj(g_longStr));
+
+            benchmark::DoNotOptimize(obj(str));
         }
     }
 }
