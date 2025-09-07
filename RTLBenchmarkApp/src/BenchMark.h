@@ -4,8 +4,6 @@
 
 #include "RTLibInterface.h"
 
-#include <streambuf>
-
 #if defined(_MSC_VER)
 #  define NOINLINE __declspec(noinline)
 #elif defined(__GNUC__)
@@ -32,7 +30,7 @@ namespace rtl_bench
         result = result + result;
         result = result + result;
         g_msg = pMsg;
-        return str_type(pMsg);
+        return str_type(g_msg->c_str());
     }
 
     struct Node
@@ -51,7 +49,7 @@ namespace rtl_bench
             result = result + result;
             result = result + result;
             g_msg = pMsg;
-            return pMsg;
+            return str_type(g_msg->c_str());
         }
     };
 
