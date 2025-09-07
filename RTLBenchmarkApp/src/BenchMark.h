@@ -14,21 +14,21 @@
 #  define NOINLINE
 #endif
 
-using str_type = std::string; //*/ std::string_view;
+using str_type = /*std::string; //*/ std::string_view;
 
 namespace rtl_bench
 {
     static std::optional<std::string> g_msg;
 
     NOINLINE static void sendMessage(str_type pMsg) {
-        std::string result = pMsg + pMsg;
+        std::string result = std::string(pMsg) + std::string(pMsg);
         result = result + result;
         result = result + result;
         g_msg = pMsg;
     }
 
     NOINLINE static str_type getMessage(str_type pMsg) {
-        std::string result = pMsg + pMsg;
+        std::string result = std::string(pMsg) + std::string(pMsg);
         result = result + result;
         result = result + result;
         g_msg = pMsg;
@@ -38,7 +38,7 @@ namespace rtl_bench
     struct Node
     {
         NOINLINE void sendMessage(str_type pMsg) {
-            std::string result = pMsg + pMsg;
+            std::string result = std::string(pMsg) + std::string(pMsg);
             result = result + result;
             result = result + result;
             g_msg = pMsg;
@@ -47,7 +47,7 @@ namespace rtl_bench
 
         NOINLINE str_type getMessage(str_type pMsg) 
         {
-            std::string result = pMsg + pMsg;
+            std::string result = std::string(pMsg) + std::string(pMsg);
             result = result + result;
             result = result + result;
             g_msg = pMsg;
@@ -95,9 +95,5 @@ namespace rtl_bench
 		static void reflectedCall_withReturn(benchmark::State& state);
 
 		static void reflectedMethodCall_withReturn(benchmark::State& state);
-
-        static void BM_FunctionCall(benchmark::State& state);
-
-        static void BM_LambdaFunc(benchmark::State& state);
 	};
 }

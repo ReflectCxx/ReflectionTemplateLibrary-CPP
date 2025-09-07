@@ -9,7 +9,6 @@ set(LOCAL_SOURCES
 
 SET(LOCAL_HEADERS
 
-	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaFunction.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CallReflector.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctionCaller.h"

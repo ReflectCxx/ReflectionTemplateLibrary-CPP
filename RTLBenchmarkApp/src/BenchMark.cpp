@@ -102,36 +102,6 @@ namespace rtl_bench
 }
 
 
-namespace rtl_bench
-{
-    void BenchMark::BM_FunctionCall(benchmark::State& state)
-    {
-        static std::function getMsg = [](const str_type& pMsg) {
-            return getMessage(pMsg);
-        };
-
-        for (auto _ : state)
-        {
-            benchmark::DoNotOptimize(getMsg(g_longStr));
-        }
-    }
-
-    void BenchMark::BM_LambdaFunc(benchmark::State& state) 
-    {
-        static rtl::detail::LambdaFunction<const std::string> obj;
-
-        static auto _ = []() {
-            obj.init(getMessage);
-            return 0;
-        }();
-
-        for (auto _ : state) {
-            benchmark::DoNotOptimize(obj(g_longStr));
-        }
-    }
-}
-
-
 namespace rtl_bench 
 {
     void BenchMark::reflectedCall_noReturn(benchmark::State& state)

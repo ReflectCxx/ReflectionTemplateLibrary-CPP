@@ -17,7 +17,4 @@ BENCHMARK(rtl_bench::BenchMark::stdFunctionCall_withReturn);
 BENCHMARK(rtl_bench::BenchMark::reflectedCall_withReturn);
 BENCHMARK(rtl_bench::BenchMark::reflectedMethodCall_withReturn);
 
-BENCHMARK(rtl_bench::BenchMark::BM_LambdaFunc);
-BENCHMARK(rtl_bench::BenchMark::BM_FunctionCall);
-
 BENCHMARK_MAIN();
