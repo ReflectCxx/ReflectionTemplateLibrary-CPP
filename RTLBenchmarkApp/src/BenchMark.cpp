@@ -6,9 +6,6 @@
 
 #include "BenchMark.h"
 
-#include "LambdaFunction.h"
-
-
 namespace {
 
     static const char* LONG_STR = "Lorem ipsum";// dolor sit amet, consectetur adipiscing elit, sed do";
