@@ -4,8 +4,6 @@
 
 #include "RTLibInterface.h"
 
-#include <streambuf>
-
 #if defined(_MSC_VER)
 #  define NOINLINE __declspec(noinline)
 #elif defined(__GNUC__)
@@ -14,30 +12,44 @@
 #  define NOINLINE
 #endif
 
-using str_type = std::string; //*/ std::string_view;
+using str_type = /*std::string; //*/ std::string_view;
 
 namespace rtl_bench
 {
     static std::optional<std::string> g_msg;
 
     NOINLINE static void sendMessage(str_type pMsg) {
+        std::string result = std::string(pMsg) + std::string(pMsg);
+        result = result + result;
+        result = result + result;
         g_msg = pMsg;
     }
 
     NOINLINE static str_type getMessage(str_type pMsg) {
+        std::string result = std::string(pMsg) + std::string(pMsg);
+        result = result + result;
+        result = result + result;
         g_msg = pMsg;
-        return str_type(pMsg);
+        return str_type(g_msg->c_str());
     }
 
     struct Node
     {
         NOINLINE void sendMessage(str_type pMsg) {
+            std::string result = std::string(pMsg) + std::string(pMsg);
+            result = result + result;
+            result = result + result;
+            g_msg = pMsg;
             g_msg = pMsg;
         }
 
-        NOINLINE str_type getMessage(str_type pMsg) {
+        NOINLINE str_type getMessage(str_type pMsg) 
+        {
+            std::string result = std::string(pMsg) + std::string(pMsg);
+            result = result + result;
+            result = result + result;
             g_msg = pMsg;
-            return str_type(pMsg);
+            return str_type(g_msg->c_str());
         }
     };
 

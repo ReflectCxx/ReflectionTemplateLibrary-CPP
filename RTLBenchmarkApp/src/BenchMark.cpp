@@ -6,6 +6,8 @@
 
 #include "BenchMark.h"
 
+#include "LambdaFunction.h"
+
 
 namespace {
 
@@ -14,11 +16,10 @@ namespace {
     "nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
     "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
     "eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id";
-
-    // Pre-created string to isolate call overhead
-    static const std::string g_longStr(LONG_STR);
 }
 
+// Pre-created string to isolate call overhead
+static const std::string g_longStr(LONG_STR);
 
 namespace rtl_bench
 {
@@ -34,9 +35,9 @@ namespace rtl_bench
 
     void BenchMark::autoLambdaCall_noReturn(benchmark::State& state)
     {
-        auto sendMsg = [](const str_type& pMsg) {
+        static auto sendMsg = [](const str_type& pMsg) {
             sendMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -50,7 +51,7 @@ namespace rtl_bench
     {
         static std::function sendMsg = [](const str_type& pMsg) {
             sendMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -78,7 +79,7 @@ namespace rtl_bench
     {
         auto getMsg = [](const str_type& pMsg) {
             return getMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
@@ -91,14 +92,13 @@ namespace rtl_bench
     {
         static std::function getMsg = [](const str_type& pMsg) {
             return getMessage(pMsg);
-            };
+        };
 
         for (auto _ : state)
         {
             benchmark::DoNotOptimize(getMsg(g_longStr));
         }
     }
-
 }
 
 
@@ -171,7 +171,7 @@ namespace rtl_bench
     {
         static rtl::Record rNode = cxx_mirror().getRecord("Node").value();
         static rtl::Method getMsg = rNode.getMethod("getMessage").value();
-        static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
+        static rtl::RObject robj = rNode.create<rtl::alloc::Heap>().rObject;
         static auto _ = []() {
             if (getMsg.bind<str_type>(robj).call(g_longStr).err == rtl::error::None) {
                 std::cout << "[rtl:3] call success.\n";

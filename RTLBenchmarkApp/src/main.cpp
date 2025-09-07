@@ -4,9 +4,6 @@
 
 #include "BenchMark.h"
 
-// ------------------------------------------------------------
-// Register benchmarks
-// ------------------------------------------------------------
 
 BENCHMARK(rtl_bench::BenchMark::directCall_noReturn);
 BENCHMARK(rtl_bench::BenchMark::autoLambdaCall_noReturn);
