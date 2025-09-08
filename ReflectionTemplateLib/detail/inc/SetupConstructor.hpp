@@ -37,15 +37,15 @@ namespace rtl::detail
                     }
                     else {
                         return { error::None,
-                                 RObjectBuilder<_recordType>::build<alloc::Stack>(
-                                     _recordType(std::forward<_signature>(params)...), true)
+                                 RObjectBuilder<_recordType>::template
+                                 build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), true)
                         };
                     }
                 }
                 else if (pAllocType == alloc::Heap) {
                     return { error::None,
-                             RObjectBuilder<_recordType*>::build<alloc::Heap>(
-                                 new _recordType(std::forward<_signature>(params)...), true)
+                             RObjectBuilder<_recordType*>::template 
+                             build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true)
                     };
                 }
             }

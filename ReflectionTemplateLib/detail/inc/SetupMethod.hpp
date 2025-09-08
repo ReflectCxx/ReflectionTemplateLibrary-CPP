@@ -64,15 +64,18 @@ namespace rtl
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder<const _rawRetType*>::build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                             RObjectBuilder<const _rawRetType*>::template
+                                build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
                     };
                 }
                 else {
 
-                    _returnType&& retObj = std::move((target.*pFunctor)(std::forward<_signature>(params)...));
+                    auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    using T = std::remove_cvref_t<decltype(retObj)>;
+
                     return { error::None,
-                             RObjectBuilder<_returnType>::build<alloc::Stack>(
-                                 std::forward<_returnType>(retObj), isConstCastSafe)
+                             RObjectBuilder<const T>::template 
+                                build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
                     };
                 }
             };
@@ -114,14 +117,18 @@ namespace rtl
                     */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder<const _rawRetType*>::build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                             RObjectBuilder<const _rawRetType*>::template
+                                build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
                     };
                 }
                 else {
-                    _returnType&& retObj = std::move((target.*pFunctor)(std::forward<_signature>(params)...));
+
+                    auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    using T = std::remove_cvref_t<decltype(retObj)>;
+
                     return { error::None,
-                             RObjectBuilder<_returnType>::build<alloc::Stack>(
-                                 std::forward<_returnType>(retObj), isConstCastSafe)
+                             RObjectBuilder<const T>::template
+                                build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
                     };
                 }
             };

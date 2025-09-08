@@ -47,10 +47,12 @@ namespace rtl
     inline RObject reflect(T(&pArr)[N]) noexcept
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
-            return detail::RObjectBuilder<std::string_view>::build<alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
+            return detail::RObjectBuilder<std::string_view>::template 
+                    build<alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
         }
         else {
-            return detail::RObjectBuilder<std::vector<T>>::build<alloc::Stack>(std::vector(pArr, pArr + N), !traits::is_const_v<T>);
+            return detail::RObjectBuilder<std::vector<T>>::template
+                    build<alloc::Stack>(std::vector(pArr, pArr + N), !traits::is_const_v<T>);
         }
     }
 
@@ -61,12 +63,14 @@ namespace rtl
         using _T = traits::raw_t<T>;
         if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)
         {
-            return detail::RObjectBuilder<T>::build<alloc::Stack>(std::forward<T>(pVal), !traits::is_const_v<T>);
+            return detail::RObjectBuilder<T>::template
+                    build<alloc::Stack>(std::forward<T>(pVal), !traits::is_const_v<T>);
         }
         else
         {
             constexpr bool isConstCastSafe = !traits::is_const_v<typename traits::std_wrapper<_T>::value_type>;
-            return detail::RObjectBuilder<T>::build<alloc::Stack>(std::forward<T>(pVal), isConstCastSafe);
+            return detail::RObjectBuilder<T>::template
+                    build<alloc::Stack>(std::forward<T>(pVal), isConstCastSafe);
         }
     }
 }

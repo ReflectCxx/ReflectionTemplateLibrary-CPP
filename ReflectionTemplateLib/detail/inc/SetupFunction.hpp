@@ -48,15 +48,18 @@ namespace rtl
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder<const _rawRetType*>::build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                             RObjectBuilder<const _rawRetType*>::template
+                             build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
                     };
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    _returnType&& retObj = std::move(pFunctor(std::forward<_signature>(params)...));
+                    auto&& retObj = pFunctor(std::forward<_signature>(params)...);
+                    using T = std::remove_cvref_t<decltype(retObj)>;
+
                     return { error::None,
-                             RObjectBuilder<_returnType>::build<rtl::alloc::Stack>(
-                                 std::forward<_returnType>(retObj), isConstCastSafe)
+                             RObjectBuilder<const T>::template
+                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
                     };
                 }
             };
