@@ -15,28 +15,30 @@
 using argStr_t = std::string_view;
 using retStr_t = std::string_view;
 
+#define WORK_LOAD(S) (std::string(S) + std::string(S) + std::string(S) + std::string(S))
+
 namespace rtl_bench
 {
     static std::optional<std::string> g_msg;
 
     NOINLINE static void sendMessage(argStr_t pMsg) {
-        g_msg = pMsg;
+        g_msg = WORK_LOAD(pMsg);
     }
 
     NOINLINE static retStr_t getMessage(argStr_t pMsg) {
-        g_msg = pMsg;
+        g_msg = WORK_LOAD(pMsg);
         return retStr_t(g_msg->c_str());
     }
 
     struct Node
     {
         NOINLINE void sendMessage(argStr_t pMsg) {
-            g_msg = pMsg;
+            g_msg = WORK_LOAD(pMsg);
         }
 
         NOINLINE retStr_t getMessage(argStr_t pMsg)
         {
-            g_msg = pMsg;
+            g_msg = WORK_LOAD(pMsg);
             return retStr_t(g_msg->c_str());
         }
     };

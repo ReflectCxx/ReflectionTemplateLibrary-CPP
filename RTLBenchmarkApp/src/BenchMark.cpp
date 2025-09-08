@@ -8,12 +8,12 @@
 
 namespace {
 
-    static const char* LONG_STR = "Lorem ipsum";// dolor sit amet, consectetur adipiscing elit, sed do"
-    //"do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
-    //"nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
-    //"dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
-    //"eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id"
-    //"Lorem ipsum dolor sit amet laboris nisi ut aliquip ex ea commodo";
+    static const char* LONG_STR = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
+    "do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
+    "nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
+    "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
+    "eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id"
+    "Lorem ipsum dolor sit amet laboris nisi ut aliquip ex ea commodo";
 }
 
 // Pre-created string to isolate call overhead
@@ -64,7 +64,7 @@ namespace rtl_bench
     {
         static auto _ = []() {
             std::cout << "--------------------------------------------------"
-                         "---------------------------------------------" << std::endl;
+                         "-----------------------------------------------" << std::endl;
             return 0; 
         }();
 
@@ -78,7 +78,10 @@ namespace rtl_bench
     void BenchMark::stdFunctionCall_withReturn(benchmark::State& state)
     {
         static std::function getMsg = [](argStr_t& pMsg) {
-            return getMessage(pMsg);
+            auto msgStr = getMessage(pMsg);
+            volatile auto* p = &msgStr; 
+            static_cast<void>(p);
+            return msgStr;
         };
 
         for (auto _ : state)
@@ -92,7 +95,10 @@ namespace rtl_bench
     {
         static Node* node = new Node();
         static std::function getMsg = [=](argStr_t& pMsg) {
-            return node->getMessage(pMsg);
+            auto msgStr = node->getMessage(pMsg);
+            volatile auto* p = &msgStr; 
+            static_cast<void>(p);
+            return msgStr;
         };
 
         for (auto _ : state)
