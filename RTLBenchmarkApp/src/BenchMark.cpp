@@ -78,16 +78,13 @@ namespace rtl_bench
     void BenchMark::reflectedCall_noReturn(benchmark::State& state)
     {
         static rtl::Function sendMsg = cxx_mirror().getFunction("sendMessage").value();
-
         static auto _ = []() {
-            if (sendMsg.bind().call(g_longStr).err == rtl::error::None) {
-                std::cout << "[rtl:0] call success.\n";
-            }
-            else {
-                std::cout << "[rtl:0] call failed.\n";
+            auto err = sendMsg.bind().call(g_longStr).err;
+            if (err != rtl::error::None) {
+                std::cout << "[rtl:0] err: "<< rtl::to_string(err)<<"\n";
             }
             return 0;
-            }();
+        }();
 
         for (auto _ : state)
         {
@@ -102,14 +99,12 @@ namespace rtl_bench
         static rtl::Method sendMsg = rNode.getMethod("sendMessage").value();
         static rtl::RObject robj = rNode.create<rtl::alloc::Stack>().rObject;
         static auto _ = []() {
-            if (sendMsg.bind(robj).call(g_longStr).err == rtl::error::None) {
-                std::cout << "[rtl:1] call success.\n";
-            }
-            else {
-                std::cout << "[rtl:1] call failed.\n";
+            auto err = sendMsg.bind(robj).call(g_longStr).err;
+            if (err != rtl::error::None)  {
+                std::cout << "[rtl:1] err: " << rtl::to_string(err) << "\n";
             }
             return 0;
-            }();
+        }();
 
         for (auto _ : state)
         {
@@ -122,11 +117,9 @@ namespace rtl_bench
     {
         static rtl::Function getMsg = cxx_mirror().getFunction("getMessage").value();
         static auto _ = []() {
-            if (getMsg.bind().call(g_longStr).err == rtl::error::None) {
-                std::cout << "[rtl:2] call success.\n";
-            }
-            else {
-                std::cout << "[rtl:2] call failed.\n";
+            auto err = getMsg.bind().call(g_longStr).err;
+            if (err != rtl::error::None) {
+                std::cout << "[rtl:2] err: " << rtl::to_string(err) << "\n";
             }
             return 0;
         }();
@@ -144,11 +137,9 @@ namespace rtl_bench
         static rtl::Method getMsg = rNode.getMethod("getMessage").value();
         static rtl::RObject robj = rNode.create<rtl::alloc::Heap>().rObject;
         static auto _ = []() {
-            if (getMsg.bind(robj).call(g_longStr).err == rtl::error::None) {
-                std::cout << "[rtl:3] call success.\n";
-            }
-            else {
-                std::cout << "[rtl:3] call failed.\n";
+            auto err = getMsg.bind(robj).call(g_longStr).err;
+            if (err != rtl::error::None) {
+                std::cout << "[rtl:3] err: " << rtl::to_string(err) << "\n";
             }
             return 0;
         }();

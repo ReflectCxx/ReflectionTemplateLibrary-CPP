@@ -78,10 +78,10 @@ namespace rtl::detail {
 
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
-    RObject RObjectBuilder<T>::build(T&& pVal, bool pIsConstCastSafe) noexcept 
+    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, bool pIsConstCastSafe) noexcept 
     {
         using _T = traits::raw_t<T>;
-        static const RObjectId robjId = RObjectId::create<std::unique_ptr<_T>, _allocOn>(pIsConstCastSafe);
+        static const RObjectId robjId = RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pIsConstCastSafe);
 
         return RObject( &robjId,
                         std::any{
@@ -95,14 +95,14 @@ namespace rtl::detail {
     
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
-    RObject RObjectBuilder<T>::build(T&& pVal, bool pIsConstCastSafe) noexcept
+    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
         constexpr bool isRawPointer = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
 
         if constexpr (isRawPointer)
         {
-            static const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
+            static const RObjectId robjId = RObjectId::create<T, alloc::Stack>(pIsConstCastSafe);
             return RObject( &robjId,
                             std::any { static_cast<const _T*>(pVal) },
                             &buildCloner<_T>(),
@@ -113,7 +113,7 @@ namespace rtl::detail {
             if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
             {
                 using U = traits::std_wrapper<_T>::value_type;
-                static const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
+                static const RObjectId robjId = RObjectId::create<T, alloc::Stack>(pIsConstCastSafe);
                 return RObject( &robjId,
                                 std::any {
                                     std::in_place_type<RObjectUPtr<U>>,
@@ -125,7 +125,7 @@ namespace rtl::detail {
             else
             {
                 static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-                static const RObjectId robjId = RObjectId::create<T, _allocOn>(pIsConstCastSafe);
+                static const RObjectId robjId = RObjectId::create<T, alloc::Stack>(pIsConstCastSafe);
                 return RObject( &robjId,
                                 std::any {
                                     std::in_place_type<T>,

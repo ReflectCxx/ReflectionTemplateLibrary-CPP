@@ -24,15 +24,15 @@
 
 namespace rtl
 {
-    inline RObject::RObject(const detail::RObjectId* pRObjId, std::any&& pObject, const Cloner* pCloner,
-                            const std::vector<traits::ConverterPair>* pConverters) noexcept
+    FORCE_INLINE RObject::RObject(const detail::RObjectId* pRObjId, std::any&& pObject, const Cloner* pCloner,
+                                  const std::vector<traits::ConverterPair>* pConverters) noexcept
         : m_object(std::forward<std::any>(pObject))
         , m_getClone(pCloner)
         , m_objectId(pRObjId)
         , m_converters(pConverters)
     { }
 
-    inline RObject::RObject(RObject&& pOther) noexcept
+    FORCE_INLINE RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
         , m_getClone(pOther.m_getClone)
         , m_objectId(pOther.m_objectId)
