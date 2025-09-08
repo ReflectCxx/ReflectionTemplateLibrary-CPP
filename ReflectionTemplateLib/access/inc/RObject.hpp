@@ -24,23 +24,23 @@
 
 namespace rtl
 {
-    FORCE_INLINE RObject::RObject(const detail::RObjectId* pRObjId, std::any&& pObject, const Cloner* pCloner,
+    FORCE_INLINE RObject::RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,
                                   const std::vector<traits::ConverterPair>* pConverters) noexcept
         : m_object(std::forward<std::any>(pObject))
-        , m_getClone(pCloner)
         , m_objectId(pRObjId)
+        , m_getClone(pCloner)
         , m_converters(pConverters)
     { }
 
     FORCE_INLINE RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
-        , m_getClone(pOther.m_getClone)
         , m_objectId(pOther.m_objectId)
+        , m_getClone(pOther.m_getClone)
         , m_converters(pOther.m_converters)
     {
         // Explicitly clear moved-from source
         pOther.m_object.reset();
-        pOther.m_objectId = nullptr;
+        pOther.m_objectId = {};
         pOther.m_getClone = nullptr;
         pOther.m_converters = nullptr;
     }
@@ -54,7 +54,7 @@ namespace rtl
 
     inline std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {
-        if (m_objectId->m_containsAs != detail::EntityKind::None) {
+        if (m_objectId.m_containsAs != detail::EntityKind::None) {
             for (std::size_t index = 0; index < m_converters->size(); index++) {
                 if ((*m_converters)[index].first == pToTypeId) {
                     return index;
@@ -70,12 +70,12 @@ namespace rtl
     {
         if constexpr (traits::is_bare_type<T>()) {
             if constexpr (traits::std_wrapper<T>::type != detail::Wrapper::None) {
-                if (m_objectId->m_wrapperTypeId == traits::std_wrapper<T>::id()) {
+                if (m_objectId.m_wrapperTypeId == traits::std_wrapper<T>::id()) {
                     return true;
                 }
             }
             const auto& typeId = detail::TypeId<T>::get();
-            return (m_objectId->m_typeId == typeId || getConverterIndex(typeId) != index_none);
+            return (m_objectId.m_typeId == typeId || getConverterIndex(typeId) != index_none);
         }
     }
 
@@ -85,7 +85,7 @@ namespace rtl
     {
         detail::EntityKind newKind = detail::EntityKind::None;
         const traits::Converter& convert = (*m_converters)[pIndex].second;
-        const std::any& viewObj = convert(m_object, m_objectId->m_containsAs, newKind);
+        const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
         if (viewRef != nullptr && newKind == detail::EntityKind::Ref) {
@@ -105,7 +105,7 @@ namespace rtl
     {
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId->m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
             {
                 using U = detail::RObjectUPtr<typename traits::std_wrapper<T>::value_type>;
                 const U& uptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
@@ -121,7 +121,7 @@ namespace rtl
     {
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId->m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
             {
                 const T& sptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
                 return std::optional<rtl::view<T>>(std::in_place, const_cast<T&>(sptrRef));
@@ -137,7 +137,7 @@ namespace rtl
         if constexpr (traits::is_bare_type<T>())
         {
             const std::size_t asTypeId = detail::TypeId<T>::get();
-            if (asTypeId == m_objectId->m_typeId)
+            if (asTypeId == m_objectId.m_typeId)
             {
                 const T* valRef = detail::RObjExtractor(this).getPointer<T>();
                 if (valRef != nullptr) {
@@ -184,10 +184,10 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Wrapper>() const
     {
-        if (m_objectId->m_wrapperType == detail::Wrapper::None) {
+        if (m_objectId.m_wrapperType == detail::Wrapper::None) {
             return { error::NotWrapperType, RObject{} };
         }
-        else if (m_objectId->m_wrapperType == detail::Wrapper::Unique) 
+        else if (m_objectId.m_wrapperType == detail::Wrapper::Unique) 
         {
             return { error::TypeNotCopyConstructible, RObject{} };
         }
@@ -212,7 +212,7 @@ namespace rtl
         else if constexpr (_copyTarget == copy::Auto) {
             // RTL wraps the objects allocated on heap in 'std::unique_ptr'. Which by default is transparent to RTL itself.
             // 'std::unique_ptr' acquired via any other source, (e.g. return value) are not transparent. hence the second condition.
-            if (m_objectId->m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) 
+            if (m_objectId.m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) 
             {
                 return createCopy<_allocOn, detail::EntityKind::Wrapper>();
             }

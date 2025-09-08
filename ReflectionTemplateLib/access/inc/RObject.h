@@ -44,13 +44,13 @@ namespace rtl
         using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
         mutable std::any m_object;
+        mutable detail::RObjectId m_objectId;
 
         mutable const Cloner* m_getClone;
-        mutable const detail::RObjectId* m_objectId;
         mutable const std::vector<traits::ConverterPair>* m_converters;
 
         RObject(const RObject&) = default;
-        RObject(const detail::RObjectId* pRObjId, std::any&& pObject, const Cloner* pCloner,
+        RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,
                 const std::vector<traits::ConverterPair>* pConverters) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
@@ -70,15 +70,15 @@ namespace rtl
         RObject& operator=(const RObject&) = delete;
 
         GETTER_BOOL(Empty, (m_object.has_value() == false))
-        GETTER_BOOL(OnHeap, (m_objectId && m_objectId->m_allocatedOn == alloc::Heap))
-        GETTER_BOOL(AllocatedByRtl, (m_objectId && m_objectId->m_allocatedOn == alloc::Heap))
-        GETTER(std::size_t, TypeId, (m_objectId ? m_objectId->m_typeId : detail::TypeId<>::None))
+        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
 
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.
     *   - RTL may 'const_cast' its own objects(allocated via RTL) but preserves logical constness.
     *   - External objects (e.g. returned via Reflected call) keep original qualifier; if const, then const_cast is unsafe.
-    */  GETTER_BOOL(ConstCastSafe, (m_objectId && m_objectId->m_isConstCastSafe))
+    */  GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
 
         template <class _asType>
         bool canViewAs() const;
