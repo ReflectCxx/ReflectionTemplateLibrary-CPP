@@ -43,7 +43,7 @@ Each benchmark was repeated across workloads of increasing complexity, with time
 
 - **No Scaling Penalty**  
   The overhead does not grow with function complexity.  
-  This indicates that RTL adds only a fixed, predictable cost per call, with no hidden allocations or RTTI-like penalties.
+  This indicates that RTL adds only a fixed, predictable cost per call, with no hidden allocations.
 
 - **Performance-Culture Friendly**  
   This aligns with C++’s ethos: *you only pay a small, predictable cost when you use reflection*.
@@ -56,13 +56,3 @@ The Reflection Template Library (RTL) demonstrates:
 
 - **Runtime reflection with constant, minimal overhead**.  
 - **Predictable cost model**: ~10–20 ns for reflective calls with returns.  
-- **Competitive performance**: far faster than existing C++ or mainstream language reflection systems.  
-
-This makes RTL practical for domains traditionally wary of reflection:
-- Serialization
-- RPC / networking
-- GUI bindings
-- Scripting integrations
-- Tooling
-
-RTL shows that reflection in C++ can finally be **both expressive and performant**.
