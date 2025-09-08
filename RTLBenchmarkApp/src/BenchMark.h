@@ -68,11 +68,15 @@ namespace rtl_bench
 
 		static void reflectedCall_noReturn(benchmark::State& state);
 
+        static void stdFunctionMethodCall_noReturn(benchmark::State& state);
+
 		static void reflectedMethodCall_noReturn(benchmark::State& state);
 
 		static void directCall_withReturn(benchmark::State& state);
 
 		static void stdFunctionCall_withReturn(benchmark::State& state);
+
+        static void stdFunctionMethodCall_withReturn(benchmark::State& state);
 
 		static void reflectedCall_withReturn(benchmark::State& state);
 

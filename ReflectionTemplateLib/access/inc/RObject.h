@@ -43,11 +43,11 @@ namespace rtl
     {
         using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
-        mutable std::any m_object;
-        mutable detail::RObjectId m_objectId;
+        std::any m_object;
+        detail::RObjectId m_objectId;
 
-        mutable const Cloner* m_getClone;
-        mutable const std::vector<traits::ConverterPair>* m_converters;
+        const Cloner* m_getClone = nullptr;
+        const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         RObject(const RObject&) = default;
         RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,

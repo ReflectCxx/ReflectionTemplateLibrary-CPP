@@ -7,7 +7,7 @@
 using namespace std;
 using namespace rtl;
 
-using namespace test_utils; 
+using namespace test_utils;
 using namespace test_mirror;
 
 namespace rtl_tests
@@ -38,7 +38,7 @@ namespace rtl_tests
 
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
-            
+
             //TODO: Fails on linux, differently optimized away from windows?
             // Calender's move-constructor called once.
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
@@ -49,6 +49,7 @@ namespace rtl_tests
 
             // 'calander0' must be empty now.
             ASSERT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -113,6 +114,7 @@ namespace rtl_tests
 
             // 'calander0' must be empty now.
             ASSERT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -182,6 +184,7 @@ namespace rtl_tests
 
                 // 'event0' must be empty now.
                 ASSERT_TRUE(event0.isEmpty());
+                EXPECT_NE(event0.getTypeId(), event1.getTypeId());
                 {
                     // Event::reset() is a non-const method. can't be called on const-object.
                     optional<Method> eventReset = classEvent->getMethod(event::str_reset);
@@ -244,7 +247,7 @@ namespace rtl_tests
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
 
-            //TODO: Fails on linux, differently optimized away from windows?
+            //TODO: Works on windows, fails on linux, differently optimized away for windows?
             // Calender's move-constructor called once.
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
@@ -254,6 +257,7 @@ namespace rtl_tests
 
             // 'calander0' must be empty now.
             ASSERT_TRUE(calender0.isEmpty());
+            EXPECT_NE(calender0.getTypeId(), calender1.getTypeId());
 
             // After move, these instance count must remain same.
             EXPECT_TRUE(calender::get_instance_count() == 1);
