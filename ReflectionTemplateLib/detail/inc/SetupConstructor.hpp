@@ -37,14 +37,16 @@ namespace rtl::detail
                     }
                     else {
                         return { error::None,
-                                 RObjectBuilder::build<_recordType, alloc::Stack>(_recordType(std::forward<_signature>(params)...),
-                                                                                  true) };
+                                 RObjectBuilder<_recordType>::template
+                                 build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), true)
+                        };
                     }
                 }
                 else if (pAllocType == alloc::Heap) {
-                    return {error::None,
-                            RObjectBuilder::build<_recordType*, alloc::Heap>(new _recordType(std::forward<_signature>(params)...),
-                                                                             true) };
+                    return { error::None,
+                             RObjectBuilder<_recordType*>::template 
+                             build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true)
+                    };
                 }
             }
             return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.

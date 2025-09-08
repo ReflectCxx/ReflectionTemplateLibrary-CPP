@@ -28,6 +28,7 @@ namespace rtl::detail
 
     class RObjExtractor;
 
+    template<class  T>
     struct RObjectBuilder;
 }
 
@@ -42,17 +43,15 @@ namespace rtl
     {
         using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
 
-        mutable detail::RObjectId m_objectId;
+        std::any m_object;
+        detail::RObjectId m_objectId;
 
-        mutable std::any m_object;
-        mutable const Cloner* m_getClone;
-        mutable const std::vector<traits::ConverterPair>* m_converters;
+        const Cloner* m_getClone = nullptr;
+        const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         RObject(const RObject&) = default;
-        RObject(const detail::RObjectId& pRObjId, std::any&& pObject, const Cloner& pCloner,
-                const std::vector<traits::ConverterPair>& pConverters);
-
-        static std::atomic<std::size_t>& getInstanceCounter();
+        RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,
+                const std::vector<traits::ConverterPair>* pConverters) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 
@@ -70,10 +69,10 @@ namespace rtl
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
-        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_BOOL(Empty, (m_object.has_value() == false))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
+        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
 
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.
@@ -96,11 +95,15 @@ namespace rtl
         template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const;
 
+        static std::atomic<std::size_t>& getInstanceCounter();
+
         //friends :)
         template<class T>
         friend struct detail::RObjectUPtr;
         friend detail::RObjExtractor;
-        friend detail::RObjectBuilder;
+
+        template<class T>
+        friend struct detail::RObjectBuilder;
     };
 
     struct [[nodiscard]] Return {

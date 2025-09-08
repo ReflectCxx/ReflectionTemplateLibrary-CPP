@@ -99,8 +99,6 @@ namespace rtl_tests
 
             rtl::type().function("strlen").build(std::strlen),
 
-            rtl::type().record<void>("void").build(),
-
             rtl::type().record<char>("char").build(),
 
             rtl::type().record<std::vector<int>>("vector_int").build(),

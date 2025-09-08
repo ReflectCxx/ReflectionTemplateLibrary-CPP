@@ -37,7 +37,7 @@ namespace rtl::detail
         GETTER(EntityKind, ContainedAs, m_containsAs)
 
         template<class T>
-        static constexpr EntityKind getEntityKind()
+        FORCE_INLINE static constexpr EntityKind getEntityKind() noexcept
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -57,7 +57,7 @@ namespace rtl::detail
 
 
         template<class T, rtl::alloc _allocOn>
-        static RObjectId create(bool pIsConstCastSafe)
+        FORCE_INLINE static RObjectId create(bool pIsConstCastSafe) noexcept
         {
             // extract wrapper info.
             using _W = traits::std_wrapper<traits::raw_t<T>>;
@@ -67,7 +67,7 @@ namespace rtl::detail
             
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-            const bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
+            constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
             return RObjectId{ isWrappingConst, pIsConstCastSafe, typeId, wrapperId, _allocOn,  _W::type, entityKind };
         }
     };

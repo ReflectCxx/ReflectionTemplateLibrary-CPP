@@ -7,7 +7,7 @@
 using namespace std;
 using namespace rtl;
 
-using namespace test_utils; 
+using namespace test_utils;
 using namespace test_mirror;
 
 namespace rtl_tests
@@ -38,7 +38,7 @@ namespace rtl_tests
 
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
-            
+
             //TODO: Fails on linux, differently optimized away from windows?
             // Calender's move-constructor called once.
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
@@ -247,7 +247,7 @@ namespace rtl_tests
             // Moving a RObject created via alloc::Stack, invokes Calender's move constructor.
             RObject calender1 = std::move(calender0);
 
-            //TODO: Fails on linux, differently optimized away from windows?
+            //TODO: Works on windows, fails on linux, differently optimized away for windows?
             // Calender's move-constructor called once.
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 

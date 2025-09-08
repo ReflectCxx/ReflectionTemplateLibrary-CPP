@@ -20,6 +20,27 @@ namespace rtl
 {
     namespace detail
     {
+
+        template<class _derivedType>
+        template<class _recordType, class _returnType, class ..._signature>
+        inline SetupMethod<_derivedType>::MethodLambda<_signature...>
+               SetupMethod<_derivedType>::getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...))
+        {
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
+        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+            {
+                if (!pTargetObj.isConstCastSafe()) {
+                    return { error::IllegalConstCast, RObject{} };
+                }
+
+                _recordType& target = const_cast<_recordType&>(pTargetObj.view<_recordType>()->get());
+                (target.*pFunctor)(std::forward<_signature>(params)...);
+                return { error::None, RObject{} };
+            };
+        }
+
+
         template<class _derivedType>
         template<class _recordType, class _returnType, class ..._signature>
         inline SetupMethod<_derivedType>::MethodLambda<_signature...>
@@ -29,33 +50,51 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
         */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
             {
-                if (!pTargetObj.isConstCastSafe())
-                {
+                if (!pTargetObj.isConstCastSafe()) {
                     return { error::IllegalConstCast, RObject{} };
                 }
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' needs const_cast, since the functor is non-const-member-function.
                 _recordType& target = const_cast<_recordType&>(pTargetObj.view<_recordType>()->get());
-                if constexpr (std::is_same_v<_returnType, void>) {
-                    //if the function do not returns anything, this block will be retained by compiler.
-                    (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return { error::None, RObject{} };
-                }
-                else if constexpr (std::is_reference_v<_returnType>) {
+                if constexpr (std::is_reference_v<_returnType>) 
+                {
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj,
-                                                                                          isConstCastSafe) };
+                             RObjectBuilder<const _rawRetType*>::template
+                                build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                    };
                 }
                 else {
+
+                    auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    using T = std::remove_cvref_t<decltype(retObj)>;
+
                     return { error::None,
-                             RObjectBuilder::build<_returnType, alloc::Stack>((target.*pFunctor)(std::forward<_signature>(params)...),
-                                                                              isConstCastSafe) };
+                             RObjectBuilder<const T>::template 
+                                build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
+                    };
                 }
+            };
+        }
+
+
+
+        template<class _derivedType>
+        template<class _recordType, class _returnType, class ..._signature>
+        inline SetupMethod<_derivedType>::MethodLambda<_signature...>
+               SetupMethod<_derivedType>::getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const)
+        {
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
+        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+            {
+                const _recordType& target = pTargetObj.view<_recordType>()->get();
+                (target.*pFunctor)(std::forward<_signature>(params)...);
+                return { error::None, RObject{} };
             };
         }
 
@@ -72,25 +111,25 @@ namespace rtl
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' is const and 'pFunctor' is const-member-function.
                 const _recordType& target = pTargetObj.view<_recordType>()->get();
-
-                if constexpr (std::is_same_v<_returnType, void>) {
-                    //if the function do not returns anything, this block will be retained by compiler.
-                    (target.*pFunctor)(std::forward<_signature>(params)...);
-                    return { error::None, RObject{} };
-                }
-                else if constexpr (std::is_reference_v<_returnType>) {
-                /*  if the function returns reference, this block will be retained by compiler.
-                    Note: reference to temporary or dangling is not checked here.
-                */  using _rawRetType = traits::raw_t<_returnType>;
+                if constexpr (std::is_reference_v<_returnType>) {
+                    /*  if the function returns reference, this block will be retained by compiler.
+                        Note: reference to temporary or dangling is not checked here.
+                    */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
-                             RObjectBuilder::build<const _rawRetType*, rtl::alloc::Stack>(&retObj,
-                                                                                          isConstCastSafe) };
+                             RObjectBuilder<const _rawRetType*>::template
+                                build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                    };
                 }
                 else {
+
+                    auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                    using T = std::remove_cvref_t<decltype(retObj)>;
+
                     return { error::None,
-                             RObjectBuilder::build<_returnType, alloc::Stack>((target.*pFunctor)(std::forward<_signature>(params)...),
-                                                                              isConstCastSafe) };
+                             RObjectBuilder<const T>::template
+                                build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
+                    };
                 }
             };
         }
@@ -137,10 +176,21 @@ namespace rtl
             //generate a type-id of '_returnType'.
             const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<detail::methodQ::NonConst, _signature...>' lambda vector and get the index.
-            const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
-            //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType, _returnType>());
+
+            if constexpr (std::is_same_v<_returnType, void>) 
+            {
+                const std::size_t index = _derivedType::pushBack(getVoidMethodCaller(pFunctor), getIndex, updateIndex);
+                //construct the hash-key 'FunctorId' and return.
+                return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+                                         _derivedType::template getSignatureStr<_recordType, _returnType>());
+            }
+            else
+            {
+                const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+                //construct the hash-key 'FunctorId' and return.
+                return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+                    _derivedType::template getSignatureStr<_recordType, _returnType>());
+            }
         }
 
 
@@ -182,10 +232,21 @@ namespace rtl
             //generate a type-id of '_returnType'.
             const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'MethodContainer<detail::methodQ::Const, _signature...>' lambda vector and get the index.
-            const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
-            //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_recordType, _returnType>());
+
+            if constexpr (std::is_same_v<_returnType, void>)
+            {
+                const std::size_t index = _derivedType::pushBack(getVoidMethodCaller(pFunctor), getIndex, updateIndex);
+                //construct the hash-key 'FunctorId' and return.
+                return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+                                         _derivedType::template getSignatureStr<_recordType, _returnType>());
+            }
+            else
+            {
+                const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+                //construct the hash-key 'FunctorId' and return.
+                return detail::FunctorId(index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
+                                         _derivedType::template getSignatureStr<_recordType, _returnType>());
+            }
         }
     }
 }

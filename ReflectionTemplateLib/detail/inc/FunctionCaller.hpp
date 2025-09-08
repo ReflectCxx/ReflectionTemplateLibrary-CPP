@@ -36,6 +36,6 @@ namespace rtl::detail
         if (index != rtl::index_none) {
             return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
         }
-        return { error::SignatureMismatch, RObject{ } };
+        return { error::SignatureMismatch, RObject{} };
     }
 }
