@@ -62,7 +62,9 @@ namespace rtl_bench
     void BenchMark::stdFunctionCall_withReturn(benchmark::State& state)
     {
         static std::function getMsg = [](argStr_t& pMsg) {
-            return getMessage(pMsg);
+            retStr_t retMsg = getMessage(pMsg);
+            volatile auto *msg = &retMsg;
+            return retMsg;
         };
 
         for (auto _ : state)
