@@ -47,13 +47,13 @@ namespace rtl::detail
             switch (m_rObj.m_objectId.m_containsAs)
             {
                 case EntityKind::Ref: {
-                    return std::any_cast<const T*>(m_rObj.m_object);
+                    return std::any_cast<const T*>(m_rObj.m_object.value());
                 }
                 case EntityKind::Wrapper: {
                     return getFromWrapper<T>();
                 }
                 case EntityKind::Value: {
-                    const T& valueRef = std::any_cast<const T&>(m_rObj.m_object);
+                    const T& valueRef = std::any_cast<const T&>(m_rObj.m_object.value());
                     return static_cast<const T*>(&valueRef);
                 }
                 default: return nullptr;
@@ -73,14 +73,14 @@ namespace rtl::detail
                     if (m_rObj.m_objectId.m_isWrappingConst)
                     {
                         using U = detail::RObjectUPtr<const _T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const U*>(&uptrRef);
                     }
                 }
                 else
                 {
                     using U = detail::RObjectUPtr<_T>;
-                    const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                    const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                     return static_cast<const U*>(&uptrRef);
                 }
             }
@@ -98,14 +98,14 @@ namespace rtl::detail
                 {
                     if (m_rObj.m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const _T>;
-                        const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const T*>(&sptrRef);
                     }
                 }
                 else
                 {
                     using U = std::shared_ptr<_T>;
-                    const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                    const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                     return static_cast<const T*>(&sptrRef);
                 }
             }
@@ -122,12 +122,12 @@ namespace rtl::detail
                 {
                     if (m_rObj.m_objectId.m_isWrappingConst) {
                         using U = detail::RObjectUPtr<const T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const T*>(uptrRef.get());
                     }
                     else {
                         using U = detail::RObjectUPtr<T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const T*>(uptrRef.get());
                     }
                 }
@@ -135,12 +135,12 @@ namespace rtl::detail
                 {
                     if (m_rObj.m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const T*>(sptrRef.get());
                     }
                     else {
                         using U = std::shared_ptr<T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object.value());
                         return static_cast<const T*>(sptrRef.get());
                     }
                 }

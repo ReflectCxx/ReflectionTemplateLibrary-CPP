@@ -15,7 +15,7 @@
 using argStr_t = std::string_view;
 using retStr_t = std::string_view;
 
-#define WORK_LOAD(S) (std::string(S) + std::string(S))
+#define WORK_LOAD(S) (std::string(S))
 
 
 namespace rtl_bench

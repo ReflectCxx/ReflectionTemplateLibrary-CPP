@@ -24,10 +24,21 @@
 
 namespace rtl
 {
+    class RObject;
+
+    namespace detail {
+
+        template<class ..._signature>
+        class FunctorContainer;
+    }
+
     namespace traits
     {
         using Converter = std::function< std::any(const std::any&, const detail::EntityKind&, detail::EntityKind&) >;
+        
         using ConverterPair = std::pair< std::size_t, Converter >;
+
+        using Cloner = detail::FunctorContainer<alloc, std::size_t, const RObject&>;
     }
 
     namespace traits

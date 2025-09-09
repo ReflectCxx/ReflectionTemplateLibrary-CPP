@@ -15,6 +15,8 @@
 
 namespace rtl {
 
+    class RObject;
+
     namespace detail
     {
     /*  @struct: SetupConstructor
@@ -26,16 +28,22 @@ namespace rtl {
         class SetupConstructor
         {	
             template<class ..._signature>
-            using CtorLambda = std::function < Return(alloc, _signature...) >;
+            using CtorLambda = std::function < Return(alloc, std::size_t, _signature...) >;
 
             template<class _recordType, class ..._signature>
             static CtorLambda<_signature...> getConstructorCaller();
+
+            template<class _recordType, class ..._signature>
+            static CtorLambda<_signature...> getCopyConstructorCaller();
 
         protected:
 
             //adds the lambda, wrapping constructor call, recordType(_signature...), to '_derivedType' (FunctorContainer)
             template<class _recordType, class ..._signature>
             static const detail::FunctorId addConstructor();
+
+            template<class _recordType, class ..._signature>
+            static const detail::FunctorId addCopyConstructor();
         };
     }
 }

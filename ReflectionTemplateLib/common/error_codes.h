@@ -23,7 +23,8 @@ namespace rtl
 
         TargetMismatch,
         SignatureMismatch,
-        FunctionNotRegisterd,   //Not used by RTL at all, for external purpose only.
+        CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type.
+        FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.
 
         IllegalConstCast,
         ConstOverloadMissing,
@@ -31,6 +32,7 @@ namespace rtl
 
         TypeNotCopyConstructible,
         TypeNotDefaultConstructible,
+
         StlWrapperHeapAllocForbidden,
     };
 
@@ -44,7 +46,9 @@ namespace rtl
             return "Empty instance: RObject does not hold any reflected object";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
-        case error::FunctionNotRegisterd:
+        case error::CloningDisabled:
+            return "Type not registered: The requested type is not explicitly registered in the Reflection system";
+        case error::FunctionNotRegistered:
             return "Function not registered: The requested function/method is not registered in the Reflection system";
         case error::TargetMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";

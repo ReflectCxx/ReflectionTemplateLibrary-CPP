@@ -8,7 +8,7 @@
 *	rtl::error::NonConstOverloadMissing
 *   rtl::error::ConstCallViolation
 * and,
-*	rtl::error::FunctionNotRegisterd, is not internally used by RTL.
+*	rtl::error::FunctionNotRegistered, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 
 * be empty if its not in registered in Reflection-system.
 * 
@@ -69,6 +69,10 @@ namespace rtl_tests
     {
         char ch = 'R';
         RObject rCh = rtl::reflect(ch);
+
+        error reterr = cxx::mirror().enableCloning(rCh);
+        ASSERT_TRUE(reterr == error::None);
+
         EXPECT_FALSE(rCh.isAllocatedByRtl());
         {
             auto [err, rch] = rCh.clone<alloc::Stack, copy::Value>();
@@ -105,10 +109,14 @@ namespace rtl_tests
 
         {
             RObject rChptr = rtl::reflect(chPtr);
-
+            
             ASSERT_FALSE(rChptr.isEmpty());
             EXPECT_FALSE(rChptr.isAllocatedByRtl());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
+
+            error reterr = cxx::mirror().enableCloning(rChptr);
+            ASSERT_TRUE(reterr == error::None);
+
             EXPECT_TRUE(rChptr.canViewAs<char>());
             {
                 auto viewCh = rChptr.view<char>();
@@ -187,11 +195,20 @@ namespace rtl_tests
             ASSERT_FALSE(event.isEmpty());
 
             // Try to call copy-constructor of class Event.
-            auto [err2, eventCp] = event.clone<alloc::Heap>();
+            auto [err2, eventCp0] = event.clone<alloc::Heap>();
+            
+            EXPECT_TRUE(err2 == error::CloningDisabled);
+            ASSERT_TRUE(eventCp0.isEmpty());
+
+            error reterr = cxx::mirror().enableCloning(event);
+            ASSERT_TRUE(reterr == error::None);
+
+            // Try to call copy-constructor of class Event.
+            auto [err3, eventCp1] = event.clone<alloc::Heap>();
 
             // Cannot create heap instance: Calender's copy constructor is deleted.
-            EXPECT_TRUE(err2 == error::TypeNotCopyConstructible);
-            ASSERT_TRUE(eventCp.isEmpty());
+            EXPECT_TRUE(err3 == error::TypeNotCopyConstructible);
+            ASSERT_TRUE(eventCp1.isEmpty());
         }
         EXPECT_TRUE(calender::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);

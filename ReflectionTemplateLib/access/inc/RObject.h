@@ -37,20 +37,17 @@ namespace rtl
 {
     struct Return;
     class Function;
+    class CxxMirror;
 
     //Reflecting the object within.
     class RObject
     {
-        using Cloner = std::function< Return(const RObject&, rtl::alloc) >;
-
-        std::any m_object;
-        detail::RObjectId m_objectId;
-
-        const Cloner* m_getClone = nullptr;
+        std::optional<std::any> m_object = std::nullopt;
+        detail::RObjectId m_objectId = {};
         const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,
+        RObject(std::any&& pObject, detail::RObjectId&& pRObjId,
                 const std::vector<traits::ConverterPair>* pConverters) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
@@ -69,7 +66,7 @@ namespace rtl
         RObject& operator=(RObject&&) = delete;
         RObject& operator=(const RObject&) = delete;
 
-        GETTER_BOOL(Empty, (m_object.has_value() == false))
+        GETTER_BOOL(Empty, (m_object == std::nullopt))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
@@ -98,9 +95,11 @@ namespace rtl
         static std::atomic<std::size_t>& getInstanceCounter();
 
         //friends :)
+        friend CxxMirror;
+        friend detail::RObjExtractor;
+
         template<class T>
         friend struct detail::RObjectUPtr;
-        friend detail::RObjExtractor;
 
         template<class T>
         friend struct detail::RObjectBuilder;

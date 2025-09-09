@@ -22,7 +22,7 @@ namespace rtl::detail
     inline SetupConstructor<_derivedType>::CtorLambda<_signature...> 
            SetupConstructor<_derivedType>::getConstructorCaller()
     {
-        return [](alloc pAllocType, _signature&&...params)-> Return
+        return [](alloc pAllocType, std::size_t pClonerIndex, _signature&&...params)-> Return
         {
             if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>)
             {   //default constructor, private or deleted.
@@ -33,25 +33,74 @@ namespace rtl::detail
                 if (pAllocType == alloc::Stack) {
 
                     if constexpr (!std::is_copy_constructible_v<_recordType>) {
-                        return { error::TypeNotCopyConstructible, RObject{} };
+                        return { 
+                            error::TypeNotCopyConstructible, RObject{}
+                        };
                     }
                     else {
-                        return { error::None,
-                                 RObjectBuilder<_recordType>::template
-                                 build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), true)
+                        return { 
+                            error::None,
+                            RObjectBuilder<_recordType>::template
+                            build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), pClonerIndex, true)
                         };
                     }
                 }
                 else if (pAllocType == alloc::Heap) {
-                    return { error::None,
-                             RObjectBuilder<_recordType*>::template 
-                             build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), true)
+                    return { 
+                        error::None,
+                        RObjectBuilder<_recordType*>::template 
+                        build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), pClonerIndex, true)
                     };
                 }
             }
             return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
         };
     }
+
+
+
+    template<class _derivedType>
+    template<class _recordType, class ..._signature>
+    inline SetupConstructor<_derivedType>::CtorLambda<_signature...> 
+           SetupConstructor<_derivedType>::getCopyConstructorCaller()
+    {
+        if constexpr (std::is_copy_constructible_v<_recordType>)
+        {
+            return [](alloc pAllocOn, std::size_t pClonerIndex, const RObject& pOther) -> Return
+            {
+                const auto& srcObj = pOther.view<_recordType>()->get();
+                switch (pAllocOn)
+                {
+                case alloc::Stack:
+                    return {
+                        error::None,
+                        RObjectBuilder<_recordType>::template build<alloc::Stack>(_recordType(srcObj), pClonerIndex, true)
+                    };
+                case alloc::Heap:
+                    return {
+                        error::None,
+                        RObjectBuilder<_recordType*>::template build<alloc::Heap>(new _recordType(srcObj), pClonerIndex, true)
+                    };
+                default:
+                    return {
+                        error::EmptyRObject,
+                        RObject{}
+                    };
+                }
+            };
+        }
+        else
+        {
+            return [](alloc pAllocOn, std::size_t pClonerIndex, const RObject&) -> Return
+            {
+                return {
+                    error::TypeNotCopyConstructible,
+                    RObject{}
+                };
+            };
+        }
+    }
+
 
 
 /*  @method: addConstructor()
@@ -75,6 +124,35 @@ namespace rtl::detail
         //will be called from '_derivedType' if the constructor not already registered.
         const auto& updateIndex = [&](std::size_t pIndex)->void {
             ctorSet.insert(std::make_pair(hashKey, pIndex));
+            };
+
+        //will be called from '_derivedType' to check if the constructor already registered.
+        const auto& getIndex = [&]()-> std::size_t {
+            const auto& itr = ctorSet.find(hashKey);
+            return (itr != ctorSet.end() ? itr->second : index_none);
+            };
+
+        //add the lambda in 'FunctorContainer'.
+        std::size_t index = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
+        const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
+        return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
+    }
+
+
+    template<class _derivedType>
+    template<class _recordType, class ..._signature>
+    inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
+    {
+        std::size_t recordId = TypeId<_recordType>::get();
+        std::size_t containerId = _derivedType::getContainerId();
+        std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
+
+        //maintaining a set of already registered constructors.
+        static std::map<std::size_t, std::size_t> ctorSet;
+
+        //will be called from '_derivedType' if the constructor not already registered.
+        const auto& updateIndex = [&](std::size_t pIndex)->void {
+            ctorSet.insert(std::make_pair(hashKey, pIndex));
         };
 
         //will be called from '_derivedType' to check if the constructor already registered.
@@ -84,7 +162,7 @@ namespace rtl::detail
         };
 
         //add the lambda in 'FunctorContainer'.
-        std::size_t index = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
+        std::size_t index = _derivedType::pushBack(getCopyConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
         const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
         return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
     }

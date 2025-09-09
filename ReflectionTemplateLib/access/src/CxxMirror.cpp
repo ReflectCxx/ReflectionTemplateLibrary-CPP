@@ -13,12 +13,28 @@
 #include "CxxMirror.h"
 #include "ReflectCast.h"
 
-namespace rtl::detail 
+namespace rtl 
 {
-    std::size_t generate_unique_id()
+    namespace detail 
     {
-        // Starts with ONE, ZERO denotes TypeId<>::None. [Never change, critical.]
-        static std::atomic<std::size_t> counter{ TypeId<>::None + 1 };
-        return counter.fetch_add(1, std::memory_order_relaxed);
+        std::size_t generate_unique_id()
+        {
+            // Starts with ONE, ZERO denotes TypeId<>::None. [Never change, critical.]
+            static std::atomic<std::size_t> counter{ TypeId<>::None + 1 };
+            return counter.fetch_add(1, std::memory_order_relaxed);
+        }
+    }
+
+    error CxxMirror::enableCloning(const RObject& pTarget) const 
+    {
+        const auto& itr = getRecordIdMap().find(pTarget.getTypeId());
+        if (itr != getRecordIdMap().end()) 
+        {
+            const Record& record = itr->second;
+            Method ctors = record.getMethod(detail::ctor_name(record.getRecordName())).value();
+            const_cast<RObject&>(pTarget).m_objectId.m_clonerIndex = ctors.getFunctors().at(detail::Index::CopyCtor).getIndex();
+            return error::None;
+        }
+        return error::CloningDisabled;
     }
 }

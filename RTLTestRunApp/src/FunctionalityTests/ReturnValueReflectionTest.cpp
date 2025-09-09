@@ -46,12 +46,22 @@ namespace rtl_tests
             ASSERT_FALSE(event.isEmpty());
             EXPECT_TRUE(event.getTypeId() == reflected_id::event);
             {
-                auto [err, robj] = event.clone<rtl::alloc::Heap>();
-                //Event's copy-constructor private or deleted.
-                EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-                ASSERT_TRUE(robj.isEmpty());
-                // Two 'Event' instances, owned by 'Calender'
-                EXPECT_TRUE(event::get_instance_count() == 2);
+                {
+                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
+                    EXPECT_TRUE(err == rtl::error::CloningDisabled);
+                }
+                
+                rtl::error reterr = cxx::mirror().enableCloning(event);
+                ASSERT_TRUE(reterr == rtl::error::None);
+                
+                {
+                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
+                    //Event's copy-constructor private or deleted.
+                    EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+                    ASSERT_TRUE(robj.isEmpty());
+                    // Two 'Event' instances, owned by 'Calender'
+                    EXPECT_TRUE(event::get_instance_count() == 2);
+                }
             } {
                 auto [err, robj] = event.clone<rtl::alloc::Stack>();
                 //Event's copy-constructor private or deleted.
