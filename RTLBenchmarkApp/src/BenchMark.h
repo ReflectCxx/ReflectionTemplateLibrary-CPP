@@ -15,30 +15,46 @@
 using argStr_t = std::string_view;
 using retStr_t = std::string_view;
 
-#define WORK_LOAD(S) (std::string(S) + std::string(S) + std::string(S) + std::string(S))
+#define WORK_LOAD(S) (std::string(S) + std::string(S))
+
 
 namespace rtl_bench
 {
     static std::optional<std::string> g_msg;
 
-    NOINLINE static void sendMessage(argStr_t pMsg) {
-        g_msg = WORK_LOAD(pMsg);
+    NOINLINE static void sendMessage(argStr_t pMsg) 
+    {
+        std::string str = WORK_LOAD(pMsg);
+        volatile auto* p = &str;
+        static_cast<void>(p);
+        g_msg = str;
     }
 
-    NOINLINE static retStr_t getMessage(argStr_t pMsg) {
-        g_msg = WORK_LOAD(pMsg);
+    NOINLINE static retStr_t getMessage(argStr_t pMsg)
+    {
+        std::string str = WORK_LOAD(pMsg);
+        volatile auto* p = &str;
+        static_cast<void>(p);
+        g_msg = str;
         return retStr_t(g_msg->c_str());
     }
 
     struct Node
     {
-        NOINLINE void sendMessage(argStr_t pMsg) {
-            g_msg = WORK_LOAD(pMsg);
+        NOINLINE void sendMessage(argStr_t pMsg) 
+        {
+            std::string str = WORK_LOAD(pMsg);
+            volatile auto* p = &str;
+            static_cast<void>(p);
+    	    g_msg = str;
         }
 
         NOINLINE retStr_t getMessage(argStr_t pMsg)
         {
-            g_msg = WORK_LOAD(pMsg);
+            std::string str = WORK_LOAD(pMsg);
+            volatile auto* p = &str;
+            static_cast<void>(p);
+            g_msg = str;
             return retStr_t(g_msg->c_str());
         }
     };
@@ -64,7 +80,7 @@ namespace rtl_bench
 
 	struct BenchMark
 	{
-		static void directCall_noReturn(benchmark::State& state);
+        static void directCall_noReturn(benchmark::State& state);
 
 		static void stdFunctionCall_noReturn(benchmark::State& state);
 
@@ -83,5 +99,5 @@ namespace rtl_bench
 		static void reflectedCall_withReturn(benchmark::State& state);
 
 		static void reflectedMethodCall_withReturn(benchmark::State& state);
-	};
+    };
 }
