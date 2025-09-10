@@ -33,7 +33,7 @@ namespace rtl::detail
                                              FunctorContainer<_signature...>>;
 
         std::size_t index = m_function.hasSignatureId(Container::getContainerId());
-        if (index != rtl::index_none) {
+        if (index != rtl::index_none) [[likely]] {
             return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
         }
         return { error::SignatureMismatch, RObject{} };

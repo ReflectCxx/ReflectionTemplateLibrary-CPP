@@ -124,13 +124,13 @@ namespace rtl::detail
         //will be called from '_derivedType' if the constructor not already registered.
         const auto& updateIndex = [&](std::size_t pIndex)->void {
             ctorSet.insert(std::make_pair(hashKey, pIndex));
-            };
+        };
 
         //will be called from '_derivedType' to check if the constructor already registered.
         const auto& getIndex = [&]()-> std::size_t {
             const auto& itr = ctorSet.find(hashKey);
             return (itr != ctorSet.end() ? itr->second : index_none);
-            };
+        };
 
         //add the lambda in 'FunctorContainer'.
         std::size_t index = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);

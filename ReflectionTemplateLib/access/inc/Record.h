@@ -65,6 +65,7 @@ namespace rtl {
 
         GETTER_CREF(MethodMap, MethodMap, m_methods)
         GETTER_CREF(std::string, RecordName, m_recordName)
+        
 /*      @method: getMethod
         @param: const std::string& (name of the method)
         @return: std::optional<Method>
@@ -93,7 +94,7 @@ namespace rtl {
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
             const auto& method = m_methods.at(detail::ctor_name(m_recordName));
-            std::size_t copyCtorIndex = method.getFunctorIds().at(detail::Index::CopyCtor).getIndex();
+            std::size_t copyCtorIndex = method.getFunctorIds()[detail::Index::CopyCtor].getIndex();
             return method.invokeCtor( _alloc,
                                       std::move(copyCtorIndex),
                                       std::forward<_ctorArgs>(params)...);

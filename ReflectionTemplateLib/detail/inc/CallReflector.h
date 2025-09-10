@@ -30,10 +30,10 @@ namespace rtl::detail {
         * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
         * this 'forwardCall' is for calling lambda containing non-member-function and static-member-function functors.
     */  template<class ..._params>
-        static Return forwardCall(std::size_t pFunctorIndex, _params&&..._args)
+        FORCE_INLINE static Return forwardCall(std::size_t pFunctorIndex, _params&&..._args)
         {
             //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors().at(pFunctorIndex)(std::forward<_params>(_args)...);
+            return _derivedType::getFunctors()[pFunctorIndex](std::forward<_params>(_args)...);
         }
 
 
@@ -42,10 +42,10 @@ namespace rtl::detail {
         * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
         * this 'forwardCall' is for calling lambda containing constructors.
     */  template<class ..._params>
-        static Return forwardCall(std::size_t pFunctorIndex, rtl::alloc pAllocType, std::size_t pClonerIndex, _params&&..._args)
+        FORCE_INLINE static Return forwardCall(std::size_t pFunctorIndex, rtl::alloc pAllocType, std::size_t pClonerIndex, _params&&..._args)
         {
             //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors().at(pFunctorIndex)(pAllocType, pClonerIndex, std::forward<_params>(_args)...);
+            return _derivedType::getFunctors()[pFunctorIndex](pAllocType, pClonerIndex, std::forward<_params>(_args)...);
         }
 
 
@@ -54,10 +54,10 @@ namespace rtl::detail {
         * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
         * this 'forwardCall' is for calling lambda containing member-function functors.
     */  template<class ..._params>
-        static Return forwardCall(const rtl::RObject& pTarget, std::size_t pFunctorIndex, _params&&..._args)
+        FORCE_INLINE static Return forwardCall(const rtl::RObject& pTarget, std::size_t pFunctorIndex, _params&&..._args)
         {
             //'getMethodFunctors()' is implemented by _derivedType (MethodContainer)
-            return _derivedType::getMethodFunctors().at(pFunctorIndex)(pTarget, std::forward<_params>(_args)...);
+            return _derivedType::getMethodFunctors()[pFunctorIndex](pTarget, std::forward<_params>(_args)...);
         }
     };
 }

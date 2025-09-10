@@ -182,7 +182,7 @@ namespace rtl
         std::size_t pClonerIndex = m_objectId.m_clonerIndex;
         if (pClonerIndex != rtl::index_none)
         {
-            return traits::Cloner::template forwardCall(pClonerIndex, alloc::Heap, pClonerIndex, *this);
+            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Heap, pClonerIndex, *this);
         }
         return { error::CloningDisabled, RObject() };
     }
@@ -194,7 +194,7 @@ namespace rtl
         std::size_t pClonerIndex = m_objectId.m_clonerIndex;
         if (pClonerIndex != rtl::index_none)
         {
-            return traits::Cloner::template forwardCall(pClonerIndex, alloc::Stack, pClonerIndex, *this);
+            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Stack, pClonerIndex, *this);
         }
         return { error::CloningDisabled, RObject() };
     }

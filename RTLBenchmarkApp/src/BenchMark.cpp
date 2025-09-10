@@ -9,24 +9,31 @@
 namespace {
 
     static const char* LONG_STR = "Lorem ipsum";
-    //    dolor sit amet, consectetur adipiscing elit, sed do"
-    //"do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
-    //"nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
-    //"dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
-    //"eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id"
-    //"Lorem ipsum dolor sit amet laboris nisi ut aliquip ex ea commodo";
+    //  dolor sit amet, consectetur adipiscing elit, sed do"
+    // "do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
+    // "nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
+    // "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
+    // "eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id"
+    // "Lorem ipsum dolor sit amet laboris nisi ut aliquip ex ea commodo";
 }
 
 // Pre-created string to isolate call overhead
-static argStr_t g_longStr(LONG_STR);
+argStr_t g_longStr(LONG_STR);
+
+extern decltype(&rtl_bench::getMessage) getMessagePtr;
+extern decltype(&rtl_bench::sendMessage) sendMessagePtr;    
+extern decltype(&rtl_bench::Node::getMessage) getMessageNodePtr;
+extern decltype(&rtl_bench::Node::sendMessage) sendMessageNodePtr;
 
 namespace rtl_bench
 {
+    static Node* node = new Node();
+
     void BenchMark::directCall_noReturn(benchmark::State& state)
     {
         for (auto _ : state)
         {
-            sendMessage(g_longStr);
+            sendMessagePtr(g_longStr);
             benchmark::DoNotOptimize(g_msg);
         }
     }
@@ -35,7 +42,7 @@ namespace rtl_bench
     void BenchMark::stdFunctionCall_noReturn(benchmark::State& state)
     {
         static std::function sendMsg = [](argStr_t& pMsg) {
-            sendMessage(pMsg);
+            sendMessagePtr(pMsg);
         };
 
         for (auto _ : state)
@@ -45,12 +52,10 @@ namespace rtl_bench
         }
     }
 
-
     void BenchMark::stdFunctionMethodCall_noReturn(benchmark::State& state)
     {
-        Node* node = new Node();
         static std::function sendMsg = [=](argStr_t& pMsg) {
-            node->sendMessage(pMsg);
+            (node->*sendMessageNodePtr)(pMsg);
         };
 
         for (auto _ : state)
@@ -79,10 +84,7 @@ namespace rtl_bench
     void BenchMark::stdFunctionCall_withReturn(benchmark::State& state)
     {
         static std::function getMsg = [](argStr_t& pMsg) {
-            auto msgStr = getMessage(pMsg);
-            volatile auto* p = &msgStr; 
-            static_cast<void>(p);
-            return msgStr;
+            return getMessagePtr(pMsg);
         };
 
         for (auto _ : state)
@@ -94,12 +96,8 @@ namespace rtl_bench
 
     void BenchMark::stdFunctionMethodCall_withReturn(benchmark::State& state)
     {
-        static Node* node = new Node();
         static std::function getMsg = [=](argStr_t& pMsg) {
-            auto msgStr = node->getMessage(pMsg);
-            volatile auto* p = &msgStr; 
-            static_cast<void>(p);
-            return msgStr;
+            return (node->*getMessageNodePtr)(pMsg);
         };
 
         for (auto _ : state)

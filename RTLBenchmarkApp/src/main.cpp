@@ -4,6 +4,10 @@
 
 #include "BenchMark.h"
 
+auto sendMessagePtr = rtl_bench::sendMessage;
+auto getMessagePtr = rtl_bench::getMessage;
+auto sendMessageNodePtr = &rtl_bench::Node::sendMessage;
+auto getMessageNodePtr = &rtl_bench::Node::getMessage;
 
 BENCHMARK(rtl_bench::BenchMark::directCall_noReturn);
 BENCHMARK(rtl_bench::BenchMark::stdFunctionCall_noReturn);
