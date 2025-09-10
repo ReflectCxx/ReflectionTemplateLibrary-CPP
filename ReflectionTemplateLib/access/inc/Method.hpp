@@ -16,16 +16,16 @@
 namespace rtl
 {
     template<class ..._signature>
-    inline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
+    FORCE_INLINE const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
     {
-        return detail::DefaultInvoker<_signature...>(*this, pTarget);
+        return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
 
     template<class ..._signature>
-    inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
+    FORCE_INLINE const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
-        return detail::NonConstInvoker<_signature...>(*this, pTarget.m_target);
+        return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
 
 
@@ -51,17 +51,17 @@ namespace rtl
     {
         switch (getQualifier())
         {
-        case detail::methodQ::None: {
-            return Function::hasSignature<_args...>();
-        }
-        case detail::methodQ::NonConst: {
-            using Container = detail::MethodContainer<detail::methodQ::NonConst, _args...>;
-            return (hasSignatureId(Container::getContainerId()) != -1);
-        }
-        case detail::methodQ::Const: {
-            using Container = detail::MethodContainer<detail::methodQ::Const, _args...>;
-            return (hasSignatureId(Container::getContainerId()) != -1);
-        }
+            case detail::methodQ::None: {
+                return Function::hasSignature<_args...>();
+            }
+            case detail::methodQ::NonConst: {
+                using Container = detail::MethodContainer<detail::methodQ::NonConst, _args...>;
+                return (hasSignatureId(Container::getContainerId()) != -1);
+            }
+            case detail::methodQ::Const: {
+                using Container = detail::MethodContainer<detail::methodQ::Const, _args...>;
+                return (hasSignatureId(Container::getContainerId()) != -1);
+            }
         }
         return false;
     }

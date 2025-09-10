@@ -184,7 +184,7 @@ namespace rtl
         {
             return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Heap, pClonerIndex, *this);
         }
-        return { error::CloningDisabled, RObject() };
+        return { error::CloningDisabled, RObject{} };
     }
 
 
@@ -196,7 +196,7 @@ namespace rtl
         {
             return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Stack, pClonerIndex, *this);
         }
-        return { error::CloningDisabled, RObject() };
+        return { error::CloningDisabled, RObject{} };
     }
 
 

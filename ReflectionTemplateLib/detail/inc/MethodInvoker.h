@@ -20,15 +20,13 @@ namespace rtl {
 namespace rtl::detail {
 
     template<class ..._signature>
-    class DefaultInvoker
+    struct DefaultInvoker
     {
         //the method to be called.
-        const Method& m_method;
+        const Method* m_method;
 
         //the object on which, the method needs to be called.
-        const RObject& m_target;
-
-        DefaultInvoker(const Method& pMethod, const RObject& pTarget);
+        const RObject* m_target;
 
         template<class ..._invokSignature>
         struct Invoker {
@@ -47,15 +45,13 @@ namespace rtl::detail {
 
 
     template<class ..._signature>
-    class NonConstInvoker
+    struct NonConstInvoker
     {
         //the method to be called.
-        const Method& m_method;
+        const Method* m_method;
 
         //the object on which, the method needs to be called.
-        const RObject& m_target;
-
-        NonConstInvoker(const Method& pMethod, const RObject& pTarget);
+        const RObject* m_target;
 
         template<class ..._invokSignature>
         struct Invoker {

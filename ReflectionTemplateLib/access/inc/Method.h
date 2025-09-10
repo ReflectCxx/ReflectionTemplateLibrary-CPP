@@ -64,10 +64,10 @@ namespace rtl {
         friend detail::CxxReflection;
 
         template<class ..._signature>
-        friend class detail::DefaultInvoker;
+        friend struct detail::DefaultInvoker;
 
         template<class ..._signature>
-        friend class detail::NonConstInvoker;
+        friend struct detail::NonConstInvoker;
 
     public:
 
