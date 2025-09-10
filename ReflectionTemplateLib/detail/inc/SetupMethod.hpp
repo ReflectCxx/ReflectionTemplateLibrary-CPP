@@ -30,7 +30,7 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
         */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
             {
-                if (!pTargetObj.isConstCastSafe()) {
+                if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
                 }
 
@@ -50,7 +50,7 @@ namespace rtl
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
         */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
             {
-                if (!pTargetObj.isConstCastSafe()) {
+                if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
                 }
 
@@ -112,9 +112,9 @@ namespace rtl
                 //'target' is const and 'pFunctor' is const-member-function.
                 const _recordType& target = pTargetObj.view<_recordType>()->get();
                 if constexpr (std::is_reference_v<_returnType>) {
-                    /*  if the function returns reference, this block will be retained by compiler.
-                        Note: reference to temporary or dangling is not checked here.
-                    */  using _rawRetType = traits::raw_t<_returnType>;
+                /*  if the function returns reference, this block will be retained by compiler.
+                    Note: reference to temporary or dangling is not checked here.
+                */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                     return { error::None,
                              RObjectBuilder<const _rawRetType*>::template

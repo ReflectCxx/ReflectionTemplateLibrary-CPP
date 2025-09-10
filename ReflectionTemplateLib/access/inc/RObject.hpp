@@ -103,7 +103,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;
@@ -111,10 +111,10 @@ namespace rtl
 
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
             {
                 using U = detail::RObjectUPtr<typename traits::std_wrapper<T>::value_type>;
-                const U& uptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
+                const U& uptrRef = *(detail::RObjExtractor{ this }.getWrapper<T>());
                 return std::optional<rtl::view<T>>(std::in_place, static_cast<const U&>(uptrRef));
             }
         }
@@ -123,7 +123,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;
@@ -131,9 +131,9 @@ namespace rtl
 
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
             {
-                const T* sptrRef = detail::RObjExtractor(this).getWrapper<T>();
+                const T* sptrRef = detail::RObjExtractor{ this }.getWrapper<T>();
                 if (sptrRef != nullptr) {
                     return std::optional<rtl::view<T>>(std::in_place, const_cast<T&>(*sptrRef));
                 }
@@ -144,7 +144,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;
@@ -153,9 +153,9 @@ namespace rtl
         if constexpr (traits::is_bare_type<T>())
         {
             const std::size_t asTypeId = detail::TypeId<T>::get();
-            if (asTypeId == m_objectId.m_typeId)
+            if (asTypeId == m_objectId.m_typeId) [[likely]]
             {
-                const T* valRef = detail::RObjExtractor(this).getPointer<T>();
+                const T* valRef = detail::RObjExtractor{ this }.getPointer<T>();
                 if (valRef != nullptr) {
                     return std::optional<rtl::view<T>>(std::in_place, *valRef);
                 }

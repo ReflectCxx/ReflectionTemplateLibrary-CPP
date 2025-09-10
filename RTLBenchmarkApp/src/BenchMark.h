@@ -2,9 +2,9 @@
 
 #include <benchmark/benchmark.h>
 
-#include <vector>
-
-#include "RTLibInterface.h"
+#include <optional>
+#include <string>
+#include <string_view>
 
 #if defined(_MSC_VER)
 #  define NOINLINE __declspec(noinline)
@@ -14,79 +14,28 @@
 #  define NOINLINE
 #endif
 
-using argStr_t = std::string_view;
-using retStr_t = std::string_view;
-
-#define WORK_LOAD(S) (std::string(S))
-
-namespace rtl_bench
+namespace bm
 {
-    static std::optional<std::string> g_msg;
+    using argStr_t = std::string_view;
+    using retStr_t = std::string_view;
 
-    NOINLINE static void sendMessage(argStr_t pMsg) 
-    {
-        g_msg = WORK_LOAD(pMsg);
-    }
-
-    NOINLINE static retStr_t getMessage(argStr_t pMsg)
-    {
-        g_msg = WORK_LOAD(pMsg);
-        return retStr_t(g_msg->c_str());
-    }
+    static const char* LONG_STR = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do"
+    "do aeiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis"
+    "nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure"
+    "dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Except"
+    "eur ssint occaecat cupidatat nnon proident, sunt in culpa qui officia deserunt mollit anim id"
+    "Lorem ipsum dolor sit amet laboris nisi ut aliquip ex ea commodo";
+    
+    static argStr_t g_longStr(LONG_STR);
 
     struct Node
     {
-        NOINLINE void sendMessage(argStr_t pMsg) 
-        {
-            g_msg = WORK_LOAD(pMsg);
-        }
-
-        NOINLINE retStr_t getMessage(argStr_t pMsg)
-        {
-            g_msg = WORK_LOAD(pMsg);
-            return retStr_t(g_msg->c_str());
-        }
+        void sendMessage(argStr_t);
+        retStr_t getMessage(argStr_t);
     };
 
+    extern void sendMessage(argStr_t);
+    extern retStr_t getMessage(argStr_t);
 
-    static const rtl::CxxMirror& cxx_mirror()
-    {
-        static auto m = rtl::CxxMirror({
-
-            rtl::type().record<Node>("Node").build(),
-
-            rtl::type().function("sendMessage").build(sendMessage),
-
-            rtl::type().member<Node>().method("sendMessage").build(&Node::sendMessage),
-
-            rtl::type().function("getMessage").build(getMessage),
-
-            rtl::type().member<Node>().method("getMessage").build(&Node::getMessage)
-        });
-        return m;
-    }
-
-
-	struct BenchMark
-	{
-        static void directCall_noReturn(benchmark::State& state);
-
-		static void stdFunctionCall_noReturn(benchmark::State& state);
-
-		static void reflectedCall_noReturn(benchmark::State& state);
-
-        static void stdFunctionMethodCall_noReturn(benchmark::State& state);
-
-		static void reflectedMethodCall_noReturn(benchmark::State& state);
-
-		static void directCall_withReturn(benchmark::State& state);
-
-		static void stdFunctionCall_withReturn(benchmark::State& state);
-
-        static void stdFunctionMethodCall_withReturn(benchmark::State& state);
-
-		static void reflectedCall_withReturn(benchmark::State& state);
-
-		static void reflectedMethodCall_withReturn(benchmark::State& state);
-    };
+    static std::optional<std::string> g_msg;
 }

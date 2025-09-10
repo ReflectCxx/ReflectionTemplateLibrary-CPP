@@ -19,7 +19,7 @@ namespace rtl
     template<class ..._signature>
     inline const detail::FunctionCaller<_signature...> Function::bind() const
     {
-        return detail::FunctionCaller<_signature...>(*this);
+        return detail::FunctionCaller<_signature...>{ this };
     }
 
 /*  @method: hasSignature<...>()

@@ -84,13 +84,13 @@ namespace rtl
         Return clone() const;
 
         template<class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int> = 0>
-        std::optional<rtl::view<T>> view() const;
+        std::optional<rtl::view<T>> view() const noexcept;
 
         template<class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int> = 0>
-        std::optional<rtl::view<T>> view() const;
+        std::optional<rtl::view<T>> view() const noexcept;
 
         template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
-        std::optional<rtl::view<T>> view() const;
+        std::optional<rtl::view<T>> view() const noexcept;
 
         static std::atomic<std::size_t>& getInstanceCounter();
 

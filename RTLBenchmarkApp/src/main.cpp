@@ -2,23 +2,21 @@
 #include <string>
 #include <benchmark/benchmark.h>
 
-#include "BenchMark.h"
+#include "StandardCall.h"
+#include "ReflectedCall.h"
 
-auto sendMessagePtr = rtl_bench::sendMessage;
-auto getMessagePtr = rtl_bench::getMessage;
-auto sendMessageNodePtr = &rtl_bench::Node::sendMessage;
-auto getMessageNodePtr = &rtl_bench::Node::getMessage;
+std::size_t g_work_load_scale = 1;
 
-BENCHMARK(rtl_bench::BenchMark::directCall_noReturn);
-BENCHMARK(rtl_bench::BenchMark::stdFunctionCall_noReturn);
-BENCHMARK(rtl_bench::BenchMark::stdFunctionMethodCall_noReturn);
-BENCHMARK(rtl_bench::BenchMark::reflectedCall_noReturn);
-BENCHMARK(rtl_bench::BenchMark::reflectedMethodCall_noReturn);
+BENCHMARK(DirectCall::noReturn);
+BENCHMARK(StdFunctionCall::noReturn);
+BENCHMARK(StdFunctionCall::noReturnMethod);
+BENCHMARK(ReflectedCall::noReturn);
+BENCHMARK(ReflectedCall::noReturnMethod);
 
-BENCHMARK(rtl_bench::BenchMark::directCall_withReturn);
-BENCHMARK(rtl_bench::BenchMark::stdFunctionCall_withReturn);
-BENCHMARK(rtl_bench::BenchMark::stdFunctionMethodCall_withReturn);
-BENCHMARK(rtl_bench::BenchMark::reflectedCall_withReturn);
-BENCHMARK(rtl_bench::BenchMark::reflectedMethodCall_withReturn);
+BENCHMARK(DirectCall::withReturn);
+BENCHMARK(StdFunctionCall::withReturn);
+BENCHMARK(StdFunctionCall::withReturnMethod);
+BENCHMARK(ReflectedCall::withReturn);
+BENCHMARK(ReflectedCall::withReturnMethod);
 
 BENCHMARK_MAIN();

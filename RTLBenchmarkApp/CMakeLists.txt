@@ -46,8 +46,12 @@ set(CXX_EXE_NAME RTLBenchmarkApp)
 # ===============================
 add_executable(${CXX_EXE_NAME}
     src/main.cpp
-    src/BenchMark.cpp        # <-- added
-    src/BenchMark.h          # <-- optional (for IDE visibility)
+    src/BenchMark.h
+    src/BenchMark.cpp
+    src/StandardCall.h
+    src/StandardCall.cpp
+    src/ReflectedCall.h
+    src/ReflectedCall.cpp
 )
 
 

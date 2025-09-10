@@ -21,12 +21,10 @@ namespace rtl
 namespace rtl::detail
 {		
     template<class ..._signature>
-    class FunctionCaller
+    struct FunctionCaller
     {
         //the function to be called.
-        const Function& m_function;
-
-        FunctionCaller(const Function& pFunction);
+        const Function* m_function;
 
     public:
 
