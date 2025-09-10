@@ -30,12 +30,12 @@ namespace rtl {
     class Method;
     class RObject;
 
-    /*  @class: Record
-        * represents a reflected class/struct.
-        * contains registered member-functions as 'Method' objects.
-        * provides interface to access methods by name.
-        * provides interface to construct instances of the class/struct using the registered constructors.
-    */  class Record
+/*  @class: Record
+    * represents a reflected class/struct.
+    * contains registered member-functions as 'Method' objects.
+    * provides interface to access methods by name.
+    * provides interface to construct instances of the class/struct using the registered constructors.
+*/  class Record
     {
         using MethodMap = std::unordered_map< std::string, Method >;
 
@@ -64,12 +64,13 @@ namespace rtl {
         Record& operator=(const Record&) = default;
 
         GETTER_CREF(MethodMap, MethodMap, m_methods)
-
-            /*      @method: getMethod
-                    @param: const std::string& (name of the method)
-                    @return: std::optional<Method>
-                    * if the method isn't found by the given name, std::nullopt is returned.
-            */      std::optional<Method> getMethod(const std::string& pMethod) const
+        GETTER_CREF(std::string, RecordName, m_recordName)
+        
+/*      @method: getMethod
+        @param: const std::string& (name of the method)
+        @return: std::optional<Method>
+        * if the method isn't found by the given name, std::nullopt is returned.
+*/      std::optional<Method> getMethod(const std::string& pMethod) const
         {
             const auto& itr = m_methods.find(pMethod);
             if (itr != m_methods.end()) {
@@ -79,20 +80,24 @@ namespace rtl {
         }
 
 
-        /*      @method: create
-                @param: ...params (any number/type of arguments)
-                @return: Return
-                * calls the constructor of the calss/struct represented by this 'Record' object.
-                * returns the dynamically allocated object of the calss/struct along with the status.
-                * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
-                * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned with empty 'RObject'.
-                * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
-                * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
-        */      template<alloc _alloc, class ..._ctorArgs>
+/*      @method: create
+        @param: ...params (any number/type of arguments)
+        @return: Return
+        * calls the constructor of the calss/struct represented by this 'Record' object.
+        * returns the dynamically allocated object of the calss/struct along with the status.
+        * only default or any other overloaded constructor is called, except copy (for that check, Record::clone()).
+        * if the signature(...params) did not match any registered ctor, error::SignatureMismatch is returned with empty 'RObject'.
+        * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
+        * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
+*/      template<alloc _alloc, class ..._ctorArgs>
         Return create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
-            return m_methods.at(detail::ctor_name(m_recordName)).invokeCtor(_alloc, std::forward<_ctorArgs>(params)...);
+            const auto& method = m_methods.at(detail::ctor_name(m_recordName));
+            std::size_t copyCtorIndex = method.getFunctorIds()[detail::Index::CopyCtor].getIndex();
+            return method.invokeCtor( _alloc,
+                                      std::move(copyCtorIndex),
+                                      std::forward<_ctorArgs>(params)...);
         }
 
         //only class which can create objects of this class & manipulates 'm_methods'.

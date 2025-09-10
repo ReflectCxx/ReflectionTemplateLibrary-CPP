@@ -151,12 +151,12 @@ namespace nsdate
 		vector<string> date;
 		for (size_t i = 0; i < pDateStr.length(); i++)
 		{
-			if (pDateStr.at(i) == '/') {
+			if (pDateStr[i] == '/') {
 				date.push_back(strBuf);
 				strBuf.clear();
 			}
 			else {
-				strBuf.push_back(pDateStr.at(i));
+				strBuf.push_back(pDateStr[i]);
 			}
 		}
 		m_day = stoi(date[0]);
@@ -208,12 +208,12 @@ namespace nsdate
 		vector<string> date;
 		for (size_t i = 0; i < pDateStr.length(); i++)
 		{
-			if (pDateStr.at(i) == '/') {
+			if (pDateStr[i] == '/') {
 				date.push_back(strBuf);
 				strBuf.clear();
 			}
 			else {
-				strBuf.push_back(pDateStr.at(i));
+				strBuf.push_back(pDateStr[i]);
 			}
 		}
 		m_day = stoi(date[0]);

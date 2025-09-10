@@ -27,6 +27,7 @@ namespace rtl::detail
         bool m_isConstCastSafe;
 
         std::size_t m_typeId;
+        std::size_t m_clonerIndex;
         std::size_t m_wrapperTypeId;
 
         alloc m_allocatedOn;
@@ -57,7 +58,7 @@ namespace rtl::detail
 
 
         template<class T, rtl::alloc _allocOn>
-        FORCE_INLINE static RObjectId create(bool pIsConstCastSafe) noexcept
+        FORCE_INLINE static RObjectId create(std::size_t pClonerIndex, bool pIsConstCastSafe) noexcept
         {
             // extract wrapper info.
             using _W = traits::std_wrapper<traits::raw_t<T>>;
@@ -68,7 +69,7 @@ namespace rtl::detail
             const std::size_t wrapperId = _W::id();
             const std::size_t typeId = rtl::detail::TypeId<_T>::get();
             constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
-            return RObjectId{ isWrappingConst, pIsConstCastSafe, typeId, wrapperId, _allocOn,  _W::type, entityKind };
+            return RObjectId{ isWrappingConst, pIsConstCastSafe, typeId, pClonerIndex, wrapperId, _allocOn,  _W::type, entityKind };
         }
     };
 }

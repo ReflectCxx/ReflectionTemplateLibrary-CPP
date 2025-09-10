@@ -59,6 +59,8 @@ namespace rtl_tests
     {
         //Now for cases, if you want to handle it type-erased and pass around.
         RObject reflChar = rtl::reflect('Q');
+        error reterr = cxx::mirror().enableCloning(reflChar);
+        ASSERT_TRUE(reterr == error::None);
         {
             //Internally calls the copy constructor.
             auto [err, rchar] = reflChar.clone<rtl::alloc::Stack>();

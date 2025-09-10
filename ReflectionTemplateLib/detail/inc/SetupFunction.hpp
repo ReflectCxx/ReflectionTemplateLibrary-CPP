@@ -49,7 +49,7 @@ namespace rtl
                     const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
                     return { error::None,
                              RObjectBuilder<const _rawRetType*>::template
-                             build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
+                             build<rtl::alloc::Stack>(&retObj, rtl::index_none, isConstCastSafe)
                     };
                 }
                 else {
@@ -59,7 +59,7 @@ namespace rtl
 
                     return { error::None,
                              RObjectBuilder<const T>::template
-                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
+                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), rtl::index_none, isConstCastSafe)
                     };
                 }
             };
@@ -108,9 +108,12 @@ namespace rtl
             const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
             const std::size_t index = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
+
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId(index, retTypeId, pRecordId, _derivedType::getContainerId(),
-                                     _derivedType::template getSignatureStr<_returnType>());
+            return detail::FunctorId{
+                index, retTypeId, pRecordId, _derivedType::getContainerId(), 
+                _derivedType::template getSignatureStr<_returnType>() 
+            };
         }
     }
 }

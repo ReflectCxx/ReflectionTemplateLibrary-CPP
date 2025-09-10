@@ -40,14 +40,15 @@ namespace rtl {
         public:
 
             //every FunctorContainer<...> will have a unique-id.
-            static std::size_t getContainerId() {
+            FORCE_INLINE static std::size_t getContainerId() {
                 static const std::size_t containerId = generate_unique_id();
                 return containerId;
             }
 
             //get the vector holding lambdas as 'const-ref'
-            const static std::vector<FunctionLambda>& getFunctors() {
-                return getFunctorTable();
+            FORCE_INLINE const static std::vector<FunctionLambda>& getFunctors() {
+                static std::vector<FunctionLambda>& functorTable = getFunctorTable();
+                return functorTable;
             }
 
             //get functor container type(_signature...) as string with given 'returnType'.

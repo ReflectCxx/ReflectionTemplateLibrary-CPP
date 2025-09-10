@@ -16,16 +16,16 @@
 namespace rtl
 {
     template<class ..._signature>
-    inline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
+    FORCE_INLINE const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
     {
-        return detail::DefaultInvoker<_signature...>(*this, pTarget);
+        return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
 
     template<class ..._signature>
-    inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
+    FORCE_INLINE const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
-        return detail::NonConstInvoker<_signature...>(*this, pTarget.m_target);
+        return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
 
 
@@ -34,9 +34,11 @@ namespace rtl
     @return: RStatus
     * calls the constructor with given arguments.
 */  template<class ..._args>
-    inline Return Method::invokeCtor(alloc&& pAllocType, _args&& ...params) const
+    inline Return Method::invokeCtor(alloc&& pAllocType, std::size_t&& pClonerIndex, _args&& ...params) const
     {
-        return Function::bind().call<alloc, _args...>(std::forward<alloc>(pAllocType), std::forward<_args>(params)...);
+        return Function::bind().call<alloc, std::size_t, _args...>( std::forward<alloc>(pAllocType),
+                                                                    std::forward<std::size_t>(pClonerIndex),
+                                                                    std::forward<_args>(params)...);
     }
 
 
@@ -49,17 +51,17 @@ namespace rtl
     {
         switch (getQualifier())
         {
-        case detail::methodQ::None: {
-            return Function::hasSignature<_args...>();
-        }
-        case detail::methodQ::NonConst: {
-            using Container = detail::MethodContainer<detail::methodQ::NonConst, _args...>;
-            return (hasSignatureId(Container::getContainerId()) != -1);
-        }
-        case detail::methodQ::Const: {
-            using Container = detail::MethodContainer<detail::methodQ::Const, _args...>;
-            return (hasSignatureId(Container::getContainerId()) != -1);
-        }
+            case detail::methodQ::None: {
+                return Function::hasSignature<_args...>();
+            }
+            case detail::methodQ::NonConst: {
+                using Container = detail::MethodContainer<detail::methodQ::NonConst, _args...>;
+                return (hasSignatureId(Container::getContainerId()) != -1);
+            }
+            case detail::methodQ::Const: {
+                using Container = detail::MethodContainer<detail::methodQ::Const, _args...>;
+                return (hasSignatureId(Container::getContainerId()) != -1);
+            }
         }
         return false;
     }

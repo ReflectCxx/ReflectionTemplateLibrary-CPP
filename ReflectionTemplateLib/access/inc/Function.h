@@ -60,8 +60,6 @@ namespace rtl {
 
         void addOverload(const Function& pOtherFunc) const;
 
-        GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
-
     protected:
 
         Function(const Function& pOther, const detail::FunctorId& pFunctorId,
@@ -70,6 +68,8 @@ namespace rtl {
         const std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
         GETTER(detail::methodQ, Qualifier, m_qualifier);
+
+        GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
     public:
 

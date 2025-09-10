@@ -43,7 +43,7 @@ namespace rtl {
 
         //invokes the constructor associated with this 'Method'
         template<class ..._args>
-        Return invokeCtor(alloc&& pAllocType, _args&&...params) const;
+        Return invokeCtor(alloc&& pAllocType, std::size_t&& pClonerIndex, _args&&...params) const;
 
     public:
 
@@ -64,10 +64,10 @@ namespace rtl {
         friend detail::CxxReflection;
 
         template<class ..._signature>
-        friend class detail::DefaultInvoker;
+        friend struct detail::DefaultInvoker;
 
         template<class ..._signature>
-        friend class detail::NonConstInvoker;
+        friend struct detail::NonConstInvoker;
 
     public:
 

@@ -25,7 +25,7 @@ namespace rtl
         * once table is found, the functor is accessed at index 'm_index', (never fails, noexcept)
         * 'FunctorId' generated for a each functor is unique, even for overloaded functions.
         * multiple registartion of same functor will generate same duplicate 'FunctorId'.
-    */  class FunctorId
+    */  struct FunctorId
         {
             //index of the functor in the functor-table.
             std::size_t m_index;
@@ -42,47 +42,36 @@ namespace rtl
             //signature of functor as string. platform dependent, may not be very much readable format.
             std::string m_signature;
 
-        public:
-
-            FunctorId(FunctorId&&) = default;
-            FunctorId(const FunctorId&) = default;
-            FunctorId& operator=(FunctorId&&) = default;
-            FunctorId& operator=(const FunctorId&) = default;
-
-            FunctorId() 
-                : m_index(rtl::index_none)
-                , m_returnId(TypeId<>::None)
-                , m_recordId(TypeId<>::None)
-                , m_containerId(TypeId<>::None)
-                , m_signature("") 
-            { }
-
-            FunctorId(std::size_t pIndex,
-                      std::size_t pReturnId, std::size_t pRecordId,
-                      std::size_t pContainerId, const std::string& pSignature)
-                : m_index(pIndex)
-                , m_returnId(pReturnId)
-                , m_recordId(pRecordId)
-                , m_containerId(pContainerId)
-                , m_signature(pSignature) 
-            { }
-
-
             GETTER(std::size_t, Index, m_index)
             GETTER(std::size_t, ReturnId, m_returnId);
             GETTER(std::size_t, RecordId, m_recordId);
             GETTER(std::size_t, SignatureId, m_containerId)
             GETTER(std::string, SignatureStr, m_signature)
-			
+
+        /*  @method: getHashCode()
+            @return: std::size_t (a unique hash-code for a functor)
+            * 'm_containerId' will be same for functors(non-member) with same signatures.
+            * for member functions, a functor will have three atrributes
+                - signature
+                - whether it is const or non-const
+                - class/struct type
+              'm_containerId' will be same for functors with same above attributes.
+            * every functor will have a distinct index in the functor-wrapped-lambda-table.
+            * so, combination of m_containerId & m_index is unique for every functor.
+        */  std::size_t getHashCode() const
+            {
+                return std::stoull(std::to_string(m_containerId) +
+                                   std::to_string(m_index) +
+                                   std::to_string(m_recordId) +
+                                   std::to_string(m_returnId));
+            }
+
             const bool operator==(const FunctorId& pOther) const
             {
-                return (m_index == pOther.m_index && m_returnId == pOther.m_returnId &&
+                return (m_index == pOther.m_index && m_returnId == pOther.m_returnId && 
                         m_recordId == pOther.m_recordId && m_containerId == pOther.m_containerId &&
                         m_signature == pOther.m_signature);
             }
-
-            //get a unique hascode representing a functor.
-            std::size_t getHashCode() const;
         };
     }
 }

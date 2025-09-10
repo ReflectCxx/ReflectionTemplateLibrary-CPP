@@ -19,7 +19,7 @@ namespace rtl
     template<class ..._signature>
     inline const detail::FunctionCaller<_signature...> Function::bind() const
     {
-        return detail::FunctionCaller<_signature...>(*this);
+        return detail::FunctionCaller<_signature...>{ this };
     }
 
 /*  @method: hasSignature<...>()
@@ -53,11 +53,11 @@ namespace rtl
     * a 'Function' object may be associated with multiple functors in case of overloads.
     * every overload will have unique 'FunctorId', contained by one 'Function' object.
     * given signatureId is compared against the signatureId of all overloads registered.
-*/  inline const std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
+*/  FORCE_INLINE const std::size_t Function::hasSignatureId(const std::size_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
-            if (functorId.getSignatureId() == pSignatureId) {
+            if (functorId.getSignatureId() == pSignatureId) [[likely]] {
                 return functorId.getIndex();
             }
         }

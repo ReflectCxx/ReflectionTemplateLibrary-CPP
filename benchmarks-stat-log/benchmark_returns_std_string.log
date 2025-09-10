@@ -1,0 +1,1655 @@
+Starting benchmark runs...
+Binary: ./bin/RTLBenchmarkApp
+Log: ./benchmark_runs.log
+===================================
+>>> Run 1: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:11+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4157.05 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.65, 1.34, 1.02
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.69 ns         2.69 ns    257512106
+StdFuncCall::noReturn                 3.78 ns         3.78 ns    191372055
+ReflectedCall::noReturn               4.75 ns         4.74 ns    150632849
+
+StdFuncMethodCall::noReturn           3.37 ns         3.37 ns    205734218
+ReflectedMethodCall::noReturn         8.16 ns         8.15 ns     83185450
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.53 ns         9.52 ns     73618012
+StdFuncCall::withReturn               10.1 ns         10.1 ns     69035901
+ReflectedCall::withReturn             18.9 ns         18.9 ns     36880785
+
+StdFuncMethodCall::withReturn         10.1 ns         10.1 ns     69220259
+ReflectedMethodCall::withReturn       22.1 ns         22.1 ns     31879199
+-----------------------------------
+>>> Run 2: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:21+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2840.42 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.40, 1.33, 1.02
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.68 ns         2.68 ns    260488715
+StdFuncCall::noReturn                 3.62 ns         3.62 ns    200782884
+ReflectedCall::noReturn               4.56 ns         4.56 ns    148944703
+
+StdFuncMethodCall::noReturn           3.39 ns         3.39 ns    208809945
+ReflectedMethodCall::noReturn         8.11 ns         8.10 ns     87050327
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.60 ns         9.60 ns     72996970
+StdFuncCall::withReturn               10.1 ns         10.1 ns     65628479
+ReflectedCall::withReturn             20.2 ns         20.2 ns     35013149
+
+StdFuncMethodCall::withReturn         10.4 ns         10.4 ns     65866447
+ReflectedMethodCall::withReturn       23.0 ns         23.0 ns     30671071
+-----------------------------------
+>>> Run 3: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:30+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4460.24 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.18, 1.32, 1.02
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.87 ns         2.87 ns    241103915
+StdFuncCall::noReturn                 3.82 ns         3.82 ns    196511816
+ReflectedCall::noReturn               4.81 ns         4.81 ns    146383768
+
+StdFuncMethodCall::noReturn           3.44 ns         3.44 ns    203121679
+ReflectedMethodCall::noReturn         8.30 ns         8.29 ns     81544882
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.71 ns         9.70 ns     70716392
+StdFuncCall::withReturn               10.2 ns         10.2 ns     68308824
+ReflectedCall::withReturn             19.1 ns         19.1 ns     35574641
+
+StdFuncMethodCall::withReturn         10.4 ns         10.4 ns     67503571
+ReflectedMethodCall::withReturn       22.1 ns         22.1 ns     31856370
+-----------------------------------
+>>> Run 4: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:40+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3303.29 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.15, 1.34, 1.03
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.78 ns         2.78 ns    244476044
+StdFuncCall::noReturn                 3.51 ns         3.51 ns    186742133
+ReflectedCall::noReturn               4.72 ns         4.72 ns    145124302
+
+StdFuncMethodCall::noReturn           3.71 ns         3.71 ns    195045272
+ReflectedMethodCall::noReturn         8.33 ns         8.32 ns     83825689
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.94 ns         9.94 ns     67349049
+StdFuncCall::withReturn               10.1 ns         10.1 ns     66482926
+ReflectedCall::withReturn             19.2 ns         19.2 ns     36102397
+
+StdFuncMethodCall::withReturn         10.1 ns         10.1 ns     67142276
+ReflectedMethodCall::withReturn       22.8 ns         22.8 ns     29914325
+-----------------------------------
+>>> Run 5: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:49+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1457.53 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.21, 1.38, 1.05
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.72 ns         2.72 ns    252082597
+StdFuncCall::noReturn                 3.57 ns         3.57 ns    187629241
+ReflectedCall::noReturn               4.85 ns         4.85 ns    145919895
+
+StdFuncMethodCall::noReturn           3.47 ns         3.47 ns    205701290
+ReflectedMethodCall::noReturn         8.19 ns         8.19 ns     82512348
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.82 ns         9.82 ns     68734745
+StdFuncCall::withReturn               10.2 ns         10.2 ns     66343231
+ReflectedCall::withReturn             19.1 ns         19.1 ns     36036806
+
+StdFuncMethodCall::withReturn         10.1 ns         10.1 ns     66426936
+ReflectedMethodCall::withReturn       21.9 ns         21.9 ns     30764432
+-----------------------------------
+>>> Run 6: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:43:59+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4134.64 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.10, 1.39, 1.05
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.68 ns         2.68 ns    255151415
+StdFuncCall::noReturn                 3.57 ns         3.57 ns    194877796
+ReflectedCall::noReturn               4.68 ns         4.68 ns    148012652
+
+StdFuncMethodCall::noReturn           3.41 ns         3.41 ns    203119855
+ReflectedMethodCall::noReturn         8.27 ns         8.27 ns     84231855
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.91 ns         9.91 ns     67237407
+StdFuncCall::withReturn               10.1 ns         10.1 ns     66701430
+ReflectedCall::withReturn             19.0 ns         19.0 ns     35306832
+
+StdFuncMethodCall::withReturn         10.1 ns         10.1 ns     66190294
+ReflectedMethodCall::withReturn       22.8 ns         22.8 ns     31433430
+-----------------------------------
+>>> Run 7: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:44:08+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3065.25 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 2.01, 1.39, 1.06
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.76 ns         2.75 ns    258152508
+StdFuncCall::noReturn                 3.54 ns         3.54 ns    188663322
+ReflectedCall::noReturn               4.70 ns         4.70 ns    148190073
+
+StdFuncMethodCall::noReturn           3.48 ns         3.48 ns    204262478
+ReflectedMethodCall::noReturn         8.15 ns         8.15 ns     82688841
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.71 ns         9.71 ns     70719451
+StdFuncCall::withReturn               10.2 ns         10.2 ns     66710422
+ReflectedCall::withReturn             19.2 ns         19.2 ns     35438621
+
+StdFuncMethodCall::withReturn         10.1 ns         10.1 ns     64913832
+ReflectedMethodCall::withReturn       22.6 ns         22.5 ns     30465366
+-----------------------------------
+>>> Run 8: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:44:17+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4152.63 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.85, 1.38, 1.06
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.70 ns         2.70 ns    258092134
+StdFuncCall::noReturn                 3.59 ns         3.59 ns    190138329
+ReflectedCall::noReturn               4.77 ns         4.77 ns    148249878
+
+StdFuncMethodCall::noReturn           3.49 ns         3.49 ns    201288659
+ReflectedMethodCall::noReturn         8.16 ns         8.16 ns     81918693
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.91 ns         9.91 ns     70546801
+StdFuncCall::withReturn               10.2 ns         10.2 ns     65288578
+ReflectedCall::withReturn             18.9 ns         18.9 ns     35386904
+
+StdFuncMethodCall::withReturn         10.2 ns         10.2 ns     66910973
+ReflectedMethodCall::withReturn       22.8 ns         22.8 ns     30535267
+-----------------------------------
+>>> Run 9: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:44:27+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4236.18 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.88, 1.40, 1.07
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2.75 ns         2.75 ns    256627078
+StdFuncCall::noReturn                 3.62 ns         3.62 ns    191604367
+ReflectedCall::noReturn               4.90 ns         4.90 ns    146177763
+
+StdFuncMethodCall::noReturn           3.51 ns         3.51 ns    207243986
+ReflectedMethodCall::noReturn         8.34 ns         8.34 ns     85440083
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.71 ns         9.71 ns     70073783
+StdFuncCall::withReturn               10.3 ns         10.3 ns     64837520
+ReflectedCall::withReturn             19.2 ns         19.2 ns     36494857
+
+StdFuncMethodCall::withReturn         10.2 ns         10.2 ns     64693494
+ReflectedMethodCall::withReturn       22.5 ns         22.5 ns     31231450
+-----------------------------------
+>>> Run 10: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2025-09-11T00:44:36+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3410.16 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.80, 1.39, 1.07
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3.18 ns         3.18 ns    220289404
+StdFuncCall::noReturn                 3.68 ns         3.68 ns    185037995
+ReflectedCall::noReturn               4.95 ns         4.95 ns    138642595
+
+StdFuncMethodCall::noReturn           3.69 ns         3.69 ns    191910140
+ReflectedMethodCall::noReturn         8.40 ns         8.40 ns     82408566
+--------------------------------------------------------------------------
+DirectCall::withReturn                9.78 ns         9.78 ns     68512931
+StdFuncCall::withReturn               10.1 ns         10.1 ns     64820748
+ReflectedCall::withReturn             19.0 ns         19.0 ns     36083173
+
+StdFuncMethodCall::withReturn         10.2 ns         10.2 ns     66179461
+ReflectedMethodCall::withReturn       22.4 ns         22.4 ns     31255435
+-----------------------------------
+>>> Run 1: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2025-09-11T00:44:45+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3869.61 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.76, 1.39, 1.07
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   310 ns          310 ns      2254101
+StdFuncCall::noReturn                  315 ns          315 ns      2239763
+ReflectedCall::noReturn                316 ns          316 ns      2198780
+
+StdFuncMethodCall::noReturn            313 ns          313 ns      2258100
+ReflectedMethodCall::noReturn          323 ns          323 ns      2166074
+--------------------------------------------------------------------------
+DirectCall::withReturn                 453 ns          453 ns      1577637
+StdFuncCall::withReturn                452 ns          452 ns      1575065
+ReflectedCall::withReturn              633 ns          633 ns      1064025
+
+StdFuncMethodCall::withReturn          452 ns          451 ns      1575285
+ReflectedMethodCall::withReturn        640 ns          640 ns      1059786
+-----------------------------------
+>>> Run 2: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2025-09-11T00:44:56+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3794.29 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.72, 1.40, 1.08
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   317 ns          317 ns      2228177
+StdFuncCall::noReturn                  308 ns          308 ns      2227891
+ReflectedCall::noReturn                318 ns          318 ns      2185558
+
+StdFuncMethodCall::noReturn            320 ns          320 ns      2209955
+ReflectedMethodCall::noReturn          324 ns          324 ns      2131421
+--------------------------------------------------------------------------
+DirectCall::withReturn                 445 ns          445 ns      1580444
+StdFuncCall::withReturn                457 ns          457 ns      1550760
+ReflectedCall::withReturn              633 ns          633 ns      1077338
+
+StdFuncMethodCall::withReturn          446 ns          446 ns      1563643
+ReflectedMethodCall::withReturn        646 ns          646 ns      1082286
+-----------------------------------
+>>> Run 3: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2025-09-11T00:45:06+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2203.19 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.77, 1.42, 1.09
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   312 ns          312 ns      2244981
+StdFuncCall::noReturn                  308 ns          308 ns      2262484
+ReflectedCall::noReturn                318 ns          318 ns      2253123
+
+StdFuncMethodCall::noReturn            312 ns          312 ns      2223455
+ReflectedMethodCall::noReturn          325 ns          325 ns      2208582
+--------------------------------------------------------------------------
+DirectCall::withReturn                 515 ns          515 ns      1315012
+StdFuncCall::withReturn                514 ns          514 ns      1314421
+ReflectedCall::withReturn              705 ns          705 ns       996799
+
+StdFuncMethodCall::withReturn          518 ns          518 ns      1295521
+ReflectedMethodCall::withReturn        706 ns          706 ns       928961
+-----------------------------------
+>>> Run 4: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2025-09-11T00:45:15+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1438.63 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.72, 1.42, 1.09
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   351 ns          351 ns      2035112
+StdFuncCall::noReturn                  349 ns          349 ns      2030713
+ReflectedCall::noReturn                349 ns          349 ns      1980472
+
+StdFuncMethodCall::noReturn            349 ns          349 ns      2023659
+ReflectedMethodCall::noReturn          353 ns          353 ns      1978482
+--------------------------------------------------------------------------
+DirectCall::withReturn                 510 ns          510 ns      1329271
+StdFuncCall::withReturn                513 ns          513 ns      1337409
+ReflectedCall::withReturn              712 ns          712 ns       931367
+
+StdFuncMethodCall::withReturn          511 ns          511 ns      1279105
+ReflectedMethodCall::withReturn        711 ns          711 ns       980263
+-----------------------------------
+>>> Run 5: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2025-09-11T00:45:24+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3937.8 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.61, 1.41, 1.09
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   316 ns          316 ns      2233794
+StdFuncCall::noReturn                  345 ns          345 ns      2026485
+ReflectedCall::noReturn                354 ns          354 ns      1979604
+
+StdFuncMethodCall::noReturn            351 ns          351 ns      1987525
+ReflectedMethodCall::noReturn          363 ns          363 ns      1943031
+--------------------------------------------------------------------------
+DirectCall::withReturn                 523 ns          523 ns      1281177
+StdFuncCall::withReturn                522 ns          522 ns      1331638
+ReflectedCall::withReturn              702 ns          702 ns       971089
+
+StdFuncMethodCall::withReturn          527 ns          527 ns      1342443
+ReflectedMethodCall::withReturn        707 ns          707 ns       966971
+-----------------------------------
+>>> Run 1: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2025-09-11T00:45:34+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3864.23 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.52, 1.39, 1.09
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   907 ns          906 ns       671085
+StdFuncCall::noReturn                  913 ns          913 ns       750555
+ReflectedCall::noReturn                927 ns          927 ns       739691
+
+StdFuncMethodCall::noReturn            913 ns          913 ns       734242
+ReflectedMethodCall::noReturn          938 ns          938 ns       722635
+--------------------------------------------------------------------------
+DirectCall::withReturn                1246 ns         1246 ns       536846
+StdFuncCall::withReturn               1268 ns         1268 ns       546493
+ReflectedCall::withReturn             1595 ns         1595 ns       423002
+
+StdFuncMethodCall::withReturn         1240 ns         1240 ns       548835
+ReflectedMethodCall::withReturn       1533 ns         1533 ns       444235
+-----------------------------------
+>>> Run 2: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2025-09-11T00:45:42+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4198.35 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.56, 1.40, 1.10
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   897 ns          897 ns       725976
+StdFuncCall::noReturn                  907 ns          907 ns       753162
+ReflectedCall::noReturn                928 ns          927 ns       742010
+
+StdFuncMethodCall::noReturn            919 ns          919 ns       716837
+ReflectedMethodCall::noReturn          939 ns          939 ns       713611
+--------------------------------------------------------------------------
+DirectCall::withReturn                1199 ns         1199 ns       561452
+StdFuncCall::withReturn               1197 ns         1197 ns       560668
+ReflectedCall::withReturn             1530 ns         1529 ns       426508
+
+StdFuncMethodCall::withReturn         1209 ns         1209 ns       556128
+ReflectedMethodCall::withReturn       1540 ns         1540 ns       434049
+-----------------------------------
+>>> Run 3: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2025-09-11T00:45:50+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3711.21 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.47, 1.39, 1.09
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   906 ns          906 ns       730770
+StdFuncCall::noReturn                  904 ns          904 ns       752526
+ReflectedCall::noReturn                924 ns          924 ns       717981
+
+StdFuncMethodCall::noReturn            899 ns          899 ns       738039
+ReflectedMethodCall::noReturn          923 ns          923 ns       726660
+--------------------------------------------------------------------------
+DirectCall::withReturn                1172 ns         1172 ns       563431
+StdFuncCall::withReturn               1187 ns         1186 ns       559493
+ReflectedCall::withReturn             1525 ns         1525 ns       444023
+
+StdFuncMethodCall::withReturn         1180 ns         1180 ns       564379
+ReflectedMethodCall::withReturn       1540 ns         1540 ns       444693
+-----------------------------------
+>>> Run 4: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2025-09-11T00:45:58+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4048.1 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.55, 1.41, 1.10
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   899 ns          899 ns       744944
+StdFuncCall::noReturn                  905 ns          905 ns       755918
+ReflectedCall::noReturn                910 ns          910 ns       735203
+
+StdFuncMethodCall::noReturn            910 ns          910 ns       751759
+ReflectedMethodCall::noReturn          927 ns          927 ns       718062
+--------------------------------------------------------------------------
+DirectCall::withReturn                1193 ns         1192 ns       571996
+StdFuncCall::withReturn               1196 ns         1196 ns       551911
+ReflectedCall::withReturn             1509 ns         1509 ns       431152
+
+StdFuncMethodCall::withReturn         1191 ns         1191 ns       546073
+ReflectedMethodCall::withReturn       1537 ns         1537 ns       441082
+-----------------------------------
+>>> Run 5: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2025-09-11T00:46:06+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1023.61 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.51, 1.40, 1.10
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                   916 ns          916 ns       732935
+StdFuncCall::noReturn                  923 ns          923 ns       738825
+ReflectedCall::noReturn                920 ns          920 ns       716561
+
+StdFuncMethodCall::noReturn            909 ns          909 ns       733723
+ReflectedMethodCall::noReturn          939 ns          939 ns       712708
+--------------------------------------------------------------------------
+DirectCall::withReturn                1189 ns         1188 ns       567232
+StdFuncCall::withReturn               1190 ns         1190 ns       556865
+ReflectedCall::withReturn             1531 ns         1531 ns       454023
+
+StdFuncMethodCall::withReturn         1187 ns         1187 ns       586934
+ReflectedMethodCall::withReturn       1536 ns         1536 ns       448828
+-----------------------------------
+>>> Run 1: workload scale = 75
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 75 iterations
+=============================================
+
+2025-09-11T00:46:14+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4506.7 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.51, 1.41, 1.11
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1711 ns         1710 ns       397182
+StdFuncCall::noReturn                 1701 ns         1701 ns       392625
+ReflectedCall::noReturn               1707 ns         1707 ns       404729
+
+StdFuncMethodCall::noReturn           1708 ns         1708 ns       400940
+ReflectedMethodCall::noReturn         1745 ns         1744 ns       393836
+--------------------------------------------------------------------------
+DirectCall::withReturn                2360 ns         2360 ns       296471
+StdFuncCall::withReturn               2358 ns         2358 ns       293315
+ReflectedCall::withReturn             3057 ns         3057 ns       229041
+
+StdFuncMethodCall::withReturn         2355 ns         2354 ns       296620
+ReflectedMethodCall::withReturn       3034 ns         3034 ns       227950
+-----------------------------------
+>>> Run 2: workload scale = 75
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 75 iterations
+=============================================
+
+2025-09-11T00:46:23+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1536.93 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.51, 1.41, 1.11
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1746 ns         1746 ns       395262
+StdFuncCall::noReturn                 1734 ns         1733 ns       403023
+ReflectedCall::noReturn               1752 ns         1752 ns       380243
+
+StdFuncMethodCall::noReturn           1753 ns         1753 ns       388427
+ReflectedMethodCall::noReturn         1752 ns         1751 ns       388074
+--------------------------------------------------------------------------
+DirectCall::withReturn                2395 ns         2395 ns       289058
+StdFuncCall::withReturn               2433 ns         2433 ns       286696
+ReflectedCall::withReturn             3164 ns         3164 ns       221492
+
+StdFuncMethodCall::withReturn         2440 ns         2440 ns       281890
+ReflectedMethodCall::withReturn       3166 ns         3166 ns       221117
+-----------------------------------
+>>> Run 3: workload scale = 75
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 75 iterations
+=============================================
+
+2025-09-11T00:46:32+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3018.84 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.43, 1.40, 1.11
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1741 ns         1741 ns       377462
+StdFuncCall::noReturn                 1715 ns         1715 ns       398238
+ReflectedCall::noReturn               1722 ns         1721 ns       395238
+
+StdFuncMethodCall::noReturn           1740 ns         1740 ns       391977
+ReflectedMethodCall::noReturn         1709 ns         1709 ns       391583
+--------------------------------------------------------------------------
+DirectCall::withReturn                2301 ns         2301 ns       303807
+StdFuncCall::withReturn               2312 ns         2311 ns       300175
+ReflectedCall::withReturn             3073 ns         3073 ns       226573
+
+StdFuncMethodCall::withReturn         2423 ns         2423 ns       290465
+ReflectedMethodCall::withReturn       3169 ns         3169 ns       224297
+-----------------------------------
+>>> Run 4: workload scale = 75
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 75 iterations
+=============================================
+
+2025-09-11T00:46:42+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3748.07 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.56, 1.42, 1.12
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1762 ns         1762 ns       388500
+StdFuncCall::noReturn                 1755 ns         1754 ns       387350
+ReflectedCall::noReturn               1753 ns         1753 ns       380083
+
+StdFuncMethodCall::noReturn           1750 ns         1750 ns       393882
+ReflectedMethodCall::noReturn         1776 ns         1776 ns       391549
+--------------------------------------------------------------------------
+DirectCall::withReturn                2401 ns         2400 ns       295056
+StdFuncCall::withReturn               2397 ns         2397 ns       295309
+ReflectedCall::withReturn             3079 ns         3079 ns       222199
+
+StdFuncMethodCall::withReturn         2409 ns         2409 ns       282929
+ReflectedMethodCall::withReturn       3179 ns         3179 ns       223918
+-----------------------------------
+>>> Run 5: workload scale = 75
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 75 iterations
+=============================================
+
+2025-09-11T00:46:51+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1163.73 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.63, 1.44, 1.13
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1723 ns         1722 ns       384064
+StdFuncCall::noReturn                 1737 ns         1737 ns       391656
+ReflectedCall::noReturn               1731 ns         1730 ns       386459
+
+StdFuncMethodCall::noReturn           1733 ns         1733 ns       397046
+ReflectedMethodCall::noReturn         1737 ns         1737 ns       395967
+--------------------------------------------------------------------------
+DirectCall::withReturn                2369 ns         2369 ns       291883
+StdFuncCall::withReturn               2372 ns         2371 ns       291833
+ReflectedCall::withReturn             3078 ns         3078 ns       228938
+
+StdFuncMethodCall::withReturn         2363 ns         2363 ns       291230
+ReflectedMethodCall::withReturn       3115 ns         3115 ns       224035
+-----------------------------------
+>>> Run 1: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2025-09-11T00:47:01+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4500 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.60, 1.44, 1.13
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1980 ns         1979 ns       351441
+StdFuncCall::noReturn                 1949 ns         1949 ns       354766
+ReflectedCall::noReturn               1986 ns         1986 ns       347476
+
+StdFuncMethodCall::noReturn           1961 ns         1960 ns       344503
+ReflectedMethodCall::noReturn         1994 ns         1993 ns       343757
+--------------------------------------------------------------------------
+DirectCall::withReturn                3012 ns         3011 ns       236164
+StdFuncCall::withReturn               2976 ns         2976 ns       235449
+ReflectedCall::withReturn             3916 ns         3916 ns       184109
+
+StdFuncMethodCall::withReturn         3026 ns         3026 ns       229148
+ReflectedMethodCall::withReturn       3878 ns         3878 ns       181123
+-----------------------------------
+>>> Run 2: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2025-09-11T00:47:11+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3869.01 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.59, 1.45, 1.14
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1973 ns         1973 ns       343831
+StdFuncCall::noReturn                 1967 ns         1966 ns       336873
+ReflectedCall::noReturn               1989 ns         1989 ns       348169
+
+StdFuncMethodCall::noReturn           1988 ns         1988 ns       348304
+ReflectedMethodCall::noReturn         2012 ns         2012 ns       335265
+--------------------------------------------------------------------------
+DirectCall::withReturn                3000 ns         3000 ns       230973
+StdFuncCall::withReturn               2967 ns         2966 ns       232757
+ReflectedCall::withReturn             3876 ns         3876 ns       183695
+
+StdFuncMethodCall::withReturn         3027 ns         3027 ns       232206
+ReflectedMethodCall::withReturn       3816 ns         3815 ns       182478
+-----------------------------------
+>>> Run 3: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2025-09-11T00:47:20+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4509.87 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.58, 1.45, 1.14
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1987 ns         1987 ns       344531
+StdFuncCall::noReturn                 1974 ns         1974 ns       339319
+ReflectedCall::noReturn               1991 ns         1990 ns       341989
+
+StdFuncMethodCall::noReturn           1991 ns         1991 ns       345119
+ReflectedMethodCall::noReturn         1994 ns         1993 ns       350809
+--------------------------------------------------------------------------
+DirectCall::withReturn                3024 ns         3023 ns       236080
+StdFuncCall::withReturn               2991 ns         2990 ns       234932
+ReflectedCall::withReturn             3841 ns         3841 ns       182164
+
+StdFuncMethodCall::withReturn         2949 ns         2948 ns       237674
+ReflectedMethodCall::withReturn       3890 ns         3890 ns       180491
+-----------------------------------
+>>> Run 4: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2025-09-11T00:47:30+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2443.13 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.57, 1.45, 1.14
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1974 ns         1974 ns       347223
+StdFuncCall::noReturn                 1973 ns         1972 ns       348490
+ReflectedCall::noReturn               1994 ns         1994 ns       345264
+
+StdFuncMethodCall::noReturn           1940 ns         1939 ns       343663
+ReflectedMethodCall::noReturn         2003 ns         2003 ns       348942
+--------------------------------------------------------------------------
+DirectCall::withReturn                2965 ns         2965 ns       237170
+StdFuncCall::withReturn               2913 ns         2913 ns       238241
+ReflectedCall::withReturn             3852 ns         3852 ns       184604
+
+StdFuncMethodCall::withReturn         2915 ns         2915 ns       237691
+ReflectedMethodCall::withReturn       3782 ns         3782 ns       185705
+-----------------------------------
+>>> Run 5: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2025-09-11T00:47:40+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4409.93 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.56, 1.45, 1.15
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  1982 ns         1982 ns       351034
+StdFuncCall::noReturn                 1964 ns         1964 ns       341721
+ReflectedCall::noReturn               1989 ns         1988 ns       350068
+
+StdFuncMethodCall::noReturn           1955 ns         1954 ns       348141
+ReflectedMethodCall::noReturn         2003 ns         2003 ns       342525
+--------------------------------------------------------------------------
+DirectCall::withReturn                2953 ns         2953 ns       234331
+StdFuncCall::withReturn               2934 ns         2934 ns       238160
+ReflectedCall::withReturn             3811 ns         3810 ns       186625
+
+StdFuncMethodCall::withReturn         2912 ns         2912 ns       236835
+ReflectedMethodCall::withReturn       3899 ns         3898 ns       184770
+-----------------------------------
+>>> Run 1: workload scale = 125
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 125 iterations
+=============================================
+
+2025-09-11T00:47:50+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4575.95 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.63, 1.47, 1.16
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2187 ns         2187 ns       313314
+StdFuncCall::noReturn                 2203 ns         2202 ns       310954
+ReflectedCall::noReturn               2231 ns         2231 ns       314343
+
+StdFuncMethodCall::noReturn           2218 ns         2217 ns       308543
+ReflectedMethodCall::noReturn         2262 ns         2262 ns       307479
+--------------------------------------------------------------------------
+DirectCall::withReturn                3654 ns         3654 ns       191381
+StdFuncCall::withReturn               3651 ns         3650 ns       193595
+ReflectedCall::withReturn             4748 ns         4747 ns       151401
+
+StdFuncMethodCall::withReturn         3605 ns         3605 ns       194245
+ReflectedMethodCall::withReturn       4691 ns         4690 ns       152913
+-----------------------------------
+>>> Run 2: workload scale = 125
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 125 iterations
+=============================================
+
+2025-09-11T00:48:01+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4523.6 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.69, 1.49, 1.17
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2236 ns         2236 ns       309724
+StdFuncCall::noReturn                 2214 ns         2214 ns       315329
+ReflectedCall::noReturn               2236 ns         2236 ns       309095
+
+StdFuncMethodCall::noReturn           2217 ns         2217 ns       304364
+ReflectedMethodCall::noReturn         2247 ns         2247 ns       313155
+--------------------------------------------------------------------------
+DirectCall::withReturn                3592 ns         3592 ns       195293
+StdFuncCall::withReturn               3587 ns         3587 ns       194462
+ReflectedCall::withReturn             4691 ns         4691 ns       152353
+
+StdFuncMethodCall::withReturn         3594 ns         3594 ns       196395
+ReflectedMethodCall::withReturn       4737 ns         4737 ns       151845
+-----------------------------------
+>>> Run 3: workload scale = 125
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 125 iterations
+=============================================
+
+2025-09-11T00:48:11+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 799.56 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.73, 1.50, 1.18
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2237 ns         2237 ns       301530
+StdFuncCall::noReturn                 2248 ns         2248 ns       305381
+ReflectedCall::noReturn               2234 ns         2233 ns       307334
+
+StdFuncMethodCall::noReturn           2250 ns         2249 ns       289243
+ReflectedMethodCall::noReturn         2241 ns         2241 ns       308428
+--------------------------------------------------------------------------
+DirectCall::withReturn                3685 ns         3684 ns       190114
+StdFuncCall::withReturn               3669 ns         3668 ns       190878
+ReflectedCall::withReturn             4782 ns         4782 ns       150076
+
+StdFuncMethodCall::withReturn         3606 ns         3606 ns       191373
+ReflectedMethodCall::withReturn       4723 ns         4722 ns       152622
+-----------------------------------
+>>> Run 4: workload scale = 125
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 125 iterations
+=============================================
+
+2025-09-11T00:48:22+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2959.43 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.77, 1.52, 1.19
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2182 ns         2182 ns       307571
+StdFuncCall::noReturn                 2184 ns         2183 ns       313459
+ReflectedCall::noReturn               2205 ns         2205 ns       317597
+
+StdFuncMethodCall::noReturn           2224 ns         2223 ns       310829
+ReflectedMethodCall::noReturn         2235 ns         2235 ns       303977
+--------------------------------------------------------------------------
+DirectCall::withReturn                3643 ns         3642 ns       195401
+StdFuncCall::withReturn               3554 ns         3554 ns       196445
+ReflectedCall::withReturn             4606 ns         4605 ns       154556
+
+StdFuncMethodCall::withReturn         3581 ns         3581 ns       195507
+ReflectedMethodCall::withReturn       4713 ns         4713 ns       152328
+-----------------------------------
+>>> Run 5: workload scale = 125
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 125 iterations
+=============================================
+
+2025-09-11T00:48:32+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3933.71 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.90, 1.56, 1.20
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  2204 ns         2204 ns       305118
+StdFuncCall::noReturn                 2204 ns         2204 ns       319369
+ReflectedCall::noReturn               2209 ns         2208 ns       314425
+
+StdFuncMethodCall::noReturn           2226 ns         2226 ns       305314
+ReflectedMethodCall::noReturn         2220 ns         2220 ns       310974
+--------------------------------------------------------------------------
+DirectCall::withReturn                3649 ns         3648 ns       195704
+StdFuncCall::withReturn               3665 ns         3664 ns       193630
+ReflectedCall::withReturn             4598 ns         4598 ns       152357
+
+StdFuncMethodCall::withReturn         3629 ns         3628 ns       195927
+ReflectedMethodCall::withReturn       4805 ns         4805 ns       154283
+-----------------------------------
+>>> Run 1: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2025-09-11T00:48:43+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2671.41 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.92, 1.58, 1.21
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3533 ns         3533 ns       195180
+StdFuncCall::noReturn                 3546 ns         3545 ns       195924
+ReflectedCall::noReturn               3625 ns         3625 ns       195820
+
+StdFuncMethodCall::noReturn           3629 ns         3629 ns       197819
+ReflectedMethodCall::noReturn         3626 ns         3626 ns       195755
+--------------------------------------------------------------------------
+DirectCall::withReturn                5182 ns         5181 ns       131107
+StdFuncCall::withReturn               5141 ns         5140 ns       130322
+ReflectedCall::withReturn             6380 ns         6380 ns       107050
+
+StdFuncMethodCall::withReturn         5139 ns         5137 ns       130221
+ReflectedMethodCall::withReturn       6283 ns         6283 ns       109882
+-----------------------------------
+>>> Run 2: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2025-09-11T00:48:52+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1153.89 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.92, 1.58, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3645 ns         3644 ns       194763
+StdFuncCall::noReturn                 3536 ns         3536 ns       197643
+ReflectedCall::noReturn               3549 ns         3549 ns       197667
+
+StdFuncMethodCall::noReturn           3535 ns         3534 ns       197002
+ReflectedMethodCall::noReturn         3554 ns         3553 ns       196119
+--------------------------------------------------------------------------
+DirectCall::withReturn                5181 ns         5181 ns       135659
+StdFuncCall::withReturn               5179 ns         5178 ns       133046
+ReflectedCall::withReturn             6373 ns         6371 ns       109310
+
+StdFuncMethodCall::withReturn         5177 ns         5176 ns       132606
+ReflectedMethodCall::withReturn       6372 ns         6372 ns       109258
+-----------------------------------
+>>> Run 3: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2025-09-11T00:49:01+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.93, 1.60, 1.23
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3528 ns         3528 ns       197592
+StdFuncCall::noReturn                 3510 ns         3510 ns       191078
+ReflectedCall::noReturn               3526 ns         3526 ns       197562
+
+StdFuncMethodCall::noReturn           3514 ns         3513 ns       198411
+ReflectedMethodCall::noReturn         3730 ns         3730 ns       196892
+--------------------------------------------------------------------------
+DirectCall::withReturn                5354 ns         5352 ns       123800
+StdFuncCall::withReturn               5245 ns         5244 ns       136768
+ReflectedCall::withReturn             6398 ns         6397 ns       106337
+
+StdFuncMethodCall::withReturn         5175 ns         5175 ns       131618
+ReflectedMethodCall::withReturn       6289 ns         6287 ns       110758
+-----------------------------------
+>>> Run 4: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2025-09-11T00:49:10+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2161.83 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.87, 1.59, 1.23
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3542 ns         3541 ns       198073
+StdFuncCall::noReturn                 3610 ns         3609 ns       195386
+ReflectedCall::noReturn               3583 ns         3582 ns       195941
+
+StdFuncMethodCall::noReturn           3507 ns         3506 ns       199751
+ReflectedMethodCall::noReturn         3609 ns         3608 ns       195357
+--------------------------------------------------------------------------
+DirectCall::withReturn                5074 ns         5073 ns       137709
+StdFuncCall::withReturn               5121 ns         5120 ns       136175
+ReflectedCall::withReturn             6347 ns         6346 ns       107908
+
+StdFuncMethodCall::withReturn         5089 ns         5088 ns       132717
+ReflectedMethodCall::withReturn       6358 ns         6358 ns       111927
+-----------------------------------
+>>> Run 5: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2025-09-11T00:49:20+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1932.44 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.73, 1.57, 1.23
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3578 ns         3577 ns       198985
+StdFuncCall::noReturn                 3533 ns         3532 ns       198881
+ReflectedCall::noReturn               3517 ns         3517 ns       198702
+
+StdFuncMethodCall::noReturn           3572 ns         3572 ns       198500
+ReflectedMethodCall::noReturn         3572 ns         3572 ns       185939
+--------------------------------------------------------------------------
+DirectCall::withReturn                5046 ns         5046 ns       137950
+StdFuncCall::withReturn               5080 ns         5078 ns       138211
+ReflectedCall::withReturn             6306 ns         6304 ns       110192
+
+StdFuncMethodCall::withReturn         5132 ns         5132 ns       131855
+ReflectedMethodCall::withReturn       6343 ns         6343 ns       107271
+-----------------------------------
+>>> Run 1: workload scale = 175
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 175 iterations
+=============================================
+
+2025-09-11T00:49:29+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2271.38 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.62, 1.55, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3789 ns         3788 ns       183993
+StdFuncCall::noReturn                 3777 ns         3776 ns       185241
+ReflectedCall::noReturn               3781 ns         3780 ns       183887
+
+StdFuncMethodCall::noReturn           3778 ns         3777 ns       185194
+ReflectedMethodCall::noReturn         3815 ns         3814 ns       183316
+--------------------------------------------------------------------------
+DirectCall::withReturn                5771 ns         5770 ns       121611
+StdFuncCall::withReturn               5735 ns         5734 ns       117886
+ReflectedCall::withReturn             7182 ns         7182 ns        94871
+
+StdFuncMethodCall::withReturn         5796 ns         5795 ns       116975
+ReflectedMethodCall::withReturn       7194 ns         7193 ns        94083
+-----------------------------------
+>>> Run 2: workload scale = 175
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 175 iterations
+=============================================
+
+2025-09-11T00:49:38+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2817.81 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.52, 1.54, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3877 ns         3877 ns       180661
+StdFuncCall::noReturn                 3876 ns         3876 ns       181752
+ReflectedCall::noReturn               3864 ns         3864 ns       180348
+
+StdFuncMethodCall::noReturn           3914 ns         3914 ns       180868
+ReflectedMethodCall::noReturn         3853 ns         3853 ns       179813
+--------------------------------------------------------------------------
+DirectCall::withReturn                5826 ns         5826 ns       120405
+StdFuncCall::withReturn               5768 ns         5768 ns       120615
+ReflectedCall::withReturn             7147 ns         7147 ns        97322
+
+StdFuncMethodCall::withReturn         5783 ns         5783 ns       120537
+ReflectedMethodCall::withReturn       7177 ns         7176 ns        96515
+-----------------------------------
+>>> Run 3: workload scale = 175
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 175 iterations
+=============================================
+
+2025-09-11T00:49:48+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2468.99 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.44, 1.52, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3867 ns         3866 ns       184722
+StdFuncCall::noReturn                 3813 ns         3813 ns       182052
+ReflectedCall::noReturn               3799 ns         3799 ns       183532
+
+StdFuncMethodCall::noReturn           3901 ns         3901 ns       180895
+ReflectedMethodCall::noReturn         3821 ns         3820 ns       180911
+--------------------------------------------------------------------------
+DirectCall::withReturn                5694 ns         5694 ns       122739
+StdFuncCall::withReturn               5726 ns         5726 ns       122179
+ReflectedCall::withReturn             7126 ns         7125 ns        99356
+
+StdFuncMethodCall::withReturn         5669 ns         5669 ns       120489
+ReflectedMethodCall::withReturn       7014 ns         7013 ns        94851
+-----------------------------------
+>>> Run 4: workload scale = 175
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 175 iterations
+=============================================
+
+2025-09-11T00:49:57+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.37, 1.50, 1.21
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3811 ns         3811 ns       185570
+StdFuncCall::noReturn                 4045 ns         4045 ns       173991
+ReflectedCall::noReturn               3913 ns         3913 ns       178008
+
+StdFuncMethodCall::noReturn           3858 ns         3858 ns       180877
+ReflectedMethodCall::noReturn         3897 ns         3897 ns       181085
+--------------------------------------------------------------------------
+DirectCall::withReturn                5706 ns         5706 ns       118455
+StdFuncCall::withReturn               5694 ns         5693 ns       119512
+ReflectedCall::withReturn             7093 ns         7093 ns        95014
+
+StdFuncMethodCall::withReturn         5716 ns         5715 ns       117328
+ReflectedMethodCall::withReturn       7107 ns         7107 ns        92531
+-----------------------------------
+>>> Run 5: workload scale = 175
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 175 iterations
+=============================================
+
+2025-09-11T00:50:07+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2389.7 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.34, 1.49, 1.21
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  3823 ns         3822 ns       184164
+StdFuncCall::noReturn                 3921 ns         3920 ns       184054
+ReflectedCall::noReturn               3892 ns         3892 ns       181641
+
+StdFuncMethodCall::noReturn           3917 ns         3917 ns       182002
+ReflectedMethodCall::noReturn         3937 ns         3937 ns       179719
+--------------------------------------------------------------------------
+DirectCall::withReturn                5706 ns         5706 ns       116926
+StdFuncCall::withReturn               5727 ns         5726 ns       122669
+ReflectedCall::withReturn             7154 ns         7153 ns        92948
+
+StdFuncMethodCall::withReturn         5696 ns         5695 ns       117101
+ReflectedMethodCall::withReturn       7157 ns         7157 ns        94837
+-----------------------------------
+>>> Run 1: workload scale = 200
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 200 iterations
+=============================================
+
+2025-09-11T00:50:16+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3209.87 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.37, 1.49, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  4196 ns         4196 ns       170841
+StdFuncCall::noReturn                 4197 ns         4197 ns       171474
+ReflectedCall::noReturn               4213 ns         4213 ns       167685
+
+StdFuncMethodCall::noReturn           4195 ns         4195 ns       169093
+ReflectedMethodCall::noReturn         4235 ns         4235 ns       167817
+--------------------------------------------------------------------------
+DirectCall::withReturn                6403 ns         6401 ns       105705
+StdFuncCall::withReturn               6411 ns         6409 ns       104979
+ReflectedCall::withReturn             7984 ns         7982 ns        83508
+
+StdFuncMethodCall::withReturn         6531 ns         6529 ns       106182
+ReflectedMethodCall::withReturn       7987 ns         7986 ns        83759
+-----------------------------------
+>>> Run 2: workload scale = 200
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 200 iterations
+=============================================
+
+2025-09-11T00:50:26+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4359.42 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.47, 1.51, 1.22
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  4189 ns         4188 ns       170733
+StdFuncCall::noReturn                 4075 ns         4073 ns       173783
+ReflectedCall::noReturn               4062 ns         4062 ns       172155
+
+StdFuncMethodCall::noReturn           4036 ns         4036 ns       172871
+ReflectedMethodCall::noReturn         4156 ns         4156 ns       171048
+--------------------------------------------------------------------------
+DirectCall::withReturn                6255 ns         6255 ns       107881
+StdFuncCall::withReturn               6202 ns         6201 ns       111269
+ReflectedCall::withReturn             7732 ns         7731 ns        88927
+
+StdFuncMethodCall::withReturn         6237 ns         6237 ns       108573
+ReflectedMethodCall::withReturn       7717 ns         7716 ns        87408
+-----------------------------------
+>>> Run 3: workload scale = 200
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 200 iterations
+=============================================
+
+2025-09-11T00:50:35+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3349.71 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.47, 1.51, 1.23
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  4183 ns         4182 ns       172969
+StdFuncCall::noReturn                 4158 ns         4158 ns       169661
+ReflectedCall::noReturn               4320 ns         4320 ns       167031
+
+StdFuncMethodCall::noReturn           4142 ns         4142 ns       171242
+ReflectedMethodCall::noReturn         4244 ns         4243 ns       167943
+--------------------------------------------------------------------------
+DirectCall::withReturn                6215 ns         6214 ns       107561
+StdFuncCall::withReturn               6285 ns         6284 ns       106520
+ReflectedCall::withReturn             7794 ns         7794 ns        86470
+
+StdFuncMethodCall::withReturn         6259 ns         6257 ns       109244
+ReflectedMethodCall::withReturn       7877 ns         7876 ns        83397
+-----------------------------------
+>>> Run 4: workload scale = 200
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 200 iterations
+=============================================
+
+2025-09-11T00:50:45+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4518.55 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.56, 1.52, 1.24
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  4097 ns         4097 ns       172402
+StdFuncCall::noReturn                 4102 ns         4102 ns       171446
+ReflectedCall::noReturn               4218 ns         4217 ns       171091
+
+StdFuncMethodCall::noReturn           4080 ns         4080 ns       170058
+ReflectedMethodCall::noReturn         4114 ns         4114 ns       170617
+--------------------------------------------------------------------------
+DirectCall::withReturn                6368 ns         6367 ns       109122
+StdFuncCall::withReturn               6411 ns         6410 ns       104101
+ReflectedCall::withReturn             8033 ns         8032 ns        86564
+
+StdFuncMethodCall::withReturn         6449 ns         6448 ns       103769
+ReflectedMethodCall::withReturn       8047 ns         8047 ns        82650
+-----------------------------------
+>>> Run 5: workload scale = 200
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 200 iterations
+=============================================
+
+2025-09-11T00:50:55+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 3507.94 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.55, 1.52, 1.24
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+DirectCall::noReturn                  4065 ns         4065 ns       171561
+StdFuncCall::noReturn                 4084 ns         4084 ns       174097
+ReflectedCall::noReturn               4206 ns         4205 ns       172296
+
+StdFuncMethodCall::noReturn           4229 ns         4229 ns       173534
+ReflectedMethodCall::noReturn         4068 ns         4068 ns       171180
+--------------------------------------------------------------------------
+DirectCall::withReturn                6278 ns         6277 ns       111032
+StdFuncCall::withReturn               6352 ns         6351 ns       106040
+ReflectedCall::withReturn             7900 ns         7898 ns        87218
+
+StdFuncMethodCall::withReturn         6349 ns         6349 ns       110877
+ReflectedMethodCall::withReturn       7880 ns         7878 ns        84629
+-----------------------------------
+All benchmarks completed.

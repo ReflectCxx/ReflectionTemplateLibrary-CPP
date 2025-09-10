@@ -122,6 +122,12 @@ namespace rtl::detail
         Reference
     };
 
+    enum Index 
+    {
+        Ctor = 0,
+        CopyCtor
+    };
+
 
     // MethodQ: Method qualifier + static marker.
     enum class methodQ

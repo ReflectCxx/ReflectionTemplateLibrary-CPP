@@ -27,10 +27,10 @@ namespace rtl::detail
         RObjectBuilder(const RObjectBuilder&) = delete;
 
         template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
-        static RObject build(T&& pVal, bool pIsConstCastSafe) noexcept;
+        static RObject build(T&& pVal, std::size_t pClonerIndex, bool pIsConstCastSafe) noexcept;
 
         template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
-        static RObject build(T&& pVal, bool pIsConstCastSafe) noexcept;
+        static RObject build(T&& pVal, std::size_t pClonerIndex, bool pIsConstCastSafe) noexcept;
     };
 }
 
@@ -48,11 +48,11 @@ namespace rtl
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
             return detail::RObjectBuilder<std::string_view>::template 
-                    build<alloc::Stack>(std::string_view(pArr, N - 1), !traits::is_const_v<T>);
+                    build<alloc::Stack>(std::string_view(pArr, N - 1), rtl::index_none, !traits::is_const_v<T>);
         }
         else {
             return detail::RObjectBuilder<std::vector<T>>::template
-                    build<alloc::Stack>(std::vector(pArr, pArr + N), !traits::is_const_v<T>);
+                    build<alloc::Stack>(std::vector(pArr, pArr + N), rtl::index_none, !traits::is_const_v<T>);
         }
     }
 
@@ -64,13 +64,13 @@ namespace rtl
         if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)
         {
             return detail::RObjectBuilder<T>::template
-                    build<alloc::Stack>(std::forward<T>(pVal), !traits::is_const_v<T>);
+                    build<alloc::Stack>(std::forward<T>(pVal), rtl::index_none, !traits::is_const_v<T>);
         }
         else
         {
             constexpr bool isConstCastSafe = !traits::is_const_v<typename traits::std_wrapper<_T>::value_type>;
             return detail::RObjectBuilder<T>::template
-                    build<alloc::Stack>(std::forward<T>(pVal), isConstCastSafe);
+                    build<alloc::Stack>(std::forward<T>(pVal), rtl::index_none, isConstCastSafe);
         }
     }
 }

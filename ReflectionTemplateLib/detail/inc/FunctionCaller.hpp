@@ -19,21 +19,15 @@
 namespace rtl::detail
 {
     template<class ..._signature>
-    //FunctionCaller, holds only 'Method' associated with a static-member-function.
-    inline FunctionCaller<_signature...>::FunctionCaller(const Function& pFunction)
-        :m_function(pFunction) {
-    }
-
-    template<class ..._signature>
     template<class ..._args>
-    inline Return FunctionCaller<_signature...>::call(_args&&...params) const
+    FORCE_INLINE Return FunctionCaller<_signature...>::call(_args&&...params) const
     {
         using Container = std::conditional_t<sizeof...(_signature) == 0,
                                              FunctorContainer<std::remove_reference_t<_args>...>,
                                              FunctorContainer<_signature...>>;
 
-        std::size_t index = m_function.hasSignatureId(Container::getContainerId());
-        if (index != rtl::index_none) {
+        std::size_t index = m_function->hasSignatureId(Container::getContainerId());
+        if (index != rtl::index_none) [[likely]] {
             return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
         }
         return { error::SignatureMismatch, RObject{} };

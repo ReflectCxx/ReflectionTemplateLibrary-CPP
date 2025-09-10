@@ -21,27 +21,25 @@
 #include "ReflectCast.h"
 #include "RObjExtracter.h"
 #include "RObjectBuilder.h"
+#include "FunctorContainer.h"
 
 namespace rtl
 {
-    FORCE_INLINE RObject::RObject(std::any&& pObject, const detail::RObjectId pRObjId, const Cloner* pCloner,
+    FORCE_INLINE RObject::RObject(std::any&& pObject, detail::RObjectId&& pRObjId,
                                   const std::vector<traits::ConverterPair>* pConverters) noexcept
-        : m_object(std::move(pObject))
+        : m_object(std::in_place, std::move(pObject))
         , m_objectId(pRObjId)
-        , m_getClone(pCloner)
         , m_converters(pConverters)
     { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
         , m_objectId(pOther.m_objectId)
-        , m_getClone(pOther.m_getClone)
         , m_converters(pOther.m_converters)
     {
         // Explicitly clear moved-from source
-        pOther.m_object.reset();
+        pOther.m_object = std::nullopt;
         pOther.m_objectId = {};
-        pOther.m_getClone = nullptr;
         pOther.m_converters = nullptr;
     }
 
@@ -68,6 +66,10 @@ namespace rtl
     template<class T>
     inline bool RObject::canViewAs() const
     {
+        if (isEmpty()) {
+            return false;
+        }
+
         if constexpr (traits::is_bare_type<T>()) {
             if constexpr (traits::std_wrapper<T>::type != detail::Wrapper::None) {
                 if (m_objectId.m_wrapperTypeId == traits::std_wrapper<T>::id()) {
@@ -85,7 +87,7 @@ namespace rtl
     {
         detail::EntityKind newKind = detail::EntityKind::None;
         const traits::Converter& convert = (*m_converters)[pIndex].second;
-        const std::any& viewObj = convert(m_object, m_objectId.m_containsAs, newKind);
+        const std::any& viewObj = convert(m_object.value(), m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
         if (viewRef != nullptr && newKind == detail::EntityKind::Ref) {
@@ -101,14 +103,18 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
+        if (isEmpty()) {
+            return std::nullopt;
+        }
+
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
             {
                 using U = detail::RObjectUPtr<typename traits::std_wrapper<T>::value_type>;
-                const U& uptrRef = *(detail::RObjExtractor(this).getWrapper<T>());
+                const U& uptrRef = *(detail::RObjExtractor{ this }.getWrapper<T>());
                 return std::optional<rtl::view<T>>(std::in_place, static_cast<const U&>(uptrRef));
             }
         }
@@ -117,13 +123,17 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
+        if (isEmpty()) {
+            return std::nullopt;
+        }
+
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId)
+            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
             {
-                const T* sptrRef = detail::RObjExtractor(this).getWrapper<T>();
+                const T* sptrRef = detail::RObjExtractor{ this }.getWrapper<T>();
                 if (sptrRef != nullptr) {
                     return std::optional<rtl::view<T>>(std::in_place, const_cast<T&>(*sptrRef));
                 }
@@ -134,14 +144,18 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const
+    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
     {
+        if (isEmpty()) {
+            return std::nullopt;
+        }
+
         if constexpr (traits::is_bare_type<T>())
         {
             const std::size_t asTypeId = detail::TypeId<T>::get();
-            if (asTypeId == m_objectId.m_typeId)
+            if (asTypeId == m_objectId.m_typeId) [[likely]]
             {
-                const T* valRef = detail::RObjExtractor(this).getPointer<T>();
+                const T* valRef = detail::RObjExtractor{ this }.getPointer<T>();
                 if (valRef != nullptr) {
                     return std::optional<rtl::view<T>>(std::in_place, *valRef);
                 }
@@ -165,14 +179,24 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
-        return (*m_getClone)(*this, alloc::Heap);
+        std::size_t pClonerIndex = m_objectId.m_clonerIndex;
+        if (pClonerIndex != rtl::index_none)
+        {
+            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Heap, pClonerIndex, *this);
+        }
+        return { error::CloningDisabled, RObject{} };
     }
 
 
     template<>
     inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
-        return (*m_getClone)(*this, alloc::Stack);
+        std::size_t pClonerIndex = m_objectId.m_clonerIndex;
+        if (pClonerIndex != rtl::index_none)
+        {
+            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Stack, pClonerIndex, *this);
+        }
+        return { error::CloningDisabled, RObject{} };
     }
 
 

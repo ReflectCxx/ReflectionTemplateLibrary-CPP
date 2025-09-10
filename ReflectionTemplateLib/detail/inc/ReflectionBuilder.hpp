@@ -43,7 +43,6 @@ namespace rtl::detail
     {
         using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
         const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
-        //assert(functorId.getRecordId() == m_recordId && "function pointer is not member-function of specified record type");
         return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
     }
 
@@ -88,9 +87,12 @@ namespace rtl::detail
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const
     {
-        using Container = FunctorContainer<rtl::alloc, traits::remove_const_if_not_reference<_ctorSignature>...>;
+        using Container = FunctorContainer < rtl::alloc, std::size_t, traits::remove_const_if_not_reference<_ctorSignature>... > ;
         const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
-            
-        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+        const FunctorId& copyCtorId = traits::Cloner::template addCopyConstructor<_recordType, const RObject&>();
+        const Function& ctorFunction = Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+
+        ctorFunction.getFunctorIds().push_back(copyCtorId);
+        return ctorFunction;
     }
 }

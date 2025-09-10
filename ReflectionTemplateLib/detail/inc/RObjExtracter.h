@@ -15,16 +15,14 @@
 
 namespace rtl::detail
 {
-    class RObjExtractor
+    struct RObjExtractor
     {
         friend RObject;
         
-        const RObject& m_rObj;
+        const RObject* m_rObj;
         
-        RObjExtractor(const RObject* pRObj) : m_rObj(*pRObj) { }
-
         template<class T>
-        FORCE_INLINE static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind)
+        FORCE_INLINE static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind) noexcept
         {
             switch (pEntityKind)
             {
@@ -42,18 +40,18 @@ namespace rtl::detail
 
 
         template<class T>
-        FORCE_INLINE const T* getPointer() const
+        FORCE_INLINE const T* getPointer() const noexcept
         {
-            switch (m_rObj.m_objectId.m_containsAs)
+            switch (m_rObj->m_objectId.m_containsAs)
             {
                 case EntityKind::Ref: {
-                    return std::any_cast<const T*>(m_rObj.m_object);
+                    return std::any_cast<const T*>(m_rObj->m_object.value());
                 }
                 case EntityKind::Wrapper: {
                     return getFromWrapper<T>();
                 }
                 case EntityKind::Value: {
-                    const T& valueRef = std::any_cast<const T&>(m_rObj.m_object);
+                    const T& valueRef = std::any_cast<const T&>(m_rObj->m_object.value());
                     return static_cast<const T*>(&valueRef);
                 }
                 default: return nullptr;
@@ -63,24 +61,24 @@ namespace rtl::detail
 
 
         template <class T, traits::enable_if_unique_ptr<T> = 0>
-        FORCE_INLINE auto getWrapper() const -> const RObjectUPtr<typename traits::std_wrapper<T>::value_type>*
+        FORCE_INLINE auto getWrapper() const noexcept -> const RObjectUPtr<typename traits::std_wrapper<T>::value_type>*
         {
-            if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
+            if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Unique)
             {
                 using _T = traits::std_wrapper<T>::value_type;
                 if constexpr (traits::is_const_v<_T>)
                 {
-                    if (m_rObj.m_objectId.m_isWrappingConst)
+                    if (m_rObj->m_objectId.m_isWrappingConst)
                     {
                         using U = detail::RObjectUPtr<const _T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const U*>(&uptrRef);
                     }
                 }
                 else
                 {
                     using U = detail::RObjectUPtr<_T>;
-                    const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                    const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                     return static_cast<const U*>(&uptrRef);
                 }
             }
@@ -89,23 +87,23 @@ namespace rtl::detail
 
 
         template <class T, traits::enable_if_shared_ptr<T> = 0>
-        FORCE_INLINE const T* getWrapper() const
+        FORCE_INLINE const T* getWrapper() const noexcept
         {
-            if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Shared)
+            if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Shared)
             {
                 using _T = traits::std_wrapper<T>::value_type;
                 if constexpr (traits::is_const_v<_T>)
                 {
-                    if (m_rObj.m_objectId.m_isWrappingConst) {
+                    if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const _T>;
-                        const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const T*>(&sptrRef);
                     }
                 }
                 else
                 {
                     using U = std::shared_ptr<_T>;
-                    const U& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                    const U& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                     return static_cast<const T*>(&sptrRef);
                 }
             }
@@ -114,33 +112,33 @@ namespace rtl::detail
 
 
         template<class T>
-        FORCE_INLINE const T* getFromWrapper() const
+        FORCE_INLINE const T* getFromWrapper() const noexcept
         {
             if constexpr (std::is_destructible_v<T>)
             {
-                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Unique)
+                if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Unique)
                 {
-                    if (m_rObj.m_objectId.m_isWrappingConst) {
+                    if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = detail::RObjectUPtr<const T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const T*>(uptrRef.get());
                     }
                     else {
                         using U = detail::RObjectUPtr<T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const T*>(uptrRef.get());
                     }
                 }
-                if (m_rObj.m_objectId.m_wrapperType == detail::Wrapper::Shared)
+                if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Shared)
                 {
-                    if (m_rObj.m_objectId.m_isWrappingConst) {
+                    if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const auto& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const T*>(sptrRef.get());
                     }
                     else {
                         using U = std::shared_ptr<T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj.m_object);
+                        const auto& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
                         return static_cast<const T*>(sptrRef.get());
                     }
                 }
