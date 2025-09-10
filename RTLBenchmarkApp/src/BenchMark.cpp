@@ -7,16 +7,18 @@
 #include "BenchMark.h"
 
 extern std::size_t g_work_load_scale;
+extern std::optional<std::string> g_work_done;
 
 namespace
 {
-    static void work_load(bm::argStr_t& pMsg)
+    NOINLINE static std::string work_load(bm::argStr_t& pMsg)
     {
-        bm::g_msg = std::string();
+        auto workStr = std::string();
         for(int i = 0; i < g_work_load_scale; ++i)
         {
-            bm::g_msg->append(pMsg);
+            workStr += pMsg;
         }
+        return workStr;
     }
 }
 
@@ -27,32 +29,33 @@ namespace bm
     {
         volatile auto* p = &pMsg;
         static_cast<void>(p);
-        work_load(pMsg);
+        
+        g_work_done = work_load(pMsg);
     }
-
-
-    NOINLINE retStr_t getMessage(argStr_t pMsg)
-    {
-        volatile auto* p = &pMsg;
-        static_cast<void>(p);
-        work_load(pMsg);
-        return bm::retStr_t(bm::g_msg->c_str());
-    }
-
 
     NOINLINE void Node::sendMessage(argStr_t pMsg) 
     {
         volatile auto* p = &pMsg;
         static_cast<void>(p);
-        work_load(pMsg);
+
+        g_work_done = work_load(pMsg);
     }
 
+    NOINLINE retStr_t getMessage(argStr_t pMsg)
+    {
+        volatile auto* p = &pMsg;
+        static_cast<void>(p);
+
+        g_work_done = work_load(pMsg);
+        return bm::retStr_t(g_work_done->c_str());
+    }
 
     NOINLINE retStr_t Node::getMessage(argStr_t pMsg)
     {
         volatile auto* p = &pMsg;
         static_cast<void>(p);
-        work_load(pMsg);
-        return bm::retStr_t(bm::g_msg->c_str());
+
+        g_work_done = work_load(pMsg);
+        return bm::retStr_t(g_work_done->c_str());
     }
 }

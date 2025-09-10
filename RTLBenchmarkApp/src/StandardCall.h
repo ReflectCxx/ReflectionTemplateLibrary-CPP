@@ -10,13 +10,17 @@ struct DirectCall
 };
 
 
-struct StdFunctionCall
+struct StdFuncCall
 {
     static void noReturn(benchmark::State& state);
-    
-    static void noReturnMethod(benchmark::State& state);
 
     static void withReturn(benchmark::State& state);
+};
 
-    static void withReturnMethod(benchmark::State& state);
+
+struct StdFuncMethodCall
+{    
+    static void noReturn(benchmark::State& state);
+
+    static void withReturn(benchmark::State& state);
 };

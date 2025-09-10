@@ -5,18 +5,44 @@
 #include "StandardCall.h"
 #include "ReflectedCall.h"
 
-std::size_t g_work_load_scale = 1;
-
 BENCHMARK(DirectCall::noReturn);
-BENCHMARK(StdFunctionCall::noReturn);
-BENCHMARK(StdFunctionCall::noReturnMethod);
+BENCHMARK(StdFuncCall::noReturn);
 BENCHMARK(ReflectedCall::noReturn);
-BENCHMARK(ReflectedCall::noReturnMethod);
+
+BENCHMARK(StdFuncMethodCall::noReturn);
+BENCHMARK(ReflectedMethodCall::noReturn);
 
 BENCHMARK(DirectCall::withReturn);
-BENCHMARK(StdFunctionCall::withReturn);
-BENCHMARK(StdFunctionCall::withReturnMethod);
+BENCHMARK(StdFuncCall::withReturn);
 BENCHMARK(ReflectedCall::withReturn);
-BENCHMARK(ReflectedCall::withReturnMethod);
 
-BENCHMARK_MAIN();
+BENCHMARK(StdFuncMethodCall::withReturn);
+BENCHMARK(ReflectedMethodCall::withReturn);
+
+std::size_t g_work_load_scale = 1;
+
+std::optional<std::string> g_work_done;
+
+#include <benchmark/benchmark.h>
+#include <iostream>
+
+int main(int argc, char** argv) 
+{
+    if (argc > 1) 
+    {
+        g_work_load_scale = std::stoi(argv[1]);
+        for (int i = 1; i < argc - 1; ++i) {
+            argv[i] = argv[i + 1];
+        }
+        --argc;
+
+        std::cout << "\n======== RTL Benchmark Configuration ========\n"
+                    << "Workload: concatenate string of length 500\n"
+                    << "Scale   : " << g_work_load_scale << " iterations\n"
+                    << "=============================================\n\n";
+    }
+
+    ::benchmark::Initialize(&argc, argv);
+    if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
+    ::benchmark::RunSpecifiedBenchmarks();
+}

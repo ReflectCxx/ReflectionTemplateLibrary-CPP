@@ -3,49 +3,53 @@
 #include <functional>
 #include "StandardCall.h"
 
+extern std::optional<std::string> g_work_done;
+
+namespace 
+{
+    static auto _put_line = []() {
+        std::cout << "-------------------------------------"
+        "-------------------------------------" << std::endl;
+        return 0;
+    };
+
+    static auto _new_line = []() {
+        std::cout << std::endl;
+        return 0;
+    };
+}
+
 namespace
 {
     static bm::Node node;
 
-    static std::function sendMsg = [](bm::argStr_t& pMsg) 
+    static std::function SendMessage = [](bm::argStr_t& pMsg) 
     {
         volatile auto* p = &pMsg;
         static_cast<void>(p);
         bm::sendMessage(pMsg);
     };
 
-    static std::function sendMsgMethod = [](bm::argStr_t& pMsg) 
+    static std::function NodeSendMessage = [](bm::argStr_t& pMsg) 
     {
         volatile auto* p = &pMsg;
         static_cast<void>(p);
         node.sendMessage(pMsg);
     };
 
-    static std::function getMsg = [](bm::argStr_t& pMsg) 
+    static std::function GetMessage = [](bm::argStr_t& pMsg) 
     {
-        {
-            volatile auto* p = &pMsg;
-            static_cast<void>(p);
-        }
-        const auto& retMsg = bm::getMessage(pMsg);
-        {
-            volatile auto* p = &retMsg;
-            static_cast<void>(p);
-        }
+        auto retMsg = bm::getMessage(pMsg);
+        volatile auto* p = &retMsg;
+        static_cast<void>(p);
         return retMsg;
     };
 
-    static std::function getMsgMethod = [](bm::argStr_t& pMsg)
+    static std::function NodeGetMessage = [](bm::argStr_t& pMsg)
     {
-        {
-            volatile auto* p = &pMsg;
-            static_cast<void>(p);
-        }
-        const auto& retMsg = node.getMessage(pMsg);
-        {
-            volatile auto* p = &retMsg;
-            static_cast<void>(p);
-        }
+        auto retMsg = node.getMessage(pMsg);
+        volatile auto* p = &retMsg;
+        static_cast<void>(p);
         return retMsg;
     };
 }
@@ -53,23 +57,18 @@ namespace
 
 void DirectCall::noReturn(benchmark::State& state)
 {
-    for (auto _ : state)
+    for (auto _: state)
     {
         bm::sendMessage(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_msg);
+        benchmark::DoNotOptimize(g_work_done->c_str());
     }
 }
 
 
 void DirectCall::withReturn(benchmark::State& state)
 {
-    static auto _ = []() {
-        std::cout << "--------------------------------------"
-        "--------------------------------------" << std::endl;
-        return 0;
-    }();
-
-    for (auto _ : state)
+    static auto _=_put_line();
+    for (auto _: state)
     {
         benchmark::DoNotOptimize(bm::getMessage(bm::g_longStr));
     }
@@ -77,39 +76,41 @@ void DirectCall::withReturn(benchmark::State& state)
 
 
 
-void StdFunctionCall::noReturn(benchmark::State& state)
+void StdFuncCall::noReturn(benchmark::State& state)
 {
-    for (auto _ : state)
+    for (auto _: state)
     {
-        sendMsg(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_msg);
+        SendMessage(bm::g_longStr);
+        benchmark::DoNotOptimize(g_work_done->c_str());
     }
 }
 
 
-void StdFunctionCall::noReturnMethod(benchmark::State& state)
+void StdFuncMethodCall::noReturn(benchmark::State& state)
 {
-    for (auto _ : state)
+    static auto _=_new_line();
+    for (auto _: state)
     {
-        sendMsgMethod(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_msg);
+        NodeSendMessage(bm::g_longStr);
+        benchmark::DoNotOptimize(g_work_done->c_str());
     }
 }
 
 
-void StdFunctionCall::withReturn(benchmark::State& state)
+void StdFuncCall::withReturn(benchmark::State& state)
 {
-    for (auto _ : state)
+    for (auto _: state)
     {
-        benchmark::DoNotOptimize(getMsg(bm::g_longStr));
+        benchmark::DoNotOptimize(GetMessage(bm::g_longStr));
     }
 }
 
 
-void StdFunctionCall::withReturnMethod(benchmark::State& state)
+void StdFuncMethodCall::withReturn(benchmark::State& state)
 {
-    for (auto _ : state)
+    static auto _=_new_line();
+    for (auto _: state)
     {
-        benchmark::DoNotOptimize(getMsgMethod(bm::g_longStr));
+        benchmark::DoNotOptimize(NodeGetMessage(bm::g_longStr));
     }
 }
