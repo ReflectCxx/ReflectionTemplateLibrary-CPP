@@ -11,11 +11,11 @@
 
 #pragma once
 
+#include "RObject.h"
+
 namespace rtl
 {
-    class RObject;
     class Function;
-    class Return;
 }
 
 namespace rtl::detail
