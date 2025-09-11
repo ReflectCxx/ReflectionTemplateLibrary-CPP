@@ -78,6 +78,7 @@ void DirectCall::withReturn(benchmark::State& state)
 
 void StdFuncCall::noReturn(benchmark::State& state)
 {
+    static auto _=_new_line();
     for (auto _: state)
     {
         SendMessage(bm::g_longStr);
@@ -99,6 +100,7 @@ void StdFuncMethodCall::noReturn(benchmark::State& state)
 
 void StdFuncCall::withReturn(benchmark::State& state)
 {
+    static auto _=_new_line();
     for (auto _: state)
     {
         benchmark::DoNotOptimize(GetMessage(bm::g_longStr));

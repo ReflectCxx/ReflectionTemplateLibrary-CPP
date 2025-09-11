@@ -17,7 +17,7 @@
 namespace rtl 
 {
     template<class ..._signature>
-    inline const detail::FunctionCaller<_signature...> Function::bind() const
+    inline const detail::FunctionCaller<_signature...> Function::bind() const noexcept
     {
         return detail::FunctionCaller<_signature...>{ this };
     }
@@ -43,7 +43,7 @@ namespace rtl
 */  template<class ..._args>
     inline Return Function::operator()(_args&& ...params) const noexcept
     {
-        return bind().call(std::forward<_args>(params)...);
+        return detail::FunctionCaller<>{ this }.call(std::forward<_args>(params)...);
     }
 
 

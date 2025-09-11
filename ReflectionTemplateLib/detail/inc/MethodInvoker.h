@@ -40,6 +40,11 @@ namespace rtl::detail {
         template<class ..._args>
         Return call(_args&&...) const noexcept;
 
+        template<class ..._args>
+        constexpr Return operator()(_args&&...params) const noexcept {
+            return call(std::forward<_args>(params)...);
+        }
+
         friend Method;
     };
 
@@ -64,6 +69,11 @@ namespace rtl::detail {
 
         template<class ..._args>
         Return call(_args&&...) const noexcept;
+
+        template<class ..._args>
+        constexpr Return operator()(_args&&...params) const noexcept {
+            return call(std::forward<_args>(params)...);
+        }
 
         friend Method;
     };

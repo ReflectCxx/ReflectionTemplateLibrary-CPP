@@ -80,6 +80,7 @@ namespace rtl {
         GETTER(std::size_t, RecordTypeId, m_recordTypeId);
         GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
+        Function() = default;
         Function(Function&&) = default;
         Function(const Function&) = default;
         Function& operator=(Function&&) = default;
@@ -95,7 +96,7 @@ namespace rtl {
         Return operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
-        const detail::FunctionCaller<_signature...> bind() const;
+        const detail::FunctionCaller<_signature...> bind() const noexcept;
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;

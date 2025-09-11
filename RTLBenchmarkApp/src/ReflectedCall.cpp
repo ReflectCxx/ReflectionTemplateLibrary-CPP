@@ -4,9 +4,15 @@
 
 namespace
 {
-    static const rtl::CxxMirror& cxx_mirror()
-    {
-        static auto m = rtl::CxxMirror({
+    static rtl::RObject nodeObj;
+    static rtl::Method NodeGetMessage;
+    static rtl::Method NodeSendMessage;
+    static rtl::Function GetMessage;
+    static rtl::Function SendMessage;
+
+    static auto _= []() {
+
+        rtl::CxxMirror m = rtl::CxxMirror({
 
             rtl::type().function("getMessage").build(bm::getMessage),
 
@@ -18,22 +24,20 @@ namespace
 
             rtl::type().member<bm::Node>().method("getMessage").build(&bm::Node::getMessage)
         });
-        return m;
-    }
-    
-    static rtl::Record Node = cxx_mirror().getRecord("Node").value();
 
-    static rtl::RObject robj = Node.create<rtl::alloc::Stack>().rObject;
+        GetMessage = m.getFunction("getMessage").value();
+        
+        SendMessage = m.getFunction("sendMessage").value();
 
-    static rtl::Method NodeGetMessage = Node.getMethod("getMessage").value();
+        rtl::Record Node = m.getRecord("Node").value();
 
-    static rtl::Method NodeSendMessage = Node.getMethod("sendMessage").value();
-
-    static rtl::Function GetMessage = cxx_mirror().getFunction("getMessage").value();
-
-    static rtl::Function SendMessage = cxx_mirror().getFunction("sendMessage").value();
+        nodeObj = std::move(Node.create<rtl::alloc::Stack>().rObject);
+        
+        NodeGetMessage = Node.getMethod("getMessage").value();
+        NodeSendMessage = Node.getMethod("sendMessage").value();
+        return true;
+    }();
 }
-
 
 
  namespace
@@ -50,7 +54,7 @@ namespace
 
     static auto _test1 = []()
     {
-        auto err = NodeSendMessage(robj)(bm::g_longStr).err;
+        auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
 
         if (err != rtl::error::None)  {
             std::cout << "[1] error: " << rtl::to_string(err) << "\n";
@@ -70,7 +74,7 @@ namespace
 
     static auto _test3 = []()
     {
-        auto err = NodeGetMessage(robj)(bm::g_longStr).err;
+        auto err = NodeGetMessage(nodeObj)(bm::g_longStr).err;
         
         if (err != rtl::error::None) {
             std::cout << "[3] error: " << rtl::to_string(err) << "\n";
@@ -86,7 +90,7 @@ void ReflectedCall::noReturn(benchmark::State& state)
     static auto _=_test0();
     for (auto _: state) {
 
-        auto error = SendMessage.bind().call(bm::g_longStr).err;
+        auto error = SendMessage(bm::g_longStr).err;
         benchmark::DoNotOptimize(error);
     }
 }
@@ -97,7 +101,7 @@ void ReflectedCall::withReturn(benchmark::State& state)
     static auto _=_test2();
     for (auto _: state)
     {
-        auto error = GetMessage.bind().call(bm::g_longStr).err;
+        auto error = GetMessage(bm::g_longStr).err;
         benchmark::DoNotOptimize(error);
     }
 }
@@ -108,7 +112,7 @@ void ReflectedMethodCall::noReturn(benchmark::State& state)
     static auto _=_test1();
     for (auto _: state)
     {
-        auto error = NodeSendMessage.bind(robj).call(bm::g_longStr).err;
+        auto error = NodeSendMessage(nodeObj)(bm::g_longStr).err;
         benchmark::DoNotOptimize(error);
     }
 }
@@ -119,7 +123,7 @@ void ReflectedMethodCall::withReturn(benchmark::State& state)
     static auto _=_test3();
     for (auto _: state)
     {
-        auto error = NodeGetMessage.bind(robj).call(bm::g_longStr).err;
+        auto error = NodeGetMessage(nodeObj)(bm::g_longStr).err;
         benchmark::DoNotOptimize(error);
     }
 }

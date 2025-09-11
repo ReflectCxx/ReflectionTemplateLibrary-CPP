@@ -31,6 +31,12 @@ namespace rtl::detail
         template<class ..._args>
         rtl::Return call(_args&&...) const;
 
+        template<class ..._args>
+        constexpr rtl::Return operator()(_args&&...params) const
+        {
+            return call(std::forward<_args>(params)...);
+        }
+
         friend Function;
     };
 }
