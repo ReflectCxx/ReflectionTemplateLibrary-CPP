@@ -1,41 +1,30 @@
 
+#include <benchmark/benchmark.h>
+
 #include "ReflectedCall.h"
 #include "RTLibInterface.h"
+#include "BenchMark.h"
+
+namespace cxx 
+{
+    extern const rtl::CxxMirror& mirror();
+}
 
 namespace
 {
-    static rtl::RObject nodeObj;
-    static rtl::Method NodeGetMessage;
-    static rtl::Method NodeSendMessage;
-    static rtl::Function GetMessage;
-    static rtl::Function SendMessage;
+    static rtl::Function GetMessage = cxx::mirror().getFunction("getMessage").value();
+    static rtl::Function SendMessage = cxx::mirror().getFunction("sendMessage").value();
 
-    static auto _= []() {
+    static rtl::Method NodeGetMessage = cxx::mirror().getRecord("Node")->getMethod("getMessage").value();
+    static rtl::Method NodeSendMessage = cxx::mirror().getRecord("Node")->getMethod("sendMessage").value();
+    
+    static rtl::RObject nodeObj = []() 
+    {    
+        auto Node = cxx::mirror().getRecord("Node").value();
 
-        rtl::CxxMirror m = rtl::CxxMirror({
+        rtl::RObject robj = Node.create<rtl::alloc::Stack>().rObject;
 
-            rtl::type().function("getMessage").build(bm::getMessage),
-
-            rtl::type().function("sendMessage").build(bm::sendMessage),
-
-            rtl::type().record<bm::Node>("Node").build(),
-
-            rtl::type().member<bm::Node>().method("sendMessage").build(&bm::Node::sendMessage),
-
-            rtl::type().member<bm::Node>().method("getMessage").build(&bm::Node::getMessage)
-        });
-
-        GetMessage = m.getFunction("getMessage").value();
-        
-        SendMessage = m.getFunction("sendMessage").value();
-
-        rtl::Record Node = m.getRecord("Node").value();
-
-        nodeObj = std::move(Node.create<rtl::alloc::Stack>().rObject);
-        
-        NodeGetMessage = Node.getMethod("getMessage").value();
-        NodeSendMessage = Node.getMethod("sendMessage").value();
-        return true;
+        return std::move(robj);
     }();
 }
 

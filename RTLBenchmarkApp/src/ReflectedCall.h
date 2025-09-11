@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BenchMark.h"
+#include <benchmark/benchmark.h>
 
 struct ReflectedCall
 {
