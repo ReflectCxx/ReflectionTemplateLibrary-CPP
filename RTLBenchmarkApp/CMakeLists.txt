@@ -50,6 +50,7 @@ add_executable(${CXX_EXE_NAME}
     src/BenchMark.cpp
     src/StandardCall.h
     src/StandardCall.cpp
+    src/StdFunction.cpp
     src/ReflectedCall.h
     src/ReflectedCall.cpp
 )

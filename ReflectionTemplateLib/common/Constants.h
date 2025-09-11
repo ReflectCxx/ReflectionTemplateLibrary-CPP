@@ -116,10 +116,10 @@ namespace rtl::detail
         Any,
         Weak,
         Unique,
-        Shared,
-        Variant,
-        Optional,
-        Reference
+        Shared,     //Planned.
+        Variant,    //Planned.
+        Optional,   //Planned.
+        Reference   //Planned.
     };
 
     enum Index 
@@ -132,7 +132,7 @@ namespace rtl::detail
     // MethodQ: Method qualifier + static marker.
     enum class methodQ
     {
-        None = 0,       // Static method (no const/non-const qualifier)
+        None = 0,   // Static method (no const/non-const qualifier)
         Const,      // Const-qualified instance method
         NonConst    // Non-const instance method
     };

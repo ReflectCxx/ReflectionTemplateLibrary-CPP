@@ -11,11 +11,11 @@
 
 #pragma once
 
+#include "RObject.h"
+
 namespace rtl
 {
-    class RObject;
     class Function;
-    class Return;
 }
 
 namespace rtl::detail
@@ -30,6 +30,12 @@ namespace rtl::detail
 
         template<class ..._args>
         rtl::Return call(_args&&...) const;
+
+        template<class ..._args>
+        constexpr rtl::Return operator()(_args&&...params) const
+        {
+            return call(std::forward<_args>(params)...);
+        }
 
         friend Function;
     };

@@ -43,6 +43,23 @@ namespace rtl
         pOther.m_converters = nullptr;
     }
 
+    inline RObject& RObject::operator=(RObject&& pOther) noexcept
+    {
+        if (this == &pOther) {
+            return *this;
+        }
+
+        m_object = std::move(pOther.m_object);
+        m_objectId = pOther.m_objectId;
+        m_converters = pOther.m_converters;
+
+        // Explicitly clear moved-from source
+        pOther.m_object = std::nullopt;
+        pOther.m_objectId = {};
+        pOther.m_converters = nullptr;
+        return *this;
+    }
+
     inline std::atomic<std::size_t>& RObject::getInstanceCounter()
     {
         static std::atomic<std::size_t> instanceCounter = {0};
