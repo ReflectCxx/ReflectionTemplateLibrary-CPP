@@ -105,7 +105,7 @@ namespace rtl::detail
     enum class EntityKind
     {
         None = 0,
-        Ref,
+        Ptr,
         Value,
         Wrapper
     };

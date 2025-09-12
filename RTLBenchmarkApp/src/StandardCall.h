@@ -2,25 +2,25 @@
 
 #include <benchmark/benchmark.h>
 
-struct DirectCall
+struct NativeCall
 {
-    static void noReturn(benchmark::State& state);
+    static void set(benchmark::State& state);
     
-    static void withReturn(benchmark::State& state);
+    static void get(benchmark::State& state);
 };
 
 
 struct StdFuncCall
 {
-    static void noReturn(benchmark::State& state);
+    static void set(benchmark::State& state);
 
-    static void withReturn(benchmark::State& state);
+    static void get(benchmark::State& state);
 };
 
 
 struct StdFuncMethodCall
 {    
-    static void noReturn(benchmark::State& state);
+    static void set(benchmark::State& state);
 
-    static void withReturn(benchmark::State& state);
+    static void get(benchmark::State& state);
 };

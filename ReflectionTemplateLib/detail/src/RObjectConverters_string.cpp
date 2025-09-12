@@ -22,8 +22,8 @@ namespace rtl::detail
     {
         const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
-            pNewEntityKind = EntityKind::Ref;
-            const auto& isPtr = (pSrcEntityKind == EntityKind::Ref);
+            pNewEntityKind = EntityKind::Ptr;
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
             return std::any(srcObj.c_str());
         };
@@ -37,8 +37,8 @@ namespace rtl::detail
     {
         const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
-            pNewEntityKind = EntityKind::Ref;
-            const auto& isPtr = (pSrcEntityKind == EntityKind::Ref);
+            pNewEntityKind = EntityKind::Ptr;
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(srcObj.data());
         };
@@ -54,7 +54,7 @@ namespace rtl::detail
         const auto& conversion = [](const std::any& pSrc, const EntityKind& pSrcEntityKind, EntityKind& pNewEntityKind)-> std::any
         {
             pNewEntityKind = EntityKind::Value;
-            const auto& isPtr = (pSrcEntityKind == EntityKind::Ref);
+            const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(_toType(srcObj));
         };

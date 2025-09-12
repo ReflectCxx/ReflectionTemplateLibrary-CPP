@@ -74,7 +74,7 @@ namespace
 
 
 
-void ReflectedCall::noReturn(benchmark::State& state)
+void ReflectedCall::set(benchmark::State& state)
 {
     static auto _=_test0();
     for (auto _: state) {
@@ -85,7 +85,7 @@ void ReflectedCall::noReturn(benchmark::State& state)
 }
 
 
-void ReflectedCall::withReturn(benchmark::State& state)
+void ReflectedCall::get(benchmark::State& state)
 {
     static auto _=_test2();
     for (auto _: state)
@@ -96,7 +96,7 @@ void ReflectedCall::withReturn(benchmark::State& state)
 }
 
 
-void ReflectedMethodCall::noReturn(benchmark::State& state)
+void ReflectedMethodCall::set(benchmark::State& state)
 {
     static auto _=_test1();
     for (auto _: state)
@@ -107,7 +107,7 @@ void ReflectedMethodCall::noReturn(benchmark::State& state)
 }
 
 
-void ReflectedMethodCall::withReturn(benchmark::State& state)
+void ReflectedMethodCall::get(benchmark::State& state)
 {
     static auto _=_test3();
     for (auto _: state)

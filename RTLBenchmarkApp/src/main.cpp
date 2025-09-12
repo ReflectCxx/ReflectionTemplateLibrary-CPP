@@ -6,21 +6,21 @@
 #include "StandardCall.h"
 #include "ReflectedCall.h"
 
-BENCHMARK(DirectCall::noReturn);
+BENCHMARK(NativeCall::set);
 
-BENCHMARK(StdFuncCall::noReturn);
-BENCHMARK(ReflectedCall::noReturn);
+BENCHMARK(StdFuncCall::set);
+BENCHMARK(ReflectedCall::set);
 
-BENCHMARK(StdFuncMethodCall::noReturn);
-BENCHMARK(ReflectedMethodCall::noReturn);
+BENCHMARK(StdFuncMethodCall::set);
+BENCHMARK(ReflectedMethodCall::set);
 
-BENCHMARK(DirectCall::withReturn);
+BENCHMARK(NativeCall::get);
 
-BENCHMARK(StdFuncCall::withReturn);
-BENCHMARK(ReflectedCall::withReturn);
+BENCHMARK(StdFuncCall::get);
+BENCHMARK(ReflectedCall::get);
 
-BENCHMARK(StdFuncMethodCall::withReturn);
-BENCHMARK(ReflectedMethodCall::withReturn);
+BENCHMARK(StdFuncMethodCall::get);
+BENCHMARK(ReflectedMethodCall::get);
 
 namespace bm 
 {

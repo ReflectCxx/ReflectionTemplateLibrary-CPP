@@ -119,7 +119,7 @@ namespace rtl::unit_test
         constexpr const int NUM = -20438;
         RObject robj = reflect(std::make_shared<int>(NUM));
 
-        error reterr = cxx_mirror().enableCloning(robj);
+        error reterr = cxx_mirror().setupCloning(robj);
         ASSERT_TRUE(reterr == error::None);
 
         ASSERT_FALSE(robj.isEmpty());
@@ -214,7 +214,7 @@ namespace rtl::unit_test
         RObject robj = reflect(std::make_shared<int>(NUM));
         ASSERT_FALSE(robj.isEmpty());
 
-        error reterr = cxx_mirror().enableCloning(robj);
+        error reterr = cxx_mirror().setupCloning(robj);
         ASSERT_TRUE(reterr == error::None);
 
         // --- Step 1: Clone by default (entity::Auto semantics) ---
@@ -271,7 +271,7 @@ namespace rtl::unit_test
             ASSERT_FALSE(robj.isEmpty());
             ASSERT_TRUE(Node::instanceCount() == 1);
 
-            error reterr = cxx_mirror().enableCloning(robj);
+            error reterr = cxx_mirror().setupCloning(robj);
             ASSERT_TRUE(reterr == error::None);
 
             // --- Step 2: Clone by default (entity::Auto semantics) ---
@@ -354,7 +354,7 @@ namespace rtl::unit_test
             constexpr const int NUM = 241054;
             RObject robj = reflect(std::make_shared<Node>(NUM));
 
-            error reterr = cxx_mirror().enableCloning(robj);
+            error reterr = cxx_mirror().setupCloning(robj);
             ASSERT_TRUE(reterr == error::None);
 
             ASSERT_FALSE(robj.isEmpty());
@@ -599,7 +599,7 @@ namespace rtl::unit_test
             constexpr const int NUM = 10742;
             RObject robj = reflect(std::make_shared<Node>(NUM));
 
-            error reterr = cxx_mirror().enableCloning(robj);
+            error reterr = cxx_mirror().setupCloning(robj);
             ASSERT_TRUE(reterr == error::None);
 
             ASSERT_FALSE(robj.isEmpty());

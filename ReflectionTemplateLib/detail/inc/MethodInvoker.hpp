@@ -67,7 +67,7 @@ namespace rtl::detail
         {
             return containerConst::template forwardCall<_args...>(pTarget, constMethodIndex, std::forward<_args>(params)...);
         }
-        else
+        else [[unlikely]]
         {
             using containerNonConst = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
             std::size_t nonConstMethodIndex = pMethod.hasSignatureId(containerNonConst::getContainerId());

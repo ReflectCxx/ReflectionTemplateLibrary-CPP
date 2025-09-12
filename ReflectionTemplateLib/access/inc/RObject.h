@@ -71,6 +71,7 @@ namespace rtl
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
+        GETTER_CREF(std::optional<std::any>, Any, m_object)
 
     /*  Reflection Const Semantics:
     *   - All reflected objects default to mutable internally; API enforces logical constness.

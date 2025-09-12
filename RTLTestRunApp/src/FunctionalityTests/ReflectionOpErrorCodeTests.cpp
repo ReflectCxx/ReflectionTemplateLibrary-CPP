@@ -70,7 +70,7 @@ namespace rtl_tests
         char ch = 'R';
         RObject rCh = rtl::reflect(ch);
 
-        error reterr = cxx::mirror().enableCloning(rCh);
+        error reterr = cxx::mirror().setupCloning(rCh);
         ASSERT_TRUE(reterr == error::None);
 
         EXPECT_FALSE(rCh.isAllocatedByRtl());
@@ -114,7 +114,7 @@ namespace rtl_tests
             EXPECT_FALSE(rChptr.isAllocatedByRtl());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
 
-            error reterr = cxx::mirror().enableCloning(rChptr);
+            error reterr = cxx::mirror().setupCloning(rChptr);
             ASSERT_TRUE(reterr == error::None);
 
             EXPECT_TRUE(rChptr.canViewAs<char>());
@@ -200,7 +200,7 @@ namespace rtl_tests
             EXPECT_TRUE(err2 == error::CloningDisabled);
             ASSERT_TRUE(eventCp0.isEmpty());
 
-            error reterr = cxx::mirror().enableCloning(event);
+            error reterr = cxx::mirror().setupCloning(event);
             ASSERT_TRUE(reterr == error::None);
 
             // Try to call copy-constructor of class Event.

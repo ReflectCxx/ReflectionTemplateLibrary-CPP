@@ -107,7 +107,7 @@ namespace rtl
         const std::any& viewObj = convert(m_object.value(), m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
-        if (viewRef != nullptr && newKind == detail::EntityKind::Ref) {
+        if (viewRef != nullptr && newKind == detail::EntityKind::Ptr) {
             return std::optional<rtl::view<T>>(std::in_place, *viewRef);
         }
         else if (viewRef != nullptr && newKind == detail::EntityKind::Value) {

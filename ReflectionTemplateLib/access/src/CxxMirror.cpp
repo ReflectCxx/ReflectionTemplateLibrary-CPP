@@ -15,7 +15,7 @@
 
 namespace rtl 
 {
-    namespace detail 
+    namespace detail
     {
         std::size_t generate_unique_id()
         {
@@ -25,7 +25,7 @@ namespace rtl
         }
     }
 
-    error CxxMirror::enableCloning(const RObject& pTarget) const
+    error CxxMirror::setupCloning(const RObject& pTarget) const
     {
         const auto& itr = getRecordIdMap().find(pTarget.getTypeId());
         if (itr != getRecordIdMap().end()) 

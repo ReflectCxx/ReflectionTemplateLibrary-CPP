@@ -51,7 +51,7 @@ namespace rtl_tests
                     EXPECT_TRUE(err == rtl::error::CloningDisabled);
                 }
                 
-                rtl::error reterr = cxx::mirror().enableCloning(event);
+                rtl::error reterr = cxx::mirror().setupCloning(event);
                 ASSERT_TRUE(reterr == rtl::error::None);
                 
                 {

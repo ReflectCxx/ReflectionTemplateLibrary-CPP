@@ -49,7 +49,7 @@ namespace rtl::detail
                 return EntityKind::Wrapper;
             }
             else if constexpr (isRawPtr && !isWrapper) {
-                return EntityKind::Ref;
+                return EntityKind::Ptr;
             }
             else if constexpr (!isWrapper && !isRawPtr) {
                 return EntityKind::Value;
