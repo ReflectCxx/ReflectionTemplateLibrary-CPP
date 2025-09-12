@@ -26,8 +26,8 @@ RTL is implemented as a *static library* that organizes function pointers into `
 * ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 
-[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./Design-Docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./Design-Docs/RTL_SYNTAX_AND_SEMANTICS.md)
+[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./text-design-docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
@@ -157,7 +157,7 @@ cmake --build .
 ```
 
 Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
-* See `CxxRTLTypeRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
+* See `CxxTestRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
 * See `CxxRTLTestApplication/src` for detailed test cases.
 
 ## Contributions

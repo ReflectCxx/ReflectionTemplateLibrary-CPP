@@ -6,8 +6,7 @@ project(CxxReflectionProject)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 # Add the subdirectories
-add_subdirectory(CxxTestDesignPatternsUsingRTL)
-add_subdirectory(CxxRTLTypeRegistration)
+add_subdirectory(CxxTestRegistration)
 add_subdirectory(RTLTestRunApp)
 add_subdirectory(RTLBenchmarkApp)
 add_subdirectory(CxxTestProps)

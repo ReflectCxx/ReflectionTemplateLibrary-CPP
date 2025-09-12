@@ -32,7 +32,7 @@ set(LOCAL_ROBJECT
 set(LOCAL_MY_REFLECTION
 	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyReflectingType.h"
 	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyReflectionTests.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyCxxMirrorProvider.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/MyReflectionTests/MyCxxTestRegistration.cpp"
 )
 
 
