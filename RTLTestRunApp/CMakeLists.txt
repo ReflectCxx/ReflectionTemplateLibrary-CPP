@@ -30,7 +30,7 @@ FetchContent_MakeAvailable(googletest)
 set(RTL_INCLUDE_DIRS
     inc
     "${CMAKE_SOURCE_DIR}/CxxTestUtils/inc"
-    "${CMAKE_SOURCE_DIR}/CxxRTLTypeRegistration/inc"
+    "${CMAKE_SOURCE_DIR}/CxxTestRegistration/inc"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc"
     "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc"
@@ -52,7 +52,7 @@ target_link_libraries(${CXX_EXE_NAME}
     PRIVATE
         CxxTestUtils
         ReflectionTemplateLib
-        CxxRTLTypeRegistration
+        CxxTestRegistration
         GTest::gtest_main
 )
 

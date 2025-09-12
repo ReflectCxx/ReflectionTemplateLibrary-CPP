@@ -39,7 +39,7 @@ namespace bm
 }
 
 
-void DirectCall::noReturn(benchmark::State& state)
+void NativeCall::set(benchmark::State& state)
 {
     for (auto _: state)
     {
@@ -49,7 +49,7 @@ void DirectCall::noReturn(benchmark::State& state)
 }
 
 
-void DirectCall::withReturn(benchmark::State& state)
+void NativeCall::get(benchmark::State& state)
 {
     static auto _=_put_line();
     for (auto _: state)
@@ -59,7 +59,7 @@ void DirectCall::withReturn(benchmark::State& state)
 }
 
 
-void StdFuncCall::noReturn(benchmark::State& state)
+void StdFuncCall::set(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -70,7 +70,7 @@ void StdFuncCall::noReturn(benchmark::State& state)
 }
 
 
-void StdFuncMethodCall::noReturn(benchmark::State& state)
+void StdFuncMethodCall::set(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -81,7 +81,7 @@ void StdFuncMethodCall::noReturn(benchmark::State& state)
 }
 
 
-void StdFuncCall::withReturn(benchmark::State& state)
+void StdFuncCall::get(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -91,7 +91,7 @@ void StdFuncCall::withReturn(benchmark::State& state)
 }
 
 
-void StdFuncMethodCall::withReturn(benchmark::State& state)
+void StdFuncMethodCall::get(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)

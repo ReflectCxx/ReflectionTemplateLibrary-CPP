@@ -22,13 +22,13 @@ namespace rtl
     {
 
         template<class _derivedType>
-        template<class _recordType, class _returnType, class ..._signature>
+        template<class _recordType, class ..._signature>
         inline SetupMethod<_derivedType>::MethodLambda<_signature...>
-               SetupMethod<_derivedType>::getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...))
+               SetupMethod<_derivedType>::getMethodCaller(void(_recordType::* pFunctor)(_signature...))
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
@@ -48,7 +48,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
@@ -84,13 +84,13 @@ namespace rtl
 
 
         template<class _derivedType>
-        template<class _recordType, class _returnType, class ..._signature>
+        template<class _recordType, class ..._signature>
         inline SetupMethod<_derivedType>::MethodLambda<_signature...>
-               SetupMethod<_derivedType>::getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const)
+               SetupMethod<_derivedType>::getMethodCaller(void(_recordType::* pFunctor)(_signature...) const)
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 const _recordType& target = pTargetObj.view<_recordType>()->get();
                 (target.*pFunctor)(std::forward<_signature>(params)...);
@@ -106,7 +106,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' is const and 'pFunctor' is const-member-function.
@@ -179,7 +179,7 @@ namespace rtl
 
             if constexpr (std::is_same_v<_returnType, void>) 
             {
-                const std::size_t index = _derivedType::pushBack(getVoidMethodCaller(pFunctor), getIndex, updateIndex);
+                const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
                 //construct the hash-key 'FunctorId' and return.
                 return detail::FunctorId{
                     index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
@@ -239,7 +239,7 @@ namespace rtl
 
             if constexpr (std::is_same_v<_returnType, void>)
             {
-                const std::size_t index = _derivedType::pushBack(getVoidMethodCaller(pFunctor), getIndex, updateIndex);
+                const std::size_t index = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
                 //construct the hash-key 'FunctorId' and return.
                 return detail::FunctorId {
                     index, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),

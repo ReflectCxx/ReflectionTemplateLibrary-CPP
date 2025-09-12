@@ -4,11 +4,11 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set the project name
-project(CxxRTLTypeRegistration)
+project(CxxTestRegistration)
 
 set(CMAKE_CXX_STANDARD 20)
 
-SET(CXX_LIB_NAME CxxRTLTypeRegistration)
+SET(CXX_LIB_NAME CxxTestRegistration)
 
 ADD_LIBRARY(${PROJECT_NAME} STATIC "")
 

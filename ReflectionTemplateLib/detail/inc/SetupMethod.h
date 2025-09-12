@@ -42,11 +42,11 @@ namespace rtl {
             template<class _recordType, class _returnType, class ..._signature>
             static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const);
 
-            template<class _recordType, class _returnType, class ..._signature>
-            static MethodLambda<_signature...> getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...));
+            template<class _recordType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(void(_recordType::* pFunctor)(_signature...));
 
-            template<class _recordType, class _returnType, class ..._signature>
-            static MethodLambda<_signature...> getVoidMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const);
+            template<class _recordType, class ..._signature>
+            static MethodLambda<_signature...> getMethodCaller(void(_recordType::* pFunctor)(_signature...) const);
             
         protected:
 

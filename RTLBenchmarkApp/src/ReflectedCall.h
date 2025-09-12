@@ -4,15 +4,15 @@
 
 struct ReflectedCall
 {
-    static void noReturn(benchmark::State& state);
+    static void set(benchmark::State& state);
 
-    static void withReturn(benchmark::State& state);
+    static void get(benchmark::State& state);
 };
 
 
 struct ReflectedMethodCall
 {    
-    static void noReturn(benchmark::State& state);
+    static void set(benchmark::State& state);
 
-    static void withReturn(benchmark::State& state);
+    static void get(benchmark::State& state);
 };

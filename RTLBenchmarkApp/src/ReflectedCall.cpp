@@ -21,9 +21,10 @@ namespace
     static rtl::RObject nodeObj = []() 
     {    
         auto Node = cxx::mirror().getRecord("Node").value();
-
-        rtl::RObject robj = Node.create<rtl::alloc::Stack>().rObject;
-
+        auto [err, robj] = Node.create<rtl::alloc::Stack>();
+        if (nodeObj.isEmpty()) {
+            std::cout << "[0] nodeObj empty! \n";
+        }
         return std::move(robj);
     }();
 }
@@ -36,17 +37,17 @@ namespace
         auto err = SendMessage(bm::g_longStr).err;
 
         if (err != rtl::error::None) {
-            std::cout << "[0] error: "<< rtl::to_string(err)<<"\n";
+            std::cout << "[1] error: "<< rtl::to_string(err)<<"\n";
         }
         return 0;
     };
 
     static auto _test1 = []()
     {
-        auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
+        auto err = NodeSendMessage.bind(nodeObj).call(bm::g_longStr).err;
 
         if (err != rtl::error::None)  {
-            std::cout << "[1] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[2] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -56,7 +57,7 @@ namespace
         auto err = GetMessage(bm::g_longStr).err;
 
         if (err != rtl::error::None) {
-            std::cout << "[2] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[3] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -66,7 +67,7 @@ namespace
         auto err = NodeGetMessage(nodeObj)(bm::g_longStr).err;
         
         if (err != rtl::error::None) {
-            std::cout << "[3] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[4] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -74,7 +75,7 @@ namespace
 
 
 
-void ReflectedCall::noReturn(benchmark::State& state)
+void ReflectedCall::set(benchmark::State& state)
 {
     static auto _=_test0();
     for (auto _: state) {
@@ -85,7 +86,7 @@ void ReflectedCall::noReturn(benchmark::State& state)
 }
 
 
-void ReflectedCall::withReturn(benchmark::State& state)
+void ReflectedCall::get(benchmark::State& state)
 {
     static auto _=_test2();
     for (auto _: state)
@@ -96,7 +97,7 @@ void ReflectedCall::withReturn(benchmark::State& state)
 }
 
 
-void ReflectedMethodCall::noReturn(benchmark::State& state)
+void ReflectedMethodCall::set(benchmark::State& state)
 {
     static auto _=_test1();
     for (auto _: state)
@@ -107,7 +108,7 @@ void ReflectedMethodCall::noReturn(benchmark::State& state)
 }
 
 
-void ReflectedMethodCall::withReturn(benchmark::State& state)
+void ReflectedMethodCall::get(benchmark::State& state)
 {
     static auto _=_test3();
     for (auto _: state)

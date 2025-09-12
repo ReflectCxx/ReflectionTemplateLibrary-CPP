@@ -205,41 +205,41 @@ namespace test_mirror
             /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
                 we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
             */  rtl::type().member<Animal>()
-                         .method<std::string&>(animal::str_setAnimalName)
-                         .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+                           .method<std::string&>(animal::str_setAnimalName)
+                           .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .method<std::string&&>(animal::str_setAnimalName)
-                         .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+                           .method<std::string&&>(animal::str_setAnimalName)
+                           .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .methodStatic<std::string&>(animal::str_updateZooKeeper)
-                         .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+                           .methodStatic<std::string&>(animal::str_updateZooKeeper)
+                           .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .methodStatic<std::string&&>(animal::str_updateZooKeeper)
-                         .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
+                           .methodStatic<std::string&&>(animal::str_updateZooKeeper)
+                           .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
             #else
                 rtl::type().member<Animal>()
-                         .method<std::string&>(animal::str_setAnimalName)
-                         .build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
+                           .method<std::string&>(animal::str_setAnimalName)
+                           .build(&Animal::setAnimalName),  //overloaded method, taking non-const lvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .method<std::string&&>(animal::str_setAnimalName)
-                         .build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
+                           .method<std::string&&>(animal::str_setAnimalName)
+                           .build(&Animal::setAnimalName),  //overloaded method, taking rvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .methodStatic<std::string&>(animal::str_updateZooKeeper)
-                         .build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
+                           .methodStatic<std::string&>(animal::str_updateZooKeeper)
+                           .build(&Animal::updateZooKeeper),  //static method, taking non-const lvalue reference as argument.
                 
                 rtl::type().member<Animal>()
-                         .methodStatic<std::string&&>(animal::str_updateZooKeeper)
-                         .build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
+                           .methodStatic<std::string&&>(animal::str_updateZooKeeper)
+                           .build(&Animal::updateZooKeeper), //static method, taking rvalue reference as argument.
             #endif
         });
 
 
-        static const auto _ = [&]()
+        static const auto _= [&]()
         {
             const std::string pathStr = std::filesystem::current_path().string() + "/MyReflection.json";
             std::cout << "\n[ OUTPUT] test_mirror::cxx::mirror() ==> dumping 'CxxMirror' as JSON."

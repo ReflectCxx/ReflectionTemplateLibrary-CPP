@@ -26,12 +26,11 @@ namespace rtl::detail
         {
             switch (pEntityKind)
             {
-                case EntityKind::Ref: {
-                    return std::any_cast<const T*>(pObject);
+                case EntityKind::Ptr: {
+                    return *(std::any_cast<const T*>(&pObject));
                 }
                 case EntityKind::Value: {
-                    const T& valueRef = std::any_cast<const T&>(pObject);
-                    return static_cast<const T*>(&valueRef);
+                    return std::any_cast<const T>(&pObject);
                 }
                 default: return nullptr;
             }
@@ -44,15 +43,14 @@ namespace rtl::detail
         {
             switch (m_rObj->m_objectId.m_containsAs)
             {
-                case EntityKind::Ref: {
-                    return std::any_cast<const T*>(m_rObj->m_object.value());
+                case EntityKind::Ptr: {
+                    return *(std::any_cast<const T*>(&(m_rObj->m_object.value())));
                 }
                 case EntityKind::Wrapper: {
                     return getFromWrapper<T>();
                 }
                 case EntityKind::Value: {
-                    const T& valueRef = std::any_cast<const T&>(m_rObj->m_object.value());
-                    return static_cast<const T*>(&valueRef);
+                    return std::any_cast<const T>(&(m_rObj->m_object.value()));
                 }
                 default: return nullptr;
             }
@@ -71,15 +69,13 @@ namespace rtl::detail
                     if (m_rObj->m_objectId.m_isWrappingConst)
                     {
                         using U = detail::RObjectUPtr<const _T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const U*>(&uptrRef);
+                        return std::any_cast<const U>(&(m_rObj->m_object.value()));
                     }
                 }
                 else
                 {
                     using U = detail::RObjectUPtr<_T>;
-                    const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                    return static_cast<const U*>(&uptrRef);
+                    return std::any_cast<const U>(&(m_rObj->m_object.value()));
                 }
             }
             return nullptr;
@@ -96,15 +92,13 @@ namespace rtl::detail
                 {
                     if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const _T>;
-                        const U& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const T*>(&sptrRef);
+                        return std::any_cast<const U>(&(m_rObj->m_object.value()));
                     }
                 }
                 else
                 {
                     using U = std::shared_ptr<_T>;
-                    const U& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                    return static_cast<const T*>(&sptrRef);
+                    return std::any_cast<const U>(&(m_rObj->m_object.value()));
                 }
             }
             return nullptr;
@@ -120,26 +114,34 @@ namespace rtl::detail
                 {
                     if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = detail::RObjectUPtr<const T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const T*>(uptrRef.get());
+                        const U* uptr = std::any_cast<const U>(&(m_rObj->m_object.value()));
+                        if (uptr != nullptr) {
+                            return uptr->get();
+                        }
                     }
                     else {
                         using U = detail::RObjectUPtr<T>;
-                        const U& uptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const T*>(uptrRef.get());
+                        const U* uptr = std::any_cast<const U>(&(m_rObj->m_object.value()));
+                        if (uptr != nullptr) {
+                            return uptr->get();
+                        }
                     }
                 }
                 if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Shared)
                 {
                     if (m_rObj->m_objectId.m_isWrappingConst) {
                         using U = std::shared_ptr<const T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const T*>(sptrRef.get());
+                        const U* sptr = std::any_cast<const U>(&(m_rObj->m_object.value()));
+                        if (sptr != nullptr) {
+                            return sptr->get();
+                        }
                     }
                     else {
                         using U = std::shared_ptr<T>;
-                        const auto& sptrRef = std::any_cast<const U&>(m_rObj->m_object.value());
-                        return static_cast<const T*>(sptrRef.get());
+                        const U* sptr = std::any_cast<const U>(&(m_rObj->m_object.value()));
+                        if (sptr != nullptr) {
+                            return sptr->get();
+                        }
                     }
                 }
             }
