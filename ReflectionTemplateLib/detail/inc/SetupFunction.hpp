@@ -23,7 +23,7 @@ namespace rtl
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...>
                SetupFunction<_derivedType>::getCaller(void(*pFunctor)(_signature...)) 
         {
-            return [=](_signature&&... params) -> Return 
+            return [pFunctor](_signature&&... params) -> Return 
             {
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -38,7 +38,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  return [=](_signature&&...params)-> Return
+        */  return [pFunctor](_signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 

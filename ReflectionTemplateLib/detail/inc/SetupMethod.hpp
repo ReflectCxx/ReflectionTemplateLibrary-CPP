@@ -28,7 +28,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
@@ -48,7 +48,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                     return { error::IllegalConstCast, RObject{} };
@@ -90,7 +90,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 const _recordType& target = pTargetObj.view<_recordType>()->get();
                 (target.*pFunctor)(std::forward<_signature>(params)...);
@@ -106,7 +106,7 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-        */  return [=](const RObject& pTargetObj, _signature&&...params)-> Return
+        */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
                 //'target' is const and 'pFunctor' is const-member-function.
