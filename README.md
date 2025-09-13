@@ -156,10 +156,12 @@ To build, use any IDE applicable to the generator, or build straight from CMake:
 cmake --build .
 ```
 
-Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
-* See `CxxTestRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
-* See `CxxRTLTestApplication/src` for detailed test cases.
-
+Run the RTLTestRunApp or RTLBenchmarkApp binaries generated in the ../bin directory. (Tested with MSVC 19, GCC 14, and Clang 19)
+* See CxxTestRegistration/src/MyReflectionTests/ for introductory examples of type registration and reflective programming.
+* See RTLTestRunApp/src for detailed test cases.
+* See RTLBenchmarkApp/src for benchmarking implementations.
+* Run run_benchmarks.sh to perform automated benchmarking, from micro-level tests to scaled workloads.
+  
 ## Contributions
 
 Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
