@@ -26,9 +26,13 @@ namespace rtl::detail
                                              FunctorContainer<std::remove_reference_t<_args>...>,
                                              FunctorContainer<_signature...>>;
 
-        std::size_t index = m_function->hasSignatureId(Container::getContainerId());
-        if (index != rtl::index_none) [[likely]] {
-            return Container::template forwardCall<_args...>(index, std::forward<_args>(params)...);
+        //auto containerId = Container::getContainerId();
+        //const detail::FunctorId* functorId = m_function->hasFunctorId(containerId);
+        //return { error::None, RObject{} };
+
+        const detail::FunctorId* functorId = m_function->hasFunctorId(Container::getContainerId());
+        if (functorId != nullptr) [[likely]] {
+            return Container::template forwardCall<_args...>(*functorId, std::forward<_args>(params)...);
         }
         return { error::SignatureMismatch, RObject{} };
     }

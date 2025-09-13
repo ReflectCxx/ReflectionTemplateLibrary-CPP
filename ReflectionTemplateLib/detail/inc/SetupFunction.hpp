@@ -36,15 +36,15 @@ namespace rtl
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...> 
                SetupFunction<_derivedType>::getCaller(_returnType(*pFunctor)(_signature...))
         {
-        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-            this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  return [pFunctor](_signature&&...params)-> Return
+            /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+                this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
+            */  return [pFunctor](_signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
                 if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
-                    Note: reference to temporary or dangling is not checked here.
+                        Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
                     return { error::None,
@@ -107,12 +107,12 @@ namespace rtl
             //generate a type-id of '_returnType'.
             const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
-            const std::size_t index = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
+            auto [index, lambdaPtr] = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId{
+            return detail::FunctorId {
                 index, retTypeId, pRecordId, _derivedType::getContainerId(), 
-                _derivedType::template getSignatureStr<_returnType>() 
+                _derivedType::template getSignatureStr<_returnType>(), lambdaPtr
             };
         }
     }

@@ -133,9 +133,12 @@ namespace rtl::detail
         };
 
         //add the lambda in 'FunctorContainer'.
-        std::size_t index = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
-        const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
-        return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
+        auto [index, lambdaPtr] = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
+
+        return detail::FunctorId {
+            index, recordId, recordId, containerId, 
+            _derivedType::template getSignatureStr<_recordType>(true), lambdaPtr
+        };
     }
 
 
@@ -162,8 +165,11 @@ namespace rtl::detail
         };
 
         //add the lambda in 'FunctorContainer'.
-        std::size_t index = _derivedType::pushBack(getCopyConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
-        const auto& signatureStr = _derivedType::template getSignatureStr<_recordType>(true);
-        return detail::FunctorId(index, recordId, recordId, containerId, signatureStr);
+        auto [index, lambdaPtr] = _derivedType::pushBack(getCopyConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
+
+        return detail::FunctorId {
+            index, recordId, recordId, containerId,
+            _derivedType::template getSignatureStr<_recordType>(true), lambdaPtr 
+        };
     }
 }

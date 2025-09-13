@@ -44,6 +44,8 @@ namespace rtl {
 
         public:
 
+            using lambda_t = detail::nonconst_functors<_signature...>;
+
             //every MethodContainer<detail::methodQ::NonConst,...> will have a unique-id.
             static std::size_t getContainerId() {
                 //holds unique-id
@@ -73,26 +75,37 @@ namespace rtl {
                 return  functorTable;
             }
 
+            static lambda_t& lambdaCache()
+            {
+                static lambda_t functorsCache;
+                return functorsCache;
+            }
+
         /*  @method: pushBack
             @params: pFunctor (lambda containing non-const-member-function functor call)
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static std::size_t pushBack(const MethodLambda& pFunctor,
-                                        std::function<const std::size_t()> pGetIndex,
-                                        std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::pair<std::size_t, detail::lambda_table*> pushBack(const MethodLambda& pFunctor,
+                                                                          std::function<const std::size_t()> pGetIndex,
+                                                                          std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
                 std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
-                if (index == rtl::index_none) {
-                    index = getFunctorTable().size();
-                    pUpdateIndex(index);
+                if (index == rtl::index_none)
+                {
+                    index = lambdaCache().get().size();
+
+                    lambdaCache().pushBack(pFunctor);
+
                     getFunctorTable().push_back(pFunctor);
+
+                    pUpdateIndex(index);
                 }
-                return index;
+                return { index, &lambdaCache() };
             }
 
             //friends :)
@@ -115,6 +128,8 @@ namespace rtl {
             using MethodLambda = std::function < Return (const rtl::RObject&, _signature...) >;
 
         public:
+
+            using lambda_t = detail::const_functors<_signature...>;
 
             //every MethodContainer<detail::methodQ::Const,...> will have a unique-id.
             FORCE_INLINE static std::size_t getContainerId() {
@@ -145,26 +160,37 @@ namespace rtl {
                 return  functorTable;
             }
 
+            static lambda_t& lambdaCache()
+            {
+                static lambda_t functorsCache;
+                return functorsCache;
+            }
+
         /*  @method: pushBack
             @params: pFunctor (lambda containing const-member-function functor call)
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static std::size_t pushBack(const MethodLambda& pFunctor,
-                                        std::function<const std::size_t()> pGetIndex,
-                                        std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::pair<std::size_t, detail::lambda_table*> pushBack(const MethodLambda& pFunctor,
+                                                                          std::function<const std::size_t()> pGetIndex,
+                                                                          std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
                 std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
-                if (index == rtl::index_none) {
-                    index = getFunctorTable().size();
-                    pUpdateIndex(index);
+                if (index == rtl::index_none)
+                {
+                    index = lambdaCache().get().size();
+
+                    lambdaCache().pushBack(pFunctor);
+
                     getFunctorTable().push_back(pFunctor);
+
+                    pUpdateIndex(index);
                 }
-                return index;
+                return { index, &lambdaCache() };
             }
 
             //friends :)

@@ -63,4 +63,16 @@ namespace rtl
         }
         return rtl::index_none;
     }
+
+
+    FORCE_INLINE const detail::FunctorId* Function::hasFunctorId(const std::size_t pSignatureId) const
+    {
+        //simple linear-search, efficient for small set of elements.
+        for (const auto& functorId : m_functorIds) {
+            if (functorId.getSignatureId() == pSignatureId) [[likely]] {
+                return &functorId;
+            }
+        }
+        return nullptr;
+    }
 }

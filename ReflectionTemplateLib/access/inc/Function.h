@@ -67,6 +67,8 @@ namespace rtl {
 
         const std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
+        const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
+
         GETTER(detail::methodQ, Qualifier, m_qualifier);
 
         GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)

@@ -14,6 +14,7 @@
 #include <optional>
 #include "RObject.h"
 #include "Constants.h"
+#include "FunctorId.h"
 
 namespace rtl::detail {
 
@@ -30,10 +31,14 @@ namespace rtl::detail {
         * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
         * this 'forwardCall' is for calling lambda containing non-member-function and static-member-function functors.
     */  template<class ..._params>
-        FORCE_INLINE static Return forwardCall(std::size_t pFunctorIndex, _params&&..._args)
+        FORCE_INLINE static Return forwardCall(const detail::FunctorId& pFunctorId, _params&&..._args)
         {
+            // static_cast to derived type, gaurateed safe by design.
+            //auto lambdaTable = static_cast<_derivedType::lambda_t*>(pFunctorId.m_lambdaTable);
+            //return lambdaTable->get()[pFunctorId.m_index](std::forward<_params>(_args)...);
+
             //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors()[pFunctorIndex](std::forward<_params>(_args)...);
+            return _derivedType::getFunctors()[pFunctorId.m_index](std::forward<_params>(_args)...);
         }
 
 
