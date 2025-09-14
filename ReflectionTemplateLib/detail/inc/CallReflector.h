@@ -33,12 +33,8 @@ namespace rtl::detail {
     */  template<class ..._params>
         FORCE_INLINE static Return forwardCall(const detail::FunctorId& pFunctorId, _params&&..._args)
         {
-            // static_cast to derived type, gaurateed safe by design.
-            //auto lambdaTable = static_cast<_derivedType::lambda_t*>(pFunctorId.m_lambdaTable);
-            //return lambdaTable->get()[pFunctorId.m_index](std::forward<_params>(_args)...);
-
             //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors()[pFunctorId.m_index](std::forward<_params>(_args)...);
+            return _derivedType::getFunctors()[pFunctorId.m_lambdaIndex](std::forward<_params>(_args)...);
         }
 
 

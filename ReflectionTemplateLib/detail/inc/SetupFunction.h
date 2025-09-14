@@ -12,6 +12,7 @@
 #pragma once
 
 #include "FunctorId.h"
+#include "FunctorRegistry.h"
 
 namespace rtl {
 
@@ -45,6 +46,17 @@ namespace rtl {
 
             template<class _returnType, class ..._signature>
             static const detail::FunctorId addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId);
+        };
+
+
+        struct FunctorCache
+        {
+            template<class return_t, class ...signature_ts>
+            static functor_registry<return_t, signature_ts...>& get()
+            {
+                static functor_registry<return_t, signature_ts...> functorRegistry;
+                return functorRegistry;
+            }
         };
     }
 }

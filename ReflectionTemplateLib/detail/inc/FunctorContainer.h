@@ -15,7 +15,7 @@
 #include <vector>
 #include <functional>
 
-#include "LambdaTable.h"
+#include "LambdaRegistry.h"
 #include "Constants.h"
 #include "CallReflector.h"
 #include "SetupFunction.h"
@@ -28,10 +28,10 @@ namespace rtl {
         //forward decl
         class ReflectionBuilder;
 
-        /*  @class: FunctorContainer
-            @param: '_signature...' (combination of any types)
-            * container class for holding lambda's wrapping functor, constructor calls of same signatures.
-            * maintains a std::vector<std::function> with static lifetime.
+    /*  @class: FunctorContainer
+        @param: '_signature...' (combination of any types)
+        * container class for holding lambda_hop's wrapping functor, constructor calls of same signatures.
+        * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
                                  public SetupConstructor<FunctorContainer<_signature...>>,
@@ -40,7 +40,7 @@ namespace rtl {
             using FunctionLambda = std::function < Return(_signature...) >;
         public:
 
-            using lambda_t = detail::functors<_signature...>;
+            using lambda_t = detail::lambda_registry<_signature...>;
 
             //every FunctorContainer<...> will have a unique-id.
             FORCE_INLINE static std::size_t getContainerId() {
@@ -62,6 +62,14 @@ namespace rtl {
                        "(" + TypeId<_signature...>::toString() + ")");
             }
 
+
+            static lambda_t& lambdaCache()
+            {
+                static lambda_t lambdaRegistry;
+                return lambdaRegistry;
+            }
+
+
         private:
 
             //vector holding lambdas
@@ -70,18 +78,13 @@ namespace rtl {
                 return  functorTable;
             }
 
-            static lambda_t& lambdaCache()
-            {
-                static lambda_t functorsCache;
-                return functorsCache;
-            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing functor or constructor call)
                         pGetIndex (lambda providing index if the functor is already registered)
                         pUpdate (lambda updating the already registered functors/ctor/d'tor set)
             @return: index of newly added or already existing lambda in vector 'm_functors'.
-        */  static std::pair<std::size_t, detail::lambda_table*> pushBack(const FunctionLambda& pFunctor,
+        */  static std::pair<std::size_t, detail::lambda_hop*> pushBack(const FunctionLambda& pFunctor,
                                                                           std::function<const std::size_t()> pGetIndex,
                                                                           std::function<void(const std::size_t&)> pUpdate)
             {
@@ -94,7 +97,7 @@ namespace rtl {
                 {
                     index = lambdaCache().get().size();
 
-                    lambdaCache().pushBack(pFunctor);
+                    lambdaCache().push(pFunctor);
 
                     getFunctorTable().push_back(pFunctor);
 

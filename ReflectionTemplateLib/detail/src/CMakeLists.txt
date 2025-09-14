@@ -8,11 +8,13 @@ set(LOCAL_SOURCES
 
 SET(LOCAL_HEADERS
 
+	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaBridge.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaRegistry.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorRegistry.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CallReflector.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/CxxReflection.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctionCaller.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctionCaller.hpp"
-	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaTable.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodInvoker.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/MethodInvoker.hpp"
     "${PROJECT_SOURCE_DIR}/detail/inc/FunctorContainer.h"

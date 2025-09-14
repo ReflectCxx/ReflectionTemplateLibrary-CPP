@@ -36,9 +36,9 @@ namespace rtl
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...> 
                SetupFunction<_derivedType>::getCaller(_returnType(*pFunctor)(_signature...))
         {
-            /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-                this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-            */  return [pFunctor](_signature&&...params)-> Return
+        /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
+            this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
+        */  return [pFunctor](_signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -78,30 +78,16 @@ namespace rtl
         template<class _returnType, class ..._signature>
         inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-        /*  set of already registered functors. (static life time).
-            used std::vector, since std::set/map are not designed for function pointers
-        */  static std::vector<std::pair<decltype(pFunctor), std::size_t>> functorSet;
-
-        /*  adds the generated functor index to the 'functorSet'. (thread safe).
-            called from '_derivedType' ('FunctorContainer')
-        */  const auto& updateIndex = [&](std::size_t pIndex)->void
+            // called from '_derivedType' ('FunctorContainer')
+            const auto& updateIndex = [pFunctor](std::size_t pIndex)->void
             {
-                functorSet.emplace_back(pFunctor, pIndex);
+                FunctorCache::get<_returnType, _signature...>().push(pFunctor, pIndex);
             };
 
-        /*  checks if the 'pFunctor' is already present in 'functorSet'. (thread safe).
-            called from '_derivedType' ('FunctorContainer')
-        */  const auto& getIndex = [&]()-> std::size_t 
+            // called from '_derivedType' ('FunctorContainer')
+            const auto& getIndex = [pFunctor]()-> std::size_t
             {
-                //linear search, efficient for small set.
-                for (const auto& fptr : functorSet) {
-                    if (fptr.first == pFunctor) {
-                        //functor already registered, return its 'index'.
-                        return fptr.second;
-                    }
-                }
-                //functor is not already registered, return '-1'.
-                return rtl::index_none;
+                return FunctorCache::get<_returnType, _signature...>().find(pFunctor);
             };
 
             //generate a type-id of '_returnType'.
@@ -111,7 +97,7 @@ namespace rtl
 
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId {
-                index, retTypeId, pRecordId, _derivedType::getContainerId(), 
+                index, 0, retTypeId, pRecordId, _derivedType::getContainerId(), 
                 _derivedType::template getSignatureStr<_returnType>(), lambdaPtr
             };
         }

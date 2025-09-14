@@ -22,7 +22,7 @@ namespace
     {    
         auto Node = cxx::mirror().getRecord("Node").value();
         auto [err, robj] = Node.create<rtl::alloc::Stack>();
-        if (nodeObj.isEmpty()) {
+        if (robj.isEmpty()) {
             std::cout << "[0] nodeObj empty! \n";
         }
         return std::move(robj);

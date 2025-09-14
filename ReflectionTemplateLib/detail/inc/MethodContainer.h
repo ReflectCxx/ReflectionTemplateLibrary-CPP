@@ -86,9 +86,9 @@ namespace rtl {
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static std::pair<std::size_t, detail::lambda_table*> pushBack(const MethodLambda& pFunctor,
-                                                                          std::function<const std::size_t()> pGetIndex,
-                                                                          std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::pair<std::size_t, detail::lambda_hop*> pushBack(const MethodLambda& pFunctor,
+                                                                        std::function<const std::size_t()> pGetIndex,
+                                                                        std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
@@ -171,9 +171,9 @@ namespace rtl {
                      pGetIndex (lambda providing index if the functor is already registered)
                      pUpdate (lambda updating the already registered functors set)
             @return: index of newly added or already existing lambda in vector 'm_methodPtrs'.
-        */  static std::pair<std::size_t, detail::lambda_table*> pushBack(const MethodLambda& pFunctor,
-                                                                          std::function<const std::size_t()> pGetIndex,
-                                                                          std::function<void(const std::size_t&)> pUpdateIndex)
+        */  static std::pair<std::size_t, detail::lambda_hop*> pushBack(const MethodLambda& pFunctor,
+                                                                        std::function<const std::size_t()> pGetIndex,
+                                                                        std::function<void(const std::size_t&)> pUpdateIndex)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;

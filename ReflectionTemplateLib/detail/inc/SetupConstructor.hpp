@@ -136,7 +136,7 @@ namespace rtl::detail
         auto [index, lambdaPtr] = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
 
         return detail::FunctorId {
-            index, recordId, recordId, containerId, 
+            index, 0, recordId, recordId, containerId, 
             _derivedType::template getSignatureStr<_recordType>(true), lambdaPtr
         };
     }
@@ -168,7 +168,7 @@ namespace rtl::detail
         auto [index, lambdaPtr] = _derivedType::pushBack(getCopyConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
 
         return detail::FunctorId {
-            index, recordId, recordId, containerId,
+            index, 0, recordId, recordId, containerId,
             _derivedType::template getSignatureStr<_recordType>(true), lambdaPtr 
         };
     }
