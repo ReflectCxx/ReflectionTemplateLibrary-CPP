@@ -44,9 +44,10 @@ namespace rtl::detail
         //signature of functor as string. platform dependent, may not be very much readable format.
         std::string m_signature;
 
-        lambda_hop* m_lambdas = nullptr;
+        lambda_hop* m_lambda = nullptr;
 
-        GETTER(std::size_t, Index, m_lambdaIndex)
+        GETTER(std::size_t, LambdaIndex, m_lambdaIndex)
+        GETTER(std::size_t, FunctorIndex, m_functorIndex)
         GETTER(std::size_t, ReturnId, m_returnId);
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
@@ -65,9 +66,9 @@ namespace rtl::detail
     */  std::size_t getHashCode() const
         {
             return std::stoull(std::to_string(m_containerId) +
-                                std::to_string(m_lambdaIndex) +
-                                std::to_string(m_recordId) +
-                                std::to_string(m_returnId));
+                               std::to_string(m_lambdaIndex) +
+                               std::to_string(m_recordId) +
+                               std::to_string(m_returnId));
         }
 
         const bool operator==(const FunctorId& pOther) const

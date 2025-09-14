@@ -26,7 +26,13 @@ static const std::string toJson(const FunctorId& pFunctorId)
 {
 	std::stringstream sout;
 	sout << "{\"containerId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
-	sout << "\"index\": \"" << std::to_string(pFunctorId.getIndex()) << "\",";
+	sout << "\"lambdaIndex\": \"" << std::to_string(pFunctorId.getLambdaIndex()) << "\",";
+	if (pFunctorId.getFunctorIndex() != rtl::index_none) {
+		sout << "\"functorIndex\": \"" << std::to_string(pFunctorId.getFunctorIndex()) << "\",";
+	}
+	else {
+		sout << "\"functorIndex\": \"-1\",";
+	}
 	if (pFunctorId.getRecordId() != TypeId<>::None) {
 		sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
 	}

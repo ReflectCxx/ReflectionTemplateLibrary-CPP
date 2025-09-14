@@ -6,8 +6,17 @@ set(LOCAL_SOURCES
 )
 
 
+SET(COMMON_HEADERS
+
+	"${PROJECT_SOURCE_DIR}/common/rtl_traits.h"
+	"${PROJECT_SOURCE_DIR}/common/error_codes.h"
+	"${PROJECT_SOURCE_DIR}/common/forward_decls.h"
+)
+
 SET(LOCAL_HEADERS
 
+	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaCache.h"
+	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorCache.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaBridge.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/LambdaRegistry.h"
 	"${PROJECT_SOURCE_DIR}/detail/inc/FunctorRegistry.h"

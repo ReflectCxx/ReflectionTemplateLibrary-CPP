@@ -55,24 +55,4 @@ namespace rtl::detail {
         template<class _recordType, class _returnType, class ..._signature>
         static const detail::FunctorId addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const);
     };
-
-    struct MethodPtrCache
-    {
-        template<class record_t, class return_t, class ...signature_ts>
-        static method_registry<record_t, return_t, signature_ts...>& get()
-        {
-            static method_registry<record_t, return_t, signature_ts...> methodRegistry;
-            return methodRegistry;
-        }
-    };
-
-    struct ConstMethodPtrCache
-    {
-        template<class record_t, class return_t, class ...signature_ts>
-        static const_method_registry<record_t, return_t, signature_ts...>& get()
-        {
-            static const_method_registry<record_t, return_t, signature_ts...> methodRegistry;
-            return methodRegistry;
-        }
-    };
 }

@@ -15,6 +15,7 @@
 #include "TypeId.h"
 #include "SetupMethod.h"
 #include "RObjectBuilder.hpp"
+#include "FunctorCache.h"
 
 namespace rtl::detail
 {
@@ -144,16 +145,22 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...))
     {
+        auto& functorCache = functor_cache<methodQ::NonConst>::get<_recordType, _returnType, _signature...>();
+        std::size_t functorIndex = rtl::index_none;
+
         // called from '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>)
-        const auto& updateIndex = [pFunctor](std::size_t pIndex)->void
+        const auto& updateIndex = [&](std::size_t pIndex)->void
         {
-            MethodPtrCache::get<_recordType, _returnType, _signature...>().push(pFunctor, pIndex);
+            functorIndex = functorCache.get().size();
+            functorCache.push(pFunctor, pIndex);
         };
 
         // called from '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>)
-        const auto& getIndex = [pFunctor]()-> std::size_t
+        const auto& getIndex = [&]()-> std::size_t
         {
-            return MethodPtrCache::get<_recordType, _returnType, _signature...>().find(pFunctor);
+            auto [functor_i, lambda_i] = functorCache.find(pFunctor);
+            functorIndex = functor_i;
+            return lambda_i;
         };
 
         //generate a type-id of '_returnType'.
@@ -162,20 +169,32 @@ namespace rtl::detail
 
         if constexpr (std::is_same_v<_returnType, void>) 
         {
-            auto [index, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+            auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId {
-                index, 0, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                _derivedType::template getSignatureStr<_recordType, _returnType>(), lambdaPtr
+
+                lambdaIndex,
+                functorIndex,
+                retTypeId,
+                TypeId<_recordType>::get(),
+                _derivedType::getContainerId(),
+                _derivedType::template getSignatureStr<_recordType, _returnType>(),
+                lambdaPtr
             };
         }
         else
         {
-            auto [index, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+            auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId {
-                index, 0, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                _derivedType::template getSignatureStr<_recordType, _returnType>(), lambdaPtr
+
+                lambdaIndex,
+                functorIndex,
+                retTypeId,
+                TypeId<_recordType>::get(),
+                _derivedType::getContainerId(),
+                _derivedType::template getSignatureStr<_recordType, _returnType>(),
+                lambdaPtr
             };
         }
     }
@@ -194,16 +213,23 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const)
     {
+
+        auto& functorCache = functor_cache<methodQ::Const>::get<_recordType, _returnType, _signature...>();
+        std::size_t functorIndex = rtl::index_none;
+
         // called from '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>)
-        const auto& updateIndex = [pFunctor](std::size_t pIndex)->void
+        const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            ConstMethodPtrCache::get<_recordType, _returnType, _signature...>().push(pFunctor, pIndex);
+            functorIndex = functorCache.get().size();
+            functorCache.push(pFunctor, pIndex);
         };
 
         // called from '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>)
-        const auto& getIndex = [pFunctor]()-> std::size_t
+        const auto& getIndex = [&]()-> std::size_t
         {
-            return ConstMethodPtrCache::get<_recordType, _returnType, _signature...>().find(pFunctor);
+            auto [functor_i, lambda_i] = functorCache.find(pFunctor);
+            functorIndex = functor_i;
+            return lambda_i;
         };
 
         //generate a type-id of '_returnType'.
@@ -212,20 +238,33 @@ namespace rtl::detail
 
         if constexpr (std::is_same_v<_returnType, void>)
         {
-            auto [index, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+            auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId {
-                index, 0, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),
-                _derivedType::template getSignatureStr<_recordType, _returnType>(), lambdaPtr
+
+                lambdaIndex, 
+                functorIndex, 
+                retTypeId, 
+                TypeId<_recordType>::get(), 
+                _derivedType::getContainerId(),
+                _derivedType::template getSignatureStr<_recordType, _returnType>(), 
+                lambdaPtr
             };
         }
         else
         {
-            auto [index, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
+            auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId { 
-                index, 0, retTypeId, TypeId<_recordType>::get(), _derivedType::getContainerId(),                     
-                _derivedType::template getSignatureStr<_recordType, _returnType>(), lambdaPtr
+            return detail::FunctorId {
+
+                lambdaIndex,
+                functorIndex,
+                retTypeId,
+                TypeId<_recordType>::get(),
+                _derivedType::getContainerId(),
+                _derivedType::template getSignatureStr<_recordType, _returnType>(),
+                lambdaPtr
             };
         }
     }

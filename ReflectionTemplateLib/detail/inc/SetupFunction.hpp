@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "FunctorCache.h"
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
 
@@ -78,27 +79,39 @@ namespace rtl
         template<class _returnType, class ..._signature>
         inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
+            auto& functorCache = functor_cache<methodQ::None>::get<_returnType, _signature...>();
+            std::size_t functorIndex = rtl::index_none;
+
             // called from '_derivedType' ('FunctorContainer')
-            const auto& updateIndex = [pFunctor](std::size_t pIndex)->void
+            const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                FunctorCache::get<_returnType, _signature...>().push(pFunctor, pIndex);
+                functorIndex = functorCache.get().size();
+                functorCache.push(pFunctor, pIndex);
             };
 
             // called from '_derivedType' ('FunctorContainer')
-            const auto& getIndex = [pFunctor]()-> std::size_t
+            const auto& getIndex = [&]()-> std::size_t
             {
-                return FunctorCache::get<_returnType, _signature...>().find(pFunctor);
+                auto [functor_i, lambda_i] = functorCache.find(pFunctor);
+                functorIndex = functor_i;
+                return lambda_i;
             };
 
             //generate a type-id of '_returnType'.
             const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
-            auto [index, lambdaPtr] = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
+            auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
             return detail::FunctorId {
-                index, 0, retTypeId, pRecordId, _derivedType::getContainerId(), 
-                _derivedType::template getSignatureStr<_returnType>(), lambdaPtr
+                
+                lambdaIndex,
+                functorIndex,
+                retTypeId,
+                pRecordId,
+                _derivedType::getContainerId(),
+                _derivedType::template getSignatureStr<_returnType>(),
+                lambdaPtr
             };
         }
     }

@@ -13,9 +13,8 @@
 
 #include <vector>
 
-namespace rtl {
-	struct Return;
-}
+#include "Constants.h"
+#include "forward_decls.h"
 
 
 namespace rtl::detail
@@ -27,7 +26,7 @@ namespace rtl::detail
 namespace rtl::detail
 {
 	template<class return_t, class ...signature_ts>
-	class functor_registry : public functor_hop
+	class functor_registry: public functor_hop
 	{
 		using functor_t = return_t(*)(signature_ts...);
 
@@ -35,6 +34,10 @@ namespace rtl::detail
 
 	public:
 
+		const std::vector<std::pair<functor_t, std::size_t>>& get() {
+			return m_functors;
+		}
+
 		functor_t operator[](std::size_t index) {
 			return m_functors[index].first;
 		}
@@ -43,17 +46,15 @@ namespace rtl::detail
 			m_functors.emplace_back(fptr, lambda_index);
 		}
 
-		std::size_t find(functor_t fptr)
+		std::pair<std::size_t, std::size_t> find(functor_t fptr)
 		{
 			//linear search, efficient for small set.
-			for (const auto& itr : m_functors) {
-				if (itr.first == fptr) {
-					//functor already registered, return its 'index'.
-					return itr.second;
+			for (int index = 0; index < m_functors.size(); index++) {
+				if (m_functors[index].first == fptr) {
+					return { index, m_functors[index].second };
 				}
 			}
-			//functor is not already registered, return '-1'.
-			return rtl::index_none;
+			return { rtl::index_none, rtl::index_none };
 		}
 	};
 }
@@ -61,8 +62,11 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
+	template<methodQ, class record_t, class return_t, class ...signature_ts>
+	class functor_registry_m;
+
 	template<class record_t, class return_t, class ...signature_ts>
-	class method_registry : public functor_hop
+	class functor_registry_m<methodQ::NonConst, record_t, return_t, signature_ts...> : public functor_hop
 	{
 		using functor_t = return_t(record_t::*)(signature_ts...);
 
@@ -70,6 +74,11 @@ namespace rtl::detail
 
 	public:
 
+		const std::vector<std::pair<functor_t, std::size_t>>& get() {
+			return m_functors;
+		}
+
+
 		functor_t operator[](std::size_t index) {
 			return m_functors[index].first;
 		}
@@ -78,17 +87,15 @@ namespace rtl::detail
 			m_functors.emplace_back(fptr, lambda_index);
 		}
 
-		std::size_t find(functor_t fptr)
+		std::pair<std::size_t, std::size_t> find(functor_t fptr)
 		{
 			//linear search, efficient for small set.
-			for (const auto& itr : m_functors) {
-				if (itr.first == fptr) {
-					//functor already registered, return its 'index'.
-					return itr.second;
+			for (int index = 0; index < m_functors.size(); index++) {
+				if (m_functors[index].first == fptr) {
+					return { index, m_functors[index].second };
 				}
 			}
-			//functor is not already registered, return '-1'.
-			return rtl::index_none;
+			return { rtl::index_none, rtl::index_none };
 		}
 	};
 }
@@ -97,13 +104,17 @@ namespace rtl::detail
 namespace rtl::detail
 {
 	template<class record_t, class return_t, class ...signature_ts>
-	class const_method_registry : public functor_hop
+	class functor_registry_m<methodQ::Const, record_t, return_t, signature_ts...> : public functor_hop
 	{
 		using functor_t = return_t(record_t::*)(signature_ts...) const;
 
 		std::vector<std::pair<functor_t, std::size_t>> m_functors;
 
 	public:
+
+		const std::vector<std::pair<functor_t, std::size_t>>& get() {
+			return m_functors;
+		}
 
 		functor_t operator[](std::size_t index) {
 			return m_functors[index].first;
@@ -113,17 +124,15 @@ namespace rtl::detail
 			m_functors.emplace_back(fptr, lambda_index);
 		}
 
-		std::size_t find(functor_t fptr)
+		std::pair<std::size_t, std::size_t> find(functor_t fptr)
 		{
 			//linear search, efficient for small set.
-			for (const auto& itr : m_functors) {
-				if (itr.first == fptr) {
-					//functor already registered, return its 'index'.
-					return itr.second;
+			for (int index = 0; index < m_functors.size(); index++) {
+				if (m_functors[index].first == fptr) {
+					return { index, m_functors[index].second };
 				}
 			}
-			//functor is not already registered, return '-1'.
-			return rtl::index_none;
+			return { rtl::index_none, rtl::index_none };
 		}
 	};
 }

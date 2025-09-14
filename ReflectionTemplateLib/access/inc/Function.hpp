@@ -58,7 +58,7 @@ namespace rtl
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
             if (functorId.getSignatureId() == pSignatureId) [[likely]] {
-                return functorId.getIndex();
+                return functorId.getLambdaIndex();
             }
         }
         return rtl::index_none;

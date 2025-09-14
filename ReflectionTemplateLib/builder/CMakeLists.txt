@@ -1,7 +1,9 @@
 # Create a variable containing the source files for your target
 
 SET(COMMON_HEADERS
-	"${PROJECT_SOURCE_DIR}/common/Constants.h"
+	"${PROJECT_SOURCE_DIR}/common/rtl_traits.h"
+	"${PROJECT_SOURCE_DIR}/common/error_codes.h"
+	"${PROJECT_SOURCE_DIR}/common/forward_decls.h"
 )
 
 SET(LOCAL_HEADERS

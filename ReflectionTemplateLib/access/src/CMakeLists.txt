@@ -12,6 +12,7 @@ SET(COMMON_HEADERS
 	"${PROJECT_SOURCE_DIR}/common/Constants.h"
 	"${PROJECT_SOURCE_DIR}/common/rtl_traits.h"
 	"${PROJECT_SOURCE_DIR}/common/error_codes.h"
+	"${PROJECT_SOURCE_DIR}/common/forward_decls.h"
 	"${PROJECT_SOURCE_DIR}/common/ConversionUtils.h"
 	"${PROJECT_SOURCE_DIR}/common/RTLibInterface.h"
 )

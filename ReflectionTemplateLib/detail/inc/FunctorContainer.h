@@ -15,7 +15,7 @@
 #include <vector>
 #include <functional>
 
-#include "LambdaRegistry.h"
+#include "LambdaCache.h"
 #include "Constants.h"
 #include "CallReflector.h"
 #include "SetupFunction.h"
@@ -40,8 +40,6 @@ namespace rtl {
             using FunctionLambda = std::function < Return(_signature...) >;
         public:
 
-            using lambda_t = detail::lambda_registry<_signature...>;
-
             //every FunctorContainer<...> will have a unique-id.
             FORCE_INLINE static std::size_t getContainerId() {
                 static const std::size_t containerId = generate_unique_id();
@@ -62,14 +60,6 @@ namespace rtl {
                        "(" + TypeId<_signature...>::toString() + ")");
             }
 
-
-            static lambda_t& lambdaCache()
-            {
-                static lambda_t lambdaRegistry;
-                return lambdaRegistry;
-            }
-
-
         private:
 
             //vector holding lambdas
@@ -85,25 +75,26 @@ namespace rtl {
                         pUpdate (lambda updating the already registered functors/ctor/d'tor set)
             @return: index of newly added or already existing lambda in vector 'm_functors'.
         */  static std::pair<std::size_t, detail::lambda_hop*> pushBack(const FunctionLambda& pFunctor,
-                                                                          std::function<const std::size_t()> pGetIndex,
-                                                                          std::function<void(const std::size_t&)> pUpdate)
+                                                                        std::function<const std::size_t()> pGetIndex,
+                                                                        std::function<void(const std::size_t&)> pUpdate)
             {
                 //critical section, thread safe.
                 static std::mutex mtx;
                 std::lock_guard<std::mutex> lock(mtx);
 
+                auto& lamdba_store = lambda_cache<methodQ::None>::get<_signature...>();
                 std::size_t index = pGetIndex();
+
                 if (index == rtl::index_none) 
                 {
-                    index = lambdaCache().get().size();
+                    index = lamdba_store.get().size();
 
-                    lambdaCache().push(pFunctor);
-
+                    lamdba_store.push(pFunctor);
                     getFunctorTable().push_back(pFunctor);
 
                     pUpdate(index);
                 }
-                return { index, &lambdaCache() };
+                return { index, &lamdba_store };
             }
             
             //friends :)

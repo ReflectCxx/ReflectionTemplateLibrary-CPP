@@ -12,26 +12,37 @@ namespace cxx
 
 namespace
 {
-    static rtl::Function GetMessage = cxx::mirror().getFunction("getMessage").value();
-    static rtl::Function SendMessage = cxx::mirror().getFunction("sendMessage").value();
+    static rtl::Function GetMessage;
+    static rtl::Function SendMessage;
 
-    static rtl::Method NodeGetMessage = cxx::mirror().getRecord("Node")->getMethod("getMessage").value();
-    static rtl::Method NodeSendMessage = cxx::mirror().getRecord("Node")->getMethod("sendMessage").value();
+    static rtl::Method NodeGetMessage;
+    static rtl::Method NodeSendMessage;
     
     static rtl::RObject nodeObj = []() 
     {    
+        GetMessage = cxx::mirror().getFunction("getMessage").value();
+        
+        SendMessage = cxx::mirror().getFunction("sendMessage").value();
+
         auto Node = cxx::mirror().getRecord("Node").value();
+
+        NodeGetMessage = Node.getMethod("getMessage").value();
+        
+        NodeSendMessage = Node.getMethod("sendMessage").value();
+        
         auto [err, robj] = Node.create<rtl::alloc::Stack>();
+
         if (robj.isEmpty()) {
-            std::cout << "[0] nodeObj empty! \n";
+            std::cout << "[0] error: " << rtl::to_string(err) << "\n";
         }
+
         return std::move(robj);
     }();
 }
 
 
- namespace
- {
+namespace
+{
     static auto _test0 = []()
     {
         auto err = SendMessage(bm::g_longStr).err;

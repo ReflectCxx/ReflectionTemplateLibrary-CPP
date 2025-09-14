@@ -44,7 +44,7 @@ namespace rtl {
 
         public:
 
-            using lambda_t = detail::nonconst_functors<_signature...>;
+            using lambda_t = detail::lambda_registry<methodQ::NonConst, _signature...>;
 
             //every MethodContainer<detail::methodQ::NonConst,...> will have a unique-id.
             static std::size_t getContainerId() {
@@ -75,11 +75,6 @@ namespace rtl {
                 return  functorTable;
             }
 
-            static lambda_t& lambdaCache()
-            {
-                static lambda_t functorsCache;
-                return functorsCache;
-            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing non-const-member-function functor call)
@@ -95,17 +90,19 @@ namespace rtl {
                 std::lock_guard<std::mutex> lock(mtx);
 
                 std::size_t index = pGetIndex();
+                auto& lamdba_store = lambda_cache<methodQ::NonConst>::get<_signature...>();
+
                 if (index == rtl::index_none)
                 {
-                    index = lambdaCache().get().size();
+                    index = lamdba_store.get().size();
 
-                    lambdaCache().pushBack(pFunctor);
+                    lamdba_store.push(pFunctor);
 
                     getFunctorTable().push_back(pFunctor);
 
                     pUpdateIndex(index);
                 }
-                return { index, &lambdaCache() };
+                return { index, &lamdba_store };
             }
 
             //friends :)
@@ -129,7 +126,7 @@ namespace rtl {
 
         public:
 
-            using lambda_t = detail::const_functors<_signature...>;
+            using lambda_t = detail::lambda_registry<methodQ::NonConst, _signature...>;
 
             //every MethodContainer<detail::methodQ::Const,...> will have a unique-id.
             FORCE_INLINE static std::size_t getContainerId() {
@@ -160,11 +157,6 @@ namespace rtl {
                 return  functorTable;
             }
 
-            static lambda_t& lambdaCache()
-            {
-                static lambda_t functorsCache;
-                return functorsCache;
-            }
 
         /*  @method: pushBack
             @params: pFunctor (lambda containing const-member-function functor call)
@@ -179,18 +171,20 @@ namespace rtl {
                 static std::mutex mtx;
                 std::lock_guard<std::mutex> lock(mtx);
 
+                auto& lamdba_store = lambda_cache<methodQ::Const>::get<_signature...>();
                 std::size_t index = pGetIndex();
+
                 if (index == rtl::index_none)
                 {
-                    index = lambdaCache().get().size();
+                    index = lamdba_store.get().size();
 
-                    lambdaCache().pushBack(pFunctor);
+                    lamdba_store.push(pFunctor);
 
                     getFunctorTable().push_back(pFunctor);
 
                     pUpdateIndex(index);
                 }
-                return { index, &lambdaCache() };
+                return { index, &lamdba_store };
             }
 
             //friends :)

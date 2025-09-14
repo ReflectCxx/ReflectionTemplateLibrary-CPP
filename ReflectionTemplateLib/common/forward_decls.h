@@ -11,23 +11,9 @@
 
 #pragma once
 
-#include "forward_decls.h"
+namespace rtl {
 
-#include "FunctorId.h"
-#include "FunctorRegistry.h"
+    struct Return;
 
-namespace rtl::detail::bridge
-{
-	template<class ...signature_ts>
-	struct lambda_def
-	{
-		template<class return_t>
-		static auto get() 
-		{
-			return [](const FunctorId& functorId, signature_ts&&...params)-> Return
-			{
-				return { error::None, RObject{} };
-			};
-		}
-	};
+    class RObject;
 }
