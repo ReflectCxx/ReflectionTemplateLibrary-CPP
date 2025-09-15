@@ -33,7 +33,7 @@ namespace rtl::detail {
     class SetupMethod
     {
         template<class ..._signature>
-        using MethodLambda = std::function < Return(const rtl::RObject&, _signature...) >;
+        using MethodLambda = std::function < Return(const FunctorId&, const rtl::RObject&, _signature...) >;
 
         template<class _recordType, class _returnType, class ..._signature>
         static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...));

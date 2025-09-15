@@ -61,23 +61,23 @@ namespace rtl::detail
                                                                        _args&&... params)
     {
         using containerConst = detail::MethodContainer<detail::methodQ::Const, _invokSignature...>;
-        std::size_t constMethodIndex = pMethod.hasSignatureId(containerConst::getContainerId());
+        const FunctorId* constFunctorId = pMethod.hasFunctorId(containerConst::getContainerId());
 
-        if (constMethodIndex != rtl::index_none) [[likely]]
+        if (constFunctorId != nullptr) [[likely]]
         {
-            return containerConst::template forwardCall<_args...>(pTarget, constMethodIndex, std::forward<_args>(params)...);
+            return containerConst::template forwardCall<_args...>(*constFunctorId, pTarget, std::forward<_args>(params)...);
         }
         else [[unlikely]]
         {
             using containerNonConst = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
-            std::size_t nonConstMethodIndex = pMethod.hasSignatureId(containerNonConst::getContainerId());
+            const FunctorId* functorId = pMethod.hasFunctorId(containerNonConst::getContainerId());
 
-            if (nonConstMethodIndex != rtl::index_none) 
+            if (functorId != nullptr)
             {
                 if (!pTarget.isConstCastSafe()) {
                     return { error::ConstOverloadMissing, RObject{} };
                 }
-                return containerNonConst::template forwardCall<_args...>(pTarget, nonConstMethodIndex, std::forward<_args>(params)...);
+                return containerNonConst::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
             }
         }
         return { error::SignatureMismatch, RObject{} };
@@ -128,9 +128,10 @@ namespace rtl::detail
                                                                         _args&&... params)
     {
         using container0 = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
-        const std::size_t index = pMethod.hasSignatureId(container0::getContainerId());
-        if (index != rtl::index_none) [[likely]] {
-            return container0::template forwardCall<_args...>(pTarget, index, std::forward<_args>(params)...);
+        const FunctorId* functorId = pMethod.hasFunctorId(container0::getContainerId());
+
+        if (functorId != nullptr) [[likely]] {
+            return container0::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
         }
         else 
         {

@@ -55,7 +55,7 @@ namespace
 
     static auto _test1 = []()
     {
-        auto err = NodeSendMessage.bind(nodeObj).call(bm::g_longStr).err;
+        auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
 
         if (err != rtl::error::None)  {
             std::cout << "[2] error: " << rtl::to_string(err) << "\n";

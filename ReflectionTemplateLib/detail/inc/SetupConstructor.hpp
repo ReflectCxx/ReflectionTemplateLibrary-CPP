@@ -11,6 +11,7 @@
 
 #pragma once
 #include <map>
+#include <cassert>
 
 #include "RObjectBuilder.hpp"
 #include "SetupConstructor.h"
@@ -22,8 +23,11 @@ namespace rtl::detail
     inline SetupConstructor<_derivedType>::CtorLambda<_signature...> 
            SetupConstructor<_derivedType>::getConstructorCaller()
     {
-        return [](alloc pAllocType, std::size_t pClonerIndex, _signature&&...params)-> Return
+        return [](const FunctorId& pFunctorId, alloc pAllocType, const FunctorId& pClonerId, _signature&&...params)-> Return
         {
+            std::size_t signatureId = TypeId<std::tuple<rtl::alloc, FunctorId, traits::remove_const_if_not_reference<_signature>...>>::get();
+            assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
             if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>)
             {   //default constructor, private or deleted.
                 return { error::TypeNotDefaultConstructible, RObject{} };
@@ -32,24 +36,27 @@ namespace rtl::detail
             {
                 if (pAllocType == alloc::Stack) {
 
-                    if constexpr (!std::is_copy_constructible_v<_recordType>) {
+                    if constexpr (!std::is_copy_constructible_v<_recordType>) 
+                    {
                         return { 
                             error::TypeNotCopyConstructible, RObject{}
                         };
                     }
-                    else {
+                    else 
+                    {
                         return { 
                             error::None,
                             RObjectBuilder<_recordType>::template
-                            build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), pClonerIndex, true)
+                            build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), pClonerId, true)
                         };
                     }
                 }
-                else if (pAllocType == alloc::Heap) {
+                else if (pAllocType == alloc::Heap) 
+                {
                     return { 
                         error::None,
                         RObjectBuilder<_recordType*>::template 
-                        build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), pClonerIndex, true)
+                        build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), pClonerId, true)
                     };
                 }
             }
@@ -60,26 +67,29 @@ namespace rtl::detail
 
 
     template<class _derivedType>
-    template<class _recordType, class ..._signature>
-    inline SetupConstructor<_derivedType>::CtorLambda<_signature...> 
+    template<class _recordType>
+    inline SetupConstructor<_derivedType>::CopyCtorLambda
            SetupConstructor<_derivedType>::getCopyConstructorCaller()
     {
         if constexpr (std::is_copy_constructible_v<_recordType>)
         {
-            return [](alloc pAllocOn, std::size_t pClonerIndex, const RObject& pOther) -> Return
+            return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
             {
+                std::size_t signatureId = TypeId<std::tuple<const RObject&, alloc>>::get();
+                assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
                 const auto& srcObj = pOther.view<_recordType>()->get();
                 switch (pAllocOn)
                 {
                 case alloc::Stack:
                     return {
                         error::None,
-                        RObjectBuilder<_recordType>::template build<alloc::Stack>(_recordType(srcObj), pClonerIndex, true)
+                        RObjectBuilder<_recordType>::template build<alloc::Stack>(_recordType(srcObj), pFunctorId, true)
                     };
                 case alloc::Heap:
                     return {
                         error::None,
-                        RObjectBuilder<_recordType*>::template build<alloc::Heap>(new _recordType(srcObj), pClonerIndex, true)
+                        RObjectBuilder<_recordType*>::template build<alloc::Heap>(new _recordType(srcObj), pFunctorId, true)
                     };
                 default:
                     return {
@@ -91,8 +101,11 @@ namespace rtl::detail
         }
         else
         {
-            return [](alloc pAllocOn, std::size_t pClonerIndex, const RObject&) -> Return
+            return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
             {
+                std::size_t signatureId = TypeId<std::tuple<const RObject&, alloc>>::get();
+                assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
                 return {
                     error::TypeNotCopyConstructible,
                     RObject{}
@@ -115,6 +128,7 @@ namespace rtl::detail
     inline const detail::FunctorId SetupConstructor<_derivedType>::addConstructor()
     {
         std::size_t recordId = TypeId<_recordType>::get();
+        std::size_t returnId = recordId;
         std::size_t containerId = _derivedType::getContainerId();
         std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
 
@@ -139,7 +153,7 @@ namespace rtl::detail
 
             lambdaIndex,
             rtl::index_none,
-            recordId,
+            returnId,
             recordId,
             containerId,
             _derivedType::template getSignatureStr<_recordType>(true),
@@ -153,6 +167,7 @@ namespace rtl::detail
     inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
     {
         std::size_t recordId = TypeId<_recordType>::get();
+        std::size_t returnId = recordId;
         std::size_t containerId = _derivedType::getContainerId();
         std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
 
@@ -171,13 +186,13 @@ namespace rtl::detail
         };
 
         //add the lambda in 'FunctorContainer'.
-        auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getCopyConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
+        auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getCopyConstructorCaller<_recordType>(), getIndex, updateIndex);
 
         return detail::FunctorId {
 
             lambdaIndex,
             rtl::index_none,
-            recordId,
+            returnId,
             recordId,
             containerId,
             _derivedType::template getSignatureStr<_recordType>(true),

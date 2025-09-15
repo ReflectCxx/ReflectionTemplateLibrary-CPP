@@ -116,11 +116,11 @@ namespace rtl_tests
 
     // This test demonstrates redundant function registration handling
     // and argument forwarding quirks for C-style strings.
-    TEST(CxxMirrorObjectTest, rednudent_registration__std_cstring_function)
+    TEST(CxxMirrorObjectTest, rednudant_registration__std_cstring_function)
     {
         auto cxxMirror = rtl::CxxMirror({
 
-            // Redundent registrations
+            // Redundant registrations
             rtl::type().function("strlen").build(std::strlen),
             rtl::type().function("strlen").build(std::strlen)
 
@@ -185,7 +185,7 @@ namespace rtl_tests
     }
 
 
-    TEST(CxxMirrorObjectTest, redundent_registration__std_cstring_func_with_global_cstring)
+    TEST(CxxMirrorObjectTest, redundant_registration__std_cstring_func_with_global_cstring)
     {
         auto cxxMirror = rtl::CxxMirror({
 
@@ -233,7 +233,7 @@ namespace rtl_tests
 
 
 
-    TEST(CxxMirrorObjectTest, redundent_regis_with_namespace__std_cstring_func_with_global_cstring)
+    TEST(CxxMirrorObjectTest, redundant_regis_with_namespace__std_cstring_func_with_global_cstring)
     {
         auto cxxMirror = rtl::CxxMirror({
             // Redundant registrations with different namespaces.
@@ -296,7 +296,7 @@ namespace rtl_tests
 
 
 
-    TEST(CxxMirrorObjectTest, redundent_regis_with_different_names__std_cstring_func_with_global_cstring)
+    TEST(CxxMirrorObjectTest, redundant_regis_with_different_names__std_cstring_func_with_global_cstring)
     {
         auto cxxMirror = rtl::CxxMirror({
             // Redundant registrations with different symbolic names.

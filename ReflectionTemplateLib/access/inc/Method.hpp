@@ -34,13 +34,13 @@ namespace rtl
     @return: RStatus
     * calls the constructor with given arguments.
 */  template<class ..._args>
-    inline Return Method::invokeCtor(alloc pAllocType, std::size_t pClonerIndex, _args&& ...params) const
+    inline Return Method::invokeCtor(alloc pAllocType, const detail::FunctorId& pClonerId, _args&& ...params) const
     {
-        using Container = detail::FunctorContainer<alloc, std::size_t, std::remove_reference_t<_args>...>;
+        using Container = detail::FunctorContainer<alloc, detail::FunctorId, std::remove_reference_t<_args>...>;
 
-        std::size_t index = hasSignatureId(Container::getContainerId());
-        if (index != rtl::index_none) [[likely]] {
-            return Container::template forwardCall<_args...>(index, pAllocType, pClonerIndex, std::forward<_args>(params)...);
+        const detail::FunctorId* functorId = hasFunctorId(Container::getContainerId());
+        if (functorId != nullptr) [[likely]] {
+            return Container::template forwardCall<_args...>(*functorId, pAllocType, pClonerId, std::forward<_args>(params)...);
         }
         return { error::SignatureMismatch, RObject{} };
     }

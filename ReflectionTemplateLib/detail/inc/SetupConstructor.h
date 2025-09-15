@@ -11,11 +11,11 @@
 
 #pragma once
 
+
 #include "FunctorId.h"
+#include "forward_decls.h"
 
 namespace rtl {
-
-    class RObject;
 
     namespace detail
     {
@@ -28,13 +28,15 @@ namespace rtl {
         class SetupConstructor
         {	
             template<class ..._signature>
-            using CtorLambda = std::function < Return(alloc, std::size_t, _signature...) >;
+            using CtorLambda = std::function < Return(FunctorId, alloc, FunctorId, _signature...) >;
+
+            using CopyCtorLambda = std::function < Return(const FunctorId&, const RObject&, alloc) >;
 
             template<class _recordType, class ..._signature>
             static CtorLambda<_signature...> getConstructorCaller();
 
-            template<class _recordType, class ..._signature>
-            static CtorLambda<_signature...> getCopyConstructorCaller();
+            template<class _recordType>
+            static CopyCtorLambda getCopyConstructorCaller();
 
         protected:
 

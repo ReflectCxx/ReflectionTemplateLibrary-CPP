@@ -152,6 +152,7 @@ namespace rtl::unit_test
             // Copies the underlying value, *not* the wrapper.
             auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
+            ASSERT_FALSE(robj0.isEmpty());
 
             // Cannot view as shared_ptr, because we cloned the contained value.
             EXPECT_FALSE(robj0.canViewAs<std::shared_ptr<int>>());
@@ -230,6 +231,7 @@ namespace rtl::unit_test
             // Copies the underlying value, *not* the wrapper.
             auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
+            ASSERT_FALSE(robj0.isEmpty());
 
             // Cannot view as shared_ptr, because we cloned the contained value.
             EXPECT_FALSE(robj0.canViewAs<std::shared_ptr<int>>());

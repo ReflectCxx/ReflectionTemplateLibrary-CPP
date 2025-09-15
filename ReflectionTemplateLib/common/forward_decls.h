@@ -11,9 +11,17 @@
 
 #pragma once
 
-namespace rtl {
-
+namespace rtl 
+{
     struct Return;
 
     class RObject;
+
+    namespace detail 
+    {
+        struct FunctorId;
+
+        template<class ..._signature>
+        class FunctorContainer;
+    }
 }

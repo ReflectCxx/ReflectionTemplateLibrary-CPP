@@ -32,7 +32,7 @@ namespace rtl::detail
     class SetupFunction
     {
         template<class ..._signature>
-        using FunctionLambda = std::function < Return(_signature...) >;
+        using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
 
         template<class... _signature>
         static FunctionLambda<_signature...> getCaller(void(*pFunctor)(_signature...));

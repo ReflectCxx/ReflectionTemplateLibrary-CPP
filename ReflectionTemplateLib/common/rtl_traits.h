@@ -21,24 +21,17 @@
 
 #include "TypeId.h"
 #include "Constants.h"
+#include "forward_decls.h"
 
 namespace rtl
 {
-    class RObject;
-
-    namespace detail {
-
-        template<class ..._signature>
-        class FunctorContainer;
-    }
-
     namespace traits
     {
         using Converter = std::function< std::any(const std::any&, const detail::EntityKind&, detail::EntityKind&) >;
         
         using ConverterPair = std::pair< std::size_t, Converter >;
 
-        using Cloner = detail::FunctorContainer<alloc, std::size_t, const RObject&>;
+        using Cloner = detail::FunctorContainer<const RObject&, alloc>;
     }
 
     namespace traits

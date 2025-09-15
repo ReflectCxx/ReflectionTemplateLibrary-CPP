@@ -32,8 +32,7 @@ namespace rtl
         {
             const Record& record = itr->second;
             Method ctors = record.getMethod(detail::ctor_name(record.getRecordName())).value();
-            std::size_t copyCtorIndex = ctors.getFunctors()[detail::Index::CopyCtor].getLambdaIndex();
-            const_cast<RObject&>(pTarget).m_objectId.m_clonerIndex = copyCtorIndex;
+            const_cast<RObject&>(pTarget).m_objectId.m_clonerId = ctors.getFunctors()[detail::Index::CopyCtor];
             return error::None;
         }
         return error::CloningDisabled;

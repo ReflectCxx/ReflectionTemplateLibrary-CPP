@@ -41,7 +41,7 @@ namespace rtl {
 
         //invokes the constructor associated with this 'Method'
         template<class ..._args>
-        Return invokeCtor(alloc pAllocType, std::size_t pClonerIndex, _args&&...params) const;
+        Return invokeCtor(alloc pAllocType, const detail::FunctorId& pClonerId, _args&&...params) const;
 
     public:
 

@@ -32,21 +32,21 @@ namespace rtl::detail
 
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
-    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::size_t pClonerIndex, bool pIsConstCastSafe) noexcept
+    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
         return RObject( std::any{
                             std::in_place_type<RObjectUPtr<_T>>,
                             RObjectUPtr<_T>(std::unique_ptr<_T>(static_cast<_T*>(pVal)))
                         },
-                        RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pClonerIndex, pIsConstCastSafe),
+                        RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pClonerId, pIsConstCastSafe),
                         &getConverters<std::unique_ptr<_T>>());
     }
 
     
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
-    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::size_t pClonerIndex, bool pIsConstCastSafe) noexcept
+    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
         constexpr bool isRawPointer = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
@@ -54,7 +54,7 @@ namespace rtl::detail
         if constexpr (isRawPointer)
         {
             return RObject( std::any { static_cast<const _T*>(pVal) },
-                            RObjectId::create<T, alloc::Stack>(pClonerIndex, pIsConstCastSafe),
+                            RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
                             &getConverters<T>() );
         }
         else
@@ -66,7 +66,7 @@ namespace rtl::detail
                                     std::in_place_type<RObjectUPtr<U>>,
                                     RObjectUPtr<U>(std::move(pVal))
                                 },
-                                RObjectId::create<T, alloc::Stack>(pClonerIndex, pIsConstCastSafe),
+                                RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
                                 &getConverters<T>() );
             }
             else
@@ -76,7 +76,7 @@ namespace rtl::detail
                                     std::in_place_type<T>,
                                     std::forward<T>(pVal)
                                 },
-                                RObjectId::create<T, alloc::Stack>(pClonerIndex, pIsConstCastSafe),
+                                RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
                                 &getConverters<T>() );
             }
         }

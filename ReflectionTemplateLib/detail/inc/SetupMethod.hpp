@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <cassert>
+
 #include "view.h"
 #include "TypeId.h"
 #include "SetupMethod.h"
@@ -26,8 +28,17 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+            assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
+            //using lambda_t = lambda_registry<methodQ::None, traits::remove_const_if_not_reference<_signature>...>;
+
+            //lambda_t registry = static_cast<lambda_t*>(pFunctorId.m_lambda);
+
+            //registry->
+
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
             }
@@ -46,8 +57,11 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+            assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
             }
@@ -63,7 +77,7 @@ namespace rtl::detail
                 const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                 return { error::None,
                          RObjectBuilder<const _rawRetType*>::template
-                         build<rtl::alloc::Stack>(&retObj, rtl::index_none, isConstCastSafe)
+                         build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
                 };
             }
             else {
@@ -73,7 +87,7 @@ namespace rtl::detail
 
                 return { error::None,
                          RObjectBuilder<const T>::template
-                         build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), rtl::index_none, isConstCastSafe)
+                         build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), std::nullopt, isConstCastSafe)
                 };
             }
         };
@@ -87,8 +101,11 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+            assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
             const _recordType& target = pTargetObj.view<_recordType>()->get();
             (target.*pFunctor)(std::forward<_signature>(params)...);
             return { error::None, RObject{} };
@@ -103,8 +120,11 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+            assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
             //'target' is const and 'pFunctor' is const-member-function.
             const _recordType& target = pTargetObj.view<_recordType>()->get();
@@ -115,7 +135,7 @@ namespace rtl::detail
                 const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
                 return { error::None,
                          RObjectBuilder<const _rawRetType*>::template
-                         build<rtl::alloc::Stack>(&retObj, rtl::index_none, isConstCastSafe)
+                         build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
                 };
             }
             else {
@@ -125,7 +145,7 @@ namespace rtl::detail
 
                 return { error::None,
                          RObjectBuilder<const T>::template
-                         build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), rtl::index_none, isConstCastSafe)
+                         build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), std::nullopt, isConstCastSafe)
                 };
             }
         };

@@ -13,92 +13,120 @@
 
 #include "LambdaBridge.h"
 
+#include <tuple>
 #include <vector>
 #include <functional>
 
+#include "TypeId.h"
 #include "Constants.h"
 #include "FunctorRegistry.h"
 
 
 namespace rtl::detail
 {
-	class lambda_hop { };
+	class lambda_hop {
+	public:
+
+		std::size_t m_signatureId = TypeId<>::None;
+		std::vector<std::size_t> m_argsId;
+	};
 }
 
 
 namespace rtl::detail
 {
-	template<methodQ, class ..._signature>
-	class lambda_registry;
+    template<methodQ, class ..._signature>
+    class lambda_registry;
 
-	template<class ...signature_ts>
-	class lambda_registry<methodQ::None, signature_ts...> : public lambda_hop
-	{
-		using lambda_t = std::function<Return(signature_ts...)>;
+    template<class ...signature_ts>
+    class lambda_registry<methodQ::None, signature_ts...> : public lambda_hop
+    {
+        using lambda_t = std::function<Return(const FunctorId&, signature_ts...)>;
 
-		std::vector<lambda_t> lambda_table;
+        std::vector<lambda_t> lambda_table;
 
-		std::vector<functor_hop*> m_functors;
+        std::vector<functor_hop*> m_functors;
 
-	public:
+    public:
 
-		GETTER_CREF(std::vector<lambda_t>, , lambda_table)
+        lambda_registry() 
+        {
+            m_signatureId = TypeId<std::tuple<signature_ts...>>::get();
+            TypeId<signature_ts...>::get(m_argsId);
+        }
 
-		void push(const lambda_t& pLambda) {
-			lambda_table.push_back(pLambda);
-		}
+        GETTER_CREF(std::vector<lambda_t>, , lambda_table)
 
-		Return operator()(std::size_t index, signature_ts&&...params)
-		{
-			return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
-		}
-	};
+        void push(const lambda_t& lambda) 
+        {
+            lambda_table.push_back(lambda);
+        }
 
-
-	template<class ...signature_ts>
-	class lambda_registry<methodQ::NonConst, signature_ts...> : public lambda_hop
-	{
-		using lambda_t = std::function <Return(const RObject&, signature_ts...)>;
-
-		std::vector<lambda_t> lambda_table;
-
-		std::vector<functor_hop*> m_functors;
-
-	public:
-
-		GETTER_CREF(std::vector<lambda_t>, , lambda_table)
-
-		void push(const lambda_t& pLambda) {
-			lambda_table.push_back(pLambda);
-		}
-
-		Return operator()(std::size_t index, signature_ts&&...params)
-		{
-			return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
-		}
-	};
+        Return operator()(std::size_t index, signature_ts&&...params)
+        {
+            return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
+        }
+    };
 
 
-	template<class ...signature_ts>
-	class lambda_registry<methodQ::Const, signature_ts...> : public lambda_hop
-	{
-		using lambda_t =  std::function <Return(const RObject&, signature_ts...)>;
-		
-		std::vector<lambda_t> lambda_table;
+    template<class ...signature_ts>
+    class lambda_registry<methodQ::NonConst, signature_ts...> : public lambda_hop
+    {
+        using lambda_t = std::function <Return(const FunctorId&, const RObject&, signature_ts...)>;
 
-		std::vector<functor_hop*> m_functors;
+        std::vector<lambda_t> lambda_table;
 
-	public:
+        std::vector<functor_hop*> m_functors;
 
-		GETTER_CREF(std::vector<lambda_t>, , lambda_table)
+    public:
 
-		void push(const lambda_t& pLambda) {
-			lambda_table.push_back(pLambda);
-		}
+        lambda_registry() 
+        {
+            m_signatureId = TypeId<std::tuple<signature_ts...>>::get();
+            TypeId<signature_ts...>::get(m_argsId);
+        }
 
-		Return operator()(std::size_t index, signature_ts&&...params)
-		{
-			return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
-		}
-	};
+        GETTER_CREF(std::vector<lambda_t>, , lambda_table)
+
+        void push(const lambda_t& lambda)
+        {
+            lambda_table.push_back(lambda);
+        }
+
+        Return operator()(std::size_t index, signature_ts&&...params)
+        {
+            return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
+        }
+    };
+
+
+    template<class ...signature_ts>
+    class lambda_registry<methodQ::Const, signature_ts...> : public lambda_hop
+    {
+        using lambda_t = std::function <Return(const FunctorId&, const RObject&, signature_ts...)>;
+
+        std::vector<lambda_t> lambda_table;
+
+        std::vector<functor_hop*> m_functors;
+
+    public:
+
+        lambda_registry()
+        {
+            m_signatureId = TypeId<std::tuple<signature_ts...>>::get();
+            TypeId<signature_ts...>::get(m_argsId);
+        }
+
+        GETTER_CREF(std::vector<lambda_t>, , lambda_table)
+
+        void push(const lambda_t& lambda)
+        {
+            lambda_table.push_back(lambda);
+        }
+
+        Return operator()(std::size_t index, signature_ts&&...params)
+        {
+            return lambda_table[index](m_functors[index], index, std::forward<signature_ts>(params)...);
+        }
+    };
 }

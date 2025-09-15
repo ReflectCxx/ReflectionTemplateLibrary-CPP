@@ -26,10 +26,6 @@ namespace rtl::detail
                                              FunctorContainer<std::remove_reference_t<_args>...>,
                                              FunctorContainer<_signature...>>;
 
-        //auto containerId = Container::getContainerId();
-        //const detail::FunctorId* functorId = m_function->hasFunctorId(containerId);
-        //return { error::None, RObject{} };
-
         const detail::FunctorId* functorId = m_function->hasFunctorId(Container::getContainerId());
         if (functorId != nullptr) [[likely]] {
             return Container::template forwardCall<_args...>(*functorId, std::forward<_args>(params)...);

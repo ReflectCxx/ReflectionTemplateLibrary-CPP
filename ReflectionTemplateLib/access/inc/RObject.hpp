@@ -196,10 +196,10 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
-        std::size_t pClonerIndex = m_objectId.m_clonerIndex;
-        if (pClonerIndex != rtl::index_none)
+        if (m_objectId.m_clonerId.has_value())
         {
-            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Heap, pClonerIndex, *this);
+            const detail::FunctorId& functorId = m_objectId.m_clonerId.value();
+            return traits::Cloner::template forwardCall(functorId, *this, alloc::Heap);
         }
         return { error::CloningDisabled, RObject{} };
     }
@@ -208,10 +208,10 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
-        std::size_t pClonerIndex = m_objectId.m_clonerIndex;
-        if (pClonerIndex != rtl::index_none)
+        if (m_objectId.m_clonerId.has_value())
         {
-            return traits::Cloner::template forwardCall<const RObject&>(pClonerIndex, alloc::Stack, pClonerIndex, *this);
+            const detail::FunctorId& functorId = m_objectId.m_clonerId.value();
+            return traits::Cloner::template forwardCall(functorId, *this, alloc::Stack);
         }
         return { error::CloningDisabled, RObject{} };
     }

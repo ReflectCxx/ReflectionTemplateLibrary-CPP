@@ -37,7 +37,7 @@ namespace rtl {
                                  public SetupConstructor<FunctorContainer<_signature...>>,
                                  public CallReflector<FunctorContainer<_signature...>>
         {
-            using FunctionLambda = std::function < Return(_signature...) >;
+            using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
         public:
 
             //every FunctorContainer<...> will have a unique-id.

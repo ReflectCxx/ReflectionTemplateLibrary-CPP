@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <cassert>
+
 #include "FunctorCache.h"
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
@@ -24,8 +26,11 @@ namespace rtl
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...>
                SetupFunction<_derivedType>::getCaller(void(*pFunctor)(_signature...)) 
         {
-            return [pFunctor](_signature&&... params) -> Return 
+            return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
+                std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+                assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
             };
@@ -39,18 +44,21 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  return [pFunctor](_signature&&...params)-> Return
+        */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
+                std::size_t signatureId = TypeId<std::tuple<traits::remove_const_if_not_reference<_signature>...>>::get();
+                assert((pFunctorId.m_lambda->m_signatureId == signatureId) && "Type resolution system failed!");
+
                 if constexpr (std::is_reference_v<_returnType>) {
                 /*  if the function returns reference, this block will be retained by compiler.
-                        Note: reference to temporary or dangling is not checked here.
+                    Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
                     const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
                     return { error::None,
                              RObjectBuilder<const _rawRetType*>::template
-                             build<rtl::alloc::Stack>(&retObj, rtl::index_none, isConstCastSafe)
+                             build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
                     };
                 }
                 else {
@@ -60,7 +68,7 @@ namespace rtl
 
                     return { error::None,
                              RObjectBuilder<const T>::template
-                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), rtl::index_none, isConstCastSafe)
+                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), std::nullopt, isConstCastSafe)
                     };
                 }
             };
@@ -98,7 +106,7 @@ namespace rtl
             };
 
             //generate a type-id of '_returnType'.
-            const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
+            const std::size_t returnId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
             //finally add the lambda 'functor' in 'FunctorContainer' lambda vector and get the index.
             auto [lambdaIndex, lambdaPtr] = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
 
@@ -107,7 +115,7 @@ namespace rtl
                 
                 lambdaIndex,
                 functorIndex,
-                retTypeId,
+                returnId,
                 pRecordId,
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_returnType>(),

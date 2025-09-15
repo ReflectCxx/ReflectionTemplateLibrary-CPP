@@ -11,15 +11,17 @@
 
 #pragma once
 
+#include <vector>
 #include <string>
 #include <typeinfo>
 #include <atomic>
 
 namespace rtl {
 
-    namespace detail 
+    namespace detail
     {
         extern std::size_t generate_unique_id();
+
 
         //class to generate unique type-id for a type or combination of types.
         template<class _type = std::nullptr_t, class ..._rest>
@@ -32,14 +34,25 @@ namespace rtl {
             //represents '_type' or 'std::nullptr_t' for TypeId<> (empty).
             using HEAD = _type;
 
+            using TAIL = std::nullptr_t;
+
             //'0' represents no type. [Never change, critical.]
             static constexpr const std::size_t None = 0;
 
             static const std::size_t get()
             {
-                //statically initialize a unique-id.
-                static const std::size_t typeId = generate_unique_id();
-                return typeId;
+                if constexpr (!std::is_same_v<_type, std::nullptr_t>)
+                {
+                    //statically initialize a unique-id.
+                    static const std::size_t TypeId = detail::generate_unique_id();
+                    return TypeId;
+                }
+                return None;
+            }
+
+            static void get(std::vector<std::size_t>& pIds)
+            {
+                pIds.push_back(get());
             }
 
             //returns the type-list as string.
@@ -63,11 +76,14 @@ namespace rtl {
                 if constexpr (std::is_same_v<_type, std::string&&>) {
                     return std::string("const std::string&&");
                 }
+                if constexpr (std::is_same_v<_type, std::string_view>) {
+                    return std::string("std::string_view");
+                }
                 if constexpr (!std::is_same_v<_type, std::nullptr_t>) {
                     return std::string(typeid(_type).name());
                 }
                 if constexpr (std::is_same_v<_type, std::nullptr_t>) {
-                    return "std::nullptr_t";
+                    return "";
                 }
                 else return std::string();
             }
@@ -84,12 +100,31 @@ namespace rtl {
             //represents a new list created excluding '_first'.
             using TAIL = TypeId<_rest...>;
 
+            static void get(std::vector<std::size_t>& pIds)
+            {
+                if constexpr (std::is_same_v<TAIL::HEAD, std::nullptr_t>)
+                {
+                    pIds.push_back(TypeId<HEAD>::get());
+                }
+                else {
+                    pIds.push_back(TypeId<HEAD>::get());
+                    TAIL::get(pIds);
+                }
+            }
+
+
             //returns the type-list as string.
-            static std::string toString() 
+            static std::string toString()
             {
                 const std::string& tailStr = TAIL::toString();
-                if (std::is_same<HEAD, std::string>::value) {
+                if (std::is_same<HEAD, std::nullptr_t>::value) {
+                    return "";
+                }
+                else if constexpr (std::is_same<HEAD, std::string>::value) {
                     return std::string("std::string") + ", " + tailStr;
+                }
+                else if constexpr (std::is_same<HEAD, std::string_view>::value) {
+                    return std::string("std::string_view") + ", " + tailStr;
                 }
                 return (std::string(typeid(HEAD).name()) + ", " + tailStr);
             }
