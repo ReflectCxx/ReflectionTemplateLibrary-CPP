@@ -199,7 +199,7 @@ namespace rtl
         if (m_objectId.m_clonerId.has_value())
         {
             const detail::FunctorId& functorId = m_objectId.m_clonerId.value();
-            return traits::Cloner::template forwardCall(functorId, *this, alloc::Heap);
+            return traits::Cloner::forwardCall(functorId, *this, alloc::Heap);
         }
         return { error::CloningDisabled, RObject{} };
     }
@@ -211,7 +211,7 @@ namespace rtl
         if (m_objectId.m_clonerId.has_value())
         {
             const detail::FunctorId& functorId = m_objectId.m_clonerId.value();
-            return traits::Cloner::template forwardCall(functorId, *this, alloc::Stack);
+            return traits::Cloner::forwardCall(functorId, *this, alloc::Stack);
         }
         return { error::CloningDisabled, RObject{} };
     }

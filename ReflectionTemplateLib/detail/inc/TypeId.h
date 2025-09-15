@@ -102,7 +102,7 @@ namespace rtl {
 
             static void get(std::vector<std::size_t>& pIds)
             {
-                if constexpr (std::is_same_v<TAIL::HEAD, std::nullptr_t>)
+                if constexpr (std::is_same_v<typename TAIL::HEAD, std::nullptr_t>)
                 {
                     pIds.push_back(TypeId<HEAD>::get());
                 }
