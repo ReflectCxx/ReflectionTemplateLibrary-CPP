@@ -102,7 +102,7 @@ namespace rtl
 
                 auto& lambda = lambdaCache.push(functor);
 
-                lambda.init_function<_returnType>();
+                lambda.template init_function<_returnType>();
 
                 lambdaPtr = &lambda;
             };

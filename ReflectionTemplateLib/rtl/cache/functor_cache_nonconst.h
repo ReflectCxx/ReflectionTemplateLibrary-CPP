@@ -21,7 +21,7 @@ namespace rtl::dispatch
     struct functor_cache_nonconst
     {
         using fptr_t = return_t(record_t::*)(signature_ts...);
-        using functor_t = typename functor_nonconst<record_t, return_t, signature_ts...>;
+        using functor_t = functor_nonconst<record_t, return_t, signature_ts...>;
 
         static functor_cache_nonconst& get()
         {
