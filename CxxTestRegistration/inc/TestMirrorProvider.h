@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RTLibInterface.h"
+#include <rtl/rtl.h>
 
 namespace test_mirror
 {

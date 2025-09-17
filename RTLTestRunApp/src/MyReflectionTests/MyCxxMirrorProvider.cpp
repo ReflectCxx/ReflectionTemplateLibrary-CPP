@@ -1,5 +1,6 @@
 
-#include "RTLibInterface.h"
+#include <rtl/rtl.h>
+
 #include "MyReflectingType.h"
 
 namespace my_type

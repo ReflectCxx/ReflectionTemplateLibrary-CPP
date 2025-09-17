@@ -5,7 +5,7 @@
 #include <functional>
 
 #include "BenchMark.h"
-#include "RTLibInterface.h"
+#include <rtl/rtl.h>
 
 
 namespace bm

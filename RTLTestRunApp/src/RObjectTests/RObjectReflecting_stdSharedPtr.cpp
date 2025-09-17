@@ -1,9 +1,9 @@
 
 #include <memory>
 #include <gtest/gtest.h>
+#include <rtl/rtl.h>
 
 #include "Node.h"
-#include "RTLibInterface.h"
 
 using namespace test_utils;
 using namespace rtl;

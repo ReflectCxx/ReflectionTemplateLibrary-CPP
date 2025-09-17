@@ -31,10 +31,6 @@ set(RTL_INCLUDE_DIRS
     inc
     "${CMAKE_SOURCE_DIR}/CxxTestUtils/inc"
     "${CMAKE_SOURCE_DIR}/CxxTestRegistration/inc"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc"
 )
 
 # ===============================
@@ -42,7 +38,6 @@ set(RTL_INCLUDE_DIRS
 # ===============================
 set(CXX_EXE_NAME RTLTestRunApp)
 
-# Add all test sources (either glob or include your src/CMakeLists.txt)
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${CXX_EXE_NAME} ${TEST_SOURCES})
 
@@ -56,8 +51,10 @@ target_link_libraries(${CXX_EXE_NAME}
         GTest::gtest_main
 )
 
+
 # ===============================
 # GoogleTest Integration
 # ===============================
+
 include(GoogleTest)
 gtest_discover_tests(${CXX_EXE_NAME})

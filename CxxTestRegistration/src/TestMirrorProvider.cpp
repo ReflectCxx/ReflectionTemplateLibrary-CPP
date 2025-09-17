@@ -202,9 +202,14 @@ namespace test_mirror
             rtl::type().member<Animal>().methodStatic<const std::string&>(animal::str_updateZooKeeper).build(&Animal::updateZooKeeper),
 
             #if defined(__GNUC__) && !defined(__clang__)
-            /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
-                we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
-            */  rtl::type().member<Animal>()
+                /*
+                    GCC fails to automatically resolve the correct overloaded functor
+                    when both a non-const lvalue reference and an rvalue overload exist.
+                    To disambiguate, explicitly cast the member function pointer, e.g.:
+
+                        static_cast<void (Animal::*)(std::string&)>(&Animal::setAnimalName);
+                */
+                rtl::type().member<Animal>()
                            .method<std::string&>(animal::str_setAnimalName)
                            .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
                 

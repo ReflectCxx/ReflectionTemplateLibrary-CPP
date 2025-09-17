@@ -1,7 +1,6 @@
 ﻿
 #include <gtest/gtest.h>
-
-#include "RTLibInterface.h"
+#include <rtl/rtl.h>
 
 using namespace rtl;
 

@@ -1,9 +1,8 @@
 
 #include <gtest/gtest.h>
-
 #include <cstring>
+#include <rtl/rtl.h>
 
-#include "RTLibInterface.h"
 #include "CxxMirrorToJson.h"
 
 namespace

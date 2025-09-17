@@ -25,16 +25,6 @@ if(NOT benchmark_POPULATED)
   add_subdirectory(${benchmark_SOURCE_DIR} ${benchmark_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-# ===============================
-# Common Include Paths
-# ===============================
-set(RTL_INCLUDE_DIRS
-    inc
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/common"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/detail/inc"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/access/inc"
-    "${CMAKE_SOURCE_DIR}/ReflectionTemplateLib/builder/inc"
-)
 
 # ===============================
 # Test Executable
