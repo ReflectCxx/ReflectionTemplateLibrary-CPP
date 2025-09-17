@@ -1,8 +1,8 @@
 
 #include <benchmark/benchmark.h>
+#include <rtl/rtl.h>
 
 #include "ReflectedCall.h"
-#include <rtl/rtl.h>
 #include "BenchMark.h"
 
 namespace cxx 
@@ -46,7 +46,7 @@ namespace
     static auto _test0 = []()
     {
         auto err = SendMessage(bm::g_longStr).err;
-
+        
         if (err != rtl::error::None) {
             std::cout << "[1] error: "<< rtl::to_string(err)<<"\n";
         }
@@ -103,6 +103,17 @@ void ReflectedCall::get(benchmark::State& state)
     for (auto _: state)
     {
         auto error = GetMessage(bm::g_longStr).err;
+        benchmark::DoNotOptimize(error);
+    }
+}
+
+void ReflectedCall::new_design_set(benchmark::State& state)
+{
+    static auto& hopper = (SendMessage.getFunctors()[0].m_lambda)->get<bm::argStr_t>();
+    static bm::argStr_t&& argStr = bm::argStr_t(bm::g_longStr);
+    for (auto _ : state) {
+
+        auto error = hopper(std::forward<bm::argStr_t>(argStr)).err;
         benchmark::DoNotOptimize(error);
     }
 }

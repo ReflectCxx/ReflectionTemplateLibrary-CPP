@@ -137,12 +137,6 @@ namespace rtl::detail
             return (itr != ctorSet.end() ? itr->second : index_none);
         };
 
-        //auto& lambdaCache = lambda_cache<methodQ::None>::get<_signature...>();
-        //const auto& pushLambdaHopper = [&]()-> std::size_t
-        //{
-        //    return lambdaCache.push_ctor<_recordType>();
-        //};
-
         //add the lambda in 'FunctorContainer'.
         auto lambdaIndex = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
 

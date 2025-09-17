@@ -25,7 +25,7 @@ namespace rtl::dispatch
 			return m_functor;
 		}
 
-		return_t operator()(signature_ts&&...params) const
+		decltype(auto) operator()(signature_ts&&...params) const noexcept // TODO: handle exception.
 		{
 			return (*m_functor)(std::forward<signature_ts>(params)...);
 		}

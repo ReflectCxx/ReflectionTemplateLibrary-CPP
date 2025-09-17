@@ -11,17 +11,17 @@
 
 #pragma once
 
-#include <deque>
+#include <list>
 
 #include "functor.h"
 
-namespace rtl::detail
+namespace rtl::dispatch
 {
     template<class return_t, class ...signature_ts>
     struct functor_cache
     {
         using fptr_t = return_t(*)(signature_ts...);
-        using functor_t = dispatch::functor<return_t, signature_ts...>;
+        using functor_t = functor<return_t, signature_ts...>;
 
         static functor_cache& get()
         {
@@ -29,22 +29,22 @@ namespace rtl::detail
             return instance;
         }
 
-        const dispatch::functor_hop* push(const functor_t& functor, std::size_t lambda_index)
+        const functor_hop* push(const functor_t& functor, std::size_t lambda_index)
         {
             m_cache.emplace_back(std::make_pair(functor, lambda_index));
             return &(m_cache.back().first);
         }
 
-        std::size_t find(fptr_t fptr)
+        std::pair<const functor_hop*, std::size_t> find(fptr_t fptr)
         {
             for (auto& itr : m_cache)
             {
                 const auto& functor = itr.first;
                 if (fptr == functor.get()) {
-                    return itr.second;
+                    return { &itr.first, itr.second };
                 }
             }
-            return rtl::index_none;
+            return { nullptr, rtl::index_none };
         }
 
         functor_cache(functor_cache&&) = delete;
@@ -55,7 +55,8 @@ namespace rtl::detail
     private:
 
         // No reallocation occurs; original objects stay intact
-        std::deque<std::pair<const functor_t, std::size_t>> m_cache;
+        std::list<std::pair<functor_t, std::size_t>> m_cache;
+
         functor_cache() {}
     };
 }

@@ -21,13 +21,16 @@ namespace rtl
 
     namespace detail 
     {
-        struct lambda_hop;
-
-        struct functor_hop;
-
         struct FunctorId;
 
         template<class ..._signature>
         class FunctorContainer;
+    }
+
+    namespace dispatch
+    {
+        struct lambda_hop;
+
+        struct functor_hop;
     }
 }

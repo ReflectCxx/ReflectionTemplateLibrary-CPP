@@ -11,24 +11,27 @@
 
 #pragma once
 
-#include <deque>
+#include <list>
 
 #include "lambda.h"
 
-namespace rtl::detail
+namespace rtl::dispatch
 {
     template<class ...signature_ts>
     struct lambda_cache
     {
-        static lambda_cache& get() {
+        static lambda_cache& get() 
+        {
             static lambda_cache instance;
             return instance;
         }
 
-        std::pair<std::size_t, const lambda_hop*> push(const dispatch::lambda<signature_ts...>& lambda_hop) 
+        const lambda<signature_ts...>& push(const functor_hop* fptr_hopper)
         {
-            m_cache.push_back(lambda_hop);
-            return { (m_cache.size() - 1), &m_cache.back() };
+            m_cache.push_back(lambda<signature_ts...>(fptr_hopper));
+            const lambda<signature_ts...>& lambda_hop = m_cache.back();
+            fptr_hopper->set_lambda(&lambda_hop);
+            return lambda_hop;
         }
 
         lambda_cache(lambda_cache&&) = delete;
@@ -39,7 +42,8 @@ namespace rtl::detail
     private:
 
         // No reallocation occurs; original objects stay intact
-        std::deque<const dispatch::lambda<signature_ts...>> m_cache;
+        std::list<lambda<signature_ts...>> m_cache;
+
         lambda_cache() {}
     };
 }

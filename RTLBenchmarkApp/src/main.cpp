@@ -10,6 +10,7 @@ BENCHMARK(NativeCall::set);
 
 BENCHMARK(StdFuncCall::set);
 BENCHMARK(ReflectedCall::set);
+BENCHMARK(ReflectedCall::new_design_set);
 
 BENCHMARK(StdFuncMethodCall::set);
 BENCHMARK(ReflectedMethodCall::set);

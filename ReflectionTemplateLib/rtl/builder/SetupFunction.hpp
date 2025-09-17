@@ -15,6 +15,8 @@
 
 #include "lambda_cache.h"
 #include "functor_cache.h"
+#include "lambda_function.hpp"
+
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
 
@@ -29,6 +31,9 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
+                bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+                assert(isAmazing && "new type-system corrupted.");
+
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
             };
@@ -44,6 +49,9 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
+                bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+                assert(isAmazing && "new type-system corrupted.");
+
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
                 if constexpr (std::is_reference_v<_returnType>) {
@@ -82,27 +90,32 @@ namespace rtl
         template<class _returnType, class ..._signature>
         inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-            auto& functorCache = functor_cache<_returnType, _signature...>::get();
+            const dispatch::lambda_hop* lambdaPtr = nullptr;
 
-            // called from '_derivedType' ('FunctorContainer')
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                //functorIndex = functorCache.get().size();
-                functorCache.push(pFunctor, pIndex);
+                auto& functorCache = dispatch::functor_cache<_returnType, _signature...>::get();
+
+                const dispatch::functor_hop* functor = functorCache.push(pFunctor, pIndex);
+
+                auto& lambdaCache = dispatch::lambda_cache<_signature...>::get();
+
+                auto& lambda = lambdaCache.push(functor);
+
+                lambda.init_function<_returnType>();
+
+                lambdaPtr = &lambda;
             };
 
-            // called from '_derivedType' ('FunctorContainer')
             const auto& getIndex = [&]()-> std::size_t
             {
-                std::size_t lambda_index = functorCache.find(pFunctor);
-                return lambda_index;
+                auto& functorCache = dispatch::functor_cache<_returnType, _signature...>::get();
+                auto [functor, lambdaIndex] = functorCache.find(pFunctor);
+                if (lambdaIndex != rtl::index_none) {
+                    lambdaPtr = functor->m_lambda;
+                }
+                return lambdaIndex;
             };
-
-            //auto& lambdaCache = lambda_cache::get<_signature...>();
-            //const auto& pushLambdaHopper = [&]()-> std::size_t
-            //{
-            //    return lambdaCache.push_function<_returnType>();
-            //};
 
             //generate a type-id of '_returnType'.
             const std::size_t returnId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
@@ -110,14 +123,14 @@ namespace rtl
             auto lambdaIndex = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId {
-                
+            return detail::FunctorId{
+
                 lambdaIndex,
                 returnId,
                 pRecordId,
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_returnType>(),
-                nullptr//&lambdaCache
+                lambdaPtr
             };
         }
     }

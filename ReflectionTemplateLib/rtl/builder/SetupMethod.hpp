@@ -148,7 +148,7 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...))
     {
-        auto& functorCache = functor_cache_nonconst<_recordType, _returnType, _signature...>::get();
+        auto& functorCache = dispatch::functor_cache_nonconst<_recordType, _returnType, _signature...>::get();
 
         // called from '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>)
         const auto& updateIndex = [&](std::size_t pIndex)->void
@@ -162,14 +162,6 @@ namespace rtl::detail
             std::size_t lambdaIndex = functorCache.find(pFunctor);
             return lambdaIndex;
         };
-
-        //auto& lambdaCache = lambda_cache<methodQ::NonConst>::get<_signature...>();
-        //const auto& pushLambdaHopper = [&]() 
-        //{
-        //    std::size_t lambdaIndex = lambdaCache.get().size();
-        //    lambdaCache.push();
-        //    return lambdaIndex;
-        //};
 
         //generate a type-id of '_returnType'.
         const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
@@ -219,10 +211,7 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const)
     {
-
-        auto& functorCache = functor_cache_const<_recordType, _returnType, _signature...>::get();
-
-        //std::size_t functorIndex = rtl::index_none;
+        auto& functorCache = dispatch::functor_cache_const<_recordType, _returnType, _signature...>::get();
 
         // called from '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>)
         const auto& updateIndex = [&](std::size_t pIndex)-> void
@@ -237,13 +226,6 @@ namespace rtl::detail
             std::size_t lambdaIndex = functorCache.find(pFunctor);
             return lambdaIndex;
         };
-
-        //auto& lambdaCache = lambda_cache<methodQ::Const>::get<_signature...>();
-        //const auto& pushLambdaHopper = [&]() {
-        //    std::size_t lambdaIndex = lambdaCache.get().size();
-        //    lambdaCache.push();
-        //    return lambdaIndex;
-        //};
 
         //generate a type-id of '_returnType'.
         const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();

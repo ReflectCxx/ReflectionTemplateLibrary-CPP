@@ -27,7 +27,7 @@ namespace rtl::dispatch
 			return m_functor;
 		}
 
-		return_t operator()(const record_t& pTarget, signature_ts&&...params) const
+		decltype(auto) operator()(const record_t& pTarget, signature_ts&&...params) const noexcept // TODO: handle exception.
 		{
 			return (pTarget.*m_functor)(std::forward<signature_ts>(params)...);
 		}

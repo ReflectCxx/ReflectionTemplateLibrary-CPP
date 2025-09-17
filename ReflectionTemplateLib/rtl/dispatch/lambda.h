@@ -22,7 +22,7 @@ namespace rtl::dispatch
     template<class ...signature_ts>
     struct lambda: public lambda_hop
     {
-        using lambda_t = std::function<Return(const lambda_hop*, signature_ts...)>;
+        using lambda_t = std::function<Return(const lambda_hop&, signature_ts...)>;
 
         template<class record_t>
         void init_ctor() const;
@@ -41,18 +41,18 @@ namespace rtl::dispatch
 
         Return operator()(signature_ts&&...params) const
         {
-            return m_hopper(this, std::forward<signature_ts>(params)...);
+            return m_hopper(*this, std::forward<signature_ts>(params)...);
         }
-
-    private:
 
         lambda(const functor_hop* fptr_hopper)
         {
-            detail::TypeId<signature_ts...>::get(m_argsTypeIds);
+            detail::TypeId<signature_ts...>::get(m_argumentsId);
             m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
             m_functor = fptr_hopper;
         }
 
-        lambda_t m_hopper;
+    private:
+
+        mutable lambda_t m_hopper;
     };
 }

@@ -41,7 +41,7 @@ namespace rtl::detail
         //signature of functor as string. platform dependent, may not be very much readable format.
         std::string m_signature;
 
-        lambda_hop* m_lambda = nullptr;
+        const dispatch::lambda_hop* m_lambda = nullptr;
 
         GETTER(std::size_t, LambdaIndex, m_lambdaIndex)
         GETTER(std::size_t, ReturnId, m_returnId);

@@ -27,6 +27,8 @@ namespace rtl
 {
     namespace traits
     {
+        using args_t = std::vector<std::size_t>;
+
         using Converter = std::function< std::any(const std::any&, const detail::EntityKind&, detail::EntityKind&) >;
         
         using ConverterPair = std::pair< std::size_t, Converter >;
