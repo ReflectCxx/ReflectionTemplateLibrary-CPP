@@ -23,7 +23,7 @@ namespace rtl::dispatch
     template<class return_t>
 	inline Return lambda<signature_ts...>::function(const lambda_hop& hopper, signature_ts&&...params) noexcept
 	{
-        auto functor = hopper.functor().get<signature_ts...>().get<return_t>(hopper.m_returnId);
+        auto functor = hopper.functor().get<signature_ts...>().template get<return_t>(hopper.m_returnId);
 
         if constexpr (std::is_same_v<return_t, void>)
         {
