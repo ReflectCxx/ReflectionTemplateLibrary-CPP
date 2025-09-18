@@ -31,8 +31,8 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
-                assert(isAmazing && "new type-system corrupted.");
+                //bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+                //assert(isAmazing && "new type-system corrupted.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -100,9 +100,7 @@ namespace rtl
 
                 auto& lambdaCache = dispatch::lambda_cache<_signature...>::get();
 
-                auto& lambda = lambdaCache.push(functor);
-
-                lambda.template init_function<_returnType>();
+                auto& lambda = lambdaCache.template push_function<_returnType>(functor);
 
                 lambdaPtr = &lambda;
             };

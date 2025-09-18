@@ -25,11 +25,6 @@ namespace rtl::dispatch
 			return m_functor;
 		}
 
-		decltype(auto) operator()(signature_ts&&...params) const noexcept // TODO: handle exception.
-		{
-			return (*m_functor)(std::forward<signature_ts>(params)...);
-		}
-
 		functor(fptr_t fptr) :m_functor(fptr)
 		{
 			m_returnId = detail::TypeId<return_t>::get();
@@ -38,6 +33,6 @@ namespace rtl::dispatch
 
 	private:
 
-		fptr_t m_functor;
+		const fptr_t m_functor;
 	};
 }

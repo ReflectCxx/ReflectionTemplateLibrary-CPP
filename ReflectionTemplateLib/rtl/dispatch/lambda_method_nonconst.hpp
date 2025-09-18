@@ -17,8 +17,8 @@ namespace rtl::dispatch
 {
     template<class ...signature_ts>
     template<class record_t, class return_t>
-    inline void lambda<signature_ts...>::init_method_nonconst() const
+    inline Return lambda<signature_ts...>::method_nonconst(const lambda_hop&, signature_ts&&...) noexcept
     {
-
+        return { error::EmptyRObject, RObject{} };
     }
 }

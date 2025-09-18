@@ -19,8 +19,8 @@ namespace rtl::dispatch
 {
     template<class ...signature_ts>
     template<class record_t>
-    inline void lambda<signature_ts...>::init_cloner() const
+    inline Return lambda<signature_ts...>::copy_ctor(const lambda_hop&, signature_ts&&...) noexcept
     {
-
+        return { error::EmptyRObject, RObject{} };
     }
 }

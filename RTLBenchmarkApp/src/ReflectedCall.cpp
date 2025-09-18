@@ -110,10 +110,9 @@ void ReflectedCall::get(benchmark::State& state)
 void ReflectedCall::new_design_set(benchmark::State& state)
 {
     static auto& hopper = (SendMessage.getFunctors()[0].m_lambda)->get<bm::argStr_t>();
-    static bm::argStr_t&& argStr = bm::argStr_t(bm::g_longStr);
     for (auto _ : state) {
 
-        auto error = hopper(std::forward<bm::argStr_t>(argStr)).err;
+        auto error = hopper(bm::g_longStr).err;
         benchmark::DoNotOptimize(error);
     }
 }

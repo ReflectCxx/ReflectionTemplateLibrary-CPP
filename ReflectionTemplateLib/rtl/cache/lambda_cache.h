@@ -26,11 +26,15 @@ namespace rtl::dispatch
             return instance;
         }
 
-        const lambda<signature_ts...>& push(const functor_hop* fptr_hopper)
+        template<class return_t>
+        const lambda<signature_ts...>& push_function(const functor_hop* fptr_hopper)
         {
-            m_cache.push_back(lambda<signature_ts...>(fptr_hopper));
+            m_cache.push_back(lambda<signature_ts...>::template create_function<return_t>(fptr_hopper));
+
             const lambda<signature_ts...>& lambda_hop = m_cache.back();
+            
             fptr_hopper->set_lambda(&lambda_hop);
+            
             return lambda_hop;
         }
 

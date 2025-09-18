@@ -18,8 +18,8 @@ namespace rtl::dispatch
 {
     template<class ...signature_ts>
     template<class record_t>
-    inline void lambda<signature_ts...>::init_ctor() const
+    inline Return lambda<signature_ts...>::ctor(const lambda_hop&, signature_ts&&...) noexcept
     {
-
+        return { error::EmptyRObject, RObject{} };
     }
 }
