@@ -13,6 +13,7 @@
 
 #include <tuple>
 #include <functional>
+#include <type_traits>
 
 #include "forward_decls.h"
 #include "dispatch_interface.h"
@@ -27,31 +28,36 @@ namespace rtl::dispatch
         template<class record_t>
         static lambda create_ctor(const functor_hop* fptr_hopper) 
         {
-            return lambda(fptr_hopper, &ctor<record_t>);
+            std::size_t returnId = detail::TypeId<record_t>::get();
+            return lambda(returnId, fptr_hopper, &ctor<record_t>);
         }
 
         template<class record_t>
         static lambda create_copy_ctor(const functor_hop* fptr_hopper)
         {
-            return lambda(fptr_hopper, &copy_ctor<record_t>);
+            std::size_t returnId = detail::TypeId<record_t>::get();
+            return lambda(returnId, fptr_hopper, &copy_ctor<record_t>);
         }
 
         template<class return_t>
         static lambda create_function(const functor_hop* fptr_hopper)
         {
-            return lambda(fptr_hopper, &function<return_t>);
+            std::size_t returnId = detail::TypeId<return_t>::get();
+            return lambda(returnId, fptr_hopper, &function<return_t>);
         }
 
         template<class record_t, class return_t>
         static lambda create_method_const(const functor_hop* fptr_hopper)
         {
-            return lambda(fptr_hopper, &method_const<record_t, return_t>);
+            std::size_t returnId = detail::TypeId<return_t>::get();
+            return lambda(returnId, fptr_hopper, &method_const<record_t, return_t>);
         }
 
         template<class record_t, class return_t>
         static lambda create_method_nonconst(const functor_hop* fptr_hopper)
         {
-            return lambda(fptr_hopper, &method_nonconst<record_t, return_t>);
+            std::size_t returnId = detail::TypeId<return_t>::get();
+            return lambda(returnId, fptr_hopper, &method_nonconst<record_t, return_t>);
         }
         
         template<class ...args_t>
@@ -64,12 +70,13 @@ namespace rtl::dispatch
 
         const lambda_t m_hopper;
 
-        lambda(const functor_hop* fptr_hopper, lambda_t hopper) noexcept
+        lambda(std::size_t returnId, const functor_hop* functor, lambda_t hopper) noexcept
             : m_hopper(std::move(hopper))
         {
-            detail::TypeId<signature_ts...>::get(m_argumentsId);
+            m_functor = functor;
+            m_returnId = returnId;
             m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
-            m_functor = fptr_hopper;
+            detail::TypeId<signature_ts...>::get(m_argumentsId);
         }
 
         template<class record_t>

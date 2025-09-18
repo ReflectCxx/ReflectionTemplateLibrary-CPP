@@ -17,30 +17,34 @@
 
 namespace rtl::dispatch
 {
-    template<class return_t, class ...signature_ts>
+    template<class ...signature_ts>
     struct functor_cache
     {
-        using fptr_t = return_t(*)(signature_ts...);
-        using functor_t = functor<return_t, signature_ts...>;
+        using functor_t = functor<signature_ts...>;
 
-        static functor_cache& get()
+        static const functor_cache& instance()
         {
-            static functor_cache instance;
-            return instance;
+            static functor_cache instance_;
+            return instance_;
         }
 
-        const functor_hop* push(const functor_t& functor, std::size_t lambda_index)
+        template<class return_t>
+        const functor_hop* push(return_t(*fptr)(signature_ts...), std::size_t lambda_index) const
         {
-            m_cache.emplace_back(std::make_pair(functor, lambda_index));
+            using voidfn_t = typename functor<signature_ts...>::voidfn_t;
+
+            auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
+            m_cache.emplace_back(std::make_pair(functor , lambda_index));
             return &(m_cache.back().first);
         }
 
-        std::pair<const functor_hop*, std::size_t> find(fptr_t fptr)
+        template<class return_t>
+        std::pair<const functor_hop*, std::size_t> find(return_t(*fptr)(signature_ts...)) const
         {
             for (auto& itr : m_cache)
             {
                 const auto& functor = itr.first;
-                if (fptr == functor.get()) {
+                if (functor.template is_same<return_t>(fptr)) {
                     return { &itr.first, itr.second };
                 }
             }
@@ -55,7 +59,7 @@ namespace rtl::dispatch
     private:
 
         // No reallocation occurs; original objects stay intact
-        std::list<std::pair<functor_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<functor_t, std::size_t>> m_cache;
 
         functor_cache() {}
     };

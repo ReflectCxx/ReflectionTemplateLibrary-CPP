@@ -15,24 +15,38 @@
 
 namespace rtl::dispatch
 {
-	template<class return_t, class ...signature_ts>
+	template<class ...signature_ts>
 	struct functor: public functor_hop
 	{
-		using fptr_t = return_t(*)(signature_ts...);
+		using voidfn_t = void(*)(signature_ts...);
 
-		fptr_t get() const
+		template<class return_t>
+		decltype(auto) get(std::size_t returnId) const
 		{
-			return m_functor;
+			using fptr_t = return_t(*)(signature_ts...);
+			if (returnId == m_returnId)
+			{
+				return reinterpret_cast<fptr_t>(m_functor);
+			}
+			return static_cast<fptr_t>(nullptr);
 		}
 
-		functor(fptr_t fptr) :m_functor(fptr)
+		template<class return_t>
+		bool is_same(return_t(*fptr)(signature_ts...)) const
 		{
-			m_returnId = detail::TypeId<return_t>::get();
+			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
+		}
+
+		functor(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
+		{
+			m_returnId = returnId;
 			m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
 		}
 
+		functor(const functor&) = default;
+
 	private:
 
-		const fptr_t m_functor;
+		const voidfn_t m_functor;
 	};
 }

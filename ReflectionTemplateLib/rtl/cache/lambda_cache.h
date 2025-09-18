@@ -20,21 +20,36 @@ namespace rtl::dispatch
     template<class ...signature_ts>
     struct lambda_cache
     {
-        static lambda_cache& get() 
+        static lambda_cache& instance() 
         {
-            static lambda_cache instance;
-            return instance;
+            static lambda_cache instance_;
+            return instance_;
         }
 
         template<class return_t>
         const lambda<signature_ts...>& push_function(const functor_hop* fptr_hopper)
         {
             m_cache.push_back(lambda<signature_ts...>::template create_function<return_t>(fptr_hopper));
-
             const lambda<signature_ts...>& lambda_hop = m_cache.back();
-            
             fptr_hopper->set_lambda(&lambda_hop);
-            
+            return lambda_hop;
+        }
+
+        template<class record_t, class return_t>
+        const lambda<signature_ts...>& push_method_const(const functor_hop* fptr_hopper)
+        {
+            m_cache.push_back(lambda<signature_ts...>::template create_method_const<record_t, return_t>(fptr_hopper));
+            const lambda<signature_ts...>& lambda_hop = m_cache.back();
+            fptr_hopper->set_lambda(&lambda_hop);
+            return lambda_hop;
+        }
+
+        template<class record_t, class return_t>
+        const lambda<signature_ts...>& push_method_nonconst(const functor_hop* fptr_hopper)
+        {
+            m_cache.push_back(lambda<signature_ts...>::template create_method_nonconst<record_t, return_t>(fptr_hopper));
+            const lambda<signature_ts...>& lambda_hop = m_cache.back();
+            fptr_hopper->set_lambda(&lambda_hop);
             return lambda_hop;
         }
 

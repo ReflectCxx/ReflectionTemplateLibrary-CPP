@@ -17,8 +17,11 @@
 #include "rtl_typeid.h"
 #include "SetupMethod.h"
 #include "RObjectBuilder.hpp"
+
 #include "functor_cache_const.h"
 #include "functor_cache_nonconst.h"
+#include "lambda_method_const.hpp"
+#include "lambda_method_nonconst.hpp"
 
 namespace rtl::detail
 {
@@ -31,6 +34,9 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            assert(isAllGood && "new type-id-system not working.");
+
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
             }
@@ -51,6 +57,9 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            assert(isAllGood && "new type-id-system not working.");
+
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
             }
@@ -92,6 +101,9 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            assert(isAllGood && "new type-id-system not working.");
+
             const _recordType& target = pTargetObj.view<_recordType>()->get();
             (target.*pFunctor)(std::forward<_signature>(params)...);
             return { error::None, RObject{} };
@@ -108,6 +120,9 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            assert(isAllGood && "new type-id-system not working.");
+
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
             //'target' is const and 'pFunctor' is const-member-function.
             const _recordType& target = pTargetObj.view<_recordType>()->get();
@@ -148,18 +163,31 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...))
     {
-        auto& functorCache = dispatch::functor_cache_nonconst<_recordType, _returnType, _signature...>::get();
+        const dispatch::lambda_hop* lambdaPtr = nullptr;
 
-        // called from '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>)
-        const auto& updateIndex = [&](std::size_t pIndex)->void
+        const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            functorCache.push(pFunctor, pIndex);
+            auto& functorCache = dispatch::functor_cache_nonconst<_recordType, _signature...>::instance();
+
+            const dispatch::functor_hop* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
+
+            auto& lambdaCache = dispatch::lambda_cache<_signature...>::instance();
+
+            auto& lambda = lambdaCache.template push_method_nonconst<_recordType, _returnType>(functor);
+
+            lambdaPtr = &lambda;
         };
 
-        // called from '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>)
         const auto& getIndex = [&]()-> std::size_t
         {
-            std::size_t lambdaIndex = functorCache.find(pFunctor);
+            auto& functorCache = dispatch::functor_cache_nonconst<_recordType, _signature...>::instance();
+
+            auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+
+            if (lambdaIndex != rtl::index_none) {
+                lambdaPtr = functor->m_lambda;
+            }
+
             return lambdaIndex;
         };
 
@@ -178,7 +206,7 @@ namespace rtl::detail
                 TypeId<_recordType>::get(),
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(),
-                nullptr
+                lambdaPtr
             };
         }
         else
@@ -192,7 +220,7 @@ namespace rtl::detail
                 TypeId<_recordType>::get(),
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(),
-                nullptr
+                lambdaPtr
             };
         }
     }
@@ -211,19 +239,31 @@ namespace rtl::detail
     template<class _recordType, class _returnType, class ..._signature>
     inline const detail::FunctorId SetupMethod<_derivedType>::addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const)
     {
-        auto& functorCache = dispatch::functor_cache_const<_recordType, _returnType, _signature...>::get();
+        const dispatch::lambda_hop* lambdaPtr = nullptr;
 
-        // called from '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>)
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            //functorIndex = functorCache.get().size();
-            functorCache.push(pFunctor, pIndex);
+            auto& functorCache = dispatch::functor_cache_const<_recordType, _signature...>::instance();
+
+            const dispatch::functor_hop* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
+
+            auto& lambdaCache = dispatch::lambda_cache<_signature...>::instance();
+
+            auto& lambda = lambdaCache.template push_method_const<_recordType, _returnType>(functor);
+
+            lambdaPtr = &lambda;
         };
 
-        // called from '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>)
         const auto& getIndex = [&]()-> std::size_t
         {
-            std::size_t lambdaIndex = functorCache.find(pFunctor);
+            auto& functorCache = dispatch::functor_cache_const<_recordType, _signature...>::instance();
+
+            auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+
+            if (lambdaIndex != rtl::index_none) {
+                lambdaPtr = functor->m_lambda;
+            }
+
             return lambdaIndex;
         };
 
@@ -243,7 +283,7 @@ namespace rtl::detail
                 TypeId<_recordType>::get(), 
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(), 
-                nullptr//&lambdaCache
+                lambdaPtr
             };
         }
         else
@@ -257,7 +297,7 @@ namespace rtl::detail
                 TypeId<_recordType>::get(),
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(),
-                nullptr// &lambdaCache
+                lambdaPtr
             };
         }
     }

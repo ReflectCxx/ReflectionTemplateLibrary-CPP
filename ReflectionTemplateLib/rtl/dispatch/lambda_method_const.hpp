@@ -12,7 +12,6 @@
 #pragma once
 
 #include "lambda.h"
-#include "RObjectBuilder.hpp"
 
 namespace rtl::dispatch
 {

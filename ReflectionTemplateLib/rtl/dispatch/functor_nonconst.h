@@ -17,29 +17,36 @@
 
 namespace rtl::dispatch
 {
-	template<class record_t, class return_t, class ...signature_ts>
+	template<class record_t, class ...signature_ts>
 	struct functor_nonconst : public functor_hop
 	{
-		using fptr_t = return_t(record_t::*)(signature_ts...);
+		using voidfn_t = void(record_t::*)(signature_ts...);
 
-		fptr_t get() const
+		template<class return_t>
+		decltype(auto) get(std::size_t returnId) const
 		{
-			return m_functor;
+			using fptr_t = return_t(record_t::*)(signature_ts...);
+			if (returnId == m_returnId)
+			{
+				return reinterpret_cast<fptr_t>(m_functor);
+			}
+			return static_cast<fptr_t>(nullptr);
 		}
 
-		decltype(auto) operator()(record_t& pTarget, signature_ts&&...params) const noexcept // TODO: handle exception.
+		template<class return_t>
+		bool is_same(return_t(record_t::* fptr)(signature_ts...)) const
 		{
-			return (pTarget.*m_functor)(std::forward<signature_ts>(params)...);
+			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
 		}
 
-		functor_nonconst(fptr_t fptr) :m_functor(fptr)
+		functor_nonconst(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
 		{
-			m_returnId = detail::TypeId<return_t>::get();
+			m_returnId = returnId;
 			m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
 		}
 
 	private:
 
-		fptr_t m_functor;
+		const voidfn_t m_functor;
 	};
 }

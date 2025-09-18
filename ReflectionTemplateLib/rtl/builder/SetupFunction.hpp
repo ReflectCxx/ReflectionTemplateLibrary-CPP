@@ -31,8 +31,8 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                //bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
-                //assert(isAmazing && "new type-system corrupted.");
+                bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+                assert(isAllGood && "new type-id-system not working.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -49,8 +49,8 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                bool isAmazing = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
-                assert(isAmazing && "new type-system corrupted.");
+                bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+                assert(isAllGood && "new type-id-system not working.");
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -94,11 +94,11 @@ namespace rtl
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                auto& functorCache = dispatch::functor_cache<_returnType, _signature...>::get();
+                auto& functorCache = dispatch::functor_cache<_signature...>::instance();
 
-                const dispatch::functor_hop* functor = functorCache.push(pFunctor, pIndex);
+                const dispatch::functor_hop* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
 
-                auto& lambdaCache = dispatch::lambda_cache<_signature...>::get();
+                auto& lambdaCache = dispatch::lambda_cache<_signature...>::instance();
 
                 auto& lambda = lambdaCache.template push_function<_returnType>(functor);
 
@@ -107,11 +107,14 @@ namespace rtl
 
             const auto& getIndex = [&]()-> std::size_t
             {
-                auto& functorCache = dispatch::functor_cache<_returnType, _signature...>::get();
-                auto [functor, lambdaIndex] = functorCache.find(pFunctor);
+                auto& functorCache = dispatch::functor_cache<_signature...>::instance();
+
+                auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+
                 if (lambdaIndex != rtl::index_none) {
                     lambdaPtr = functor->m_lambda;
                 }
+
                 return lambdaIndex;
             };
 

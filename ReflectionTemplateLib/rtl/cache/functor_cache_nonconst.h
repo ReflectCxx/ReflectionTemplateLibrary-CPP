@@ -17,36 +17,38 @@
 
 namespace rtl::dispatch
 {
-    template<class record_t, class return_t, class ...signature_ts>
+    template<class record_t, class ...signature_ts>
     struct functor_cache_nonconst
     {
-        using fptr_t = return_t(record_t::*)(signature_ts...);
-        using functor_t = functor_nonconst<record_t, return_t, signature_ts...>;
+        using functor_t = functor_nonconst<record_t, signature_ts...>;
 
-        static functor_cache_nonconst& get()
+        static const functor_cache_nonconst& instance()
         {
-            static functor_cache_nonconst instance;
-            return instance;
+            static const functor_cache_nonconst instance_;
+            return instance_;
         }
 
-        const functor_hop* push(const functor_t& functor, std::size_t lambda_index)
+        template<class return_t>
+        const functor_hop* push(return_t(record_t::* fptr)(signature_ts...), std::size_t lambda_index) const
         {
+            using voidfn_t = typename functor_nonconst<record_t, signature_ts...>::voidfn_t;
+            auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
             m_cache.emplace_back(std::make_pair(functor, lambda_index));
             return &(m_cache.back().first);
         }
 
-        std::size_t find(fptr_t fptr)
+        template<class return_t>
+        std::pair<const functor_hop*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...)) const
         {
             for (auto& itr : m_cache)
             {
                 const auto& functor = itr.first;
-                if (fptr == functor.get()) {
-                    return itr.second;
+                if (functor.template is_same<return_t>(fptr)) {
+                    return { &itr.first, itr.second };
                 }
             }
-            return rtl::index_none;
+            return { nullptr, rtl::index_none };
         }
-
 
         functor_cache_nonconst(functor_cache_nonconst&&) = delete;
         functor_cache_nonconst(const functor_cache_nonconst&) = delete;
@@ -56,7 +58,7 @@ namespace rtl::dispatch
     private:
 
         // No reallocation occurs; original objects stay intact
-        std::list<std::pair<const functor_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<const functor_t, std::size_t>> m_cache;
 
         functor_cache_nonconst() {}
     };
