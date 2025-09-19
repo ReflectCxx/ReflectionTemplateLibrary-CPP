@@ -12,7 +12,7 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/hopper.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/hopper_ctor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/hopper_const.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/hoppert_nonconst.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/hopper_nonconst.h"
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/CallReflector.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/FunctionCaller.h"
