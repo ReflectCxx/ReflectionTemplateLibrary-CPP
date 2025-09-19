@@ -5,6 +5,12 @@
 #include "ReflectedCall.h"
 #include "BenchMark.h"
 
+
+namespace bm
+{
+    extern std::optional<std::string> g_work_done;
+}
+
 namespace cxx 
 {
     extern const rtl::CxxMirror& mirror();
@@ -48,17 +54,29 @@ namespace
         auto err = SendMessage(bm::g_longStr).err;
         
         if (err != rtl::error::None) {
-            std::cout << "[1] error: "<< rtl::to_string(err)<<"\n";
+            std::cout << "[0] error: "<< rtl::to_string(err)<<"\n";
         }
         return 0;
     };
+
+
+    static auto _test4 = []()
+    {
+        auto& hopper = (SendMessage.getFunctors()[0].m_lambda)->get<bm::argStr_t>();
+        //auto err = hopper(bm::g_longStr).err;
+        //if (err != rtl::error::None) {
+        //    std::cout << "[4] error: " << rtl::to_string(err) << "\n";
+        //}
+        return hopper;
+    };
+
 
     static auto _test1 = []()
     {
         auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
 
         if (err != rtl::error::None)  {
-            std::cout << "[2] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[1] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -68,7 +86,7 @@ namespace
         auto err = GetMessage(bm::g_longStr).err;
 
         if (err != rtl::error::None) {
-            std::cout << "[3] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[2] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -78,7 +96,7 @@ namespace
         auto err = NodeGetMessage(nodeObj)(bm::g_longStr).err;
         
         if (err != rtl::error::None) {
-            std::cout << "[4] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[3] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -109,11 +127,12 @@ void ReflectedCall::get(benchmark::State& state)
 
 void ReflectedCall::new_design_set(benchmark::State& state)
 {
-    static auto& hopper = (SendMessage.getFunctors()[0].m_lambda)->get<bm::argStr_t>();
+    static const auto& hopper = _test4();
     for (auto _ : state) {
 
-        auto error = hopper(bm::g_longStr).err;
-        benchmark::DoNotOptimize(error);
+        hopper.call<bm::argStr_t>(bm::g_longStr);
+        //auto ret = hopper(bm::g_longStr);
+        benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }
 

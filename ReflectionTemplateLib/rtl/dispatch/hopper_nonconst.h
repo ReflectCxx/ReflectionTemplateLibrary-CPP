@@ -16,9 +16,12 @@
 namespace rtl::dispatch
 {
     template<class ...signature_ts>
-    template<class record_t, class return_t>
-    inline Return lambda<signature_ts...>::method_nonconst(const lambda_hop&, signature_ts&&...) noexcept
+    struct hopper_nonconst
     {
-        return { error::EmptyRObject, RObject{} };
-    }
+        template<class record_t, class return_t>
+        static Return method(const lambda_hop&, signature_ts&&...) noexcept
+        {
+            return { error::EmptyRObject, RObject{} };
+        }
+    };
 }

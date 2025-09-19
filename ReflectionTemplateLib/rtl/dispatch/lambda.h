@@ -16,6 +16,12 @@
 #include <type_traits>
 
 #include "forward_decls.h"
+
+#include "hopper.h"
+#include "hopper_ctor.h"
+#include "hopper_const.h"
+#include "hopper_nonconst.h"
+
 #include "dispatch_interface.h"
 
 namespace rtl::dispatch
@@ -23,47 +29,58 @@ namespace rtl::dispatch
     template<class ...signature_ts>
     struct lambda: public lambda_hop
     {
-        using lambda_t = std::function<Return(const lambda_hop&, signature_ts...)>;
+        using lambda_t = std::function<Return(const lambda_hop&, signature_ts&&...)>;
 
         template<class record_t>
         static lambda create_ctor(const functor_hop* fptr_hopper) 
         {
-            std::size_t returnId = detail::TypeId<record_t>::get();
-            return lambda(returnId, fptr_hopper, &ctor<record_t>);
+            return lambda(detail::TypeId<record_t>::get(), fptr_hopper, 
+                          &hopper_ctor<signature_ts...>::template constructor<record_t>);
         }
 
         template<class record_t>
         static lambda create_copy_ctor(const functor_hop* fptr_hopper)
         {
-            std::size_t returnId = detail::TypeId<record_t>::get();
-            return lambda(returnId, fptr_hopper, &copy_ctor<record_t>);
+            return lambda(detail::TypeId<record_t>::get(), fptr_hopper, 
+                          &hopper_ctor<signature_ts...>::template cloner<record_t>);
         }
 
         template<class return_t>
         static lambda create_function(const functor_hop* fptr_hopper)
         {
-            std::size_t returnId = detail::TypeId<return_t>::get();
-            return lambda(returnId, fptr_hopper, &function<return_t>);
+            return lambda(detail::TypeId<return_t>::get(), fptr_hopper,
+                          &hopper<signature_ts...>::template function<Return, std::is_same_v<return_t, void>>);
         }
 
         template<class record_t, class return_t>
         static lambda create_method_const(const functor_hop* fptr_hopper)
         {
-            std::size_t returnId = detail::TypeId<return_t>::get();
-            return lambda(returnId, fptr_hopper, &method_const<record_t, return_t>);
+            return lambda(detail::TypeId<return_t>::get(), fptr_hopper, 
+                          &hopper_const<signature_ts...>::template method<record_t, return_t>);
         }
 
         template<class record_t, class return_t>
         static lambda create_method_nonconst(const functor_hop* fptr_hopper)
         {
-            std::size_t returnId = detail::TypeId<return_t>::get();
-            return lambda(returnId, fptr_hopper, &method_nonconst<record_t, return_t>);
+            return lambda(detail::TypeId<return_t>::get(), fptr_hopper,
+                          &hopper_nonconst<signature_ts...>::template method<record_t, return_t>);
         }
         
         template<class ...args_t>
-        decltype(auto) operator()(args_t&&...params) const noexcept
+        Return operator()(args_t&&...params) const noexcept
         {
-            return m_hopper(*this, std::forward<args_t>(params)...);
+            return m_hopper(*this, std::forward<signature_ts>(params)...);
+        }
+
+        template<class return_t, class ...args_t>
+        decltype(auto) call(args_t&&...params) const noexcept
+        {
+            if constexpr (std::is_same_v<return_t, void>) {
+                hopper<signature_ts...>::template function<return_t>(*this, std::forward<signature_ts>(params)...);
+            }
+            else {
+                return hopper<signature_ts...>::template function<return_t>(*this, std::forward<signature_ts>(params)...);
+            }
         }
 
     private:
@@ -86,7 +103,7 @@ namespace rtl::dispatch
         static Return copy_ctor(const lambda_hop&, signature_ts&&...) noexcept;
 
         template<class return_t>
-        static Return function(const lambda_hop&, signature_ts&&...) noexcept;
+        static return_t function(const lambda_hop&, signature_ts&&...) noexcept;
 
         template<class record_t, class return_t>
         static Return method_const(const lambda_hop&, signature_ts&&...) noexcept;

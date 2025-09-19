@@ -9,11 +9,10 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/functor_nonconst.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_ctor.hpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_copy_ctor.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method_const.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method_nonconst.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/hopper.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/hopper_ctor.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/hopper_const.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/hoppert_nonconst.h"
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/CallReflector.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/FunctionCaller.h"

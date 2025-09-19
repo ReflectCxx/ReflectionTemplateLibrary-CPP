@@ -11,14 +11,24 @@
 
 #pragma once
 
+
 #include "lambda.h"
 
 namespace rtl::dispatch
 {
     template<class ...signature_ts>
-    template<class record_t, class return_t>
-    inline Return lambda<signature_ts...>::method_const(const lambda_hop&, signature_ts&&...) noexcept
+    struct hopper_ctor
     {
-        return { error::EmptyRObject, RObject{} };
-    }
+        template<class record_t>
+        static Return cloner(const lambda_hop&, signature_ts&&...) noexcept
+        {
+            return { error::EmptyRObject, RObject{} };
+        }
+
+        template<class record_t>
+        static Return constructor(const lambda_hop&, signature_ts&&...) noexcept
+        {
+            return { error::EmptyRObject, RObject{} };
+        }
+    };
 }
