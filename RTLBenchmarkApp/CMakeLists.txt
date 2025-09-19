@@ -41,8 +41,10 @@ add_executable(${CXX_EXE_NAME}
     src/StandardCall.h
     src/StandardCall.cpp
     src/StdFunction.cpp
-    src/ReflectedCall.h
-    src/ReflectedCall.cpp
+    src/ReflectedCallKnownReturn.h
+    src/ReflectedCallKnownReturn.cpp
+    src/ReflectedCallUnknownReturn.h
+    src/ReflectedCallUnknownReturn.cpp
 )
 
 

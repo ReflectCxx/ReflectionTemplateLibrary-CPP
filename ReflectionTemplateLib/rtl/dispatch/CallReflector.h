@@ -33,8 +33,8 @@ namespace rtl::detail {
     */  template<class ..._params>
         FORCE_INLINE static Return forwardCall(const detail::FunctorId& pFunctorId, _params&&..._args)
         {
-            //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors()[pFunctorId.m_lambdaIndex](pFunctorId, std::forward<_params>(_args)...);
+            //'getOverloads()' must be implemented by _derivedType (FunctorContainer).
+            return _derivedType::getOverloads()[pFunctorId.m_lambdaIndex](pFunctorId, std::forward<_params>(_args)...);
         }
 
 
@@ -45,16 +45,16 @@ namespace rtl::detail {
     */  template<class ..._params>
         FORCE_INLINE static Return forwardCall(const detail::FunctorId& pFunctorId, rtl::alloc pAllocType, const detail::FunctorId& pClonerId, _params&&..._args)
         {
-            //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors()[pFunctorId.m_lambdaIndex](pFunctorId, pAllocType, pClonerId, std::forward<_params>(_args)...);
+            //'getOverloads()' must be implemented by _derivedType (FunctorContainer).
+            return _derivedType::getOverloads()[pFunctorId.m_lambdaIndex](pFunctorId, pAllocType, pClonerId, std::forward<_params>(_args)...);
         }
 
 
         template<class ..._params>
         FORCE_INLINE static Return forwardCall(const detail::FunctorId& pFunctorId, const RObject& pSrcObj, rtl::alloc pAllocType)
         {
-            //'getFunctors()' must be implemented by _derivedType (FunctorContainer).
-            return _derivedType::getFunctors()[pFunctorId.m_lambdaIndex](pFunctorId, pSrcObj, pAllocType);
+            //'getOverloads()' must be implemented by _derivedType (FunctorContainer).
+            return _derivedType::getOverloads()[pFunctorId.m_lambdaIndex](pFunctorId, pSrcObj, pAllocType);
         }
 
 

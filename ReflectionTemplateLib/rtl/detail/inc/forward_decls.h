@@ -19,6 +19,12 @@ namespace rtl
 
     class RObject;
 
+    class Function;
+
+    class Method;
+
+    class CxxMirror;
+
     namespace detail 
     {
         struct FunctorId;
@@ -32,5 +38,20 @@ namespace rtl
         struct lambda_hop;
 
         struct functor_hop;
+
+        template<class ...signature_ts>
+        class lambda;
+
+        template<class record_t, class ...signature_ts>
+        class lambda_method;
+
+        template<class ...signature_ts>
+        struct functor;
+
+        template<class record_t, class ...signature_ts>
+        struct functor_const;
+
+        template<class record_t, class ...signature_ts>
+        struct functor_nonconst;
     }
 }

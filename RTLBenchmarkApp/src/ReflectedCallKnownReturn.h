@@ -2,17 +2,15 @@
 
 #include <benchmark/benchmark.h>
 
-struct ReflectedCall
+struct ReflectedCallKnownReturn
 {
     static void set(benchmark::State& state);
 
     static void get(benchmark::State& state);
-
-    static void new_design_set(benchmark::State& state);
 };
 
 
-struct ReflectedMethodCall
+struct ReflectedMethodCallKnownReturn
 {    
     static void set(benchmark::State& state);
 

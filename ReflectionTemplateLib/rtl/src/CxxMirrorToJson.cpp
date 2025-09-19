@@ -40,7 +40,7 @@ static const std::string toJson(const FunctorId& pFunctorId)
 static const std::string toJson(const Function& pFunction)
 {
 	std::stringstream sout;
-	const auto& functors = pFunction.getFunctors();
+	const auto& functors = pFunction.getOverloads();
 	const std::string& record = pFunction.getRecordName();
 	const std::string& nmspace = pFunction.getNamespace();
 

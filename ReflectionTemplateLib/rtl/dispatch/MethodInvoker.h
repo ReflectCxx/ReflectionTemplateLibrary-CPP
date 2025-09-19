@@ -11,11 +11,8 @@
 
 #pragma once
 
-namespace rtl {
+#include "forward_decls.h"
 
-    //forward decls
-    class Method;
-}
 
 namespace rtl::detail {
 

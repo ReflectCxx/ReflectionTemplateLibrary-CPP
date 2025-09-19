@@ -80,7 +80,7 @@ namespace rtl {
         GETTER(std::string, Namespace, m_namespace);
         GETTER(std::string, FunctionName, m_function);
         GETTER(std::size_t, RecordTypeId, m_recordTypeId);
-        GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds);
+        GETTER(std::vector<detail::FunctorId>, Overloads, m_functorIds);
 
         Function() = default;
         Function(Function&&) = default;

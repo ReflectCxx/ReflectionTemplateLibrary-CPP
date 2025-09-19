@@ -15,23 +15,23 @@
 
 #include "functor.h"
 
-namespace rtl::dispatch
+namespace rtl::cache
 {
     template<class ...signature_ts>
-    struct functor_cache
+    struct function_ptr
     {
-        using functor_t = functor<signature_ts...>;
+        using functor_t = dispatch::functor<signature_ts...>;
 
-        static const functor_cache& instance()
+        static const function_ptr& instance()
         {
-            static functor_cache instance_;
+            static function_ptr instance_;
             return instance_;
         }
 
         template<class return_t>
-        const functor_hop* push(return_t(*fptr)(signature_ts...), std::size_t lambda_index) const
+        const dispatch::functor_hop* push(return_t(*fptr)(signature_ts...), std::size_t lambda_index) const
         {
-            using voidfn_t = typename functor<signature_ts...>::voidfn_t;
+            using voidfn_t = typename dispatch::functor<signature_ts...>::voidfn_t;
 
             auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
             m_cache.emplace_back(std::make_pair(functor , lambda_index));
@@ -39,7 +39,7 @@ namespace rtl::dispatch
         }
 
         template<class return_t>
-        std::pair<const functor_hop*, std::size_t> find(return_t(*fptr)(signature_ts...)) const
+        std::pair<const dispatch::functor_hop*, std::size_t> find(return_t(*fptr)(signature_ts...)) const
         {
             for (auto& itr : m_cache)
             {
@@ -51,16 +51,16 @@ namespace rtl::dispatch
             return { nullptr, rtl::index_none };
         }
 
-        functor_cache(functor_cache&&) = delete;
-        functor_cache(const functor_cache&) = delete;
-        functor_cache& operator=(functor_cache&&) = delete;
-        functor_cache& operator=(const functor_cache&) = delete;
+        function_ptr(function_ptr&&) = delete;
+        function_ptr(const function_ptr&) = delete;
+        function_ptr& operator=(function_ptr&&) = delete;
+        function_ptr& operator=(const function_ptr&) = delete;
 
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<functor_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<const functor_t, std::size_t>> m_cache;
 
-        functor_cache() {}
+        function_ptr() {}
     };
 }

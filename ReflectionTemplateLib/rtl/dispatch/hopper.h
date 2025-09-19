@@ -13,7 +13,7 @@
 
 #include <cassert>
 
-#include "lambda.h"
+#include "lambda_function.h"
 #include "functor.h"
 //#include "RObjectBuilder.hpp"
 
@@ -22,59 +22,59 @@ namespace rtl::dispatch
     template<class ...signature_ts>
     struct hopper
     {
-        template<class return_t>
-        static decltype(auto) function(const lambda_hop& lambda_ref, signature_ts&&...params) noexcept
+        template<class return_t> requires (std::is_same_v<return_t, Return> == false)
+        static decltype(auto) dispatch(const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
         {
-            auto functor = lambda_ref.functor().template get<signature_ts...>().template get<return_t>(lambda_ref.m_returnId);
+            auto functor = lambda_ref.functor().template get<signature_ts...>()
+                                               .template get<return_t>(lambda_ref.m_returnId);
+
             if constexpr (std::is_same_v<return_t, void>) {
-                (*functor)(std::forward<signature_ts>(params)...);
+                (*functor)(params...);
             }
             else {
-                return (*functor)(std::forward<signature_ts>(params)...);
+                return (*functor)(params...);
             }
         }
 
-        template<class return_t, bool is_void_t> requires (is_void_t == true)
-        static Return function(const lambda_hop& lambda_ref, signature_ts&&...params) noexcept
+
+        template<bool void_t, class return_t> requires (void_t == true)
+        static Return dispatch(const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
         {
-            if constexpr (std::is_same_v<return_t, void>) {
-                auto functor = lambda_ref.functor().template get<signature_ts...>().template get<return_t>(lambda_ref.m_returnId);
-                (*functor)(std::forward<signature_ts>(params)...);
+            if constexpr (std::is_same_v<return_t, void>) 
+            {
+                auto functor = lambda_ref.functor().template get<signature_ts...>()
+                                                   .template get<return_t>(lambda_ref.m_returnId);
+
+                (*functor)(params...);
             }
-            else {
+            else 
+            {
                 static_assert("return-type mismatch.");
             }
             return { error::None, RObject{} };
         }
 
-        template<class return_t, bool is_void_t> requires (is_void_t == false)
-        static Return function(const lambda_hop& lambda_ref, signature_ts&&...params) noexcept
+
+        template<bool void_t, class return_t> requires (void_t == false)
+        static Return dispatch(const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
         {
             constexpr bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-            auto functor = lambda_ref.functor().template get<signature_ts...>().template get<return_t>(lambda_ref.m_returnId);
+            auto functor = lambda_ref.functor().template get<signature_ts...>()
+                                               .template get<return_t>(lambda_ref.m_returnId);
 
             if constexpr (std::is_reference_v<return_t>)
             {
                 using T = traits::raw_t<return_t>;
-                const T& retObj = functor(std::forward<signature_ts>(params)...);
-
-                //return { error::None,
-                //        detail::RObjectBuilder<const T*>::template
-                //        build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
-                //};
+                const T& retObj = (*functor)(params...);
+                return { error::None, RObject{} };
             }
             else {
 
-                auto&& retObj = functor(std::forward<signature_ts>(params)...);
-                using T = std::remove_cvref_t<decltype(retObj)>;
-
-                //return { error::None,
-                //        detail::RObjectBuilder<const T>::template
-                //        build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), std::nullopt, isConstCastSafe)
-                //};
+                //auto&& retObj = (*functor)(params...);
+                //using T = std::remove_cvref_t<decltype(retObj)>;
+                return { error::None, RObject{} };
             }
-            return { error::None, RObject{} };
         }
     };
 }

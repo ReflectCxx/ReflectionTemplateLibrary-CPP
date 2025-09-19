@@ -14,6 +14,8 @@
 #include "rtl_typeid.h"
 #include "rtl_constants.h"
 #include "forward_decls.h"
+#include "lambda_method.h"
+#include "lambda_function.h"
 
 namespace rtl::detail
 {
@@ -48,6 +50,16 @@ namespace rtl::detail
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER(std::string, SignatureStr, m_signature)
+
+        template<class ..._signature>
+        const dispatch::lambda<_signature...>* get_lambda_function() const {
+            return m_lambda->get_function<_signature...>();
+        }
+
+        template<class record_t, class ..._signature>
+        const dispatch::lambda_method<_signature...>* get_lambda_method() const {
+            return m_lambda->get_method<record_t, _signature...>();
+        }
 
     /*  @method: getHashCode()
         @return: std::size_t (a unique hash-code for a functor)

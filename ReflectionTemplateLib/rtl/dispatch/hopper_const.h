@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "lambda.h"
+#include "lambda_function.h"
 
 namespace rtl::dispatch
 {
@@ -19,7 +19,7 @@ namespace rtl::dispatch
     struct hopper_const
     {
         template<class record_t, class return_t>
-        static Return method(const lambda_hop&, signature_ts&&...) noexcept
+        static Return dispatch(const lambda_hop&, const signature_ts&...) noexcept
         {
             return { error::EmptyRObject, RObject{} };
         }

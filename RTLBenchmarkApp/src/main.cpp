@@ -4,24 +4,28 @@
 #include <benchmark/benchmark.h>
 
 #include "StandardCall.h"
-#include "ReflectedCall.h"
+#include "ReflectedCallKnownReturn.h"
+#include "ReflectedCallUnknownReturn.h"
 
 BENCHMARK(NativeCall::set);
 
-BENCHMARK(StdFuncCall::set);
-BENCHMARK(ReflectedCall::new_design_set);
-BENCHMARK(ReflectedCall::set);
+BENCHMARK(StdFunctionCall::set);
+BENCHMARK(ReflectedCallKnownReturn::set);
+BENCHMARK(ReflectedCallUnknownReturn::set);
 
-BENCHMARK(StdFuncMethodCall::set);
-BENCHMARK(ReflectedMethodCall::set);
+BENCHMARK(StdFunctionMethodCall::set);
+//BENCHMARK(ReflectedMethodCallKnownReturn::set);
+BENCHMARK(ReflectedMethodCallUnknownReturn::set);
 
 BENCHMARK(NativeCall::get);
 
-BENCHMARK(StdFuncCall::get);
-BENCHMARK(ReflectedCall::get);
+BENCHMARK(StdFunctionCall::get);
+BENCHMARK(ReflectedCallKnownReturn::get);
+BENCHMARK(ReflectedCallUnknownReturn::get);
 
-BENCHMARK(StdFuncMethodCall::get);
-BENCHMARK(ReflectedMethodCall::get);
+BENCHMARK(StdFunctionMethodCall::get);
+//BENCHMARK(ReflectedMethodCallKnownReturn::get);
+BENCHMARK(ReflectedMethodCallUnknownReturn::get);
 
 namespace bm 
 {

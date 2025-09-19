@@ -13,8 +13,9 @@
 
 #include <cassert>
 
-#include "lambda_cache.h"
 #include "functor_cache.h"
+#include "lambda_function.hpp"
+#include "lambda_function_cache.h"
 
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
@@ -93,16 +94,16 @@ namespace rtl
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                auto& lambdaCache = dispatch::lambda_cache<_signature...>::instance();
-                auto& functorCache = dispatch::functor_cache<_signature...>::instance();
+                auto& lambdaCache = cache::lambda_function<_signature...>::instance();
+                auto& functorCache = cache::function_ptr<_signature...>::instance();
                 auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-                auto& lambda = lambdaCache.template push_function<_returnType>(functor);
+                auto& lambda = lambdaCache.template push<_returnType>(functor);
                 lambdaPtr = &lambda;
             };
 
             const auto& getIndex = [&]()-> std::size_t
             {
-                auto& functorCache = dispatch::functor_cache<_signature...>::instance();
+                auto& functorCache = cache::function_ptr<_signature...>::instance();
                 auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
                 if (lambdaIndex != rtl::index_none) {
                     lambdaPtr = functor->m_lambda;

@@ -15,7 +15,7 @@
 #include <vector>
 #include <functional>
 
-#include "lambda_cache.h"
+#include "lambda_function_cache.h"
 #include "rtl_constants.h"
 #include "CallReflector.h"
 #include "SetupFunction.h"
@@ -47,7 +47,7 @@ namespace rtl {
             }
 
             //get the vector holding lambdas as 'const-ref'
-            FORCE_INLINE const static std::vector<FunctionLambda>& getFunctors() {
+            FORCE_INLINE const static std::vector<FunctionLambda>& getOverloads() {
                 static std::vector<FunctionLambda>& functorTable = getFunctorTable();
                 return functorTable;
             }

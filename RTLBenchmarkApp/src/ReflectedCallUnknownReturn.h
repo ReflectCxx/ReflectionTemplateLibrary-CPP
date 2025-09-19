@@ -2,15 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct NativeCall
-{
-    static void set(benchmark::State& state);
-    
-    static void get(benchmark::State& state);
-};
-
-
-struct StdFunctionCall
+struct ReflectedCallUnknownReturn
 {
     static void set(benchmark::State& state);
 
@@ -18,7 +10,7 @@ struct StdFunctionCall
 };
 
 
-struct StdFunctionMethodCall
+struct ReflectedMethodCallUnknownReturn
 {    
     static void set(benchmark::State& state);
 

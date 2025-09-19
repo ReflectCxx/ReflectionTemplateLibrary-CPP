@@ -8,7 +8,10 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/functor_const.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/functor_nonconst.h"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.hpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/hopper.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/hopper_ctor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/hopper_const.h"

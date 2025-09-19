@@ -11,12 +11,9 @@
 
 #pragma once
 
-#include "RObject.h"
+#include "forward_decls.h"
 
-namespace rtl
-{
-    class Function;
-}
+#include "RObject.h"
 
 namespace rtl::detail
 {		

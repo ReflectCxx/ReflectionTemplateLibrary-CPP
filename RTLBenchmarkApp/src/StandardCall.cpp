@@ -9,8 +9,8 @@
 namespace 
 {
     static auto _put_line = []() {
-        std::cout << "-------------------------------------"
-        "-------------------------------------" << std::endl;
+        std::cout << "----------------------------------------"
+            "----------------------------------------" << std::endl;
         return 0;
     };
 
@@ -59,7 +59,7 @@ void NativeCall::get(benchmark::State& state)
 }
 
 
-void StdFuncCall::set(benchmark::State& state)
+void StdFunctionCall::set(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -70,7 +70,7 @@ void StdFuncCall::set(benchmark::State& state)
 }
 
 
-void StdFuncMethodCall::set(benchmark::State& state)
+void StdFunctionMethodCall::set(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -81,7 +81,7 @@ void StdFuncMethodCall::set(benchmark::State& state)
 }
 
 
-void StdFuncCall::get(benchmark::State& state)
+void StdFunctionCall::get(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -91,7 +91,7 @@ void StdFuncCall::get(benchmark::State& state)
 }
 
 
-void StdFuncMethodCall::get(benchmark::State& state)
+void StdFunctionMethodCall::get(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)

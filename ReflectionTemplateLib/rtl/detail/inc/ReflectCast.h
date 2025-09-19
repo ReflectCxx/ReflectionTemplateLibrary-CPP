@@ -16,11 +16,7 @@
 #include <functional>
 
 #include "rtl_traits.h"
-
-namespace rtl {
-
-    class CxxMirror;
-}
+#include "forward_decls.h"
 
 namespace rtl::detail
 {
