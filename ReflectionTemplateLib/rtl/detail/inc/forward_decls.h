@@ -40,18 +40,18 @@ namespace rtl
         class lambda_hop;
 
         template<class ...signature_ts>
-        class lambda_hop_function;
+        struct lambda_hop_function;
 
         template<class record_t, class ...signature_ts>
-        class lambda_hop_method;
+        struct lambda_hop_method;
 
-        template<class ...signature_ts>
+        template<class return_t, class ...signature_ts>
         struct function_ptr;
 
-        template<class record_t, class ...signature_ts>
-        struct const_method_ptr;
-
-        template<class record_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_ts>
         struct method_ptr;
+
+        template<class record_t, class return_t, class ...signature_ts>
+        struct const_method_ptr;
     }
 }

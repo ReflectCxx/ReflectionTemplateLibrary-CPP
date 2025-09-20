@@ -102,15 +102,20 @@ namespace
 
 void FunctionPointerCall::set(benchmark::State& state)
 {
-    static auto passed = _test0();
+    static auto* functor = []() -> void(*)(bm::argStr_t) 
+    {   
+        // Must be checked: Passing an incorrect argument or return type is undefined behaviour.
+        if (sendMessage_lambda.is_returning<void>() && sendMessage_lambda.is_signature<bm::argStr_t>())
+        {
+            // No validation is performed internally and the function will not return nullptr on mismatch.
+            return sendMessage_lambda.return_type<void>().signature<bm::argStr_t>().f_ptr();
+        }
+        return nullptr;
+    }();
 
-    // Unchecked: Passing an incorrect signature or return type is undefined behaviour.
-    // No validation is performed and the function will not return nullptr on mismatch.
-    static auto functor = sendMessage_lambda.get_functor().template args_t<bm::argStr_t>()
-                                                          .template return_t<bm::retStr_t>();
     for (auto _ : state)
     {
-        if (passed)
+        if (functor)
         {
             (*functor)(bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());

@@ -12,30 +12,32 @@ namespace cxx
 
 namespace
 {
-    static rtl::Function GetMessage;
-    static rtl::Function SendMessage;
-
-    static rtl::Method NodeGetMessage;
-    static rtl::Method NodeSendMessage;
-
-    static rtl::RObject nodeObj = []()
+    static rtl::Function GetMessage = []()
     {
-        GetMessage = cxx::mirror().getFunction("getMessage").value();
+        return *(cxx::mirror().getFunction("getMessage"));
+    }();
 
-        SendMessage = cxx::mirror().getFunction("sendMessage").value();
+    static rtl::Function SendMessage = []()
+    {
+        return *(cxx::mirror().getFunction("sendMessage"));
+    }();
 
-        rtl::Record Node = cxx::mirror().getRecord("Node").value();
+    static rtl::Method NodeGetMessage = []()
+    {
+        return *(cxx::mirror().getRecord("Node")->getMethod("getMessage"));
+    }();
 
-        NodeGetMessage = Node.getMethod("getMessage").value();
+    static rtl::Method NodeSendMessage = []()
+    {
+        return *(cxx::mirror().getRecord("Node")->getMethod("sendMessage"));
+    }();
 
-        NodeSendMessage = Node.getMethod("sendMessage").value();
-
-        auto [err, robj] = Node.create<rtl::alloc::Stack>();
-
+    static const rtl::RObject nodeObj = []()
+    {
+        auto [err, robj] = cxx::mirror().getRecord("Node")->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
             std::cout << "[0] error: " << rtl::to_string(err) << "\n";
         }
-
         return std::move(robj);
     }();
 }

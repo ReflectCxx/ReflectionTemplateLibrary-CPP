@@ -166,19 +166,19 @@ namespace rtl::detail
         const dispatch::lambda_hop* lambdaPtr = nullptr;
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            auto& functorCache = cache::method_ptr<_recordType, _signature...>::instance();
             auto& lambdaCache = cache::lambda_hop_method<_recordType, _signature...>::instance();
+            auto& functorCache = cache::method_ptr<_recordType, _returnType, _signature...>::instance();
 
-            auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-            auto& lambda = lambdaCache.template push<_returnType>(functor);
+            auto* functor = functorCache.push(pFunctor, pIndex);
+            auto& lambda = lambdaCache.push(functor);
 
             lambdaPtr = &lambda;
         };
 
         const auto& getIndex = [&]()-> std::size_t
         {
-            auto& functorCache = cache::method_ptr<_recordType, _signature...>::instance();
-            auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+            auto& functorCache = cache::method_ptr<_recordType, _returnType, _signature...>::instance();
+            auto [functor, lambdaIndex] = functorCache.find(pFunctor);
 
             if (lambdaIndex != rtl::index_none) {
                 lambdaPtr = functor->m_lambda;
@@ -238,18 +238,18 @@ namespace rtl::detail
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
             auto& lambdaCache = cache::lambda_hop_method<_recordType, _signature...>::instance();
-            auto& functorCache = cache::const_method_ptr<_recordType, _signature...>::instance();
+            auto& functorCache = cache::const_method_ptr<_recordType, _returnType, _signature...>::instance();
 
-            auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-            auto& lambda = lambdaCache.template push<_returnType>(functor);
+            auto* functor = functorCache.push(pFunctor, pIndex);
+            auto& lambda = lambdaCache.push(functor);
             
             lambdaPtr = &lambda;
         };
 
         const auto& getIndex = [&]()-> std::size_t
         {
-            auto& functorCache = cache::const_method_ptr<_recordType, _signature...>::instance();
-            auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+            auto& functorCache = cache::const_method_ptr<_recordType, _returnType, _signature...>::instance();
+            auto [functor, lambdaIndex] = functorCache.find(pFunctor);
             
             if (lambdaIndex != rtl::index_none) {
                 lambdaPtr = functor->m_lambda;

@@ -17,32 +17,29 @@
 
 namespace rtl::dispatch
 {
-	template<class record_t, class ...signature_ts>
+	template<class record_t, class return_t, class ...signature_ts>
 	struct const_method_ptr : public functor
 	{
-		using voidfn_t = void(record_t::*)(signature_ts...) const;
+		using functor_t = return_t(record_t::*)(signature_ts...) const;
 
-		template<class ret_t>
-		constexpr decltype(auto) return_t() const
+		constexpr functor_t get() const
 		{
-			using fptr_t = ret_t(record_t::*)(signature_ts...);
-			return reinterpret_cast<fptr_t>(m_functor);
+			return m_functor;
 		}
 
-		template<class return_t>
-		constexpr bool is_same(return_t(record_t::*fptr)(signature_ts...) const) const
+		constexpr bool is_same(functor_t fptr) const
 		{
-			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
+			return (fptr == m_functor);
 		}
 
-		const_method_ptr(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
+		const_method_ptr(functor_t fptr) :m_functor(fptr)
 		{
-			m_returnId = returnId;
-			m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
+			m_returnId = detail::TypeId<traits::raw_t<return_t>>::get();
+			m_signatureId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
 		}
 
 	private:
 
-		const voidfn_t m_functor;
+		const functor_t m_functor;
 	};
 }

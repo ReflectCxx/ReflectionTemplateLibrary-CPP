@@ -11,38 +11,35 @@
 
 #pragma once
 
+#include <tuple>
+
 #include "functor.h"
 
 namespace rtl::dispatch
 {
-	template<class ...signature_ts>
+	template<class return_t, class ...signature_ts>
 	struct function_ptr: public functor
 	{
-		using voidfn_t = void(*)(signature_ts...);
+		using functor_t = return_t(*)(signature_ts...);
 
-		template<class ret_t>
-		constexpr decltype(auto) return_t() const
+		constexpr functor_t f_ptr() const
 		{
-			using fptr_t = ret_t(*)(signature_ts...);
-			return reinterpret_cast<fptr_t>(m_functor);
+			return m_functor;
 		}
 
-		template<class return_t>
-		constexpr bool is_same(return_t(*fptr)(signature_ts...)) const
+		constexpr bool is_same(functor_t fptr) const
 		{
-			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
+			return (fptr == m_functor);
 		}
 
-		function_ptr(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
+		function_ptr(functor_t fptr) :m_functor(fptr)
 		{
-			m_returnId = returnId;
-			m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
+			m_returnId = detail::TypeId<traits::raw_t<return_t>>::get();
+			m_signatureId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
 		}
-
-		function_ptr(const function_ptr&) = default;
 
 	private:
 
-		const voidfn_t m_functor;
+		const functor_t m_functor;
 	};
 }

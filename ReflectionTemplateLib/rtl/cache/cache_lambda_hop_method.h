@@ -15,7 +15,6 @@
 
 #include "lambda_hop_method.h"
 
-
 namespace rtl::cache
 {
     template<class record_t, class ...signature_ts>
@@ -27,11 +26,9 @@ namespace rtl::cache
             return instance_;
         }
 
-        template<class return_t>
         const dispatch::lambda_hop_method<record_t, signature_ts...>& push(const dispatch::functor* fptr) const
         {
-            auto lambda = dispatch::lambda_hop_method<record_t, signature_ts...>::template create<return_t>(fptr);
-            m_cache.push_back(lambda);
+            m_cache.push_back(dispatch::lambda_hop_method<record_t, signature_ts...>(fptr));
             fptr->set_lambda(&m_cache.back());
             return m_cache.back();
         }

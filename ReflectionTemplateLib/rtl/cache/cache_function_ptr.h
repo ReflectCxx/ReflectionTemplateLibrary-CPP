@@ -17,10 +17,10 @@
 
 namespace rtl::cache
 {
-    template<class ...signature_ts>
+    template<class return_t, class ...signature_ts>
     struct function_ptr
     {
-        using functor_t = dispatch::function_ptr<signature_ts...>;
+        using functor_t = dispatch::function_ptr<return_t, signature_ts...>;
 
         static const function_ptr& instance()
         {
@@ -28,23 +28,18 @@ namespace rtl::cache
             return instance_;
         }
 
-        template<class return_t>
         const dispatch::functor* push(return_t(*fptr)(signature_ts...), std::size_t lambda_index) const
         {
-            using voidfn_t = typename dispatch::function_ptr<signature_ts...>::voidfn_t;
-
-            auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
-            m_cache.emplace_back(std::make_pair(functor , lambda_index));
+            m_cache.emplace_back(std::make_pair(fptr, lambda_index));
             return &(m_cache.back().first);
         }
 
-        template<class return_t>
         std::pair<const dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_ts...)) const
         {
             for (auto& itr : m_cache)
             {
                 const auto& functor = itr.first;
-                if (functor.template is_same<return_t>(fptr)) {
+                if (functor.is_same(fptr)) {
                     return { &itr.first, itr.second };
                 }
             }
@@ -61,6 +56,6 @@ namespace rtl::cache
         // No reallocation occurs; original objects stay intact
         mutable std::list<std::pair<const functor_t, std::size_t>> m_cache;
 
-        function_ptr() {}
+        function_ptr() = default;
     };
 }

@@ -17,34 +17,29 @@
 
 namespace rtl::cache 
 {
-    template<class record_t, class ...signature_ts>
+    template<class record_t, class return_t, class ...signature_ts>
     struct const_method_ptr
     {
-        using functor_t = dispatch::const_method_ptr<record_t, signature_ts...>;
+        using functor_t = dispatch::const_method_ptr<record_t, return_t, signature_ts...>;
 
         static const const_method_ptr& instance()
         {
-            static const_method_ptr instance_;
+            static const const_method_ptr instance_;
             return instance_;
         }
 
-        template<class return_t>
         const dispatch::functor* push(return_t(record_t::* fptr)(signature_ts...) const, std::size_t lambda_index) const
         {
-            using voidfn_t = typename dispatch::const_method_ptr<record_t, signature_ts...>::voidfn_t;
-            auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
-            m_cache.emplace_back(std::make_pair(functor, lambda_index));
+            m_cache.emplace_back(std::make_pair(fptr, lambda_index));
             return &(m_cache.back().first);
-
         }
 
-        template<class return_t>
         std::pair<const dispatch::functor*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...) const) const
         {
             for (auto& itr : m_cache)
             {
                 const auto& functor = itr.first;
-                if (functor.template is_same<return_t>(fptr)) {
+                if (functor.is_same(fptr)) {
                     return { &itr.first, itr.second };
                 }
             }

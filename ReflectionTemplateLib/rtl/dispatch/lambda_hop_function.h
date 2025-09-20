@@ -11,51 +11,16 @@
 
 #pragma once
 
-#include <tuple>
-#include <functional>
-#include <type_traits>
-
-#include "forward_decls.h"
-
-#include "hopper.h"
-#include "hopper_ctor.h"
-#include "hopper_const.h"
 #include "lambda_hop.h"
 
 namespace rtl::dispatch
 {
     template<class ...signature_ts>
-    class lambda_hop_function: public lambda_hop
+    struct lambda_hop_function: public lambda_hop
     {
-        using lambda_t = std::function<Return(const lambda_hop&, const signature_ts&...)>;
-
-        const lambda_t m_hopper;
-
-        lambda_hop_function(std::size_t returnId, const functor* functor, lambda_t hopper) noexcept
-            : m_hopper(std::move(hopper))
-        {
-            m_functor = functor;
-            m_returnId = returnId;
-            m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();
-            detail::TypeId<signature_ts...>::get(m_argumentsId);
-        }
-
-    public:
-
-        template<class return_t>
-        static lambda_hop_function create(const functor*);
-
-        decltype(auto) operator()(signature_ts&&...) const noexcept;
+        lambda_hop_function(const functor*) noexcept;
 
         template<class return_t, class...args_t>
-        decltype(auto) dispatch(args_t&& ...) const noexcept;
-
-
-        template<class record_t, class return_t>
-        static lambda_hop_function create_method_const(const functor* fptr_hopper)
-        {
-            return lambda(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
-                          //&hopper_const<signature_ts...>::template dispatch<record_t, return_t>);
-        }
+        decltype(auto) dispatch(args_t&&...) const noexcept;
     };
 }

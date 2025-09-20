@@ -95,16 +95,18 @@ namespace rtl
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
                 auto& lambdaCache = cache::lambda_hop_function<_signature...>::instance();
-                auto& functorCache = cache::function_ptr<_signature...>::instance();
-                auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-                auto& lambda = lambdaCache.template push<_returnType>(functor);
+                auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
+
+                auto* functor = functorCache.push(pFunctor, pIndex);
+                auto& lambda = lambdaCache.push(functor);
+
                 lambdaPtr = &lambda;
             };
 
             const auto& getIndex = [&]()-> std::size_t
             {
-                auto& functorCache = cache::function_ptr<_signature...>::instance();
-                auto [functor, lambdaIndex] = functorCache.template find<_returnType>(pFunctor);
+                auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
+                auto [functor, lambdaIndex] = functorCache.find(pFunctor);
                 if (lambdaIndex != rtl::index_none) {
                     lambdaPtr = functor->m_lambda;
                 }
