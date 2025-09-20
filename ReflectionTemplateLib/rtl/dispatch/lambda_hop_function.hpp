@@ -32,7 +32,7 @@ namespace rtl::dispatch
         constexpr bool signature_ok = std::is_same_v< std::tuple<traits::raw_t<args_t>...>,
                                                       std::tuple<signature_ts...>>;
 
-        static_assert( signature_ok, "Argument types don’t match signature.");
+        static_assert( signature_ok, "Argument types don't match signature.");
 
         auto* functor = return_type<traits::raw_t<ret_t>>().template signature<traits::raw_t<args_t>...>().f_ptr();
 
