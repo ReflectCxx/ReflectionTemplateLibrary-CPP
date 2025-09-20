@@ -13,9 +13,9 @@
 
 #include <cassert>
 
-#include "functor_cache.h"
-#include "lambda_function.hpp"
-#include "lambda_function_cache.h"
+#include "lambda_hop_function.hpp"
+#include "cache_lambda_hop_function.h"
+#include "cache_function_ptr.h"
 
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
@@ -94,7 +94,7 @@ namespace rtl
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                auto& lambdaCache = cache::lambda_function<_signature...>::instance();
+                auto& lambdaCache = cache::lambda_hop_function<_signature...>::instance();
                 auto& functorCache = cache::function_ptr<_signature...>::instance();
                 auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
                 auto& lambda = lambdaCache.template push<_returnType>(functor);

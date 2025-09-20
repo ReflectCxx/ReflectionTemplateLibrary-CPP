@@ -18,9 +18,9 @@
 namespace rtl::dispatch
 {
 	template<class record_t, class ...signature_ts>
-	struct functor_nonconst : public functor_hop
+	struct const_method_ptr : public functor
 	{
-		using voidfn_t = void(record_t::*)(signature_ts...);
+		using voidfn_t = void(record_t::*)(signature_ts...) const;
 
 		template<class return_t>
 		decltype(auto) get(std::size_t returnId) const
@@ -34,12 +34,12 @@ namespace rtl::dispatch
 		}
 
 		template<class return_t>
-		bool is_same(return_t(record_t::* fptr)(signature_ts...)) const
+		bool is_same(return_t(record_t::*fptr)(signature_ts...) const) const
 		{
 			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
 		}
 
-		functor_nonconst(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
+		const_method_ptr(voidfn_t fptr, std::size_t returnId) :m_functor(fptr)
 		{
 			m_returnId = returnId;
 			m_signatureId = detail::TypeId<std::tuple<signature_ts...>>::get();

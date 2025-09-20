@@ -100,3 +100,13 @@
 * Declared in namespace rtl.
 */
 #include "CxxMirror.hpp"
+
+
+namespace rtl {
+    
+    template<class ...argsT>
+    using lambda_function = dispatch::lambda_hop_function<argsT...>;
+
+    template<class recordT, class ...argsT>
+    using lambda_method = dispatch::lambda_hop_method<recordT, argsT...>;
+}

@@ -18,13 +18,13 @@
 namespace rtl::dispatch
 {
     template<class record_t, class ...signature_ts>
-    class lambda_method : public lambda_hop
+    class lambda_hop_method : public lambda_hop
     {
         using lambda_t = std::function<Return(record_t&, const lambda_hop&, const signature_ts&...)>;
 
         const lambda_t m_hopper;
 
-        lambda_method(std::size_t returnId, const functor_hop* functor, lambda_t hopper) noexcept
+        lambda_hop_method(std::size_t returnId, const functor* functor, lambda_t hopper) noexcept
             : m_hopper(std::move(hopper))
         {
             m_functor = functor;
@@ -37,9 +37,9 @@ namespace rtl::dispatch
     public:
 
         template<class return_t>
-        static lambda_method create(const functor_hop* fptr_hopper)
+        static lambda_hop_method create(const functor* fptr_hopper)
         {
-            return lambda_method(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
+            return lambda_hop_method(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
    			                     //&hopper_nonconst<record_t, signature_ts...>::template dispatch<std::is_same_v<return_t, void>, return_t>);
         }
 
@@ -58,7 +58,5 @@ namespace rtl::dispatch
                 return hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
             }
         }
-
-        //lambda_method() :m_hopper(nullptr) {}
     };
 }

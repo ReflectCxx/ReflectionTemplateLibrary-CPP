@@ -24,8 +24,6 @@ namespace rtl
     class Method;
 
     class CxxMirror;
-
-    struct Return;
     
     namespace detail 
     {
@@ -37,23 +35,19 @@ namespace rtl
 
     namespace dispatch
     {
-        struct lambda_hop;
+        template<class ...signature_ts>
+        class lambda_hop_function;
 
-        struct functor_hop;
+        template<class record_t, class ...signature_ts>
+        class lambda_hop_method;
 
         template<class ...signature_ts>
-        class lambda;
+        struct function_ptr;
 
         template<class record_t, class ...signature_ts>
-        class lambda_method;
-
-        template<class ...signature_ts>
-        struct functor;
+        struct const_method_ptr;
 
         template<class record_t, class ...signature_ts>
-        struct functor_const;
-
-        template<class record_t, class ...signature_ts>
-        struct functor_nonconst;
+        struct method_ptr;
     }
 }

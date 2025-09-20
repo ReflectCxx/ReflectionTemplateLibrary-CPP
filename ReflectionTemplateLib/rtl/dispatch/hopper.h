@@ -13,8 +13,8 @@
 
 #include <cassert>
 
-#include "lambda_function.h"
-#include "functor.h"
+#include "lambda_hop_function.h"
+#include "function_ptr.h"
 
 namespace rtl::dispatch
 {
@@ -24,8 +24,8 @@ namespace rtl::dispatch
         template<class return_t> requires (std::is_same_v<return_t, Return> == false)
         static decltype(auto) dispatch(const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
         {
-            auto functor = lambda_ref.functor().template get<signature_ts...>()
-                                               .template get<return_t>(lambda_ref.m_returnId);
+            auto functor = lambda_ref.get_functor().template get<signature_ts...>()
+                                                   .template get<return_t>(lambda_ref.m_returnId);
 
             if constexpr (std::is_same_v<return_t, void>) {
                 (*functor)(params...);

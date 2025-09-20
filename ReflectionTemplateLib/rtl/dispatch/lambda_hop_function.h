@@ -25,13 +25,13 @@
 namespace rtl::dispatch
 {
     template<class ...signature_ts>
-    class lambda: public lambda_hop
+    class lambda_hop_function: public lambda_hop
     {
         using lambda_t = std::function<Return(const lambda_hop&, const signature_ts&...)>;
 
         const lambda_t m_hopper;
 
-        lambda(std::size_t returnId, const functor_hop* functor, lambda_t hopper) noexcept
+        lambda_hop_function(std::size_t returnId, const functor* functor, lambda_t hopper) noexcept
             : m_hopper(std::move(hopper))
         {
             m_functor = functor;
@@ -43,7 +43,7 @@ namespace rtl::dispatch
     public:
 
         template<class return_t>
-        static lambda create(const functor_hop*);
+        static lambda_hop_function create(const functor*);
 
         decltype(auto) operator()(const signature_ts&...) const noexcept;
 
@@ -51,7 +51,7 @@ namespace rtl::dispatch
         decltype(auto) dispatch(const signature_ts&...) const noexcept;
 
         template<class record_t, class return_t>
-        static lambda create_method_const(const functor_hop* fptr_hopper)
+        static lambda_hop_function create_method_const(const functor* fptr_hopper)
         {
             return lambda(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
                           //&hopper_const<signature_ts...>::template dispatch<record_t, return_t>);

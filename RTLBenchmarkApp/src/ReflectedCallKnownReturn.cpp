@@ -1,7 +1,8 @@
 
 #include <benchmark/benchmark.h>
 #include <rtl/rtl.h>
-#include <rtl/dispatch/lambda_function.hpp>
+//#include <rtl/dispatch/lambda_hop_method.hpp>
+#include <rtl/dispatch/lambda_hop_function.hpp>
 
 #include "BenchMark.h"
 #include "ReflectedCallKnownReturn.h"
@@ -19,13 +20,13 @@ namespace cxx
 
 namespace
 {
-    static const rtl::dispatch::lambda<bm::argStr_t>* GetMessage_lambda = nullptr;
+    static const rtl::lambda_function<bm::argStr_t>* GetMessage_lambda = nullptr;
 
-    static const rtl::dispatch::lambda<bm::argStr_t>* SendMessage_lambda = nullptr;
+    static const rtl::lambda_function<bm::argStr_t>* SendMessage_lambda = nullptr;
 
-    static const rtl::dispatch::lambda<bm::argStr_t>* NodeGetMessage_lambda = nullptr;
+    static const rtl::lambda_method<bm::Node, bm::argStr_t>* NodeGetMessage_lambda = nullptr;
 
-    static const rtl::dispatch::lambda<bm::argStr_t>* NodeSendMessage_lambda = nullptr;
+    static const rtl::lambda_method<bm::Node, bm::argStr_t>* NodeSendMessage_lambda = nullptr;
 
     static const rtl::RObject nodeObj = []()
     {
@@ -43,9 +44,9 @@ namespace
 
         SendMessage_lambda = sendMsg.getOverloads()[0].get_lambda_function<bm::argStr_t>();
 
-        NodeGetMessage_lambda = getMsgNode.getOverloads()[0].get_lambda_function<bm::argStr_t>();
+        NodeGetMessage_lambda = getMsgNode.getOverloads()[0].get_lambda_method<bm::Node, bm::argStr_t>();
 
-        NodeSendMessage_lambda = sendMsgNode.getOverloads()[0].get_lambda_function<bm::argStr_t>();
+        NodeSendMessage_lambda = sendMsgNode.getOverloads()[0].get_lambda_method<bm::Node, bm::argStr_t>();
 
         auto [err, robj] = Node.create<rtl::alloc::Stack>();
 

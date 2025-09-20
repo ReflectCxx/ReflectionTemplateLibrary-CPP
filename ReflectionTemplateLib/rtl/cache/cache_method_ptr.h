@@ -13,14 +13,14 @@
 
 #include <list>
 
-#include "functor_nonconst.h"
+#include "method_ptr.h"
 
 namespace rtl::cache
 {
     template<class record_t, class ...signature_ts>
     struct method_ptr
     {
-        using functor_t = dispatch::functor_nonconst<record_t, signature_ts...>;
+        using functor_t = dispatch::method_ptr<record_t, signature_ts...>;
 
         static const method_ptr& instance()
         {
@@ -29,16 +29,16 @@ namespace rtl::cache
         }
 
         template<class return_t>
-        const dispatch::functor_hop* push(return_t(record_t::* fptr)(signature_ts...), std::size_t lambda_index) const
+        const dispatch::functor* push(return_t(record_t::* fptr)(signature_ts...), std::size_t lambda_index) const
         {
-            using voidfn_t = typename dispatch::functor_nonconst<record_t, signature_ts...>::voidfn_t;
+            using voidfn_t = typename dispatch::method_ptr<record_t, signature_ts...>::voidfn_t;
             auto functor = functor_t(reinterpret_cast<voidfn_t>(fptr), detail::TypeId<return_t>::get());
             m_cache.emplace_back(std::make_pair(functor, lambda_index));
             return &(m_cache.back().first);
         }
 
         template<class return_t>
-        std::pair<const dispatch::functor_hop*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...)) const
+        std::pair<const dispatch::functor*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...)) const
         {
             for (auto& itr : m_cache)
             {

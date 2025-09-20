@@ -13,39 +13,39 @@
 
 #include <list>
 
-#include "lambda_function.h"
+#include "lambda_hop_method.h"
 
 
 namespace rtl::cache
 {
     template<class record_t, class ...signature_ts>
-    struct lambda_method
+    struct lambda_hop_method
     {
-        static const lambda_method& instance()
+        static const lambda_hop_method& instance()
         {
-            static const lambda_method instance_;
+            static const lambda_hop_method instance_;
             return instance_;
         }
 
         template<class return_t>
-        const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor_hop* fptr_hopper) const
+        const dispatch::lambda_hop_method<record_t, signature_ts...>& push(const dispatch::functor* fptr_hopper) const
         {
-            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>::template create<return_t>(fptr_hopper));
-            const dispatch::lambda_method<record_t, signature_ts...>& lambda_hop = m_cache.back();
+            m_cache.push_back(dispatch::lambda_hop_method<record_t, signature_ts...>::template create<return_t>(fptr_hopper));
+            const dispatch::lambda_hop_method<record_t, signature_ts...>& lambda_hop = m_cache.back();
             fptr_hopper->set_lambda(&lambda_hop);
             return lambda_hop;
         }
 
-        lambda_method(lambda_method&&) = delete;
-        lambda_method(const lambda_method&) = delete;
-        lambda_method& operator=(lambda_method&&) = delete;
-        lambda_method& operator=(const lambda_method&) = delete;
+        lambda_hop_method(lambda_hop_method&&) = delete;
+        lambda_hop_method(const lambda_hop_method&) = delete;
+        lambda_hop_method& operator=(lambda_hop_method&&) = delete;
+        lambda_hop_method& operator=(const lambda_hop_method&) = delete;
 
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<dispatch::lambda_method<record_t, signature_ts...>> m_cache;
+        mutable std::list<dispatch::lambda_hop_method<record_t, signature_ts...>> m_cache;
 
-        lambda_method() {}
+        lambda_hop_method() = default;
     };
 }

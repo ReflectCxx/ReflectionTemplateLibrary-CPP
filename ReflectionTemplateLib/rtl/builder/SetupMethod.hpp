@@ -18,12 +18,10 @@
 #include "SetupMethod.h"
 #include "RObjectBuilder.hpp"
 
-#include "functor_cache_const.h"
-#include "functor_cache_nonconst.h"
-
-#include "lambda_method.h"
-#include "lambda_method_cache.h"
-
+#include "lambda_hop_method.h"
+#include "cache_method_ptr.h"
+#include "cache_const_method_ptr.h"
+#include "cache_lambda_hop_method.h"
 
 namespace rtl::detail
 {
@@ -168,8 +166,8 @@ namespace rtl::detail
         const dispatch::lambda_hop* lambdaPtr = nullptr;
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            auto& lambdaCache = cache::lambda_method<_recordType, _signature...>::instance();
             auto& functorCache = cache::method_ptr<_recordType, _signature...>::instance();
+            auto& lambdaCache = cache::lambda_hop_method<_recordType, _signature...>::instance();
 
             auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
             auto& lambda = lambdaCache.template push<_returnType>(functor);
@@ -239,11 +237,11 @@ namespace rtl::detail
         const dispatch::lambda_hop* lambdaPtr = nullptr;
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            auto& lambdaCache = cache::lambda_function<_signature...>::instance();
+            auto& lambdaCache = cache::lambda_hop_method<_recordType, _signature...>::instance();
             auto& functorCache = cache::const_method_ptr<_recordType, _signature...>::instance();
 
             auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-            auto& lambda = lambdaCache.template push_method_const<_recordType, _returnType>(functor);
+            auto& lambda = lambdaCache.template push<_returnType>(functor);
             
             lambdaPtr = &lambda;
         };

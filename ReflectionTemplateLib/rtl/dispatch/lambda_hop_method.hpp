@@ -21,7 +21,7 @@ namespace rtl::detail
 
 	//template<class record_t, class ...signature_ts>
 	//template<class return_t>
-	//inline lambda_method<record_t, signature_ts...> lambda_method<record_t, signature_ts...>::create(const functor_hop* fptr_hopper)
+	//inline lambda_method<record_t, signature_ts...> lambda_method<record_t, signature_ts...>::create(const functor* fptr_hopper)
 	//{
  //       return lambda_method<record_t, signature_ts...>();
  //           //lambda_method(detail::TypeId<return_t>::get(), fptr_hopper,
