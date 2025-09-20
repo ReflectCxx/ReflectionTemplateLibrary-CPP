@@ -12,29 +12,28 @@
 #pragma once
 
 
-#include "lambda_function.h"
+//#include "lambda_function.h"
 
 namespace rtl::dispatch
 {
-    template<class ...signature_ts>
-    struct hopper_ctor
-    {
-        template<class record_t>
-        static Return dispatch(const lambda_hop&, const signature_ts&...) noexcept
-        {
-            return { error::EmptyRObject, RObject{} };
-        }
-    };
+    // template<class ...signature_ts>
+    // struct hopper_ctor
+    // {
+    //     template<class record_t>
+    //     static Return dispatch(const lambda_hop&, const signature_ts&...) noexcept
+    //     {
+    //         return { error::EmptyRObject, RObject{} };
+    //     }
+    // };
 
 
-    template<class ...signature_ts>
-    struct hopper_copyctor
-    {
-        template<class record_t>
-        static Return dispatch(const lambda_hop&, signature_ts&&...) noexcept
-        {
-            return { error::EmptyRObject, RObject{} };
-        }
-    };
-
+    // template<class ...signature_ts>
+    // struct hopper_copyctor
+    // {
+    //     template<class record_t>
+    //     static Return dispatch(const lambda_hop&, signature_ts&&...) noexcept
+    //     {
+    //         return { error::EmptyRObject, RObject{} };
+    //     }
+    // };
 }

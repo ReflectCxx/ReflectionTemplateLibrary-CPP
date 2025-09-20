@@ -17,10 +17,10 @@ namespace rtl::dispatch
 {
     template<class ...signature_ts>
     template<class return_t>
-    static lambda<signature_ts...> lambda<signature_ts...>::create(const functor_hop* fptr_hopper)
+    inline lambda<signature_ts...> lambda<signature_ts...>::create(const functor_hop* fptr_hopper)
     {
-        return lambda(detail::TypeId<return_t>::get(), fptr_hopper,
-                      &hopper<signature_ts...>::template dispatch<std::is_same_v<return_t, void>, return_t>);
+        return lambda(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
+                      //&hopper<signature_ts...>::template dispatch<std::is_same_v<return_t, void>, return_t>);
     }
 
     template<class ...signature_ts>

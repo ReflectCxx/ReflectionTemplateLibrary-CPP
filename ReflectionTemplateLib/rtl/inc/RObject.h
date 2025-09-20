@@ -20,7 +20,7 @@
 
 #include "rtl_typeid.h"
 #include "rtl_traits.h"
-
+#include "forward_decls.h"
 
 namespace rtl::detail
 {
@@ -36,10 +36,6 @@ namespace rtl::detail
 
 namespace rtl
 {
-    struct Return;
-    class Function;
-    class CxxMirror;
-
     //Reflecting the object within.
     class RObject
     {

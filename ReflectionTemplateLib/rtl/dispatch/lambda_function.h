@@ -42,19 +42,19 @@ namespace rtl::dispatch
 
     public:
 
+        template<class return_t>
+        static lambda create(const functor_hop*);
+
         decltype(auto) operator()(const signature_ts&...) const noexcept;
 
         template<class return_t>
         decltype(auto) dispatch(const signature_ts&...) const noexcept;
 
-        template<class return_t>
-        static lambda create(const functor_hop*);
-
         template<class record_t, class return_t>
         static lambda create_method_const(const functor_hop* fptr_hopper)
         {
-            return lambda(detail::TypeId<return_t>::get(), fptr_hopper,
-                          &hopper_const<signature_ts...>::template dispatch<record_t, return_t>);
+            return lambda(detail::TypeId<return_t>::get(), fptr_hopper, nullptr);
+                          //&hopper_const<signature_ts...>::template dispatch<record_t, return_t>);
         }
     };
 }

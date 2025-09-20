@@ -21,7 +21,7 @@
 #include "functor_cache_const.h"
 #include "functor_cache_nonconst.h"
 
-#include "lambda_method.hpp"
+#include "lambda_method.h"
 #include "lambda_method_cache.h"
 
 
@@ -172,7 +172,7 @@ namespace rtl::detail
             auto& functorCache = cache::method_ptr<_recordType, _signature...>::instance();
 
             auto* functor = functorCache.template push<_returnType>(pFunctor, pIndex);
-            auto& lambda = lambdaCache.template push<_recordType, _returnType>(functor);
+            auto& lambda = lambdaCache.template push<_returnType>(functor);
 
             lambdaPtr = &lambda;
         };

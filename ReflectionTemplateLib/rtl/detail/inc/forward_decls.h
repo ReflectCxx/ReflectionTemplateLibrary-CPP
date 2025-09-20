@@ -25,6 +25,8 @@ namespace rtl
 
     class CxxMirror;
 
+    struct Return;
+    
     namespace detail 
     {
         struct FunctorId;

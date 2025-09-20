@@ -11,17 +11,18 @@
 
 #pragma once
 
-#include "lambda_function.h"
+//#include "RObject.h"
+//#include "lambda_function.h"
 
 namespace rtl::dispatch
 {
-    template<class ...signature_ts>
-    struct hopper_const
-    {
-        template<class record_t, class return_t>
-        static Return dispatch(const lambda_hop&, const signature_ts&...) noexcept
-        {
-            return { error::EmptyRObject, RObject{} };
-        }
-    };    
+    // template<class ...signature_ts>
+    // struct hopper_const
+    // {
+    //     template<class record_t, class return_t>
+    //     static Return dispatch(const lambda_hop&, const signature_ts&...) noexcept
+    //     {
+    //         return { error::EmptyRObject, RObject{} };
+    //     }
+    // };
 }

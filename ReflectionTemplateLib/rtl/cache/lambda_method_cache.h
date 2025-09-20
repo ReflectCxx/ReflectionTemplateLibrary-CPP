@@ -27,7 +27,7 @@ namespace rtl::cache
             return instance_;
         }
 
-        template<class record_t, class return_t>
+        template<class return_t>
         const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor_hop* fptr_hopper) const
         {
             m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>::template create<return_t>(fptr_hopper));

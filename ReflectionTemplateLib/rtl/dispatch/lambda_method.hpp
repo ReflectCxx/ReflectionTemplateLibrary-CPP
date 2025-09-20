@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "dispatch_interface.h"
+//#include "dispatch_interface.h"
 
-#include "lambda_method.h"
-#include "hopper_nonconst.h"
+//#include "lambda_method.h"
+//#include "hopper_nonconst.h"
 
 namespace rtl::detail
 {
@@ -37,16 +37,15 @@ namespace rtl::detail
     //}
 
 
-    //template<class record_t, class ...signature_ts>
-    //template<class return_t>
-    //inline decltype(auto) lambda_method<record_t, signature_ts...>::dispatch(record_t& target, const signature_ts&...params) const noexcept
-    //{
-    //    //TODO: static-assert signature_ts == args_t && enable perfect-forwarding
+    // template<class record_t, class ...signature_ts>
+    // template<class return_t>
+    // inline return_t lambda_method<record_t, signature_ts...>::dispatch(record_t& target, const signature_ts&...params) const noexcept
+    // {
     //    if constexpr (std::is_same_v<return_t, void>) {
     //        hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
     //    }
     //    else {
     //        return hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
     //    }
-    //}
+    // }
 }

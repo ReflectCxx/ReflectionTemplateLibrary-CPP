@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "forward_decls.h"
+//#include "forward_decls.h"
 #include "dispatch_interface.h"
 #include "hopper_nonconst.h"
 
@@ -43,10 +43,21 @@ namespace rtl::dispatch
    			                     //&hopper_nonconst<record_t, signature_ts...>::template dispatch<std::is_same_v<return_t, void>, return_t>);
         }
 
-        decltype(auto) operator()(record_t&, const signature_ts&...) const noexcept;
+        decltype(auto) operator()(record_t& target, const signature_ts& ...params) const noexcept
+        {
+            return m_hopper(target, *this, params...);
+        }
 
-        template<class record_t, class return_t>
-        decltype(auto) dispatch(record_t&, const signature_ts&...) const noexcept;
+        template<class return_t>
+        decltype(auto) dispatch(record_t& target, const signature_ts& ...params) const noexcept
+        {
+            if constexpr (std::is_same_v<return_t, void>) {
+                hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
+            }
+            else {
+                return hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
+            }
+        }
 
         //lambda_method() :m_hopper(nullptr) {}
     };

@@ -114,7 +114,7 @@ void ReflectedCallKnownReturn::set(benchmark::State& state)
     static auto passed = _test0();
     for (auto _ : state)
     {
-        if (passed)
+        //if (passed)
         {
             (*SendMessage_lambda).dispatch<void>(bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());
@@ -128,7 +128,7 @@ void ReflectedCallKnownReturn::get(benchmark::State& state)
     static auto passed = _test2();
     for (auto _: state)
     {
-        if (passed)
+        //if (passed)
         {
             auto retStr = (*GetMessage_lambda).dispatch<bm::retStr_t>(bm::g_longStr);
             benchmark::DoNotOptimize(retStr);

@@ -14,7 +14,7 @@
 #include <optional>
 
 #include "rtl_traits.h"
-#include "forward_decls.h"
+#include "RObject.h"
 
 namespace rtl::detail
 {
