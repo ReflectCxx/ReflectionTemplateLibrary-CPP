@@ -21,19 +21,19 @@ namespace rtl::dispatch
     template<class record_t, class ...signature_ts>
     struct hopper_nonconst
     {
-        template<class return_t> requires (std::is_same_v<return_t, Return> == false)
-        static decltype(auto) dispatch(record_t& target, const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
-        {
-            auto functor = lambda_ref.get_functor().template get_nonconst<record_t, signature_ts...>()
-                                                   .template get<return_t>(lambda_ref.m_returnId);
+        // template<class return_t> requires (std::is_same_v<return_t, Return> == false)
+        // static decltype(auto) dispatch(record_t& target, const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
+        // {
+        //     auto functor = lambda_ref.get_functor().template get_nonconst<record_t, signature_ts...>()
+        //                                            .template get<return_t>(lambda_ref.m_returnId);
 
-            if constexpr (std::is_same_v<return_t, void>) {
-                (target.*functor)(params...);
-            }
-            else {
-                return (target.*functor)(params...);
-            }
-        }
+        //     if constexpr (std::is_same_v<return_t, void>) {
+        //         (target.*functor)(params...);
+        //     }
+        //     else {
+        //         return (target.*functor)(params...);
+        //     }
+        // }
 
 
     //     template<bool void_t, class return_t> requires (void_t == true)

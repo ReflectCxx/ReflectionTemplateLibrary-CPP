@@ -22,10 +22,10 @@ namespace rtl::dispatch
 	{
 		using voidfn_t = void(record_t::*)(signature_ts...);
 
-		template<class return_t>
+		template<class ret_t>
 		constexpr decltype(auto) return_t() const
 		{
-			using fptr_t = return_t(record_t::*)(signature_ts...);
+			using fptr_t = ret_t(record_t::*)(signature_ts...);
 			return reinterpret_cast<fptr_t>(m_functor);
 		}
 
