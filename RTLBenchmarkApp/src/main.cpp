@@ -8,6 +8,9 @@
 #include "ReflectedCallUnknownReturn.h"
 
 BENCHMARK(NativeCall::set);
+BENCHMARK(FunctionPointerCall::set);
+//BENCHMARK(ReflectedCallKnownReturn::set);
+//BENCHMARK(ReflectedCallKnownReturn::set);
 
 BENCHMARK(StdFunctionCall::set);
 BENCHMARK(ReflectedCallKnownReturn::set);

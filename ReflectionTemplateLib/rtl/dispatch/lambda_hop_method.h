@@ -12,7 +12,7 @@
 #pragma once
 
 //#include "forward_decls.h"
-#include "dispatch_interface.h"
+#include "lambda_hop.h"
 #include "hopper_nonconst.h"
 
 namespace rtl::dispatch

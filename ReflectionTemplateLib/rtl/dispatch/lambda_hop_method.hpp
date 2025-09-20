@@ -11,8 +11,7 @@
 
 #pragma once
 
-//#include "dispatch_interface.h"
-
+//#include "functor.h"
 //#include "lambda_method.h"
 //#include "hopper_nonconst.h"
 

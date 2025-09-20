@@ -15,7 +15,7 @@
 #include "rtl_constants.h"
 #include "forward_decls.h"
 #include "lambda_hop_method.h"
-#include "lambda_hop_function.h"
+
 
 namespace rtl::detail
 {
@@ -51,15 +51,6 @@ namespace rtl::detail
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER(std::string, SignatureStr, m_signature)
 
-        template<class ..._signature>
-        const dispatch::lambda_hop_function<_signature...>* get_lambda_function() const {
-            return m_lambda->get_function<_signature...>();
-        }
-
-        template<class _recordType, class ..._signature>
-        const dispatch::lambda_hop_method<_recordType, _signature...>* get_lambda_method() const {
-            return m_lambda->get_method<_recordType, _signature...>();
-        }
 
     /*  @method: getHashCode()
         @return: std::size_t (a unique hash-code for a functor)

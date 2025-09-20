@@ -28,12 +28,12 @@ namespace rtl::cache
         }
 
         template<class return_t>
-        const dispatch::lambda_hop_method<record_t, signature_ts...>& push(const dispatch::functor* fptr_hopper) const
+        const dispatch::lambda_hop_method<record_t, signature_ts...>& push(const dispatch::functor* fptr) const
         {
-            m_cache.push_back(dispatch::lambda_hop_method<record_t, signature_ts...>::template create<return_t>(fptr_hopper));
-            const dispatch::lambda_hop_method<record_t, signature_ts...>& lambda_hop = m_cache.back();
-            fptr_hopper->set_lambda(&lambda_hop);
-            return lambda_hop;
+            auto lambda = dispatch::lambda_hop_method<record_t, signature_ts...>::template create<return_t>(fptr);
+            m_cache.push_back(lambda);
+            fptr->set_lambda(&m_cache.back());
+            return m_cache.back();
         }
 
         lambda_hop_method(lambda_hop_method&&) = delete;

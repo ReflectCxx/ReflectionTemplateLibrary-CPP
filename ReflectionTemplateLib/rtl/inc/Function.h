@@ -18,6 +18,7 @@
 #include "FunctorId.h"
 #include "rtl_constants.h"
 #include "FunctionCaller.h"
+#include "lambda_hop_function.h"
 
 namespace rtl {
 
@@ -93,6 +94,9 @@ namespace rtl {
 
         template<class ..._args>
         bool hasSignature() const;
+
+        template<class ..._signature>
+        const dispatch::lambda_hop_function<_signature...>* lambda_hop(std::size_t pOverloadIndex = 0) const;
 
         template<class ..._args>
         Return operator()(_args&&...params) const noexcept;

@@ -3,11 +3,12 @@
 # Collect headers in this folder (absolute paths)
 set(LOCAL_HEADERS
 	
-	"${CMAKE_CURRENT_SOURCE_DIR}/dispatch_interface.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/functor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/const_method_ptr.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/const_method_ptr.h"
 
+    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_hop.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_hop_method.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_hop_method.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_hop_function.h"

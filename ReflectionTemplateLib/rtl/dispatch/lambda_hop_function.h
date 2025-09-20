@@ -20,7 +20,7 @@
 #include "hopper.h"
 #include "hopper_ctor.h"
 #include "hopper_const.h"
-#include "dispatch_interface.h"
+#include "lambda_hop.h"
 
 namespace rtl::dispatch
 {
@@ -45,10 +45,11 @@ namespace rtl::dispatch
         template<class return_t>
         static lambda_hop_function create(const functor*);
 
-        decltype(auto) operator()(const signature_ts&...) const noexcept;
+        decltype(auto) operator()(signature_ts&&...) const noexcept;
 
-        template<class return_t>
-        decltype(auto) dispatch(const signature_ts&...) const noexcept;
+        template<class return_t, class...args_t>
+        decltype(auto) dispatch(args_t&& ...) const noexcept;
+
 
         template<class record_t, class return_t>
         static lambda_hop_function create_method_const(const functor* fptr_hopper)

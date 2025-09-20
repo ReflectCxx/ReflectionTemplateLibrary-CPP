@@ -35,6 +35,10 @@ namespace rtl
 
     namespace dispatch
     {
+        struct functor;
+
+        class lambda_hop;
+
         template<class ...signature_ts>
         class lambda_hop_function;
 

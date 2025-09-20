@@ -22,6 +22,16 @@ namespace rtl
         return detail::FunctionCaller<_signature...>{ this };
     }
 
+    template<class ..._signature>
+    const dispatch::lambda_hop_function<_signature...>* Function::lambda_hop(std::size_t pOverloadIndex) const
+    {
+        if (pOverloadIndex < m_functorIds.size())
+        {
+            return m_functorIds[pOverloadIndex].m_lambda->get_function<_signature...>();
+        }
+        return nullptr;
+    }
+
 /*  @method: hasSignature<...>()
     @param: set of arguments, explicitly specified as template parameter.
     @return: bool, if the functor associated with this object is of certain signature or not.

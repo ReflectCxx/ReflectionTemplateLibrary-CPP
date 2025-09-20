@@ -18,20 +18,19 @@
 
 namespace rtl::dispatch
 {
-    template<class ...signature_ts>
     struct hopper
     {
-        template<class return_t> requires (std::is_same_v<return_t, Return> == false)
-        static decltype(auto) dispatch(const lambda_hop& lambda_ref, const signature_ts&...params) noexcept
+        template<class ret_t, class ...params_t> //requires (std::is_same_v<return_t, ret_t> == false)
+        static decltype(auto) dispatch(const lambda_hop& lambda_ref, params_t&&...params) noexcept
         {
-            auto functor = lambda_ref.get_functor().template get<signature_ts...>()
-                                                   .template get<return_t>(lambda_ref.m_returnId);
+            auto functor = lambda_ref.get_functor().template args_t<traits::raw_t<params_t>...>()
+                                                   .template return_t<traits::raw_t<ret_t>>();
 
-            if constexpr (std::is_same_v<return_t, void>) {
-                (*functor)(params...);
+            if constexpr (std::is_same_v<ret_t, void>) {
+                (*functor)(std::forward<params_t>(params)...);
             }
             else {
-                return (*functor)(params...);
+                return (*functor)(std::forward<params_t>(params)...);
             }
         }
 

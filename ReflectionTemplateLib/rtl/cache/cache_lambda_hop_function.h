@@ -27,21 +27,12 @@ namespace rtl::cache
         }
 
         template<class return_t>
-        const dispatch::lambda_hop_function<signature_ts...>& push(const dispatch::functor* fptr_hopper) const
+        const dispatch::lambda_hop_function<signature_ts...>& push(const dispatch::functor* fptr) const
         {
-            m_cache.push_back(dispatch::lambda_hop_function<signature_ts...>::template create<return_t>(fptr_hopper));
-            const dispatch::lambda_hop_function<signature_ts...>& lambda_hop = m_cache.back();
-            fptr_hopper->set_lambda(&lambda_hop);
-            return lambda_hop;
-        }
-
-        template<class record_t, class return_t>
-        const dispatch::lambda_hop_function<signature_ts...>& push_method_const(const dispatch::functor* fptr_hopper) const
-        {
-            m_cache.push_back(dispatch::lambda_hop_function<signature_ts...>::template create_method_const<record_t, return_t>(fptr_hopper));
-            const dispatch::lambda_hop_function<signature_ts...>& lambda_hop = m_cache.back();
-            fptr_hopper->set_lambda(&lambda_hop);
-            return lambda_hop;
+            auto lambda = dispatch::lambda_hop_function<signature_ts...>::template create<return_t>(fptr);
+            m_cache.push_back(lambda);
+            fptr->set_lambda(&m_cache.back());
+            return m_cache.back();
         }
 
         lambda_hop_function(lambda_hop_function&&) = delete;

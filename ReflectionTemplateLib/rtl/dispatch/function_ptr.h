@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "dispatch_interface.h"
+#include "functor.h"
 
 namespace rtl::dispatch
 {
@@ -20,19 +20,15 @@ namespace rtl::dispatch
 	{
 		using voidfn_t = void(*)(signature_ts...);
 
-		template<class return_t>
-		decltype(auto) get(std::size_t returnId) const
+		template<class ret_t>
+		constexpr decltype(auto) return_t() const
 		{
-			using fptr_t = return_t(*)(signature_ts...);
-			if (returnId == m_returnId)
-			{
-				return reinterpret_cast<fptr_t>(m_functor);
-			}
-			return static_cast<fptr_t>(nullptr);
+			using fptr_t = ret_t(*)(signature_ts...);
+			return reinterpret_cast<fptr_t>(m_functor);
 		}
 
 		template<class return_t>
-		bool is_same(return_t(*fptr)(signature_ts...)) const
+		constexpr bool is_same(return_t(*fptr)(signature_ts...)) const
 		{
 			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
 		}

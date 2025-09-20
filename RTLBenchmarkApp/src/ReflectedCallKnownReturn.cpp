@@ -20,40 +20,33 @@ namespace cxx
 
 namespace
 {
-    static const rtl::lambda_function<bm::argStr_t>* GetMessage_lambda = nullptr;
+    static const rtl::lambda_function<bm::argStr_t>& getMessage_lambda = []()
+    {
+        return *(cxx::mirror().getFunction("getMessage")->lambda_hop<bm::argStr_t>());
+    }();
 
-    static const rtl::lambda_function<bm::argStr_t>* SendMessage_lambda = nullptr;
+    static const rtl::lambda_function<bm::argStr_t>& sendMessage_lambda = []()
+    {
+        return *(cxx::mirror().getFunction("sendMessage")->lambda_hop<bm::argStr_t>());
+    }();
 
-    static const rtl::lambda_method<bm::Node, bm::argStr_t>* NodeGetMessage_lambda = nullptr;
+    static const rtl::lambda_method<bm::Node, bm::argStr_t>& getMessageOnNode_lambda = []()
+    {
+        return *(cxx::mirror().getRecord("Node")->getMethod("getMessage")->lambda_hop<bm::Node, bm::argStr_t>());
+    }();
 
-    static const rtl::lambda_method<bm::Node, bm::argStr_t>* NodeSendMessage_lambda = nullptr;
+    static const rtl::lambda_method<bm::Node, bm::argStr_t>& sendMessageOnNode_lambda = []()
+    {
+        rtl::Record Node = cxx::mirror().getRecord("Node").value();
+        return *(cxx::mirror().getRecord("Node")->getMethod("sendMessage")->lambda_hop<bm::Node, bm::argStr_t>());
+    }();
 
     static const rtl::RObject nodeObj = []()
     {
-        rtl::Record Node = cxx::mirror().getRecord("Node").value();
-
-        rtl::Method getMsgNode = Node.getMethod("getMessage").value();
-
-        rtl::Method sendMsgNode = Node.getMethod("sendMessage").value();
-
-        rtl::Function getMsg = cxx::mirror().getFunction("getMessage").value();
-
-        rtl::Function sendMsg = cxx::mirror().getFunction("sendMessage").value();
-
-        GetMessage_lambda = getMsg.getOverloads()[0].get_lambda_function<bm::argStr_t>();
-
-        SendMessage_lambda = sendMsg.getOverloads()[0].get_lambda_function<bm::argStr_t>();
-
-        NodeGetMessage_lambda = getMsgNode.getOverloads()[0].get_lambda_method<bm::Node, bm::argStr_t>();
-
-        NodeSendMessage_lambda = sendMsgNode.getOverloads()[0].get_lambda_method<bm::Node, bm::argStr_t>();
-
-        auto [err, robj] = Node.create<rtl::alloc::Stack>();
-
+        auto [err, robj] = cxx::mirror().getRecord("Node")->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
             std::cout << "[0] error: " << rtl::to_string(err) << "\n";
         }
-
         return std::move(robj);
     }();
 }
@@ -63,9 +56,8 @@ namespace
 {
     static auto _test0 = []()
     {
-        if( SendMessage_lambda == nullptr || 
-           !SendMessage_lambda->is_returning<void>() ||
-           !SendMessage_lambda->is_signature<bm::argStr_t>())
+        if(!sendMessage_lambda.is_signature<bm::argStr_t>() || 
+           !sendMessage_lambda.is_returning<void>())
         {
             std::cout << "[0] error: signature mismatch.\n";
             return false;
@@ -74,22 +66,21 @@ namespace
     };
 
 
-    static auto _test1 = []()
-    {
-        if (NodeSendMessage_lambda == nullptr)
-        {
-            std::cout << "[1] error: signature mismatch.\n";
-            return false;
-        }
-        return true;
-    };
+    //static auto _test1 = []()
+    //{
+    //    if (sendMessageOnNode_lambda == nullptr)
+    //    {
+    //        std::cout << "[1] error: signature mismatch.\n";
+    //        return false;
+    //    }
+    //    return true;
+    //};
 
 
     static auto _test2 = []()
     {
-        if ( GetMessage_lambda == nullptr ||
-            !GetMessage_lambda->is_returning<bm::retStr_t>() ||
-            !GetMessage_lambda->is_signature<bm::argStr_t>())
+        if (!getMessage_lambda.is_signature<bm::argStr_t>() ||
+            !getMessage_lambda.is_returning<bm::retStr_t>())
         {
             std::cout << "[0] error: signature mismatch.\n";
             return false;
@@ -97,15 +88,34 @@ namespace
         return true;
     };
 
-    static auto _test3 = []()
+    //static auto _test3 = []()
+    //{
+    //    if (getMessageOnNode_lambda == nullptr)
+    //    {
+    //        std::cout << "[3] error: signature mismatch.\n";
+    //        return false;
+    //    }
+    //    return true;
+    //};
+}
+
+
+void FunctionPointerCall::set(benchmark::State& state)
+{
+    static auto passed = _test0();
+
+    // Unchecked: Passing an incorrect signature or return type is undefined behaviour.
+    // No validation is performed and the function will not return nullptr on mismatch.
+    static auto functor = sendMessage_lambda.get_functor().template args_t<bm::argStr_t>()
+                                                          .template return_t<bm::retStr_t>();
+    for (auto _ : state)
     {
-        if (NodeGetMessage_lambda == nullptr)
+        if (passed)
         {
-            std::cout << "[3] error: signature mismatch.\n";
-            return false;
+            (*functor)(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
         }
-        return true;
-    };
+    }
 }
 
 
@@ -115,9 +125,9 @@ void ReflectedCallKnownReturn::set(benchmark::State& state)
     static auto passed = _test0();
     for (auto _ : state)
     {
-        //if (passed)
+        if (passed)
         {
-            (*SendMessage_lambda).dispatch<void>(bm::g_longStr);
+            sendMessage_lambda.dispatch<void>(bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());
         }
     }
@@ -129,9 +139,9 @@ void ReflectedCallKnownReturn::get(benchmark::State& state)
     static auto passed = _test2();
     for (auto _: state)
     {
-        //if (passed)
+        if (passed)
         {
-            auto retStr = (*GetMessage_lambda).dispatch<bm::retStr_t>(bm::g_longStr);
+            auto retStr = getMessage_lambda.dispatch<bm::retStr_t>(bm::g_longStr);
             benchmark::DoNotOptimize(retStr);
         }
     }

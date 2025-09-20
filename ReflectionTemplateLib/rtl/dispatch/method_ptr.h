@@ -13,7 +13,7 @@
 
 #include <tuple>
 
-#include "dispatch_interface.h"
+#include "functor.h"
 
 namespace rtl::dispatch
 {
@@ -23,18 +23,14 @@ namespace rtl::dispatch
 		using voidfn_t = void(record_t::*)(signature_ts...);
 
 		template<class return_t>
-		decltype(auto) get(std::size_t returnId) const
+		constexpr decltype(auto) return_t() const
 		{
 			using fptr_t = return_t(record_t::*)(signature_ts...);
-			if (returnId == m_returnId)
-			{
-				return reinterpret_cast<fptr_t>(m_functor);
-			}
-			return static_cast<fptr_t>(nullptr);
+			return reinterpret_cast<fptr_t>(m_functor);
 		}
 
 		template<class return_t>
-		bool is_same(return_t(record_t::* fptr)(signature_ts...)) const
+		constexpr bool is_same(return_t(record_t::* fptr)(signature_ts...)) const
 		{
 			return (m_functor == reinterpret_cast<voidfn_t>(fptr));
 		}
