@@ -16,30 +16,23 @@
 #include "rtl_traits.h"
 #include "rtl_typeid.h"
 #include "rtl_constants.h"
-#include "forward_decls.h"
 #include "functor.h"
 
 namespace rtl::dispatch
 {
     struct lambda_hop
     {
-        template<class return_t>
-        constexpr const functor_cast<return_t> return_type() const
-        {
-            return functor_cast<return_t>{ m_functor };
-        }
-
         template<class record_t>
         constexpr bool is_member() const
         {
-            return (m_functor->m_recordId == detail::TypeId<traits::raw_t<record_t>>::get() ||
-                    m_functor->m_recordId == detail::TypeId<const traits::raw_t<record_t>>::get());
+            return (m_functor->getRecordId() == detail::TypeId<traits::raw_t<record_t>>::get() ||
+                    m_functor->getRecordId() == detail::TypeId<const traits::raw_t<record_t>>::get());
         }
 
         template<class return_t>
         constexpr bool is_returning() const
         {
-            return (m_functor->m_returnId == detail::TypeId<traits::raw_t<return_t>>::get());
+            return (m_functor->getReturnId() == detail::TypeId<traits::raw_t<return_t>>::get());
         }
 
         template<class...args_t>
@@ -64,7 +57,7 @@ namespace rtl::dispatch
         {
             std::size_t recordId = detail::TypeId<record_t>::get();
             std::size_t typeId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
-            if (typeId == m_signatureId && recordId == m_functor->m_recordId)
+            if (typeId == m_signatureId && recordId == m_functor->getRecordId())
             {
                 return static_cast<const lambda_hop_method<record_t, signature_ts...>*>(this);
             }

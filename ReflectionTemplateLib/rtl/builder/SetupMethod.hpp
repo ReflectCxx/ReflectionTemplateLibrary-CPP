@@ -34,7 +34,7 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
             assert(isAllGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
@@ -57,7 +57,7 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
             assert(isAllGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
@@ -101,7 +101,7 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
             assert(isAllGood && "new type-id-system not working.");
 
             const _recordType& target = pTargetObj.view<_recordType>()->get();
@@ -120,7 +120,7 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->m_lambda);
+            bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
             assert(isAllGood && "new type-id-system not working.");
 
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
@@ -181,7 +181,7 @@ namespace rtl::detail
             auto [functor, lambdaIndex] = functorCache.find(pFunctor);
 
             if (lambdaIndex != rtl::index_none) {
-                lambdaPtr = functor->m_lambda;
+                lambdaPtr = functor->getLambdaHop();
             }
             return lambdaIndex;
         };
@@ -252,7 +252,7 @@ namespace rtl::detail
             auto [functor, lambdaIndex] = functorCache.find(pFunctor);
             
             if (lambdaIndex != rtl::index_none) {
-                lambdaPtr = functor->m_lambda;
+                lambdaPtr = functor->getLambdaHop();
             }
             return lambdaIndex;
         };

@@ -12,13 +12,17 @@
 #pragma once
 
 #include "lambda_hop.h"
-#include "hopper_nonconst.h"
+#include "method_ptr.h"
+#include <utility>
 
 namespace rtl::dispatch
 {
     template<class record_t, class ...signature_ts>
     struct lambda_hop_method : public lambda_hop
     {
+        template<class return_t>
+        using fptr_t = typename method_ptr<record_t, return_t, signature_ts...>::functor_t;
+
         lambda_hop_method(const functor* functor) noexcept
         {
             m_functor = functor;
@@ -27,13 +31,33 @@ namespace rtl::dispatch
         }
 
         template<class return_t>
-        decltype(auto) dispatch(record_t& target, const signature_ts& ...params) const noexcept
+        constexpr const method_ptr<record_t, return_t, signature_ts...>& get_functor() const
         {
+            // Unchecked: using an incorrect argument or return type is undefined behaviour.
+            // No validation is performed and the function will not return nullptr on mismatch. (By Design)
+            return *(static_cast<const method_ptr<record_t, return_t, signature_ts...>*>(m_functor));
+        }
+
+        template<class return_t, class...args_t>
+        constexpr decltype(auto) dispatch(record_t& target, args_t&& ...params) const
+                                        noexcept(noexcept(
+                                            (std::declval<record_t&>().*std::declval<fptr_t<return_t>>())(std::declval<args_t>()...)
+                                        ))
+        {
+            constexpr bool signature_ok = std::is_same_v<
+                std::tuple<traits::raw_t<args_t>...>,
+                std::tuple<signature_ts...>
+            >;
+            
+            static_assert( signature_ok, "Argument types don't match signature.");
+
+            fptr_t<return_t> functor = get_functor<return_t>().f_ptr();
+
             if constexpr (std::is_same_v<return_t, void>) {
-                hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
+                (target.*functor)(std::forward<args_t>(params)...);
             }
             else {
-                return hopper_nonconst<record_t, signature_ts...>::template dispatch<return_t>(target, *this, params...);
+                return (target.*functor)(std::forward<args_t>(params)...);
             }
         }
     };

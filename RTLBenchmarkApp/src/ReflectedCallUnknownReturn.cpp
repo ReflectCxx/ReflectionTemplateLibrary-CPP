@@ -36,7 +36,7 @@ namespace
     {
         auto [err, robj] = cxx::mirror().getRecord("Node")->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
-            std::cout << "[0] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[_] error: " << rtl::to_string(err) << "\n";
         }
         return std::move(robj);
     }();

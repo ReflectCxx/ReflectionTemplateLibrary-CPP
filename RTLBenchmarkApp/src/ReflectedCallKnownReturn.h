@@ -19,7 +19,7 @@ struct FunctionPointerCall
 
 
 struct ReflectedMethodCallKnownReturn
-{    
+{
     static void set(benchmark::State& state);
 
     static void get(benchmark::State& state);

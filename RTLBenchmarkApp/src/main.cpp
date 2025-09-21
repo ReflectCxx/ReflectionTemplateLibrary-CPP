@@ -9,6 +9,7 @@
 
 BENCHMARK(NativeCall::set);
 BENCHMARK(FunctionPointerCall::set);
+
 //BENCHMARK(ReflectedCallKnownReturn::set);
 //BENCHMARK(ReflectedCallKnownReturn::set);
 
@@ -17,17 +18,18 @@ BENCHMARK(ReflectedCallKnownReturn::set);
 BENCHMARK(ReflectedCallUnknownReturn::set);
 
 BENCHMARK(StdFunctionMethodCall::set);
-//BENCHMARK(ReflectedMethodCallKnownReturn::set);
+BENCHMARK(ReflectedMethodCallKnownReturn::set);
 BENCHMARK(ReflectedMethodCallUnknownReturn::set);
 
 BENCHMARK(NativeCall::get);
+BENCHMARK(FunctionPointerCall::get);
 
 BENCHMARK(StdFunctionCall::get);
 BENCHMARK(ReflectedCallKnownReturn::get);
 BENCHMARK(ReflectedCallUnknownReturn::get);
 
 BENCHMARK(StdFunctionMethodCall::get);
-//BENCHMARK(ReflectedMethodCallKnownReturn::get);
+BENCHMARK(ReflectedMethodCallKnownReturn::get);
 BENCHMARK(ReflectedMethodCallUnknownReturn::get);
 
 namespace bm 
