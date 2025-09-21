@@ -81,7 +81,7 @@ namespace rtl {
         GETTER(std::string, Namespace, m_namespace);
         GETTER(std::string, FunctionName, m_function);
         GETTER(std::size_t, RecordTypeId, m_recordTypeId);
-        GETTER(std::vector<detail::FunctorId>, Overloads, m_functorIds);
+        GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
         Function() = default;
         Function(Function&&) = default;
@@ -96,7 +96,7 @@ namespace rtl {
         bool hasSignature() const;
 
         template<class ..._signature>
-        const dispatch::lambda_hop_function<_signature...>* lambda_hop(std::size_t pOverloadIndex = 0) const;
+        const dispatch::lambda_function<_signature...>* get_lambda(std::size_t pOverloadIndex = 0) const;
 
         template<class ..._args>
         Return operator()(_args&&...params) const noexcept;

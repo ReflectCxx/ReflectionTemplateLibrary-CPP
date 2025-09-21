@@ -33,17 +33,26 @@ namespace rtl
         class FunctorContainer;
     }
 
+    namespace cache
+    {
+        template<class ...signature_ts>
+        struct lambda_function;
+
+        template<class record_t, class ...signature_ts>
+        struct lambda_method;
+    }
+
     namespace dispatch
     {
         struct functor;
 
-        class lambda_hop;
+        struct lambda;
 
         template<class ...signature_ts>
-        struct lambda_hop_function;
+        class lambda_function;
 
         template<class record_t, class ...signature_ts>
-        struct lambda_hop_method;
+        class lambda_method;
 
         template<class return_t, class ...signature_ts>
         struct function_ptr;

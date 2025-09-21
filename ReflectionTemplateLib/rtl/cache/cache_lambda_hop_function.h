@@ -18,31 +18,31 @@
 namespace rtl::cache
 {
     template<class ...signature_ts>
-    struct lambda_hop_function
+    struct lambda_function
     {
-        static const lambda_hop_function& instance() 
+        static const lambda_function& instance() 
         {
-            static const lambda_hop_function instance_;
+            static const lambda_function instance_;
             return instance_;
         }
 
-        const dispatch::lambda_hop_function<signature_ts...>& push(const dispatch::functor* fptr) const
+        const dispatch::lambda_function<signature_ts...>& push(const dispatch::functor& fptr) const
         {
-            m_cache.push_back(dispatch::lambda_hop_function<signature_ts...>(fptr));
-            fptr->set_lambda(&m_cache.back());
+            m_cache.push_back(dispatch::lambda_function<signature_ts...>(fptr));
+            fptr.m_lambda = &m_cache.back();
             return m_cache.back();
         }
 
-        lambda_hop_function(lambda_hop_function&&) = delete;
-        lambda_hop_function(const lambda_hop_function&) = delete;
-        lambda_hop_function& operator=(lambda_hop_function&&) = delete;
-        lambda_hop_function& operator=(const lambda_hop_function&) = delete;
+        lambda_function(lambda_function&&) = delete;
+        lambda_function(const lambda_function&) = delete;
+        lambda_function& operator=(lambda_function&&) = delete;
+        lambda_function& operator=(const lambda_function&) = delete;
 
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<dispatch::lambda_hop_function<signature_ts...>> m_cache;
+        mutable std::list<dispatch::lambda_function<signature_ts...>> m_cache;
 
-        lambda_hop_function() = default;
+        lambda_function() = default;
     };
 }

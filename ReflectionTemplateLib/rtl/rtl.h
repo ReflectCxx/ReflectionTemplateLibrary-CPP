@@ -105,8 +105,8 @@
 namespace rtl {
     
     template<class ...argsT>
-    using lambda_function = dispatch::lambda_hop_function<argsT...>;
+    using lambda_function = dispatch::lambda_function<argsT...>;
 
     template<class recordT, class ...argsT>
-    using lambda_method = dispatch::lambda_hop_method<recordT, argsT...>;
+    using lambda_method = dispatch::lambda_method<recordT, argsT...>;
 }

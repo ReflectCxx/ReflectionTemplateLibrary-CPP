@@ -28,10 +28,10 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::functor* push(return_t(record_t::* fptr)(signature_ts...), std::size_t lambda_index) const
+        const dispatch::functor& push(return_t(record_t::* fptr)(signature_ts...), std::size_t lambda_index) const
         {
             m_cache.emplace_back(std::make_pair(fptr, lambda_index));
-            return &(m_cache.back().first);
+            return m_cache.back().first;
         }
 
         std::pair<const dispatch::functor*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...)) const

@@ -23,11 +23,11 @@ namespace rtl
     }
 
     template<class ..._signature>
-    const dispatch::lambda_hop_function<_signature...>* Function::lambda_hop(std::size_t pOverloadIndex) const
+    const dispatch::lambda_function<_signature...>* Function::get_lambda(std::size_t pOverloadIndex) const
     {
         if (pOverloadIndex < m_functorIds.size())
         {
-            return m_functorIds[pOverloadIndex].m_lambda->get_function<_signature...>();
+            return m_functorIds[pOverloadIndex].m_lambda->to_function<_signature...>();
         }
         return nullptr;
     }

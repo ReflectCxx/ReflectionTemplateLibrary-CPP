@@ -30,12 +30,12 @@ namespace rtl
 
 
     template<class _recordType, class ..._signature>
-    const dispatch::lambda_hop_method<_recordType, _signature...>* Method::lambda_hop(std::size_t pOverloadIndex) const
+    const dispatch::lambda_method<_recordType, _signature...>* Method::get_lambda(std::size_t pOverloadIndex) const
     {
-        auto& functorIds = getOverloads();
+        auto& functorIds = getFunctors();
         if (pOverloadIndex < functorIds.size())
         {
-            return functorIds[pOverloadIndex].m_lambda->get_method<_recordType, _signature...>();
+            return functorIds[pOverloadIndex].m_lambda->to_method<_recordType, _signature...>();
         }
         return nullptr;
     }

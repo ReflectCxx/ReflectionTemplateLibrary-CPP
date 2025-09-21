@@ -24,9 +24,11 @@ BENCHMARK(ReflectedMethodCallUnknownReturn::set);
 BENCHMARK(NativeCall::get);
 BENCHMARK(FunctionPointerCall::get);
 
+//BENCHMARK(ReflectedMethodCallKnownReturn::get);
 BENCHMARK(StdFunctionCall::get);
 BENCHMARK(ReflectedCallKnownReturn::get);
 BENCHMARK(ReflectedCallUnknownReturn::get);
+//BENCHMARK(ReflectedMethodCallKnownReturn::get);
 
 BENCHMARK(StdFunctionMethodCall::get);
 BENCHMARK(ReflectedMethodCallKnownReturn::get);

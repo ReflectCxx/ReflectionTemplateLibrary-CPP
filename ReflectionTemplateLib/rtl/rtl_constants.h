@@ -144,6 +144,12 @@ namespace rtl::detail
         return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }
 
+
+#define GETTER_(_varType, _name, _var)                 \
+    inline constexpr const _varType& _name() const {   \
+        return _var;                                   \
+    }
+
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \
@@ -152,6 +158,17 @@ namespace rtl::detail
 #define GETTER_REF(_varType, _name, _var)       \
     inline _varType& get##_name() const {       \
         return _var;                            \
+    }
+
+
+#define GETTER_CPTR_(_varType, _name, _var)                 \
+    constexpr inline const _varType* _name() const {  \
+        return _var;                                       \
+    }
+
+#define GETTER_CPTR(_varType, _name, _var)                 \
+    constexpr inline const _varType* get##_name() const {  \
+        return _var;                                       \
     }
 
 #define GETTER_CREF(_varType, _name, _var)       \

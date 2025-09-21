@@ -20,31 +20,31 @@ namespace
 {
     static const rtl::lambda_function<bm::argStr_t>& getMessage_lambda = []()
     {
-        // No validation is performed internally and lambda_hop<signature_ts...>
+        // No validation is performed internally and lambda<signature_ts...>
         // will not return nullptr on signature mismatch. (by design)
-        return *(cxx::mirror().getFunction("getMessage")->lambda_hop<bm::argStr_t>());
+        return *(cxx::mirror().getFunction("getMessage")->get_lambda<bm::argStr_t>());
     }();
 
     static const rtl::lambda_function<bm::argStr_t>& sendMessage_lambda = []()
     {
-        // No validation is performed internally and lambda_hop<signature_ts...>
+        // No validation is performed internally and lambda<signature_ts...>
         // will not return nullptr on signature mismatch. (by design)
-        return *(cxx::mirror().getFunction("sendMessage")->lambda_hop<bm::argStr_t>());
+        return *(cxx::mirror().getFunction("sendMessage")->get_lambda<bm::argStr_t>());
     }();
 
     static const rtl::lambda_method<bm::Node, bm::argStr_t>& getMessageOnNode_lambda = []()
     {
-        // No validation is performed internally and lambda_hop<signature_ts...>
+        // No validation is performed internally and lambda<signature_ts...>
         // will not return nullptr on signature mismatch. (by design)
-        return *(cxx::mirror().getRecord("Node")->getMethod("getMessage")->lambda_hop<bm::Node, bm::argStr_t>());
+        return *(cxx::mirror().getRecord("Node")->getMethod("getMessage")->get_lambda<bm::Node, bm::argStr_t>());
     }();
 
     static const rtl::lambda_method<bm::Node, bm::argStr_t>& sendMessageOnNode_lambda = []()
     {
         rtl::Record Node = cxx::mirror().getRecord("Node").value();
-        // No validation is performed internally and lambda_hop<signature_ts...>
+        // No validation is performed internally and lambda<signature_ts...>
         // will not return nullptr on signature mismatch. (by design)
-        return *(cxx::mirror().getRecord("Node")->getMethod("sendMessage")->lambda_hop<bm::Node, bm::argStr_t>());
+        return *(cxx::mirror().getRecord("Node")->getMethod("sendMessage")->get_lambda<bm::Node, bm::argStr_t>());
     }();
 }
 
@@ -154,7 +154,7 @@ void ReflectedCallKnownReturn::set(benchmark::State& state)
     {
         if (passed)
         {
-            sendMessage_lambda.dispatch<void>(bm::g_longStr);
+            sendMessage_lambda.hop<void>(bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());
         }
     }
@@ -168,7 +168,7 @@ void ReflectedCallKnownReturn::get(benchmark::State& state)
     {
         if (passed)
         {
-            auto retStr = getMessage_lambda.dispatch<bm::retStr_t>(bm::g_longStr);
+            auto retStr = getMessage_lambda.hop<bm::retStr_t>(bm::g_longStr);
             benchmark::DoNotOptimize(retStr);
         }
     }
@@ -194,7 +194,7 @@ void ReflectedMethodCallKnownReturn::set(benchmark::State& state)
     {
         if (functor)
         {
-            sendMessageOnNode_lambda.dispatch<void>(nodeObj, bm::g_longStr);
+            sendMessageOnNode_lambda.hop<void>(nodeObj, bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());
         }
     }
@@ -220,7 +220,7 @@ void ReflectedMethodCallKnownReturn::get(benchmark::State& state)
     {
         if (functor)
         {
-            auto retStr = getMessageOnNode_lambda.dispatch<bm::retStr_t>(nodeObj, bm::g_longStr);
+            auto retStr = getMessageOnNode_lambda.hop<bm::retStr_t>(nodeObj, bm::g_longStr);
             benchmark::DoNotOptimize(retStr);
         }
     }

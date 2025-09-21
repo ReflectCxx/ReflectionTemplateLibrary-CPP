@@ -30,8 +30,8 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
-                assert(isAllGood && "new type-id-system not working.");
+                bool isFunctorGood = (pFunctor == pFunctorId.m_lambda->to_function<_signature...>()->template get_functor<void>().f_ptr());
+                assert(isFunctorGood && "new type-id-system not working.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -48,8 +48,8 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                bool isAllGood = (pFunctorId.m_lambda == pFunctorId.m_lambda->m_functor->getLambdaHop());
-                assert(isAllGood && "new type-id-system not working.");
+                bool isFunctorGood = (pFunctor == pFunctorId.m_lambda->to_function<_signature...>()->template get_functor<_returnType>().f_ptr());
+                assert(isFunctorGood && "new type-id-system not working.");
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -89,14 +89,14 @@ namespace rtl
         template<class _returnType, class ..._signature>
         inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-            const dispatch::lambda_hop* lambdaPtr = nullptr;
+            const dispatch::lambda* lambdaPtr = nullptr;
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                auto& lambdaCache = cache::lambda_hop_function<_signature...>::instance();
+                auto& lambdaCache = cache::lambda_function<_signature...>::instance();
                 auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
 
-                auto* functor = functorCache.push(pFunctor, pIndex);
+                auto& functor = functorCache.push(pFunctor, pIndex);
                 auto& lambda = lambdaCache.push(functor);
 
                 lambdaPtr = &lambda;
@@ -107,7 +107,7 @@ namespace rtl
                 auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
                 auto [functor, lambdaIndex] = functorCache.find(pFunctor);
                 if (lambdaIndex != rtl::index_none) {
-                    lambdaPtr = functor->getLambdaHop();
+                    lambdaPtr = functor->get_lambda();
                 }
                 return lambdaIndex;
             };

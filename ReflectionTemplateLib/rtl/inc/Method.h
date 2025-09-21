@@ -67,7 +67,7 @@ namespace rtl {
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
         template<class _recordType, class ..._signature>
-        const dispatch::lambda_hop_method<_recordType, _signature...>* lambda_hop(std::size_t pOverloadIndex = 0) const;
+        const dispatch::lambda_method<_recordType, _signature...>* get_lambda(std::size_t pOverloadIndex = 0) const;
 
     /*  @method: operator()()
         @return: lambda
