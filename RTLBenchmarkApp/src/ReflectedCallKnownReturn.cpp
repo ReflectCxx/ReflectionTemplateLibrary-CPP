@@ -167,8 +167,7 @@ void MethodFnPointerCall::get(benchmark::State& state)
     {
         if (functor)
         {
-            auto ret = (nodeObj.*functor)(bm::g_longStr);
-            benchmark::DoNotOptimize(ret);
+            benchmark::DoNotOptimize((nodeObj.*functor)(bm::g_longStr));
         }
     }
 }
@@ -192,8 +191,7 @@ void FunctionPointerCall::get(benchmark::State& state)
     {
         if (functor)
         {
-            auto ret = (*functor)(bm::g_longStr);
-            benchmark::DoNotOptimize(ret);
+            benchmark::DoNotOptimize((*functor)(bm::g_longStr));
         }
     }
 }
@@ -220,8 +218,7 @@ void RtlReflectedCall::get(benchmark::State& state)
     {
         if (passed)
         {
-            auto retStr = getMessage_lambda.hop<bm::retStr_t>(bm::g_longStr);
-            benchmark::DoNotOptimize(retStr);
+            benchmark::DoNotOptimize(getMessage_lambda.hop<bm::retStr_t>(bm::g_longStr));
         }
     }
 }
@@ -272,8 +269,7 @@ void RtlReflectedMethodCall::get(benchmark::State& state)
     {
         if (functor)
         {
-            auto retStr = getMessageOnNode_lambda.hop<bm::retStr_t>(nodeObj, bm::g_longStr);
-            benchmark::DoNotOptimize(retStr);
+            benchmark::DoNotOptimize(getMessageOnNode_lambda.hop<bm::retStr_t>(nodeObj, bm::g_longStr));
         }
     }
 }

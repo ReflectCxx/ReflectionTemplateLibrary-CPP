@@ -46,11 +46,11 @@ namespace rtl::dispatch
         [[nodiscard]] constexpr decltype(auto) hop(args_t&&...params) const  noexcept(noexcept_v<return_t>)
         {
             static_assert(is_args_t_ok<args_t...>, "Argument types don't match signature.");
-            
-            constexpr auto call = [](auto fp, auto&&... a) -> decltype(auto) {
+
+            constexpr auto hopper = [](auto fp, auto&&... a) -> decltype(auto) {
                 return (*fp)(std::forward<decltype(a)>(a)...);
             };
-            return call(get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
+            return hopper(get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
         }
     };
 }

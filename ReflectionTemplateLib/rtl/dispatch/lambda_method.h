@@ -47,10 +47,10 @@ namespace rtl::dispatch
         {
             static_assert(is_args_t_ok<args_t...>, "Argument types don't match signature.");
             
-            constexpr auto call = [](record_t& obj, auto fp, auto&&... a) -> decltype(auto) {
+            constexpr auto hopper = [](record_t& obj, auto fp, auto&&... a) -> decltype(auto) {
                 return (obj.*fp)(std::forward<decltype(a)>(a)...);
             };
-            return call(target, get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
+            return hopper(target, get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
         }
     };
 }
