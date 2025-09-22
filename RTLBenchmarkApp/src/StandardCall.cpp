@@ -73,7 +73,6 @@ void StdFunctionCall::set(benchmark::State& state)
 void StdFunctionMethodCall::set(benchmark::State& state)
 {
     static bm::Node nodeObj;
-    static auto _=_new_line();
     for (auto _: state)
     {
         bm::NodeSendMessage(nodeObj, bm::g_longStr);
@@ -95,7 +94,6 @@ void StdFunctionCall::get(benchmark::State& state)
 void StdFunctionMethodCall::get(benchmark::State& state)
 {
     static bm::Node nodeObj;
-    static auto _=_new_line();
     for (auto _: state)
     {
         benchmark::DoNotOptimize(bm::NodeGetMessage(nodeObj, bm::g_longStr));

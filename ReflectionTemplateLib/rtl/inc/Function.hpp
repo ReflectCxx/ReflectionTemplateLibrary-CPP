@@ -25,9 +25,8 @@ namespace rtl
     template<class ..._signature>
     const dispatch::lambda_function<_signature...>* Function::get_lambda(std::size_t pOverloadIndex) const
     {
-        if (pOverloadIndex < m_functorIds.size())
-        {
-            return m_functorIds[pOverloadIndex].m_lambda->to_function<_signature...>();
+        if (pOverloadIndex < m_functorIds.size()) {
+            return m_functorIds[pOverloadIndex].get_lambda_function<_signature...>();
         }
         return nullptr;
     }

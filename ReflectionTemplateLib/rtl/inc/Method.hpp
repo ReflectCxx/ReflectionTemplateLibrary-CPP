@@ -33,9 +33,8 @@ namespace rtl
     const dispatch::lambda_method<_recordType, _signature...>* Method::get_lambda(std::size_t pOverloadIndex) const
     {
         auto& functorIds = getFunctors();
-        if (pOverloadIndex < functorIds.size())
-        {
-            return functorIds[pOverloadIndex].m_lambda->to_method<_recordType, _signature...>();
+        if (pOverloadIndex < functorIds.size()) {
+            return functorIds[pOverloadIndex].get_lambda_method<_recordType, _signature...>();
         }
         return nullptr;
     }

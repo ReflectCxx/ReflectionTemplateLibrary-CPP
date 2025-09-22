@@ -15,6 +15,7 @@
 #include "rtl_constants.h"
 #include "forward_decls.h"
 #include "lambda_method.h"
+#include "lambda_function.h"
 
 
 namespace rtl::detail
@@ -77,6 +78,24 @@ namespace rtl::detail
                     m_containerId == pOther.m_containerId &&
                     m_lambdaIndex == pOther.m_lambdaIndex &&
                     m_signature == pOther.m_signature);
+        }
+
+        template<class ..._signature>
+        const dispatch::lambda_function<_signature...>* get_lambda_function() const
+        {
+            if(m_lambda->is_signature<_signature...>()) {
+                return m_lambda->to_function<_signature...>();
+            }
+            return nullptr;
+        }
+        
+        template<class _recordType, class ..._signature>
+        const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method() const
+        {
+            if(m_lambda->is_member<_recordType>() && m_lambda->is_signature<_signature...>()) {
+                return m_lambda->to_method<_recordType, _signature...>();
+            }
+            return nullptr;
         }
     };
 }

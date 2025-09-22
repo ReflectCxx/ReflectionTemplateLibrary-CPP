@@ -34,7 +34,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isFunctorGood = (pFunctor == pFunctorId.m_lambda->to_method<_recordType, _signature...>()->template get_functor<void>().f_ptr());
+            bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<void>().f_ptr());
+            
             assert(isFunctorGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
@@ -57,7 +58,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            bool isFunctorGood = (pFunctor == pFunctorId.m_lambda->to_method<_recordType, _signature...>()->template get_functor<_returnType>().f_ptr());
+            bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<_returnType>().f_ptr());
+
             assert(isFunctorGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {

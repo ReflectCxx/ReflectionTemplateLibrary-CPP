@@ -31,6 +31,9 @@ namespace rtl
 
         template<class ..._signature>
         class FunctorContainer;
+
+        template<class _derivedType>
+        class SetupMethod;
     }
 
     namespace cache

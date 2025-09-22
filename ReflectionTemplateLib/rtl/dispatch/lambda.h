@@ -31,11 +31,7 @@ namespace rtl::dispatch
 
         template<class record_t, class ...args_t>
         using method_t = lambda_method<record_t, args_t...>;
-
-    public:
-
-        GETTER_CREF(functor, _functor, m_functor);
-
+        
         template<class ...signature_ts>
         constexpr const function_t<signature_ts...>* to_function() const
         {
@@ -59,6 +55,9 @@ namespace rtl::dispatch
             return nullptr;
         }
 
+    public:
+
+        GETTER_CREF(functor, _functor, m_functor);
 
         template<class return_t>
         constexpr bool is_returning() const
@@ -78,5 +77,7 @@ namespace rtl::dispatch
             return (m_functor.m_recordId == detail::TypeId<traits::raw_t<record_t>>::get() ||
                     m_functor.m_recordId == detail::TypeId<const traits::raw_t<record_t>>::get());
         }
+
+        friend detail::FunctorId;
     };
 }

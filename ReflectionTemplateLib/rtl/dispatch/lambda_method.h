@@ -34,7 +34,7 @@ namespace rtl::dispatch
             :lambda(fptr)
         { }
 
-        // Unsafe: using an incorrect argument or return type is undefined behaviour.
+        // Unsafe: using an incorrect return type is undefined behaviour.
         // Not validated here and the function will not return nullptr on mismatch. (By Design)
         template<class return_t>
         [[nodiscard]] constexpr auto& get_functor() const

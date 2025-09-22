@@ -36,7 +36,7 @@ namespace
     {
         auto [err, robj] = cxx::mirror().getRecord("Node")->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
-            std::cout << "[_] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[x] error: " << rtl::to_string(err) << "\n";
         }
         return std::move(robj);
     }();
@@ -89,8 +89,7 @@ void RtlReflectedCall_retUnknown::set(benchmark::State& state)
     static auto _ = _test0();
     for (auto _ : state) 
     {
-        auto error = SendMessage(bm::g_longStr).err;
-        benchmark::DoNotOptimize(error);
+        benchmark::DoNotOptimize(SendMessage(bm::g_longStr));
     }
 }
 
@@ -100,8 +99,7 @@ void RtlReflectedCall_retUnknown::get(benchmark::State& state)
     static auto _ = _test2();
     for (auto _ : state)
     {
-        auto error = GetMessage(bm::g_longStr).err;
-        benchmark::DoNotOptimize(error);
+        benchmark::DoNotOptimize(GetMessage(bm::g_longStr));
     }
 }
 
@@ -111,8 +109,7 @@ void RtlReflectionMethodCall_retUnknown::set(benchmark::State& state)
     static auto _ = _test1();
     for (auto _ : state)
     {
-        auto error = NodeSendMessage(nodeObj)(bm::g_longStr).err;
-        benchmark::DoNotOptimize(error);
+        benchmark::DoNotOptimize(NodeSendMessage(nodeObj)(bm::g_longStr));
     }
 }
 
@@ -122,7 +119,6 @@ void RtlReflectionMethodCall_retUnknown::get(benchmark::State& state)
     static auto _ = _test3();
     for (auto _ : state)
     {
-        auto error = NodeGetMessage(nodeObj)(bm::g_longStr).err;
-        benchmark::DoNotOptimize(error);
+        benchmark::DoNotOptimize(NodeGetMessage(nodeObj)(bm::g_longStr));
     }
 }
