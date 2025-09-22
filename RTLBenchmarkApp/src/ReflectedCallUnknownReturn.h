@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct ReflectedCallUnknownReturn
+struct RtlReflectedCall_retUnknown
 {
     static void set(benchmark::State& state);
 
@@ -10,7 +10,7 @@ struct ReflectedCallUnknownReturn
 };
 
 
-struct ReflectedMethodCallUnknownReturn
+struct RtlReflectionMethodCall_retUnknown
 {    
     static void set(benchmark::State& state);
 

@@ -10,7 +10,7 @@ namespace
 {
     static auto _put_line = []() {
         std::cout << "----------------------------------------"
-            "----------------------------------------" << std::endl;
+            "------------------------------------------" << std::endl;
         return 0;
     };
 
@@ -31,11 +31,11 @@ namespace bm
 
     extern std::function<void(argStr_t&)> SendMessage;
 
-    extern std::function<void(argStr_t&)> NodeSendMessage;
+    extern std::function<void(bm::Node, argStr_t&)> NodeSendMessage;
 
     extern std::function<retStr_t(argStr_t&)> GetMessage;
 
-    extern std::function<retStr_t(argStr_t&)> NodeGetMessage;
+    extern std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage;
 }
 
 
@@ -72,10 +72,11 @@ void StdFunctionCall::set(benchmark::State& state)
 
 void StdFunctionMethodCall::set(benchmark::State& state)
 {
+    static bm::Node nodeObj;
     static auto _=_new_line();
     for (auto _: state)
     {
-        bm::NodeSendMessage(bm::g_longStr);
+        bm::NodeSendMessage(nodeObj, bm::g_longStr);
         benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }
@@ -93,9 +94,10 @@ void StdFunctionCall::get(benchmark::State& state)
 
 void StdFunctionMethodCall::get(benchmark::State& state)
 {
+    static bm::Node nodeObj;
     static auto _=_new_line();
     for (auto _: state)
     {
-        benchmark::DoNotOptimize(bm::NodeGetMessage(bm::g_longStr));
+        benchmark::DoNotOptimize(bm::NodeGetMessage(nodeObj, bm::g_longStr));
     }
 }

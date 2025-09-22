@@ -18,7 +18,7 @@
 #include "FunctorId.h"
 #include "rtl_constants.h"
 #include "FunctionCaller.h"
-#include "lambda_hop_function.h"
+#include "lambda_function.h"
 
 namespace rtl {
 

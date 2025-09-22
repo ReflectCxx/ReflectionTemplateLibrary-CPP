@@ -14,7 +14,7 @@
 #include "rtl_typeid.h"
 #include "rtl_constants.h"
 #include "forward_decls.h"
-#include "lambda_hop_method.h"
+#include "lambda_method.h"
 
 
 namespace rtl::detail

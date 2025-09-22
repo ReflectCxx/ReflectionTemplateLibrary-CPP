@@ -16,7 +16,7 @@
 #include "RObject.h"
 #include "Function.h"
 #include "MethodInvoker.h"
-#include "lambda_hop_method.h"
+#include "lambda_method.h"
 
 namespace rtl {
 

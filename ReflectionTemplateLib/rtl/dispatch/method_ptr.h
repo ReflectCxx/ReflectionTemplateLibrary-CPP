@@ -22,7 +22,7 @@ namespace rtl::dispatch
 	{
 		using functor_t = return_t(record_t::*)(signature_ts...);
 
-		constexpr functor_t f_ptr() const
+		[[nodiscard]] constexpr auto f_ptr() const
 		{
 			return m_functor;
 		}

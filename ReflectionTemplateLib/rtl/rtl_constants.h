@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include "rtl_errors.h"
-
 namespace rtl {
 
     // Allocation policy for rtl::RObject.
@@ -144,12 +142,6 @@ namespace rtl::detail
         return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }
 
-
-#define GETTER_(_varType, _name, _var)                 \
-    inline constexpr const _varType& _name() const {   \
-        return _var;                                   \
-    }
-
 #define GETTER(_varType, _name, _var)                       \
     inline constexpr const _varType& get##_name() const {   \
         return _var;                                        \
@@ -160,11 +152,6 @@ namespace rtl::detail
         return _var;                            \
     }
 
-
-#define GETTER_CPTR_(_varType, _name, _var)                 \
-    constexpr inline const _varType* _name() const {  \
-        return _var;                                       \
-    }
 
 #define GETTER_CPTR(_varType, _name, _var)                 \
     constexpr inline const _varType* get##_name() const {  \

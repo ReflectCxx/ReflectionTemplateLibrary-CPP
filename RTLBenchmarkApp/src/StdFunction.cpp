@@ -19,8 +19,6 @@ namespace bm
 
 namespace bm
 {
-    static Node node;
-
     extern void sendMessage(argStr_t);
 
     extern retStr_t getMessage(argStr_t);
@@ -30,9 +28,9 @@ namespace bm
         bm::sendMessage(pMsg);
     };
 
-    std::function<void(argStr_t&)> NodeSendMessage = [](bm::argStr_t& pMsg) 
+    std::function<void(bm::Node, argStr_t&)> NodeSendMessage = [](bm::Node pNode, bm::argStr_t& pMsg) 
     {
-        node.sendMessage(pMsg);
+        pNode.sendMessage(pMsg);
     };
 
     std::function<retStr_t(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
@@ -41,9 +39,9 @@ namespace bm
         return retMsg;
     };
 
-    std::function<retStr_t(argStr_t&)> NodeGetMessage = [](bm::argStr_t& pMsg)
+    std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage = [](bm::Node pNode, bm::argStr_t& pMsg)
     {
-        auto retMsg = node.getMessage(pMsg);
+        auto retMsg = pNode.getMessage(pMsg);
         return retMsg;
     };
 }

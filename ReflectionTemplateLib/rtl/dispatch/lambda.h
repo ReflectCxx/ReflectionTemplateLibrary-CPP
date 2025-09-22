@@ -11,11 +11,7 @@
 
 #pragma once
 
-#include <vector>
-
 #include "rtl_traits.h"
-#include "rtl_typeid.h"
-#include "rtl_constants.h"
 #include "functor.h"
 
 namespace rtl::dispatch
@@ -52,7 +48,7 @@ namespace rtl::dispatch
         }
 
         template<class record_t, class ...signature_ts>
-        const method_t<record_t, signature_ts...>* to_method() const
+        constexpr const method_t<record_t, signature_ts...>* to_method() const
         {
             std::size_t recordId = detail::TypeId<record_t>::get();
             std::size_t typeId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();

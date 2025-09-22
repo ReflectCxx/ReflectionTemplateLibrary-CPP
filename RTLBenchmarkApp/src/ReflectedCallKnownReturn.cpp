@@ -122,6 +122,58 @@ void FunctionPointerCall::set(benchmark::State& state)
 }
 
 
+void MethodFnPointerCall::set(benchmark::State& state)
+{
+    static bm::Node nodeObj;
+    static auto functor = []() -> void(bm::Node::*)(bm::argStr_t) 
+    {   
+        // Must be checked: Passing an incorrect argument or return type is undefined behaviour.
+        if (sendMessageOnNode_lambda.is_returning<void>() && sendMessageOnNode_lambda.is_signature<bm::argStr_t>())
+        {
+            // No validation is performed internally and the function will not return nullptr on mismatch.
+            return sendMessageOnNode_lambda.get_functor<void>().f_ptr();
+        }
+        std::cout << "[8] error: signature mismatch.\n";
+        return nullptr;
+    }();
+
+    for (auto _ : state)
+    {
+        if (functor)
+        {
+            (nodeObj.*functor)(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
+    }
+}
+
+
+void MethodFnPointerCall::get(benchmark::State& state)
+{
+    static bm::Node nodeObj;
+    static auto functor = []() -> bm::retStr_t(bm::Node::*)(bm::argStr_t)
+    {
+        // Must be checked: Passing an incorrect argument or return type is undefined behaviour.
+        if (getMessageOnNode_lambda.is_returning<bm::retStr_t>() && getMessageOnNode_lambda.is_signature<bm::argStr_t>())
+        {
+            // No validation is performed internally and the function will not return nullptr on mismatch.
+            return getMessageOnNode_lambda.get_functor<bm::retStr_t>().f_ptr();
+        }
+        std::cout << "[9] error: signature mismatch.\n";
+        return nullptr;
+    }();
+
+    for (auto _ : state)
+    {
+        if (functor)
+        {
+            auto ret = (nodeObj.*functor)(bm::g_longStr);
+            benchmark::DoNotOptimize(ret);
+        }
+    }
+}
+
+
 void FunctionPointerCall::get(benchmark::State& state)
 {
     static auto* functor = []() -> bm::retStr_t(*)(bm::argStr_t)
@@ -147,7 +199,7 @@ void FunctionPointerCall::get(benchmark::State& state)
 }
 
 
-void ReflectedCallKnownReturn::set(benchmark::State& state)
+void RtlReflectedCall::set(benchmark::State& state)
 {
     static auto passed = _test0();
     for (auto _ : state)
@@ -161,7 +213,7 @@ void ReflectedCallKnownReturn::set(benchmark::State& state)
 }
 
 
-void ReflectedCallKnownReturn::get(benchmark::State& state)
+void RtlReflectedCall::get(benchmark::State& state)
 {
     static auto passed = _test2();
     for (auto _: state)
@@ -175,7 +227,7 @@ void ReflectedCallKnownReturn::get(benchmark::State& state)
 }
 
 
-void ReflectedMethodCallKnownReturn::set(benchmark::State& state)
+void RtlReflectedMethodCall::set(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto functor = []() -> void(bm::Node::*)(bm::argStr_t) 
@@ -201,7 +253,7 @@ void ReflectedMethodCallKnownReturn::set(benchmark::State& state)
 }
 
 
-void ReflectedMethodCallKnownReturn::get(benchmark::State& state)
+void RtlReflectedMethodCall::get(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto functor = []() -> bm::retStr_t(bm::Node::*)(bm::argStr_t) 

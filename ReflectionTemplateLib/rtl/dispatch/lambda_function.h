@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "lambda_hop.h"
+#include "lambda.h"
 #include "function_ptr.h"
 
 namespace rtl::dispatch
@@ -23,7 +23,7 @@ namespace rtl::dispatch
         using fptr_t = typename function_ptr<return_t, signature_ts...>::functor_t;
 
         template<class ...args_t>
-        static constexpr bool is_argst_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
+        static constexpr bool is_args_t_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
 
         template<class return_t>
         static constexpr bool noexcept_v = noexcept(std::declval<fptr_t<return_t>>()(std::declval<signature_ts>()...));
@@ -35,7 +35,7 @@ namespace rtl::dispatch
         { }
 
         template<class return_t>
-        constexpr const function_ptr<return_t, signature_ts...>& get_functor() const
+        [[nodiscard]] constexpr auto& get_functor() const
         {
             // Unchecked: using an incorrect argument or return type is undefined behaviour.
             // No validation is performed and the function will not return nullptr on mismatch. (By Design)
@@ -43,17 +43,14 @@ namespace rtl::dispatch
         }
 
         template<class return_t, class...args_t>
-        constexpr decltype(auto) hop(args_t&&...params) const  //noexcept(noexcept_v)
+        [[nodiscard]] constexpr decltype(auto) hop(args_t&&...params) const  noexcept(noexcept_v<return_t>)
         {
-            static_assert(is_argst_ok<args_t...>, "Argument types don't match signature.");
-
-            fptr_t<return_t> functor = get_functor<return_t>().f_ptr();
-            if constexpr (std::is_same_v<return_t, void>) {
-                (*functor)(std::forward<args_t>(params)...);
-            }
-            else {
-                return (*functor)(std::forward<args_t>(params)...);
-            }
+            static_assert(is_args_t_ok<args_t...>, "Argument types don't match signature.");
+            
+            constexpr auto call = [](auto fp, auto&&... a) -> decltype(auto) {
+                return (*fp)(std::forward<decltype(a)>(a)...);
+            };
+            return call(get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
         }
     };
 }

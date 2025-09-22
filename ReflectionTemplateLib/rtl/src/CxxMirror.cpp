@@ -11,7 +11,6 @@
 
 #include "RObject.h"
 #include "CxxMirror.h"
-#include "ReflectCast.h"
 
 namespace rtl 
 {

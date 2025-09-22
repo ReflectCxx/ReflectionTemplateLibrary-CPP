@@ -11,15 +11,13 @@
 
 #pragma once
 
-#include <memory>
 #include <atomic>
-#include <functional>
 
 #include "view.h"
 #include "RObjectId.h"
 
-#include "rtl_typeid.h"
 #include "rtl_traits.h"
+#include "rtl_errors.h"
 #include "forward_decls.h"
 
 namespace rtl::detail

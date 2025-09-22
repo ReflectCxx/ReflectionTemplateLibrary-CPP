@@ -13,7 +13,7 @@
 
 #include <cassert>
 
-#include "cache_lambda_hop_function.h"
+#include "cache_lambda_function.h"
 #include "cache_function_ptr.h"
 
 #include "SetupFunction.h"

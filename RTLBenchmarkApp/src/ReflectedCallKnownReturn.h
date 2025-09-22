@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct ReflectedCallKnownReturn
+struct RtlReflectedCall
 {
     static void set(benchmark::State& state);
 
@@ -18,7 +18,15 @@ struct FunctionPointerCall
 };
 
 
-struct ReflectedMethodCallKnownReturn
+struct MethodFnPointerCall
+{
+    static void set(benchmark::State& state);
+
+    static void get(benchmark::State& state);
+};
+
+
+struct RtlReflectedMethodCall
 {
     static void set(benchmark::State& state);
 

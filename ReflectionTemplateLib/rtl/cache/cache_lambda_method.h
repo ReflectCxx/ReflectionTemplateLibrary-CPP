@@ -13,36 +13,36 @@
 
 #include <list>
 
-#include "lambda_hop_function.h"
+#include "lambda_method.h"
 
 namespace rtl::cache
 {
-    template<class ...signature_ts>
-    struct lambda_function
+    template<class record_t, class ...signature_ts>
+    struct lambda_method
     {
-        static const lambda_function& instance() 
+        static const lambda_method& instance()
         {
-            static const lambda_function instance_;
+            static const lambda_method instance_;
             return instance_;
         }
 
-        const dispatch::lambda_function<signature_ts...>& push(const dispatch::functor& fptr) const
+        const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor& fptr) const
         {
-            m_cache.push_back(dispatch::lambda_function<signature_ts...>(fptr));
+            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>(fptr));
             fptr.m_lambda = &m_cache.back();
             return m_cache.back();
         }
 
-        lambda_function(lambda_function&&) = delete;
-        lambda_function(const lambda_function&) = delete;
-        lambda_function& operator=(lambda_function&&) = delete;
-        lambda_function& operator=(const lambda_function&) = delete;
+        lambda_method(lambda_method&&) = delete;
+        lambda_method(const lambda_method&) = delete;
+        lambda_method& operator=(lambda_method&&) = delete;
+        lambda_method& operator=(const lambda_method&) = delete;
 
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<dispatch::lambda_function<signature_ts...>> m_cache;
+        mutable std::list<dispatch::lambda_method<record_t, signature_ts...>> m_cache;
 
-        lambda_function() = default;
+        lambda_method() = default;
     };
 }

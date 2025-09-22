@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <tuple>
-
 #include "functor.h"
 
 namespace rtl::dispatch
@@ -22,7 +20,7 @@ namespace rtl::dispatch
 	{
 		using functor_t = return_t(*)(signature_ts...);
 
-		constexpr functor_t f_ptr() const
+		[[nodiscard]] constexpr auto f_ptr() const
 		{
 			return m_functor;
 		}

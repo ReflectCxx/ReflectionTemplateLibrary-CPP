@@ -14,7 +14,6 @@
 #include <vector>
 #include <string>
 #include <typeinfo>
-#include <atomic>
 
 namespace rtl {
 
