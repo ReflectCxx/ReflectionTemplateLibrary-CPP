@@ -37,8 +37,8 @@ namespace rtl::dispatch
         template<class return_t>
         [[nodiscard]] constexpr auto& get_functor() const
         {
-            // Unchecked: using an incorrect argument or return type is undefined behaviour.
-            // No validation is performed and the function will not return nullptr on mismatch. (By Design)
+            // Unsafe: using an incorrect return type is undefined behaviour.
+            // Not validated here and the function will not return nullptr on mismatch. (By Design)
             return static_cast<const function_ptr<return_t, signature_ts...>&>(m_functor);
         }
 

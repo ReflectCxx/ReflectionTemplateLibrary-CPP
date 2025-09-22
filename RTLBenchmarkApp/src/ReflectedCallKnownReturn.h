@@ -2,33 +2,33 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlReflectedCall
+struct ReflectedCallKnownReturn
 {
-    static void set(benchmark::State& state);
+    static void typeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void typeNonVoid(benchmark::State& state);
 };
 
 
 struct FunctionPointerCall
 {
-    static void set(benchmark::State& state);
+    static void returnTypeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void returnTypeNonVoid(benchmark::State& state);
 };
 
 
 struct MethodFnPointerCall
 {
-    static void set(benchmark::State& state);
+    static void returnTypeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void returnTypeNonVoid(benchmark::State& state);
 };
 
 
-struct RtlReflectedMethodCall
+struct ReflectedMethodCallKnownReturn
 {
-    static void set(benchmark::State& state);
+    static void typeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void typeNonVoid(benchmark::State& state);
 };

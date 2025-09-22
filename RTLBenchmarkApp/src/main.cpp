@@ -6,29 +6,33 @@
 #include "ReflectedCallKnownReturn.h"
 #include "ReflectedCallUnknownReturn.h"
 
-BENCHMARK(NativeCall::set);
-BENCHMARK(FunctionPointerCall::set);
-BENCHMARK(MethodFnPointerCall::set);
+BENCHMARK(NativeCall::returnTypeVoid);
 
-BENCHMARK(StdFunctionCall::set);
-BENCHMARK(StdFunctionMethodCall::set);
+BENCHMARK(FunctionPointerCall::returnTypeVoid);
+BENCHMARK(MethodFnPointerCall::returnTypeVoid);
 
-BENCHMARK(RtlReflectedCall::set);
-BENCHMARK(RtlReflectedMethodCall::set);
-BENCHMARK(RtlReflectedCall_retUnknown::set);
-BENCHMARK(RtlReflectionMethodCall_retUnknown::set);
+BENCHMARK(StdFunctionCall::returnTypeVoid);
+BENCHMARK(StdFunctionMethodCall::returnTypeVoid);
 
-BENCHMARK(NativeCall::get);
-BENCHMARK(FunctionPointerCall::get);
-BENCHMARK(MethodFnPointerCall::get);
+BENCHMARK(ReflectedCallKnownReturn::typeVoid);
+BENCHMARK(ReflectedMethodCallKnownReturn::typeVoid);
 
-BENCHMARK(StdFunctionCall::get);
-BENCHMARK(StdFunctionMethodCall::get);
+BENCHMARK(ReflectedCallUnknownReturn::typeVoid);
+BENCHMARK(ReflectedMethodCallUnknownReturn::typeVoid);
 
-BENCHMARK(RtlReflectedCall::get);
-BENCHMARK(RtlReflectedMethodCall::get);
-BENCHMARK(RtlReflectedCall_retUnknown::get);
-BENCHMARK(RtlReflectionMethodCall_retUnknown::get);
+BENCHMARK(NativeCall::returnTypeNonVoid);
+
+BENCHMARK(FunctionPointerCall::returnTypeNonVoid);
+BENCHMARK(MethodFnPointerCall::returnTypeNonVoid);
+
+BENCHMARK(StdFunctionCall::returnTypeNonVoid);
+BENCHMARK(StdFunctionMethodCall::returnTypeNonVoid);
+
+BENCHMARK(ReflectedCallKnownReturn::typeNonVoid);
+BENCHMARK(ReflectedMethodCallKnownReturn::typeNonVoid);
+
+BENCHMARK(ReflectedCallUnknownReturn::typeNonVoid);
+BENCHMARK(ReflectedMethodCallUnknownReturn::typeNonVoid);
 
 namespace bm 
 {

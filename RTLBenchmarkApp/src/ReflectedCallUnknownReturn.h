@@ -2,17 +2,17 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlReflectedCall_retUnknown
+struct ReflectedCallUnknownReturn
 {
-    static void set(benchmark::State& state);
+    static void typeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void typeNonVoid(benchmark::State& state);
 };
 
 
-struct RtlReflectionMethodCall_retUnknown
+struct ReflectedMethodCallUnknownReturn
 {    
-    static void set(benchmark::State& state);
+    static void typeVoid(benchmark::State& state);
 
-    static void get(benchmark::State& state);
+    static void typeNonVoid(benchmark::State& state);
 };

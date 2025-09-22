@@ -80,12 +80,18 @@ namespace
         }
         return 0;
     };
+
+    static auto _new_line = []() {
+        std::cout << std::endl;
+        return 0;
+    };
 }
 
 
 
-void RtlReflectedCall_retUnknown::set(benchmark::State& state)
+void ReflectedCallUnknownReturn::typeVoid(benchmark::State& state)
 {
+    static auto __=_new_line();
     static auto _ = _test0();
     for (auto _ : state) 
     {
@@ -94,8 +100,9 @@ void RtlReflectedCall_retUnknown::set(benchmark::State& state)
 }
 
 
-void RtlReflectedCall_retUnknown::get(benchmark::State& state)
+void ReflectedCallUnknownReturn::typeNonVoid(benchmark::State& state)
 {
+    static auto __=_new_line();
     static auto _ = _test2();
     for (auto _ : state)
     {
@@ -104,7 +111,7 @@ void RtlReflectedCall_retUnknown::get(benchmark::State& state)
 }
 
 
-void RtlReflectionMethodCall_retUnknown::set(benchmark::State& state)
+void ReflectedMethodCallUnknownReturn::typeVoid(benchmark::State& state)
 {
     static auto _ = _test1();
     for (auto _ : state)
@@ -114,7 +121,7 @@ void RtlReflectionMethodCall_retUnknown::set(benchmark::State& state)
 }
 
 
-void RtlReflectionMethodCall_retUnknown::get(benchmark::State& state)
+void ReflectedMethodCallUnknownReturn::typeNonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
     for (auto _ : state)

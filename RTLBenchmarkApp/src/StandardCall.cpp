@@ -39,7 +39,7 @@ namespace bm
 }
 
 
-void NativeCall::set(benchmark::State& state)
+void NativeCall::returnTypeVoid(benchmark::State& state)
 {
     for (auto _: state)
     {
@@ -49,7 +49,7 @@ void NativeCall::set(benchmark::State& state)
 }
 
 
-void NativeCall::get(benchmark::State& state)
+void NativeCall::returnTypeNonVoid(benchmark::State& state)
 {
     static auto _=_put_line();
     for (auto _: state)
@@ -59,7 +59,7 @@ void NativeCall::get(benchmark::State& state)
 }
 
 
-void StdFunctionCall::set(benchmark::State& state)
+void StdFunctionCall::returnTypeVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -70,7 +70,7 @@ void StdFunctionCall::set(benchmark::State& state)
 }
 
 
-void StdFunctionMethodCall::set(benchmark::State& state)
+void StdFunctionMethodCall::returnTypeVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     for (auto _: state)
@@ -81,7 +81,7 @@ void StdFunctionMethodCall::set(benchmark::State& state)
 }
 
 
-void StdFunctionCall::get(benchmark::State& state)
+void StdFunctionCall::returnTypeNonVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -91,7 +91,7 @@ void StdFunctionCall::get(benchmark::State& state)
 }
 
 
-void StdFunctionMethodCall::get(benchmark::State& state)
+void StdFunctionMethodCall::returnTypeNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     for (auto _: state)

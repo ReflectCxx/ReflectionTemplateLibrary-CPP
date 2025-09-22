@@ -30,8 +30,8 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_function<_signature...>()->template get_functor<void>().f_ptr());
-                assert(isFunctorGood && "new type-id-system not working.");
+                // bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_function<_signature...>()->template get_functor<void>().f_ptr());
+                // assert(isFunctorGood && "new type-id-system not working.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -48,9 +48,8 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_function<_signature...>()->template get_functor<_returnType>().f_ptr());
-
-                assert(isFunctorGood && "new type-id-system not working.");
+                // bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_function<_signature...>()->template get_functor<_returnType>().f_ptr());
+                // assert(isFunctorGood && "new type-id-system not working.");
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 

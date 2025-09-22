@@ -116,8 +116,9 @@ namespace
 
 
 
-void FunctionPointerCall::get(benchmark::State& state)
+void FunctionPointerCall::returnTypeNonVoid(benchmark::State& state)
 {
+    static auto _=_new_line();
     static auto functor = functor_get(0);
     for (auto _ : state)
     {
@@ -125,7 +126,7 @@ void FunctionPointerCall::get(benchmark::State& state)
     }
 }
 
-void MethodFnPointerCall::get(benchmark::State& state)
+void MethodFnPointerCall::returnTypeNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto functor = method_get(0);
@@ -135,8 +136,9 @@ void MethodFnPointerCall::get(benchmark::State& state)
     }
 }
 
-void FunctionPointerCall::set(benchmark::State& state)
+void FunctionPointerCall::returnTypeVoid(benchmark::State& state)
 {
+    static auto __=_new_line();
     static auto _ = functor_set(0);
     static auto functor = sendMessage_lambda.get_functor<void>().f_ptr();
     for (auto _ : state)
@@ -146,7 +148,7 @@ void FunctionPointerCall::set(benchmark::State& state)
     }
 }
 
-void MethodFnPointerCall::set(benchmark::State& state)
+void MethodFnPointerCall::returnTypeVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto functor = method_set(0);
@@ -159,7 +161,7 @@ void MethodFnPointerCall::set(benchmark::State& state)
 
 
 
-void RtlReflectedCall::get(benchmark::State& state)
+void ReflectedCallKnownReturn::typeNonVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     static auto _test = functor_get(1);
@@ -169,7 +171,7 @@ void RtlReflectedCall::get(benchmark::State& state)
     }
 }
 
-void RtlReflectedMethodCall::get(benchmark::State& state)
+void ReflectedMethodCallKnownReturn::typeNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto _test = method_get(1);
@@ -179,7 +181,7 @@ void RtlReflectedMethodCall::get(benchmark::State& state)
     }
 }
 
-void RtlReflectedCall::set(benchmark::State& state)
+void ReflectedCallKnownReturn::typeVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     static auto _test = functor_set(1);
@@ -190,7 +192,7 @@ void RtlReflectedCall::set(benchmark::State& state)
     }
 }
 
-void RtlReflectedMethodCall::set(benchmark::State& state)
+void ReflectedMethodCallKnownReturn::typeVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto _test = method_set(1);
