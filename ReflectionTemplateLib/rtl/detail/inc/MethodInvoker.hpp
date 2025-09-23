@@ -147,3 +147,34 @@ namespace rtl::detail
         }
     }
 }
+
+
+namespace rtl::detail
+{
+    template<class _recordType>
+    template<class ..._signature>
+    const Hopper<_recordType>::Build<_signature...> Hopper<_recordType>::argsT() const
+    {
+        for (auto& functorId : m_functorIds)
+        {
+            if (functorId.m_lambda->is_member<_recordType>() &&
+                functorId.m_lambda->is_signature<_signature...>()) [[likely]]
+            {
+                return { functorId.get_lambda_method<_recordType, _signature...>() };
+            }
+        }
+        return Build<_signature...>();
+    }
+
+
+    template<class _recordType>
+    template<class ..._signature>
+    template<class _returnType>
+    inline constexpr const method<_returnType(_recordType::*)(_signature...)> Hopper<_recordType>::Build<_signature...>::returnT() const
+    {
+        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
+            return m_lambda->template get_hopper<_returnType>();
+        }
+        return method<_returnType(_recordType::*)(_signature...)>();
+    }
+}

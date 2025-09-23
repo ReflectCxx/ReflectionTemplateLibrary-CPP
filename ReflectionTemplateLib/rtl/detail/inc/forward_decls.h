@@ -26,10 +26,10 @@ namespace rtl
     class CxxMirror;
 
     template<class functor_t>
-    struct function_hop;
+    struct function;
 
     template<class functor_t>
-    struct method_hop;
+    struct method;
 
     namespace detail 
     {
@@ -40,6 +40,9 @@ namespace rtl
 
         template<class _derivedType>
         class SetupMethod;
+
+        template<class _recordType = std::nullptr_t>
+        struct Hopper;
     }
 
     namespace cache

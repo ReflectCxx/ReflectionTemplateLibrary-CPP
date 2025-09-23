@@ -22,31 +22,13 @@ namespace rtl
         return detail::FunctionCaller<_signature...>{ this };
     }
 
-    template<class ..._signature>
-    const Function::HopBuilder<_signature...> Function::args_t() const
+
+    inline detail::Hopper<> Function::getLambda()
     {
-        for (auto& functorId : m_functorIds)
-        {
-            if (functorId.m_lambda->is_signature<_signature...>()) [[likely]] {
-                return { functorId.get_lambda_function<_signature...>() };
-            }
-        }
-        return HopBuilder<_signature...>();
+        return detail::Hopper<>{ m_functorIds };
     }
 
-
-    template<class ..._signature>
-    template<class _returnType>
-    inline constexpr const function_hop<_returnType(_signature...)> Function::HopBuilder<_signature...>::return_t() const
-    {
-        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
-            return m_lambda->template get_hopper<_returnType>();
-        }
-        return function_hop<_returnType(_signature...)>();
-    }
-
-
-/*  @method: hasSignature<...>()
+    /*  @method: hasSignature<...>()
     @param: set of arguments, explicitly specified as template parameter.
     @return: bool, if the functor associated with this object is of certain signature or not.
     * a single 'Function' object can be associated with multiple overloads of same function.

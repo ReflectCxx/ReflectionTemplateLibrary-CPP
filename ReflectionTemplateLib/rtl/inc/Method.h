@@ -56,18 +56,8 @@ namespace rtl {
 
         GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
 
-
         template<class _recordType, class ..._signature>
-        struct HopBuilder
-        {
-            const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
-
-            template<class _returnType>
-            constexpr const method_hop<_returnType (_recordType::*)(_signature...)> return_t() const;
-        };
-
-        template<class _recordType, class ..._signature>
-        const HopBuilder<_recordType, _signature...> args_t() const;
+        constexpr detail::Hopper<_recordType> getLambda() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

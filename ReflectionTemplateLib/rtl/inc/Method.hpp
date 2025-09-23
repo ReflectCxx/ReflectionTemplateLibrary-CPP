@@ -30,28 +30,9 @@ namespace rtl
 
 
     template<class _recordType, class ..._signature>
-    const Method::HopBuilder<_recordType, _signature...> Method::args_t() const
+    inline constexpr detail::Hopper<_recordType> Method::getLambda() const
     {
-        for (auto& functorId : getFunctorIds())
-        {
-            if (functorId.m_lambda->is_member<_recordType>() &&
-                functorId.m_lambda->is_signature<_signature...>()) [[likely]] 
-            {
-                return { functorId.get_lambda_method<_recordType, _signature...>() };
-            }
-        }
-        return HopBuilder<_recordType, _signature...>();
-    }
-
-
-    template<class _recordType, class ..._signature>
-    template<class _returnType>
-    inline constexpr const method_hop<_returnType (_recordType::*)(_signature...)> Method::HopBuilder<_recordType, _signature...>::return_t() const
-    {
-        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
-            return m_lambda->template get_hopper<_returnType>();
-        }
-        return method_hop<_returnType (_recordType::*)(_signature...)>();
+        return detail::Hopper<_recordType>{ getFunctorIds() };
     }
 
 
@@ -72,7 +53,7 @@ namespace rtl
     }
 
 
-/*  @method: hasSignature<...>()
+    /*  @method: hasSignature<...>()
     @params: template params, <_arg0, ..._args> (expects at least one args- _args0)
     @return: bool
     * checks if the member-function functor associated with this 'Method', takes template specified arguments set or not.

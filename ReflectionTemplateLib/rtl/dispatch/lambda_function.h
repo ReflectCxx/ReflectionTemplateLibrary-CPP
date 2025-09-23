@@ -17,7 +17,7 @@
 namespace  rtl 
 {
     template<class return_t, class ...signature_ts>
-    struct function_hop<return_t(signature_ts...)>
+    struct function<return_t(signature_ts...)>
     {
         using fptr_t = return_t(*)(signature_ts...);
 
@@ -55,7 +55,7 @@ namespace rtl::dispatch
     struct lambda_function: public lambda
     {
         template<class return_t>
-        using hopper_t = function_hop<return_t(signature_ts...)>;
+        using hopper_t = function<return_t(signature_ts...)>;
 
         lambda_function(const functor& p_functor) noexcept
             :lambda(p_functor)
