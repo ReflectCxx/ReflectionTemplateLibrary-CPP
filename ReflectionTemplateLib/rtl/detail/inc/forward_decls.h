@@ -25,6 +25,12 @@ namespace rtl
 
     class CxxMirror;
 
+    template<class functor_t>
+    struct function_hop;
+
+    template<class functor_t>
+    struct method_hop;
+
     namespace detail 
     {
         struct FunctorId;

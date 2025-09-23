@@ -23,7 +23,7 @@ namespace rtl
     }
 
     template<class ..._signature>
-    const Function::Hopper<_signature...> Function::args_t() const
+    const Function::HopBuilder<_signature...> Function::args_t() const
     {
         for (auto& functorId : m_functorIds)
         {
@@ -31,19 +31,18 @@ namespace rtl
                 return { functorId.get_lambda_function<_signature...>() };
             }
         }
-        return Hopper<_signature...>();
+        return HopBuilder<_signature...>();
     }
 
 
     template<class ..._signature>
     template<class _returnType>
-    inline constexpr const dispatch::lambda_function<_signature...>::hopper<_returnType> 
-        Function::Hopper<_signature...>::return_t() const
+    inline constexpr const function_hop<_returnType(_signature...)> Function::HopBuilder<_signature...>::return_t() const
     {
-        if (m_lambda != nullptr && m_lambda->is_returning<_returnType>()) {
-            return m_lambda->get_hopper<_returnType>();
+        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
+            return m_lambda->template get_hopper<_returnType>();
         }
-        return dispatch::lambda_function<_signature...>::template hopper<_returnType>();
+        return function_hop<_returnType(_signature...)>();
     }
 
 

@@ -1,8 +1,10 @@
 
+#include <optional>
 #include <rtl/rtl.h>
 #include <benchmark/benchmark.h>
 
 #include "BenchMark.h"
+#include "Function.h"
 #include "ReflectedCallKnownReturn.h"
 
 
@@ -18,13 +20,59 @@ namespace cxx
 
 namespace
 {
-    static const auto getMessage_functor = cxx::mirror().getFunction("getMessage")->args_t<bm::argStr_t>().return_t<bm::retStr_t>();
+    static const auto getMessage_functor = []()
+    {
+        std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
+        if(!function)
+        {
+            std::cerr << "[00] error: function 'getMessage' not found.\n";
+            std::abort();
+        }
+        return function->args_t<bm::argStr_t>().return_t<bm::retStr_t>();
+    }();
 
-    static const auto sendMessage_functor = cxx::mirror().getFunction("sendMessage")->args_t<bm::argStr_t>().return_t<void>();
+    static const auto sendMessage_functor = []()
+    {
+        std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("sendMessage");
+        if(!sendMessage)
+        {
+            std::cerr << "[01] error: function 'sendMessage' not found.\n";
+            std::abort();
+        }
+        return sendMessage->args_t<bm::argStr_t>().return_t<void>();
+    }();
 
-    static const auto getMessageOnNode_functor = cxx::mirror().getRecord("Node")->getMethod("getMessage")->args_t<bm::Node, bm::argStr_t>().return_t<bm::retStr_t>();
+    static const auto getMessageOnNode_functor = []()
+    {
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
 
-    static const auto sendMessageOnNode_functor = cxx::mirror().getRecord("Node")->getMethod("sendMessage")->args_t<bm::Node, bm::argStr_t>().return_t<void>();
+        std::optional<rtl::Method> method = Node->getMethod("getMessage");
+        if (!method) {
+            std::cerr << "[02] error: method 'Node::getMessage' not found.\n";
+            std::abort();
+        }
+        return method->args_t<bm::Node, bm::argStr_t>().return_t<bm::retStr_t>();
+    }();
+
+    static const auto sendMessageOnNode_functor = []()
+    {
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
+
+        std::optional<rtl::Method> method = Node->getMethod("sendMessage");
+        if (!method) {
+            std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
+            std::abort();
+        }
+        return method->args_t<bm::Node, bm::argStr_t>().return_t<void>();
+    }();
 }
 
 

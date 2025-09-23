@@ -90,16 +90,16 @@ namespace rtl {
         Function& operator=(const Function&) = default;
 
         template<class ..._signature>
-        struct Hopper
+        struct HopBuilder
         {
             const dispatch::lambda_function<_signature...>* m_lambda = nullptr;
 
             template<class _returnType>
-            constexpr const dispatch::lambda_function<_signature...>::hopper<_returnType> return_t() const;
+            constexpr const function_hop<_returnType(_signature...)> return_t() const;
         };
 
         template<class ..._signature>
-        const Hopper<_signature...> args_t() const;
+        const HopBuilder<_signature...> args_t() const;
 
         //indicates if a functor associated with it takes zero arguments.
         bool hasSignature() const;

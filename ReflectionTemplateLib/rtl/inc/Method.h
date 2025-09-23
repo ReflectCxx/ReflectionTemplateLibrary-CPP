@@ -58,16 +58,16 @@ namespace rtl {
 
 
         template<class _recordType, class ..._signature>
-        struct Hopper
+        struct HopBuilder
         {
             const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
 
             template<class _returnType>
-            constexpr const dispatch::lambda_method<_recordType, _signature...>::hopper<_returnType> return_t() const;
+            constexpr const method_hop<_returnType (_recordType::*)(_signature...)> return_t() const;
         };
 
         template<class _recordType, class ..._signature>
-        const Hopper<_recordType, _signature...> args_t() const;
+        const HopBuilder<_recordType, _signature...> args_t() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

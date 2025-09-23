@@ -30,7 +30,7 @@ namespace rtl
 
 
     template<class _recordType, class ..._signature>
-    const Method::Hopper<_recordType, _signature...> Method::args_t() const
+    const Method::HopBuilder<_recordType, _signature...> Method::args_t() const
     {
         for (auto& functorId : getFunctorIds())
         {
@@ -40,19 +40,18 @@ namespace rtl
                 return { functorId.get_lambda_method<_recordType, _signature...>() };
             }
         }
-        return Hopper<_recordType, _signature...>();
+        return HopBuilder<_recordType, _signature...>();
     }
 
 
     template<class _recordType, class ..._signature>
     template<class _returnType>
-    inline constexpr const dispatch::lambda_method<_recordType, _signature...>::hopper<_returnType> 
-    Method::Hopper<_recordType, _signature...>::return_t() const
+    inline constexpr const method_hop<_returnType (_recordType::*)(_signature...)> Method::HopBuilder<_recordType, _signature...>::return_t() const
     {
-        if (m_lambda != nullptr && m_lambda->is_returning<_returnType>()) {
-            return m_lambda->get_hopper<_returnType>();
+        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
+            return m_lambda->template get_hopper<_returnType>();
         }
-        return dispatch::lambda_method<_recordType, _signature...>::template hopper<_returnType>();
+        return method_hop<_returnType (_recordType::*)(_signature...)>();
     }
 
 
