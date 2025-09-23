@@ -153,7 +153,7 @@ namespace rtl::detail
 {
     template<class _recordType>
     template<class ..._signature>
-    const Hopper<_recordType>::Build<_signature...> Hopper<_recordType>::argsT() const
+    const Hopper<_recordType>::template Build<_signature...> Hopper<_recordType>::argsT() const
     {
         for (auto& functorId : m_functorIds)
         {

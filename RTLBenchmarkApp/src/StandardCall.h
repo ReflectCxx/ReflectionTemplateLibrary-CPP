@@ -4,23 +4,23 @@
 
 struct NativeCall
 {
-    static void returnTypeVoid(benchmark::State& state);
+    static void returnVoid(benchmark::State& state);
     
-    static void returnTypeNonVoid(benchmark::State& state);
+    static void returnNonVoid(benchmark::State& state);
 };
 
 
-struct StdFunctionCall
+struct StdFunction_call
 {
-    static void returnTypeVoid(benchmark::State& state);
+    static void returnVoid(benchmark::State& state);
 
-    static void returnTypeNonVoid(benchmark::State& state);
+    static void returnNonVoid(benchmark::State& state);
 };
 
 
-struct StdFunctionMethodCall
+struct StdFunction_callMethod
 {    
-    static void returnTypeVoid(benchmark::State& state);
+    static void returnVoid(benchmark::State& state);
 
-    static void returnTypeNonVoid(benchmark::State& state);
+    static void returnNonVoid(benchmark::State& state);
 };

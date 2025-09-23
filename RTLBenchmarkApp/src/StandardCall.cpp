@@ -9,8 +9,8 @@
 namespace 
 {
     static auto _put_line = []() {
-        std::cout << "----------------------------------------"
-             "------------------------------------------------" << std::endl;
+        std::cout << "--------------------------------------------"
+             "----------------------------------------------------" << std::endl;
         return 0;
     };
 
@@ -39,7 +39,7 @@ namespace bm
 }
 
 
-void NativeCall::returnTypeVoid(benchmark::State& state)
+void NativeCall::returnVoid(benchmark::State& state)
 {
     for (auto _: state)
     {
@@ -49,7 +49,7 @@ void NativeCall::returnTypeVoid(benchmark::State& state)
 }
 
 
-void NativeCall::returnTypeNonVoid(benchmark::State& state)
+void NativeCall::returnNonVoid(benchmark::State& state)
 {
     static auto _=_put_line();
     for (auto _: state)
@@ -59,7 +59,7 @@ void NativeCall::returnTypeNonVoid(benchmark::State& state)
 }
 
 
-void StdFunctionCall::returnTypeVoid(benchmark::State& state)
+void StdFunction_call::returnVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -70,7 +70,7 @@ void StdFunctionCall::returnTypeVoid(benchmark::State& state)
 }
 
 
-void StdFunctionMethodCall::returnTypeVoid(benchmark::State& state)
+void StdFunction_callMethod::returnVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     for (auto _: state)
@@ -81,7 +81,7 @@ void StdFunctionMethodCall::returnTypeVoid(benchmark::State& state)
 }
 
 
-void StdFunctionCall::returnTypeNonVoid(benchmark::State& state)
+void StdFunction_call::returnNonVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     for (auto _: state)
@@ -91,7 +91,7 @@ void StdFunctionCall::returnTypeNonVoid(benchmark::State& state)
 }
 
 
-void StdFunctionMethodCall::returnTypeNonVoid(benchmark::State& state)
+void StdFunction_callMethod::returnNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     for (auto _: state)

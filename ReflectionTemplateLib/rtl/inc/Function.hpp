@@ -23,7 +23,7 @@ namespace rtl
     }
 
 
-    inline detail::Hopper<> Function::getLambda()
+    inline detail::Hopper<> Function::lambda()
     {
         return detail::Hopper<>{ m_functorIds };
     }

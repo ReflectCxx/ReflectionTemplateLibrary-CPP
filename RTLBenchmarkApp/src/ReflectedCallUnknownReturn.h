@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct ReflectedCallUnknownReturn
+struct RtlFunction_call_ReturnUnknown
 {
     static void typeVoid(benchmark::State& state);
 
@@ -10,7 +10,7 @@ struct ReflectedCallUnknownReturn
 };
 
 
-struct ReflectedMethodCallUnknownReturn
+struct RtlFunctionCall_callMethod_ReturnUnknown
 {    
     static void typeVoid(benchmark::State& state);
 

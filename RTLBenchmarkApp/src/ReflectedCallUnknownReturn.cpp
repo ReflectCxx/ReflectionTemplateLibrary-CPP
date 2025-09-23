@@ -127,7 +127,7 @@ namespace
 
 
 
-void ReflectedCallUnknownReturn::typeVoid(benchmark::State& state)
+void RtlFunction_call_ReturnUnknown::typeVoid(benchmark::State& state)
 {
     static auto __=_new_line();
     static auto _ = _test0();
@@ -138,7 +138,7 @@ void ReflectedCallUnknownReturn::typeVoid(benchmark::State& state)
 }
 
 
-void ReflectedCallUnknownReturn::typeNonVoid(benchmark::State& state)
+void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
 {
     static auto __=_new_line();
     static auto _ = _test2();
@@ -149,7 +149,7 @@ void ReflectedCallUnknownReturn::typeNonVoid(benchmark::State& state)
 }
 
 
-void ReflectedMethodCallUnknownReturn::typeVoid(benchmark::State& state)
+void RtlFunctionCall_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 {
     static auto _ = _test1();
     for (auto _ : state)
@@ -159,7 +159,7 @@ void ReflectedMethodCallUnknownReturn::typeVoid(benchmark::State& state)
 }
 
 
-void ReflectedMethodCallUnknownReturn::typeNonVoid(benchmark::State& state)
+void RtlFunctionCall_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
     for (auto _ : state)

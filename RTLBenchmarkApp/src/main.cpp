@@ -6,33 +6,33 @@
 #include "ReflectedCallKnownReturn.h"
 #include "ReflectedCallUnknownReturn.h"
 
-BENCHMARK(NativeCall::returnTypeVoid);
+BENCHMARK(NativeCall::returnVoid);
 
-BENCHMARK(FunctionPointerCall::returnTypeVoid);
-BENCHMARK(MethodFnPointerCall::returnTypeVoid);
+BENCHMARK(NativeFunctionPtr_call::returnVoid);
+BENCHMARK(NativeFunctionPtr_callMethod::returnVoid);
 
-BENCHMARK(StdFunctionCall::returnTypeVoid);
-BENCHMARK(StdFunctionMethodCall::returnTypeVoid);
+BENCHMARK(StdFunction_call::returnVoid);
+BENCHMARK(StdFunction_callMethod::returnVoid);
 
-BENCHMARK(ReflectedCallKnownReturn::typeVoid);
-BENCHMARK(ReflectedMethodCallKnownReturn::typeVoid);
+BENCHMARK(RtlFunction_call::returnVoid);
+BENCHMARK(RtlFunction_callMethod::returnVoid);
 
-BENCHMARK(ReflectedCallUnknownReturn::typeVoid);
-BENCHMARK(ReflectedMethodCallUnknownReturn::typeVoid);
+BENCHMARK(RtlFunction_call_ReturnUnknown::typeVoid);
+BENCHMARK(RtlFunctionCall_callMethod_ReturnUnknown::typeVoid);
 
-BENCHMARK(NativeCall::returnTypeNonVoid);
+BENCHMARK(NativeCall::returnNonVoid);
 
-BENCHMARK(FunctionPointerCall::returnTypeNonVoid);
-BENCHMARK(MethodFnPointerCall::returnTypeNonVoid);
+BENCHMARK(NativeFunctionPtr_call::returnNonVoid);
+BENCHMARK(NativeFunctionPtr_callMethod::returnNonVoid);
 
-BENCHMARK(StdFunctionCall::returnTypeNonVoid);
-BENCHMARK(StdFunctionMethodCall::returnTypeNonVoid);
+BENCHMARK(StdFunction_call::returnNonVoid);
+BENCHMARK(StdFunction_callMethod::returnNonVoid);
 
-BENCHMARK(ReflectedCallKnownReturn::typeNonVoid);
-BENCHMARK(ReflectedMethodCallKnownReturn::typeNonVoid);
+BENCHMARK(RtlFunction_call::returnNonVoid);
+BENCHMARK(RtlFunction_callMethod::returnNonVoid);
 
-BENCHMARK(ReflectedCallUnknownReturn::typeNonVoid);
-BENCHMARK(ReflectedMethodCallUnknownReturn::typeNonVoid);
+BENCHMARK(RtlFunction_call_ReturnUnknown::typeNonVoid);
+BENCHMARK(RtlFunctionCall_callMethod_ReturnUnknown::typeNonVoid);
 
 namespace bm 
 {

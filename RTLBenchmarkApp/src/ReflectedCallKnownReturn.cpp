@@ -25,10 +25,10 @@ namespace
         std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
         if(!function)
         {
-            std::cerr << "[00] error: function 'getMessage' not found.\callerId";
+            std::cerr << "[00] error: function 'getMessage' not found.";
             std::abort();
         }
-        return function->getLambda().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return function->lambda().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
     static const rtl::function<void(bm::argStr_t)> sendMessage = []()
@@ -36,42 +36,42 @@ namespace
         std::optional<rtl::Function> function = cxx::mirror().getFunction("sendMessage");
         if(!function)
         {
-            std::cerr << "[01] error: function 'sendMessage' not found.\callerId";
+            std::cerr << "[01] error: function 'sendMessage' not found.";
             std::abort();
         }
-        return function->getLambda().argsT<bm::argStr_t>().returnT<void>();
+        return function->lambda().argsT<bm::argStr_t>().returnT<void>();
     }();
 
     static const rtl::method<bm::retStr_t(bm::Node::*)(bm::argStr_t)> getMessageNode = []()
     {
         std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
         if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\callerId";
+            std::cerr << "[x] error: record 'Node' not found";
             std::abort();
         }
 
         std::optional<rtl::Method> method = Node->getMethod("getMessage");
         if (!method) {
-            std::cerr << "[02] error: method 'Node::getMessage' not found.\callerId";
+            std::cerr << "[02] error: method 'Node::getMessage' not found.";
             std::abort();
         }
-        return method->getLambda<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return method->lambda<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
-    static const rtl::method<void(bm::Node::*)(bm::argStr_t)> sendMessageOnNode = []()
+    static const rtl::method<void(bm::Node::*)(bm::argStr_t)> sendMessageNode = []()
     {
         std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
         if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\callerId";
+            std::cerr << "[x] error: record 'Node' not found.";
             std::abort();
         }
 
         std::optional<rtl::Method> method = Node->getMethod("sendMessage");
         if (!method) {
-            std::cerr << "[3] error: method 'Node::sendMessage' not found.\callerId";
+            std::cerr << "[3] error: method 'Node::sendMessage' not found.";
             std::abort();
         }
-        return method->getLambda<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
+        return method->lambda<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
     }();
 }
 
@@ -87,7 +87,7 @@ namespace
     static bool test(const T& lambda, int callerId) 
     {
         if (!lambda.is_valid()) {
-            std::cerr << "[" << callerId << "] error: functor not valid, return-type or signature mismatch.\callerId";
+            std::cerr << "[" << callerId << "] error: functor not valid, return-type or signature mismatch.";
             std::abort();
         }
         return true;
@@ -95,7 +95,7 @@ namespace
 }
 
 
-void FunctionPointerCall::returnTypeNonVoid(benchmark::State& state)
+void NativeFunctionPtr_call::returnNonVoid(benchmark::State& state)
 {
     static auto _=_new_line();
     static auto is_ok = test(getMessage, 0);
@@ -105,7 +105,7 @@ void FunctionPointerCall::returnTypeNonVoid(benchmark::State& state)
     }
 }
 
-void MethodFnPointerCall::returnTypeNonVoid(benchmark::State& state)
+void NativeFunctionPtr_callMethod::returnNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto is_ok = test(getMessageNode, 1);
@@ -115,7 +115,7 @@ void MethodFnPointerCall::returnTypeNonVoid(benchmark::State& state)
     }
 }
 
-void FunctionPointerCall::returnTypeVoid(benchmark::State& state)
+void NativeFunctionPtr_call::returnVoid(benchmark::State& state)
 {
     static auto _ = _new_line();
     static auto is_ok = test(sendMessage, 2);
@@ -126,15 +126,15 @@ void FunctionPointerCall::returnTypeVoid(benchmark::State& state)
     }
 }
 
-void MethodFnPointerCall::returnTypeVoid(benchmark::State& state)
+void NativeFunctionPtr_callMethod::returnVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto is_ok = test(getMessageNode, 2);
     for (auto _ : state)
     {
-        if (sendMessageOnNode.is_valid())
+        if (sendMessageNode.is_valid())
         {
-            (nodeObj.*sendMessageOnNode.f_ptr())(bm::g_longStr);
+            (nodeObj.*sendMessageNode.f_ptr())(bm::g_longStr);
             benchmark::DoNotOptimize(bm::g_work_done->c_str());
         }
     }
@@ -142,7 +142,7 @@ void MethodFnPointerCall::returnTypeVoid(benchmark::State& state)
 
 
 
-void ReflectedCallKnownReturn::typeNonVoid(benchmark::State& state)
+void RtlFunction_call::returnNonVoid(benchmark::State &state)
 {
     static auto _ = _new_line();
     static auto is_ok = test(getMessage, 3);
@@ -152,7 +152,7 @@ void ReflectedCallKnownReturn::typeNonVoid(benchmark::State& state)
     }
 }
 
-void ReflectedMethodCallKnownReturn::typeNonVoid(benchmark::State& state)
+void RtlFunction_callMethod::returnNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto is_ok = test(getMessageNode, 4);
@@ -162,7 +162,7 @@ void ReflectedMethodCallKnownReturn::typeNonVoid(benchmark::State& state)
     }
 }
 
-void ReflectedCallKnownReturn::typeVoid(benchmark::State& state)
+void RtlFunction_call::returnVoid(benchmark::State& state)
 {
     static auto _ = _new_line();
     static auto is_ok = test(sendMessage, 0);
@@ -173,13 +173,13 @@ void ReflectedCallKnownReturn::typeVoid(benchmark::State& state)
     }
 }
 
-void ReflectedMethodCallKnownReturn::typeVoid(benchmark::State& state)
+void RtlFunction_callMethod::returnVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
-    static auto is_ok = test(sendMessageOnNode, 5);
+    static auto is_ok = test(sendMessageNode, 5);
     for (auto _ : state)
     {
-        sendMessageOnNode(nodeObj, bm::g_longStr);
+        sendMessageNode(nodeObj, bm::g_longStr);
         benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }

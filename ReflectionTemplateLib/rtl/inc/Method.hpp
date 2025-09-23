@@ -30,7 +30,7 @@ namespace rtl
 
 
     template<class _recordType, class ..._signature>
-    inline constexpr detail::Hopper<_recordType> Method::getLambda() const
+    inline constexpr detail::Hopper<_recordType> Method::lambda() const
     {
         return detail::Hopper<_recordType>{ getFunctorIds() };
     }

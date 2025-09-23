@@ -57,7 +57,7 @@ namespace rtl {
         GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
 
         template<class _recordType, class ..._signature>
-        constexpr detail::Hopper<_recordType> getLambda() const;
+        constexpr detail::Hopper<_recordType> lambda() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

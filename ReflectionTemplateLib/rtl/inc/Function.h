@@ -89,7 +89,7 @@ namespace rtl {
         Function& operator=(Function&&) = default;
         Function& operator=(const Function&) = default;
 
-        detail::Hopper<> getLambda();
+        detail::Hopper<> lambda();
 
         bool hasSignature() const;
 
