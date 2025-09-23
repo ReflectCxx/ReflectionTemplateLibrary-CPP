@@ -153,7 +153,7 @@ namespace rtl::detail
 {
     template<class _recordType>
     template<class ..._signature>
-    const Hopper<_recordType>::template Build<_signature...> Hopper<_recordType>::argsT() const
+    inline constexpr HopMethod<_recordType, _signature...> Hopper<_recordType>::argsT() const
     {
         for (auto& functorId : m_functorIds)
         {
@@ -163,14 +163,15 @@ namespace rtl::detail
                 return { functorId.get_lambda_method<_recordType, _signature...>() };
             }
         }
-        return Build<_signature...>();
+        return HopMethod<_recordType, _signature...>();
     }
 
 
-    template<class _recordType>
-    template<class ..._signature>
+    template<class _recordType, class ..._signature>
     template<class _returnType>
-    inline constexpr const method<_returnType(_recordType::*)(_signature...)> Hopper<_recordType>::Build<_signature...>::returnT() const
+    inline constexpr 
+        const method<_returnType(_recordType::*)(_signature...)> 
+                          HopMethod<_recordType, _signature...>::returnT() const
     {
         if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
             return m_lambda->template get_hopper<_returnType>();

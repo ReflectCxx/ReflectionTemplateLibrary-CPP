@@ -79,21 +79,21 @@ namespace rtl::detail {
 
 namespace rtl::detail
 {
+    template<class _recordType, class ..._signature>
+    struct HopMethod
+    {
+        const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
+
+        template<class _returnType>
+        constexpr const method<_returnType(_recordType::*)(_signature...)> returnT() const;
+    };
+
     template<class _recordType>
     struct Hopper
     {
         const std::vector<FunctorId>& m_functorIds;
 
         template<class ..._signature>
-        struct Build
-        {
-            const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
-
-            template<class _returnType>
-            constexpr const method<_returnType(_recordType::*)(_signature...)> returnT() const;
-        };
-
-        template<class ..._signature>
-        const Build<_signature...> argsT() const;
+        constexpr HopMethod<_recordType, _signature...> argsT() const;
     };
 }
