@@ -104,9 +104,9 @@
 
 namespace rtl {
     
-    template<class ...signatureT>
-    using lambda_function = dispatch::lambda_function<signatureT...>;
+    template<class return_t, class ...signature_t>
+    using function_ptr = dispatch::lambda_function<signature_t...>::template hopper<return_t>;
 
-    template<class recordT, class ...signatureT>
-    using lambda_method = dispatch::lambda_method<recordT, signatureT...>;
+    template<class record_t, class return_t, class ...signature_t>
+    using method_ptr = dispatch::lambda_method<record_t, signature_t...>::template hopper<return_t>;
 }

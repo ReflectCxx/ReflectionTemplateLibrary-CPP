@@ -17,16 +17,10 @@
 namespace rtl::dispatch
 {
     template<class record_t, class ...signature_ts>
-    class lambda_method : public lambda
+    struct lambda_method : public lambda
     {
         template<class return_t>
         using fptr_t = typename method_ptr<record_t, return_t, signature_ts...>::functor_t;
-
-        template<class ...args_t>
-        static constexpr bool is_args_t_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
-
-        template<class return_t>
-        static constexpr bool noexcept_v = noexcept((std::declval<record_t>().*std::declval<fptr_t<return_t>>())(std::declval<signature_ts>()...));
 
     public:
 
@@ -34,23 +28,46 @@ namespace rtl::dispatch
             :lambda(fptr)
         { }
 
-        // Unsafe: using an incorrect return type is undefined behaviour.
-        // Not validated here and the function will not return nullptr on mismatch. (By Design)
-        template<class return_t>
-        [[nodiscard]] constexpr auto& get_functor() const
-        {
-            return static_cast<const method_ptr<record_t, return_t, signature_ts...>&>(m_functor);
-        }
 
-        template<class return_t, class...args_t>
-        [[nodiscard]] constexpr decltype(auto) hop(record_t& target, args_t&& ...params) const noexcept(noexcept_v<return_t>)
+        template<class return_t>
+        struct hopper
         {
-            static_assert(is_args_t_ok<args_t...>, "Argument types don't match signature.");
-            
-            constexpr auto hopper = [](auto& obj, auto fp, auto&&... a) -> decltype(auto) {
-                return (obj.*fp)(std::forward<decltype(a)>(a)...);
-            };
-            return hopper(target, get_functor<return_t>().f_ptr(), std::forward<args_t>(params)...);
+            constexpr auto f_ptr() const {
+                return m_functor;
+            }
+
+            constexpr auto is_valid() const {
+                return (m_functor != nullptr);
+            }
+
+            template<class ...args_t>
+            [[nodiscard]] constexpr decltype(auto) operator()(record_t& target, args_t&&...params) const noexcept(noexcept_v<args_t...>)
+            {
+                static_assert(is_args_t_ok<args_t...>, "Argument types don't match the expected signature.");
+                return (target.*m_functor)(std::forward<args_t>(params)...);
+            }
+
+            const fptr_t<return_t> m_functor = nullptr;
+
+        private:
+
+            template<class ...args_t>
+            static constexpr bool is_args_t_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
+
+            template<class ...args_t>
+            static constexpr bool noexcept_v = noexcept((std::declval<record_t>().*std::declval<fptr_t<return_t>>())(std::declval<args_t>()...));
+        };
+
+
+        template<class return_t>
+        [[nodiscard]] constexpr const hopper<return_t> get_hopper() const
+        {
+            if (m_functor.m_returnId == detail::TypeId<return_t>::get())
+            {
+                fptr_t<return_t> func_ptr = (static_cast<const method_ptr<record_t, return_t, signature_ts...>&>(m_functor)).f_ptr();
+                return hopper<return_t>{ func_ptr };
+            }
+            return hopper<return_t>();
         }
     };
 }

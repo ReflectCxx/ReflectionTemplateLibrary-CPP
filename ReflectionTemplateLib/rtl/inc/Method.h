@@ -56,6 +56,19 @@ namespace rtl {
 
         GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
 
+
+        template<class _recordType, class ..._signature>
+        struct Hopper
+        {
+            const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
+
+            template<class _returnType>
+            constexpr const dispatch::lambda_method<_recordType, _signature...>::hopper<_returnType> return_t() const;
+        };
+
+        template<class _recordType, class ..._signature>
+        const Hopper<_recordType, _signature...> args_t() const;
+
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>
         bool hasSignature() const;
@@ -65,9 +78,6 @@ namespace rtl {
 
         template<class ..._signature>
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
-
-        template<class _recordType, class ..._signature>
-        const dispatch::lambda_method<_recordType, _signature...>* get_lambda(std::size_t pOverloadIndex = 0) const;
 
     /*  @method: operator()()
         @return: lambda

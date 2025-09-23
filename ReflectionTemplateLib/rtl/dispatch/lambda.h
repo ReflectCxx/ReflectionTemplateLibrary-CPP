@@ -35,24 +35,13 @@ namespace rtl::dispatch
         template<class ...signature_ts>
         constexpr const function_t<signature_ts...>* to_function() const
         {
-            const std::size_t typeId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
-            if (typeId == m_functor.m_signatureId)
-            {
-                return static_cast<const function_t<signature_ts...>*>(this);
-            }
-            return nullptr;
+            return static_cast<const function_t<signature_ts...>*>(this);
         }
 
         template<class record_t, class ...signature_ts>
         constexpr const method_t<record_t, signature_ts...>* to_method() const
         {
-            std::size_t recordId = detail::TypeId<record_t>::get();
-            std::size_t typeId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
-            if (typeId == m_functor.m_signatureId && recordId == m_functor.m_recordId)
-            {
-                return static_cast<const method_t<record_t, signature_ts...>*>(this);
-            }
-            return nullptr;
+            return static_cast<const method_t<record_t, signature_ts...>*>(this);
         }
 
     public:

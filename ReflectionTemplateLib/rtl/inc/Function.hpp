@@ -23,13 +23,29 @@ namespace rtl
     }
 
     template<class ..._signature>
-    const dispatch::lambda_function<_signature...>* Function::get_lambda(std::size_t pOverloadIndex) const
+    const Function::Hopper<_signature...> Function::args_t() const
     {
-        if (pOverloadIndex < m_functorIds.size()) {
-            return m_functorIds[pOverloadIndex].get_lambda_function<_signature...>();
+        for (auto& functorId : m_functorIds)
+        {
+            if (functorId.m_lambda->is_signature<_signature...>()) [[likely]] {
+                return { functorId.get_lambda_function<_signature...>() };
+            }
         }
-        return nullptr;
+        return Hopper<_signature...>();
     }
+
+
+    template<class ..._signature>
+    template<class _returnType>
+    inline constexpr const dispatch::lambda_function<_signature...>::hopper<_returnType> 
+        Function::Hopper<_signature...>::return_t() const
+    {
+        if (m_lambda != nullptr && m_lambda->is_returning<_returnType>()) {
+            return m_lambda->get_hopper<_returnType>();
+        }
+        return dispatch::lambda_function<_signature...>::template hopper<_returnType>();
+    }
+
 
 /*  @method: hasSignature<...>()
     @param: set of arguments, explicitly specified as template parameter.

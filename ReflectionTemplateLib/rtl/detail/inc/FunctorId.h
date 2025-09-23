@@ -83,19 +83,13 @@ namespace rtl::detail
         template<class ..._signature>
         const dispatch::lambda_function<_signature...>* get_lambda_function() const
         {
-            if(m_lambda->is_signature<_signature...>()) {
-                return m_lambda->to_function<_signature...>();
-            }
-            return nullptr;
+            return m_lambda->to_function<_signature...>();
         }
         
         template<class _recordType, class ..._signature>
         const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method() const
         {
-            if(m_lambda->is_member<_recordType>() && m_lambda->is_signature<_signature...>()) {
-                return m_lambda->to_method<_recordType, _signature...>();
-            }
-            return nullptr;
+            return m_lambda->to_method<_recordType, _signature...>();
         }
     };
 }

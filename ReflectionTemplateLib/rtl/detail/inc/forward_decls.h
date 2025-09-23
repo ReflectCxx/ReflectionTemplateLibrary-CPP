@@ -24,7 +24,7 @@ namespace rtl
     class Method;
 
     class CxxMirror;
-    
+
     namespace detail 
     {
         struct FunctorId;
@@ -52,10 +52,10 @@ namespace rtl
         struct lambda;
 
         template<class ...signature_ts>
-        class lambda_function;
+        struct lambda_function;
 
         template<class record_t, class ...signature_ts>
-        class lambda_method;
+        struct lambda_method;
 
         template<class return_t, class ...signature_ts>
         struct function_ptr;

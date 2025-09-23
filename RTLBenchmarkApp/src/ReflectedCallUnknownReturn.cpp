@@ -14,27 +14,65 @@ namespace
 {
     static rtl::Function GetMessage = []()
     {
-        return *(cxx::mirror().getFunction("getMessage"));
+        std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
+        if (!function) {
+            std::cerr << "[0] error: function 'getMessage' not found.\n";
+            std::abort();
+        }
+        return *function;
     }();
 
     static rtl::Function SendMessage = []()
     {
-        return *(cxx::mirror().getFunction("sendMessage"));
+        std::optional<rtl::Function> function = cxx::mirror().getFunction("sendMessage");
+        if (!function) {
+            std::cerr << "[1] error: function 'sendMessage' not found.\n";
+            std::abort();
+        }
+        return *function;
     }();
 
     static rtl::Method NodeGetMessage = []()
     {
-        return *(cxx::mirror().getRecord("Node")->getMethod("getMessage"));
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
+
+        std::optional<rtl::Method> method = Node->getMethod("getMessage");
+        if (!method) {
+            std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
+            std::abort();
+        }
+        return *method;
     }();
 
     static rtl::Method NodeSendMessage = []()
     {
-        return *(cxx::mirror().getRecord("Node")->getMethod("sendMessage"));
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
+
+        std::optional<rtl::Method> method = Node->getMethod("sendMessage");
+        if (!method) {
+            std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
+            std::abort();
+        }
+        return *method;
     }();
 
     static const rtl::RObject nodeObj = []()
     {
-        auto [err, robj] = cxx::mirror().getRecord("Node")->create<rtl::alloc::Stack>();
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
+
+        auto [err, robj] = Node->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
             std::cout << "[x] error: " << rtl::to_string(err) << "\n";
         }
@@ -49,7 +87,7 @@ namespace
     {
         auto err = SendMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[0] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[00] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -58,7 +96,7 @@ namespace
     {
         auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[1] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[01] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -67,7 +105,7 @@ namespace
     {
         auto err = GetMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[2] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[02] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -76,7 +114,7 @@ namespace
     {
         auto err = NodeGetMessage(nodeObj)(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[3] error: " << rtl::to_string(err) << "\n";
+            std::cout << "[03] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };

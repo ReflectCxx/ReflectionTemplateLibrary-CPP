@@ -30,13 +30,29 @@ namespace rtl
 
 
     template<class _recordType, class ..._signature>
-    const dispatch::lambda_method<_recordType, _signature...>* Method::get_lambda(std::size_t pOverloadIndex) const
+    const Method::Hopper<_recordType, _signature...> Method::args_t() const
     {
-        auto& functorIds = getFunctors();
-        if (pOverloadIndex < functorIds.size()) {
-            return functorIds[pOverloadIndex].get_lambda_method<_recordType, _signature...>();
+        for (auto& functorId : getFunctorIds())
+        {
+            if (functorId.m_lambda->is_member<_recordType>() &&
+                functorId.m_lambda->is_signature<_signature...>()) [[likely]] 
+            {
+                return { functorId.get_lambda_method<_recordType, _signature...>() };
+            }
         }
-        return nullptr;
+        return Hopper<_recordType, _signature...>();
+    }
+
+
+    template<class _recordType, class ..._signature>
+    template<class _returnType>
+    inline constexpr const dispatch::lambda_method<_recordType, _signature...>::hopper<_returnType> 
+    Method::Hopper<_recordType, _signature...>::return_t() const
+    {
+        if (m_lambda != nullptr && m_lambda->is_returning<_returnType>()) {
+            return m_lambda->get_hopper<_returnType>();
+        }
+        return dispatch::lambda_method<_recordType, _signature...>::template hopper<_returnType>();
     }
 
 
