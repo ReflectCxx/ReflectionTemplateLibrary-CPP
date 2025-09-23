@@ -15,26 +15,28 @@
 
 #include "const_method_ptr.h"
 
-namespace rtl::cache 
+namespace rtl::cache
 {
     template<class record_t, class return_t, class ...signature_ts>
-    struct const_method_ptr
+    struct method_ptr<const record_t, return_t, signature_ts...>
     {
-        using functor_t = dispatch::const_method_ptr<record_t, return_t, signature_ts...>;
+        using method_t = dispatch::method_ptr<const record_t, return_t, signature_ts...>;
 
-        static const const_method_ptr& instance()
+        using functor_t = return_t(record_t::*)(signature_ts...) const;
+
+        static const method_ptr& instance()
         {
-            static const const_method_ptr instance_;
+            static const method_ptr instance_;
             return instance_;
         }
 
-        const dispatch::functor& push(return_t(record_t::* fptr)(signature_ts...) const, std::size_t lambda_index) const
+        const dispatch::functor& push(functor_t fptr, std::size_t lambda_index) const
         {
-            m_cache.emplace_back(std::make_pair(fptr, lambda_index));
+            m_cache.emplace_back(std::make_pair(method_t(fptr), lambda_index));
             return m_cache.back().first;
         }
 
-        std::pair<const dispatch::functor*, std::size_t> find(return_t(record_t::* fptr)(signature_ts...) const) const
+        std::pair<const dispatch::functor*, std::size_t> find(functor_t fptr) const
         {
             for (auto& itr : m_cache)
             {
@@ -46,16 +48,16 @@ namespace rtl::cache
             return { nullptr, rtl::index_none };
         }
 
-        const_method_ptr(const_method_ptr&&) = delete;
-        const_method_ptr(const const_method_ptr&) = delete;
-        const_method_ptr& operator=(const_method_ptr&&) = delete;
-        const_method_ptr& operator=(const const_method_ptr&) = delete;
+        method_ptr(method_ptr&&) = delete;
+        method_ptr(const method_ptr&) = delete;
+        method_ptr& operator=(method_ptr&&) = delete;
+        method_ptr& operator=(const method_ptr&) = delete;
 
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<const functor_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<const method_t, std::size_t>> m_cache;
 
-        const_method_ptr() = default;
+        method_ptr() = default;
     };
 }

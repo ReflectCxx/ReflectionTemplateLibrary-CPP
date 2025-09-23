@@ -20,7 +20,7 @@ namespace rtl::cache
     template<class return_t, class ...signature_ts>
     struct function_ptr
     {
-        using functor_t = dispatch::function_ptr<return_t, signature_ts...>;
+        using function_t = dispatch::function_ptr<return_t, signature_ts...>;
 
         static const function_ptr& instance()
         {
@@ -54,7 +54,7 @@ namespace rtl::cache
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<const functor_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<const function_t, std::size_t>> m_cache;
 
         function_ptr() = default;
     };

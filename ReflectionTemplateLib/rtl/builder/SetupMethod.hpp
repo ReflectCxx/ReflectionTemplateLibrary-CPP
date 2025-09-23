@@ -34,8 +34,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            // bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<void>().f_ptr());
-            // assert(isFunctorGood && "new type-id-system not working.");
+             //bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<void>().f_ptr());
+             //assert(isFunctorGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
@@ -57,8 +57,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            // bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<_returnType>().f_ptr());
-            // assert(isFunctorGood && "new type-id-system not working.");
+             //bool isFunctorGood = (pFunctor == pFunctorId.get_lambda_method<_recordType, _signature...>()->template get_functor<_returnType>().f_ptr());
+             //assert(isFunctorGood && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
@@ -238,7 +238,7 @@ namespace rtl::detail
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
             auto& lambdaCache = cache::lambda_method<_recordType, _signature...>::instance();
-            auto& functorCache = cache::const_method_ptr<_recordType, _returnType, _signature...>::instance();
+            auto& functorCache = cache::method_ptr<const _recordType, _returnType, _signature...>::instance();
 
             auto& functor = functorCache.push(pFunctor, pIndex);
             auto& lambda = lambdaCache.push(functor);
@@ -248,7 +248,7 @@ namespace rtl::detail
 
         const auto& getIndex = [&]()-> std::size_t
         {
-            auto& functorCache = cache::const_method_ptr<_recordType, _returnType, _signature...>::instance();
+            auto& functorCache = cache::method_ptr<const _recordType, _returnType, _signature...>::instance();
             auto [functor, lambdaIndex] = functorCache.find(pFunctor);
             
             if (lambdaIndex != rtl::index_none) {

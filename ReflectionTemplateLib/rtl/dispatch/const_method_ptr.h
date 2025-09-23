@@ -18,11 +18,11 @@
 namespace rtl::dispatch
 {
 	template<class record_t, class return_t, class ...signature_ts>
-	struct const_method_ptr : public functor
+	struct method_ptr<const record_t, return_t, signature_ts...> : public functor
 	{
 		using functor_t = return_t(record_t::*)(signature_ts...) const;
 
-		constexpr functor_t get() const
+		[[nodiscard]] constexpr auto f_ptr() const
 		{
 			return m_functor;
 		}
@@ -32,8 +32,9 @@ namespace rtl::dispatch
 			return (fptr == m_functor);
 		}
 
-		const_method_ptr(functor_t fptr) :m_functor(fptr)
+		method_ptr(functor_t fptr) :m_functor(fptr)
 		{
+			m_recordId = detail::TypeId<traits::raw_t<record_t>>::get();
 			m_returnId = detail::TypeId<traits::raw_t<return_t>>::get();
 			m_signatureId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
 		}
