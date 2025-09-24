@@ -18,9 +18,9 @@ namespace rtl::dispatch
 {
     struct lambda_base
     {
-    protected:
-
         const functor& m_functor;
+        
+    protected:
 
         lambda_base(const functor& p_functor) noexcept
             :m_functor(p_functor)

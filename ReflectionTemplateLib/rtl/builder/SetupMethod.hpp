@@ -32,24 +32,19 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            auto recId = TypeId<_recordType>::get();
-            auto returnId = TypeId<void>::get();
-            auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-            auto functor = pFunctorId.get_lambda_method<_recordType, _signature...>(recId, argsId)
-                                     ->template get_hopper<void>(returnId)
-                                     .f_ptr();
-
-            assert((functor == pFunctor) && "new type-id-system not working.");
+            auto& functorId = pFunctorId.m_lambda->m_functor;
+            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
+                                  ->template get_hopper<void>(functorId.m_returnId)
+                                  .f_ptr();
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
             }
 
             _recordType& target = const_cast<_recordType&>(pTargetObj.view<_recordType>()->get());
-            (target.*pFunctor)(std::forward<_signature>(params)...);
+            (target.*fptr)(std::forward<_signature>(params)...);
             return { error::None, RObject{} };
         };
     }
@@ -62,18 +57,12 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-
-            auto recId = TypeId<_recordType>::get();
-            auto returnId = TypeId<_returnType>::get();
-            auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-            decltype(pFunctor) functor = pFunctorId.get_lambda_method<_recordType, _signature...>(recId, argsId)
-                                                   ->template get_hopper<_returnType>(returnId)
-                                                   .f_ptr();
-
-            assert((functor == pFunctor) && "new type-id-system not working.");
+            auto& functorId = pFunctorId.m_lambda->m_functor;
+            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
+                                  ->template get_hopper<_returnType>(functorId.m_returnId)
+                                  .f_ptr();
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
@@ -87,7 +76,7 @@ namespace rtl::detail
             /*  if the function returns reference, this block will be retained by compiler.
                 Note: reference to temporary or dangling is not checked here.
             */  using _rawRetType = traits::raw_t<_returnType>;
-                const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                const _rawRetType& retObj = (target.*fptr)(std::forward<_signature>(params)...);
                 return { error::None,
                          RObjectBuilder<const _rawRetType*>::template
                          build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
@@ -95,7 +84,7 @@ namespace rtl::detail
             }
             else {
 
-                auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                auto&& retObj = (target.*fptr)(std::forward<_signature>(params)...);
                 using T = std::remove_cvref_t<decltype(retObj)>;
 
                 return { error::None,
@@ -114,20 +103,15 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            auto recId = TypeId<const _recordType>::get();
-            auto returnId = TypeId<void>::get();
-            auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-            decltype(pFunctor) functor = pFunctorId.get_lambda_method<const _recordType, _signature...>(recId, argsId)
-                                                   ->template get_hopper<void>(returnId)
-                                                   .f_ptr();
-            
-            //assert(pFunctor == functor && "new type-id-system not working.");
+            auto& functorId = pFunctorId.m_lambda->m_functor;
+            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
+                                  ->template get_hopper<void>(functorId.m_returnId)
+                                  .f_ptr();
 
             const _recordType& target = pTargetObj.view<_recordType>()->get();
-            (target.*pFunctor)(std::forward<_signature>(params)...);
+            (target.*fptr)(std::forward<_signature>(params)...);
             return { error::None, RObject{} };
         };
     }
@@ -140,18 +124,12 @@ namespace rtl::detail
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
-    */  return [pFunctor](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
+    */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-
-            auto recId = TypeId<const _recordType>::get();
-            auto returnId = TypeId<void>::get();
-            auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-            decltype(pFunctor) functor = pFunctorId.get_lambda_method<const _recordType, _signature...>(recId, argsId)
-                                                   ->template get_hopper<_returnType>(returnId)
-                                                   .f_ptr();
-
-            //assert(pFunctor == functor && "new type-id-system not working.");
+            auto& functorId = pFunctorId.m_lambda->m_functor;
+            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
+                                  ->template get_hopper<_returnType>(functorId.m_returnId)
+                                  .f_ptr();
 
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
             //'target' is const and 'pFunctor' is const-member-function.
@@ -160,7 +138,7 @@ namespace rtl::detail
             /*  if the function returns reference, this block will be retained by compiler.
                 Note: reference to temporary or dangling is not checked here.
             */  using _rawRetType = traits::raw_t<_returnType>;
-                const _rawRetType& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                const _rawRetType& retObj = (target.*fptr)(std::forward<_signature>(params)...);
                 return { error::None,
                          RObjectBuilder<const _rawRetType*>::template
                          build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
@@ -168,7 +146,7 @@ namespace rtl::detail
             }
             else {
 
-                auto&& retObj = (target.*pFunctor)(std::forward<_signature>(params)...);
+                auto&& retObj = (target.*fptr)(std::forward<_signature>(params)...);
                 using T = std::remove_cvref_t<decltype(retObj)>;
 
                 return { error::None,

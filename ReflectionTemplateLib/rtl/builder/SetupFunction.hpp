@@ -28,18 +28,14 @@ namespace rtl
         inline SetupFunction<_derivedType>::FunctionLambda<_signature...>
                SetupFunction<_derivedType>::getCaller(void(*pFunctor)(_signature...)) 
         {
-            return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
+            return [](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                auto retId = TypeId<void>::get();
-                auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>(argsId)
-                                                       ->template get_hopper<void>(retId)
-                                                       .f_ptr();
-
-                assert((functor == pFunctor) && "new type-id-system not working.");
-
-                pFunctor(std::forward<_signature>(params)...);
+                auto& functorId = pFunctorId.m_lambda->m_functor;
+                auto fptr = pFunctorId.get_lambda_function<_signature...>(functorId.m_signatureId)
+                                      ->template get_hopper<void>(functorId.m_returnId)
+                                      .f_ptr();
+                
+                fptr(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
             };
         }
@@ -52,16 +48,12 @@ namespace rtl
         {
         /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
-        */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
+        */  return [](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                auto retId = TypeId<_returnType>::get();
-                auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
-
-                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>(argsId)
-                                                       ->template get_hopper<_returnType>(retId)
-                                                       .f_ptr(); 
-                
-                assert((functor == pFunctor) && "new type-id-system not working.");
+                auto& functorId = pFunctorId.m_lambda->m_functor;
+                auto fptr = pFunctorId.get_lambda_function<_signature...>(functorId.m_signatureId)
+                                      ->template get_hopper<_returnType>(functorId.m_returnId)
+                                      .f_ptr();
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -69,7 +61,7 @@ namespace rtl
                 /*  if the function returns reference, this block will be retained by compiler.
                     Note: reference to temporary or dangling is not checked here.
                 */  using _rawRetType = traits::raw_t<_returnType>;
-                    const _rawRetType& retObj = pFunctor(std::forward<_signature>(params)...);
+                    const _rawRetType& retObj = fptr(std::forward<_signature>(params)...);
                     return { error::None,
                              RObjectBuilder<const _rawRetType*>::template
                              build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
@@ -77,7 +69,7 @@ namespace rtl
                 }
                 else {
                     //if the function returns anything (not refrence), this block will be retained by compiler.
-                    auto&& retObj = pFunctor(std::forward<_signature>(params)...);
+                    auto&& retObj = fptr(std::forward<_signature>(params)...);
                     using T = std::remove_cvref_t<decltype(retObj)>;
 
                     return { error::None,
