@@ -16,7 +16,7 @@
 #include <optional>
 
 #include "ReflectCast.h"
-#include "forward_decls.h"
+#include "rtl_forward_decls.h"
 #include "FunctorId.h"
 
 namespace rtl::detail

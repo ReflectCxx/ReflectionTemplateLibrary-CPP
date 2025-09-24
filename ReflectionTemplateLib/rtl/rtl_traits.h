@@ -19,7 +19,7 @@
 
 #include "rtl_typeid.h"
 #include "rtl_constants.h"
-#include "forward_decls.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl
 {

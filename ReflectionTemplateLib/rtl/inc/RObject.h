@@ -18,7 +18,7 @@
 
 #include "rtl_traits.h"
 #include "rtl_errors.h"
-#include "forward_decls.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl::detail
 {

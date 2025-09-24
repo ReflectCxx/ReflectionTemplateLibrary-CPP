@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "forward_decls.h"
+#include "rtl_forward_decls.h"
 
 
 namespace rtl::detail {

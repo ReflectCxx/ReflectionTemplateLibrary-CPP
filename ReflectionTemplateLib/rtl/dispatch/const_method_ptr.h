@@ -36,7 +36,7 @@ namespace rtl::dispatch
 		{
 			m_qualifier = detail::methodQ::Const;
 			m_recordId = detail::TypeId<const record_t>::get();
-			m_returnId = detail::TypeId<traits::raw_t<return_t>>::get();
+			m_returnId = detail::TypeId<return_t>::get();
 			m_signatureId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
 
 			m_returnStr = detail::TypeId<return_t>::toString();
