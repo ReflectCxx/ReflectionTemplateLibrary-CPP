@@ -155,12 +155,13 @@ namespace rtl::detail
     template<class ..._signature>
     inline constexpr HopMethod<_recordType, _signature...> Hopper<_recordType>::argsT() const
     {
+        const auto recId = TypeId<_recordType>::get();
+        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature...>>>::get();
         for (auto& functorId : m_functorIds)
         {
-            if (functorId.m_lambda->is_member<_recordType>() &&
-                functorId.m_lambda->is_signature<_signature...>()) [[likely]]
-            {
-                return { functorId.get_lambda_method<_recordType, _signature...>() };
+            auto lambda = functorId.get_lambda_method<_recordType, _signature...>(recId, argsId);
+            if (lambda != nullptr) {
+                return { lambda };
             }
         }
         return HopMethod<_recordType, _signature...>();
@@ -173,8 +174,10 @@ namespace rtl::detail
         const method<_returnType(_recordType::*)(_signature...)> 
                           HopMethod<_recordType, _signature...>::returnT() const
     {
-        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
-            return m_lambda->template get_hopper<_returnType>();
+        if (m_lambda != nullptr) 
+        {
+            const auto retId = TypeId<void>::get();
+            return m_lambda->template get_hopper<_returnType>(retId);
         }
         return method<_returnType(_recordType::*)(_signature...)>();
     }

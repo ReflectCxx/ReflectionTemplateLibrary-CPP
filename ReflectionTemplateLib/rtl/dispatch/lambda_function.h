@@ -38,7 +38,6 @@ namespace  rtl
             return (*m_functor)(std::forward<args_t>(params)...);
         }
 
-
     private:
 
         template<class ...args_t>
@@ -52,21 +51,21 @@ namespace  rtl
 namespace rtl::dispatch
 {
     template<class ...signature_ts>
-    struct lambda_function: public lambda
+    struct lambda_function: public lambda_base
     {
         template<class return_t>
         using hopper_t = function<return_t(signature_ts...)>;
 
         lambda_function(const functor& p_functor) noexcept
-            :lambda(p_functor)
+            :lambda_base(p_functor)
         { }
 
         template<class return_t>
-        constexpr const hopper_t<return_t> get_hopper() const
+        constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId) const
         {
-            if (m_functor.m_returnId == detail::TypeId<return_t>::get())
+            if (p_returnId == m_functor.m_returnId) [[likely]]
             {
-                return hopper_t<return_t> { 
+                return hopper_t<return_t> {
                     static_cast<const function_ptr<return_t, signature_ts...>&>(m_functor).f_ptr()
                 };
             }

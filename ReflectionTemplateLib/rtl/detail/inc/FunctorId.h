@@ -44,7 +44,7 @@ namespace rtl::detail
         //signature of functor as string. platform dependent, may not be very much readable format.
         std::string m_signature;
 
-        const dispatch::lambda* m_lambda = nullptr;
+        const dispatch::lambda_base* m_lambda = nullptr;
 
         GETTER(std::size_t, LambdaIndex, m_lambdaIndex)
         GETTER(std::size_t, ReturnId, m_returnId);
@@ -81,15 +81,15 @@ namespace rtl::detail
         }
 
         template<class ..._signature>
-        constexpr const dispatch::lambda_function<_signature...>* get_lambda_function() const
+        constexpr const dispatch::lambda_function<_signature...>* get_lambda_function(std::size_t p_argsId) const
         {
-            return m_lambda->to_function<_signature...>();
+            return m_lambda->to_function<_signature...>(p_argsId);
         }
         
         template<class _recordType, class ..._signature>
-        constexpr const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method() const
+        constexpr const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
-            return m_lambda->to_method<_recordType, _signature...>();
+            return m_lambda->to_method<_recordType, _signature...>(p_recordId, p_argsId);
         }
     };
 }

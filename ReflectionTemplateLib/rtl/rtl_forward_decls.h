@@ -58,7 +58,7 @@ namespace rtl
     {
         struct functor;
 
-        struct lambda;
+        struct lambda_base;
 
         template<class ...signature_ts>
         struct lambda_function;

@@ -31,11 +31,11 @@ namespace rtl::dispatch
 
         detail::methodQ m_qualifier = detail::methodQ::None;        
 
-        GETTER_CPTR(lambda, _lambda, m_lambda)
+        GETTER_CPTR(lambda_base, _lambda, m_lambda)
 
     private:
 
-        mutable const lambda* m_lambda = nullptr;
+        mutable const lambda_base* m_lambda = nullptr;
 
         template<class ...signature_ts>
         friend struct cache::lambda_function;

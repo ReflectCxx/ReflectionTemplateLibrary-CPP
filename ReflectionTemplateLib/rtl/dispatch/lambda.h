@@ -16,13 +16,13 @@
 
 namespace rtl::dispatch
 {
-    struct lambda
+    struct lambda_base
     {
     protected:
 
         const functor& m_functor;
 
-        lambda(const functor& p_functor) noexcept
+        lambda_base(const functor& p_functor) noexcept
             :m_functor(p_functor)
         { }
 
@@ -33,15 +33,23 @@ namespace rtl::dispatch
         using method_t = lambda_method<record_t, args_t...>;
         
         template<class ...signature_ts>
-        constexpr const function_t<signature_ts...>* to_function() const
+        constexpr const function_t<signature_ts...>* to_function(std::size_t p_argsId) const
         {
-            return static_cast<const function_t<signature_ts...>*>(this);
+            if (p_argsId == m_functor.m_signatureId) [[likely]]
+            {
+                return static_cast<const function_t<signature_ts...>*>(this);
+            }
+            else return nullptr;
         }
 
         template<class record_t, class ...signature_ts>
-        constexpr const method_t<record_t, signature_ts...>* to_method() const
+        constexpr const method_t<record_t, signature_ts...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
-            return static_cast<const method_t<record_t, signature_ts...>*>(this);
+            if (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_signatureId) [[likely]]
+            {
+                return static_cast<const method_t<record_t, signature_ts...>*>(this);
+            }
+            else return nullptr;
         }
 
     public:

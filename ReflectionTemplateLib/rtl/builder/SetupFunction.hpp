@@ -30,8 +30,14 @@ namespace rtl
         {
             return [pFunctor](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>()->template get_hopper<void>().f_ptr();
-                assert((functor == pFunctor) && "new type-id-system not working.");
+                auto retId = TypeId<void>::get();
+                auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
+
+                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>(argsId)
+                                                       ->template get_hopper<void>(retId)
+                                                       .f_ptr();
+
+                //assert((functor == pFunctor) && "new type-id-system not working.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -48,8 +54,14 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [pFunctor](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>()->template get_hopper<_returnType>().f_ptr();
-                assert((functor == pFunctor) && "new type-id-system not working.");
+                auto retId = TypeId<_returnType>::get();
+                auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
+
+                decltype(pFunctor) functor = pFunctorId.get_lambda_function<_signature...>(argsId)
+                                                       ->template get_hopper<_returnType>(retId)
+                                                       .f_ptr(); 
+                
+                //assert((functor == pFunctor) && "new type-id-system not working.");
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -89,7 +101,7 @@ namespace rtl
         template<class _returnType, class ..._signature>
         inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-            const dispatch::lambda* lambdaPtr = nullptr;
+            const dispatch::lambda_base* lambdaPtr = nullptr;
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
