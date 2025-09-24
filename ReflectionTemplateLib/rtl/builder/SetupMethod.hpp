@@ -42,7 +42,7 @@ namespace rtl::detail
                                      ->template get_hopper<void>(returnId)
                                      .f_ptr();
 
-            //assert((functor == pFunctor) && "new type-id-system not working.");
+            assert((functor == pFunctor) && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };
@@ -73,7 +73,7 @@ namespace rtl::detail
                                                    ->template get_hopper<_returnType>(returnId)
                                                    .f_ptr();
 
-            //assert((functor == pFunctor) && "new type-id-system not working.");
+            assert((functor == pFunctor) && "new type-id-system not working.");
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
                 return { error::IllegalConstCast, RObject{} };

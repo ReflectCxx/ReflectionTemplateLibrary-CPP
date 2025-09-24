@@ -37,7 +37,7 @@ namespace rtl
                                                        ->template get_hopper<void>(retId)
                                                        .f_ptr();
 
-                //assert((functor == pFunctor) && "new type-id-system not working.");
+                assert((functor == pFunctor) && "new type-id-system not working.");
 
                 pFunctor(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -61,7 +61,7 @@ namespace rtl
                                                        ->template get_hopper<_returnType>(retId)
                                                        .f_ptr(); 
                 
-                //assert((functor == pFunctor) && "new type-id-system not working.");
+                assert((functor == pFunctor) && "new type-id-system not working.");
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 

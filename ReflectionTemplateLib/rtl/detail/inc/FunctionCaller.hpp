@@ -48,7 +48,7 @@ namespace rtl::detail
     template<class ..._signature>
     inline constexpr const HopFunction<_signature...> Hopper<>::argsT() const
     {
-        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature...>>>::get();
+        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature>... >>::get();
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_function<_signature...>(argsId);
@@ -66,7 +66,7 @@ namespace rtl::detail
         const function<_returnType(_signature...)> 
                        HopFunction<_signature...>::returnT() const
     {
-        const auto retId = TypeId<void>::get();
+        const auto retId = TypeId<_returnType>::get();
         if (m_lambda != nullptr) [[likely]] {
             return m_lambda->template get_hopper<_returnType>(retId);
         }

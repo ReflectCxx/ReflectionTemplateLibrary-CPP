@@ -156,7 +156,7 @@ namespace rtl::detail
     inline constexpr HopMethod<_recordType, _signature...> Hopper<_recordType>::argsT() const
     {
         const auto recId = TypeId<_recordType>::get();
-        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature...>>>::get();
+        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_method<_recordType, _signature...>(recId, argsId);
@@ -176,7 +176,7 @@ namespace rtl::detail
     {
         if (m_lambda != nullptr) 
         {
-            const auto retId = TypeId<void>::get();
+            const auto retId = TypeId<_returnType>::get();
             return m_lambda->template get_hopper<_returnType>(retId);
         }
         return method<_returnType(_recordType::*)(_signature...)>();
