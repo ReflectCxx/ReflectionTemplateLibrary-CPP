@@ -53,6 +53,6 @@ namespace rtl::detail
         const std::vector<FunctorId>& m_functorIds;
 
         template<class ..._signature>
-        const HopFunction<_signature...> argsT() const;
+        constexpr const HopFunction<_signature...> argsT() const;
     };
 }

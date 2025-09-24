@@ -32,12 +32,15 @@ namespace rtl::dispatch
 
 		function_ptr(functor_t fptr) :m_functor(fptr)
 		{
-			m_returnId = detail::TypeId<traits::raw_t<return_t>>::get();
+			m_returnId = detail::TypeId<return_t>::get();
 			m_signatureId = detail::TypeId<std::tuple<traits::raw_t<signature_ts>...>>::get();
+
+			m_returnStr = detail::TypeId<return_t>::toString();
+			m_signatureStr = detail::TypeId<signature_ts...>::toString();
 		}
 
 	private:
 
-		const functor_t m_functor;
+		functor_t m_functor;
 	};
 }

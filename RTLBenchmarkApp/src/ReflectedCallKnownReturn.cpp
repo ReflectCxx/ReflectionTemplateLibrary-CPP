@@ -86,7 +86,7 @@ namespace
     template<class T>
     static bool test(const T& lambda, int callerId) 
     {
-        if (!lambda.is_valid()) {
+        if (!lambda) {
             std::cerr << "[" << callerId << "] error: functor not valid, return-type or signature mismatch.";
             std::abort();
         }
@@ -132,11 +132,8 @@ void NativeFunctionPtr_callMethod::returnVoid(benchmark::State& state)
     static auto is_ok = test(getMessageNode, 2);
     for (auto _ : state)
     {
-        if (sendMessageNode.is_valid())
-        {
-            (nodeObj.*sendMessageNode.f_ptr())(bm::g_longStr);
-            benchmark::DoNotOptimize(bm::g_work_done->c_str());
-        }
+        (nodeObj.*sendMessageNode.f_ptr())(bm::g_longStr);
+        benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }
 

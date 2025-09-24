@@ -46,7 +46,7 @@ namespace rtl::detail
 namespace rtl::detail
 {
     template<class ..._signature>
-    const HopFunction<_signature...> Hopper<>::argsT() const
+    inline constexpr const HopFunction<_signature...> Hopper<>::argsT() const
     {
         for (auto& functorId : m_functorIds)
         {
@@ -64,7 +64,7 @@ namespace rtl::detail
         const function<_returnType(_signature...)> 
                        HopFunction<_signature...>::returnT() const
     {
-        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) {
+        if (m_lambda != nullptr && m_lambda->template is_returning<_returnType>()) [[likely]] {
             return m_lambda->template get_hopper<_returnType>();
         }
         return function<_returnType(_signature...)>();

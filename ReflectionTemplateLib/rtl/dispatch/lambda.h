@@ -51,7 +51,7 @@ namespace rtl::dispatch
         template<class return_t>
         constexpr bool is_returning() const
         {
-            return (m_functor.m_returnId == detail::TypeId<traits::raw_t<return_t>>::get());
+            return (m_functor.m_returnId == detail::TypeId<return_t>::get());
         }
 
         template<class...args_t>
@@ -63,8 +63,8 @@ namespace rtl::dispatch
         template<class record_t>
         constexpr bool is_member() const
         {
-            return (m_functor.m_recordId == detail::TypeId<traits::raw_t<record_t>>::get() ||
-                    m_functor.m_recordId == detail::TypeId<const traits::raw_t<record_t>>::get());
+            return (m_functor.m_recordId == detail::TypeId<record_t>::get() ||
+                    m_functor.m_recordId == detail::TypeId<const record_t>::get());
         }
 
         friend detail::FunctorId;

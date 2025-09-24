@@ -89,7 +89,7 @@ namespace rtl {
         Function& operator=(Function&&) = default;
         Function& operator=(const Function&) = default;
 
-        detail::Hopper<> lambda();
+        constexpr detail::Hopper<> lambda() const;
 
         bool hasSignature() const;
 
@@ -100,7 +100,7 @@ namespace rtl {
         Return operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
-        const detail::FunctionCaller<_signature...> bind() const noexcept;
+        constexpr const detail::FunctionCaller<_signature...> bind() const noexcept;
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;

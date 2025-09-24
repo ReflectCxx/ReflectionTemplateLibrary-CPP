@@ -17,13 +17,13 @@
 namespace rtl 
 {
     template<class ..._signature>
-    inline const detail::FunctionCaller<_signature...> Function::bind() const noexcept
+    inline constexpr const detail::FunctionCaller<_signature...> Function::bind() const noexcept
     {
         return detail::FunctionCaller<_signature...>{ this };
     }
 
 
-    inline detail::Hopper<> Function::lambda()
+    inline constexpr detail::Hopper<> Function::lambda() const
     {
         return detail::Hopper<>{ m_functorIds };
     }

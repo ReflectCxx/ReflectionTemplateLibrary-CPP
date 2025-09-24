@@ -23,6 +23,10 @@ namespace rtl::dispatch
         std::size_t m_returnId = detail::TypeId<>::None;
         std::size_t m_signatureId = detail::TypeId<>::None;
 
+        std::string m_recordStr;
+        std::string m_returnStr;
+        std::string m_signatureStr;
+
         std::vector<std::size_t> m_argumentsId = {};
 
         detail::methodQ m_qualifier = detail::methodQ::None;        

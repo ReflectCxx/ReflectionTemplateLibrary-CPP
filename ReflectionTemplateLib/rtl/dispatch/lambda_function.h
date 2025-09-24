@@ -27,7 +27,7 @@ namespace  rtl
             return m_functor;
         }
 
-        constexpr auto is_valid() const {
+        constexpr operator bool() const {
             return (m_functor != nullptr);
         }
 
