@@ -149,7 +149,7 @@ void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
 }
 
 
-void RtlFunctionCall_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
+void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 {
     static auto _ = _test1();
     for (auto _ : state)
@@ -159,7 +159,7 @@ void RtlFunctionCall_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 }
 
 
-void RtlFunctionCall_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
+void RtlFunction_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
     for (auto _ : state)

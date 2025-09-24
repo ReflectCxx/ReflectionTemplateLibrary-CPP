@@ -18,7 +18,7 @@ BENCHMARK(RtlFunction_call::returnVoid);
 BENCHMARK(RtlFunction_callMethod::returnVoid);
 
 BENCHMARK(RtlFunction_call_ReturnUnknown::typeVoid);
-BENCHMARK(RtlFunctionCall_callMethod_ReturnUnknown::typeVoid);
+BENCHMARK(RtlFunction_callMethod_ReturnUnknown::typeVoid);
 
 BENCHMARK(NativeCall::returnNonVoid);
 
@@ -32,7 +32,7 @@ BENCHMARK(RtlFunction_call::returnNonVoid);
 BENCHMARK(RtlFunction_callMethod::returnNonVoid);
 
 BENCHMARK(RtlFunction_call_ReturnUnknown::typeNonVoid);
-BENCHMARK(RtlFunctionCall_callMethod_ReturnUnknown::typeNonVoid);
+BENCHMARK(RtlFunction_callMethod_ReturnUnknown::typeNonVoid);
 
 namespace bm 
 {

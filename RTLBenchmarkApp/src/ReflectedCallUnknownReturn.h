@@ -10,7 +10,7 @@ struct RtlFunction_call_ReturnUnknown
 };
 
 
-struct RtlFunctionCall_callMethod_ReturnUnknown
+struct RtlFunction_callMethod_ReturnUnknown
 {    
     static void typeVoid(benchmark::State& state);
 
