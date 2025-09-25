@@ -160,7 +160,7 @@ namespace rtl::detail
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_method<_recordType, _signature...>(recId, argsId);
-            if (lambda != nullptr) {
+            if (lambda != nullptr) [[likely]] {
                 return { lambda };
             }
         }
@@ -170,11 +170,10 @@ namespace rtl::detail
 
     template<class _recordType, class ..._signature>
     template<class _returnType>
-    inline constexpr 
-        const method<_returnType(_recordType::*)(_signature...)> 
-                          HopMethod<_recordType, _signature...>::returnT() const
+    inline constexpr const method<_returnType(_recordType::*)(_signature...)> 
+                           HopMethod<_recordType, _signature...>::returnT() const
     {
-        if (m_lambda != nullptr) 
+        if (m_lambda != nullptr) [[likely]]
         {
             const auto retId = TypeId<_returnType>::get();
             return m_lambda->template get_hopper<_returnType>(retId);

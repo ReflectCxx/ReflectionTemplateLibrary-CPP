@@ -33,10 +33,9 @@ namespace rtl::detail
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
-        {
-            auto& functorId = pFunctorId.m_lambda->m_functor;
-            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
-                                  ->template get_hopper<void>(functorId.m_returnId)
+        {   
+            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>()
+                                  ->template get_hopper<void>()
                                   .f_ptr();
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
@@ -59,9 +58,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            auto& functorId = pFunctorId.m_lambda->m_functor;
-            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
-                                  ->template get_hopper<_returnType>(functorId.m_returnId)
+            auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>()
+                                  ->template get_hopper<_returnType>()
                                   .f_ptr();
 
             if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
@@ -105,9 +103,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            auto& functorId = pFunctorId.m_lambda->m_functor;
-            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
-                                  ->template get_hopper<void>(functorId.m_returnId)
+            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>()
+                                  ->template get_hopper<void>()
                                   .f_ptr();
 
             const _recordType& target = pTargetObj.view<_recordType>()->get();
@@ -126,9 +123,8 @@ namespace rtl::detail
         this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
-            auto& functorId = pFunctorId.m_lambda->m_functor;
-            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>(functorId.m_recordId, functorId.m_signatureId)
-                                  ->template get_hopper<_returnType>(functorId.m_returnId)
+            auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>()
+                                  ->template get_hopper<_returnType>()
                                   .f_ptr();
 
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);

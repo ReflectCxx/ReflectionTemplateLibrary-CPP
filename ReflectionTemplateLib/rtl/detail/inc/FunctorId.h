@@ -81,13 +81,13 @@ namespace rtl::detail
         }
 
         template<class ..._signature>
-        constexpr const dispatch::lambda_function<_signature...>* get_lambda_function(std::size_t p_argsId) const
+        constexpr const dispatch::lambda_function<_signature...>* get_lambda_function(std::size_t p_argsId = 0) const
         {
             return m_lambda->to_function<_signature...>(p_argsId);
         }
         
         template<class _recordType, class ..._signature>
-        constexpr const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method(std::size_t p_recordId, std::size_t p_argsId) const
+        constexpr const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_argsId = 0) const
         {
             return m_lambda->to_method<_recordType, _signature...>(p_recordId, p_argsId);
         }

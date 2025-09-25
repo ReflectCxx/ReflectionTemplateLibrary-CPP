@@ -35,7 +35,7 @@ namespace rtl::dispatch
         template<class ...signature_ts>
         constexpr const function_t<signature_ts...>* to_function(std::size_t p_argsId) const
         {
-            if (p_argsId == m_functor.m_signatureId) [[likely]]
+            if (p_argsId == 0 || p_argsId == m_functor.m_signatureId) [[likely]]
             {
                 return static_cast<const function_t<signature_ts...>*>(this);
             }
@@ -45,7 +45,8 @@ namespace rtl::dispatch
         template<class record_t, class ...signature_ts>
         constexpr const method_t<record_t, signature_ts...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
-            if (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_signatureId) [[likely]]
+            if (p_recordId == 0 || p_argsId ==0 ||
+               (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_signatureId)) [[likely]]
             {
                 return static_cast<const method_t<record_t, signature_ts...>*>(this);
             }

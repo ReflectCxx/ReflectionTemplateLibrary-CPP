@@ -30,9 +30,8 @@ namespace rtl
         {
             return [](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                auto& functorId = pFunctorId.m_lambda->m_functor;
-                auto fptr = pFunctorId.get_lambda_function<_signature...>(functorId.m_signatureId)
-                                      ->template get_hopper<void>(functorId.m_returnId)
+                auto fptr = pFunctorId.get_lambda_function<_signature...>()
+                                      ->template get_hopper<void>()
                                       .f_ptr();
                 
                 fptr(std::forward<_signature>(params)...);
@@ -50,9 +49,8 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                auto& functorId = pFunctorId.m_lambda->m_functor;
-                auto fptr = pFunctorId.get_lambda_function<_signature...>(functorId.m_signatureId)
-                                      ->template get_hopper<_returnType>(functorId.m_returnId)
+                auto fptr = pFunctorId.get_lambda_function<_signature...>()
+                                      ->template get_hopper<_returnType>()
                                       .f_ptr();
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);

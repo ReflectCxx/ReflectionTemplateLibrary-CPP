@@ -52,7 +52,7 @@ namespace rtl::detail
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_function<_signature...>(argsId);
-            if (lambda != nullptr) {
+            if (lambda != nullptr) [[likely]] {
                 return { lambda };
             }
         }
@@ -62,9 +62,8 @@ namespace rtl::detail
 
     template<class ..._signature>
     template<class _returnType>
-    inline constexpr 
-        const function<_returnType(_signature...)> 
-                       HopFunction<_signature...>::returnT() const
+    inline constexpr const function<_returnType(_signature...)> 
+                           HopFunction<_signature...>::returnT() const
     {
         const auto retId = TypeId<_returnType>::get();
         if (m_lambda != nullptr) [[likely]] {
