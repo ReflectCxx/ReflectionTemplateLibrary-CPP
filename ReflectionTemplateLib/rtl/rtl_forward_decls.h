@@ -31,6 +31,15 @@ namespace rtl
     template<class functor_t>
     struct method;
 
+    namespace erasure 
+    {
+        template<class T>
+        struct function;
+
+        template<class T>
+        struct method;    
+    }
+
     namespace detail 
     {
         struct FunctorId;

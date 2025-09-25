@@ -18,7 +18,7 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/cache
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/detail
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/dispatch
-        ${CMAKE_CURRENT_SOURCE_DIR}/rtl/registry
+        ${CMAKE_CURRENT_SOURCE_DIR}/rtl/erasure
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/inc
 		${CMAKE_CURRENT_SOURCE_DIR}/rtl
 )
