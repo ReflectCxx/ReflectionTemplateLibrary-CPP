@@ -19,13 +19,13 @@
  namespace rtl::erase
  {
      template<class ...signature_ts>
-     struct erasure_base<Return(signature_ts...)>
+     struct erasure_base
      {
          virtual Return forward(signature_ts&&...) = 0;
      };
 
      template<class return_t, class ...signature_ts>
-     struct function_return : public erasure_base<Return(signature_ts...)>
+     struct function_return : public erasure_base<signature_ts...>
      {
          Return forward(signature_ts&&...) override
          {
