@@ -33,8 +33,8 @@ namespace rtl
 
     namespace erase 
     {
-        //template<class ...>
-        //struct erasure_base;
+        template<class ...signature_ts>
+        struct erasure_base;
 
         template<class T>
         struct function;
