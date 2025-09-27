@@ -20,7 +20,7 @@ namespace rtl::dispatch
     {
         const functor& m_functor;
         
-    protected:
+//    protected:
 
         lambda_base(const functor& p_functor) noexcept
             :m_functor(p_functor)
@@ -53,7 +53,7 @@ namespace rtl::dispatch
             else return nullptr;
         }
 
-    public:
+//    public:
 
         GETTER_CREF(functor, _functor, m_functor);
 

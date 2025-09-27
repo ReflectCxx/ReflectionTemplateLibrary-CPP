@@ -95,7 +95,7 @@ namespace rtl
 
             const auto& updateIndex = [&](std::size_t pIndex)-> void
             {
-                auto& lambdaCache = cache::lambda_function<_signature...>::instance();
+                auto& lambdaCache = cache::lambda_function<_returnType, _signature...>::instance();
                 auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
 
                 auto& functor = functorCache.push(pFunctor, pIndex);

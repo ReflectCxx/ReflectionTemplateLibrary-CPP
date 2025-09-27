@@ -37,7 +37,7 @@ namespace rtl::dispatch
 
         mutable const lambda_base* m_lambda = nullptr;
 
-        template<class ...signature_ts>
+        template<class return_t, class ...signature_ts>
         friend struct cache::lambda_function;
 
         template<class record_t, class ...signature_ts>

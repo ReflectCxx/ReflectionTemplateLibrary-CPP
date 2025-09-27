@@ -21,8 +21,6 @@ namespace rtl
     {
         using fptr_t = return_t(*)(signature_ts...);
 
-        const fptr_t m_functor = nullptr;
-
         constexpr auto f_ptr() const {
             return m_functor;
         }
@@ -38,12 +36,27 @@ namespace rtl
             return (*m_functor)(std::forward<args_t>(params)...);
         }
 
+        function(fptr_t p_functor): m_functor(p_functor)
+        { }
+        
+        function() = default;
+        function(function&&) = default;
+        function(const function&) = default;
+
+        function& operator=(function&&) = default;
+        function& operator=(const function&) = default;
+
     private:
+
+        fptr_t m_functor = nullptr;
 
         template<class ...args_t>
         static constexpr bool is_args_t_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
 
         template<class ...args_t>
         static constexpr bool noexcept_v = noexcept(std::declval<return_t(*)(signature_ts...)>()(std::declval<args_t>()...));
+
+        template<class ...args_t>
+        friend struct dispatch::lambda_function;
     };
 }

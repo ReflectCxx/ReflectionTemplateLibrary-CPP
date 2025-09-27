@@ -14,6 +14,7 @@
 #include "lambda.h"
 #include "function_ptr.h"
 #include "rtl_function.h"
+#include "erase_return.h"
 
 namespace rtl::dispatch
 {
@@ -21,20 +22,29 @@ namespace rtl::dispatch
     struct lambda_function: public lambda_base
     {
         template<class return_t>
-        using hopper_t = function<return_t(signature_ts...)>;
+        using hopper_t = rtl::function<return_t(signature_ts...)>;
 
-        lambda_function(const functor& p_functor) noexcept
-            :lambda_base(p_functor)
+        erase::erasure_base<signature_ts...>* m_erasure;
+
+        lambda_function(const functor& p_functor, erase::erasure_base<signature_ts...>* p_erasure) noexcept
+            : lambda_base(p_functor)
+            , m_erasure(p_erasure)
         { }
+
+        template<class return_t>
+        constexpr void init_erasure() const
+        {
+            auto erasure = static_cast<erase::function_return<return_t, signature_ts...>*>(m_erasure);
+            erasure->m_function = get_hopper<return_t>();
+        }
 
         template<class return_t>
         constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId = 0) const
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]
             {
-                return hopper_t<return_t> {
-                    static_cast<const function_ptr<return_t, signature_ts...>&>(m_functor).f_ptr()
-                };
+                auto fptr = static_cast<const function_ptr<return_t, signature_ts...>&>(m_functor).f_ptr();
+                return hopper_t<return_t>(fptr);
             }
             return hopper_t<return_t>();
         }

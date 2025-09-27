@@ -18,6 +18,6 @@ namespace rtl::erase
     template<class ...signature_ts>
     struct erasure_base
     {
-        virtual rtl::Return forward(signature_ts&&...) = 0;
+        virtual void forward(signature_ts&&...) = 0;
     };
 }
