@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <any>
 #include "rtl_forward_decls.h"
 
 namespace rtl::erase
@@ -18,6 +19,7 @@ namespace rtl::erase
     template<class ...signature_ts>
     struct erasure_base
     {
-        virtual void forward(signature_ts&&...) = 0;
+        virtual void hop_v(signature_ts&&...) const noexcept = 0;
+        virtual std::any hop_r(signature_ts&&...) const noexcept = 0;
     };
 }

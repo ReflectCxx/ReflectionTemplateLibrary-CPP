@@ -11,11 +11,11 @@
 
 #pragma once
 
-
 #include "erasure.h"
 #include "rtl_traits.h"
 #include "rtl_function.h"
 #include "rtl_errors.h"
+#include <type_traits>
 
 namespace rtl::erase
 {
@@ -24,9 +24,21 @@ namespace rtl::erase
     {
         rtl::function<return_t(signature_ts...)> m_function;
 
-        void forward(signature_ts&&...params) override
+        void hop_v(signature_ts&&...params) const noexcept override
         {
-            //m_function(std::forward<signature_ts>(params)...);
+            if constexpr (std::is_void_v<return_t>)
+            {
+                m_function(std::forward<signature_ts>(params)...);
+            }
+        }
+
+        std::any hop_r(signature_ts&&...params) const noexcept override
+        {
+            if constexpr (!std::is_void_v<return_t>)
+            {
+                return std::any(m_function(std::forward<signature_ts>(params)...));
+            }
+            else return std::any();
         }
     };
  }

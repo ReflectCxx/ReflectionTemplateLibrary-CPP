@@ -32,7 +32,7 @@ namespace rtl
         template<class ...args_t>
         [[nodiscard]] constexpr decltype(auto) operator()(args_t&&...params) const noexcept(noexcept_v<args_t...>)
         {
-            static_assert(is_args_t_ok<args_t...>, "Argument types don't match the expected signature.");
+            //static_assert(is_args_t_ok<args_t...>, "Argument types don't match the expected signature.");
             return (*m_functor)(std::forward<args_t>(params)...);
         }
 

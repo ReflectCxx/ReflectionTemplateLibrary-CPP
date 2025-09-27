@@ -1,4 +1,5 @@
 
+#include <any>
 #include <iostream>
 #include <optional>
 #include <functional>
@@ -33,7 +34,7 @@ namespace bm
 
     extern std::function<void(bm::Node, argStr_t&)> NodeSendMessage;
 
-    extern std::function<retStr_t(argStr_t&)> GetMessage;
+    extern std::function<std::any(argStr_t&)> GetMessage;
 
     extern std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage;
 }

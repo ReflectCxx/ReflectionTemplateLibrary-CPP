@@ -1,4 +1,5 @@
 
+#include <any>
 #include <functional>
 #include "BenchMark.h"
 
@@ -33,10 +34,12 @@ namespace bm
         pNode.sendMessage(pMsg);
     };
 
-    std::function<retStr_t(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
+    std::function<std::any(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
     {
-        auto retMsg = bm::getMessage(pMsg);
-        return retMsg;
+        //Testing.
+        return std::any(bm::getMessage(pMsg));
+        // auto retMsg = bm::getMessage(pMsg);
+        // return retMsg;
     };
 
     std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage = [](bm::Node pNode, bm::argStr_t& pMsg)

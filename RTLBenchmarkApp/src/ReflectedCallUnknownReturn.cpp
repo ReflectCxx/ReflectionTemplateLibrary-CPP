@@ -5,6 +5,11 @@
 #include "BenchMark.h"
 #include "ReflectedCallUnknownReturn.h"
 
+namespace bm
+{
+    extern std::optional<std::string> g_work_done;
+}
+
 namespace cxx
 {
     extern const rtl::CxxMirror& mirror();
@@ -154,7 +159,10 @@ void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
     static auto _ = _test1();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeSendMessage(nodeObj)(bm::g_longStr));
+        //Testings:
+        SendMessage.ecall_v(bm::g_longStr);
+        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        //benchmark::DoNotOptimize(NodeSendMessage(nodeObj)(bm::g_longStr));
     }
 }
 
@@ -164,6 +172,8 @@ void RtlFunction_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
     static auto _ = _test3();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeGetMessage(nodeObj)(bm::g_longStr));
+        //Testing:
+        benchmark::DoNotOptimize(GetMessage.ecall_r(bm::g_longStr));
+        //benchmark::DoNotOptimize(NodeGetMessage(nodeObj)(bm::g_longStr));
     }
 }
