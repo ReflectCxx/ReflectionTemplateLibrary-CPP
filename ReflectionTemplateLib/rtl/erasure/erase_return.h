@@ -24,21 +24,30 @@ namespace rtl::erase
     {
         rtl::function<return_t(signature_ts...)> m_function;
 
-        void hop_v(signature_ts&&...params) const noexcept override
+        function_return()
+        {
+            erasure_base<signature_ts...>::v_hop = vhop;
+            erasure_base<signature_ts...>::r_hop = rhop;
+        }
+
+        FORCE_INLINE static void vhop(erasure_base<signature_ts...>* p_this, signature_ts&&...params)
         {
             if constexpr (std::is_void_v<return_t>)
             {
-                m_function(std::forward<signature_ts>(params)...);
+                auto this_p = static_cast<function_return<return_t, signature_ts...>*>(p_this);
+                this_p->m_function(std::forward<signature_ts>(params)...);
             }
         }
 
-        std::any hop_r(signature_ts&&...params) const noexcept override
+        FORCE_INLINE static std::any rhop(erasure_base<signature_ts...>* p_this, signature_ts&&...params)
         {
             if constexpr (!std::is_void_v<return_t>)
             {
-                return std::any(m_function(std::forward<signature_ts>(params)...));
+                auto this_p = static_cast<function_return<return_t, signature_ts...>*>(p_this);
+                auto&& ret_v = this_p->m_function(std::forward<signature_ts>(params)...);
+                return std::any(std::forward<decltype(ret_v)>(ret_v));
             }
             else return std::any();
         }
     };
- }
+}

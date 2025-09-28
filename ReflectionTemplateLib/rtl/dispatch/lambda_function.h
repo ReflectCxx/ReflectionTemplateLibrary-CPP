@@ -48,11 +48,5 @@ namespace rtl::dispatch
             }
             return hopper_t<return_t>();
         }
-        
-        template<class ...args_t>
-        constexpr decltype(auto) operator()(args_t&&...params) const
-        {
-            return m_erasure->forward(std::forward<args_t&&>(params)...);
-        }
     };
 }
