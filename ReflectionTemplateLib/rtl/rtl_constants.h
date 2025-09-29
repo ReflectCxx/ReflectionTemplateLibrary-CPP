@@ -169,10 +169,10 @@ namespace rtl::detail
     }
 
 #if defined(_MSC_VER)
-#define FORCE_INLINE __forceinline
+#define ForceInline __forceinline
 #elif defined(__GNUC__) || defined(__clang__)
-#define FORCE_INLINE inline __attribute__((always_inline))
+#define ForceInline inline __attribute__((always_inline))
 #else
-#define FORCE_INLINE inline
+#define ForceInline inline
 #endif
 }

@@ -13,9 +13,9 @@
 
 #include <list>
 
+#include "aware_method.h"
 #include "lambda_method.h"
-#include "return_method.h"
-#include "return_const_method.h"
+#include "aware_method_const.h"
 
 namespace rtl::cache
 {
@@ -28,15 +28,15 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor& fptr) const
+        const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.push_back(erase::return_method<record_t, return_t, signature_ts...>());
-            erase::method<record_t, signature_ts...>* erasure = &m_erasure_cache.back();
+            m_erasure_cache.push_back(erase::aware_method<record_t, return_t, signature_ts...>());
+            erase::erased_method<record_t, signature_ts...>* erasure = &m_erasure_cache.back();
 
-            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>(fptr, erasure));
-            fptr.m_lambda = &m_cache.back();
+            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>(p_functor, erasure));
+            p_functor.m_lambda = &m_cache.back();
 
-            (m_cache.back()).template init_erasure<return_t>();
+            (m_erasure_cache.back()).m_method = m_cache.back().template get_hopper<return_t>();
 
             return m_cache.back();
         }
@@ -50,7 +50,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_method<record_t, signature_ts...>> m_cache;
-        mutable std::list<erase::return_method<record_t, return_t, signature_ts...>> m_erasure_cache;
+        mutable std::list<erase::aware_method<record_t, return_t, signature_ts...>> m_erasure_cache;
 
         lambda_method() = default;
     };

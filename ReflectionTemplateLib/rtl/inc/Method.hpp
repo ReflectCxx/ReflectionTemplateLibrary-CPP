@@ -16,14 +16,14 @@
 namespace rtl
 {
     template<class ..._signature>
-    FORCE_INLINE const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
+    ForceInline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
     {
         return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
 
     template<class ..._signature>
-    FORCE_INLINE const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
+    ForceInline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
         return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }

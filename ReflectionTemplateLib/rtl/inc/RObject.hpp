@@ -25,7 +25,7 @@
 
 namespace rtl
 {
-    FORCE_INLINE RObject::RObject(std::any&& pObject, detail::RObjectId&& pRObjId,
+    ForceInline RObject::RObject(std::any&& pObject, detail::RObjectId&& pRObjId,
                                   const std::vector<traits::ConverterPair>* pConverters) noexcept
         : m_object(std::in_place, std::move(pObject))
         , m_objectId(pRObjId)
@@ -120,7 +120,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_unique_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
+    ForceInline std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;
@@ -140,7 +140,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_shared_ptr_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
+    ForceInline std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;
@@ -161,7 +161,7 @@ namespace rtl
 
 
     template <class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int>>
-    FORCE_INLINE std::optional<rtl::view<T>> RObject::view() const noexcept
+    ForceInline std::optional<rtl::view<T>> RObject::view() const noexcept
     {
         if (isEmpty()) {
             return std::nullopt;

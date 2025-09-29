@@ -34,16 +34,16 @@ namespace rtl
     namespace erase 
     {
         template<class ...signature_ts>
-        struct function;
+        struct erased_function;
 
         template<class record_t, class ...signature_ts>
-        struct method;
+        struct erased_method;
 
         template<class return_t, class ...signature_ts>
-        struct return_function;
+        struct aware_function;
 
         template<class record_t, class return_t, class ...signature_ts>
-        struct return_method;
+        struct aware_method;
     }
 
     namespace detail 

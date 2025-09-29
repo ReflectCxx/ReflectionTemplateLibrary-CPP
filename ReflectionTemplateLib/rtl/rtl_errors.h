@@ -49,7 +49,7 @@ namespace rtl
         case error::CloningDisabled:
             return "Type not registered: The requested type is not explicitly registered in the Reflection system";
         case error::FunctionNotRegistered:
-            return "Function not registered: The requested function/method is not registered in the Reflection system";
+            return "Function not registered: The requested erase_function/method is not registered in the Reflection system";
         case error::TargetMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
         case error::NonConstOverloadMissing:

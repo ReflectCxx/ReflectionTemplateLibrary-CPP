@@ -11,47 +11,45 @@
 
 #pragma once
 
-#include "erase_method.h"
+#include "erased_method.h"
 
 namespace rtl::erase
 {
     template<class record_t, class return_t, class ...signature_ts>
-    struct return_method<const record_t, return_t, signature_ts...> : public method<record_t, signature_ts...>
+    struct aware_method : public erased_method<record_t, signature_ts...>
     {
-        using base_t = method<record_t, signature_ts...>;
+        using base_t = erased_method<record_t, signature_ts...>;
+        
+        using this_t = aware_method<record_t, return_t, signature_ts...>;
 
-        using this_t = return_method<record_t, return_t, signature_ts...>;
+        rtl::method<return_t(record_t::*)(signature_ts...)> m_method;
 
-        rtl::method<return_t (record_t::*)(signature_ts...) const> m_method;
-
-        return_method()
+        aware_method()
         {
-            base_t::v_hop = hop_v;
-            base_t::r_hop = hop_r;
+            base_t::hop_void = void_hop;
+            base_t::hop_return = return_hop;
         }
 
-        FORCE_INLINE static void hop_v(base_t* p_this, const record_t& p_target, signature_ts&&...params)
+        constexpr static void void_hop(const base_t* p_this, const record_t& p_target, signature_ts&&...params) noexcept
         {
             if constexpr (std::is_void_v<return_t>)
             {
-                auto this_p = static_cast<this_t*>(p_this);
-                this_p->m_method(p_target, std::forward<signature_ts>(params)...);
+                auto this_p = static_cast<const this_t*>(p_this);
+                this_p->m_method(const_cast<record_t&>(p_target), std::forward<signature_ts>(params)...);
             }
         }
 
-        FORCE_INLINE static std::any hop_r(base_t* p_this, const record_t& p_target, signature_ts&&...params)
+        ForceInline static std::any return_hop(const base_t* p_this, const record_t& p_target, signature_ts&&...params) noexcept
         {
             if constexpr (!std::is_void_v<return_t>)
             {
-                auto this_p = static_cast<this_t*>(p_this);
-                auto&& ret_v = this_p->m_method(p_target, std::forward<signature_ts>(params)...);
+                auto this_p = static_cast<const this_t*>(p_this);
+                auto&& ret_v = this_p->m_method(const_cast<record_t&>(p_target), std::forward<signature_ts>(params)...);
 
-                if constexpr (std::is_reference_v<return_t>)
-                {
+                if constexpr (std::is_reference_v<return_t>) {
                     return std::any(&ret_v);
                 }
-                else
-                {
+                else {
                     return std::any(std::forward<decltype(ret_v)>(ret_v));
                 }
             }

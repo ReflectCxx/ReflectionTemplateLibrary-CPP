@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "erase_method.h"
+#include "erased_method.h"
 
 namespace rtl::detail
 {

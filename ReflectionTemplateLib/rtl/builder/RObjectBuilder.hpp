@@ -20,7 +20,7 @@
 namespace rtl::detail 
 {    
     template<class T>
-    FORCE_INLINE const std::vector<traits::ConverterPair>& getConverters() noexcept
+    ForceInline const std::vector<traits::ConverterPair>& getConverters() noexcept
     {
         // extract wrapper info.
         using _W = traits::std_wrapper<traits::raw_t<T>>;
@@ -32,7 +32,7 @@ namespace rtl::detail
 
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
-    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
+    ForceInline RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
         return RObject( std::any{
@@ -46,7 +46,7 @@ namespace rtl::detail
     
     template<class T>
     template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
-    FORCE_INLINE RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
+    ForceInline RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
         constexpr bool isRawPointer = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;

@@ -12,11 +12,10 @@
 #pragma once
 
 #include "lambda.h"
-#include "method_ptr.h"
 #include "rtl_method.h"
-#include "rtl_const_method.h"
-#include "return_method.h"
-#include "return_const_method.h"
+#include "erased_method.h"
+#include "functor_method.h"
+#include "rtl_method_const.h"
 
 
 namespace rtl::dispatch
@@ -30,19 +29,12 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_ct = rtl::method<return_t (record_t::*)(signature_ts...) const>;
 
-        erase::method<record_t, signature_ts...>* m_erasure;
+        erase::erased_method<record_t, signature_ts...>* m_erasure;
 
-        lambda_method(const functor& p_functor, erase::method<record_t, signature_ts...>* p_erasure) noexcept
+        lambda_method(const functor& p_functor, erase::erased_method<record_t, signature_ts...>* p_erasure) noexcept
             : lambda_base(p_functor)
             , m_erasure(p_erasure)
         { }
-
-        template<class return_t>
-        constexpr void init_erasure() const
-        {
-            auto erasure = static_cast<erase::return_method<record_t, return_t, signature_ts...>*>(m_erasure);
-            erasure->m_method = get_hopper<return_t>();
-        }
 
         template<class return_t> requires (std::is_const_v<record_t> == false)
         constexpr const hopper_t<return_t> get_hopper(std::size_t p_returnId = 0) const

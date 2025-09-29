@@ -24,7 +24,7 @@ namespace rtl::detail
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    FORCE_INLINE Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
+    ForceInline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         //Only static-member-functions have Qualifier- 'methodQ::None'
         if (m_method->getQualifier() == methodQ::None) [[unlikely]] {
@@ -55,7 +55,7 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    FORCE_INLINE Return
+    ForceInline Return
     DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
                                                                        const RObject& pTarget,
                                                                        _args&&... params)
@@ -93,7 +93,7 @@ namespace rtl::detail
     * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
 */  template<class ..._signature>
     template<class ..._args>
-    FORCE_INLINE Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
+    ForceInline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_method->getQualifier() == methodQ::None) [[unlikely]] {
             return static_cast<Function>(*m_method).bind().call(std::forward<_args>(params)...);
@@ -122,7 +122,7 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    FORCE_INLINE Return
+    ForceInline Return
     NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
                                                                         const RObject& pTarget,
                                                                         _args&&... params)
@@ -191,18 +191,18 @@ namespace rtl::detail
     {
         auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] {
-            functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->hop_v(m_target, std::forward<_args>(params)...);
+            functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->void_hop(m_target, std::forward<_args>(params)...);
         }
         return error::None;
     }
 
     template<class _recordType>
     template<class ..._args>
-    FORCE_INLINE std::any ErasedInvoker<_recordType>::call_r(_args&&...params) const noexcept
+    ForceInline std::any ErasedInvoker<_recordType>::call_r(_args&&...params) const noexcept
     {
         auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] {
-            return functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->hop_r(m_target, std::forward<_args>(params)...);
+            return functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->return_hop(m_target, std::forward<_args>(params)...);
         }
         return std::any();
     }

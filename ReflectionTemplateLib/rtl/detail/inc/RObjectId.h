@@ -39,7 +39,7 @@ namespace rtl::detail
         GETTER(EntityKind, ContainedAs, m_containsAs)
 
         template<class T>
-        FORCE_INLINE static constexpr EntityKind getEntityKind() noexcept
+        ForceInline static constexpr EntityKind getEntityKind() noexcept
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -59,7 +59,7 @@ namespace rtl::detail
 
 
         template<class T, rtl::alloc _allocOn>
-        FORCE_INLINE static RObjectId create(std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
+        ForceInline static RObjectId create(std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
         {
             // extract wrapper info.
             using _W = traits::std_wrapper<traits::raw_t<T>>;

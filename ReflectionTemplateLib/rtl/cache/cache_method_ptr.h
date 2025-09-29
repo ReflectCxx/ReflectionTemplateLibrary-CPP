@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "method_ptr.h"
+#include "functor_method.h"
 
 namespace rtl::cache
 {

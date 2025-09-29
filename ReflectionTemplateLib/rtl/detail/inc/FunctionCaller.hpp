@@ -16,13 +16,13 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
-#include "erase_function.h"
+#include "erased_function.h"
 
 namespace rtl::detail
 {
     template<class ..._signature>
     template<class ..._args>
-    FORCE_INLINE Return FunctionCaller<_signature...>::call(_args&&...params) const noexcept
+    ForceInline Return FunctionCaller<_signature...>::call(_args&&...params) const noexcept
     {
         using Container = std::conditional_t<sizeof...(_signature) == 0,
                                              FunctorContainer<std::remove_reference_t<_args>...>,
@@ -50,7 +50,7 @@ namespace rtl::detail
     {
         auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] {
-            functorId->template get_lambda_function<_args...>()->m_erasure->hop_v(std::forward<_args>(params)...);
+            functorId->template get_lambda_function<_args...>()->m_erasure->void_hop(std::forward<_args>(params)...);
         }
         return error::None;
     }
@@ -58,11 +58,11 @@ namespace rtl::detail
 
     template<class ..._signature>
     template<class ..._args>
-    FORCE_INLINE std::any FunctionCaller<_signature...>::call_r(_args&& ...params) const noexcept
+    ForceInline std::any FunctionCaller<_signature...>::call_r(_args&& ...params) const noexcept
     {
         auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] {
-            return functorId->template get_lambda_function<_args...>()->m_erasure->hop_r(std::forward<_args>(params)...);
+            return functorId->template get_lambda_function<_args...>()->m_erasure->return_hop(std::forward<_args>(params)...);
         }
         return std::any();
     }

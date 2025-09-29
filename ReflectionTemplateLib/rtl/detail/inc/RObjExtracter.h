@@ -22,7 +22,7 @@ namespace rtl::detail
         const RObject* m_rObj;
         
         template<class T>
-        FORCE_INLINE static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind) noexcept
+        ForceInline static const T* getPointer(const std::any& pObject, const EntityKind pEntityKind) noexcept
         {
             switch (pEntityKind)
             {
@@ -39,7 +39,7 @@ namespace rtl::detail
 
 
         template<class T>
-        FORCE_INLINE const T* getPointer() const noexcept
+        ForceInline const T* getPointer() const noexcept
         {
             switch (m_rObj->m_objectId.m_containsAs)
             {
@@ -59,7 +59,7 @@ namespace rtl::detail
 
 
         template <class T, traits::enable_if_unique_ptr<T> = 0>
-        FORCE_INLINE auto getWrapper() const noexcept -> const RObjectUPtr<typename traits::std_wrapper<T>::value_type>*
+        ForceInline auto getWrapper() const noexcept -> const RObjectUPtr<typename traits::std_wrapper<T>::value_type>*
         {
             if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Unique)
             {
@@ -83,7 +83,7 @@ namespace rtl::detail
 
 
         template <class T, traits::enable_if_shared_ptr<T> = 0>
-        FORCE_INLINE const T* getWrapper() const noexcept
+        ForceInline const T* getWrapper() const noexcept
         {
             if (m_rObj->m_objectId.m_wrapperType == detail::Wrapper::Shared)
             {
@@ -106,7 +106,7 @@ namespace rtl::detail
 
 
         template<class T>
-        FORCE_INLINE const T* getFromWrapper() const noexcept
+        ForceInline const T* getFromWrapper() const noexcept
         {
             if constexpr (std::is_destructible_v<T>)
             {

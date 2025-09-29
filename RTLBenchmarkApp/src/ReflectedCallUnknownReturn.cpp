@@ -21,7 +21,7 @@ namespace
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
         if (!function) {
-            std::cerr << "[0] error: function 'getMessage' not found.\n";
+            std::cerr << "[0] error: erase_function 'getMessage' not found.\n";
             std::abort();
         }
         return *function;
@@ -31,7 +31,7 @@ namespace
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("sendMessage");
         if (!function) {
-            std::cerr << "[1] error: function 'sendMessage' not found.\n";
+            std::cerr << "[1] error: erase_function 'sendMessage' not found.\n";
             std::abort();
         }
         return *function;

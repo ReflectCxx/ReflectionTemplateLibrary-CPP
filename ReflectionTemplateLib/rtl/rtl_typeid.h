@@ -16,11 +16,11 @@
 #include <typeinfo>
 
 #if defined(_MSC_VER)
-#define FORCE_INLINE __forceinline
+#define ForceInline __forceinline
 #elif defined(__GNUC__) || defined(__clang__)
-#define FORCE_INLINE inline __attribute__((always_inline))
+#define ForceInline inline __attribute__((always_inline))
 #else
-#define FORCE_INLINE inline
+#define ForceInline inline
 #endif
 
 namespace rtl {
@@ -46,7 +46,7 @@ namespace rtl {
             //'0' represents no type. [Never change, critical.]
             static constexpr const std::size_t None = 0;
 
-            FORCE_INLINE static std::size_t get()
+            ForceInline static std::size_t get()
             {
                 if constexpr (!std::is_same_v<_type, std::nullptr_t>)
                 {

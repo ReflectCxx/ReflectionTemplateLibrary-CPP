@@ -52,7 +52,7 @@ namespace rtl {
             }
 
             //get the vector holding lambdas as 'const-ref'
-            FORCE_INLINE static const std::vector<MethodLambda>& getMethodFunctors() {
+            ForceInline static const std::vector<MethodLambda>& getMethodFunctors() {
                 static std::vector<MethodLambda>& functorTable = getFunctorTable();
                 return functorTable;
             }
@@ -118,14 +118,14 @@ namespace rtl {
         public:
 
             //every MethodContainer<detail::methodQ::Const,...> will have a unique-id.
-            FORCE_INLINE static std::size_t getContainerId() {
+            ForceInline static std::size_t getContainerId() {
                 //holds unique-id
                 static const std::size_t containerId = generate_unique_id();
                 return containerId;
             }
 
             //get the vector holding lambdas as 'const-ref'
-            FORCE_INLINE static const std::vector<MethodLambda>& getMethodFunctors() {
+            ForceInline static const std::vector<MethodLambda>& getMethodFunctors() {
                 static std::vector<MethodLambda>& functorTable = getFunctorTable();
                 return functorTable;
             }

@@ -12,9 +12,9 @@
 #pragma once
 
 #include "lambda.h"
-#include "function_ptr.h"
 #include "rtl_function.h"
-#include "return_function.h"
+#include "functor_function.h"
+#include "erased_function.h"
 
 namespace rtl::dispatch
 {
@@ -24,19 +24,12 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_t = rtl::function<return_t(signature_ts...)>;
 
-        erase::function<signature_ts...>* m_erasure;
+        erase::erased_function<signature_ts...>* m_erasure;
 
-        lambda_function(const functor& p_functor, erase::function<signature_ts...>* p_erasure) noexcept
+        lambda_function(const functor& p_functor, erase::erased_function<signature_ts...>* p_erasure) noexcept
             : lambda_base(p_functor)
             , m_erasure(p_erasure)
         { }
-
-        template<class return_t>
-        constexpr void init_erasure() const
-        {
-            auto erasure = static_cast<erase::return_function<return_t, signature_ts...>*>(m_erasure);
-            erasure->m_function = get_hopper<return_t>();
-        }
 
         template<class return_t>
         constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId = 0) const
