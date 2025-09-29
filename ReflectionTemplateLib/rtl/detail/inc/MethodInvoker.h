@@ -13,7 +13,7 @@
 
 #include "erase_method.h"
 
-namespace rtl::detail 
+namespace rtl::detail
 {
     template<class _recordType>
     struct ErasedInvoker
@@ -23,24 +23,10 @@ namespace rtl::detail
         const _recordType& m_target;
 
         template<class ..._args>
-        constexpr error call_v(_args&&...params) const noexcept
-        {
-            auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-            if (functorId) [[likely]] {
-                functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->hop_v(m_target, std::forward<_args>(params)...);
-            }
-            return error::None;
-        }
+        constexpr error call_v(_args&&...params) const noexcept;
 
         template<class ..._args>
-        constexpr std::any call_r(_args&&...params) const noexcept
-        {
-            auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-            if (functorId) [[likely]] {
-                return functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->hop_r(m_target, std::forward<_args>(params)...);
-            }
-            return std::any();
-        }
+        std::any call_r(_args&&...params) const noexcept;
     };
 }
 

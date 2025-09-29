@@ -55,8 +55,5 @@ namespace rtl
 
         //template<class ...args_t>
         //static constexpr bool noexcept_v = noexcept(std::declval<return_t(*)(signature_ts...)>()(std::declval<args_t>()...));
-
-        template<class ...args_t>
-        friend struct dispatch::lambda_function;
     };
 }

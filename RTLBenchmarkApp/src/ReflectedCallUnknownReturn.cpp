@@ -162,7 +162,7 @@ void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
     for (auto _ : state)
     {
         NodeSendMessage(node).call_v(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done);
+        benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }
 

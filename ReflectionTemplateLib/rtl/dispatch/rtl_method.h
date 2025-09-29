@@ -56,8 +56,5 @@ namespace rtl
 
         //template<class ...args_t>
         //static constexpr bool noexcept_v = noexcept((std::declval<record_t>().*std::declval<fptr_t>())(std::declval<args_t>()...));
-
-        template<class record_t, class ...args_t>
-        friend struct dispatch::lambda_method;
     };
 }

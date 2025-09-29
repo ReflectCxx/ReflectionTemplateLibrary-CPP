@@ -46,7 +46,7 @@ namespace rtl::detail
 
     template<class ..._signature>
     template<class ..._args>
-    FORCE_INLINE error FunctionCaller<_signature...>::call_v(_args&& ...params) const noexcept
+    constexpr error FunctionCaller<_signature...>::call_v(_args&& ...params) const noexcept
     {
         auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] {
