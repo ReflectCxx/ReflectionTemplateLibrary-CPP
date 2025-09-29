@@ -34,13 +34,16 @@ namespace rtl
     namespace erase 
     {
         template<class ...signature_ts>
-        struct erasure_base;
-
-        template<class T>
         struct function;
 
-        template<class T>
-        struct method;    
+        template<class record_t, class ...signature_ts>
+        struct method;
+
+        template<class return_t, class ...signature_ts>
+        struct return_function;
+
+        template<class record_t, class return_t, class ...signature_ts>
+        struct return_method;
     }
 
     namespace detail 
@@ -62,7 +65,7 @@ namespace rtl
         template<class return_t, class ...signature_ts>
         struct lambda_function;
 
-        template<class record_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_ts>
         struct lambda_method;
     }
 

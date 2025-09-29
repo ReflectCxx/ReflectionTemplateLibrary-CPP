@@ -21,7 +21,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaults);
 		EXPECT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [err, ret] = (*getDefaults)()();
+		auto [err, ret] = getDefaults->bind().call();
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
 		EXPECT_TRUE(ret.canViewAs<string>());
@@ -59,7 +59,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfile);
 		EXPECT_TRUE(getProfile->hasSignature<bool>());
 		{
-			auto [err, ret] = (*getProfile)()(true);
+			auto [err, ret] = getProfile->bind().call(true);
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());

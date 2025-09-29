@@ -40,7 +40,7 @@ namespace rtl::dispatch
         template<class return_t, class ...signature_ts>
         friend struct cache::lambda_function;
 
-        template<class record_t, class ...signature_ts>
+        template<class return_t, class record_t, class ...signature_ts>
         friend struct cache::lambda_method;
     };
 }

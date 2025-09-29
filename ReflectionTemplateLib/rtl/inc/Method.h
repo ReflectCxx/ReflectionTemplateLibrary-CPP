@@ -69,14 +69,10 @@ namespace rtl {
         template<class ..._signature>
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
-    /*  @method: operator()()
-        @return: lambda
-        * accepts no arguments for 'target', since associated functor is static-member-functions.
-        * returns a lambda, which forwards the call to finally call the associated static-member-function functor.
-        * provides syntax like,'method()(params...)', first'()' is empty & second'()' takes the actual params.
-    */  constexpr auto operator()() const
+        template<class _recordType>
+        constexpr detail::ErasedInvoker<_recordType> operator()(const _recordType& pTarget) const
         {
-            return detail::FunctionCaller<>{ this };
+            return detail::ErasedInvoker<_recordType>{ (*this), pTarget };
         }
 
 
@@ -105,5 +101,8 @@ namespace rtl {
 
         template<class ..._signature>
         friend struct detail::NonConstInvoker;
+
+        template<class _recordType>
+        friend struct detail::ErasedInvoker;
     };
 }

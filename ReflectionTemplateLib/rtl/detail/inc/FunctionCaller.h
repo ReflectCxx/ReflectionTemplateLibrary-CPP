@@ -30,6 +30,12 @@ namespace rtl::detail
         template<class ..._args>
         constexpr rtl::Return operator()(_args&&...params) const noexcept;
 
+        template<class ..._args>
+        rtl::error call_v(_args&&...) const noexcept;
+
+        template<class ..._args>
+        std::any call_r(_args&&...) const noexcept;
+
         friend Function;
     };
 }

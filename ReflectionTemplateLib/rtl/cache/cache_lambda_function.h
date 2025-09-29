@@ -14,7 +14,7 @@
 #include <list>
 
 #include "lambda_function.h"
-#include "erase_return.h"
+#include "return_function.h"
 
 namespace rtl::cache
 {
@@ -29,8 +29,8 @@ namespace rtl::cache
 
         const dispatch::lambda_function<signature_ts...>& push(const dispatch::functor& fptr) const
         {
-            m_erasure_cache.push_back(erase::function_return<return_t, signature_ts...>());
-            erase::erasure_base<signature_ts...>* erasure = &m_erasure_cache.back();
+            m_erasure_cache.push_back(erase::return_function<return_t, signature_ts...>());
+            erase::function<signature_ts...>* erasure = &m_erasure_cache.back();
 
             m_cache.push_back(dispatch::lambda_function<signature_ts...>(fptr, erasure));
             fptr.m_lambda = &m_cache.back();
@@ -48,7 +48,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_function<signature_ts...>> m_cache;
-        mutable std::list<erase::function_return<return_t, signature_ts...>> m_erasure_cache;
+        mutable std::list<erase::return_function<return_t, signature_ts...>> m_erasure_cache;
 
         lambda_function() = default;
     };

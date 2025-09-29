@@ -170,7 +170,7 @@ namespace rtl::detail
         const dispatch::lambda_base* lambdaPtr = nullptr;
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            auto& lambdaCache = cache::lambda_method<_recordType, _signature...>::instance();
+            auto& lambdaCache = cache::lambda_method<_recordType, _returnType, _signature...>::instance();
             auto& functorCache = cache::method_ptr<_recordType, _returnType, _signature...>::instance();
 
             auto& functor = functorCache.push(pFunctor, pIndex);
@@ -241,7 +241,7 @@ namespace rtl::detail
         const dispatch::lambda_base* lambdaPtr = nullptr;
         const auto& updateIndex = [&](std::size_t pIndex)-> void
         {
-            auto& lambdaCache = cache::lambda_method<_recordType, _signature...>::instance();
+            auto& lambdaCache = cache::lambda_method<_recordType, _returnType, _signature...>::instance();
             auto& functorCache = cache::method_ptr<const _recordType, _returnType, _signature...>::instance();
 
             auto& functor = functorCache.push(pFunctor, pIndex);

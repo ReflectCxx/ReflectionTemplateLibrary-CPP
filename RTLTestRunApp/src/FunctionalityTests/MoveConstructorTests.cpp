@@ -228,7 +228,7 @@ namespace rtl_tests
 
             // Calender::create is a static method that returns stack-allocated Calender object.
             // Calling this via reflection, moves the return value from Calender::create to here.
-            auto [err0, calender0] = (*createCalender)()();
+            auto [err0, calender0] = createCalender->bind().call();
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());

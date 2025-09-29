@@ -16,11 +16,7 @@
 #include "RObject.h"
 #include "rtl_constants.h"
 #include "rtl_errors.h"
-#include <any>
-#include <cstddef>
-#include <utility>
 
-#include "erase_return.h"
 
 namespace rtl 
 {
@@ -61,34 +57,6 @@ namespace rtl
     }
 
 
-    template<class ..._args>
-    FORCE_INLINE error Function::ecall_v(_args&& ...params) const noexcept
-    {
-        //m_functorIds[0].get_lambda_function<_args...>()->m_erasure->hop(std::forward<_args>(params)...);
-        const std::size_t argsId = detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get();
-        for (auto& functorId : m_functorIds)
-        {
-            if(argsId == functorId.m_lambda->m_functor.m_signatureId) [[likely]]
-            {
-                functorId.get_lambda_function<_args...>()->m_erasure->hop_v(std::forward<_args>(params)...);
-                break;
-            }
-        }
-        return error::None;
-    }
-
-
-    template<class ..._args>
-    FORCE_INLINE std::any Function::ecall_r(_args&& ...params) const noexcept
-    {
-        auto functorId = getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if(functorId) {
-            return functorId->template get_lambda_function<_args...>()->m_erasure->hop_r(std::forward<_args>(params)...);
-        }
-        return std::any();
-    }
-
-
 /*  @method: hasSignatureId()
     @param: const std::size_t& (signatureId to be found)
     @return: the index of the functor in the functor-table.
@@ -117,6 +85,7 @@ namespace rtl
         }
         return nullptr;
     }
+
 
     FORCE_INLINE const detail::FunctorId* Function::getLambdaById(const std::size_t pSignatureId) const
     {

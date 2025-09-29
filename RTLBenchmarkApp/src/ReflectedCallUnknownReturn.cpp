@@ -138,7 +138,8 @@ void RtlFunction_call_ReturnUnknown::typeVoid(benchmark::State& state)
     static auto _ = _test0();
     for (auto _ : state) 
     {
-        benchmark::DoNotOptimize(SendMessage(bm::g_longStr));
+        SendMessage.bind().call_v(bm::g_longStr);
+        benchmark::DoNotOptimize(bm::g_work_done);
     }
 }
 
@@ -149,7 +150,7 @@ void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
     static auto _ = _test2();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(GetMessage(bm::g_longStr));
+        benchmark::DoNotOptimize(GetMessage.bind().call_r(bm::g_longStr));
     }
 }
 
@@ -157,12 +158,11 @@ void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
 void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 {
     static auto _ = _test1();
+    static bm::Node node;
     for (auto _ : state)
     {
-        //Testings:
-        SendMessage.ecall_v(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
-        //benchmark::DoNotOptimize(NodeSendMessage(nodeObj)(bm::g_longStr));
+        NodeSendMessage(node).call_v(bm::g_longStr);
+        benchmark::DoNotOptimize(bm::g_work_done);
     }
 }
 
@@ -170,10 +170,9 @@ void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 void RtlFunction_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
+    static bm::Node node;
     for (auto _ : state)
     {
-        //Testing:
-        benchmark::DoNotOptimize(GetMessage.ecall_r(bm::g_longStr));
-        //benchmark::DoNotOptimize(NodeGetMessage(nodeObj)(bm::g_longStr));
+        benchmark::DoNotOptimize(NodeGetMessage(node).call_r(bm::g_longStr));
     }
 }

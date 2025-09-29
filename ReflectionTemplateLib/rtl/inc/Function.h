@@ -107,12 +107,6 @@ namespace rtl {
         template<class ..._signature>
         constexpr const detail::FunctionCaller<_signature...> bind() const noexcept;
 
-        template<class ..._args>
-        rtl::error ecall_v(_args&&...) const noexcept;
-
-        template<class ..._args>
-        std::any ecall_r(_args&&...) const noexcept;
-
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;
 

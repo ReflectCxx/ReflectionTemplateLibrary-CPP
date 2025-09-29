@@ -16,6 +16,8 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
+#include "erase_function.h"
+
 namespace rtl::detail
 {
     template<class ..._signature>
@@ -39,6 +41,30 @@ namespace rtl::detail
     constexpr inline rtl::Return FunctionCaller<_signature...>::operator()(_args&&...params) const noexcept
     {
         return call(std::forward<_args>(params)...);
+    }
+
+
+    template<class ..._signature>
+    template<class ..._args>
+    FORCE_INLINE error FunctionCaller<_signature...>::call_v(_args&& ...params) const noexcept
+    {
+        auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        if (functorId) [[likely]] {
+            functorId->template get_lambda_function<_args...>()->m_erasure->hop_v(std::forward<_args>(params)...);
+        }
+        return error::None;
+    }
+
+
+    template<class ..._signature>
+    template<class ..._args>
+    FORCE_INLINE std::any FunctionCaller<_signature...>::call_r(_args&& ...params) const noexcept
+    {
+        auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        if (functorId) [[likely]] {
+            return functorId->template get_lambda_function<_args...>()->m_erasure->hop_r(std::forward<_args>(params)...);
+        }
+        return std::any();
     }
 }
 

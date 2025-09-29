@@ -14,7 +14,7 @@
 #include "lambda.h"
 #include "function_ptr.h"
 #include "rtl_function.h"
-#include "erase_return.h"
+#include "return_function.h"
 
 namespace rtl::dispatch
 {
@@ -24,9 +24,9 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_t = rtl::function<return_t(signature_ts...)>;
 
-        erase::erasure_base<signature_ts...>* m_erasure;
+        erase::function<signature_ts...>* m_erasure;
 
-        lambda_function(const functor& p_functor, erase::erasure_base<signature_ts...>* p_erasure) noexcept
+        lambda_function(const functor& p_functor, erase::function<signature_ts...>* p_erasure) noexcept
             : lambda_base(p_functor)
             , m_erasure(p_erasure)
         { }
@@ -34,7 +34,7 @@ namespace rtl::dispatch
         template<class return_t>
         constexpr void init_erasure() const
         {
-            auto erasure = static_cast<erase::function_return<return_t, signature_ts...>*>(m_erasure);
+            auto erasure = static_cast<erase::return_function<return_t, signature_ts...>*>(m_erasure);
             erasure->m_function = get_hopper<return_t>();
         }
 
