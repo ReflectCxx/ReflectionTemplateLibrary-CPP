@@ -39,7 +39,7 @@ namespace rtl::detail
                             std::in_place_type<RObjectUPtr<_T>>,
                             RObjectUPtr<_T>(std::unique_ptr<_T>(static_cast<_T*>(pVal)))
                         },
-                        RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pClonerId, pIsConstCastSafe),
+                        RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pIsConstCastSafe, pClonerId),
                         &getConverters<std::unique_ptr<_T>>());
     }
 
@@ -49,12 +49,12 @@ namespace rtl::detail
     ForceInline RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
     {
         using _T = traits::raw_t<T>;
-        constexpr bool isRawPointer = std::is_pointer_v<traits::remove_const_n_ref_t<T>>;
+        constexpr bool isRawPointer = std::is_pointer_v<traits::remove_cref_t<T>>;
 
         if constexpr (isRawPointer)
         {
             return RObject( std::any { static_cast<const _T*>(pVal) },
-                            RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
+                            RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
                             &getConverters<T>() );
         }
         else
@@ -66,7 +66,7 @@ namespace rtl::detail
                                     std::in_place_type<RObjectUPtr<U>>,
                                     RObjectUPtr<U>(std::move(pVal))
                                 },
-                                RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
+                                RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
                                 &getConverters<T>() );
             }
             else
@@ -76,7 +76,7 @@ namespace rtl::detail
                                     std::in_place_type<T>,
                                     std::forward<T>(pVal)
                                 },
-                                RObjectId::create<T, alloc::Stack>(pClonerId, pIsConstCastSafe),
+                                RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
                                 &getConverters<T>() );
             }
         }

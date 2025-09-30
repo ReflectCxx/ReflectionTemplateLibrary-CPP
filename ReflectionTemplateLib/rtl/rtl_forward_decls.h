@@ -53,6 +53,12 @@ namespace rtl
         template<class ..._signature>
         class FunctorContainer;
 
+        template<class ..._signature>
+        struct FunctionCaller;
+
+        template<class _recordType>
+        struct ErasedInvoker;
+
         template<class _derivedType>
         class SetupMethod;
 

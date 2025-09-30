@@ -43,7 +43,7 @@ namespace rtl::detail
         {
             if constexpr (sizeof...(_signature) == 0) {
                 // executes when bind doesn't have any explicit signature types specified. (e.g. perfect-forwaring)
-                return Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
+                return Invoker<traits::remove_cref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
             }
             else {
                 return Invoker<_signature...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
@@ -110,7 +110,7 @@ namespace rtl::detail
         else [[likely]]
         {
             if constexpr (sizeof...(_signature) == 0) {
-                return Invoker<traits::remove_const_n_ref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
+                return Invoker<traits::remove_cref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
             }
             else {
                 return Invoker<_signature...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
@@ -191,17 +191,18 @@ namespace rtl::detail
     ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
     {
         auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if (functorId) [[likely]] 
+        if (functorId) [[likely]]
         {
+            RObject robject;
+
             auto caller = functorId->template get_lambda_method<_recordType, _args...>()->m_erasure;
-            if(functorId->m_lambda->is_void()) {
-                caller->void_hop(m_target, std::forward<_args>(params)...);
-                return { error::None, RObject{} };
-            }
-            else {
-                return caller->return_hop(m_target, std::forward<_args>(params)...);
-            }
+
+            caller->hop(robject.m_object, m_target, std::forward<_args>(params)...);
+
+            robject.m_objectId = caller->get_robject_id();
+
+            return { error::None, robject };
         }
-        return { error::SignatureMismatch, RObject{} };
+        else return { error::SignatureMismatch, RObject{} };
     }
 }

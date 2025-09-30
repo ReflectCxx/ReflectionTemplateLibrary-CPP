@@ -18,26 +18,21 @@ namespace rtl::erase
     template<class record_t, class ...signature_ts>
     struct erased_method
     {
-        constexpr void void_hop(const record_t& p_target, signature_ts&&...params) const noexcept
+        constexpr void hop(std::optional<std::any>& p_return, const record_t& p_target, signature_ts&&...params) const noexcept
         {
-            (*hop_void)(this, p_target, std::forward<signature_ts>(params)...);
+            (*hopper)(this, p_return, p_target, std::forward<signature_ts>(params)...);
         }
 
-        ForceInline rtl::Return return_hop(const record_t& p_target, signature_ts&&...params) const noexcept
-        {
-            return (*hop_return)(this, p_target, std::forward<signature_ts>(params)...);
-        }
+        GETTER(detail::RObjectId, _robject_id, robj_id);
 
     protected:
 
         using this_t = erased_method<record_t, signature_ts...>;
 
-        using functor_vt = void(*)(const this_t*, const record_t&, signature_ts&&...);
+        using functor_t = void(*)(const this_t*, std::optional<std::any>& , const record_t&, signature_ts&&...);
 
-        using functor_rt = rtl::Return(*)(const this_t*, const record_t&, signature_ts&&...);
+        functor_t hopper = nullptr;
 
-        functor_vt hop_void = nullptr;
-
-        functor_rt hop_return = nullptr;
+        detail::RObjectId robj_id;
     };
 }

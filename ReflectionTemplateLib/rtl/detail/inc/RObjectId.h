@@ -57,7 +57,7 @@ namespace rtl::detail
 
 
         template<class T, rtl::alloc _allocOn>
-        ForceInline static RObjectId create(std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
+        ForceInline static RObjectId create(bool pIsConstCastSafe, std::optional<FunctorId> pClonerId = std::nullopt) noexcept
         {
             // extract wrapper info.
             using _W = traits::std_wrapper<traits::raw_t<T>>;

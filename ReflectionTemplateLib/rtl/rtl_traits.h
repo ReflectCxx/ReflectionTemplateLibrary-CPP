@@ -44,7 +44,7 @@ namespace rtl
 
         // Utility: Remove const and reference qualifiers from T.
         template <typename T>
-        using remove_const_n_ref_t = std::remove_const_t<std::remove_reference_t<T>>;
+        using remove_cref_t = std::remove_const_t<std::remove_reference_t<T>>;
 
         // Utility: Remove const from T if T is not a reference; otherwise, leave as is.
         template <typename T>
@@ -55,7 +55,7 @@ namespace rtl
         using remove_const_n_ref_n_ptr = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<std::decay_t<T>>>>;
 
         template<typename T>
-        inline constexpr bool is_raw_ptr_v = std::is_pointer_v<remove_const_n_ref_t<T>>;
+        inline constexpr bool is_raw_ptr_v = std::is_pointer_v<remove_cref_t<T>>;
 
         template<typename T>
         inline constexpr bool is_const_v = (std::is_const_v<std::remove_reference_t<T>> || (std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>));

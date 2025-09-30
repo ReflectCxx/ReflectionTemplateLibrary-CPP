@@ -105,6 +105,12 @@ namespace rtl
 
         template<class T>
         friend struct detail::RObjectBuilder;
+
+        template<class ..._signature>
+        friend struct detail::FunctionCaller;
+
+        template<class _recordType>
+        friend struct detail::ErasedInvoker;
     };
 
     struct [[nodiscard]] Return {
