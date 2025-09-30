@@ -43,17 +43,21 @@ namespace rtl::detail
         auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]] 
         {
-            RObject robject;
-
             auto caller = functorId->template get_lambda_function<_args...>()->m_erasure;
-
-            caller->hop(robject.m_object, std::forward<_args>(params)...);
-            
-            robject.m_objectId = caller->get_robject_id();
-
-            return { error::None, robject };
+            if(functorId->m_lambda->is_void())
+            {
+                caller->hop_v(std::forward<_args>(params)...);
+                return { error::None, RObject{} };
+            }
+            else
+            {
+                return{ error::None,
+                        RObject{ caller->hop_r(std::forward<_args>(params)...),
+                                 caller->get_robject_id(), nullptr } 
+                    };
+            }
         }
-        else return {error::SignatureMismatch, RObject{} };
+        else return { error::SignatureMismatch, RObject{} };
     }
 }
 

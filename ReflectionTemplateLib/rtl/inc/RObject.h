@@ -43,7 +43,7 @@ namespace rtl
         const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, detail::RObjectId&& pRObjId,
+        RObject(std::any&& pObject, const detail::RObjectId& pRObjId,
                 const std::vector<traits::ConverterPair>* pConverters) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;

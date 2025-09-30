@@ -13,15 +13,21 @@
 
 #include "RObjectId.h"
 #include "rtl_forward_decls.h"
+#include "rtl_typeid.h"
 
 namespace rtl::erase
 {
     template<class ...signature_ts>
     struct erased_function
     {
-        constexpr void hop(std::optional<std::any>& p_return, signature_ts&&...params) const noexcept
+        constexpr void hop_v(signature_ts&&...params) const noexcept
         {
-            (*hopper)(this, p_return, std::forward<signature_ts>(params)...);
+            (*hopper_v)(this, std::forward<signature_ts>(params)...);
+        }
+
+        ForceInline std::any hop_r(signature_ts&&...params) const noexcept
+        {
+            return (*hopper_r)(this, std::forward<signature_ts>(params)...);
         }
 
         GETTER(detail::RObjectId, _robject_id, robj_id);
@@ -30,9 +36,13 @@ namespace rtl::erase
 
         using this_t = erased_function<signature_ts...>;
 
-        using functor_t = void(*)(const this_t*, std::optional<std::any>&, signature_ts&&...);
+        using functor_vt = void(*)(const this_t*, signature_ts&&...);
 
-        functor_t hopper = nullptr;
+        using functor_rt = std::any(*)(const this_t*, signature_ts&&...);
+
+        functor_vt hopper_v = nullptr;
+
+        functor_rt hopper_r = nullptr;
 
         detail::RObjectId robj_id;
     };
