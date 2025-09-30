@@ -38,33 +38,21 @@ namespace rtl::detail
 
     template<class ..._signature>
     template<class ..._args>
-    constexpr inline rtl::Return FunctionCaller<_signature...>::operator()(_args&&...params) const noexcept
-    {
-        return call(std::forward<_args>(params)...);
-    }
-
-
-    template<class ..._signature>
-    template<class ..._args>
-    constexpr error FunctionCaller<_signature...>::call_v(_args&& ...params) const noexcept
+    ForceInline constexpr Return FunctionCaller<_signature...>::operator()(_args&&...params) const noexcept
     {
         auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if (functorId) [[likely]] {
-            functorId->template get_lambda_function<_args...>()->m_erasure->void_hop(std::forward<_args>(params)...);
+        if (functorId) [[likely]] 
+        {
+            auto caller = functorId->template get_lambda_function<_args...>()->m_erasure;
+            if(functorId->m_lambda->is_void()) {
+                caller->void_hop(std::forward<_args>(params)...);
+                return {error::None, RObject{} };
+            }
+            else {
+                return caller->return_hop(std::forward<_args>(params)...);
+            }
         }
-        return error::None;
-    }
-
-
-    template<class ..._signature>
-    template<class ..._args>
-    ForceInline std::any FunctionCaller<_signature...>::call_r(_args&& ...params) const noexcept
-    {
-        auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if (functorId) [[likely]] {
-            return functorId->template get_lambda_function<_args...>()->m_erasure->return_hop(std::forward<_args>(params)...);
-        }
-        return std::any();
+        return {error::SignatureMismatch, RObject{} };
     }
 }
 
@@ -89,7 +77,7 @@ namespace rtl::detail
     template<class ..._signature>
     template<class _returnType>
     inline constexpr const function<_returnType(_signature...)> 
-                           HopFunction<_signature...>::returnT() const
+                                    HopFunction<_signature...>::returnT() const
     {
         const auto retId = TypeId<_returnType>::get();
         if (m_lambda != nullptr) [[likely]] {

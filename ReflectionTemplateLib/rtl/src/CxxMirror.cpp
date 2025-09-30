@@ -8,7 +8,7 @@
  *                                                                       *
  *************************************************************************/
 
-
+#include <atomic>
 #include "RObject.h"
 #include "CxxMirror.h"
 

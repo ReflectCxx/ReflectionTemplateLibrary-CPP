@@ -13,8 +13,6 @@
 
 #include "rtl_forward_decls.h"
 
-#include "RObject.h"
-
 namespace rtl::detail
 {		
     template<class ..._signature>
@@ -27,12 +25,6 @@ namespace rtl::detail
 
         template<class ..._args>
         constexpr rtl::Return operator()(_args&&...params) const noexcept;
-
-        template<class ..._args>
-        constexpr rtl::error call_v(_args&&...) const noexcept;
-
-        template<class ..._args>
-        std::any call_r(_args&&...) const noexcept;
     };
 }
 

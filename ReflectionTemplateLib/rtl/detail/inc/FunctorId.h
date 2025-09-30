@@ -11,12 +11,7 @@
 
 #pragma once
 
-#include "rtl_typeid.h"
-#include "rtl_constants.h"
 #include "rtl_forward_decls.h"
-#include "lambda_method.h"
-#include "lambda_function.h"
-
 
 namespace rtl::detail
 {
@@ -81,15 +76,15 @@ namespace rtl::detail
         }
 
         template<class ..._signature>
-        constexpr const dispatch::lambda_function<_signature...>* get_lambda_function(std::size_t p_argsId = 0) const
-        {
-            return m_lambda->to_function<_signature...>(p_argsId);
-        }
+        using lambda_ft = dispatch::lambda_function<_signature...>;
+
+        template<class rec_t, class ..._signature>
+        using lambda_mt = dispatch::lambda_method<rec_t, _signature...>;
+
+        template<class ...args_t>
+        constexpr const lambda_ft<args_t...>* get_lambda_function(std::size_t p_argsId = 0) const;
         
-        template<class _recordType, class ..._signature>
-        constexpr const dispatch::lambda_method<_recordType, _signature...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_argsId = 0) const
-        {
-            return m_lambda->to_method<_recordType, _signature...>(p_recordId, p_argsId);
-        }
+        template<class record_t, class ...args_t>
+        constexpr const lambda_mt<record_t, args_t...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_argsId = 0) const;
     };
 }

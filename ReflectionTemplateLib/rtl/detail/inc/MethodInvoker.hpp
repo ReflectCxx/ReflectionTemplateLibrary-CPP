@@ -15,6 +15,7 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
+#include "erased_method.h"
 
 namespace rtl::detail
 {
@@ -143,7 +144,7 @@ namespace rtl::detail
                 return { error::NonConstOverloadMissing, RObject{} };
             }
             // else the signature might be wrong.
-            return { error::SignatureMismatch , RObject{} };
+            return { error::SignatureMismatch, RObject{} };
         }
     }
 }
@@ -171,7 +172,7 @@ namespace rtl::detail
     template<class _recordType, class ..._signature>
     template<class _returnType>
     inline constexpr const method<_returnType(_recordType::*)(_signature...)> 
-                           HopMethod<_recordType, _signature...>::returnT() const
+                                       HopMethod<_recordType, _signature...>::returnT() const
     {
         if (m_lambda != nullptr) [[likely]]
         {
@@ -187,23 +188,20 @@ namespace rtl::detail
 {
     template<class _recordType>
     template<class ..._args>
-    constexpr error ErasedInvoker<_recordType>::call_v(_args&&...params) const noexcept
+    ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
     {
         auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if (functorId) [[likely]] {
-            functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->void_hop(m_target, std::forward<_args>(params)...);
+        if (functorId) [[likely]] 
+        {
+            auto caller = functorId->template get_lambda_method<_recordType, _args...>()->m_erasure;
+            if(functorId->m_lambda->is_void()) {
+                caller->void_hop(m_target, std::forward<_args>(params)...);
+                return { error::None, RObject{} };
+            }
+            else {
+                return caller->return_hop(m_target, std::forward<_args>(params)...);
+            }
         }
-        return error::None;
-    }
-
-    template<class _recordType>
-    template<class ..._args>
-    ForceInline std::any ErasedInvoker<_recordType>::call_r(_args&&...params) const noexcept
-    {
-        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
-        if (functorId) [[likely]] {
-            return functorId->template get_lambda_method<_recordType, _args...>()->m_erasure->return_hop(m_target, std::forward<_args>(params)...);
-        }
-        return std::any();
+        return { error::SignatureMismatch, RObject{} };
     }
 }

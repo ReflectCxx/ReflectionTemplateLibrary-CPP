@@ -59,13 +59,7 @@ namespace rtl
         pOther.m_converters = nullptr;
         return *this;
     }
-
-    inline std::atomic<std::size_t>& RObject::getInstanceCounter()
-    {
-        static std::atomic<std::size_t> instanceCounter = {0};
-        return instanceCounter;
-    }
-
+    
 
     inline std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {

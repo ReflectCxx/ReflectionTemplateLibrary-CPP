@@ -11,7 +11,8 @@
 
 #pragma once
 
-#include <atomic>
+//#include <atomic>
+#include <cstddef>
 
 #include "view.h"
 #include "RObjectId.h"
@@ -89,7 +90,11 @@ namespace rtl
         template<class T, std::enable_if_t<traits::is_not_any_wrapper_v<T>, int> = 0>
         std::optional<rtl::view<T>> view() const noexcept;
 
-        static std::atomic<std::size_t>& getInstanceCounter();
+        static std::size_t& /*std::atomic<std::size_t>&*/ getInstanceCounter()
+        {
+            static std::size_t/*std::atomic<std::size_t>*/ instanceCounter = {0};
+            return instanceCounter;
+        }
 
         //friends :)
         friend CxxMirror;

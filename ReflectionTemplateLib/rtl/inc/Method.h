@@ -16,7 +16,6 @@
 #include "RObject.h"
 #include "Function.h"
 #include "MethodInvoker.h"
-#include "lambda_method.h"
 
 namespace rtl {
 
@@ -70,7 +69,7 @@ namespace rtl {
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
         template<class _recordType>
-        constexpr detail::ErasedInvoker<_recordType> operator()(const _recordType& pTarget) const
+        constexpr const detail::ErasedInvoker<_recordType> operator()(const _recordType& pTarget) const
         {
             return detail::ErasedInvoker<_recordType>{ (*this), pTarget };
         }

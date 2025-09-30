@@ -51,9 +51,9 @@ namespace rtl
     * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
     * providing optional syntax, Function::call() does the exact same thing.
 */  template<class ..._args>
-    inline Return Function::operator()(_args&& ...params) const noexcept
+    inline constexpr const detail::FunctionCaller<_args...> Function::operator()(_args&& ...params) const noexcept
     {
-        return detail::FunctionCaller<>{ this }.call(std::forward<_args>(params)...);
+        return detail::FunctionCaller<_args...>{ this };
     }
 
 

@@ -31,7 +31,7 @@ namespace rtl::detail
     template<class _fromType>
     class ReflectCast
     {
-        static std::vector<std::pair<std::size_t, traits::Converter>>& conversions() {
+        ForceInline static std::vector<std::pair<std::size_t, traits::Converter>>& conversions() {
             static std::vector<std::pair<std::size_t, traits::Converter>> converters;
             return converters;
         }
@@ -40,7 +40,7 @@ namespace rtl::detail
 
         template<class _toType> static void pushConversion();
 
-        static const std::vector<std::pair<std::size_t, traits::Converter>>& getConversions() {
+        ForceInline static const std::vector<std::pair<std::size_t, traits::Converter>>& getConversions() {
             return conversions();
         }
     };

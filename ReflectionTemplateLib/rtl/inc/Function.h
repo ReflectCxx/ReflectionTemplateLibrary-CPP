@@ -14,14 +14,8 @@
 #include <any>
 #include <string>
 #include <vector>
-#include <functional>
 
-#include "FunctorId.h"
-#include "RObject.h"
-#include "rtl_constants.h"
 #include "FunctionCaller.h"
-#include "lambda_function.h"
-#include "rtl_errors.h"
 
 namespace rtl {
 
@@ -102,7 +96,7 @@ namespace rtl {
         bool hasSignature() const;
 
         template<class ..._args>
-        Return operator()(_args&&...params) const noexcept;
+        constexpr const detail::FunctionCaller<_args...> operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
         constexpr const detail::FunctionCaller<_signature...> bind() const noexcept;

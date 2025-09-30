@@ -20,10 +20,13 @@ namespace rtl::dispatch
     {
         const functor& m_functor;
         
+        const bool m_is_void;
+
 //    protected:
 
         lambda_base(const functor& p_functor) noexcept
-            :m_functor(p_functor)
+            : m_functor(p_functor)
+            , m_is_void(p_functor.m_returnId == detail::TypeId<void>::get())
         { }
 
         template<class ...args_t>
@@ -56,6 +59,10 @@ namespace rtl::dispatch
 //    public:
 
         GETTER_CREF(functor, _functor, m_functor);
+
+        constexpr bool is_void() const {
+            return m_is_void;
+        }
 
         template<class return_t>
         constexpr bool is_returning() const

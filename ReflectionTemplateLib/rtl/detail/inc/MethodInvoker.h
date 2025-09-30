@@ -11,7 +11,8 @@
 
 #pragma once
 
-#include "erased_method.h"
+#include "rtl_typeid.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl::detail
 {
@@ -23,10 +24,7 @@ namespace rtl::detail
         const _recordType& m_target;
 
         template<class ..._args>
-        constexpr error call_v(_args&&...params) const noexcept;
-
-        template<class ..._args>
-        std::any call_r(_args&&...params) const noexcept;
+        constexpr Return operator()(_args&&...params) const noexcept;
     };
 }
 

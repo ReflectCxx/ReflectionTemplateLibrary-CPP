@@ -12,11 +12,9 @@
 #pragma once
 
 #include <any>
-#include <vector>
 #include <optional>
 
 #include "ReflectCast.h"
-#include "rtl_forward_decls.h"
 #include "FunctorId.h"
 
 namespace rtl::detail

@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "Function.h"
+#include "FunctorId.h"
 
 namespace rtl 
 {

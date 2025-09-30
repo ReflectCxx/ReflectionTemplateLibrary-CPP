@@ -13,11 +13,13 @@
 
 #include <cassert>
 
-#include "cache_lambda_function.h"
 #include "cache_function_ptr.h"
+#include "cache_lambda_function.h"
 
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
+
+#include "FunctorId.hpp"
 
 namespace rtl
 {

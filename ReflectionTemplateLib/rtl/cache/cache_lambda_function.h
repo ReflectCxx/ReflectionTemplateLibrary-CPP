@@ -35,7 +35,8 @@ namespace rtl::cache
             m_cache.push_back(dispatch::lambda_function<signature_ts...>(p_functor, erasure));
             p_functor.m_lambda = &m_cache.back();
             
-            (m_erasure_cache.back()).m_function = m_cache.back().template get_hopper<return_t>();
+            m_erasure_cache.back().m_function = m_cache.back().template get_hopper<return_t>();
+            
             return m_cache.back();
         }
 

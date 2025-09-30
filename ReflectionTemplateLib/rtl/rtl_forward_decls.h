@@ -31,7 +31,7 @@ namespace rtl
     template<class functor_t>
     struct method;
 
-    namespace erase 
+    namespace erase
     {
         template<class ...signature_ts>
         struct erased_function;

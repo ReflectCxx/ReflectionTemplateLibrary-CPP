@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include <any>
 #include "rtl_forward_decls.h"
 
 namespace rtl::erase
@@ -24,7 +23,7 @@ namespace rtl::erase
             (*hop_void)(this, std::forward<signature_ts>(params)...);
         }
 
-        ForceInline std::any return_hop(signature_ts&&...params) const noexcept
+        ForceInline rtl::Return return_hop(signature_ts&&...params) const noexcept
         {
             return (*hop_return)(this, std::forward<signature_ts>(params)...);
         }
@@ -35,7 +34,7 @@ namespace rtl::erase
 
         using functor_vt = void(*)(const this_t*, signature_ts&&...);
 
-        using functor_rt = std::any(*)(const this_t*, signature_ts&&...);
+        using functor_rt = rtl::Return(*)(const this_t*, signature_ts&&...);
 
         functor_vt hop_void = nullptr;
 

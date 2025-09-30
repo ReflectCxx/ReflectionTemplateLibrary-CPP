@@ -144,7 +144,7 @@ namespace rtl_tests
 
         double real = g_real;    //g_real's type is "const double", so can't be passed directly to setReal else,
                                  //its type will be inferred 'const double' instead of 'double'.
-        auto [err0, ret0] = (*setReal)(real);
+        auto [err0, ret0] = setReal->bind().call(real);
         EXPECT_TRUE(err0 == rtl::error::None);
         ASSERT_TRUE(ret0.isEmpty());
 
@@ -152,13 +152,13 @@ namespace rtl_tests
 
         double imaginary = g_imaginary;    //g_imaginary's type is "const double", so can't be passed directly to setImaginary else,
                                            //its type will be inferred 'const double' instead of 'double'.
-        auto [err1, ret1] = (*setImaginary)(imaginary);
+        auto [err1, ret1] = setImaginary->bind().call(imaginary);
         EXPECT_TRUE(err1 == rtl::error::None);
         ASSERT_TRUE(ret1.isEmpty());
 
         EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-        auto [err2, ret2] = (*getMagnitude)();
+        auto [err2, ret2] = getMagnitude->bind().call();
 
         EXPECT_TRUE(err2 == rtl::error::None);
         ASSERT_FALSE(ret2.isEmpty());
@@ -194,7 +194,7 @@ namespace rtl_tests
         optional<Function> getComplexNumAsString = cxx::mirror().getFunction(str_getComplexNumAsString);
         ASSERT_TRUE(getComplexNumAsString);
 
-        auto [err, ret] = (*getComplexNumAsString)();
+        auto [err, ret] = getComplexNumAsString->bind().call();
 
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(ret.isEmpty());
@@ -213,7 +213,7 @@ namespace rtl_tests
         {
             //STRA's type is 'consexpr const char*', function accepts 'string',
             //so type-casting in place as 'string'
-            auto [err, ret] = (*reverseString)(string(STRA));
+            auto [err, ret] = reverseString->bind().call(string(STRA));
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
@@ -232,7 +232,7 @@ namespace rtl_tests
            string retVal = ret.view<std::string>()->get();
            EXPECT_TRUE(retVal == STRB_REVERSE);
         } {
-            auto [err, ret] = (*reverseString)();
+            auto [err, ret] = reverseString->bind().call();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());

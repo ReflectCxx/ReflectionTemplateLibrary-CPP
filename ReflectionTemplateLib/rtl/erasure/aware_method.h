@@ -12,6 +12,7 @@
 #pragma once
 
 #include "erased_method.h"
+#include "RObjectBuilder.hpp"
 
 namespace rtl::erase
 {
@@ -39,21 +40,34 @@ namespace rtl::erase
             }
         }
 
-        ForceInline static std::any return_hop(const base_t* p_this, const record_t& p_target, signature_ts&&...params) noexcept
+        ForceInline static rtl::Return return_hop(const base_t* p_this, const record_t& p_target, signature_ts&&...params) noexcept
         {
             if constexpr (!std::is_void_v<return_t>)
             {
                 auto this_p = static_cast<const this_t*>(p_this);
                 auto&& ret_v = this_p->m_method(const_cast<record_t&>(p_target), std::forward<signature_ts>(params)...);
+                constexpr bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-                if constexpr (std::is_reference_v<return_t>) {
-                    return std::any(&ret_v);
+                if constexpr (std::is_reference_v<return_t>)
+                {
+                    using T = traits::raw_t<return_t>;
+                    return{ error::None,
+                            detail::RObjectBuilder<const T*>::template build<rtl::alloc::Stack> (
+                                &ret_v, std::nullopt, isConstCastSafe
+                            )
+                        };
                 }
-                else {
-                    return std::any(std::forward<decltype(ret_v)>(ret_v));
+                else 
+                {
+                    using T = std::remove_cvref_t<decltype(ret_v)>;
+                    return{ error::None,
+                            detail::RObjectBuilder<const T>::template build<rtl::alloc::Stack> (
+                                std::forward<decltype(ret_v)>(ret_v), std::nullopt, isConstCastSafe
+                            )
+                        };
                 }
             }
-            else return std::any();
+            return {error::SignatureMismatch, RObject{ }};
         }
     };
 }
