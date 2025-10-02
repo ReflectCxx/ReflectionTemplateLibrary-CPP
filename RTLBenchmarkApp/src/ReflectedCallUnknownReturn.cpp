@@ -69,22 +69,22 @@ namespace
         return *method;
     }();
 
-    // static const rtl::RObject nodeObj = []()
-    // {
-    //     std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-    //     if (!Node) {
-    //         std::cerr << "[x] error: record 'Node' not found.\n";
-    //         std::abort();
-    //     }
+     static const rtl::RObject nodeObj = []()
+     {
+         std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+         if (!Node) {
+             std::cerr << "[x] error: record 'Node' not found.\n";
+             std::abort();
+         }
 
-    //     auto [err, robj] = Node->create<rtl::alloc::Stack>();
-    //     if (robj.isEmpty()) {
-    //         std::cout << "[x] error: " << rtl::to_string(err) << "\n";
-    //     }
-    //     return std::move(robj);
-    // }();
+         auto [err, robj] = Node->create<rtl::alloc::Stack>();
+         if (robj.isEmpty()) {
+             std::cout << "[x] error: " << rtl::to_string(err) << "\n";
+         }
+         return std::move(robj);
+     }();
 }
-
+ 
 
 namespace
 {
@@ -124,6 +124,26 @@ namespace
         return 0;
     };
 
+
+    static auto _test4 = []()
+    {
+        auto err = NodeSendMessage(nodeObj)(bm::g_longStr).err;
+        if (err != rtl::error::None) {
+            std::cout << "[01] error: " << rtl::to_string(err) << "\n";
+        }
+        return 0;
+    };
+
+
+    static auto _test5 = []()
+    {
+        auto err = NodeGetMessage(nodeObj)(bm::g_longStr).err;
+        if (err != rtl::error::None) {
+            std::cout << "[03] error: " << rtl::to_string(err) << "\n";
+        }
+        return 0;
+    };
+
     static auto _new_line = []() {
         std::cout << std::endl;
         return 0;
@@ -132,7 +152,7 @@ namespace
 
 
 
-void RtlFunction_call_ReturnUnknown::typeVoid(benchmark::State& state)
+void RtlFunction_call_ReturnUnknown::Void(benchmark::State& state)
 {
     static auto __= _new_line();
     static auto _ = _test0();
@@ -143,7 +163,7 @@ void RtlFunction_call_ReturnUnknown::typeVoid(benchmark::State& state)
 }
 
 
-void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
+void RtlFunction_call_ReturnUnknown::NonVoid(benchmark::State& state)
 {
     static auto __= _new_line();
     static auto _ = _test2();
@@ -154,7 +174,7 @@ void RtlFunction_call_ReturnUnknown::typeNonVoid(benchmark::State& state)
 }
 
 
-void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
+void RtlFunction_callMethod_ReturnUnknown::Void(benchmark::State& state)
 {
     static auto _ = _test1();
     static bm::Node node;
@@ -165,12 +185,32 @@ void RtlFunction_callMethod_ReturnUnknown::typeVoid(benchmark::State& state)
 }
 
 
-void RtlFunction_callMethod_ReturnUnknown::typeNonVoid(benchmark::State& state)
+void RtlFunction_callMethod_ReturnUnknown::NonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
     static bm::Node node;
     for (auto _ : state)
     {
         benchmark::DoNotOptimize(NodeGetMessage(node)(bm::g_longStr));
+    }
+}
+
+
+void RtlFunction_callMethod_ReturnUnknown::erasedTarget_Void(benchmark::State& state)
+{
+    static auto _ = _test4();
+    for (auto _ : state)
+    {
+        benchmark::DoNotOptimize(NodeSendMessage(nodeObj)(bm::g_longStr));
+    }
+}
+
+
+void RtlFunction_callMethod_ReturnUnknown::erasedTarget_NonVoid(benchmark::State& state)
+{
+    static auto _ = _test5();
+    for (auto _ : state)
+    {
+        benchmark::DoNotOptimize(NodeGetMessage(nodeObj)(bm::g_longStr));
     }
 }

@@ -121,7 +121,7 @@ namespace rtl_tests
 		EXPECT_TRUE(err0 == error::None);
 		ASSERT_FALSE(person.isEmpty());
 		{
-			auto [err, ret] = (*getDefaults)(person)();
+			auto [err, ret] = getDefaults->bind(person).call();
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
@@ -168,7 +168,7 @@ namespace rtl_tests
 
 			EXPECT_EQ(retStr, checkStr);
 		} {
-			auto [err, ret] = (*getProfile)(person)(occupation, age);
+			auto [err, ret] = getProfile->bind(person).call(occupation, age);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(ret.isEmpty());

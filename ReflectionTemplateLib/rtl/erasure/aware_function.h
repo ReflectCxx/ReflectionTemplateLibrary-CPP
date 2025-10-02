@@ -13,7 +13,6 @@
 
 #include <any>
 #include "erased_function.h"
-#include "rtl_constants.h"
 
 namespace rtl::erase
 {
@@ -26,13 +25,13 @@ namespace rtl::erase
 
         using this_t = aware_function<return_t, signature_ts...>;
 
-        aware_function()
-        {
-            constexpr bool isConstCastSafe = (!traits::is_const_v<return_t>);
+        constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
+        aware_function(const dispatch::functor& p_functor)
+            : base_t(p_functor, detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe))
+        {
             base_t::hopper_v = hop_v;
             base_t::hopper_r = hop_r;
-            base_t::robj_id = detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe);
         }
 
         constexpr static void hop_v(const base_t* p_this, signature_ts&&...params) noexcept
@@ -62,8 +61,8 @@ namespace rtl::erase
                 }
                 else 
                 {
-                    using rconst_t = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                    return std::any(rconst_t(std::forward<decltype(ret_v)>(ret_v)));
+                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
                 }
             }
             else return std::any();

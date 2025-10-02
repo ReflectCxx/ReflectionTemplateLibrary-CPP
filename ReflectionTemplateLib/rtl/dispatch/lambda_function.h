@@ -24,13 +24,6 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_t = rtl::function<return_t(signature_ts...)>;
 
-        erase::erased_function<signature_ts...>* m_erasure;
-
-        lambda_function(const functor& p_functor, erase::erased_function<signature_ts...>* p_erasure) noexcept
-            : lambda_base(p_functor)
-            , m_erasure(p_erasure)
-        { }
-
         template<class return_t>
         constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId = 0) const
         {
@@ -41,5 +34,9 @@ namespace rtl::dispatch
             }
             return hopper_t<return_t>();
         }
+
+        lambda_function(const functor& p_functor, const erase::erased_function<signature_ts...>& p_erasure) noexcept
+            : lambda_base(p_functor, p_erasure)
+        { }
     };
 }

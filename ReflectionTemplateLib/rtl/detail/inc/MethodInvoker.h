@@ -23,7 +23,10 @@ namespace rtl::detail
 
         const _recordType& m_target;
 
-        template<class ..._args>
+        template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == false)
+        constexpr Return operator()(_args&&...params) const noexcept;
+        
+        template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == true)
         constexpr Return operator()(_args&&...params) const noexcept;
     };
 }

@@ -126,10 +126,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
-            auto [err1, ret1] = (*setAuthor)(book)(author);
+            auto [err1, ret1] = setAuthor->bind(book).call(author);
             EXPECT_TRUE(err1 == error::None);
 
-            auto [err2, ret2] = (*setDecription)(book)(description);
+            auto [err2, ret2] = setDecription->bind(book).call(description);
             EXPECT_TRUE(err1 == error::None);
 
             auto [err3, bookCopy] = book.clone<alloc::Heap>();
@@ -168,10 +168,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
-            auto [err1, ret1] = (*setAuthor)(book)(author);
+            auto [err1, ret1] = setAuthor->bind(book).call(author);
             EXPECT_TRUE(err1 == error::None);
 
-            auto [err2, ret2] = (*setDecription)(book)(description);
+            auto [err2, ret2] = setDecription->bind(book).call(description);
             EXPECT_TRUE(err1 == error::None);
 
             auto [err3, bookCopy] = book.clone<alloc::Stack>();
@@ -210,10 +210,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             
-            auto [err1, ret1] = (*setAuthor)(book)(author);
+            auto [err1, ret1] = setAuthor->bind(book).call(author);
             EXPECT_TRUE(err1 == error::None);
             
-            auto [err2, ret2] = (*setDecription)(book)(description);
+            auto [err2, ret2] = setDecription->bind(book).call(description);
             EXPECT_TRUE(err1 == error::None);
             
             auto [err3, bookCopy] = book.clone<alloc::Heap>();
@@ -252,10 +252,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             
-            auto [err1, ret1] = (*setAuthor)(book)(author);
+            auto [err1, ret1] = setAuthor->bind(book).call(author);
             EXPECT_TRUE(err1 == error::None);
             
-            auto [err2, ret2] = (*setDecription)(book)(description);
+            auto [err2, ret2] = setDecription->bind(book).call(description);
             EXPECT_TRUE(err1 == error::None);
             
             auto [err3, bookCopy] = book.clone<alloc::Stack>();

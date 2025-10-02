@@ -187,24 +187,51 @@ namespace rtl::detail
 namespace rtl::detail 
 {
     template<class _recordType>
-    template<class ..._args>
+    template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == false)
     ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
     {
         auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
         if (functorId) [[likely]]
         {
-            auto caller = functorId->template get_lambda_method<_recordType, _args...>()->m_erasure;
+            const auto& erased = functorId->m_lambda->m_erasure;
+            const auto& caller = erased.to_erased_ret_method<_recordType, _args...>();
             if(functorId->m_lambda->is_void())
             {
-                caller->hop_v(m_target, std::forward<_args>(params)...);
+                caller.hop_v(m_target, std::forward<_args>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller->hop_r(m_target, std::forward<_args>(params)...),
-                                 caller->get_robject_id(), nullptr }
+                        RObject{ caller.hop_r(m_target, std::forward<_args>(params)...),
+                                 caller.get_return_robj_id(), nullptr }
                     };
+            }
+        }
+        else return { error::SignatureMismatch, RObject{} };
+    }
+
+
+    template<class _recordType>
+    template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == true)
+    ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
+    {
+        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        if (functorId) [[likely]]
+        {
+            const auto& erased = functorId->m_lambda->m_erasure;
+            const auto& caller = erased.to_erased_ret_function<_args...>();
+            if (functorId->m_lambda->is_void())
+            {
+                caller.hop_v(m_target, std::forward<_args>(params)...);
+                return { error::None, RObject{} };
+            }
+            else
+            {
+                return{ error::None,
+                        RObject{ caller.hop_r(m_target, std::forward<_args>(params)...),
+                                 caller.get_return_robj_id(), nullptr }
+                };
             }
         }
         else return { error::SignatureMismatch, RObject{} };

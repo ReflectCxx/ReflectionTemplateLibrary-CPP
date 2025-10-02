@@ -53,6 +53,9 @@ namespace rtl {
 
         using Function::bind;
 
+        template<class ..._args>
+        constexpr const detail::FunctionCaller<_args...> operator()(_args&&...params) const noexcept = delete;
+
         GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
 
         template<class _recordType, class ..._signature>
@@ -69,29 +72,11 @@ namespace rtl {
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
         template<class _recordType>
-        constexpr const detail::ErasedInvoker<_recordType> operator()(const _recordType& pTarget) const
+        constexpr const detail::ErasedInvoker<_recordType> operator()(_recordType&& pTarget) const
         {
             return detail::ErasedInvoker<_recordType>{ (*this), pTarget };
         }
 
-
-    /*  @method: operator()(const RObject&)
-        @param: const RObject& (target object)
-        @return: lambda
-        * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
-        * returns a lambda, which forwards the call to 'call', finally invoking the associated non-static-member-function functor.
-        * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
-    */  constexpr detail::DefaultInvoker<> operator()(const RObject& pTarget) const
-        {
-            return detail::DefaultInvoker<>{ this, &pTarget };
-        }
-
-        constexpr detail::NonConstInvoker<> operator()(constCast<RObject>&& pTarget) const
-        {
-            return detail::NonConstInvoker<>{ this, &pTarget.m_target };
-        }
-
-        //friends :)
         friend Record;
         friend detail::CxxReflection;
 

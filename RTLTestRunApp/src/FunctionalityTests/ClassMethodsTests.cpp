@@ -82,7 +82,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
-			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor->bind(book).call(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -108,7 +108,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_FALSE(setAuthor->hasSignature<const char*>());
 
-			auto [err1, ret] = (*setAuthor)(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor->bind(book).call(book::AUTHOR);
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -134,7 +134,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 			// Slower. bind<>().call() syntax is faster.
-			auto [err1, ret] = (*getPublishedOn)(book)();
+			auto [err1, ret] = getPublishedOn->bind(book).call();
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_FALSE(ret.isEmpty());
@@ -163,7 +163,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
-			auto [err1, ret] = (*getPublishedOn)(book)();
+			auto [err1, ret] = getPublishedOn->bind(book).call();
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_FALSE(ret.isEmpty());
@@ -246,7 +246,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
-			auto [err1, ret] = (*updateBookInfo)(book)();
+			auto [err1, ret] = updateBookInfo->bind(book).call();
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -272,7 +272,7 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(updateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
-			auto [err1, ret] = (*updateBookInfo)(book)();
+			auto [err1, ret] = updateBookInfo->bind(book).call();
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -304,7 +304,7 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
+			auto [err1, ret] = updateBookInfo->bind(book).call(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -338,7 +338,7 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			auto [err1, ret] = (*updateBookInfo)(book)(author, price, title);
+			auto [err1, ret] = updateBookInfo->bind(book).call(author, price, title);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -372,7 +372,7 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
+			auto [err1, ret] = updateBookInfo->bind(book).call(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -406,7 +406,7 @@ namespace rtl_tests
 			std::string author = book::AUTHOR;
 			const char* title = book::TITLE;
 
-			auto [err1, ret] = (*updateBookInfo)(book)(title, price, author);
+			auto [err1, ret] = updateBookInfo->bind(book).call(title, price, author);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -438,7 +438,7 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
+			auto [err1, ret] = addCopyrightTag->bind(book).call(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -470,7 +470,7 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto [err1, ret] = (*addCopyrightTag)(book)(std::string(book::COPYRIGHT_TAG));
+			auto [err1, ret] = addCopyrightTag->bind(book).call(std::string(book::COPYRIGHT_TAG));
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());

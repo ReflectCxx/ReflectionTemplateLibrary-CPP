@@ -177,13 +177,13 @@ namespace rtl_tests
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 string_view lastName = "invalid_arg";
-                auto [err, ret] = (*updateLastName)(person)(lastName);
+                auto [err, ret] = updateLastName->bind(person).call(lastName);
 
                 EXPECT_TRUE(err == error::SignatureMismatch);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 string lastName = person::LAST_NAME;
-                auto [err, ret] = (*updateLastName)(person)(lastName);
+                auto [err, ret] = updateLastName->bind(person).call(lastName);
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
@@ -214,13 +214,13 @@ namespace rtl_tests
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
                 string_view lastName = "invalid_arg";
-                auto [err, ret] = (*updateLastName)(person)(lastName);
+                auto [err, ret] = updateLastName->bind(person).call(lastName);
 
                 EXPECT_TRUE(err == error::SignatureMismatch);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 string lastName = person::LAST_NAME;
-                auto [err, ret] = (*updateLastName)(person)(lastName);
+                auto [err, ret] = updateLastName->bind(person).call(lastName);
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());

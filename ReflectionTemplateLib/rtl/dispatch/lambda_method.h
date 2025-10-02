@@ -26,16 +26,6 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_t = rtl::method<return_t (record_t::*)(signature_ts...)>;
 
-        template<class return_t>
-        using hopper_ct = rtl::method<return_t (record_t::*)(signature_ts...) const>;
-
-        erase::erased_method<record_t, signature_ts...>* m_erasure;
-
-        lambda_method(const functor& p_functor, erase::erased_method<record_t, signature_ts...>* p_erasure) noexcept
-            : lambda_base(p_functor)
-            , m_erasure(p_erasure)
-        { }
-
         template<class return_t> requires (std::is_const_v<record_t> == false)
         constexpr const hopper_t<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
@@ -47,6 +37,9 @@ namespace rtl::dispatch
             return hopper_t<return_t>();
         }
 
+        template<class return_t>
+        using hopper_ct = rtl::method<return_t(record_t::*)(signature_ts...) const>;
+
         template<class return_t> requires (std::is_const_v<record_t> == true)
         constexpr const hopper_ct<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
@@ -57,5 +50,9 @@ namespace rtl::dispatch
             }
             return hopper_ct<return_t>();
         }
+
+        lambda_method(const functor& p_functor, const erase::erased_method<record_t, signature_ts...>& p_erasure) noexcept
+            : lambda_base(p_functor, p_erasure)
+        { }
     };
 }

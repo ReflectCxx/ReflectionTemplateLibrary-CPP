@@ -30,12 +30,10 @@ namespace rtl::cache
 
         const dispatch::lambda_method<record_t, signature_ts...>& push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.push_back(erase::aware_method<record_t, return_t, signature_ts...>());
-            erase::erased_method<record_t, signature_ts...>* erasure = &m_erasure_cache.back();
+            m_erasure_cache.push_back(erase::aware_method<record_t, return_t, signature_ts...>(p_functor));
+            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>(p_functor, m_erasure_cache.back()));
 
-            m_cache.push_back(dispatch::lambda_method<record_t, signature_ts...>(p_functor, erasure));
             p_functor.m_lambda = &m_cache.back();
-
             m_erasure_cache.back().m_method = m_cache.back().template get_hopper<return_t>();
 
             return m_cache.back();

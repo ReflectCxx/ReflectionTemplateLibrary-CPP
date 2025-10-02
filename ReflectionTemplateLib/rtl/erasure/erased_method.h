@@ -18,7 +18,7 @@
 namespace rtl::erase
 {
     template<class record_t, class ...signature_ts>
-    struct erased_method
+    struct erased_method : erased_function<signature_ts...>
     {
         constexpr void hop_v(const record_t& p_target, signature_ts&&...params) const noexcept
         {
@@ -30,9 +30,9 @@ namespace rtl::erase
             return (*hopper_r)(this, p_target, std::forward<signature_ts>(params)...);
         }
 
-        GETTER(detail::RObjectId, _robject_id, robj_id);
-
     protected:
+
+        using base_t = erased_function<signature_ts...>;
 
         using this_t = erased_method<record_t, signature_ts...>;
 
@@ -44,6 +44,8 @@ namespace rtl::erase
 
         functor_rt hopper_r = nullptr;
 
-        detail::RObjectId robj_id;
+        erased_method(const dispatch::functor& p_functor, const detail::RObjectId& p_robj_id) noexcept
+            : base_t(p_functor, p_robj_id)
+        { }
     };
 }

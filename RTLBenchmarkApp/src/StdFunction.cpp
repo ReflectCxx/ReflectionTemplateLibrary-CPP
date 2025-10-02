@@ -36,10 +36,8 @@ namespace bm
 
     std::function<std::any(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
     {
-        //Testing.
-        return std::any(bm::getMessage(pMsg));
-        // auto retMsg = bm::getMessage(pMsg);
-        // return retMsg;
+         auto retMsg = bm::getMessage(pMsg);
+         return retMsg;
     };
 
     std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage = [](bm::Node pNode, bm::argStr_t& pMsg)
