@@ -44,7 +44,7 @@ namespace rtl::detail
         if (functorId) [[likely]] 
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.to_erased_ret_function<_args...>();
+            const auto& caller = erased.template to_erased_ret_function<_args...>();
             if(functorId->m_lambda->is_void())
             {
                 caller.hop_v(std::forward<_args>(params)...);

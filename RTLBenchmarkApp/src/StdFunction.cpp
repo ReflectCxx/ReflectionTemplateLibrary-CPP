@@ -34,7 +34,7 @@ namespace bm
         pNode.sendMessage(pMsg);
     };
 
-    std::function<std::any(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
+    std::function<retStr_t(argStr_t&)> GetMessage = [](bm::argStr_t& pMsg)
     {
          auto retMsg = bm::getMessage(pMsg);
          return retMsg;
