@@ -21,13 +21,13 @@
 namespace rtl 
 {
     template<class ..._signature>
-    inline constexpr const detail::FunctionCaller<_signature...> Function::bind() const noexcept
+    inline constexpr const detail::ErasedCaller<_signature...> Function::bind() const noexcept
     {
-        return detail::FunctionCaller<_signature...>{ this };
+        return detail::ErasedCaller<_signature...>{ this };
     }
 
 
-    inline constexpr detail::Hopper<> Function::lambda() const
+    inline constexpr detail::Hopper<> Function::to() const
     {
         return detail::Hopper<>{ m_functorIds };
     }
@@ -42,18 +42,6 @@ namespace rtl
     {
         //hasSignatureId() returns the index of the 'lambda' in functor-container, which cannot be '-1'.
         return (hasSignatureId(detail::FunctorContainer<_args...>::getContainerId()) != -1);
-    }
-
-
-/*  @method: operator()()
-    @param: variadic arguments.
-    @return: Return, possible error & return value of from the reflected call.
-    * if the arguments did not match with any overload, returns RObject with error::SignatureMismatch
-    * providing optional syntax, Function::call() does the exact same thing.
-*/  template<class ..._args>
-    inline constexpr const detail::FunctionCaller<_args...> Function::operator()(_args&& ...params) const noexcept
-    {
-        return detail::FunctionCaller<_args...>{ this };
     }
 
 

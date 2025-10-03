@@ -18,15 +18,16 @@
 
 #include "erased_function.h"
 
+
 namespace rtl::detail
 {
     template<class ..._signature>
     template<class ..._args>
-    ForceInline Return FunctionCaller<_signature...>::call(_args&&...params) const noexcept
+    ForceInline Return ErasedCaller<_signature...>::call(_args&&...params) const noexcept
     {
         using Container = std::conditional_t<sizeof...(_signature) == 0,
-                                             FunctorContainer<std::remove_reference_t<_args>...>,
-                                             FunctorContainer<_signature...>>;
+            FunctorContainer<std::remove_reference_t<_args>...>,
+            FunctorContainer<_signature...>>;
 
         const detail::FunctorId* functorId = m_function->hasFunctorId(Container::getContainerId());
         if (functorId != nullptr) [[likely]] {
@@ -34,27 +35,31 @@ namespace rtl::detail
         }
         return { error::SignatureMismatch, RObject{} };
     }
+}
 
 
-    template<class ..._signature>
-    template<class ..._args>
-    ForceInline constexpr Return FunctionCaller<_signature...>::operator()(_args&&...params) const noexcept
+
+namespace rtl::detail
+{
+    template<class ...signatureT>
+    template<class ...argsT>
+    ForceInline constexpr Return ErasedCaller<signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        auto functorId = m_function->getLambdaById(detail::TypeId<std::tuple<traits::raw_t<argsT>... >>::get());
         if (functorId) [[likely]] 
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_function<_args...>();
+            const auto& caller = erased.template to_erased_ret_function<argsT...>();
             if(functorId->m_lambda->is_void())
             {
-                caller.hop_v(std::forward<_args>(params)...);
+                caller.hop_void(std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller.hop_r(std::forward<_args>(params)...),
-                                 caller.get_return_robj_id(), nullptr } 
+                        RObject{ caller.hop_return(std::forward<argsT>(params)...),
+                                 caller.get_return_id(), nullptr } 
                     };
             }
         }
@@ -65,30 +70,29 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class ..._signature>
-    inline constexpr const HopFunction<_signature...> Hopper<>::argsT() const
+    template<class ...signatureT>
+    inline constexpr const HopFunction<signatureT...> Hopper<>::argsT() const
     {
-        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature>... >>::get();
+        const auto argsId = TypeId<std::tuple<traits::raw_t<signatureT>... >>::get();
         for (auto& functorId : m_functorIds)
         {
-            auto lambda = functorId.get_lambda_function<_signature...>(argsId);
+            auto lambda = functorId.get_lambda_function<signatureT...>(argsId);
             if (lambda != nullptr) [[likely]] {
                 return { lambda };
             }
         }
-        return HopFunction<_signature...>();
+        return HopFunction<signatureT...>();
     }
 
 
-    template<class ..._signature>
-    template<class _returnType>
-    inline constexpr const function<_returnType(_signature...)> 
-                                    HopFunction<_signature...>::returnT() const
+    template<class ...args_t>
+    template<class return_t>
+    inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
     {
-        const auto retId = TypeId<_returnType>::get();
+        const auto retId = TypeId<return_t>::get();
         if (m_lambda != nullptr) [[likely]] {
-            return m_lambda->template get_hopper<_returnType>(retId);
+            return m_lambda->template get_hopper<return_t>(retId);
         }
-        return function<_returnType(_signature...)>();
+        return function<return_t(args_t...)>();
     }
 }

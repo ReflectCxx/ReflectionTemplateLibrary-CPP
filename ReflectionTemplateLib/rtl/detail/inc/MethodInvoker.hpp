@@ -197,14 +197,14 @@ namespace rtl::detail
             const auto& caller = erased.template to_erased_ret_method<_recordType, _args...>();
             if(functorId->m_lambda->is_void())
             {
-                caller.hop_v(m_target, std::forward<_args>(params)...);
+                caller.hop_void(m_target, std::forward<_args>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller.hop_r(m_target, std::forward<_args>(params)...),
-                                 caller.get_return_robj_id(), nullptr }
+                        RObject{ caller.hop_return(m_target, std::forward<_args>(params)...),
+                                 caller.get_return_id(), nullptr }
                     };
             }
         }
@@ -223,14 +223,14 @@ namespace rtl::detail
             const auto& caller = erased.template to_erased_ret_function<_args...>();
             if (functorId->m_lambda->is_void())
             {
-                caller.hop_v(m_target, std::forward<_args>(params)...);
+                caller.hop_void(m_target, std::forward<_args>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller.hop_r(m_target, std::forward<_args>(params)...),
-                                 caller.get_return_robj_id(), nullptr }
+                        RObject{ caller.hop_return(m_target, std::forward<_args>(params)...),
+                                 caller.get_return_id(), nullptr }
                 };
             }
         }

@@ -19,22 +19,22 @@ namespace rtl::erase
     template<class ...signature_ts>
     struct erased_function : erasure_base
     {
-        constexpr void hop_v(signature_ts&&...params) const noexcept
+        constexpr void hop_void(signature_ts&&...params) const noexcept
         {
             (*hopper_v)(this, std::forward<signature_ts>(params)...);
         }
 
-        ForceInline std::any hop_r(signature_ts&&...params) const noexcept
+        ForceInline std::any hop_return(signature_ts&&...params) const noexcept
         {
             return (*hopper_r)(this, std::forward<signature_ts>(params)...);
         }
 
-        constexpr void hop_v(const RObject& p_robj, signature_ts&&...params) const noexcept
+        constexpr void hop_void(const RObject& p_robj, signature_ts&&...params) const noexcept
         {
             (*hopper_robj_v)(this, p_robj, std::forward<signature_ts>(params)...);
         }
 
-        ForceInline std::any hop_r(const RObject& p_robj, signature_ts&&...params) const noexcept
+        ForceInline std::any hop_return(const RObject& p_robj, signature_ts&&...params) const noexcept
         {
             return (*hopper_robj_r)(this, p_robj, std::forward<signature_ts>(params)...);
         }

@@ -90,7 +90,7 @@ namespace
 {
     static auto _test0 = []()
     {
-        auto err = SendMessage()(bm::g_longStr).err;
+        auto err = SendMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cout << "[00] error: " << rtl::to_string(err) << "\n";
         }
@@ -108,7 +108,7 @@ namespace
 
     static auto _test2 = []()
     {
-        auto err = GetMessage()(bm::g_longStr).err;
+        auto err = GetMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cout << "[02] error: " << rtl::to_string(err) << "\n";
         }
@@ -158,7 +158,7 @@ void RtlFunction_call_ReturnUnknown::Void(benchmark::State& state)
     static auto _ = _test0();
     for (auto _ : state) 
     {
-        benchmark::DoNotOptimize(SendMessage()(bm::g_longStr));
+        benchmark::DoNotOptimize(SendMessage(bm::g_longStr));
     }
 }
 
@@ -169,7 +169,7 @@ void RtlFunction_call_ReturnUnknown::NonVoid(benchmark::State& state)
     static auto _ = _test2();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(GetMessage()(bm::g_longStr));
+        benchmark::DoNotOptimize(GetMessage(bm::g_longStr));
     }
 }
 

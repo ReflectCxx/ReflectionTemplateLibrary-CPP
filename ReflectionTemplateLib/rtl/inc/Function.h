@@ -88,23 +88,26 @@ namespace rtl {
         Function& operator=(Function&&) = default;
         Function& operator=(const Function&) = default;
 
-        constexpr detail::Hopper<> lambda() const;
+        constexpr detail::Hopper<> to() const;
 
         bool hasSignature() const;
 
         template<class ..._args>
         bool hasSignature() const;
-
-        template<class ..._args>
-        constexpr const detail::FunctionCaller<_args...> operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
-        constexpr const detail::FunctionCaller<_signature...> bind() const noexcept;
+        constexpr const detail::ErasedCaller<_signature...> bind() const noexcept;
+
+        template<class ..._args>
+        constexpr rtl::Return operator()(_args&&...params) const noexcept
+        {
+            return detail::ErasedCaller<_args...>{ this }(std::forward<_args>(params)...);
+        }
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;
 
         template<class ..._signature>
-        friend class detail::FunctionCaller;
+        friend class detail::ErasedCaller;
     };
 }

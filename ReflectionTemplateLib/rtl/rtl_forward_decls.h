@@ -54,7 +54,7 @@ namespace rtl
         class FunctorContainer;
 
         template<class ..._signature>
-        struct FunctionCaller;
+        struct ErasedCaller;
 
         template<class _recordType>
         struct ErasedInvoker;

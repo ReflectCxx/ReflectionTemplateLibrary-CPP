@@ -6,6 +6,7 @@ project(RTLTestRunApp)
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ClassMethodsTests.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeCFunctionTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ConstMethodOverloadTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/CopyConstructorTests.cpp"

@@ -28,7 +28,7 @@ namespace
             std::cerr << "[00] error: erase_function 'getMessage' not found.";
             std::abort();
         }
-        return function->lambda().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return function->to().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
     static const rtl::function<void(bm::argStr_t)> sendMessage = []()
@@ -39,7 +39,7 @@ namespace
             std::cerr << "[01] error: erase_function 'sendMessage' not found.";
             std::abort();
         }
-        return function->lambda().argsT<bm::argStr_t>().returnT<void>();
+        return function->to().argsT<bm::argStr_t>().returnT<void>();
     }();
 
     static const rtl::method<bm::retStr_t(bm::Node::*)(bm::argStr_t)> getMessageNode = []()
@@ -55,7 +55,7 @@ namespace
             std::cerr << "[02] error: method 'Node::getMessage' not found.";
             std::abort();
         }
-        return method->lambda<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return method->to<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
     static const rtl::method<void(bm::Node::*)(bm::argStr_t)> sendMessageNode = []()
@@ -71,7 +71,7 @@ namespace
             std::cerr << "[3] error: method 'Node::sendMessage' not found.";
             std::abort();
         }
-        return method->lambda<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
+        return method->to<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
     }();
 }
 
@@ -84,9 +84,9 @@ namespace
     };
 
     template<class T>
-    static bool test(const T& lambda, int callerId) 
+    static bool test(const T& to, int callerId) 
     {
-        if (!lambda) {
+        if (!to) {
             std::cerr << "[" << callerId << "] error: functor not valid, return-type or signature mismatch.";
             std::abort();
         }

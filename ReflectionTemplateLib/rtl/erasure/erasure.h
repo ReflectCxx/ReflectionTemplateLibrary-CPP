@@ -38,13 +38,13 @@ namespace rtl::erase
 
         erasure_base(const dispatch::functor& p_functor, const detail::RObjectId& p_robj_id) noexcept
             : m_functor(p_functor)
-            , m_ret_obj_id(p_robj_id)
+            , m_robj_id(p_robj_id)
         { }
 
         const dispatch::functor& m_functor;
 
-        const detail::RObjectId m_ret_obj_id;
+        const detail::RObjectId m_robj_id;
 
-        GETTER(detail::RObjectId, _return_robj_id, m_ret_obj_id);
+        GETTER(detail::RObjectId, _return_id, m_robj_id);
 	};
 }

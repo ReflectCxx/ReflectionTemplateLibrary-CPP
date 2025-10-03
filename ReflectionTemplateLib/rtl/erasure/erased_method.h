@@ -20,12 +20,12 @@ namespace rtl::erase
     template<class record_t, class ...signature_ts>
     struct erased_method : erased_function<signature_ts...>
     {
-        constexpr void hop_v(const record_t& p_target, signature_ts&&...params) const noexcept
+        constexpr void hop_void(const record_t& p_target, signature_ts&&...params) const noexcept
         {
             (*hopper_v)(this, p_target, std::forward<signature_ts>(params)...);
         }
 
-        ForceInline std::any hop_r(const record_t& p_target, signature_ts&&...params) const noexcept
+        ForceInline std::any hop_return(const record_t& p_target, signature_ts&&...params) const noexcept
         {
             return (*hopper_r)(this, p_target, std::forward<signature_ts>(params)...);
         }

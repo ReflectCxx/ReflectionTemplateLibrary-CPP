@@ -16,7 +16,7 @@
 namespace rtl::detail
 {		
     template<class ..._signature>
-    struct FunctionCaller
+    struct ErasedCaller
     {
         const Function* m_function;
 

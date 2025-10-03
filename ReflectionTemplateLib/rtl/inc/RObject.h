@@ -107,7 +107,7 @@ namespace rtl
         friend struct detail::RObjectBuilder;
 
         template<class ..._signature>
-        friend struct detail::FunctionCaller;
+        friend struct detail::ErasedCaller;
 
         template<class _recordType>
         friend struct detail::ErasedInvoker;
