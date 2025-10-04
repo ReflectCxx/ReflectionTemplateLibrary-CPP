@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "RObject.h"
 #include "FunctionCaller.h"
 
 namespace rtl {
