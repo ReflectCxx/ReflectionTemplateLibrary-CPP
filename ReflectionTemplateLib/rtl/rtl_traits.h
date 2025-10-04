@@ -143,3 +143,13 @@ namespace rtl
         }
     }
 }
+
+
+namespace rtl::traits
+{
+    template<class ...signatureT>
+    using sign_t = std::tuple<signatureT...>;
+
+    template<class ...signatureT>
+    using fwd_sign_t = std::tuple<std::remove_reference_t<signatureT>...>;
+}
