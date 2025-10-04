@@ -29,10 +29,10 @@ namespace rtl
     }
 
 
-    template<class _recordType, class ..._signature>
-    inline constexpr detail::Hopper<_recordType> Method::to() const
+    template<class recT, class ...signatureT>
+    inline constexpr detail::Hopper<recT> Method::recordT() const
     {
-        return detail::Hopper<_recordType>{ getFunctorIds() };
+        return detail::Hopper<recT>{ getFunctorIds() };
     }
 
 

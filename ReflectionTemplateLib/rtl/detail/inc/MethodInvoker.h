@@ -89,21 +89,24 @@ namespace rtl::detail {
 
 namespace rtl::detail
 {
-    template<class _recordType, class ..._signature>
+    template<class recordT, class ...signatureT>
     struct HopMethod
     {
-        const dispatch::lambda_method<_recordType, _signature...>* m_lambda = nullptr;
+        const dispatch::lambda_method<recordT, signatureT...>* m_lambda = nullptr;
 
-        template<class _returnType>
-        constexpr const method<_returnType(_recordType::*)(_signature...)> returnT() const;
+        template<class retT> requires (std::is_const_v<recordT> == false)
+        constexpr const method<retT(recordT::*)(signatureT...)> returnT() const;
+
+        template<class retT> requires (std::is_const_v<recordT> == true)
+        constexpr const method<retT(recordT::*)(signatureT...) const> returnT() const;
     };
 
-    template<class _recordType>
+    template<class recordT>
     struct Hopper
     {
         const std::vector<FunctorId>& m_functorIds;
 
-        template<class ..._signature>
-        constexpr HopMethod<_recordType, _signature...> argsT() const;
+        template<class ...signatureT>
+        constexpr HopMethod<recordT, signatureT...> argsT() const;
     };
 }

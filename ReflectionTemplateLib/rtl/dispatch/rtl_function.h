@@ -32,7 +32,6 @@ namespace rtl
         template<class ...args_t>
         [[nodiscard]] constexpr decltype(auto) operator()(args_t&&...params) const noexcept
         {
-            //static_assert(is_args_t_ok<args_t...>, "Argument types don't match the expected signature.");
             return (*m_functor)(std::forward<args_t>(params)...);
         }
 
@@ -49,8 +48,5 @@ namespace rtl
     private:
 
         fptr_t m_functor = nullptr;
-
-        template<class ...args_t>
-        static constexpr bool is_args_t_ok = std::is_same_v<std::tuple<traits::raw_t<args_t>...>, std::tuple<signature_ts...>>;
     };
 }

@@ -88,7 +88,8 @@ namespace rtl {
         Function& operator=(Function&&) = default;
         Function& operator=(const Function&) = default;
 
-        constexpr detail::Hopper<> to() const;
+        template<class ...signatureT>
+        constexpr const detail::HopFunction<signatureT...> argsT() const;
 
         bool hasSignature() const;
 

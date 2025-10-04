@@ -152,58 +152,72 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class _recordType>
-    template<class ..._signature>
-    inline constexpr HopMethod<_recordType, _signature...> Hopper<_recordType>::argsT() const
+    template<class recordT>
+    template<class ...signatureT>
+    inline constexpr HopMethod<recordT, signatureT...> Hopper<recordT>::argsT() const
     {
-        const auto recId = TypeId<_recordType>::get();
-        const auto argsId = TypeId<std::tuple<traits::raw_t<_signature>...>>::get();
+        const auto recId = TypeId<recordT>::get();
+        const auto argsId = TypeId<std::tuple<traits::raw_t<signatureT>...>>::get();
         for (auto& functorId : m_functorIds)
         {
-            auto lambda = functorId.get_lambda_method<_recordType, _signature...>(recId, argsId);
+            auto lambda = functorId.get_lambda_method<recordT, signatureT...>(recId, argsId);
             if (lambda != nullptr) [[likely]] {
                 return { lambda };
             }
         }
-        return HopMethod<_recordType, _signature...>();
+        return HopMethod<recordT, signatureT...>();
     }
 
 
-    template<class _recordType, class ..._signature>
-    template<class _returnType>
-    inline constexpr const method<_returnType(_recordType::*)(_signature...)> 
-                                       HopMethod<_recordType, _signature...>::returnT() const
+    template<class recordT, class ...signatureT>
+    template<class _returnType> requires (std::is_const_v<recordT> == false)
+    inline constexpr const method<_returnType(recordT::*)(signatureT...)>
+                                       HopMethod<recordT, signatureT...>::returnT() const
     {
         if (m_lambda != nullptr) [[likely]]
         {
             const auto retId = TypeId<_returnType>::get();
             return m_lambda->template get_hopper<_returnType>(retId);
         }
-        return method<_returnType(_recordType::*)(_signature...)>();
+        return method<_returnType(recordT::*)(signatureT...)>();
+    }
+
+
+    template<class recordT, class ...signatureT>
+    template<class _returnType> requires (std::is_const_v<recordT> == true)
+    inline constexpr const method<_returnType(recordT::*)(signatureT...) const> 
+                                       HopMethod<recordT, signatureT...>::returnT() const
+    {
+        if (m_lambda != nullptr) [[likely]]
+        {
+            const auto retId = TypeId<_returnType>::get();
+            return m_lambda->template get_hopper<_returnType>(retId);
+        }
+        return method<_returnType(recordT::*)(signatureT...) const>();
     }
 }
 
 
 namespace rtl::detail 
 {
-    template<class _recordType>
-    template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == false)
-    ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
+    template<class recordT>
+    template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == false)
+    ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<argsT>... >>::get());
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_method<_recordType, _args...>();
+            const auto& caller = erased.template to_erased_ret_method<recordT, argsT...>();
             if(functorId->m_lambda->is_void())
             {
-                caller.hop_void(m_target, std::forward<_args>(params)...);
+                caller.hop_void(m_target, std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller.hop_return(m_target, std::forward<_args>(params)...),
+                        RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
                                  caller.get_return_id(), nullptr }
                     };
             }
@@ -212,24 +226,24 @@ namespace rtl::detail
     }
 
 
-    template<class _recordType>
-    template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == true)
-    ForceInline constexpr Return ErasedInvoker<_recordType>::operator()(_args&&...params) const noexcept
+    template<class recordT>
+    template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == true)
+    ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<_args>... >>::get());
+        auto functorId = m_method.getLambdaById(detail::TypeId<std::tuple<traits::raw_t<argsT>... >>::get());
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_function<_args...>();
+            const auto& caller = erased.template to_erased_ret_function<argsT...>();
             if (functorId->m_lambda->is_void())
             {
-                caller.hop_void(m_target, std::forward<_args>(params)...);
+                caller.hop_void(m_target, std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
                 return{ error::None,
-                        RObject{ caller.hop_return(m_target, std::forward<_args>(params)...),
+                        RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
                                  caller.get_return_id(), nullptr }
                 };
             }

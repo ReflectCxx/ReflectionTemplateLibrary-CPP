@@ -28,7 +28,7 @@ namespace
             std::cerr << "[00] error: erase_function 'getMessage' not found.";
             std::abort();
         }
-        return function->to().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return function->argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
     static const rtl::function<void(bm::argStr_t)> sendMessage = []()
@@ -39,7 +39,7 @@ namespace
             std::cerr << "[01] error: erase_function 'sendMessage' not found.";
             std::abort();
         }
-        return function->to().argsT<bm::argStr_t>().returnT<void>();
+        return function->argsT<bm::argStr_t>().returnT<void>();
     }();
 
     static const rtl::method<bm::retStr_t(bm::Node::*)(bm::argStr_t)> getMessageNode = []()
@@ -55,7 +55,7 @@ namespace
             std::cerr << "[02] error: method 'Node::getMessage' not found.";
             std::abort();
         }
-        return method->to<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        return method->recordT<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
     static const rtl::method<void(bm::Node::*)(bm::argStr_t)> sendMessageNode = []()
@@ -71,7 +71,7 @@ namespace
             std::cerr << "[3] error: method 'Node::sendMessage' not found.";
             std::abort();
         }
-        return method->to<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
+        return method->recordT<bm::Node>().argsT<bm::argStr_t>().returnT<void>();
     }();
 }
 

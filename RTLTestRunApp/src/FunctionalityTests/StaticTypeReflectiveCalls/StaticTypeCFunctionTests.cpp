@@ -11,7 +11,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StaticTypeQuery, get_namespace_function_types)
+    TEST(StaticTypeFunctionQuery, function_validation_with_given_signature)
     {
         std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
@@ -19,10 +19,10 @@ namespace rtl_tests
             EXPECT_TRUE(setReal->getNamespace() == str_complex);
             EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
             {
-                rtl::function<void(double)> functor = setReal->to().argsT<double>().returnT<void>();
+                rtl::function<void(double)> functor = setReal->argsT<double>().returnT<void>();
                 ASSERT_TRUE(functor);
             } {
-                rtl::function<void(float)> functor = setReal->to().argsT<float>().returnT<void>();
+                rtl::function<void(float)> functor = setReal->argsT<float>().returnT<void>();
                 ASSERT_FALSE(functor);
             }
         }
@@ -33,34 +33,34 @@ namespace rtl_tests
             EXPECT_TRUE(setImaginary->getNamespace() == str_complex);
             EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
             {
-                rtl::function<void(double)> functor = setImaginary->to().argsT<double>().returnT<void>();
+                rtl::function<void(double)> functor = setImaginary->argsT<double>().returnT<void>();
                 ASSERT_TRUE(functor);
             } {
-                rtl::function<char(double)> functor = setImaginary->to().argsT<double>().returnT<char>();
+                rtl::function<char(double)> functor = setImaginary->argsT<double>().returnT<char>();
                 ASSERT_FALSE(functor);
             }
         }
     }
 
 
-    TEST(StaticTypeQuery, namespace_function_execute_return)
+    TEST(StaticTypeFunctionQuery, function_executation_with_given_signature)
     {
         std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
         ASSERT_TRUE(getMagnitude);
 
-        rtl::function<double()> get_magnitude = getMagnitude->to().argsT().returnT<double>();
+        rtl::function<double()> get_magnitude = getMagnitude->argsT<>().returnT<double>();
         ASSERT_TRUE(get_magnitude);
 
         std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
 
-        rtl::function<void(double)> set_real = setReal->to().argsT<double>().returnT<void>();
+        rtl::function<void(double)> set_real = setReal->argsT<double>().returnT<void>();
         ASSERT_TRUE(set_real);
 
         std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
         ASSERT_TRUE(setImaginary);
 
-        rtl::function<void(double)> set_imaginary = setImaginary->to().argsT<double>().returnT<void>();
+        rtl::function<void(double)> set_imaginary = setImaginary->argsT<double>().returnT<void>();
         ASSERT_TRUE(set_imaginary);
 
         set_real(g_real);
@@ -74,18 +74,18 @@ namespace rtl_tests
     }
 
 
-    TEST(StaticTypeQuery, global_function_execute_return)
+    TEST(StaticTypeFunctionQuery, global_function_executation_with_given_signature)
     {
         std::optional<rtl::Function> getComplexNumAsString = cxx::mirror().getFunction(str_getComplexNumAsString);
         ASSERT_TRUE(getComplexNumAsString);
         {
-            rtl::function<const std::string()> get_complex_num_as_string = getComplexNumAsString->to().argsT().returnT<const std::string>();
+            rtl::function<const std::string()> get_complex_num_as_string = getComplexNumAsString->argsT<>().returnT<const std::string>();
             ASSERT_FALSE(get_complex_num_as_string);
         } {
-            rtl::function<std::string&()> get_complex_num_as_string = getComplexNumAsString->to().argsT().returnT<std::string&>();
+            rtl::function<std::string&()> get_complex_num_as_string = getComplexNumAsString->argsT<>().returnT<std::string&>();
             ASSERT_FALSE(get_complex_num_as_string);
         } {
-            rtl::function<std::string()> get_complex_num_as_string = getComplexNumAsString->to().argsT().returnT<std::string>();
+            rtl::function<std::string()> get_complex_num_as_string = getComplexNumAsString->argsT<>().returnT<std::string>();
             ASSERT_TRUE(get_complex_num_as_string);
 
             std::string ret_str = get_complex_num_as_string();
@@ -97,93 +97,74 @@ namespace rtl_tests
     }
 
 
-    //TEST(StaticTypeQuery, overloaded_function_execute_return)
-    //{
-    //    std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
-    //    ASSERT_TRUE(reverseString);
-    //    {
-    //        //STRA's type is 'consexpr const char*', function accepts 'string',
-    //        //so type-casting in place as 'string'
-    //        auto [err, ret] = reverseString->bind().call(string(STRA));
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<string>());
+    TEST(StaticTypeFunctionQuery, function_overload_resolution_with_given_signature)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string)> reverse_string = reverseString->argsT<std::string>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
 
-    //        string retVal = ret.view<std::string>()->get();
-    //        EXPECT_TRUE(retVal == STRA_REVERSE);
-    //    } {
-    //        //STRB's type is 'consexpr const char*', function accepts 'string',
-    //        //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-    //        auto [err, ret] = reverseString->bind<string>().call(STRB);
+            std::string ret_str = reverse_string(STRA);
+            EXPECT_EQ(ret_str, STRA_REVERSE);
+        } {
+            rtl::function<std::string(std::string)> reverse_string = reverseString->argsT<std::string>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
 
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<string>());
+            std::string ret_str = reverse_string(STRB);
+            EXPECT_EQ(ret_str, STRB_REVERSE);
+        } {
+            rtl::function<std::string()> reverse_string = reverseString->argsT<>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
 
-    //       string retVal = ret.view<std::string>()->get();
-    //       EXPECT_TRUE(retVal == STRB_REVERSE);
-    //    } {
-    //        auto [err, ret] = reverseString->bind().call();
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<string>());
-    //        
-    //        string retVal = ret.view<std::string>()->get();
-    //        EXPECT_TRUE(retVal == REV_STR_VOID_RET);
-    //    }
-    //}
+            std::string ret_str = reverse_string();
+            EXPECT_EQ(ret_str, REV_STR_VOID_RET);
+        }
+    }
 
 
-    //TEST(Reflecting_STL_class, std_string__call_reflected_method)
-    //{
-    //    optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
-    //    ASSERT_TRUE(stdStringClass);
+    TEST(StaticTypeMethodQuery, std_string_call_reflected_method_empty)
+    {
+        std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std", "string");
+        ASSERT_TRUE(stdStringClass);
 
-    //    optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-    //    ASSERT_TRUE(isStringEmpty);
+        std::optional<rtl::Method> isStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(isStringEmpty);
 
-    //    RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
-    //    {
-    //        auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<bool>());
-    //        EXPECT_TRUE(ret.view<bool>()->get());
-    //    }
-    //    RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
-    //    {
-    //        auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<bool>());
-    //        EXPECT_FALSE(ret.view<bool>()->get());
-    //    }
-    //}
+        rtl::method<bool(std::string::*)() const> is_empty = isStringEmpty->recordT<const std::string>().argsT<>().returnT<bool>();
+        ASSERT_TRUE(is_empty);
+
+        EXPECT_TRUE(is_empty(std::string("")));
+
+        EXPECT_FALSE(is_empty(std::string("not_empty")));
+
+        EXPECT_TRUE(is_empty(""));
+
+        EXPECT_FALSE(is_empty("view_not_empty"));
+    }
 
 
-    //TEST(Reflecting_STL_class, std_string_view__call_reflected_method)
-    //{
-    //    optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
-    //    ASSERT_TRUE(stdStringClass);
+    TEST(StaticTypeMethodQuery, std_string_view_call_reflected_method_empty)
+    {
+        std::optional<rtl::Record> stdStringViewClass = cxx::mirror().getRecord("std", "string_view");
+        ASSERT_TRUE(stdStringViewClass);
 
-    //    optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-    //    ASSERT_TRUE(isStringEmpty);
+        std::optional<rtl::Method> isStringEmpty = stdStringViewClass->getMethod("empty");
+        ASSERT_TRUE(isStringEmpty);
 
-    //    RObject reflected_str0 = rtl::reflect("");	//empty string.
-    //    {
-    //        auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<bool>());
-    //        EXPECT_TRUE(ret.view<bool>()->get());
-    //    }
-    //    RObject reflected_str1 = rtl::reflect("not_empty");
-    //    {
-    //        auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
-    //        EXPECT_TRUE(err == rtl::error::None);
-    //        ASSERT_FALSE(ret.isEmpty());
-    //        EXPECT_TRUE(ret.canViewAs<bool>());
-    //        EXPECT_FALSE(ret.view<bool>()->get());
-    //    }
-    //}
+        rtl::method<bool(std::string_view::*)() const> is_empty = isStringEmpty->recordT<const std::string_view>().argsT<>().returnT<bool>();
+        ASSERT_TRUE(is_empty);
+
+        EXPECT_TRUE(is_empty(std::string("")));
+
+        EXPECT_FALSE(is_empty(std::string("not_empty")));
+
+        EXPECT_TRUE(is_empty(std::string_view("")));
+
+        EXPECT_FALSE(is_empty(std::string_view("view_not_empty")));
+
+        EXPECT_TRUE(is_empty(""));
+
+        EXPECT_FALSE(is_empty("view_not_empty"));
+    }
 }

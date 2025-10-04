@@ -26,11 +26,12 @@ namespace rtl
         return detail::ErasedCaller<_signature...>{ this };
     }
 
-
-    inline constexpr detail::Hopper<> Function::to() const
+    template<class ...signatureT>
+    inline constexpr const detail::HopFunction<signatureT...> Function::argsT() const
     {
-        return detail::Hopper<>{ m_functorIds };
+        return detail::Hopper<>{ m_functorIds }.argsT<signatureT...>();
     }
+
 
     /*  @method: hasSignature<...>()
     @param: set of arguments, explicitly specified as template parameter.
