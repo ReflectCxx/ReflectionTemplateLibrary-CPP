@@ -27,12 +27,18 @@ namespace rtl::dispatch
         template<class ...args_t>
         using function_t = lambda_function<args_t...>;
         
-        template<class ...signature_ts>
-        constexpr const function_t<signature_ts...>* to_function(std::size_t p_argsId) const
+        template<class ...signature_t>
+        constexpr const function_t<signature_t...>& to_function() const
+        {
+            return static_cast<const function_t<signature_t...>&>(*this);
+        }
+
+        template<class ...signature_t>
+        constexpr const function_t<signature_t...>* to_function(std::size_t p_argsId) const
         {
             if (p_argsId == 0 || p_argsId == m_functor.m_signatureId) [[likely]]
             {
-                return static_cast<const function_t<signature_ts...>*>(this);
+                return static_cast<const function_t<signature_t...>*>(this);
             }
             else return nullptr;
         }
@@ -40,13 +46,19 @@ namespace rtl::dispatch
         template<class record_t, class ...args_t>
         using method_t = lambda_method<record_t, args_t...>;
 
-        template<class record_t, class ...signature_ts>
-        constexpr const method_t<record_t, signature_ts...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
+        template<class record_t, class ...signature_t>
+        constexpr const method_t<record_t, signature_t...>& to_method() const
+        {
+            return static_cast<const method_t<record_t, signature_t...>&>(*this);
+        }
+
+        template<class record_t, class ...signature_t>
+        constexpr const method_t<record_t, signature_t...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
             if (p_recordId == 0 || p_argsId ==0 ||
                (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_signatureId)) [[likely]]
             {
-                return static_cast<const method_t<record_t, signature_ts...>*>(this);
+                return static_cast<const method_t<record_t, signature_t...>*>(this);
             }
             else return nullptr;
         }

@@ -33,16 +33,16 @@ namespace rtl
 
     namespace erase
     {
-        template<class ...signature_ts>
-        struct erased_function;
+        template<class ...signature_t>
+        struct erased_hopper;
 
-        template<class record_t, class ...signature_ts>
-        struct erased_method;
+        template<class record_t, class ...signature_t>
+        struct erased_method_hop;
 
-        template<class return_t, class ...signature_ts>
+        template<class return_t, class ...signature_t>
         struct aware_function;
 
-        template<class record_t, class return_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_t>
         struct aware_method;
     }
 
@@ -68,10 +68,10 @@ namespace rtl
 
     namespace cache
     {
-        template<class return_t, class ...signature_ts>
+        template<class return_t, class ...signature_t>
         struct lambda_function;
 
-        template<class record_t, class return_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_t>
         struct lambda_method;
     }
 
@@ -81,19 +81,19 @@ namespace rtl
 
         struct lambda_base;
 
-        template<class ...signature_ts>
+        template<class ...signature_t>
         struct lambda_function;
 
-        template<class record_t, class ...signature_ts>
+        template<class record_t, class ...signature_t>
         struct lambda_method;
 
-        template<class return_t, class ...signature_ts>
+        template<class return_t, class ...signature_t>
         struct function_ptr;
 
-        template<class record_t, class return_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_t>
         struct method_ptr;
 
-        template<class record_t, class return_t, class ...signature_ts>
+        template<class record_t, class return_t, class ...signature_t>
         struct const_method_ptr;
     }
 }

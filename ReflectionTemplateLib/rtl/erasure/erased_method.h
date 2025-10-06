@@ -12,40 +12,52 @@
 #pragma once
 
 #include <any>
-#include "RObjectId.h"
+#include <functional>
+
+#include "erased_function.h"
 #include "rtl_forward_decls.h"
 
 namespace rtl::erase
 {
-    template<class record_t, class ...signature_ts>
-    struct erased_method : erased_function<signature_ts...>
+    template<class record_t, class ...normal_sign_t>
+    class erased_method_hop : public erased_hopper<normal_sign_t...>
     {
-        constexpr void hop_void(const record_t& p_target, signature_ts&&...params) const noexcept
-        {
-            (*hopper_v)(this, p_target, std::forward<signature_ts>(params)...);
-        }
+        using base_t = erased_hopper<normal_sign_t...>;
 
-        ForceInline std::any hop_return(const record_t& p_target, signature_ts&&...params) const noexcept
-        {
-            return (*hopper_r)(this, p_target, std::forward<signature_ts>(params)...);
-        }
+        using this_t = erased_method_hop<record_t, normal_sign_t...>;
+
+        using lambda_vt = std::function<void(const this_t&, const record_t&, normal_sign_t...)>;
+
+        using lambda_rt = std::function<std::any(const this_t&, const record_t&, normal_sign_t...)>;
+
+        lambda_vt m_void_hop;
+
+        lambda_rt m_any_ret_hop;
 
     protected:
 
-        using base_t = erased_function<signature_ts...>;
+        erased_method_hop( const dispatch::functor& p_functor,
+                           const detail::RObjectId& p_robj_id, 
+                           const lambda_vt& p_void_hop,
+                           const lambda_rt& p_any_ret_hop,
+                           const base_t::lambda_robj_vt& p_void_robj_hop,
+                           const base_t::lambda_robj_rt& p_any_ret_robj_hop ) noexcept
 
-        using this_t = erased_method<record_t, signature_ts...>;
-
-        using functor_vt = void(*)(const this_t*, const record_t& , signature_ts&&...);
-
-        using functor_rt = std::any(*)(const this_t*, const record_t& , signature_ts&&...);
-
-        functor_vt hopper_v = nullptr;
-
-        functor_rt hopper_r = nullptr;
-
-        erased_method(const dispatch::functor& p_functor, const detail::RObjectId& p_robj_id) noexcept
-            : base_t(p_functor, p_robj_id)
+            : base_t(p_functor, p_robj_id, p_void_robj_hop, p_any_ret_robj_hop)
+            , m_void_hop(p_void_hop)
+            , m_any_ret_hop(p_any_ret_hop)
         { }
+
+    public:
+
+        constexpr void hop_void(const record_t& p_target, normal_sign_t&&...params) const noexcept
+        {
+            m_void_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
+        }
+
+        ForceInline std::any hop_return(const record_t& p_target, normal_sign_t&&...params) const noexcept
+        {
+            return m_any_ret_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
+        }
     };
 }

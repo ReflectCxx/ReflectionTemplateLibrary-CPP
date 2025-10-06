@@ -20,38 +20,38 @@
 
 namespace rtl::dispatch
 {
-    template<class record_t, class ...signature_ts>
+    template<class record_t, class ...signature_t>
     struct lambda_method : public lambda_base
     {
         template<class return_t>
-        using hopper_t = rtl::method<return_t (record_t::*)(signature_ts...)>;
+        using hopper_t = rtl::method<return_t (record_t::*)(signature_t...)>;
 
         template<class return_t> requires (std::is_const_v<record_t> == false)
         constexpr const hopper_t<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]
             {
-                auto fptr = static_cast<const method_ptr<record_t, return_t, signature_ts...>&>(m_functor).f_ptr();
+                auto fptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(m_functor).f_ptr();
                 return hopper_t<return_t>(fptr);
             }
             return hopper_t<return_t>();
         }
 
         template<class return_t>
-        using hopper_ct = rtl::method<return_t(record_t::*)(signature_ts...) const>;
+        using hopper_ct = rtl::method<return_t(record_t::*)(signature_t...) const>;
 
         template<class return_t> requires (std::is_const_v<record_t> == true)
         constexpr const hopper_ct<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]
             {
-                auto fptr = static_cast<const method_ptr<record_t, return_t, signature_ts...>&>(m_functor).f_ptr();
+                auto fptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(m_functor).f_ptr();
                 return hopper_ct<return_t>(fptr);
             }
             return hopper_ct<return_t>();
         }
 
-        lambda_method(const functor& p_functor, const erase::erased_method<record_t, signature_ts...>& p_erasure) noexcept
+        lambda_method(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
             : lambda_base(p_functor, p_erasure)
         { }
     };

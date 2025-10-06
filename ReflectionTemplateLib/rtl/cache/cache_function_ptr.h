@@ -17,10 +17,10 @@
 
 namespace rtl::cache
 {
-    template<class return_t, class ...signature_ts>
+    template<class return_t, class ...signature_t>
     struct function_ptr
     {
-        using function_t = dispatch::function_ptr<return_t, signature_ts...>;
+        using function_t = dispatch::function_ptr<return_t, signature_t...>;
 
         static const function_ptr& instance()
         {
@@ -28,13 +28,13 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::functor& push(return_t(*fptr)(signature_ts...), std::size_t lambda_index) const
+        const dispatch::functor& push(return_t(*fptr)(signature_t...), std::size_t lambda_index) const
         {
             m_cache.emplace_back(std::make_pair(fptr, lambda_index));
             return m_cache.back().first;
         }
 
-        std::pair<const dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_ts...)) const
+        std::pair<const dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_t...)) const
         {
             for (auto& itr : m_cache)
             {

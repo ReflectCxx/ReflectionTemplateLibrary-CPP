@@ -16,10 +16,10 @@
 
 namespace rtl
 {
-    template<class return_t, class ...signature_ts>
-    struct function<return_t(signature_ts...)>
+    template<class return_t, class ...signature_t>
+    struct function<return_t(signature_t...)>
     {
-        using fptr_t = return_t(*)(signature_ts...);
+        using fptr_t = return_t(*)(signature_t...);
 
         constexpr auto f_ptr() const {
             return m_functor;

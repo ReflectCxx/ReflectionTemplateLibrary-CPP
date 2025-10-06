@@ -17,10 +17,10 @@
 
 namespace rtl::dispatch
 {
-	template<class record_t, class return_t, class ...signature_ts>
+	template<class record_t, class return_t, class ...signature_t>
 	struct method_ptr : public functor
 	{
-		using functor_t = return_t(record_t::*)(signature_ts...);
+		using functor_t = return_t(record_t::*)(signature_t...);
 
 		[[nodiscard]] constexpr auto f_ptr() const
 		{
@@ -37,11 +37,11 @@ namespace rtl::dispatch
 			m_qualifier = detail::methodQ::NonConst;
 			m_recordId = detail::TypeId<record_t>::get();
 			m_returnId = detail::TypeId<return_t>::get();
-			m_signatureId = detail::TypeId<traits::sign_t<signature_ts...>>::get();
+			m_signatureId = detail::TypeId<traits::strict_sign_t<signature_t...>>::get();
 
 			m_returnStr = detail::TypeId<return_t>::toString();
 			m_recordStr = detail::TypeId<record_t>::toString();
-			m_signatureStr = detail::TypeId<signature_ts...>::toString();
+			m_signatureStr = detail::TypeId<signature_t...>::toString();
 		}
 
 	private:

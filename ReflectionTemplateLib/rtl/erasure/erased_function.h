@@ -11,56 +11,79 @@
 
 #pragma once
 
-#include "RObjectId.h"
+#include <functional>
+
 #include "erasure.h"
 
 namespace rtl::erase
 {
-    template<class ...signature_ts>
-    struct erased_function : erasure_base
+    template<class ...norm_sign_t>
+    struct erased_hopper : public erasure_base
     {
-        constexpr void hop_void(signature_ts&&...params) const noexcept
-        {
-            (*hopper_v)(this, std::forward<signature_ts>(params)...);
-        }
-
-        ForceInline std::any hop_return(signature_ts&&...params) const noexcept
-        {
-            return (*hopper_r)(this, std::forward<signature_ts>(params)...);
-        }
-
-        constexpr void hop_void(const RObject& p_robj, signature_ts&&...params) const noexcept
-        {
-            (*hopper_robj_v)(this, p_robj, std::forward<signature_ts>(params)...);
-        }
-
-        ForceInline std::any hop_return(const RObject& p_robj, signature_ts&&...params) const noexcept
-        {
-            return (*hopper_robj_r)(this, p_robj, std::forward<signature_ts>(params)...);
-        }
-
     protected:
 
-        using this_t = erased_function<signature_ts...>;
+        using this_t = erased_hopper<norm_sign_t...>;
 
-        using functor_vt = void(*)(const this_t*, signature_ts&&...);
+        using lambda_vt = std::function<void(const this_t&, norm_sign_t...)>;
 
-        using functor_rt = std::any(*)(const this_t*, signature_ts&&...);
+        using lambda_rt = std::function<std::any(const this_t&, norm_sign_t...)>;
 
-        using func_ro_vt = void(*)(const this_t*, const RObject&, signature_ts&&...);
+        using lambda_robj_vt = std::function<void(const this_t&, const RObject&, norm_sign_t...)>;
 
-        using func_ro_rt = std::any(*)(const this_t*, const RObject&, signature_ts&&...);
+        using lambda_robj_rt = std::function<std::any(const this_t&, const RObject&, norm_sign_t...)>;
 
-        functor_vt hopper_v = nullptr;
+        lambda_vt m_void_hop;
 
-        functor_rt hopper_r = nullptr;
+        lambda_rt m_any_ret_hop;
 
-        func_ro_vt hopper_robj_v = nullptr;
+        lambda_robj_vt m_void_method_hop;
 
-        func_ro_rt hopper_robj_r = nullptr;
+        lambda_robj_rt m_any_ret_method_hop;
 
-        erased_function(const dispatch::functor& p_functor, const detail::RObjectId& p_robj_id) noexcept
+        erased_hopper( const dispatch::functor& p_functor,
+                       const detail::RObjectId& p_robj_id,
+                       const lambda_vt& p_void_hop,
+                       const lambda_rt& p_any_ret_hop ) noexcept
+
             : erasure_base(p_functor, p_robj_id)
+            , m_void_hop(p_void_hop)
+            , m_any_ret_hop(p_any_ret_hop)
         { }
+
+        erased_hopper( const dispatch::functor& p_functor,
+                       const detail::RObjectId& p_robj_id,
+                       const lambda_robj_vt& p_void_method_hop,
+                       const lambda_robj_rt& p_any_ret_method_hop ) noexcept
+
+            : erasure_base(p_functor, p_robj_id)
+            , m_void_method_hop(p_void_method_hop)
+            , m_any_ret_method_hop(p_any_ret_method_hop)
+        { }
+
+    public:
+
+        template<class...args_t>
+        constexpr void hop_void(args_t&&...params) const noexcept
+        {
+            m_void_hop(*this, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        ForceInline std::any hop_return(args_t&&...params) const noexcept
+        {
+            return m_any_ret_hop(*this, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        constexpr void hop_void(const RObject& p_robj, args_t&&...params) const noexcept
+        {
+            m_void_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        ForceInline std::any hop_return(const RObject& p_robj, args_t&&...params) const noexcept
+        {
+            return m_any_ret_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+        }
     };
 }

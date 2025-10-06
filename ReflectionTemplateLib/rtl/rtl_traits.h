@@ -148,8 +148,19 @@ namespace rtl
 namespace rtl::traits
 {
     template<class ...signatureT>
-    using sign_t = std::tuple<signatureT...>;
+    using strict_sign_t = std::tuple<signatureT...>;
 
     template<class ...signatureT>
     using fwd_sign_t = std::tuple<std::remove_reference_t<signatureT>...>;
+
+    template<typename T>
+    struct normalized_t
+    {
+        using type = std::remove_const_t<
+                     std::remove_pointer_t<
+                     std::remove_reference_t<T> > >;
+    };
+
+    template<typename T>
+    using normal_sign_t = typename normalized_t<T>::type;
 }

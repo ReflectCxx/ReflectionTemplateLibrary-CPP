@@ -15,10 +15,10 @@
 
 namespace rtl::dispatch
 {
-	template<class return_t, class ...signature_ts>
+	template<class return_t, class ...signature_t>
 	struct function_ptr: public functor
 	{
-		using functor_t = return_t(*)(signature_ts...);
+		using functor_t = return_t(*)(signature_t...);
 
 		[[nodiscard]] constexpr auto f_ptr() const
 		{
@@ -33,10 +33,10 @@ namespace rtl::dispatch
 		function_ptr(functor_t fptr) :m_functor(fptr)
 		{
 			m_returnId = detail::TypeId<return_t>::get();
-			m_signatureId = detail::TypeId<traits::sign_t<signature_ts...>>::get();
+			m_signatureId = detail::TypeId<traits::strict_sign_t<signature_t...>>::get();
 
 			m_returnStr = detail::TypeId<return_t>::toString();
-			m_signatureStr = detail::TypeId<signature_ts...>::toString();
+			m_signatureStr = detail::TypeId<signature_t...>::toString();
 		}
 
 	private:

@@ -16,56 +16,75 @@
 
 namespace rtl::erase
 {
-    template<class return_t, class ...signature_ts>
-    struct aware_function : public erased_function<signature_ts...>
+    template<class return_t, class ...signature_t>
+    struct aware_function : public erased_hopper<traits::normal_sign_t<signature_t>...>
     {
-        rtl::function<return_t(signature_ts...)> m_function;
-
-        using base_t = erased_function<signature_ts...>;
-
-        using this_t = aware_function<return_t, signature_ts...>;
+        using base_t = erased_hopper<traits::normal_sign_t<signature_t>...>;
 
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
         aware_function(const dispatch::functor& p_functor)
-            : base_t(p_functor, detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe))
+            : base_t( p_functor, 
+                      detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe),
+                      aware_function::get_lambda_void(),
+                      aware_function::get_lambda_any_return() )
+        { }
+
+
+        template<class...args_t>
+        constexpr static auto get_lambda_void() noexcept
         {
-            base_t::hopper_v = hop_v;
-            base_t::hopper_r = hop_r;
+            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)
+            {
+                constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
+                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
+
+                if constexpr (std::is_void_v<return_t> && !is_any_ptr && !is_any_rvref)
+                {
+                    auto fptr = eh.get_lambda()
+                                  .template to_function<signature_t...>()
+                                  .template get_hopper<void>()
+                                  .f_ptr();
+
+                    (*fptr)(params...);
+                }
+            };
         }
 
-        constexpr static void hop_v(const base_t* p_this, signature_ts&&...params) noexcept
+        constexpr static auto get_lambda_any_return() noexcept
         {
-            if constexpr (std::is_void_v<return_t>) 
+            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                auto this_p = static_cast<const this_t*>(p_this);
-                this_p->m_function(std::forward<signature_ts>(params)...);
-            }
-        }
+                constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
+                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
-        ForceInline static std::any hop_r(const base_t* p_this, signature_ts&&...params) noexcept
-        {
-            auto this_p = static_cast<const this_t*>(p_this);
-            if constexpr (!std::is_void_v<return_t>) 
-            {
-                auto&& ret_v = this_p->m_function(std::forward<signature_ts>(params)...);
-                if constexpr (std::is_pointer_v<return_t>) 
+                if constexpr (!std::is_void_v<return_t> && !is_any_ptr && !is_any_rvref)
                 {
-                    using raw_t = std::remove_pointer_t<return_t>;
-                    return std::any(static_cast<const raw_t*>(ret_v));
+                    auto fptr = eh.get_lambda()
+                                  .template to_function<signature_t...>()
+                                  .template get_hopper<return_t>()
+                                  .f_ptr();
+
+                    auto&& ret_v = (*fptr)(params...);
+
+                    if constexpr (std::is_pointer_v<return_t>)
+                    {
+                        using raw_t = std::remove_pointer_t<return_t>;
+                        return std::any(static_cast<const raw_t*>(ret_v));
+                    }
+                    else if constexpr (std::is_reference_v<return_t>)
+                    {
+                        using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
+                        return std::any(static_cast<const raw_t*>(&ret_v));
+                    }
+                    else
+                    {
+                        using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                        return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
+                    }
                 }
-                else if constexpr (std::is_reference_v<return_t>) 
-                {
-                    using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
-                    return std::any(static_cast<const raw_t*>(&ret_v));
-                }
-                else 
-                {
-                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
-                }
-            }
-            else return std::any();
+                else return std::any();
+            };
         }
     };
 }

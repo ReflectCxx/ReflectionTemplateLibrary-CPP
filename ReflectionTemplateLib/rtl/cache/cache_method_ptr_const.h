@@ -17,12 +17,12 @@
 
 namespace rtl::cache
 {
-    template<class record_t, class return_t, class ...signature_ts>
-    struct method_ptr<const record_t, return_t, signature_ts...>
+    template<class record_t, class return_t, class ...signature_t>
+    struct method_ptr<const record_t, return_t, signature_t...>
     {
-        using method_t = dispatch::method_ptr<const record_t, return_t, signature_ts...>;
+        using method_t = dispatch::method_ptr<const record_t, return_t, signature_t...>;
 
-        using functor_t = return_t(record_t::*)(signature_ts...) const;
+        using functor_t = return_t(record_t::*)(signature_t...) const;
 
         static const method_ptr& instance()
         {
