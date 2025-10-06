@@ -15,7 +15,7 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
-#include "erased_method_hop.h"
+#include "erased_hopper_rec.h"
 
 namespace rtl::detail
 {
@@ -208,7 +208,7 @@ namespace rtl::detail
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_method<recordT, argsT...>();
+            const auto& caller = erased.template to_erased_return_rec<recordT, argsT...>();
             if(functorId->m_lambda->is_void())
             {
                 caller.hop_void(m_target, std::forward<argsT>(params)...);
@@ -234,7 +234,7 @@ namespace rtl::detail
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_function<argsT...>();
+            const auto& caller = erased.template to_erased_return<argsT...>();
             if (functorId->m_lambda->is_void())
             {
                 caller.hop_void(m_target, std::forward<argsT>(params)...);

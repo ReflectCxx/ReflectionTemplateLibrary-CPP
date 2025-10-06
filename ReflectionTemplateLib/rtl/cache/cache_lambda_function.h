@@ -14,7 +14,7 @@
 #include <list>
 
 #include "lambda_function.h"
-#include "aware_function.h"
+#include "aware_hopper.h"
 
 namespace rtl::cache
 {
@@ -29,9 +29,9 @@ namespace rtl::cache
 
         const dispatch::lambda_function<signature_t...>& push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.push_back(erase::aware_function<return_t, signature_t...>(p_functor));
+            m_erasure_cache.push_back(dispatch::erase::aware_hopper<return_t, signature_t...>(p_functor));
 
-            const erase::erasure_base& eb = m_erasure_cache.back();
+            const dispatch::erase::erasure_base& eb = m_erasure_cache.back();
 
             m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
 
@@ -49,7 +49,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_function<signature_t...>> m_cache;
-        mutable std::list<erase::aware_function<return_t, signature_t...>> m_erasure_cache;
+        mutable std::list<dispatch::erase::aware_hopper<return_t, signature_t...>> m_erasure_cache;
 
         lambda_function() = default;
     };

@@ -13,7 +13,7 @@
 
 #include "lambda_base.h"
 #include "rtl_method.h"
-#include "erased_method_hop.h"
+#include "erased_hopper_rec.h"
 #include "functor_method.h"
 #include "rtl_method_const.h"
 

@@ -13,9 +13,9 @@
 
 #include <list>
 
-#include "aware_method.h"
 #include "lambda_method.h"
-#include "aware_method_const.h"
+#include "aware_hopper_rec.h"
+#include "aware_hopper_rec_const.h"
 
 namespace rtl::cache
 {
@@ -30,9 +30,9 @@ namespace rtl::cache
 
         const dispatch::lambda_method<record_t, signature_t...>& push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.push_back(erase::aware_method<record_t, return_t, signature_t...>(p_functor));
+            m_erasure_cache.push_back(dispatch::erase::aware_hopper_rec<record_t, return_t, signature_t...>(p_functor));
             
-            const erase::erasure_base& eb = m_erasure_cache.back();
+            const dispatch::erase::erasure_base& eb = m_erasure_cache.back();
 
             m_cache.push_back(dispatch::lambda_method<record_t, signature_t...>(p_functor, eb));
 
@@ -50,7 +50,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_method<record_t, signature_t...>> m_cache;
-        mutable std::list<erase::aware_method<record_t, return_t, signature_t...>> m_erasure_cache;
+        mutable std::list<dispatch::erase::aware_hopper_rec<record_t, return_t, signature_t...>> m_erasure_cache;
 
         lambda_method() = default;
     };

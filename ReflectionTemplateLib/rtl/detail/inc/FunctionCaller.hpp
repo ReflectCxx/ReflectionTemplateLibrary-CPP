@@ -49,7 +49,7 @@ namespace rtl::detail
         if (functorId) [[likely]] 
         {
             const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_ret_function<argsT...>();
+            const auto& caller = erased.template to_erased_return<argsT...>();
             if(functorId->m_lambda->is_void())
             {
                 caller.hop_void(std::forward<argsT>(params)...);
@@ -83,7 +83,6 @@ namespace rtl::detail
         }
         return HopFunction<signatureT...>();
     }
-
 
     template<class ...args_t>
     template<class return_t>

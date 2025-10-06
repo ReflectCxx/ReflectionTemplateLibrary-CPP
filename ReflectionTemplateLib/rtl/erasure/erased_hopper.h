@@ -15,7 +15,7 @@
 
 #include "erasure_base.h"
 
-namespace rtl::erase
+namespace rtl::dispatch::erase
 {
     template<class ...norm_sign_t>
     struct erased_hopper : public erasure_base

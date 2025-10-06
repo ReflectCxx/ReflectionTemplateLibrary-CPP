@@ -31,22 +31,7 @@ namespace rtl
     template<class functor_t>
     struct method;
 
-    namespace erase
-    {
-        template<class ...signature_t>
-        struct erased_hopper;
-
-        template<class record_t, class ...signature_t>
-        struct erased_method_hop;
-
-        template<class return_t, class ...signature_t>
-        struct aware_function;
-
-        template<class record_t, class return_t, class ...signature_t>
-        struct aware_method;
-    }
-
-    namespace detail 
+    namespace detail
     {
         struct FunctorId;
 
@@ -95,5 +80,20 @@ namespace rtl
 
         template<class record_t, class return_t, class ...signature_t>
         struct const_method_ptr;
+
+        namespace erase
+        {
+            template<class ...signature_t>
+            struct erased_hopper;
+
+            template<class record_t, class ...signature_t>
+            struct erased_hopper_rec;
+
+            template<class return_t, class ...signature_t>
+            struct aware_hopper;
+
+            template<class record_t, class return_t, class ...signature_t>
+            struct aware_hopper_rec;
+        }
     }
 }

@@ -14,26 +14,27 @@
 #include <any>
 #include "erased_hopper.h"
 
-namespace rtl::erase
+namespace rtl::dispatch::erase
 {
     template<class return_t, class ...signature_t>
-    struct aware_function : public erased_hopper<traits::normal_sign_t<signature_t>...>
+    struct aware_hopper : public erased_hopper<traits::normal_sign_t<signature_t>...>
     {
         using base_t = erased_hopper<traits::normal_sign_t<signature_t>...>;
 
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-        aware_function(const dispatch::functor& p_functor)
+        aware_hopper(const dispatch::functor& p_functor)
             : base_t( p_functor, 
                       detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe),
-                      aware_function::get_lambda_void(),
-                      aware_function::get_lambda_any_return() )
+                      aware_hopper::get_lambda_void(),
+                      aware_hopper::get_lambda_any_return() )
         { }
 
         constexpr static auto get_lambda_void() noexcept
         {
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
@@ -52,6 +53,7 @@ namespace rtl::erase
         {
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 

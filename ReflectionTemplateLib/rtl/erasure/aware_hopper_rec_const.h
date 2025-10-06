@@ -14,32 +14,33 @@
 #include <any>
 
 #include "RObjectId.h"
-#include "erased_method_hop.h"
+#include "erased_hopper_rec.h"
 
-namespace rtl::erase
+namespace rtl::dispatch::erase
 {
     template<class record_t, class return_t, class ...signature_t>
-    struct aware_method<const record_t, return_t, signature_t...> : public erased_method_hop<record_t, traits::normal_sign_t<signature_t>...>
+    struct aware_hopper_rec<const record_t, return_t, signature_t...> : public erased_hopper_rec<record_t, traits::normal_sign_t<signature_t>...>
     {
-        using base_t = erased_method_hop<record_t, traits::normal_sign_t<signature_t>...>;
+        using base_t = erased_hopper_rec<record_t, traits::normal_sign_t<signature_t>...>;
 
-        using this_t = aware_method<record_t, return_t, signature_t...>;
+        using this_t = aware_hopper_rec<record_t, return_t, signature_t...>;
 
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-        aware_method(const dispatch::functor& p_functor)
+        aware_hopper_rec(const dispatch::functor& p_functor)
             : base_t( p_functor,
                       detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe),
-                      aware_method::get_lambda_void(),
-                      aware_method::get_lambda_any_ret(),
-                      aware_method::get_lambda_void_robj(),
-                      aware_method::get_lambda_any_ret_robj() )
+                      aware_hopper_rec::get_lambda_void(),
+                      aware_hopper_rec::get_lambda_any_ret(),
+                      aware_hopper_rec::get_lambda_void_robj(),
+                      aware_hopper_rec::get_lambda_any_ret_robj() )
         { }
 
         constexpr static auto get_lambda_void() noexcept
         {
             return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
@@ -58,6 +59,7 @@ namespace rtl::erase
         {
             return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
@@ -78,6 +80,7 @@ namespace rtl::erase
         {
             return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
@@ -113,6 +116,7 @@ namespace rtl::erase
         {
             return[](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
+                //TODO: handle these kind of overloads.
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
