@@ -20,8 +20,6 @@ namespace rtl::erase
     template<class ...norm_sign_t>
     struct erased_hopper : public erasure_base
     {
-    protected:
-
         using this_t = erased_hopper<norm_sign_t...>;
 
         using lambda_vt = std::function<void(const this_t&, norm_sign_t...)>;
@@ -31,6 +29,32 @@ namespace rtl::erase
         using lambda_robj_vt = std::function<void(const this_t&, const RObject&, norm_sign_t...)>;
 
         using lambda_robj_rt = std::function<std::any(const this_t&, const RObject&, norm_sign_t...)>;
+
+        template<class...args_t>
+        constexpr void hop_void(args_t&&...params) const noexcept
+        {
+            m_void_hop(*this, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        ForceInline std::any hop_return(args_t&&...params) const noexcept
+        {
+            return m_any_ret_hop(*this, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        constexpr void hop_void(const RObject& p_robj, args_t&&...params) const noexcept
+        {
+            m_void_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+        }
+
+        template<class...args_t>
+        ForceInline std::any hop_return(const RObject& p_robj, args_t&&...params) const noexcept
+        {
+            return m_any_ret_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+        }
+
+    protected:
 
         lambda_vt m_void_hop;
 
@@ -59,31 +83,5 @@ namespace rtl::erase
             , m_void_method_hop(p_void_method_hop)
             , m_any_ret_method_hop(p_any_ret_method_hop)
         { }
-
-    public:
-
-        template<class...args_t>
-        constexpr void hop_void(args_t&&...params) const noexcept
-        {
-            m_void_hop(*this, std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        ForceInline std::any hop_return(args_t&&...params) const noexcept
-        {
-            return m_any_ret_hop(*this, std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        constexpr void hop_void(const RObject& p_robj, args_t&&...params) const noexcept
-        {
-            m_void_method_hop(*this, p_robj, std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        ForceInline std::any hop_return(const RObject& p_robj, args_t&&...params) const noexcept
-        {
-            return m_any_ret_method_hop(*this, p_robj, std::forward<args_t>(params)...);
-        }
     };
 }

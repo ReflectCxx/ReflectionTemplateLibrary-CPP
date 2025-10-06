@@ -20,7 +20,7 @@
 namespace rtl::erase
 {
     template<class record_t, class ...normal_sign_t>
-    class erased_method_hop : public erased_hopper<normal_sign_t...>
+    struct erased_method_hop : public erased_hopper<normal_sign_t...>
     {
         using base_t = erased_hopper<normal_sign_t...>;
 
@@ -30,11 +30,21 @@ namespace rtl::erase
 
         using lambda_rt = std::function<std::any(const this_t&, const record_t&, normal_sign_t...)>;
 
+        constexpr void hop_void(const record_t& p_target, normal_sign_t&&...params) const noexcept
+        {
+            m_void_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
+        }
+
+        ForceInline std::any hop_return(const record_t& p_target, normal_sign_t&&...params) const noexcept
+        {
+            return m_any_ret_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
+        }
+
+    protected:
+
         lambda_vt m_void_hop;
 
         lambda_rt m_any_ret_hop;
-
-    protected:
 
         erased_method_hop( const dispatch::functor& p_functor,
                            const detail::RObjectId& p_robj_id, 
@@ -47,17 +57,5 @@ namespace rtl::erase
             , m_void_hop(p_void_hop)
             , m_any_ret_hop(p_any_ret_hop)
         { }
-
-    public:
-
-        constexpr void hop_void(const record_t& p_target, normal_sign_t&&...params) const noexcept
-        {
-            m_void_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
-        }
-
-        ForceInline std::any hop_return(const record_t& p_target, normal_sign_t&&...params) const noexcept
-        {
-            return m_any_ret_hop(*this, p_target, std::forward<normal_sign_t>(params)...);
-        }
     };
 }
