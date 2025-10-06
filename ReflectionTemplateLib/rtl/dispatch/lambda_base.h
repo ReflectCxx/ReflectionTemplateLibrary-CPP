@@ -13,7 +13,7 @@
 
 #include "rtl_traits.h"
 #include "functor.h"
-#include "erasure.h"
+#include "erasure_base.h"
 
 namespace rtl::dispatch
 {

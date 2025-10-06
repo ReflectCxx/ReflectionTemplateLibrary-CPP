@@ -103,7 +103,7 @@ namespace rtl {
         template<class ..._args>
         constexpr rtl::Return operator()(_args&&...params) const noexcept
         {
-            return detail::ErasedCaller<_args...>{ this }(std::forward<_args>(params)...);
+            return detail::ErasedCaller<_args...>{ (*this) }(std::forward<_args>(params)...);
         }
 
         friend detail::CxxReflection;

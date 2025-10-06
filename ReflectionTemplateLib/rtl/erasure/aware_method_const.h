@@ -11,9 +11,10 @@
 
 #pragma once
 
-#include "RObjectId.h"
-#include "erased_method.h"
 #include <any>
+
+#include "RObjectId.h"
+#include "erased_method_hop.h"
 
 namespace rtl::erase
 {
@@ -37,7 +38,7 @@ namespace rtl::erase
 
         constexpr static auto get_lambda_void() noexcept
         {
-            return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)
+            return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
@@ -46,8 +47,7 @@ namespace rtl::erase
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
-                                  .template get_hopper<void>()
-                                  .f_ptr();
+                                  .template get_functor<void>();
 
                     (p_target.*mptr)(params...);
                 }
@@ -56,7 +56,7 @@ namespace rtl::erase
 
         constexpr static auto get_lambda_void_robj() noexcept
         {
-            return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)
+            return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
@@ -65,8 +65,7 @@ namespace rtl::erase
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
-                                  .template get_hopper<void>()
-                                  .f_ptr();
+                                  .template get_functor<void>();
 
                     const auto& target = p_target.view<record_t>()->get();
 
@@ -86,10 +85,9 @@ namespace rtl::erase
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
-                                  .template get_hopper<return_t>()
-                                  .f_ptr();
+                                  .template get_functor<return_t>();
 
-                    auto&& ret_v = (const_cast<record_t&>(p_target).*mptr)(params...);
+                    auto&& ret_v = (p_target.*mptr)(params...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {
@@ -122,12 +120,11 @@ namespace rtl::erase
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
-                                  .template get_hopper<return_t>()
-                                  .f_ptr();
+                                  .template get_functor<return_t>();
 
                     const auto& target = p_target.view<record_t>()->get();
 
-                    auto&& ret_v = (const_cast<record_t&>(target).*mptr)(params...);
+                    auto&& ret_v = (target.*mptr)(params...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {

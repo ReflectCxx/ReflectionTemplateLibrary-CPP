@@ -16,7 +16,7 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
-#include "erased_function.h"
+#include "erased_hopper.h"
 
 
 namespace rtl::detail
@@ -29,7 +29,7 @@ namespace rtl::detail
             FunctorContainer<std::remove_reference_t<_args>...>,
             FunctorContainer<_signature...>>;
 
-        const detail::FunctorId* functorId = m_function->hasFunctorId(Container::getContainerId());
+        const detail::FunctorId* functorId = m_function.hasFunctorId(Container::getContainerId());
         if (functorId != nullptr) [[likely]] {
             return Container::template forwardCall<_args...>(*functorId, std::forward<_args>(params)...);
         }
@@ -45,7 +45,7 @@ namespace rtl::detail
     template<class ...argsT>
     ForceInline constexpr Return ErasedCaller<signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function->getLambdaById(detail::TypeId<traits::fwd_sign_t<argsT...>>::get());
+        auto functorId = m_function.getLambdaById(detail::TypeId<traits::fwd_sign_t<argsT...>>::get());
         if (functorId) [[likely]] 
         {
             const auto& erased = functorId->m_lambda->m_erasure;

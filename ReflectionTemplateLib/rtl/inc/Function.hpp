@@ -23,7 +23,7 @@ namespace rtl
     template<class ..._signature>
     inline constexpr const detail::ErasedCaller<_signature...> Function::bind() const noexcept
     {
-        return detail::ErasedCaller<_signature...>{ this };
+        return detail::ErasedCaller<_signature...>{ (*this) };
     }
 
     template<class ...signatureT>

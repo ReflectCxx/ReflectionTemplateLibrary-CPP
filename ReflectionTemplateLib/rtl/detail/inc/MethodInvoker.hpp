@@ -15,7 +15,7 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
-#include "erased_method.h"
+#include "erased_method_hop.h"
 
 namespace rtl::detail
 {

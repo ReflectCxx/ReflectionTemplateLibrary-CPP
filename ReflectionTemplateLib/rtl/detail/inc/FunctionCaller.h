@@ -18,7 +18,7 @@ namespace rtl::detail
     template<class ..._signature>
     struct ErasedCaller
     {
-        const Function* m_function;
+        const Function& m_function;
 
         template<class ..._args>
         rtl::Return call(_args&&...) const noexcept;

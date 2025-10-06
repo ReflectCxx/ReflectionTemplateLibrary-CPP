@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "lambda.h"
+#include "lambda_base.h"
 #include "rtl_function.h"
 #include "functor_function.h"
-#include "erased_function.h"
+#include "erased_hopper.h"
 
 namespace rtl::dispatch
 {
@@ -23,6 +23,12 @@ namespace rtl::dispatch
     {
         template<class return_t>
         using hopper_t = rtl::function<return_t(signature_t...)>;
+
+        template<class return_t>
+        constexpr decltype(auto) get_functor(const std::size_t p_returnId = 0) const
+        {
+            return static_cast<const function_ptr<return_t, signature_t...>&>(m_functor).f_ptr();
+        }
 
         template<class return_t>
         constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId = 0) const

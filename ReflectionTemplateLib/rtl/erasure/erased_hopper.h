@@ -13,7 +13,7 @@
 
 #include <functional>
 
-#include "erasure.h"
+#include "erasure_base.h"
 
 namespace rtl::erase
 {

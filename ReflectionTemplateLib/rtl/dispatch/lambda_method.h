@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "lambda.h"
+#include "lambda_base.h"
 #include "rtl_method.h"
-#include "erased_method.h"
+#include "erased_method_hop.h"
 #include "functor_method.h"
 #include "rtl_method_const.h"
 
@@ -25,6 +25,12 @@ namespace rtl::dispatch
     {
         template<class return_t>
         using hopper_t = rtl::method<return_t (record_t::*)(signature_t...)>;
+
+        template<class return_t>
+        constexpr decltype(auto) get_functor(std::size_t p_returnId = 0) const
+        {
+            return static_cast<const method_ptr<record_t, return_t, signature_t...>&>(m_functor).f_ptr();
+        }
 
         template<class return_t> requires (std::is_const_v<record_t> == false)
         constexpr const hopper_t<return_t> get_hopper(std::size_t p_returnId = 0) const

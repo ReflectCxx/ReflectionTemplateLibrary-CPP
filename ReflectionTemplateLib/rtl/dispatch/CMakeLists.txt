@@ -9,7 +9,7 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/functor_function.h"	
     "${CMAKE_CURRENT_SOURCE_DIR}/functor_method_const.h"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_base.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.h"
 

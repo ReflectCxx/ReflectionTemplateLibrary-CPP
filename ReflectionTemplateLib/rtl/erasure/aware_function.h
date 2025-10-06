@@ -12,7 +12,7 @@
 #pragma once
 
 #include <any>
-#include "erased_function.h"
+#include "erased_hopper.h"
 
 namespace rtl::erase
 {
@@ -30,11 +30,9 @@ namespace rtl::erase
                       aware_function::get_lambda_any_return() )
         { }
 
-
-        template<class...args_t>
         constexpr static auto get_lambda_void() noexcept
         {
-            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)
+            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
@@ -43,8 +41,7 @@ namespace rtl::erase
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
-                                  .template get_hopper<void>()
-                                  .f_ptr();
+                                  .template get_functor<void>();
 
                     (*fptr)(params...);
                 }
@@ -62,8 +59,7 @@ namespace rtl::erase
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
-                                  .template get_hopper<return_t>()
-                                  .f_ptr();
+                                  .template get_functor<return_t>();
 
                     auto&& ret_v = (*fptr)(params...);
 

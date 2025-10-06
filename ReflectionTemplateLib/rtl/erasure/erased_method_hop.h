@@ -14,7 +14,7 @@
 #include <any>
 #include <functional>
 
-#include "erased_function.h"
+#include "erased_hopper.h"
 #include "rtl_forward_decls.h"
 
 namespace rtl::erase
