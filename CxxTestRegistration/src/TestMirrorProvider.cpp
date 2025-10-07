@@ -10,7 +10,7 @@
 #include "Date.h"
 #include "Book.h"
 #include "Person.h"
-#include "Complex.h"
+#include "ComplexStrings.h"
 #include "Animal.h"
 #include "Library.h"
 
@@ -86,6 +86,14 @@ namespace test_mirror
 
         //  Overloaded function, takes 'const char*' arguments.
             rtl::type().function<const char*>(str_reverseString).build(reverseString),
+
+        //  numereous other overloads.
+            rtl::type().function<std::string&>(str_reverseString).build(reverseString),
+            rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
+            rtl::type().function<std::string*>(str_reverseString).build(reverseString),
+            rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
+            rtl::type().function<std::string&&>(str_reverseString).build(reverseString),
+            rtl::type().function<const std::string&&>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),

@@ -105,23 +105,29 @@ namespace rtl_tests
             rtl::function<std::string(const char)> reverse_string = reverseString->argsT<const char>().returnT<std::string>();
             ASSERT_FALSE(reverse_string);
         } {
+            rtl::function<std::string(char*)> reverse_string = reverseString->argsT<char*>().returnT<std::string>();
+            ASSERT_FALSE(reverse_string);
+        } {
             rtl::function<std::string(const char*)> reverse_string = reverseString->argsT<const char*>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(STRA);
-            EXPECT_EQ(ret_str, STRA_REVERSE);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+            EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(std::string)> reverse_string = reverseString->argsT<std::string>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(STRB);
-            EXPECT_EQ(ret_str, STRB_REVERSE);
+            auto exp_str = std::string(STRB_REVERSE) + SUFFIX_ARG_std_string;
+            EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string()> reverse_string = reverseString->argsT<>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string();
-            EXPECT_EQ(ret_str, REV_STR_VOID_RET);
+            auto exp_str = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+            EXPECT_EQ(ret_str, exp_str);
         }
     }
 

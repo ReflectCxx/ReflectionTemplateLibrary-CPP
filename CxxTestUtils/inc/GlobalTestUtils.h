@@ -10,6 +10,17 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 */
 namespace test_utils {
 
+	extern const char* SUFFIX_ARG_void;
+	extern const char* SUFFIX_ARG_const_char_ptr;
+
+	extern const char* SUFFIX_ARG_std_string;
+	extern const char* SUFFIX_ARG_std_string_ptr;
+	extern const char* SUFFIX_ARG_std_string_lvref;
+	extern const char* SUFFIX_ARG_std_string_clvref;
+	extern const char* SUFFIX_ARG_std_string_cptr;
+	extern const char* SUFFIX_ARG_std_string_rvref;
+	extern const char* SUFFIX_ARG_std_string_crvref;
+
 	extern const char* REV_STR_VOID_RET;
 
 	static constexpr double g_real = 3.92;

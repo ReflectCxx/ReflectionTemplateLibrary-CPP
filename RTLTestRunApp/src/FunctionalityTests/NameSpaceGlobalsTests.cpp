@@ -218,8 +218,9 @@ namespace rtl_tests
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
-            string retVal = ret.view<std::string>()->get();
-            EXPECT_TRUE(retVal == STRA_REVERSE);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+            EXPECT_EQ(retStr, expStr);
         } {
             //STRB's type is 'consexpr const char*', function accepts 'string',
             //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
@@ -229,16 +230,18 @@ namespace rtl_tests
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
-           string retVal = ret.view<std::string>()->get();
-           EXPECT_TRUE(retVal == STRB_REVERSE);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(STRB_REVERSE) + SUFFIX_ARG_std_string;
+            EXPECT_EQ(retStr, expStr);
         } {
             auto [err, ret] = reverseString->bind().call();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
             
-            string retVal = ret.view<std::string>()->get();
-            EXPECT_TRUE(retVal == REV_STR_VOID_RET);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+            EXPECT_EQ(retStr, expStr);
         }
     }
 
