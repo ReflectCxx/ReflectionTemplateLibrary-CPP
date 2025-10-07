@@ -88,12 +88,27 @@ namespace test_mirror
             rtl::type().function<const char*>(str_reverseString).build(reverseString),
 
         //  numereous other overloads.
-            rtl::type().function<std::string&>(str_reverseString).build(reverseString),
-            rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
-            rtl::type().function<std::string*>(str_reverseString).build(reverseString),
-            rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
-            rtl::type().function<std::string&&>(str_reverseString).build(reverseString),
-            rtl::type().function<const std::string&&>(str_reverseString).build(reverseString),
+            #if defined(__GNUC__) && !defined(__clang__)
+                rtl::type().function<std::string&>(str_reverseString)
+                           .build(static_cast<std::string(*)(std::string&)>(reverseString)),
+                rtl::type().function<const std::string&>(str_reverseString)
+                           .build(static_cast<std::string(*)(const std::string&)>(reverseString)),
+                rtl::type().function<std::string*>(str_reverseString)
+                           .build(static_cast<std::string(*)(std::string*)>(reverseString)),
+                rtl::type().function<const std::string*>(str_reverseString)
+                           .build(static_cast<std::string(*)(const std::string*)>(reverseString)),
+                rtl::type().function<std::string&&>(str_reverseString)
+                           .build(static_cast<std::string(*)(std::string&&)>(reverseString)),
+                rtl::type().function<const std::string&&>(str_reverseString)
+                           .build(static_cast<std::string(*)(const std::string&&)>(reverseString)),
+            #else
+                rtl::type().function<std::string&>(str_reverseString).build(reverseString),
+                rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
+                rtl::type().function<std::string*>(str_reverseString).build(reverseString),
+                rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
+                rtl::type().function<std::string&&>(str_reverseString).build(reverseString),
+                rtl::type().function<const std::string&&>(str_reverseString).build(reverseString),
+            #endif
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
