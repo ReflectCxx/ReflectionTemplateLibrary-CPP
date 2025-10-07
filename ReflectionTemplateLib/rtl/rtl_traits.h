@@ -151,7 +151,7 @@ namespace rtl::traits
     using strict_sign_t = std::tuple<signatureT...>;
 
     template<class ...signatureT>
-    using fwd_sign_t = std::tuple<std::remove_reference_t<signatureT>...>;
+    using fuzzy_sign_t = std::tuple<std::remove_reference_t<signatureT>...>;
 
     template<typename T>
     struct normalized_t

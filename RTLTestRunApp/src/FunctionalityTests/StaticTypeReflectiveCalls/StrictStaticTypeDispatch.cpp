@@ -132,6 +132,75 @@ namespace rtl_tests
     }
 
 
+    TEST(StrictStaticTypeDispatch, lvalue_ref_overload_resolution_with_known_signatures)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string&)> reverse_string = reverseString->argsT<std::string&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string lv_str = STRA;
+            std::string ret_str = reverse_string(lv_str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_lvref;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(const std::string&)> reverse_string = reverseString->argsT<const std::string&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            const std::string lv_str = STRA;
+            std::string ret_str = reverse_string(lv_str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_clvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
+    TEST(StrictStaticTypeDispatch, rvalue_ref_overload_resolution_with_known_signatures)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string&&)> reverse_string = reverseString->argsT<std::string&&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(STRA);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_rvref;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(const std::string&&)> reverse_string = reverseString->argsT<const std::string&&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(STRA);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_crvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
+    TEST(StrictStaticTypeDispatch, ptr_and_const_ptr_overload_resolution_with_known_signatures)
+    {
+        std::string str = STRA;
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string*)> reverse_string = reverseString->argsT<std::string*>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(&str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(const std::string*)> reverse_string = reverseString->argsT<const std::string*>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(&str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
     TEST(StrictStaticTypeDispatch, std_string_method_call_with_known_signature)
     {
         std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std", "string");

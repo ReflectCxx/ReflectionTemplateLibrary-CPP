@@ -89,14 +89,17 @@ namespace test_mirror
 
         //  numereous other overloads.
             #if defined(__GNUC__) && !defined(__clang__)
+                /*
+                    GCC here fails to automatically resolve the correct overloaded functor
+                    when both a non-const lvalue reference and an rvalue overload exist.
+                    To disambiguate, explicitly cast the function pointer, e.g.:
+
+                        static_cast<std::string(*)(std::string&&)>(reverseString)
+                */
                 rtl::type().function<std::string&>(str_reverseString)
                            .build(static_cast<std::string(*)(std::string&)>(reverseString)),
                 rtl::type().function<const std::string&>(str_reverseString)
                            .build(static_cast<std::string(*)(const std::string&)>(reverseString)),
-                rtl::type().function<std::string*>(str_reverseString)
-                           .build(static_cast<std::string(*)(std::string*)>(reverseString)),
-                rtl::type().function<const std::string*>(str_reverseString)
-                           .build(static_cast<std::string(*)(const std::string*)>(reverseString)),
                 rtl::type().function<std::string&&>(str_reverseString)
                            .build(static_cast<std::string(*)(std::string&&)>(reverseString)),
                 rtl::type().function<const std::string&&>(str_reverseString)
@@ -104,11 +107,11 @@ namespace test_mirror
             #else
                 rtl::type().function<std::string&>(str_reverseString).build(reverseString),
                 rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
-                rtl::type().function<std::string*>(str_reverseString).build(reverseString),
-                rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
                 rtl::type().function<std::string&&>(str_reverseString).build(reverseString),
                 rtl::type().function<const std::string&&>(str_reverseString).build(reverseString),
             #endif
+            rtl::type().function<std::string*>(str_reverseString).build(reverseString),
+            rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
@@ -226,11 +229,11 @@ namespace test_mirror
 
             #if defined(__GNUC__) && !defined(__clang__)
                 /*
-                    GCC fails to automatically resolve the correct overloaded functor
+                    GCC here fails to automatically resolve the correct overloaded functor
                     when both a non-const lvalue reference and an rvalue overload exist.
                     To disambiguate, explicitly cast the member function pointer, e.g.:
 
-                        static_cast<void (Animal::*)(std::string&)>(&Animal::setAnimalName);
+                        static_cast<void (Animal::*)(std::string&)>(&Animal::setAnimalName)
                 */
                 rtl::type().member<Animal>()
                            .method<std::string&>(animal::str_setAnimalName)

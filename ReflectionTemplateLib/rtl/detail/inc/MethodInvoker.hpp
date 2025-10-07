@@ -157,7 +157,7 @@ namespace rtl::detail
     inline constexpr HopMethod<recordT, signatureT...> Hopper<recordT>::argsT() const
     {
         const auto recId = TypeId<recordT>::get();
-        const auto argsId = TypeId<traits::fwd_sign_t<signatureT...>>::get();
+        const auto argsId = TypeId<traits::strict_sign_t<signatureT...>>::get();
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_method<recordT, signatureT...>(recId, argsId);
@@ -204,7 +204,7 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == false)
     ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaById(detail::TypeId<traits::fwd_sign_t<argsT...>>::get());
+        auto functorId = m_method.getLambdaById(detail::TypeId<traits::fuzzy_sign_t<argsT...>>::get());
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
@@ -230,7 +230,7 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == true)
     ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaById(detail::TypeId<traits::fwd_sign_t<argsT...>>::get());
+        auto functorId = m_method.getLambdaById(detail::TypeId<traits::fuzzy_sign_t<argsT...>>::get());
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;

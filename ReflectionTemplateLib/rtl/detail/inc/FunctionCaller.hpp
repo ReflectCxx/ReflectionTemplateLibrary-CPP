@@ -45,7 +45,7 @@ namespace rtl::detail
     template<class ...argsT>
     ForceInline constexpr Return ErasedCaller<signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function.getLambdaById(detail::TypeId<traits::fwd_sign_t<argsT...>>::get());
+        auto functorId = m_function.getLambdaById(detail::TypeId<traits::fuzzy_sign_t<argsT...>>::get());
         if (functorId) [[likely]] 
         {
             const auto& erased = functorId->m_lambda->m_erasure;
@@ -73,7 +73,7 @@ namespace rtl::detail
     template<class ...signatureT>
     inline constexpr const HopFunction<signatureT...> Hopper<>::argsT() const
     {
-        const auto argsId = TypeId<traits::fwd_sign_t<signatureT...>>::get();
+        const auto argsId = TypeId<traits::strict_sign_t<signatureT...>>::get();
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_function<signatureT...>(argsId);
