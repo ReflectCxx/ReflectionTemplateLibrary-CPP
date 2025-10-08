@@ -147,20 +147,24 @@ namespace rtl
 
 namespace rtl::traits
 {
-    template<class ...signatureT>
-    using strict_sign_t = std::tuple<signatureT...>;
-
-    template<class ...signatureT>
-    using fuzzy_sign_t = std::tuple<std::remove_reference_t<signatureT>...>;
-
     template<typename T>
-    struct normalized_t
+    class normalized_t 
     {
-        using type = std::remove_const_t<
-                     std::remove_pointer_t<
-                     std::remove_reference_t<T> > >;
+        using no_ref_t = std::remove_reference_t<T>;
+
+    public:
+        using type = std::conditional_t< std::is_pointer_v<no_ref_t>,
+                                         std::remove_const_t<no_ref_t>,    // strip top-level const of pointer
+                                         std::remove_const_t<no_ref_t>     // strip const and reference for non-pointers
+                                       >;
     };
 
     template<typename T>
     using normal_sign_t = typename normalized_t<T>::type;
+
+    template<class ...signatureT>
+    using fuzzy_sign_t = std::tuple<normal_sign_t<signatureT>...>;
+
+    template<class ...signatureT>
+    using strict_sign_t = std::tuple<signatureT...>;
 }

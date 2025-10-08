@@ -20,10 +20,10 @@ namespace rtl_tests
             EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
             {
                 rtl::function<void(double)> functor = setReal->argsT<double>().returnT<void>();
-                ASSERT_TRUE(functor);
+                EXPECT_TRUE(functor);
             } {
                 rtl::function<void(float)> functor = setReal->argsT<float>().returnT<void>();
-                ASSERT_FALSE(functor);
+                EXPECT_FALSE(functor);
             }
         }
 
@@ -34,10 +34,10 @@ namespace rtl_tests
             EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
             {
                 rtl::function<void(double)> functor = setImaginary->argsT<double>().returnT<void>();
-                ASSERT_TRUE(functor);
+                EXPECT_TRUE(functor);
             } {
                 rtl::function<char(double)> functor = setImaginary->argsT<double>().returnT<char>();
-                ASSERT_FALSE(functor);
+                EXPECT_FALSE(functor);
             }
         }
     }
@@ -80,10 +80,10 @@ namespace rtl_tests
         ASSERT_TRUE(getComplexNumStr);
         {
             rtl::function<const std::string()> get_complex_num_str = getComplexNumStr->argsT<>().returnT<const std::string>();
-            ASSERT_FALSE(get_complex_num_str);
+            EXPECT_FALSE(get_complex_num_str);
         } {
             rtl::function<std::string&()> get_complex_num_str = getComplexNumStr->argsT<>().returnT<std::string&>();
-            ASSERT_FALSE(get_complex_num_str);
+            EXPECT_FALSE(get_complex_num_str);
         } {
             rtl::function<std::string()> get_complex_num_str = getComplexNumStr->argsT<>().returnT<std::string>();
             ASSERT_TRUE(get_complex_num_str);
@@ -103,10 +103,10 @@ namespace rtl_tests
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(const char)> reverse_string = reverseString->argsT<const char>().returnT<std::string>();
-            ASSERT_FALSE(reverse_string);
+            EXPECT_FALSE(reverse_string);
         } {
             rtl::function<std::string(char*)> reverse_string = reverseString->argsT<char*>().returnT<std::string>();
-            ASSERT_FALSE(reverse_string);
+            EXPECT_FALSE(reverse_string);
         } {
             rtl::function<std::string(const char*)> reverse_string = reverseString->argsT<const char*>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -169,11 +169,7 @@ namespace rtl_tests
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string&&)> reverse_string = reverseString->argsT<const std::string&&>().returnT<std::string>();
-            ASSERT_TRUE(reverse_string);
-
-            std::string ret_str = reverse_string(STRA);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_crvref;
-            EXPECT_EQ(ret_str, exp_str);
+            EXPECT_FALSE(reverse_string);
         }
     }
 
@@ -210,7 +206,7 @@ namespace rtl_tests
         ASSERT_TRUE(isStringEmpty);
         {
             rtl::method<bool(std::string::*)()> is_empty = isStringEmpty->recordT<std::string>().argsT<>().returnT<bool>();
-            ASSERT_FALSE(is_empty);
+            EXPECT_FALSE(is_empty);
         } {
             rtl::method<bool(std::string::*)() const> is_empty = isStringEmpty->recordT<const std::string>().argsT<>().returnT<bool>();
             ASSERT_TRUE(is_empty);
@@ -235,7 +231,7 @@ namespace rtl_tests
         ASSERT_TRUE(isStringEmpty);
         {
             rtl::method<bool(std::string_view::*)()> is_empty = isStringEmpty->recordT<std::string_view>().argsT<>().returnT<bool>();
-            ASSERT_FALSE(is_empty);
+            EXPECT_FALSE(is_empty);
         } {
             rtl::method<bool(std::string_view::*)() const> is_empty = isStringEmpty->recordT<const std::string_view>().argsT<>().returnT<bool>();
             ASSERT_TRUE(is_empty);

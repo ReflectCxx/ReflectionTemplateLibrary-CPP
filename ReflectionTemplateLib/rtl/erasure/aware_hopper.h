@@ -35,10 +35,9 @@ namespace rtl::dispatch::erase
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 //TODO: handle these kind of overloads.
-                constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
-                if constexpr (std::is_void_v<return_t> && !is_any_ptr && !is_any_rvref)
+                if constexpr (std::is_void_v<return_t> && !is_any_rvref)
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
@@ -54,10 +53,9 @@ namespace rtl::dispatch::erase
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 //TODO: handle these kind of overloads.
-                constexpr bool is_any_ptr = ((traits::is_raw_ptr_v<signature_t> || ...));
                 constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
 
-                if constexpr (!std::is_void_v<return_t> && !is_any_ptr && !is_any_rvref)
+                if constexpr (!std::is_void_v<return_t> && !is_any_rvref)
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
