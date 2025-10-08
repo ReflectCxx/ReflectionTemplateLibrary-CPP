@@ -98,16 +98,17 @@ namespace test_mirror
                 */
                 rtl::type().function<std::string&>(str_reverseString)
                            .build(static_cast<std::string(*)(std::string&)>(reverseString)),
+                rtl::type().function<const std::string&>(str_reverseString)
+                           .build(static_cast<std::string(*)(const std::string&)>(reverseString)),
                 rtl::type().function<std::string&&>(str_reverseString)
                            .build(static_cast<std::string(*)(std::string&&)>(reverseString)),
             #else
                 rtl::type().function<std::string&>(str_reverseString).build(reverseString),
                 rtl::type().function<std::string&&>(str_reverseString).build(reverseString),
-                //rtl::type().function<const std::string&&>(str_reverseString).build(reverseString),    //compile-error, not allowed by RTL.
+                rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
             #endif
             rtl::type().function<std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
-            rtl::type().function<const std::string&>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
