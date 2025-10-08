@@ -27,7 +27,7 @@ namespace rtl_tests
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			auto [err, robj] = reverseString(std::string(STRA));
@@ -60,6 +60,16 @@ namespace rtl_tests
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+			EXPECT_EQ(retStr, expStr);
+		} {
+			auto [err, robj] = reverseString();
+
+			EXPECT_TRUE(err == rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}
