@@ -63,7 +63,9 @@ namespace rtl::detail
                 };
             }
         }
-        else return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
+        else [[unlikely]] {
+            return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
+        }
     }
 }
 

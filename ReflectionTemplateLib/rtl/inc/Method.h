@@ -13,7 +13,6 @@
 
 #include <functional>
 
-#include "RObject.h"
 #include "Function.h"
 #include "MethodInvoker.h"
 
