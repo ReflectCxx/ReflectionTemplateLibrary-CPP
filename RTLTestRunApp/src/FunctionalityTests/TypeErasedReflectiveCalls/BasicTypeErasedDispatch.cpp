@@ -10,7 +10,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-	TEST(BasicTypeErasedDispatch, default_resolutions_to_call_by_value_overloads)
+	TEST(BasicTypeErasedDispatch, implicit_resolutions_to_call_by_value_overloads)
 	{
 		auto reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
 		ASSERT_TRUE(reverseStringOpt);
@@ -18,11 +18,11 @@ namespace rtl_tests
 		rtl::Function reverseString = *reverseStringOpt;
 		{
 			auto [err, robj] = reverseString(const_cast<char*>(STRA));
-			EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+			EXPECT_EQ(err, rtl::error::SignatureMismatch);
 		} {
 			auto [err, robj] = reverseString(STRA);
 			
-			EXPECT_TRUE(err == rtl::error::None);
+			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
@@ -32,7 +32,7 @@ namespace rtl_tests
 		} {
 			auto [err, robj] = reverseString(std::string(STRA));
 
-			EXPECT_TRUE(err == rtl::error::None);
+			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
@@ -43,7 +43,7 @@ namespace rtl_tests
 			std::string str = STRA;
 			auto [err, robj] = reverseString(&str);
 
-			EXPECT_TRUE(err == rtl::error::None);
+			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
@@ -54,7 +54,7 @@ namespace rtl_tests
 			const std::string str = STRA;
 			auto [err, robj] = reverseString(&str);
 
-			EXPECT_TRUE(err == rtl::error::None);
+			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
@@ -64,12 +64,32 @@ namespace rtl_tests
 		} {
 			auto [err, robj] = reverseString();
 
-			EXPECT_TRUE(err == rtl::error::None);
+			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+			EXPECT_EQ(retStr, expStr);
+		}
+	}
+
+
+	TEST(BasicTypeErasedDispatch, implicit_resolution_to_const_lvalue_ref_overload)
+	{
+		auto reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
+		ASSERT_TRUE(reverseStringOpt);
+
+		rtl::Function reverseString = *reverseStringOpt;
+		{
+			std::string_view str = STRA;
+			auto [err, robj] = reverseString(str);
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}

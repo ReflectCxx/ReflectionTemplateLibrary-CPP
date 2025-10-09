@@ -109,6 +109,7 @@ namespace test_mirror
             #endif
             rtl::type().function<std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
+            rtl::type().function<const std::string_view&>(str_reverseString).build(reverseString),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),

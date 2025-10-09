@@ -36,7 +36,7 @@ namespace rtl::dispatch
         template<class ...signature_t>
         constexpr const function_t<signature_t...>* to_function(std::size_t p_argsId) const
         {
-            if (p_argsId == 0 || p_argsId == m_functor.m_signatureId) [[likely]]
+            if (p_argsId == 0 || p_argsId == m_functor.m_strict_signId) [[likely]]
             {
                 return static_cast<const function_t<signature_t...>*>(this);
             }
@@ -56,7 +56,7 @@ namespace rtl::dispatch
         constexpr const method_t<record_t, signature_t...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
             if (p_recordId == 0 || p_argsId ==0 ||
-               (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_signatureId)) [[likely]]
+               (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_strict_signId)) [[likely]]
             {
                 return static_cast<const method_t<record_t, signature_t...>*>(this);
             }
@@ -64,6 +64,12 @@ namespace rtl::dispatch
         }
 
         GETTER_CREF(functor, _functor, m_functor);
+        
+        GETTER_BOOL(_any_ncref, m_functor.m_is_any_ncref)
+            
+        GETTER(std::size_t, _strict_sign_id, m_functor.m_strict_signId)
+
+        GETTER(std::size_t, _normal_sign_id, m_functor.m_normal_signId)
 
         lambda_base(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
             : m_is_void(p_functor.m_returnId == detail::TypeId<void>::get())

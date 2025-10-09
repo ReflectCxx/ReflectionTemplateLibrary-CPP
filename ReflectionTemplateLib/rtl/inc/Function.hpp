@@ -76,14 +76,31 @@ namespace rtl
     }
 
 
-    ForceInline const detail::FunctorId* Function::getLambdaById(const std::size_t pSignatureId) const
+    ForceInline std::pair<const detail::FunctorId*, bool> Function::getLambdaById(const std::size_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
-            if (pSignatureId == functorId.m_lambda->m_functor.m_signatureId) [[likely]] {
-                return &functorId;
+            if (pSignatureId == functorId.m_lambda->get_strict_sign_id()) [[likely]] {
+                return { &functorId, false };
             }
         }
-        return nullptr;
+
+        std::size_t index = rtl::index_none;
+        for (int i = 0; i < m_functorIds.size(); i++)
+        {
+            if (pSignatureId == m_functorIds[i].m_lambda->get_normal_sign_id()) [[likely]] {
+                if (index == rtl::index_none) {
+                    index = i;
+                }
+                else return { nullptr, true };
+            }
+        }
+
+        if (index != rtl::index_none)
+        {
+            auto isAnyNonConstRefInArgsT = (m_functorIds[index].m_lambda->is_any_ncref());
+            return { (isAnyNonConstRefInArgsT ? nullptr : &m_functorIds[index]), isAnyNonConstRefInArgsT };
+        }
+        return { nullptr, false };
     }
 }

@@ -19,23 +19,36 @@ namespace rtl::dispatch
 {
     struct functor
     {
-        std::size_t m_recordId = detail::TypeId<>::None;
-        std::size_t m_returnId = detail::TypeId<>::None;
-        std::size_t m_signatureId = detail::TypeId<>::None;
+        GETTER_CPTR(lambda_base, _lambda, m_lambda)
+
+    protected:
 
         std::string m_recordStr;
         std::string m_returnStr;
         std::string m_signatureStr;
 
+        std::size_t m_recordId = detail::TypeId<>::None;
+        std::size_t m_returnId = detail::TypeId<>::None;
+
+        std::size_t m_normal_signId = detail::TypeId<>::None;
+        std::size_t m_strict_signId = detail::TypeId<>::None;
+
+        bool m_is_any_ncref = false;
         std::vector<std::size_t> m_argumentsId = {};
 
-        detail::methodQ m_qualifier = detail::methodQ::None;        
-
-        GETTER_CPTR(lambda_base, _lambda, m_lambda)
+        detail::methodQ m_qualifier = detail::methodQ::None;
 
     private:
 
         mutable const lambda_base* m_lambda = nullptr;
+
+        friend lambda_base;
+
+        template<class ...signature_t>
+        friend struct lambda_function;
+
+        template<class record_t, class ...signature_t>
+        friend struct lambda_method;
 
         template<class return_t, class ...signature_t>
         friend struct cache::lambda_function;

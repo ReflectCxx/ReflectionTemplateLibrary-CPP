@@ -127,9 +127,9 @@ namespace rtl
 
     namespace traits 
     {
-        template<typename T, typename... Args>
-        concept has_constructor = requires(Args&&... args) {
-            T{ std::forward<Args>(args)... };
+        template<typename T, typename... signatureT>
+        concept has_constructor = requires(signatureT&&... args) {
+            T{ std::forward<signatureT>(args)... };
         };
 
         template<class T>
@@ -148,23 +148,15 @@ namespace rtl
 namespace rtl::traits
 {
     template<typename T>
-    class normalized_t 
-    {
-        using no_ref_t = std::remove_reference_t<T>;
+    using normal_sign_t = std::remove_const_t<std::remove_reference_t<T>>;
 
-    public:
-        using type = std::conditional_t< std::is_pointer_v<no_ref_t>,
-                                         std::remove_const_t<no_ref_t>,    // strip top-level const of pointer
-                                         std::remove_const_t<no_ref_t>     // strip const and reference for non-pointers
-                                       >;
-    };
+    template<class ...signatureT>
+    using normal_sign_id_t = std::tuple<normal_sign_t<signatureT>...>;
+
+    template<class ...signatureT>
+    using strict_sign_id_t = std::tuple<signatureT...>;
 
     template<typename T>
-    using normal_sign_t = typename normalized_t<T>::type;
-
-    template<class ...signatureT>
-    using fuzzy_sign_t = std::tuple<normal_sign_t<signatureT>...>;
-
-    template<class ...signatureT>
-    using strict_sign_t = std::tuple<signatureT...>;
+    inline constexpr bool is_nonconst_ref_v = ((std::is_lvalue_reference_v<T> || std::is_rvalue_reference_v<T>) &&
+                                                !std::is_const_v<std::remove_reference_t<T>>);
 }

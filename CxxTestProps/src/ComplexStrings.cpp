@@ -18,9 +18,10 @@ namespace test_utils {
 	const char* SUFFIX_ARG_std_string_clvref = "_arg_const_std::string&";
 	
 	const char* SUFFIX_ARG_std_string_rvref = "_arg_std::string&&";
-	const char* SUFFIX_ARG_std_string_crvref = "_arg_const_std::string&&";
 
 	const char* REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
+
+	const char* SUFFIX_ARG_std_string_view_clvref = "_arg_const_std::string_view&";
 }
 
 using namespace test_utils;
@@ -71,14 +72,6 @@ std::string reverseString(const std::string& pStr)
 }
 
 
-std::string reverseString(const std::string&& pStr)
-{
-	std::string retStr = pStr;
-	std::reverse(retStr.begin(), retStr.end());
-	return retStr + SUFFIX_ARG_std_string_crvref;
-}
-
-
 std::string reverseString(std::string* pStr)
 {
 	std::string retStr = *pStr;
@@ -92,6 +85,14 @@ std::string reverseString(const std::string* pStr)
 	std::string retStr = *pStr;
 	std::reverse(retStr.begin(), retStr.end());
 	return retStr + SUFFIX_ARG_std_string_cptr;
+}
+
+
+std::string reverseString(const std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_clvref;
 }
 
 

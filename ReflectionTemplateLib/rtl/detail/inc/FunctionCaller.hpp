@@ -45,12 +45,12 @@ namespace rtl::detail
     template<class ...argsT>
     ForceInline constexpr Return ErasedCaller<signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function.getLambdaById(detail::TypeId<traits::fuzzy_sign_t<argsT...>>::get());
-        if (functorId) [[likely]] 
+        auto functorId = m_function.getLambdaById(detail::TypeId<traits::normal_sign_id_t<argsT...>>::get());
+        if (functorId.first) [[likely]]
         {
-            const auto& erased = functorId->m_lambda->m_erasure;
+            const auto& erased = functorId.first->m_lambda->m_erasure;
             const auto& caller = erased.template to_erased_return<argsT...>();
-            if(functorId->m_lambda->is_void())
+            if (functorId.first->m_lambda->is_void())
             {
                 caller.hop_void(std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
@@ -59,11 +59,11 @@ namespace rtl::detail
             {
                 return{ error::None,
                         RObject{ caller.hop_return(std::forward<argsT>(params)...),
-                                 caller.get_return_id(), nullptr } 
-                    };
+                                 caller.get_return_id(), nullptr }
+                };
             }
         }
-        else return { error::SignatureMismatch, RObject{} };
+        else return { (functorId.second ? error::RefOverloadAmbiguity : error::SignatureMismatch), RObject{} };
     }
 }
 
@@ -73,7 +73,7 @@ namespace rtl::detail
     template<class ...signatureT>
     inline constexpr const HopFunction<signatureT...> Hopper<>::argsT() const
     {
-        const auto argsId = TypeId<traits::strict_sign_t<signatureT...>>::get();
+        const auto argsId = TypeId<traits::strict_sign_id_t<signatureT...>>::get();
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_function<signatureT...>(argsId);

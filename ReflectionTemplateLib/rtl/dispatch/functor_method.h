@@ -35,9 +35,13 @@ namespace rtl::dispatch
 		method_ptr(functor_t fptr) :m_functor(fptr)
 		{
 			m_qualifier = detail::methodQ::NonConst;
+			
 			m_recordId = detail::TypeId<record_t>::get();
 			m_returnId = detail::TypeId<return_t>::get();
-			m_signatureId = detail::TypeId<traits::strict_sign_t<signature_t...>>::get();
+
+			m_is_any_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
+			m_normal_signId = detail::TypeId<traits::normal_sign_id_t<signature_t...>>::get();
+			m_strict_signId = detail::TypeId<traits::strict_sign_id_t<signature_t...>>::get();
 
 			m_returnStr = detail::TypeId<return_t>::toString();
 			m_recordStr = detail::TypeId<record_t>::toString();
@@ -46,6 +50,6 @@ namespace rtl::dispatch
 
 	private:
 
-		functor_t m_functor;
+		const functor_t m_functor;
 	};
 }

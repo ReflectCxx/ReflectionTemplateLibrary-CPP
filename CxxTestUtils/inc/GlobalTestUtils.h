@@ -19,7 +19,7 @@ namespace test_utils {
 	extern const char* SUFFIX_ARG_std_string_clvref;
 	extern const char* SUFFIX_ARG_std_string_cptr;
 	extern const char* SUFFIX_ARG_std_string_rvref;
-	extern const char* SUFFIX_ARG_std_string_crvref;
+	extern const char* SUFFIX_ARG_std_string_view_clvref;
 
 	extern const char* REV_STR_VOID_RET;
 
