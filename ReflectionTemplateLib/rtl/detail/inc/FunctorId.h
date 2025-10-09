@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "rtl_constants.h"
 #include "rtl_forward_decls.h"
 
 namespace rtl::detail
@@ -45,7 +46,7 @@ namespace rtl::detail
         GETTER(std::size_t, ReturnId, m_returnId);
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
-        GETTER(std::string, SignatureStr, m_signature)
+        GETTER_CREF(std::string, SignatureStr, m_signature)
 
 
     /*  @method: getHashCode()

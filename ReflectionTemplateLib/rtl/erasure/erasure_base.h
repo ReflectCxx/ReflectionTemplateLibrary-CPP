@@ -13,6 +13,7 @@
 
 #include "functor.h"
 #include "RObjectId.h"
+#include "rtl_constants.h"
 
 namespace rtl::dispatch::erase
 {
@@ -45,8 +46,8 @@ namespace rtl::dispatch::erase
 
         const detail::RObjectId m_robj_id;
 
-        GETTER(detail::RObjectId, _return_id, m_robj_id);
+        GETTER_CREF(detail::RObjectId, _return_id, m_robj_id);
 
-        GETTER(dispatch::lambda_base, _lambda, (*m_functor.get_lambda()));
+        GETTER_CREF(dispatch::lambda_base, _lambda, (*m_functor.get_lambda()));
 	};
 }

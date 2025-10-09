@@ -2,6 +2,15 @@
 
 #include <string>
 
+namespace complex
+{
+	double getMagnitude();
+
+	void setReal(double pNum);
+
+	void setImaginary(double pNum);
+}
+
 std::string getComplexNumAsString();
 
 std::string reverseString();
@@ -22,12 +31,10 @@ std::string reverseString(const std::string* pStr);		  // (6) pointer to const
 
 std::string reverseString(const std::string_view& pStr);
 
+std::string revStrOverloadValRef(std::string_view pStr);
 
-namespace complex
-{
-	double getMagnitude();
+std::string revStrOverloadValRef(std::string_view& pStr);
 
-	void setReal(double pNum);
+std::string revStrOverloadValCRef(std::string_view pStr);
 
-	void setImaginary(double pNum);
-}
+std::string revStrOverloadValCRef(const std::string_view& pStr);

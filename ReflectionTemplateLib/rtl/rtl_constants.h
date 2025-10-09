@@ -143,28 +143,28 @@ namespace rtl::detail
     }
 
 #define GETTER(_varType, _name, _var)                       \
-    inline constexpr const _varType& get##_name() const {   \
+    inline constexpr const _varType get##_name() const {   \
         return _var;                                        \
     }
 
 #define GETTER_REF(_varType, _name, _var)       \
-    inline _varType& get##_name() const {       \
+    inline constexpr _varType& get##_name() const {       \
         return _var;                            \
     }
 
 
 #define GETTER_CPTR(_varType, _name, _var)                 \
-    constexpr inline const _varType* get##_name() const {  \
+    inline constexpr const _varType* get##_name() const {  \
         return _var;                                       \
     }
 
 #define GETTER_CREF(_varType, _name, _var)       \
-    inline const _varType& get##_name() const {  \
+    inline constexpr const _varType& get##_name() const {  \
         return _var;                             \
     }
 
 #define GETTER_BOOL(_name, _var)              \
-    inline const bool is##_name() const {     \
+    inline constexpr const bool is##_name() const {     \
         return _var;                          \
     }
 

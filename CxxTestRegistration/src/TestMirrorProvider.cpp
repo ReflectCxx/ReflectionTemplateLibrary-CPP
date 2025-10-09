@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <string_view>
 
 #include "TestMirrorProvider.h"
 #include "CxxMirrorToJson.h"
@@ -17,6 +18,7 @@
 /*
 TestUtils, provides the interface to test/compare reflected type objects with actual objects (created via strict typing)
 without exposing the actual type objects to "CxxReflectionTests" project.*/
+#include "Reflect.h"
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
@@ -110,6 +112,10 @@ namespace test_mirror
             rtl::type().function<std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string_view&>(str_reverseString).build(reverseString),
+            rtl::type().function<std::string_view>(str_revStrOverloadValRef).build(revStrOverloadValRef),
+            rtl::type().function<std::string_view&>(str_revStrOverloadValRef).build(revStrOverloadValRef),
+            rtl::type().function<std::string_view>(str_revStrOverloadValCRef).build(revStrOverloadValCRef),
+            rtl::type().function<const std::string_view&>(str_revStrOverloadValCRef).build(revStrOverloadValCRef),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),

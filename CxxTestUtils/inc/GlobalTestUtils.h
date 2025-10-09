@@ -15,10 +15,13 @@ namespace test_utils {
 
 	extern const char* SUFFIX_ARG_std_string;
 	extern const char* SUFFIX_ARG_std_string_ptr;
-	extern const char* SUFFIX_ARG_std_string_lvref;
-	extern const char* SUFFIX_ARG_std_string_clvref;
 	extern const char* SUFFIX_ARG_std_string_cptr;
+	extern const char* SUFFIX_ARG_std_string_lvref;
 	extern const char* SUFFIX_ARG_std_string_rvref;
+	extern const char* SUFFIX_ARG_std_string_clvref;
+
+	extern const char* SUFFIX_ARG_std_string_view;
+	extern const char* SUFFIX_ARG_std_string_view_lvref;
 	extern const char* SUFFIX_ARG_std_string_view_clvref;
 
 	extern const char* REV_STR_VOID_RET;
@@ -33,6 +36,8 @@ namespace test_utils {
 	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
 
 	static constexpr const char* str_reverseString = "reverseString";
+	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
+	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
 	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
 
 	static constexpr const char* str_complex = "complex";

@@ -1,6 +1,7 @@
 
 #include <complex>
 #include <gtest/gtest.h>
+#include <string_view>
 
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
@@ -75,21 +76,81 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, implicit_resolution_to_const_lvalue_ref_overload)
+	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
-		auto reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
-		ASSERT_TRUE(reverseStringOpt);
+		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+		ASSERT_TRUE(revStrOverloadValCRefOpt);
 
-		rtl::Function reverseString = *reverseStringOpt;
+		rtl::Function revStrOverloadValCRef = *revStrOverloadValCRefOpt;
 		{
 			std::string_view str = STRA;
-			auto [err, robj] = reverseString(str);
+			auto [err, robj] = revStrOverloadValCRef(str);
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			EXPECT_EQ(retStr, expStr);
+		}
+	}
+
+
+	TEST(BasicTypeErasedDispatch, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
+	{
+		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+		ASSERT_TRUE(revStrOverloadValCRefOpt);
+
+		rtl::Function revStrOverloadValCRef = *revStrOverloadValCRefOpt;
+		{
+			std::string_view str = STRA;
+			auto [err, robj] = revStrOverloadValCRef.bind<const std::string_view&>().call(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			EXPECT_EQ(retStr, expStr);
+		}
+	}
+
+
+	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	{
+		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
+		ASSERT_TRUE(revStrOverloadValRefOpt);
+
+		rtl::Function revStrOverloadValRef = *revStrOverloadValRefOpt;
+		{
+			std::string_view str = STRA;
+			auto [err, robj] = revStrOverloadValRef(str);
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			EXPECT_EQ(retStr, expStr);
+		}
+	}
+
+
+	TEST(BasicTypeErasedDispatch, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	{
+		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
+		ASSERT_TRUE(revStrOverloadValRefOpt);
+
+		rtl::Function revStrOverloadValRef = *revStrOverloadValRefOpt;
+		{
+			std::string_view str = STRA;
+			auto [err, robj] = revStrOverloadValRef.bind<std::string_view&>().call(str);
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}

@@ -17,6 +17,7 @@
 
 #include "RObject.h"
 #include "FunctionCaller.h"
+#include "rtl_constants.h"
 
 namespace rtl {
 
@@ -77,11 +78,11 @@ namespace rtl {
     public:
 
         //simple inlined getters.
-        GETTER(std::string, RecordName, m_record);
-        GETTER(std::string, Namespace, m_namespace);
-        GETTER(std::string, FunctionName, m_function);
         GETTER(std::size_t, RecordTypeId, m_recordTypeId);
-        GETTER(std::vector<detail::FunctorId>, Functors, m_functorIds);
+        GETTER_CREF(std::string, RecordName, m_record);
+        GETTER_CREF(std::string, Namespace, m_namespace);
+        GETTER_CREF(std::string, FunctionName, m_function);
+        GETTER_CREF(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
         Function() = default;
         Function(Function&&) = default;
