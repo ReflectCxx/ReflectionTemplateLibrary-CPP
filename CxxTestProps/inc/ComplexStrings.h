@@ -29,7 +29,9 @@ std::string reverseString(std::string* pStr);			  // (5) pointer
 
 std::string reverseString(const std::string* pStr);		  // (6) pointer to const
 
-std::string reverseString(const std::string_view& pStr);
+std::string revStrConstRefArg(const std::string_view& pStr);
+
+std::string revStrNonConstRefArg(std::string_view& pStr);
 
 std::string revStrOverloadValRef(std::string_view pStr);
 
@@ -38,3 +40,7 @@ std::string revStrOverloadValRef(std::string_view& pStr);
 std::string revStrOverloadValCRef(std::string_view pStr);
 
 std::string revStrOverloadValCRef(const std::string_view& pStr);
+
+std::string revStrOverloadRefAndCRef(std::string_view& pStr);
+
+std::string revStrOverloadRefAndCRef(const std::string_view& pStr);

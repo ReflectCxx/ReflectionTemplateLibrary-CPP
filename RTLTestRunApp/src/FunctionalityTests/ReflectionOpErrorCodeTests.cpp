@@ -7,6 +7,10 @@
 *	rtl::error::ConstOverloadMissing
 *	rtl::error::NonConstOverloadMissing
 *   rtl::error::ConstCallViolation
+* 
+* Covered in BasicTypeErasedDispatch.cpp
+*   rtl::error::ExplicitRefBindingRequired
+* 
 * and,
 *	rtl::error::FunctionNotRegistered, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 

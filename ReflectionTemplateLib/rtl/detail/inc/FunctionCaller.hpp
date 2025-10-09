@@ -63,7 +63,7 @@ namespace rtl::detail
                 };
             }
         }
-        else return { (functorId.second ? error::RefOverloadAmbiguity : error::SignatureMismatch), RObject{} };
+        else return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
     }
 }
 

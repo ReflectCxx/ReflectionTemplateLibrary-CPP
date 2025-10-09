@@ -99,7 +99,7 @@ namespace rtl
         if (index != rtl::index_none)
         {
             auto isAnyNonConstRefInArgsT = (m_functorIds[index].m_lambda->is_any_ncref());
-            return { (isAnyNonConstRefInArgsT ? nullptr : &m_functorIds[index]), isAnyNonConstRefInArgsT };
+            return { (isAnyNonConstRefInArgsT ? nullptr:&m_functorIds[index]), isAnyNonConstRefInArgsT };
         }
         return { nullptr, false };
     }

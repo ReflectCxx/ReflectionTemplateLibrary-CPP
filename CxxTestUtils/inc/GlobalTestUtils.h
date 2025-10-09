@@ -36,12 +36,17 @@ namespace test_utils {
 	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
 
 	static constexpr const char* str_reverseString = "reverseString";
+	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
+	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
 	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
 	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
+	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadValRefAndCRef";
+
 	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
 
 	static constexpr const char* str_complex = "complex";
 	static constexpr const char* str_setReal = "setReal";
+
 	static constexpr const char* str_setImaginary = "setImaginary";
 	static constexpr const char* str_getMagnitude = "getMagnitude";
 }

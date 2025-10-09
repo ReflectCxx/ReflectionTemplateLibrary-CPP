@@ -111,11 +111,18 @@ namespace test_mirror
             #endif
             rtl::type().function<std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
-            rtl::type().function<const std::string_view&>(str_reverseString).build(reverseString),
+
+            rtl::type().function<const std::string_view&>(str_revStrConstRefArg).build(revStrConstRefArg),
+            rtl::type().function<std::string_view&>(str_revStrNonConstRefArg).build(revStrNonConstRefArg),
+
             rtl::type().function<std::string_view>(str_revStrOverloadValRef).build(revStrOverloadValRef),
             rtl::type().function<std::string_view&>(str_revStrOverloadValRef).build(revStrOverloadValRef),
+
             rtl::type().function<std::string_view>(str_revStrOverloadValCRef).build(revStrOverloadValCRef),
             rtl::type().function<const std::string_view&>(str_revStrOverloadValCRef).build(revStrOverloadValCRef),
+
+            rtl::type().function<std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
+            rtl::type().function<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
@@ -291,7 +298,7 @@ namespace test_mirror
 
 namespace test_mirror
 {
-    //Optional setup for accessing registered types via unique-ids.
+    //Optional setup for accessing registered types via unique-ids. (for Testing-Purposes only, not required by RTL).
     std::size_t reflected_id::book = rtl::detail::TypeId<Book>::get();
     std::size_t reflected_id::person = rtl::detail::TypeId<Person>::get();
     std::size_t reflected_id::animal = rtl::detail::TypeId<Animal>::get();
@@ -306,7 +313,7 @@ namespace test_mirror
     std::size_t reflected_id::std_string = rtl::detail::TypeId<std::string>::get();
     std::size_t reflected_id::std_string_view = rtl::detail::TypeId<std::string_view>::get();
 
-    //Optional setup - mapping unique-ids to string type-names (for Testing-Purposes only).
+    //Optional setup - mapping unique-ids to string type-names (for Testing-Purposes only, not required by RTL).
     const std::size_t reflected_id::getRecordIdFor(const std::string& pRecordName)
     {
         static std::unordered_map<std::string, std::size_t> nameIdMap(
