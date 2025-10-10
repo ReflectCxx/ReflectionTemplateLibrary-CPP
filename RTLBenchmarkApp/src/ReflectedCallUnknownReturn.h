@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlFunction_call_ReturnUnknown
+struct RtlErasedType_call_unknownReturn
 {
     static void Void(benchmark::State& state);
 
@@ -10,13 +10,13 @@ struct RtlFunction_call_ReturnUnknown
 };
 
 
-struct RtlFunction_callMethod_ReturnUnknown
+struct RtlErasedType_callMethod_unknownReturn
 {    
     static void Void(benchmark::State& state);
 
     static void NonVoid(benchmark::State& state);
 
-    static void erasedTarget_Void(benchmark::State& state);
+    static void unknownTarget_Void(benchmark::State& state);
 
-    static void erasedTarget_NonVoid(benchmark::State& state);
+    static void unknownTarget_NonVoid(benchmark::State& state);
 };

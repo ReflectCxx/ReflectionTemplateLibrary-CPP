@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlFunction_call
+struct RtlStaticTyped_call
 {
     static void returnVoid(benchmark::State& state);
 
@@ -26,7 +26,7 @@ struct NativeFunctionPtr_callMethod
 };
 
 
-struct RtlFunction_callMethod
+struct RtlStaticTyped_callMethod
 {
     static void returnVoid(benchmark::State& state);
 

@@ -14,12 +14,12 @@ BENCHMARK(NativeFunctionPtr_callMethod::returnVoid);
 BENCHMARK(StdFunction_call::returnVoid);
 BENCHMARK(StdFunction_callMethod::returnVoid);
 
-BENCHMARK(RtlFunction_call::returnVoid);
-BENCHMARK(RtlFunction_callMethod::returnVoid);
+BENCHMARK(RtlStaticTyped_call::returnVoid);
+BENCHMARK(RtlStaticTyped_callMethod::returnVoid);
 
-BENCHMARK(RtlFunction_call_ReturnUnknown::Void);
-BENCHMARK(RtlFunction_callMethod_ReturnUnknown::Void);
-BENCHMARK(RtlFunction_callMethod_ReturnUnknown::erasedTarget_Void);
+BENCHMARK(RtlErasedType_call_unknownReturn::Void);
+BENCHMARK(RtlErasedType_callMethod_unknownReturn::Void);
+BENCHMARK(RtlErasedType_callMethod_unknownReturn::unknownTarget_Void);
 
 BENCHMARK(NativeCall::returnNonVoid);
 
@@ -29,12 +29,12 @@ BENCHMARK(NativeFunctionPtr_callMethod::returnNonVoid);
 BENCHMARK(StdFunction_call::returnNonVoid);
 BENCHMARK(StdFunction_callMethod::returnNonVoid);
 
-BENCHMARK(RtlFunction_call::returnNonVoid);
-BENCHMARK(RtlFunction_callMethod::returnNonVoid);
+BENCHMARK(RtlStaticTyped_call::returnNonVoid);
+BENCHMARK(RtlStaticTyped_callMethod::returnNonVoid);
 
-BENCHMARK(RtlFunction_call_ReturnUnknown::NonVoid);
-BENCHMARK(RtlFunction_callMethod_ReturnUnknown::NonVoid);
-BENCHMARK(RtlFunction_callMethod_ReturnUnknown::erasedTarget_NonVoid);
+BENCHMARK(RtlErasedType_call_unknownReturn::NonVoid);
+BENCHMARK(RtlErasedType_callMethod_unknownReturn::NonVoid);
+BENCHMARK(RtlErasedType_callMethod_unknownReturn::unknownTarget_NonVoid);
 
 namespace bm 
 {

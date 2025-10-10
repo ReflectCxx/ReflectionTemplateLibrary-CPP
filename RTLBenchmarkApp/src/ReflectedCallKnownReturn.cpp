@@ -139,7 +139,7 @@ void NativeFunctionPtr_callMethod::returnVoid(benchmark::State& state)
 
 
 
-void RtlFunction_call::returnNonVoid(benchmark::State &state)
+void RtlStaticTyped_call::returnNonVoid(benchmark::State &state)
 {
     static auto _ = _new_line();
     static auto is_ok = test(getMessage, 3);
@@ -149,7 +149,7 @@ void RtlFunction_call::returnNonVoid(benchmark::State &state)
     }
 }
 
-void RtlFunction_callMethod::returnNonVoid(benchmark::State& state)
+void RtlStaticTyped_callMethod::returnNonVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto is_ok = test(getMessageNode, 4);
@@ -159,7 +159,7 @@ void RtlFunction_callMethod::returnNonVoid(benchmark::State& state)
     }
 }
 
-void RtlFunction_call::returnVoid(benchmark::State& state)
+void RtlStaticTyped_call::returnVoid(benchmark::State& state)
 {
     static auto _ = _new_line();
     static auto is_ok = test(sendMessage, 0);
@@ -170,7 +170,7 @@ void RtlFunction_call::returnVoid(benchmark::State& state)
     }
 }
 
-void RtlFunction_callMethod::returnVoid(benchmark::State& state)
+void RtlStaticTyped_callMethod::returnVoid(benchmark::State& state)
 {
     static bm::Node nodeObj;
     static auto is_ok = test(sendMessageNode, 5);
