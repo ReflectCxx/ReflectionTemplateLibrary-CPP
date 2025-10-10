@@ -249,4 +249,110 @@ namespace rtl_tests
             EXPECT_FALSE(is_empty("view_not_empty"));
         }
     }
+
+
+    TEST(StrictStaticTypeDispatch, distinct_functions_with_ref_args_call_with_known_signature)
+    {
+        std::string str = STRA;
+        {
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrConstRefArg);
+            ASSERT_TRUE(reverseString);
+
+            rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrNonConstRefArg);
+            ASSERT_TRUE(reverseString);
+
+            rtl::function<std::string(std::string_view&)> reverse_string = reverseString->argsT<std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            auto lvstr = std::string_view(str);
+            std::string ret_str = reverse_string(lvstr);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrRValueRefArg);
+            ASSERT_TRUE(reverseString);
+
+            rtl::function<std::string(std::string_view&&)> reverse_string = reverseString->argsT<std::string_view&&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(std::string_view(str));
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_rvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
+    TEST(StrictStaticTypeDispatch, overloads_with_ref_and_value_args_call_with_known_signature)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRef);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string_view)> reverse_string = reverseString->argsT<std::string_view>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(std::string_view(STRA));
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(std::string_view&)> reverse_string = reverseString->argsT<std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string_view str = STRA;
+            std::string ret_str = reverse_string(str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
+    TEST(StrictStaticTypeDispatch, overloads_with_const_ref_and_value_args_call_with_known_signature)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string_view)> reverse_string = reverseString->argsT<std::string_view>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(std::string_view(STRA));
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(std::string_view(STRA));
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
+
+
+    TEST(StrictStaticTypeDispatch, overloads_with_ref_and_const_ref_args_call_with_known_signature)
+    {
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::function<std::string(std::string_view&)> reverse_string = reverseString->argsT<std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string_view str = STRA;
+            std::string ret_str = reverse_string(str);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            EXPECT_EQ(ret_str, exp_str);
+        } {
+            rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(std::string_view(STRA));
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
 }

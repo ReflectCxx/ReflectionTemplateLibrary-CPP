@@ -33,6 +33,8 @@ std::string revStrConstRefArg(const std::string_view& pStr);
 
 std::string revStrNonConstRefArg(std::string_view& pStr);
 
+std::string revStrRValueRefArg(std::string_view&& pStr);
+
 std::string revStrOverloadValRef(std::string_view pStr);
 
 std::string revStrOverloadValRef(std::string_view& pStr);

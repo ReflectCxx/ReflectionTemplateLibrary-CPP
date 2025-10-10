@@ -48,6 +48,7 @@ namespace test_utils {
 
 	const char* SUFFIX_ARG_std_string_view = "_arg_std::string_view";
 	const char* SUFFIX_ARG_std_string_view_lvref = "_arg_std::string_view&";
+	const char* SUFFIX_ARG_std_string_view_rvref = "_arg_std::string_view&&";
 	const char* SUFFIX_ARG_std_string_view_clvref = "_arg_const_std::string_view&";
 }
 
@@ -120,6 +121,14 @@ std::string revStrConstRefArg(const std::string_view& pStr)
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
 	return retStr + SUFFIX_ARG_std_string_view_clvref;
+}
+
+
+std::string revStrRValueRefArg(std::string_view&& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_rvref;
 }
 
 

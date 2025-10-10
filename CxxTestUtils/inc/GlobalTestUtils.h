@@ -22,6 +22,7 @@ namespace test_utils {
 
 	extern const char* SUFFIX_ARG_std_string_view;
 	extern const char* SUFFIX_ARG_std_string_view_lvref;
+	extern const char* SUFFIX_ARG_std_string_view_rvref;
 	extern const char* SUFFIX_ARG_std_string_view_clvref;
 
 	extern const char* REV_STR_VOID_RET;
@@ -35,8 +36,9 @@ namespace test_utils {
 	static constexpr const char* STRB = "cxxReflection";
 	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
 
-	static constexpr const char* str_reverseString = "reverseString";
+	static constexpr const char* str_reverseString = "reverseString"; 
 	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
+	static constexpr const char* str_revStrRValueRefArg = "revStrRValueRefArg";
 	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
 	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
 	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";

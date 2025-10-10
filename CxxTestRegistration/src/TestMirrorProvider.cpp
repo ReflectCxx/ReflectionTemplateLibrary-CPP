@@ -112,8 +112,9 @@ namespace test_mirror
             rtl::type().function<std::string*>(str_reverseString).build(reverseString),
             rtl::type().function<const std::string*>(str_reverseString).build(reverseString),
 
-            rtl::type().function<const std::string_view&>(str_revStrConstRefArg).build(revStrConstRefArg),
             rtl::type().function<std::string_view&>(str_revStrNonConstRefArg).build(revStrNonConstRefArg),
+            rtl::type().function<std::string_view&&>(str_revStrRValueRefArg).build(revStrRValueRefArg),
+            rtl::type().function<const std::string_view&>(str_revStrConstRefArg).build(revStrConstRefArg),
 
             rtl::type().function<std::string_view>(str_revStrOverloadValRef).build(revStrOverloadValRef),
             rtl::type().function<std::string_view&>(str_revStrOverloadValRef).build(revStrOverloadValRef),

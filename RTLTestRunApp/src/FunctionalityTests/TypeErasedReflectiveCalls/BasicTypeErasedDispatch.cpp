@@ -261,6 +261,29 @@ namespace rtl_tests
 	}
 
 
+	TEST(BasicTypeErasedDispatch, calling_non_overloaded_rvalue_ref_argument)
+	{
+		auto revStrRValueRefArgOpt = cxx::mirror().getFunction(str_revStrRValueRefArg);
+		ASSERT_TRUE(revStrRValueRefArgOpt);
+
+		rtl::Function revStrRValueRefArg = *revStrRValueRefArgOpt;
+		{
+			auto [err, robj] = revStrRValueRefArg(std::string_view(STRA));
+			EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
+		} {
+			auto [err, robj] = revStrRValueRefArg.bind<std::string_view&&>().call(std::string_view(STRA));
+
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			EXPECT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_rvref;
+			EXPECT_EQ(retStr, expStr);
+		}
+	}
+
+
 	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
 		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
@@ -297,8 +320,7 @@ namespace rtl_tests
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
-		}
-		{
+		} {
 			// Explicitly selecting the const ref overload.
 			// Note: If only 'const T&' existed, RTL would have resolved it implicitly.
 			// But since both 'T&' and 'const T&' overloads are available,
