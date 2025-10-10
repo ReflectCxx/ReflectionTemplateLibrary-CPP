@@ -133,7 +133,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(getPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
-			// Slower. bind<>().call() syntax is faster.
+
 			auto [err1, ret] = getPublishedOn->bind(book).call();
 
 			EXPECT_TRUE(err1 == error::None);

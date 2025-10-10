@@ -312,7 +312,7 @@ namespace rtl_tests
 		{
 			// Explicitly selecting the non-const ref overload.
 			// Caller signals intent to allow mutation by binding as T&.
-			auto [err, robj] = revStrOverloadValRefNCref.bind<std::string_view&>().call(str);
+			auto [err, robj] = revStrOverloadValRefNCref.bind<std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
@@ -326,7 +326,7 @@ namespace rtl_tests
 			// But since both 'T&' and 'const T&' overloads are available,
 			// RTL treats the situation as ambiguous and requires explicit selection
 			// to avoid guessing the user's intent regarding mutability.
-			auto [err, robj] = revStrOverloadValRefNCref.bind<const std::string_view&>().call(str);
+			auto [err, robj] = revStrOverloadValRefNCref.bind<const std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());

@@ -182,7 +182,7 @@ namespace rtl_tests
         //Instead we can explicitly specify the types as template parameter,
         //like, (*setReal).operator()<float>(g_real);
         //or we can use the bind<...>().call(), specifying type as template param, like,
-        auto [err, robj] = setReal->bind<float>().call(g_real);
+        auto [err, robj] = setReal->bind<float>()(g_real);
 
         EXPECT_TRUE(err == rtl::error::SignatureMismatch);
         ASSERT_TRUE(robj.isEmpty());
@@ -224,7 +224,7 @@ namespace rtl_tests
         } {
             //STRB's type is 'consexpr const char*', function accepts 'string',
             //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-            auto [err, ret] = reverseString->bind<string>().call(STRB);
+            auto [err, ret] = reverseString->bind<string>()(STRB);
 
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());

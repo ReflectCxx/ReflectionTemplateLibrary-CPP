@@ -153,7 +153,7 @@ namespace rtl_tests
             constexpr const char* cstr = "Reflection Template Library C++";
 
             // Need to forward as 'const char*'
-            auto [err, ret] = cstrLen->bind<const char*>().call(cstr);
+            auto [err, ret] = cstrLen->bind<const char*>()(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -168,7 +168,7 @@ namespace rtl_tests
         } {
             // Case 3: string literal (deduces as const char[N], here const char[32])
             // Must explicitly forward as 'const char*'.
-            auto [err, ret] = cstrLen->bind<const char*>().call("Reflection Template Library C++");
+            auto [err, ret] = cstrLen->bind<const char*>()("Reflection Template Library C++");
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());

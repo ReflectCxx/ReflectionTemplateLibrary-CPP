@@ -322,7 +322,7 @@ namespace rtl_tests
             EXPECT_TRUE(isValid);
 
             const auto zookeeper = std::string(animal::ZOO_KEEPER);
-            auto [err, ret] = updateZooKeeper->bind<const std::string&>().call(zookeeper);
+            auto [err, ret] = updateZooKeeper->bind<const std::string&>()(zookeeper);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -350,7 +350,7 @@ namespace rtl_tests
             EXPECT_TRUE(isValid);
 
             auto zookeeper = std::string(animal::ZOO_KEEPER);
-            auto [err, ret] = updateZooKeeper->bind<std::string&>().call(zookeeper);
+            auto [err, ret] = updateZooKeeper->bind<std::string&>()(zookeeper);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
