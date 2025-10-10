@@ -40,16 +40,13 @@ namespace rtl::dispatch::erase
         {
             return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (std::is_void_v<return_t>)
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
                                   .template get_functor<void>();
 
-                    (p_target.*mptr)(params...);
+                    (p_target.*mptr)(std::forward<signature_t>(params)...);
                 }
             };
         }
@@ -58,10 +55,7 @@ namespace rtl::dispatch::erase
         {
             return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (std::is_void_v<return_t>)
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
@@ -69,7 +63,7 @@ namespace rtl::dispatch::erase
 
                     const auto& target = p_target.view<record_t>()->get();
 
-                    (target.*mptr)(params...);
+                    (target.*mptr)(std::forward<signature_t>(params)...);
                 }
             };
         }
@@ -78,16 +72,13 @@ namespace rtl::dispatch::erase
         {
             return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (!std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (!std::is_void_v<return_t>)
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
                                   .template get_functor<return_t>();
 
-                    auto&& ret_v = (p_target.*mptr)(params...);
+                    auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {
@@ -113,10 +104,7 @@ namespace rtl::dispatch::erase
         {
             return[](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (!std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (!std::is_void_v<return_t>)
                 {
                     auto mptr = eh.get_lambda()
                                   .template to_method<record_t, signature_t...>()
@@ -124,7 +112,7 @@ namespace rtl::dispatch::erase
 
                     const auto& target = p_target.view<record_t>()->get();
 
-                    auto&& ret_v = (target.*mptr)(params...);
+                    auto&& ret_v = (target.*mptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {

@@ -115,7 +115,7 @@ namespace rtl_tests
 			// Required only when a by-value overload exists to resolve ambiguity.
 			// If no by-value overload were present, implicit resolution to const-ref
 			// would have worked automatically, because const-ref cannot mutate.
-			auto [err, robj] = revStrOverloadValCRef.bind<const std::string_view&>().call(str);
+			auto [err, robj] = revStrOverloadValCRef.bind<const std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
@@ -167,7 +167,7 @@ namespace rtl_tests
 			// Even though the by-value overload is preferred implicitly for safety,
 			// the user can override that choice by binding explicitly as T&,
 			// signaling the intent to allow mutation through reflection.
-			auto [err, robj] = revStrOverloadValRef.bind<std::string_view&>().call(str);
+			auto [err, robj] = revStrOverloadValRef.bind<std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
 			EXPECT_TRUE(robj.canViewAs<std::string>());
@@ -214,7 +214,7 @@ namespace rtl_tests
 		// executes successfully, producing the expected result.
 		// -------------------------------------------------------------------------
 		{
-			auto [err, robj] = revStrNonConstRefArg.bind<std::string_view&>().call(str);
+			auto [err, robj] = revStrNonConstRefArg.bind<std::string_view&>()(str);
 
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
@@ -271,7 +271,7 @@ namespace rtl_tests
 			auto [err, robj] = revStrRValueRefArg(std::string_view(STRA));
 			EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
 		} {
-			auto [err, robj] = revStrRValueRefArg.bind<std::string_view&&>().call(std::string_view(STRA));
+			auto [err, robj] = revStrRValueRefArg.bind<std::string_view&&>()(std::string_view(STRA));
 
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());

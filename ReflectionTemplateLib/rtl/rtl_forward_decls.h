@@ -38,7 +38,7 @@ namespace rtl
         template<class ..._signature>
         class FunctorContainer;
 
-        template<class ..._signature>
+        template<bool is_bind_v, class ..._signature>
         struct ErasedCaller;
 
         template<class _recordType>

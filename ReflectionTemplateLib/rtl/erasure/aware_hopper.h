@@ -34,16 +34,13 @@ namespace rtl::dispatch::erase
         {
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (std::is_void_v<return_t>)
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
                                   .template get_functor<void>();
 
-                    (*fptr)(params...);
+                    (*fptr)(std::forward<signature_t>(params)...);
                 }
             };
         }
@@ -52,16 +49,13 @@ namespace rtl::dispatch::erase
         {
             return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                //TODO: handle these kind of overloads.
-                constexpr bool is_any_rvref = ((std::is_rvalue_reference_v<signature_t> || ...));
-
-                if constexpr (!std::is_void_v<return_t> && !is_any_rvref)
+                if constexpr (!std::is_void_v<return_t>)
                 {
                     auto fptr = eh.get_lambda()
                                   .template to_function<signature_t...>()
                                   .template get_functor<return_t>();
 
-                    auto&& ret_v = (*fptr)(params...);
+                    auto&& ret_v = (*fptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {

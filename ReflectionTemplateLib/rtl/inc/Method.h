@@ -55,7 +55,7 @@ namespace rtl {
         using Function::bind;
 
         template<class ..._args>
-        constexpr const detail::ErasedCaller<_args...> operator()(_args&&...params) const noexcept = delete;
+        constexpr const detail::ErasedCaller<false, _args...> operator()(_args&&...params) const noexcept = delete;
 
         template<class ...signatureT>
         constexpr const detail::HopFunction<signatureT...> argsT() const = delete;

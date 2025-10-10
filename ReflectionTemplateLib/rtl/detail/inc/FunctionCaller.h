@@ -15,7 +15,7 @@
 
 namespace rtl::detail
 {		
-    template<class ..._signature>
+    template<bool is_binding_v, class ..._signature>
     struct ErasedCaller
     {
         const Function& m_function;
@@ -23,7 +23,10 @@ namespace rtl::detail
         template<class ..._args>
         rtl::Return call(_args&&...) const noexcept;
 
-        template<class ..._args>
+        template<class ..._args> requires (is_binding_v == false)
+        constexpr rtl::Return operator()(_args&&...params) const noexcept;
+
+        template<class ..._args> requires (is_binding_v == true)
         constexpr rtl::Return operator()(_args&&...params) const noexcept;
     };
 }

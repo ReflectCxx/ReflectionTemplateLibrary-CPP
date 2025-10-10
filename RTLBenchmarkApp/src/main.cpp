@@ -17,9 +17,9 @@ BENCHMARK(StdFunction_callMethod::returnVoid);
 BENCHMARK(RtlStaticTyped_call::returnVoid);
 BENCHMARK(RtlStaticTyped_callMethod::returnVoid);
 
-BENCHMARK(RtlErasedType_call_unknownReturn::Void);
-BENCHMARK(RtlErasedType_callMethod_unknownReturn::Void);
-BENCHMARK(RtlErasedType_callMethod_unknownReturn::unknownTarget_Void);
+BENCHMARK(RtlErasedReturnType_call::returnVoid);
+BENCHMARK(RtlErasedReturnType_callMethod::returnVoid);
+BENCHMARK(RtlErasedReturnType_callMethod::unknownTarget_returnVoid);
 
 BENCHMARK(NativeCall::returnNonVoid);
 
@@ -32,9 +32,9 @@ BENCHMARK(StdFunction_callMethod::returnNonVoid);
 BENCHMARK(RtlStaticTyped_call::returnNonVoid);
 BENCHMARK(RtlStaticTyped_callMethod::returnNonVoid);
 
-BENCHMARK(RtlErasedType_call_unknownReturn::NonVoid);
-BENCHMARK(RtlErasedType_callMethod_unknownReturn::NonVoid);
-BENCHMARK(RtlErasedType_callMethod_unknownReturn::unknownTarget_NonVoid);
+BENCHMARK(RtlErasedReturnType_call::returnNonVoid);
+BENCHMARK(RtlErasedReturnType_callMethod::returnNonVoid);
+BENCHMARK(RtlErasedReturnType_callMethod::unknownTarget_returnNonVoid);
 
 namespace bm 
 {

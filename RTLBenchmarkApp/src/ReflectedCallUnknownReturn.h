@@ -2,21 +2,21 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlErasedType_call_unknownReturn
+struct RtlErasedReturnType_call
 {
-    static void Void(benchmark::State& state);
+    static void returnVoid(benchmark::State& state);
 
-    static void NonVoid(benchmark::State& state);
+    static void returnNonVoid(benchmark::State& state);
 };
 
 
-struct RtlErasedType_callMethod_unknownReturn
+struct RtlErasedReturnType_callMethod
 {    
-    static void Void(benchmark::State& state);
+    static void returnVoid(benchmark::State& state);
 
-    static void NonVoid(benchmark::State& state);
+    static void returnNonVoid(benchmark::State& state);
 
-    static void unknownTarget_Void(benchmark::State& state);
+    static void unknownTarget_returnVoid(benchmark::State& state);
 
-    static void unknownTarget_NonVoid(benchmark::State& state);
+    static void unknownTarget_returnNonVoid(benchmark::State& state);
 };

@@ -152,7 +152,7 @@ namespace
 
 
 
-void RtlErasedType_call_unknownReturn::Void(benchmark::State& state)
+void RtlErasedReturnType_call::returnVoid(benchmark::State& state)
 {
     static auto __= _new_line();
     static auto _ = _test0();
@@ -163,7 +163,7 @@ void RtlErasedType_call_unknownReturn::Void(benchmark::State& state)
 }
 
 
-void RtlErasedType_call_unknownReturn::NonVoid(benchmark::State& state)
+void RtlErasedReturnType_call::returnNonVoid(benchmark::State& state)
 {
     static auto __= _new_line();
     static auto _ = _test2();
@@ -174,7 +174,7 @@ void RtlErasedType_call_unknownReturn::NonVoid(benchmark::State& state)
 }
 
 
-void RtlErasedType_callMethod_unknownReturn::Void(benchmark::State& state)
+void RtlErasedReturnType_callMethod::returnVoid(benchmark::State& state)
 {
     static auto _ = _test1();
     static bm::Node node;
@@ -185,7 +185,7 @@ void RtlErasedType_callMethod_unknownReturn::Void(benchmark::State& state)
 }
 
 
-void RtlErasedType_callMethod_unknownReturn::NonVoid(benchmark::State& state)
+void RtlErasedReturnType_callMethod::returnNonVoid(benchmark::State& state)
 {
     static auto _ = _test3();
     static bm::Node node;
@@ -196,7 +196,7 @@ void RtlErasedType_callMethod_unknownReturn::NonVoid(benchmark::State& state)
 }
 
 
-void RtlErasedType_callMethod_unknownReturn::unknownTarget_Void(benchmark::State& state)
+void RtlErasedReturnType_callMethod::unknownTarget_returnVoid(benchmark::State& state)
 {
     static auto _ = _test4();
     for (auto _ : state)
@@ -206,7 +206,7 @@ void RtlErasedType_callMethod_unknownReturn::unknownTarget_Void(benchmark::State
 }
 
 
-void RtlErasedType_callMethod_unknownReturn::unknownTarget_NonVoid(benchmark::State& state)
+void RtlErasedReturnType_callMethod::unknownTarget_returnNonVoid(benchmark::State& state)
 {
     static auto _ = _test5();
     for (auto _ : state)

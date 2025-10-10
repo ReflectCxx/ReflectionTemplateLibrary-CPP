@@ -21,9 +21,9 @@
 namespace rtl 
 {
     template<class ..._signature>
-    inline constexpr const detail::ErasedCaller<_signature...> Function::bind() const noexcept
+    inline constexpr const detail::ErasedCaller<true, _signature...> Function::bind() const noexcept
     {
-        return detail::ErasedCaller<_signature...>{ (*this) };
+        return detail::ErasedCaller<true, _signature...>{ (*this) };
     }
 
     template<class ...signatureT>
@@ -76,7 +76,19 @@ namespace rtl
     }
 
 
-    ForceInline std::pair<const detail::FunctorId*, bool> Function::getLambdaById(const std::size_t pSignatureId) const
+    ForceInline const detail::FunctorId* Function::getLambdaByStrictId(const std::size_t pSignatureId) const
+    {
+        //simple linear-search, efficient for small set of elements.
+        for (const auto& functorId : m_functorIds) {
+            if (pSignatureId == functorId.m_lambda->get_strict_sign_id()) [[likely]] {
+                return &functorId;
+            }
+        }
+        return nullptr;
+    }
+
+
+    inline std::pair<const detail::FunctorId*, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
@@ -99,7 +111,7 @@ namespace rtl
         if (index != rtl::index_none)
         {
             auto isAnyNonConstRefInArgsT = (m_functorIds[index].m_lambda->is_any_ncref());
-            return { (isAnyNonConstRefInArgsT ? nullptr:&m_functorIds[index]), isAnyNonConstRefInArgsT };
+            return { (isAnyNonConstRefInArgsT ? nullptr : &m_functorIds[index]), isAnyNonConstRefInArgsT };
         }
         return { nullptr, false };
     }

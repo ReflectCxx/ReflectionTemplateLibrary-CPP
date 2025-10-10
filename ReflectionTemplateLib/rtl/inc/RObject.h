@@ -106,7 +106,7 @@ namespace rtl
         template<class T>
         friend struct detail::RObjectBuilder;
 
-        template<class ..._signature>
+        template<bool is_binding_v, class ..._signature>
         friend struct detail::ErasedCaller;
 
         template<class _recordType>
