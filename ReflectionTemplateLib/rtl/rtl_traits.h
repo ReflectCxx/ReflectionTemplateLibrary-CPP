@@ -154,10 +154,14 @@ namespace rtl::traits
     template<class T = std::nullptr_t>
     class uid
     {
-        static constexpr uid_t get() noexcept
+        static
+        #if __cpp_static_local_constexpr >= 202306L
+        constexpr
+        #endif
+        uid_t get() noexcept
         {
             if constexpr (!std::is_same_v<T, std::nullptr_t>) {
-                static const int unique_tag;
+                static const int unique_tag = 0;
                 return reinterpret_cast<uid_t>(&unique_tag);
             }
             return 0;
