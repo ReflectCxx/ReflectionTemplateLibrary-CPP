@@ -43,7 +43,7 @@ namespace rtl::detail
     template<class ...signatureT>
     inline constexpr const HopFunction<signatureT...> Hopper<>::argsT() const
     {
-        const auto argsId = TypeId<traits::strict_sign_id_t<signatureT...>>::get();
+        const auto argsId = traits::uid<traits::strict_sign_id_t<signatureT...>>::value;
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_function<signatureT...>(argsId);
@@ -59,7 +59,7 @@ namespace rtl::detail
     template<class return_t>
     inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
     {
-        const auto retId = TypeId<return_t>::get();
+        const auto retId = traits::uid<return_t>::value;
         if (m_lambda != nullptr) [[likely]] {
             return m_lambda->template get_hopper<return_t>(retId);
         }
@@ -71,7 +71,7 @@ namespace rtl::detail
     template<class ...argsT> requires (is_binding_v == true)
     ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function.getLambdaByStrictId(detail::TypeId<traits::strict_sign_id_t<signatureT...>>::get());
+        auto functorId = m_function.getLambdaByStrictId(traits::uid<traits::strict_sign_id_t<signatureT...>>::value);
         if (functorId) [[likely]]
         {
             const auto& erased = functorId->m_lambda->m_erasure;
@@ -99,7 +99,7 @@ namespace rtl::detail
     template<class ...argsT> requires (is_binding_v == false)
     ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_function.getLambdaByNormalId(detail::TypeId<traits::normal_sign_id_t<argsT...>>::get());
+        auto functorId = m_function.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;

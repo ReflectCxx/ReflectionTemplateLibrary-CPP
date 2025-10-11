@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include "rtl_typeid.h"
 #include "rtl_constants.h"
 #include "rtl_forward_decls.h"
 
@@ -27,11 +26,11 @@ namespace rtl::dispatch
         std::string m_returnStr;
         std::string m_signatureStr;
 
-        std::size_t m_recordId = detail::TypeId<>::None;
-        std::size_t m_returnId = detail::TypeId<>::None;
+        traits::uid_t m_recordId = traits::uid<>::none;
+        traits::uid_t m_returnId = traits::uid<>::none;
 
-        std::size_t m_normal_signId = detail::TypeId<>::None;
-        std::size_t m_strict_signId = detail::TypeId<>::None;
+        traits::uid_t m_normal_signId = traits::uid<>::none;
+        traits::uid_t m_strict_signId = traits::uid<>::none;
 
         bool m_is_any_ncref = false;
         std::vector<std::size_t> m_argumentsId = {};

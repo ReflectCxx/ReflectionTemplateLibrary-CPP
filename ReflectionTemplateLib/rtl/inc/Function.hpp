@@ -76,7 +76,7 @@ namespace rtl
     }
 
 
-    ForceInline const detail::FunctorId* Function::getLambdaByStrictId(const std::size_t pSignatureId) const
+    inline constexpr const detail::FunctorId* Function::getLambdaByStrictId(const std::size_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
@@ -88,13 +88,11 @@ namespace rtl
     }
 
 
-    inline std::pair<const detail::FunctorId*, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
+    ForceInline std::pair<const detail::FunctorId*, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
     {
-        //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (pSignatureId == functorId.m_lambda->get_strict_sign_id()) [[likely]] {
-                return { &functorId, false };
-            }
+        const detail::FunctorId* functorId = getLambdaByStrictId(pSignatureId);
+        if (functorId != nullptr) {
+            return { functorId, false };
         }
 
         std::size_t index = rtl::index_none;

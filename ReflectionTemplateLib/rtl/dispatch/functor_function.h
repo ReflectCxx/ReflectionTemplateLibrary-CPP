@@ -32,11 +32,11 @@ namespace rtl::dispatch
 
 		function_ptr(functor_t fptr) :m_functor(fptr)
 		{
-			m_returnId = detail::TypeId<return_t>::get();
+			m_returnId = traits::uid<return_t>::value;
 
 			m_is_any_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
-			m_normal_signId = detail::TypeId<traits::normal_sign_id_t<signature_t...>>::get();
-			m_strict_signId = detail::TypeId<traits::strict_sign_id_t<signature_t...>>::get();
+			m_normal_signId = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
+			m_strict_signId = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
 			
 			m_returnStr = detail::TypeId<return_t>::toString();
 			m_signatureStr = detail::TypeId<signature_t...>::toString();

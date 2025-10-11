@@ -71,7 +71,7 @@ namespace rtl {
 
         std::pair<const detail::FunctorId*, bool> getLambdaByNormalId(const std::size_t pSignatureId) const;
 
-        const detail::FunctorId* getLambdaByStrictId(const std::size_t pSignatureId) const;
+        constexpr const detail::FunctorId* getLambdaByStrictId(const std::size_t pSignatureId) const;
 
         GETTER(detail::methodQ, Qualifier, m_qualifier);
 

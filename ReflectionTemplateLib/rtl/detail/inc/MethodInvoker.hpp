@@ -156,8 +156,8 @@ namespace rtl::detail
     template<class ...signatureT>
     inline constexpr HopMethod<recordT, signatureT...> Hopper<recordT>::argsT() const
     {
-        const auto recId = TypeId<recordT>::get();
-        const auto argsId = TypeId<traits::strict_sign_id_t<signatureT...>>::get();
+        const auto recId = traits::uid<recordT>::value;
+        const auto argsId = traits::uid<traits::strict_sign_id_t<signatureT...>>::value;
         for (auto& functorId : m_functorIds)
         {
             auto lambda = functorId.get_lambda_method<recordT, signatureT...>(recId, argsId);
@@ -176,7 +176,7 @@ namespace rtl::detail
     {
         if (m_lambda != nullptr) [[likely]]
         {
-            const auto retId = TypeId<_returnType>::get();
+            const auto retId = traits::uid<_returnType>::value;
             return m_lambda->template get_hopper<_returnType>(retId);
         }
         return method<_returnType(recordT::*)(signatureT...)>();
@@ -190,7 +190,7 @@ namespace rtl::detail
     {
         if (m_lambda != nullptr) [[likely]]
         {
-            const auto retId = TypeId<_returnType>::get();
+            const auto retId = traits::uid<_returnType>::value;
             return m_lambda->template get_hopper<_returnType>(retId);
         }
         return method<_returnType(recordT::*)(signatureT...) const>();
@@ -204,7 +204,7 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == false)
     ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaByNormalId(detail::TypeId<traits::normal_sign_id_t<argsT...>>::get());
+        auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;
@@ -232,7 +232,7 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<recordT>, RObject> == true)
     ForceInline constexpr Return ErasedInvoker<recordT>::operator()(argsT&&...params) const noexcept
     {
-        auto functorId = m_method.getLambdaByNormalId(detail::TypeId<traits::normal_sign_id_t<argsT...>>::get());
+        auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;

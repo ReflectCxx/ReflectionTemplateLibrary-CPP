@@ -72,7 +72,7 @@ namespace rtl::dispatch
         GETTER(std::size_t, _normal_sign_id, m_functor.m_normal_signId)
 
         lambda_base(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
-            : m_is_void(p_functor.m_returnId == detail::TypeId<void>::get())
+            : m_is_void(p_functor.m_returnId == traits::uid<void>::value)
             , m_functor(p_functor)
             , m_erasure(p_erasure)
         { }
