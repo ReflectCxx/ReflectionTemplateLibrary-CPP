@@ -63,13 +63,13 @@ namespace rtl::dispatch
             else return nullptr;
         }
 
-        GETTER_CREF(functor, _functor, m_functor);
+        GETTER_CREF(functor, _functor, m_functor)
         
         GETTER_BOOL(_any_ncref, m_functor.m_is_any_ncref)
             
-        GETTER(std::size_t, _strict_sign_id, m_functor.m_strict_signId)
+        GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_signId)
 
-        GETTER(std::size_t, _normal_sign_id, m_functor.m_normal_signId)
+        GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
 
         lambda_base(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
             : m_is_void(p_functor.m_returnId == traits::uid<void>::value)

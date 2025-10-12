@@ -22,11 +22,20 @@ namespace rtl_tests
 			auto [err, robj] = erased_ret_func();
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
-		} {
-			rtl::function<rtl::Return(int)> erased_ret_func;
-			EXPECT_FALSE(erased_ret_func);
+		}
 
+		rtl::function<rtl::Return(int)> erased_ret_func;
+		EXPECT_FALSE(erased_ret_func);
+		{
 			auto [err, robj] = erased_ret_func(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			auto [err, robj] = erased_ret_func.call<int>(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			auto [err, robj] = erased_ret_func.call<int&&>(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}

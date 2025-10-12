@@ -32,13 +32,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_void() noexcept
         {
-            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto fptr = eh.get_lambda()
-                                  .template to_function<signature_t...>()
-                                  .template get_functor<void>();
+                    auto fptr = lambda.template to_function<signature_t...>()
+                                      .template get_functor<void>();
 
                     (*fptr)(std::forward<signature_t>(params)...);
                 }
@@ -47,13 +46,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_any_return() noexcept
         {
-            return [](const base_t& eh, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto fptr = eh.get_lambda()
-                                  .template to_function<signature_t...>()
-                                  .template get_functor<return_t>();
+                    auto fptr = lambda.template to_function<signature_t...>()
+                                      .template get_functor<return_t>();
 
                     auto&& ret_v = (*fptr)(std::forward<signature_t>(params)...);
 

@@ -23,8 +23,6 @@ namespace rtl::dispatch::erase
     {
         using base_t = erased_hopper_rec<record_t, traits::normal_sign_t<signature_t>...>;
         
-        using this_t = aware_hopper_rec<record_t, return_t, signature_t...>;
-
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
         aware_hopper_rec(const dispatch::functor& p_functor)
@@ -38,13 +36,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_void() noexcept
         {
-            return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto mptr = eh.get_lambda()
-                                  .template to_method<record_t, signature_t...>()
-                                  .template get_functor<void>();
+                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                                      .template get_functor<void>();
 
                     (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
                 }
@@ -53,13 +50,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_void_robj() noexcept
         {
-            return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto mptr = eh.get_lambda()
-                                  .template to_method<record_t, signature_t...>()
-                                  .template get_functor<void>();
+                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                                      .template get_functor<void>();
 
                     const auto& target = p_target.view<record_t>()->get();
 
@@ -70,13 +66,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_any_ret() noexcept
         {
-            return [](const base_t& eh, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
+            return [](const lambda_base& lambda, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto mptr = eh.get_lambda()
-                                  .template to_method<record_t, signature_t...>()
-                                  .template get_functor<return_t>();
+                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                                      .template get_functor<return_t>();
 
                     auto&& ret_v = (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
 
@@ -102,13 +97,12 @@ namespace rtl::dispatch::erase
 
         constexpr static auto get_lambda_any_ret_robj() noexcept
         {
-            return [](const base_t::base_t& eh, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto mptr = eh.get_lambda()
-                                  .template to_method<record_t, signature_t...>()
-                                  .template get_functor<return_t>();
+                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                                      .template get_functor<return_t>();
 
                     const auto& target = p_target.view<record_t>()->get();
 

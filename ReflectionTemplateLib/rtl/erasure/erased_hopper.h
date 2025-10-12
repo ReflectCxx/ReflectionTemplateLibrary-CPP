@@ -20,38 +20,36 @@ namespace rtl::dispatch::erase
     template<class ...norm_sign_t>
     struct erased_hopper : public erasure_base
     {
-        using this_t = erased_hopper<norm_sign_t...>;
+        using lambda_vt = std::function<void(const lambda_base&, norm_sign_t...)>;
 
-        using lambda_vt = std::function<void(const this_t&, norm_sign_t...)>;
+        using lambda_rt = std::function<std::any(const lambda_base&, norm_sign_t...)>;
 
-        using lambda_rt = std::function<std::any(const this_t&, norm_sign_t...)>;
+        using lambda_robj_vt = std::function<void(const lambda_base&, const RObject&, norm_sign_t...)>;
 
-        using lambda_robj_vt = std::function<void(const this_t&, const RObject&, norm_sign_t...)>;
-
-        using lambda_robj_rt = std::function<std::any(const this_t&, const RObject&, norm_sign_t...)>;
+        using lambda_robj_rt = std::function<std::any(const lambda_base&, const RObject&, norm_sign_t...)>;
 
         template<class...args_t>
         constexpr void hop_void(args_t&&...params) const noexcept
         {
-            m_void_hop(*this, std::forward<args_t>(params)...);
+            m_void_hop(get_lambda(), std::forward<args_t>(params)...);
         }
 
         template<class...args_t>
         ForceInline std::any hop_return(args_t&&...params) const noexcept
         {
-            return m_any_ret_hop(*this, std::forward<args_t>(params)...);
+            return m_any_ret_hop(get_lambda(), std::forward<args_t>(params)...);
         }
 
         template<class...args_t>
         constexpr void hop_void(const RObject& p_robj, args_t&&...params) const noexcept
         {
-            m_void_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+            m_void_method_hop(get_lambda(), p_robj, std::forward<args_t>(params)...);
         }
 
         template<class...args_t>
         ForceInline std::any hop_return(const RObject& p_robj, args_t&&...params) const noexcept
         {
-            return m_any_ret_method_hop(*this, p_robj, std::forward<args_t>(params)...);
+            return m_any_ret_method_hop(get_lambda(), p_robj, std::forward<args_t>(params)...);
         }
 
     protected:
