@@ -33,7 +33,7 @@ namespace rtl
     }
 
 
-    /*  @method: hasSignature<...>()
+/*  @method: hasSignature<...>()
     @param: set of arguments, explicitly specified as template parameter.
     @return: bool, if the functor associated with this object is of certain signature or not.
     * a single 'Function' object can be associated with multiple overloads of same function.

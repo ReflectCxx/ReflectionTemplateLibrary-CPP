@@ -6,11 +6,32 @@
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
 
+#include <rtl/dispatch/rtl_function_erased_return.h>
+
 using namespace test_utils;
 using namespace test_mirror;
 
 namespace rtl_tests
 {
+	TEST(BasicTypeErasedDispatch, invalid_erased_return_rtl_function)
+	{
+		{
+			rtl::function<rtl::Return()> erased_ret_func;
+			EXPECT_FALSE(erased_ret_func);
+
+			auto [err, robj] = erased_ret_func();
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			rtl::function<rtl::Return(int)> erased_ret_func;
+			EXPECT_FALSE(erased_ret_func);
+
+			auto [err, robj] = erased_ret_func(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		}
+	}
+
 	TEST(BasicTypeErasedDispatch, implicit_resolutions_to_call_by_value_overloads)
 	{
 		auto reverseStringOpt = cxx::mirror().getFunction(str_reverseString);

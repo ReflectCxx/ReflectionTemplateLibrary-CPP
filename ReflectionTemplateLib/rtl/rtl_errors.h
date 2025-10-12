@@ -19,6 +19,7 @@ namespace rtl
     {
         None,
         EmptyRObject,
+        InvalidCaller,
         NotWrapperType,
 
         TargetMismatch,
@@ -46,6 +47,8 @@ namespace rtl
             return "No error (operation successful)";
         case error::EmptyRObject:
             return "Empty instance: RObject does not hold any reflected object";
+        case error::InvalidCaller:
+            return "Invalid callable: rtl::function/rtl::method object bieng used is empty.";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
         case error::ExplicitRefBindingRequired:

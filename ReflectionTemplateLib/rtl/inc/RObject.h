@@ -111,6 +111,9 @@ namespace rtl
 
         template<class _recordType>
         friend struct detail::ErasedInvoker;
+
+        template<class return_t, class ...signature_t>
+        friend struct function;
     };
 
     struct [[nodiscard]] Return {

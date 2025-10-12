@@ -47,7 +47,7 @@ auto cxx_mirror = rtl::CxxMirror({
 
 With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
 
-***Without reflection:***
+**Without reflection:**
 
 ```c++
 Person p("John", 42);
@@ -55,7 +55,7 @@ p.setAge(43);
 std::cout << p.getName();
 ```
 
-***With reflection:***
+**With reflection:**
 
 ```c++
 // Look up the class by name

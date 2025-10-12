@@ -25,7 +25,7 @@ namespace rtl
 
     class CxxMirror;
 
-    template<class functor_t>
+    template<class return_t, class ...signature_t>
     struct function;
 
     template<class functor_t>
