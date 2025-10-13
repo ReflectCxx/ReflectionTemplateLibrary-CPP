@@ -39,7 +39,12 @@ namespace rtl::detail
     {
         const dispatch::lambda_function<_signature...>* m_lambda = nullptr;
 
-        template<class _returnType>
+        std::vector<const dispatch::lambda_base*> m_lambdaRefOverloads = {};
+
+        template<class _returnType = rtl::Return> requires (std::is_same_v<_returnType, rtl::Return>)
+        constexpr const function<_returnType(_signature...)> returnT() const;
+
+        template<class _returnType = rtl::Return> requires (!std::is_same_v<_returnType, rtl::Return>)
         constexpr const function<_returnType(_signature...)> returnT() const;
     };
 

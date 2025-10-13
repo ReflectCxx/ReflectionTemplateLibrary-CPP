@@ -94,6 +94,8 @@ namespace rtl::detail
     {
         const dispatch::lambda_method<recordT, signatureT...>* m_lambda = nullptr;
 
+        std::vector<const dispatch::lambda_base*> m_lambdaRefOverloads = {};
+
         template<class retT> requires (std::is_const_v<recordT> == false)
         constexpr const method<retT(recordT::*)(signatureT...)> returnT() const;
 

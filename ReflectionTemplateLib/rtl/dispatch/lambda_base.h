@@ -66,7 +66,9 @@ namespace rtl::dispatch
         GETTER_CREF(functor, _functor, m_functor)
         
         GETTER_BOOL(_any_ncref, m_functor.m_is_any_ncref)
-            
+        
+        GETTER(traits::uid_t, _record_id, m_functor.m_recordId)
+
         GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_signId)
 
         GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
