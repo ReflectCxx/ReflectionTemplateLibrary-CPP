@@ -33,7 +33,7 @@ namespace rtl
             }
 
             if (m_lambda[call_by::value] == nullptr && 
-               (m_lambda.size() > call_by::ref || 
+               (m_lambda.size() > call_by::ncref || 
                 m_lambda[call_by::cref]->is_any_ncref()) ) [[unlikely]]
             {
                 return { error::ExplicitRefBindingRequired, RObject{} };
@@ -42,14 +42,15 @@ namespace rtl
             auto index = (m_lambda[call_by::value] != nullptr ? call_by::value : call_by::cref);
             if (m_lambda[index]->is_void())
             {
-                m_void_hop[index](*m_lambda[index], std::forward<args_t>(params)...);
+                m_void_hop[index] (*m_lambda[index], std::forward<args_t>(params)...);
                 return { error::None, RObject{} };
             }
-            else {
-
+            else
+            {
                 return{ error::None,
-                        RObject{ m_any_hop[index](*m_lambda[index], std::forward<args_t>(params)...),
-                                 m_robj_id, nullptr }
+                        RObject{ m_any_hop[index] (*m_lambda[index], std::forward<args_t>(params)...),
+                                 m_robj_id, nullptr
+                        }
                 };
             }
         }
@@ -67,14 +68,15 @@ namespace rtl
                 {
                     if (m_lambda[index]->is_void())
                     {
-                        m_void_hop[index](*m_lambda[index], std::forward<args_t>(params)...);
+                        m_void_hop[index] (*m_lambda[index], std::forward<args_t>(params)...);
                         return { error::None, RObject{} };
                     }
-                    else {
-
+                    else
+                    {
                         return{ error::None,
-                                RObject{ m_any_hop[index](*m_lambda[index], std::forward<args_t>(params)...),
-                                         m_robj_id, nullptr }
+                                RObject{ m_any_hop[index] (*m_lambda[index], std::forward<args_t>(params)...),
+                                         m_robj_id, nullptr 
+                                }
                         };
                     }
                 }
@@ -82,7 +84,7 @@ namespace rtl
             return { error::InvalidCaller, RObject{} };
         }
 
-    private:
+    //private:
 
         using lambda_vt = std::function<void(const dispatch::lambda_base&, signature_t...)>;
 
@@ -94,15 +96,23 @@ namespace rtl
 
         std::vector<lambda_vt> m_void_hop = {};
 
-        std::vector<dispatch::lambda_base*> m_lambda = {};
+        std::vector<const dispatch::lambda_base*> m_lambda = {};
 
         enum call_by
         {
             value = 0,
-            cref = 1,
-            ref = 2
+            cref = 1,   //const ref.
+            ncref = 2   //non-const ref.
         };
 
+        std::vector<lambda_rt>& get_rhop() {
+            return m_any_hop;
+        }
+        
+        std::vector<lambda_vt>& get_vhop() {
+            return m_void_hop;
+        }
+        
         static_assert((!std::is_reference_v<signature_t> && ...),
                        "function<Return(signature_t...)>: any type cannot be reference here");
     };

@@ -17,24 +17,24 @@ namespace cxx
 
 namespace
 {
-    static rtl::Function GetMessage = []()
+    static rtl::function<rtl::Return(bm::argStr_t)> GetMessage = []()
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
         if (!function) {
             std::cerr << "[0] error: erase_function 'getMessage' not found.\n";
             std::abort();
         }
-        return *function;
+        return function->argsT<bm::argStr_t>().returnT();
     }();
 
-    static rtl::Function SendMessage = []()
+    static rtl::function<rtl::Return(bm::argStr_t)> SendMessage = []()
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("sendMessage");
         if (!function) {
             std::cerr << "[1] error: erase_function 'sendMessage' not found.\n";
             std::abort();
         }
-        return *function;
+        return function->argsT<bm::argStr_t>().returnT();
     }();
 
     static rtl::Method NodeGetMessage = []()

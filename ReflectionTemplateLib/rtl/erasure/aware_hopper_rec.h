@@ -87,8 +87,8 @@ namespace rtl::dispatch::erase
                     }
                     else
                     {
-                        using rconst_t = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        return std::any(rconst_t(std::forward<decltype(ret_v)>(ret_v)));
+                        using craw_t = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                        return std::any(craw_t(std::forward<decltype(ret_v)>(ret_v)));
                     }
                 }
                 else return std::any();
@@ -120,8 +120,8 @@ namespace rtl::dispatch::erase
                     }
                     else
                     {
-                        using rconst_t = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        return std::any(rconst_t(std::forward<decltype(ret_v)>(ret_v)));
+                        using craw_t = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                        return std::any(craw_t(std::forward<decltype(ret_v)>(ret_v)));
                     }
                 }
                 else return std::any();

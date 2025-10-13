@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "functor_method_const.h"
+#include "method_ptr_const.h"
 
 namespace rtl::cache
 {
@@ -56,7 +56,7 @@ namespace rtl::cache
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<const method_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<method_t, std::size_t>> m_cache;
 
         method_ptr() = default;
     };

@@ -26,17 +26,9 @@ namespace rtl::dispatch::erase
 
         using lambda_rt = std::function<std::any(const lambda_base&, const record_t&, normal_sign_t...)>;
 
-        template<class...args_t>
-        constexpr void hop_void(const record_t& p_target, args_t&&...params) const noexcept
-        {
-            m_void_hop(erasure_base::get_lambda(), p_target, std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        ForceInline std::any hop_return(const record_t& p_target, args_t&&...params) const noexcept
-        {
-            return m_any_ret_hop(erasure_base::get_lambda(), p_target, std::forward<args_t>(params)...);
-        }
+        GETTER(lambda_vt, _void_hopper, m_void_hop)
+            
+        GETTER(lambda_rt, _return_hopper, m_any_ret_hop)
 
     protected:
 

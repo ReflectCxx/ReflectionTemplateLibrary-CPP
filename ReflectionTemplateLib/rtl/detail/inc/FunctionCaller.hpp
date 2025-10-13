@@ -17,7 +17,7 @@
 #include "FunctorContainer.h"
 
 #include "erased_hopper.h"
-
+#include "rtl_function_erased_return.h"
 
 namespace rtl::detail
 {
@@ -76,13 +76,17 @@ namespace rtl::detail
 
     template<class ...args_t>
     template<class return_t> requires (std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
+    inline constexpr function<Return(args_t...)> HopFunction<args_t...>::returnT() const
     {
-        const auto retId = traits::uid<return_t>::value;
-        if (m_lambda != nullptr) [[likely]] {
-            return m_lambda->template get_hopper<return_t>(retId);
+        function<Return(traits::normal_sign_t<args_t>...)> erasedReturnFunc;
+        for (auto lambda : m_lambdaRefOverloads)
+        {
+            auto eret = lambda->m_erasure.to_erased_return<traits::normal_sign_t<args_t>...>();
+            erasedReturnFunc.get_vhop().push_back(eret.get_void_hopper());
+            erasedReturnFunc.get_rhop().push_back(eret.get_return_hopper());
+            erasedReturnFunc.m_lambda.push_back(lambda);
         }
-        return function<return_t(args_t...)>();
+        return erasedReturnFunc;
     }
 
 
@@ -102,27 +106,27 @@ namespace rtl::detail
     template<class ...args_t> requires (is_binding_v == true)
     ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(args_t&&...params) const noexcept
     {
-        auto functorId = m_function.getLambdaByStrictId(traits::uid<traits::strict_sign_id_t<signatureT...>>::value);
-        if (functorId) [[likely]]
-        {
-            const auto& erased = functorId->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_return<signatureT...>();
-            if (functorId->m_lambda->is_void())
-            {
-                caller.hop_void(std::forward<args_t>(params)...);
-                return { error::None, RObject{} };
-            }
-            else
-            {
-                return{ error::None,
-                        RObject{ caller.hop_return(std::forward<args_t>(params)...),
-                                 caller.get_return_id(), nullptr }
-                };
-            }
-        }
-        else [[unlikely]] {
+        //auto functorId = m_function.getLambdaByStrictId(traits::uid<traits::strict_sign_id_t<signatureT...>>::value);
+        //if (functorId) [[likely]]
+        //{
+        //    const auto& erased = functorId->m_lambda->m_erasure;
+        //    const auto& caller = erased.template to_erased_return<signatureT...>();
+        //    if (functorId->m_lambda->is_void())
+        //    {
+        //        caller.hop_void(std::forward<args_t>(params)...);
+        //        return { error::None, RObject{} };
+        //    }
+        //    else
+        //    {
+        //        return{ error::None,
+        //                RObject{ caller.hop_return(std::forward<args_t>(params)...),
+        //                         caller.get_return_id(), nullptr }
+        //        };
+        //    }
+        //}
+        //else [[unlikely]] {
             return { error::SignatureMismatch, RObject{} };
-        }
+        //}
     }
 
 
@@ -130,23 +134,25 @@ namespace rtl::detail
     template<class ...args_t> requires (is_binding_v == false)
     ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(args_t&&...params) const noexcept
     {
+        return { error::InvalidCaller, RObject{} };
+
         auto functorId = m_function.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<args_t...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;
             const auto& caller = erased.template to_erased_return<args_t...>();
-            if (functorId.first->m_lambda->is_void())
-            {
-                caller.hop_void(std::forward<args_t>(params)...);
+            //if (functorId.first->m_lambda->is_void())
+            //{
+            //  caller.hop_void(std::forward<args_t>(params)...);
                 return { error::None, RObject{} };
-            }
-            else
-            {
-                return{ error::None,
-                        RObject{ caller.hop_return(std::forward<args_t>(params)...),
-                                 caller.get_return_id(), nullptr }
-                };
-            }
+            //}
+            //else
+            //{
+            //    return{ error::None,
+            //            RObject{ caller.hop_return(std::forward<args_t>(params)...),
+            //                     caller.get_return_id(), nullptr }
+            //    };
+            //}
         }
         else [[unlikely]] {
             return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };

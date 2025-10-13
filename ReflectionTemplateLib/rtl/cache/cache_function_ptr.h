@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "functor_function.h"
+#include "function_ptr.h"
 
 namespace rtl::cache
 {
@@ -34,7 +34,7 @@ namespace rtl::cache
             return m_cache.back().first;
         }
 
-        std::pair<const dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_t...)) const
+        std::pair<dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_t...)) const
         {
             for (auto& itr : m_cache)
             {
@@ -54,7 +54,7 @@ namespace rtl::cache
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<const function_t, std::size_t>> m_cache;
+        mutable std::list<std::pair<function_t, std::size_t>> m_cache;
 
         function_ptr() = default;
     };

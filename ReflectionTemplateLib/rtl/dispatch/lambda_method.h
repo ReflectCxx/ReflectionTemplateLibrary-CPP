@@ -14,7 +14,7 @@
 #include "lambda_base.h"
 #include "rtl_method.h"
 #include "erased_hopper_rec.h"
-#include "functor_method.h"
+#include "method_ptr.h"
 #include "rtl_method_const.h"
 
 

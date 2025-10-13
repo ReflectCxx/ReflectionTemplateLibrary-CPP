@@ -13,7 +13,7 @@
 
 #include "lambda_base.h"
 #include "rtl_function.h"
-#include "functor_function.h"
+#include "function_ptr.h"
 #include "erased_hopper.h"
 
 namespace rtl::dispatch

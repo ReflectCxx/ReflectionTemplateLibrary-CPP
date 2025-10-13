@@ -230,23 +230,25 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<record_t>, RObject> == false)
     ForceInline constexpr Return ErasedInvoker<record_t>::operator()(argsT&&...params) const noexcept
     {
+        return { error::InvalidCaller, RObject{} };
+
         auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;
             const auto& caller = erased.template to_erased_return_rec<record_t, argsT...>();
-            if(functorId.first->m_lambda->is_void())
-            {
-                caller.hop_void(m_target, std::forward<argsT>(params)...);
+            //if(functorId.first->m_lambda->is_void())
+            //{
+            //    caller.hop_void(m_target, std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
-            }
-            else
-            {
-                return{ error::None,
-                        RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
-                                 caller.get_return_id(), nullptr }
-                    };
-            }
+            //}
+            //else
+            //{
+            //    return{ error::None,
+            //            RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
+            //                     caller.get_return_id(), nullptr }
+            //        };
+            //}
         }
         else [[unlikely]] {
             return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
@@ -258,23 +260,25 @@ namespace rtl::detail
     template<class ...argsT> requires (std::is_same_v<traits::raw_t<record_t>, RObject> == true)
     ForceInline constexpr Return ErasedInvoker<record_t>::operator()(argsT&&...params) const noexcept
     {
+        return { error::InvalidCaller, RObject{} };
+
         auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
             const auto& erased = functorId.first->m_lambda->m_erasure;
             const auto& caller = erased.template to_erased_return<argsT...>();
-            if (functorId.first->m_lambda->is_void())
-            {
-                caller.hop_void(m_target, std::forward<argsT>(params)...);
+            //if (functorId.first->m_lambda->is_void())
+            //{
+            //    caller.hop_void(m_target, std::forward<argsT>(params)...);
                 return { error::None, RObject{} };
-            }
-            else
-            {
-                return{ error::None,
-                        RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
-                                 caller.get_return_id(), nullptr }
-                };
-            }
+            //}
+            //else
+            //{
+            //    return{ error::None,
+            //            RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
+            //                     caller.get_return_id(), nullptr }
+            //    };
+            //}
         }
         else return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
     }

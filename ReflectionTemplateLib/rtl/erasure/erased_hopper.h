@@ -17,40 +17,21 @@
 
 namespace rtl::dispatch::erase
 {
-    template<class ...norm_sign_t>
+    template<class ...normal_sign_t>
     struct erased_hopper : public erasure_base
     {
-        using lambda_vt = std::function<void(const lambda_base&, norm_sign_t...)>;
+        using lambda_vt = std::function<void(const lambda_base&, normal_sign_t...)>;
 
-        using lambda_rt = std::function<std::any(const lambda_base&, norm_sign_t...)>;
+        using lambda_rt = std::function<std::any(const lambda_base&, normal_sign_t...)>;
 
-        using lambda_robj_vt = std::function<void(const lambda_base&, const RObject&, norm_sign_t...)>;
+        using lambda_robj_vt = std::function<void(const lambda_base&, const RObject&, normal_sign_t...)>;
 
-        using lambda_robj_rt = std::function<std::any(const lambda_base&, const RObject&, norm_sign_t...)>;
+        using lambda_robj_rt = std::function<std::any(const lambda_base&, const RObject&, normal_sign_t...)>;
 
-        template<class...args_t>
-        constexpr void hop_void(args_t&&...params) const noexcept
-        {
-            m_void_hop(get_lambda(), std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        ForceInline std::any hop_return(args_t&&...params) const noexcept
-        {
-            return m_any_ret_hop(get_lambda(), std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        constexpr void hop_void(const RObject& p_robj, args_t&&...params) const noexcept
-        {
-            m_void_method_hop(get_lambda(), p_robj, std::forward<args_t>(params)...);
-        }
-
-        template<class...args_t>
-        ForceInline std::any hop_return(const RObject& p_robj, args_t&&...params) const noexcept
-        {
-            return m_any_ret_method_hop(get_lambda(), p_robj, std::forward<args_t>(params)...);
-        }
+        GETTER(lambda_vt, _void_hopper, m_void_hop)
+        GETTER(lambda_rt, _return_hopper, m_any_ret_hop)
+        GETTER(lambda_robj_vt, _void_method_hopper, m_void_method_hop)
+        GETTER(lambda_robj_rt, _return_method_hopper, m_any_ret_method_hop)
 
     protected:
 
