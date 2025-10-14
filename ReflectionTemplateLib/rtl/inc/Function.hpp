@@ -80,7 +80,7 @@ namespace rtl
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& functorId : m_functorIds) {
-            if (pSignatureId == functorId.m_lambda->get_strict_sign_id()) [[likely]] {
+            if (pSignatureId == functorId.get_lambda().get_strict_sign_id()) [[likely]] {
                 return &functorId;
             }
         }
@@ -98,7 +98,7 @@ namespace rtl
         std::size_t index = rtl::index_none;
         for (int i = 0; i < m_functorIds.size(); i++)
         {
-            if (pSignatureId == m_functorIds[i].m_lambda->get_normal_sign_id()) [[likely]] {
+            if (pSignatureId == m_functorIds[i].get_lambda().get_normal_sign_id()) [[likely]] {
                 if (index == rtl::index_none) {
                     index = i;
                 }
@@ -108,7 +108,7 @@ namespace rtl
 
         if (index != rtl::index_none)
         {
-            auto isAnyNonConstRefInArgsT = (m_functorIds[index].m_lambda->is_any_ncref());
+            auto isAnyNonConstRefInArgsT = (m_functorIds[index].get_lambda().is_any_ncref());
             return { (isAnyNonConstRefInArgsT ? nullptr : &m_functorIds[index]), isAnyNonConstRefInArgsT };
         }
         return { nullptr, false };

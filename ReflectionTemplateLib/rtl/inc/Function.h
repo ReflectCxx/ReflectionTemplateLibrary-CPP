@@ -75,7 +75,7 @@ namespace rtl {
 
         GETTER(detail::methodQ, Qualifier, m_qualifier);
 
-        GETTER_REF(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
+        GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
     public:
 

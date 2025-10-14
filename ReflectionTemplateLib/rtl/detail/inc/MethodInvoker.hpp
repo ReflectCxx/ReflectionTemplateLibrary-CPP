@@ -160,38 +160,37 @@ namespace rtl::detail
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
 
-        const dispatch::lambda_method<record_t, args_t...>* lambda = nullptr;
+        const dispatch::lambda_method<record_t, args_t...>* lambda_fn = nullptr;
         std::vector<const dispatch::lambda_base*> refOverloads = { nullptr };
 
         for (auto& functorId : m_functorIds)
         {
-            if (recordId != functorId.m_lambda->get_record_id()) {
+            auto& lambda = functorId.get_lambda();
+            if (recordId != lambda.get_record_id()) {
                 continue;
             }
-            if (!lambda && strictArgsId == functorId.m_lambda->get_strict_sign_id()) 
-            {
-                lambda = &(functorId.m_lambda->to_method<record_t, args_t...>());
+            if (!lambda_fn && strictArgsId == lambda.get_strict_sign_id()) {
+                lambda_fn = &(lambda.to_method<record_t, args_t...>());
             }
-            if (normalArgsId == functorId.m_lambda->get_normal_sign_id())
+            if (normalArgsId == lambda.get_normal_sign_id())
             {
-                if (normalArgsId == functorId.m_lambda->get_strict_sign_id()) {
-                    refOverloads[0] = functorId.m_lambda;
+                if (normalArgsId == lambda.get_strict_sign_id()) {
+                    refOverloads[0] = &lambda;
                 }
-                else if (!functorId.m_lambda->is_any_ncref()) {
-                    refOverloads.push_back(functorId.m_lambda);
+                else if (!lambda.is_any_ncref()) {
+                    refOverloads.push_back(&lambda);
                 }
             }
         }
         for (auto& functorId : m_functorIds)
         {
-            if (recordId == functorId.m_lambda->get_record_id() &&
-                normalArgsId == functorId.m_lambda->get_normal_sign_id() && 
-                functorId.m_lambda->is_any_ncref()) 
-            {
-                refOverloads.push_back(functorId.m_lambda);
+            auto& lambda = functorId.get_lambda();
+            if (recordId == lambda.get_record_id() && 
+                normalArgsId == lambda.get_normal_sign_id() && lambda.is_any_ncref()) {
+                refOverloads.push_back(&lambda);
             }
         }
-        return { lambda, refOverloads };
+        return { lambda_fn, refOverloads };
     }
 
 
@@ -235,7 +234,7 @@ namespace rtl::detail
         auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
-            const auto& erased = functorId.first->m_lambda->m_erasure;
+            const auto& erased = functorId.first->m_lambda->get_unerasure();
             const auto& caller = erased.template to_erased_return_rec<record_t, argsT...>();
             //if(functorId.first->m_lambda->is_void())
             //{
@@ -265,7 +264,7 @@ namespace rtl::detail
         auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
         if (functorId.first) [[likely]]
         {
-            const auto& erased = functorId.first->m_lambda->m_erasure;
+            const auto& erased = functorId.first->m_lambda->get_unerasure();
             const auto& caller = erased.template to_erased_return<argsT...>();
             //if (functorId.first->m_lambda->is_void())
             //{

@@ -147,11 +147,15 @@ namespace rtl::detail
         return _var;                                        \
     }
 
-#define GETTER_REF(_varType, _name, _var)       \
-    inline constexpr _varType& get##_name() const {       \
-        return _var;                            \
+#define GETTER_REF_C(_varType, _name, _var)           \
+    inline constexpr _varType& get##_name() const {   \
+        return _var;                                  \
     }
 
+#define GETTER_REF(_varType, _name, _var)       \
+    inline constexpr _varType& get##_name() {   \
+        return _var;                            \
+    }
 
 #define GETTER_CPTR(_varType, _name, _var)                 \
     inline constexpr const _varType* get##_name() const {  \

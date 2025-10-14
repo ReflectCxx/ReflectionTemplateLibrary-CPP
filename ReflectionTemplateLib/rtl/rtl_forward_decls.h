@@ -49,6 +49,9 @@ namespace rtl
 
         template<class _recordType = std::nullptr_t>
         struct Hopper;
+
+        template<class ..._signature>
+        struct HopFunction;
     }
 
     namespace cache

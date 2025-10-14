@@ -43,7 +43,7 @@ namespace rtl
             {
                 return { error::None,
                          RObject{ m_rhop[index] (*m_lambdas[index], std::forward<args_t>(params)...),
-                                  m_lambdas.back()->m_erasure.m_return_id, nullptr
+                                  m_lambdas.back()->get_return_id(), nullptr
                          }
                 };
             }
@@ -79,7 +79,7 @@ namespace rtl
                             {
                                 return { error::None,
                                          RObject{ fn.m_rhop[index] (*(fn.m_lambdas[index]), std::forward<args_t>(params)...),
-                                                  fn.m_lambdas.back()->m_erasure.m_return_id, nullptr
+                                                  fn.m_lambdas.back()->get_return_id(), nullptr
                                          }
                                 };
                             }
@@ -107,7 +107,7 @@ namespace rtl
                    (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
         }
 
-    //private:
+    private:
 
         using lambda_vt = std::function<void(const dispatch::lambda_base&, signature_t...)>;
 
@@ -126,15 +126,17 @@ namespace rtl
             ncref = 2   //non-const ref.
         };
 
-        std::vector<lambda_rt>& get_rhop() {
-            return m_rhop;
-        }
-        
-        std::vector<lambda_vt>& get_vhop() {
-            return m_vhop;
-        }
-        
+        GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
+        GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
+        GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
+
         static_assert((!std::is_reference_v<signature_t> && ...),
                        "function<Return(signature_t...)>: any type cannot be reference here");
+
+        //template<class _recordType>
+        //friend struct detail::Hopper;
+
+        template<class ..._signature>
+        friend struct detail::HopFunction;
     };
 }

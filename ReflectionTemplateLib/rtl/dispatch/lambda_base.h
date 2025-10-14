@@ -58,8 +58,14 @@ namespace rtl::dispatch
             else return nullptr;
         }
 
+        GETTER_BOOL(_void, m_functor.m_is_void)
+        
         GETTER_CREF(functor, _functor, m_functor)
         
+        GETTER_CREF(erase::erasure_base, _unerasure, m_erasure)
+
+        GETTER_CREF(detail::RObjectId, _return_id, m_erasure.m_return_id);
+
         GETTER_BOOL(_any_ncref, m_functor.m_is_any_ncref)
         
         GETTER(traits::uid_t, _record_id, m_functor.m_recordId)
@@ -67,10 +73,6 @@ namespace rtl::dispatch
         GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_signId)
 
         GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
-            
-        constexpr bool is_void() const {
-            return m_functor.m_is_void;
-        }
 
         lambda_base(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
             : m_functor(p_functor)

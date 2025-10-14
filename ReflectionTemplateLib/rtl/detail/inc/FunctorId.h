@@ -47,7 +47,7 @@ namespace rtl::detail
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER_CREF(std::string, SignatureStr, m_signature)
-
+        GETTER_CREF(dispatch::lambda_base, _lambda, (*m_lambda))
 
     /*  @method: getHashCode()
         @return: std::size_t (a unique hash-code for a functor)

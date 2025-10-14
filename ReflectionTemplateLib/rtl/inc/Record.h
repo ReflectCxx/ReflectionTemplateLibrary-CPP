@@ -53,7 +53,7 @@ namespace rtl {
         {
         }
 
-        GETTER_REF(MethodMap, FunctionsMap, m_methods)
+        GETTER_REF_C(MethodMap, FunctionsMap, m_methods)
 
     public:
 
