@@ -27,10 +27,10 @@ namespace rtl::dispatch::erase
 
         aware_hopper_rec(const dispatch::functor& p_functor)
         : base_t( p_functor,
-                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void() : nullptr,
-                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret() : nullptr,
-                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void_robj() : nullptr,
-                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret_robj() : nullptr,
+                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void() : decltype(aware_hopper_rec::get_lambda_void()){},
+                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret() : decltype(aware_hopper_rec::get_lambda_any_ret()){},
+                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void_robj() : decltype(aware_hopper_rec::get_lambda_void_robj()){},
+                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret_robj() : decltype(aware_hopper_rec::get_lambda_any_ret_robj()){},
                   detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe) )
         { }
 
