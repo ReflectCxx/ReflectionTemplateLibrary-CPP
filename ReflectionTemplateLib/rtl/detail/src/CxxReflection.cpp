@@ -51,6 +51,7 @@ namespace rtl {
             else {
                 const auto& function = itr->second;
                 //if the function is already present, add its 'FunctorId' as overload.
+                // TODO: Make sure every overload has identical return type/id.
                 function.addOverload(pFunction);
             }
         }
@@ -73,6 +74,7 @@ namespace rtl {
             else {
                 const auto& function = itr->second;
                 //if the method is already present, add as overload.
+                // TODO: Make sure every overload has identical return type/id.
                 function.addOverload(pFunction);
             }
         }

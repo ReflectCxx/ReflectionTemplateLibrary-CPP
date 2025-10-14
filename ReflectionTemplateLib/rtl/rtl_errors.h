@@ -24,6 +24,7 @@ namespace rtl
 
         TargetMismatch,
         SignatureMismatch,
+        RefBindingMismatch,
         ExplicitRefBindingRequired,
 
         CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type.
@@ -51,6 +52,8 @@ namespace rtl
             return "Invalid callable: rtl::function/rtl::method object bieng used is empty.";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
+        case error::RefBindingMismatch:
+            return "Reference binding mismatch: Argument references do not match the expected parameter bindings";
         case error::ExplicitRefBindingRequired:
             return "Explicit reference binding required for correct overload resolution";
         case error::CloningDisabled:

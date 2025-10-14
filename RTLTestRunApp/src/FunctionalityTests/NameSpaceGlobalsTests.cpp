@@ -208,12 +208,15 @@ namespace rtl_tests
 
     TEST(GlobalFunction, overloaded_function_execute_return)
     {
-        optional<Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        optional<Function> reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(reverseStringOpt);
+
+        rtl::function<rtl::Return(std::string)> reverseString = reverseStringOpt->argsT<std::string>().returnT<>();
         ASSERT_TRUE(reverseString);
         {
-            //STRA's type is 'consexpr const char*', function accepts 'string',
+            //STRA's type is 'const char*', function accepts 'string',
             //so type-casting in place as 'string'
-            auto [err, ret] = reverseString->bind().call(string(STRA));
+            auto [err, ret] = reverseString(STRA);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
@@ -222,9 +225,9 @@ namespace rtl_tests
             auto expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
             EXPECT_EQ(retStr, expStr);
         } {
-            //STRB's type is 'consexpr const char*', function accepts 'string',
+            //STRB's type is 'const char*', function accepts 'string',
             //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-            auto [err, ret] = reverseString->bind<string>()(STRB);
+            auto [err, ret] = reverseString(STRB);
 
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -234,7 +237,9 @@ namespace rtl_tests
             auto expStr = std::string(STRB_REVERSE) + SUFFIX_ARG_std_string;
             EXPECT_EQ(retStr, expStr);
         } {
-            auto [err, ret] = reverseString->bind().call();
+            rtl::function<rtl::Return()> reverseStr = reverseStringOpt->argsT<>().returnT<>();
+
+            auto [err, ret] = reverseStr();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());

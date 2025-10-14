@@ -32,7 +32,7 @@ namespace rtl::dispatch
             return static_cast<const method_ptr<record_t, return_t, signature_t...>&>(m_functor).f_ptr();
         }
 
-        template<class return_t> requires (std::is_const_v<record_t> == false)
+        template<class return_t> requires (!std::is_const_v<record_t>)
         constexpr const hopper_t<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]
@@ -46,7 +46,7 @@ namespace rtl::dispatch
         template<class return_t>
         using hopper_ct = rtl::method<return_t(record_t::*)(signature_t...) const>;
 
-        template<class return_t> requires (std::is_const_v<record_t> == true)
+        template<class return_t> requires (std::is_const_v<record_t>)
         constexpr const hopper_ct<return_t> get_hopper(std::size_t p_returnId = 0) const
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]

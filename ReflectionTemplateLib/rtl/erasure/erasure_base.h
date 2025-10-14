@@ -37,16 +37,16 @@ namespace rtl::dispatch::erase
             return static_cast<const ehop_rt<record_t, signature_t...>&>(*this);
         }
 
-        erasure_base(const dispatch::functor& p_functor, const detail::RObjectId& p_robj_id) noexcept
+        erasure_base(const dispatch::functor& p_functor, const detail::RObjectId& p_ret_id) noexcept
             : m_functor(p_functor)
-            , m_robj_id(p_robj_id)
+            , m_return_id(p_ret_id)
         { }
 
         const dispatch::functor& m_functor;
 
-        const detail::RObjectId m_robj_id;
+        const detail::RObjectId m_return_id;
 
-        GETTER_CREF(detail::RObjectId, _return_id, m_robj_id);
+        GETTER_CREF(detail::RObjectId, _return_id, m_return_id);
 
         GETTER_CREF(dispatch::lambda_base, _lambda, (*m_functor.get_lambda()));
 	};

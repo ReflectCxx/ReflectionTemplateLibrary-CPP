@@ -132,11 +132,13 @@ namespace rtl_tests
         std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
         ASSERT_TRUE(cstrLen);
 
+        rtl::function<rtl::Return(const char*)> cstrlen_fn = cstrLen->argsT<const char*>().returnT<>();
+        EXPECT_TRUE(cstrlen_fn);
         {
             // Case 1: normal pointer (deduces as 'const char*')
             const char* cstr = "Reflection Template Library C++";
 
-            auto [err, ret] = cstrLen->bind().call(cstr);
+            auto [err, ret] = cstrlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -152,8 +154,7 @@ namespace rtl_tests
             // Case 2: constexpr top-level const (deduces as 'const char* const&')
             constexpr const char* cstr = "Reflection Template Library C++";
 
-            // Need to forward as 'const char*'
-            auto [err, ret] = cstrLen->bind<const char*>()(cstr);
+            auto [err, ret] = cstrlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -167,8 +168,7 @@ namespace rtl_tests
             EXPECT_EQ(rlen, clen);
         } {
             // Case 3: string literal (deduces as const char[N], here const char[32])
-            // Must explicitly forward as 'const char*'.
-            auto [err, ret] = cstrLen->bind<const char*>()("Reflection Template Library C++");
+            auto [err, ret] = cstrlen_fn("Reflection Template Library C++");
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());

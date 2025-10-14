@@ -19,11 +19,6 @@ namespace rtl::dispatch
 {
     struct lambda_base
     {
-        constexpr bool is_void() const 
-        {
-            return m_is_void;
-        }
-
         template<class ...args_t>
         using function_t = lambda_function<args_t...>;
         
@@ -72,14 +67,15 @@ namespace rtl::dispatch
         GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_signId)
 
         GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
+            
+        constexpr bool is_void() const {
+            return m_functor.m_is_void;
+        }
 
         lambda_base(const functor& p_functor, const erase::erasure_base& p_erasure) noexcept
-            : m_is_void(p_functor.m_returnId == traits::uid<void>::value)
-            , m_functor(p_functor)
+            : m_functor(p_functor)
             , m_erasure(p_erasure)
         { }
-
-        const bool m_is_void;
 
         const functor& m_functor;
 

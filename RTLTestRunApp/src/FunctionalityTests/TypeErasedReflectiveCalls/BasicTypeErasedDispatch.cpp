@@ -6,8 +6,6 @@
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
 
-#include <rtl/dispatch/rtl_function_erased_return.h>
-
 using namespace test_utils;
 using namespace test_mirror;
 
@@ -31,77 +29,170 @@ namespace rtl_tests
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		} {
-			auto [err, robj] = erased_ret_func.call<int>(0);
+			auto [err, robj] = erased_ret_func.bind<int>()(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		} {
-			auto [err, robj] = erased_ret_func.call<int&&>(0);
+			auto [err, robj] = erased_ret_func.bind<int&&>()(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}
 	}
 
+
 	TEST(BasicTypeErasedDispatch, implicit_resolutions_to_call_by_value_overloads)
 	{
-		auto reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
-		ASSERT_TRUE(reverseStringOpt);
-
-		rtl::Function reverseString = *reverseStringOpt;
+		auto reverseStrOpt = cxx::mirror().getFunction(str_reverseString);
+		ASSERT_TRUE(reverseStrOpt);
+		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
-			auto [err, robj] = reverseString(const_cast<char*>(STRA));
-			EXPECT_EQ(err, rtl::error::SignatureMismatch);
-		} {
-			auto [err, robj] = reverseString(STRA);
-			
-			EXPECT_EQ(err, rtl::error::None);
-			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			rtl::function<rtl::Return(char*)> reverseString = reverseStrOpt->argsT<char*>().returnT<>();
+			EXPECT_FALSE(reverseString);
+			{
+				auto [err, robj] = reverseString(const_cast<char*>(STRA));
 
-			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
-			EXPECT_EQ(retStr, expStr);
-		} {
-			auto [err, robj] = reverseString(std::string(STRA));
+				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_TRUE(robj.isEmpty());
+			} {
+				auto [err, robj] = reverseString.bind<char*>()(const_cast<char*>(STRA));
 
-			EXPECT_EQ(err, rtl::error::None);
-			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_TRUE(robj.isEmpty());
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const char*>());
+		{
+			rtl::function<rtl::Return(const char*)> reverseString = reverseStrOpt->argsT<const char*>().returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString(STRA);
 
-			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
-			EXPECT_EQ(retStr, expStr);
-		} {
-			std::string str = STRA;
-			auto [err, robj] = reverseString(&str);
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-			EXPECT_EQ(err, rtl::error::None);
-			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				auto [err, robj] = reverseString.bind<const char*>()(STRA);
 
-			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
-			EXPECT_EQ(retStr, expStr);
-		} {
-			const std::string str = STRA;
-			auto [err, robj] = reverseString(&str);
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-			EXPECT_EQ(err, rtl::error::None);
-			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string>());
+		{
+			rtl::function<rtl::Return(std::string)> reverseString = reverseStrOpt->argsT<std::string>().returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString(STRA);
 
-			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
-			EXPECT_EQ(retStr, expStr);
-		} {
-			auto [err, robj] = reverseString();
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-			EXPECT_EQ(err, rtl::error::None);
-			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				auto [err, robj] = reverseString.bind<std::string>()(STRA);
 
-			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
-			EXPECT_EQ(retStr, expStr);
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string*>());
+		{
+			rtl::function<rtl::Return(std::string*)> reverseString = reverseStrOpt->argsT<std::string*>().returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				std::string str = STRA;
+				auto [err, robj] = reverseString(&str);
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				std::string str = STRA;
+				auto [err, robj] = reverseString.bind<std::string*>()(&str);
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string*>());
+		{
+			rtl::function<rtl::Return(const std::string*)> reverseString = reverseStrOpt->argsT<const std::string*>().returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				const std::string str = STRA;
+				auto [err, robj] = reverseString(&str);
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				const std::string str = STRA;
+				auto [err, robj] = reverseString.bind<const std::string*>()(&str);
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<>());
+		{
+			rtl::function<rtl::Return()> reverseString = reverseStrOpt->argsT<>().returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString();
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				auto [err, robj] = reverseString.bind()();
+
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+				EXPECT_EQ(retStr, expStr);
+			}
 		}
 	}
 
@@ -111,19 +202,37 @@ namespace rtl_tests
 		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
 
-		rtl::Function revStrOverloadValCRef = *revStrOverloadValCRefOpt;
-		{
-			std::string_view str = STRA;
+		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&&>());
 
-			// Both by-value (T) and const-ref (const T&) overloads exist.
+		// Both by-value (T) and const-ref (const T&) overloads exist.		
+		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<const std::string_view&>());
+		std::string_view str = STRA;
+
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValCRefOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString); 
+		{
 			// RTL chooses the safe by-value overload implicitly. The const-ref
 			// path requires explicit binding only to disambiguate intent.
 			// Note: If only const T& existed (no by-value overload), RTL would
 			// call it implicitly, since binding to const-ref cannot mutate the caller.
-			auto [err, robj] = revStrOverloadValCRef(str);
+			auto [err, robj] = reverseString(str);
+
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			EXPECT_EQ(retStr, expStr);
+		} {
+			// explicit call by value resolution.
+			auto [err, robj] = reverseString.bind<std::string_view>()(str);
+
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
@@ -137,22 +246,34 @@ namespace rtl_tests
 		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
 
-		rtl::Function revStrOverloadValCRef = *revStrOverloadValCRefOpt;
-		{
-			std::string_view str = STRA;
+		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&&>());
+		
+		// Both by-value (T) and const-ref (const T&) overloads exist.		
+		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<const std::string_view&>());
+		std::string_view str = STRA;
 
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValCRefOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
+		{
 			// Explicitly selecting the const-ref overload using .bind<const T&>().
-			// Required only when a by-value overload exists to resolve ambiguity.
 			// If no by-value overload were present, implicit resolution to const-ref
 			// would have worked automatically, because const-ref cannot mutate.
-			auto [err, robj] = revStrOverloadValCRef.bind<const std::string_view&>()(str);
+			auto [err, robj] = reverseString.bind<const std::string_view&>()(str);
+
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
+		} {
+			auto [err, robj] = reverseString.bind<std::string_view&>()(str);
+
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
+			ASSERT_TRUE(robj.isEmpty());
 		}
 	}
 
@@ -162,20 +283,33 @@ namespace rtl_tests
 		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
 
-		rtl::Function revStrOverloadValRef = *revStrOverloadValRefOpt;
-		{
-			std::string_view str = STRA;
+		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<const std::string_view&>());
+		
+		// Here both by-value (T) and non-const ref (T&) overloads exist.
+		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view&>());
+		std::string_view str = STRA;
 
-			// Here both by-value (T) and non-const ref (T&) overloads exist.
-			// Unlike in static C++, where such a situation causes ambiguity and
-			// requires an explicit static_cast, RTL prioritizes the safe-by-value
-			// overload automatically since it guarantees no mutation.
-			// The non-const ref overload remains accessible only through explicit
-			// binding to preserve mutability intent.
-			auto [err, robj] = revStrOverloadValRef(str);
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValRefOpt->argsT<std::string_view>().returnT<>();
+		{
+			// Here also, RTL prioritizes the safe-by-value overload automatically
+			// since it guarantees no mutation. The non-const ref overload remains
+			// accessible only through explicit binding to preserve mutability intent.
+			auto [err, robj] = reverseString(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			EXPECT_EQ(retStr, expStr);
+		} {
+			// explicit call by value resolution.
+			auto [err, robj] = reverseString.bind<std::string_view>()(str);
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
@@ -188,67 +322,72 @@ namespace rtl_tests
 	{
 		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
+		
+		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<const std::string_view&>());
+		
+		// Here both by-value (T) and non-const ref (T&) overloads exist.
+		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view&>());
+		std::string_view str = STRA;
 
-		rtl::Function revStrOverloadValRef = *revStrOverloadValRefOpt;
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValRefOpt->argsT<std::string_view>().returnT<>();
 		{
-			std::string_view str = STRA;
-
 			// Explicitly selecting the non-const ref overload.
 			// Even though the by-value overload is preferred implicitly for safety,
 			// the user can override that choice by binding explicitly as T&,
 			// signaling the intent to allow mutation through reflection.
-			auto [err, robj] = revStrOverloadValRef.bind<std::string_view&>()(str);
+			auto [err, robj] = reverseString.bind<std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
+		} {
+			auto [err, robj] = reverseString.bind<const std::string_view&>()(str);
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
+			ASSERT_TRUE(robj.isEmpty());
 		}
 	}
 
 
-
-	// -----------------------------------------------------------------------------
-	// Tests implicit vs explicit binding behavior for reference arguments in RTL.
-	// Demonstrates RTL's intentional design choice: non-const refs require explicit
-	// opt-in binding to prevent unintended mutation through reflection.
-	// -----------------------------------------------------------------------------
 	TEST(BasicTypeErasedDispatch, calling_non_overloaded_non_const_ref_argument)
 	{
 		auto revStrNonConstRefArgOpt = cxx::mirror().getFunction(str_revStrNonConstRefArg);
 		ASSERT_TRUE(revStrNonConstRefArgOpt);
 
+		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<const std::string_view&>());
+
+		// Here no overloads exists, only non-const ref (T&) argument.
+		EXPECT_TRUE(revStrNonConstRefArgOpt->hasSignature<std::string_view&>());
 		std::string_view str = STRA;
-		rtl::Function revStrNonConstRefArg = *revStrNonConstRefArgOpt;
 
-		// -------------------------------------------------------------------------
-		// Case 1: Implicit call with a value (or perfectly forwarded lvalue)
-		// -------------------------------------------------------------------------
-		// Even though 'str' is an lvalue and forwarding is perfect, RTL enforces
-		// semantic safety: calls that may mutate user data (T&) require explicit
-		// intent. Hence, the dispatcher returns ExplicitRefBindingRequired instead
-		// of silently binding to a non-const lvalue reference.
-		// -------------------------------------------------------------------------
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrNonConstRefArgOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
+
+		// Calls that may mutate user data (T&) require explicit intent.
+		// Hence, the dispatcher returns 'ExplicitRefBindingRequired' error.
+		// Since no call by value overload exists.
 		{
-			auto [err, robj] = revStrNonConstRefArg(str);
+			auto [err, robj] = reverseString(str);
 			EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
-		}
-
-		// -------------------------------------------------------------------------
-		// Case 2: Explicitly binding as std::string_view&
-		// -------------------------------------------------------------------------
-		// By calling .bind<T&>(), the user explicitly signals willingness to let
-		// the function modify the argument. This re-enables the T& call path and
-		// executes successfully, producing the expected result.
-		// -------------------------------------------------------------------------
-		{
-			auto [err, robj] = revStrNonConstRefArg.bind<std::string_view&>()(str);
+		} {
+			// expected non-const ref binding.
+			auto [err, robj] = reverseString.bind<const std::string_view&>()(str);
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
+		} {
+			// By calling .bind<T&>(), the user explicitly signals willingness to let
+			// the function modify the argument. This re-enables the T& call path and
+			// executes successfully, producing the expected result.
+			auto [err, robj] = reverseString.bind<std::string_view&>()(str);
 
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
@@ -257,36 +396,51 @@ namespace rtl_tests
 	}
 
 
-	// -----------------------------------------------------------------------------
-	// Tests implicit binding for const-reference arguments.
-	// Since const-ref parameters cannot mutate caller data, RTL allows implicit
-	// binding without requiring an explicit .bind<T&>() call.
-	// -----------------------------------------------------------------------------
 	TEST(BasicTypeErasedDispatch, calling_non_overloaded_const_ref_argument)
 	{
 		auto revStrConstRefArgOpt = cxx::mirror().getFunction(str_revStrConstRefArg);
 		ASSERT_TRUE(revStrConstRefArgOpt);
 
-		std::string_view str = STRA;
-		rtl::Function revStrConstRefArg = *revStrConstRefArgOpt;
+		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view&&>());
 
-		// -------------------------------------------------------------------------
-		// Case: Implicitly binding to const-ref parameter
-		// -------------------------------------------------------------------------
-		// Safe by C++ semantics — temporaries and values can bind to const& freely.
-		// RTL mirrors this rule at runtime, so the call proceeds without requiring
-		// explicit binding and executes successfully.
-		// -------------------------------------------------------------------------
+		// Here no overloads exists, only non-const ref (T&) argument.
+		EXPECT_TRUE(revStrConstRefArgOpt->hasSignature<const std::string_view&>());
+		std::string_view str = STRA;
+
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrConstRefArgOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
 		{
-			auto [err, robj] = revStrConstRefArg(str);
+			// This call resolves to the const-ref overload (no other overloads exist),
+			// so the argument is implicitly bound as a const reference.
+			auto [err, robj] = reverseString(str);
 
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
+		} {
+			// explicit binding must also behave the same way.
+			auto [err, robj] = reverseString.bind<const std::string_view&>()(str);
+
+			EXPECT_EQ(err, rtl::error::None);
+			ASSERT_FALSE(robj.isEmpty());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
+
+			const std::string& retStr = robj.view<std::string>()->get();
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			EXPECT_EQ(retStr, expStr);
+		} {
+			// explicit binding to non-const ref returns error.
+			auto [err, robj] = reverseString.bind<std::string_view&>()(str);
+
+			// expected 'const T&'
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
+			ASSERT_TRUE(robj.isEmpty());
 		}
 	}
 
@@ -296,16 +450,24 @@ namespace rtl_tests
 		auto revStrRValueRefArgOpt = cxx::mirror().getFunction(str_revStrRValueRefArg);
 		ASSERT_TRUE(revStrRValueRefArgOpt);
 
-		rtl::Function revStrRValueRefArg = *revStrRValueRefArgOpt;
+		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<const std::string_view&>());
+		
+		// Here no overloads exists, only non-const ref (T&) argument.
+		EXPECT_TRUE(revStrRValueRefArgOpt->hasSignature<std::string_view&&>());
+
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrRValueRefArgOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
 		{
-			auto [err, robj] = revStrRValueRefArg(std::string_view(STRA));
+			auto [err, robj] = reverseString(std::string_view(STRA));
 			EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
 		} {
-			auto [err, robj] = revStrRValueRefArg.bind<std::string_view&&>()(std::string_view(STRA));
+			auto [err, robj] = reverseString.bind<std::string_view&&>()(std::string_view(STRA));
 
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_rvref;
@@ -319,15 +481,28 @@ namespace rtl_tests
 		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
 
-		rtl::Function revStrOverloadValRefNCref = *revStrOverloadValRefNCrefOpt;
-		{
-			std::string_view str = STRA;
+		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&&>());
 
+		// Here distinct overloads exists, with non-const ref (T&) and const-ref (const T&).
+		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<const std::string_view&>());
+		std::string_view str = STRA;
+
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValRefNCrefOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
+		{
 			// Both T& and const T& overloads are viable for an lvalue argument.
 			// RTL avoids implicit ambiguity by requiring explicit ref binding
 			// when mutation is possible (non-const ref path).
-			auto [err, robj] = revStrOverloadValRefNCref(str);
+			auto [err, robj] = reverseString(str);
 			EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
+		} {
+			auto [err, robj] = reverseString.bind<std::string_view>()(str);
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
+		} {
+			auto [err, robj] = reverseString.bind<std::string_view&&>()(str);
+			EXPECT_EQ(err, rtl::error::RefBindingMismatch);
 		}
 	}
 
@@ -337,15 +512,23 @@ namespace rtl_tests
 		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
 
+		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&&>());
+
+		// Here distinct overloads exists, with non-const ref (T&) and const-ref (const T&).
+		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<const std::string_view&>());
 		std::string_view str = STRA;
-		rtl::Function revStrOverloadValRefNCref = *revStrOverloadValRefNCrefOpt;
+
+		rtl::function<rtl::Return(std::string_view)> reverseString = revStrOverloadValRefNCrefOpt->argsT<std::string_view>().returnT<>();
+		EXPECT_TRUE(reverseString);
 		{
 			// Explicitly selecting the non-const ref overload.
 			// Caller signals intent to allow mutation by binding as T&.
-			auto [err, robj] = revStrOverloadValRefNCref.bind<std::string_view&>()(str);
+			auto [err, robj] = reverseString.bind<std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
@@ -356,10 +539,10 @@ namespace rtl_tests
 			// But since both 'T&' and 'const T&' overloads are available,
 			// RTL treats the situation as ambiguous and requires explicit selection
 			// to avoid guessing the user's intent regarding mutability.
-			auto [err, robj] = revStrOverloadValRefNCref.bind<const std::string_view&>()(str);
+			auto [err, robj] = reverseString.bind<const std::string_view&>()(str);
 			EXPECT_EQ(err, rtl::error::None);
 			ASSERT_FALSE(robj.isEmpty());
-			EXPECT_TRUE(robj.canViewAs<std::string>());
+			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
 			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;

@@ -51,6 +51,9 @@ namespace rtl::detail
 
         for (auto& functorId : m_functorIds)
         {
+            auto ssignId = functorId.m_lambda->get_strict_sign_id();
+            auto nsignId = functorId.m_lambda->get_normal_sign_id();
+
             if (!lambda && strictArgsId == functorId.m_lambda->get_strict_sign_id()) {
                 lambda = &(functorId.m_lambda->to_function<args_t...>());
             }
@@ -78,13 +81,33 @@ namespace rtl::detail
     template<class return_t> requires (std::is_same_v<return_t, rtl::Return>)
     inline constexpr function<Return(args_t...)> HopFunction<args_t...>::returnT() const
     {
+        bool isRetTypeVoid = false;
         function<Return(traits::normal_sign_t<args_t>...)> erasedReturnFunc;
+        
         for (auto lambda : m_lambdaRefOverloads)
         {
-            auto eret = lambda->m_erasure.to_erased_return<traits::normal_sign_t<args_t>...>();
-            erasedReturnFunc.get_vhop().push_back(eret.get_void_hopper());
-            erasedReturnFunc.get_rhop().push_back(eret.get_return_hopper());
-            erasedReturnFunc.m_lambda.push_back(lambda);
+            erasedReturnFunc.m_lambdas.push_back(lambda);
+            if (lambda)
+            {
+                auto eret = lambda->m_erasure.to_erased_return<traits::normal_sign_t<args_t>...>();
+                if (lambda->is_void()) {
+                    erasedReturnFunc.get_vhop().push_back(eret.get_void_hopper());
+                    isRetTypeVoid = true;
+                }
+                else {
+                    erasedReturnFunc.get_rhop().push_back(eret.get_return_hopper());
+                }
+            }
+            else {
+                erasedReturnFunc.get_vhop().push_back(nullptr);
+                erasedReturnFunc.get_rhop().push_back(nullptr);
+            }
+        }
+        if (isRetTypeVoid) {
+            erasedReturnFunc.get_rhop().clear();
+        }
+        else {
+            erasedReturnFunc.get_vhop().clear();
         }
         return erasedReturnFunc;
     }

@@ -26,12 +26,12 @@ namespace rtl::dispatch::erase
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
         aware_hopper_rec(const dispatch::functor& p_functor)
-            : base_t( p_functor, 
-                      detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe),
-                      aware_hopper_rec::get_lambda_void(),
-                      aware_hopper_rec::get_lambda_any_ret(),
-                      aware_hopper_rec::get_lambda_void_robj(),
-                      aware_hopper_rec::get_lambda_any_ret_robj() )
+        : base_t( p_functor,
+                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void() : nullptr,
+                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret() : nullptr,
+                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void_robj() : nullptr,
+                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret_robj() : nullptr,
+                  detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe) )
         { }
 
         constexpr static auto get_lambda_void() noexcept

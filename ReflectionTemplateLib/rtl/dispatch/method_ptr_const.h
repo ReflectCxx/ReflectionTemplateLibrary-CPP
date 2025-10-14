@@ -37,6 +37,7 @@ namespace rtl::dispatch
 			m_qualifier = detail::methodQ::Const;
 
 			m_returnId = traits::uid<return_t>::value;
+			m_is_void = (m_returnId == traits::uid<void>::value);
 			m_recordId = traits::uid<const record_t>::value;
 
 			m_is_any_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);

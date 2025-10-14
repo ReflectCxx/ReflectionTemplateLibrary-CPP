@@ -20,68 +20,91 @@ namespace rtl
     template<class ...signature_t>
     struct function<Return(signature_t...)>
     {
-        constexpr operator bool() const {
-            return (!m_lambda.empty());
-        }
-
         template<class ...args_t>
-        [[nodiscard]]
+        requires (sizeof...(args_t) == sizeof...(signature_t))
+        [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
         constexpr Return operator()(args_t&&...params) const noexcept
         {
-            if (m_lambda.empty()) [[unlikely]] {
+            if (!(*this)) [[unlikely]] {
                 return { error::InvalidCaller, RObject{} };
             }
 
-            if (m_lambda[call_by::value] == nullptr && 
-               (m_lambda.size() > call_by::ncref || 
-                m_lambda[call_by::cref]->is_any_ncref()) ) [[unlikely]]
-            {
+            if (must_bind_refs()) [[unlikely]] {
                 return { error::ExplicitRefBindingRequired, RObject{} };
             }
 
-            auto index = (m_lambda[call_by::value] != nullptr ? call_by::value : call_by::cref);
-            if (m_lambda[index]->is_void())
+            auto index = (m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
+            if (m_lambdas[index]->is_void())
             {
-                m_void_hop[index] (*m_lambda[index], std::forward<args_t>(params)...);
+                m_vhop[index] (*m_lambdas[index], std::forward<args_t>(params)...);
                 return { error::None, RObject{} };
             }
             else
             {
-                return{ error::None,
-                        RObject{ m_any_hop[index] (*m_lambda[index], std::forward<args_t>(params)...),
-                                 m_robj_id, nullptr
-                        }
+                return { error::None,
+                         RObject{ m_rhop[index] (*m_lambdas[index], std::forward<args_t>(params)...),
+                                  m_lambdas.back()->m_erasure.m_return_id, nullptr
+                         }
                 };
             }
         }
 
 
-        template<class ...args_t>
-        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>> == true)
-        [[nodiscard]]
-        constexpr Return call(args_t&&...params) const noexcept
+        template<class ...fwd_args_t>
+        struct perfect_fwd
         {
-            auto signature_id = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
-            for (int index = 0; index < m_lambda.size(); index++)
+            const function<Return(signature_t...)>& fn;
+
+            template<class ...args_t>
+            [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
+            constexpr Return operator()(args_t&&...params) const noexcept
             {
-                if (signature_id == m_lambda[index]->get_strict_sign_id())
+                if (!fn) [[unlikely]] {
+                    return { error::InvalidCaller, RObject{} };
+                }
+
+                auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
+                for (int index = 0; index < fn.m_lambdas.size(); index++)
                 {
-                    if (m_lambda[index]->is_void())
+                    if (fn.m_lambdas[index] != nullptr) 
                     {
-                        m_void_hop[index] (*m_lambda[index], std::forward<args_t>(params)...);
-                        return { error::None, RObject{} };
-                    }
-                    else
-                    {
-                        return{ error::None,
-                                RObject{ m_any_hop[index] (*m_lambda[index], std::forward<args_t>(params)...),
-                                         m_robj_id, nullptr 
-                                }
-                        };
+                        if (signature_id == fn.m_lambdas[index]->get_strict_sign_id())
+                        {
+                            if (fn.m_lambdas[index]->is_void())
+                            {
+                                fn.m_vhop[index] (*(fn.m_lambdas[index]), std::forward<args_t>(params)...);
+                                return { error::None, RObject{} };
+                            }
+                            else
+                            {
+                                return { error::None,
+                                         RObject{ fn.m_rhop[index] (*(fn.m_lambdas[index]), std::forward<args_t>(params)...),
+                                                  fn.m_lambdas.back()->m_erasure.m_return_id, nullptr
+                                         }
+                                };
+                            }
+                        }
                     }
                 }
+                return { error::RefBindingMismatch, RObject{} };
             }
-            return { error::InvalidCaller, RObject{} };
+        };
+
+
+        template<class ...args_t>
+        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        [[nodiscard]]
+        constexpr const perfect_fwd<args_t...> bind() const noexcept {
+            return perfect_fwd<args_t...>{ *this };
+        }
+
+        constexpr operator bool() const noexcept {
+            return !(m_lambdas.empty() || (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+        }
+
+        constexpr bool must_bind_refs() const noexcept {
+            return (m_lambdas[call_by::value] == nullptr && 
+                   (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
         }
 
     //private:
@@ -90,13 +113,11 @@ namespace rtl
 
         using lambda_rt = std::function<std::any(const dispatch::lambda_base&, signature_t...)>;
 
-        detail::RObjectId m_robj_id = {};
+        std::vector<lambda_rt> m_rhop = {};
 
-        std::vector<lambda_rt> m_any_hop = {};
+        std::vector<lambda_vt> m_vhop = {};
 
-        std::vector<lambda_vt> m_void_hop = {};
-
-        std::vector<const dispatch::lambda_base*> m_lambda = {};
+        std::vector<const dispatch::lambda_base*> m_lambdas = {};
 
         enum call_by
         {
@@ -106,11 +127,11 @@ namespace rtl
         };
 
         std::vector<lambda_rt>& get_rhop() {
-            return m_any_hop;
+            return m_rhop;
         }
         
         std::vector<lambda_vt>& get_vhop() {
-            return m_void_hop;
+            return m_vhop;
         }
         
         static_assert((!std::is_reference_v<signature_t> && ...),

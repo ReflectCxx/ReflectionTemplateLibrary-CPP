@@ -68,11 +68,11 @@ namespace rtl {
                 if constexpr (std::is_same_v<_type, void>) {
                     return std::string("void");
                 }
-                if constexpr (std::is_same_v<_type, std::string>) {
-                    return std::string("std::string");
+                if constexpr (std::is_same_v<_type, std::string*>) {
+                    return std::string("std::string*");
                 }
-                if constexpr (std::is_same_v<_type, const std::string>) {
-                    return std::string("const std::string");
+                if constexpr (std::is_same_v<_type, const std::string*>) {
+                    return std::string("const std::string*");
                 }
                 if constexpr (std::is_same_v<_type, std::string&>) {
                     return std::string("std::string&");
@@ -81,7 +81,25 @@ namespace rtl {
                     return std::string("const std::string&");
                 }
                 if constexpr (std::is_same_v<_type, std::string&&>) {
-                    return std::string("const std::string&&");
+                    return std::string("std::string&&");
+                }
+                if constexpr (std::is_same_v<_type, const std::string>) {
+                    return std::string("const std::string");
+                }
+                if constexpr (std::is_same_v<_type, std::string>) {
+                    return std::string("std::string");
+                }
+                if constexpr (std::is_same_v<_type, std::string_view&>) {
+                    return std::string("std::string_view&");
+                }
+                if constexpr (std::is_same_v<_type, const std::string_view&>) {
+                    return std::string("const std::string_view&");
+                }
+                if constexpr (std::is_same_v<_type, std::string_view&&>) {
+                    return std::string("std::string_view&&");
+                }
+                if constexpr (std::is_same_v<_type, const std::string_view>) {
+                    return std::string("const std::string_view");
                 }
                 if constexpr (std::is_same_v<_type, std::string_view>) {
                     return std::string("std::string_view");
