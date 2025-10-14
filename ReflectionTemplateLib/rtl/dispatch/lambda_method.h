@@ -24,7 +24,7 @@ namespace rtl::dispatch
     struct lambda_method : public lambda_base
     {
         template<class return_t>
-        using hopper_t = rtl::method<return_t (record_t::*)(signature_t...)>;
+        using hopper_t = rtl::method<record_t, return_t(signature_t...)>;
 
         template<class return_t>
         constexpr decltype(auto) get_functor(std::size_t p_returnId = 0) const
@@ -44,7 +44,7 @@ namespace rtl::dispatch
         }
 
         template<class return_t>
-        using hopper_ct = rtl::method<return_t(record_t::*)(signature_t...) const>;
+        using hopper_ct = rtl::method<const record_t, return_t(signature_t...)>;
 
         template<class return_t> requires (std::is_const_v<record_t>)
         constexpr const hopper_ct<return_t> get_hopper(std::size_t p_returnId = 0) const

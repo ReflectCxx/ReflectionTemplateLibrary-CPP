@@ -205,10 +205,10 @@ namespace rtl_tests
         std::optional<rtl::Method> isStringEmpty = stdStringClass->getMethod("empty");
         ASSERT_TRUE(isStringEmpty);
         {
-            rtl::method<bool(std::string::*)()> is_empty = isStringEmpty->recordT<std::string>().argsT<>().returnT<bool>();
+            rtl::method<std::string, bool()> is_empty = isStringEmpty->recordT<std::string>().argsT<>().returnT<bool>();
             EXPECT_FALSE(is_empty);
         } {
-            rtl::method<bool(std::string::*)() const> is_empty = isStringEmpty->recordT<const std::string>().argsT<>().returnT<bool>();
+            rtl::method<const std::string, bool()> is_empty = isStringEmpty->recordT<const std::string>().argsT<>().returnT<bool>();
             ASSERT_TRUE(is_empty);
 
             EXPECT_TRUE(is_empty(std::string("")));
@@ -230,10 +230,10 @@ namespace rtl_tests
         std::optional<rtl::Method> isStringEmpty = stdStringViewClass->getMethod("empty");
         ASSERT_TRUE(isStringEmpty);
         {
-            rtl::method<bool(std::string_view::*)()> is_empty = isStringEmpty->recordT<std::string_view>().argsT<>().returnT<bool>();
+            rtl::method<std::string_view, bool()> is_empty = isStringEmpty->recordT<std::string_view>().argsT<>().returnT<bool>();
             EXPECT_FALSE(is_empty);
         } {
-            rtl::method<bool(std::string_view::*)() const> is_empty = isStringEmpty->recordT<const std::string_view>().argsT<>().returnT<bool>();
+            rtl::method<const std::string_view, bool()> is_empty = isStringEmpty->recordT<const std::string_view>().argsT<>().returnT<bool>();
             ASSERT_TRUE(is_empty);
 
             EXPECT_TRUE(is_empty(std::string("")));

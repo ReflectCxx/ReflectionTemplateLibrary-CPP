@@ -42,7 +42,7 @@ namespace
         return function->argsT<bm::argStr_t>().returnT<void>();
     }();
 
-    static const rtl::method<bm::retStr_t(bm::Node::*)(bm::argStr_t)> getMessageNode = []()
+    static const rtl::method<bm::Node, bm::retStr_t(bm::argStr_t)> getMessageNode = []()
     {
         std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
         if (!Node) {
@@ -58,7 +58,7 @@ namespace
         return method->recordT<bm::Node>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
     }();
 
-    static const rtl::method<void(bm::Node::*)(bm::argStr_t)> sendMessageNode = []()
+    static const rtl::method<bm::Node, void(bm::argStr_t)> sendMessageNode = []()
     {
         std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
         if (!Node) {

@@ -196,29 +196,29 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class _returnType> requires (std::is_const_v<record_t> == false)
-    inline constexpr const method<_returnType(record_t::*)(args_t...)>
-                                       HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const method<record_t, _returnType(args_t...)>
+                                    HopMethod<record_t, args_t...>::returnT() const
     {
         if (m_lambda != nullptr) [[likely]]
         {
             const auto retId = traits::uid<_returnType>::value;
             return m_lambda->template get_hopper<_returnType>(retId);
         }
-        return method<_returnType(record_t::*)(args_t...)>();
+        return method<record_t, _returnType(args_t...)>();
     }
 
 
     template<class record_t, class ...args_t>
     template<class _returnType> requires (std::is_const_v<record_t> == true)
-    inline constexpr const method<_returnType(record_t::*)(args_t...) const> 
-                                       HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const method<const record_t, _returnType(args_t...)> 
+                                          HopMethod<record_t, args_t...>::returnT() const
     {
         if (m_lambda != nullptr) [[likely]]
         {
             const auto retId = traits::uid<_returnType>::value;
             return m_lambda->template get_hopper<_returnType>(retId);
         }
-        return method<_returnType(record_t::*)(args_t...) const>();
+        return method<const record_t, _returnType(args_t...)>();
     }
 }
 

@@ -97,10 +97,10 @@ namespace rtl::detail
         std::vector<const dispatch::lambda_base*> m_lambdaRefOverloads = {};
 
         template<class retT> requires (std::is_const_v<recordT> == false)
-        constexpr const method<retT(recordT::*)(signatureT...)> returnT() const;
+        constexpr const method<recordT, retT(signatureT...)> returnT() const;
 
         template<class retT> requires (std::is_const_v<recordT> == true)
-        constexpr const method<retT(recordT::*)(signatureT...) const> returnT() const;
+        constexpr const method<const recordT, retT(signatureT...)> returnT() const;
     };
 
     template<class recordT>

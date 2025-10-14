@@ -18,7 +18,7 @@
 namespace rtl
 {
     template<class record_t, class return_t, class... signature_t>
-    struct method<return_t (record_t::*)(signature_t...)> 
+    struct method<record_t, return_t(signature_t...)>
     {
         using fptr_t = return_t (record_t::*)(signature_t...);
 

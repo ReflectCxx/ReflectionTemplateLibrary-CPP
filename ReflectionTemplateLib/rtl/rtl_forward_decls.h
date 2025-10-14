@@ -28,7 +28,7 @@ namespace rtl
     template<class return_t, class ...signature_t>
     struct function;
 
-    template<class functor_t>
+    template<class record_t, class return_t, class ...signature_t>
     struct method;
 
     namespace detail
