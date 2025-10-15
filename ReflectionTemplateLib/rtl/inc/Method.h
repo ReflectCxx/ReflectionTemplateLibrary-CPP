@@ -82,13 +82,13 @@ namespace rtl {
         friend Record;
         friend detail::CxxReflection;
 
-        template<class ..._signature>
+        template<class ...>
         friend struct detail::DefaultInvoker;
 
-        template<class ..._signature>
+        template<class ...>
         friend struct detail::NonConstInvoker;
 
-        template<class _recordType>
+        template<class>
         friend struct detail::ErasedInvoker;
     };
 }

@@ -6,6 +6,8 @@
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
 
+#include <rtl/dispatch/rtl_method_erased_return.h>
+
 using namespace test_utils;
 using namespace test_mirror;
 
@@ -14,26 +16,49 @@ namespace rtl_tests
 	TEST(BasicTypeErasedDispatch, invalid_erased_return_rtl_function)
 	{
 		{
-			rtl::function<rtl::Return()> erased_ret_func;
-			EXPECT_FALSE(erased_ret_func);
+			rtl::function<rtl::Return()> erased_ret_fn;
+			EXPECT_FALSE(erased_ret_fn);
 
-			auto [err, robj] = erased_ret_func();
+			auto [err, robj] = erased_ret_fn();
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			rtl::method<int, rtl::Return()> erased_ret_mt;
+			EXPECT_FALSE(erased_ret_mt);
+
+			auto [err, robj] = erased_ret_mt(0)();
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}
 
-		rtl::function<rtl::Return(int)> erased_ret_func;
-		EXPECT_FALSE(erased_ret_func);
+		rtl::function<rtl::Return(int)> erased_ret_fn;
+		EXPECT_FALSE(erased_ret_fn);
 		{
-			auto [err, robj] = erased_ret_func(0);
+			auto [err, robj] = erased_ret_fn(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		} {
-			auto [err, robj] = erased_ret_func.bind<int>()(0);
+			auto [err, robj] = erased_ret_fn.bind<int>()(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		} {
-			auto [err, robj] = erased_ret_func.bind<int&&>()(0);
+			auto [err, robj] = erased_ret_fn.bind<int&&>()(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		}
+
+		rtl::method<char, rtl::Return(int)> erased_ret_mt;
+		EXPECT_FALSE(erased_ret_mt);
+		{
+			auto [err, robj] = erased_ret_mt('a')(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			auto [err, robj] = erased_ret_mt.bind<int>('a')(0);
+			EXPECT_EQ(err, rtl::error::InvalidCaller);
+			EXPECT_TRUE(robj.isEmpty());
+		} {
+			auto [err, robj] = erased_ret_mt.bind<int&&>('a')(0);
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}

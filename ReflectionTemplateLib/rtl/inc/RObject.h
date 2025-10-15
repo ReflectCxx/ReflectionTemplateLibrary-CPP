@@ -100,20 +100,23 @@ namespace rtl
         friend CxxMirror;
         friend detail::RObjExtractor;
 
-        template<class T>
+        template<class>
         friend struct detail::RObjectUPtr;
 
-        template<class T>
+        template<class>
         friend struct detail::RObjectBuilder;
 
-        template<bool is_binding_v, class ..._signature>
+        template<bool, class ...>
         friend struct detail::ErasedCaller;
 
-        template<class _recordType>
+        template<class>
         friend struct detail::ErasedInvoker;
 
-        template<class return_t, class ...signature_t>
+        template<class, class ...>
         friend struct function;
+
+        template<class , class, class ...>
+        friend struct method;
     };
 
     struct [[nodiscard]] Return {

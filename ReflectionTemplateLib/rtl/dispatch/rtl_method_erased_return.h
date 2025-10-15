@@ -17,8 +17,8 @@
 
 namespace rtl
 {
-    template<class ...signature_t>
-    struct function<Return(signature_t...)>
+    template<class record_t, class ...signature_t>
+    struct method<record_t, Return(signature_t...)>
     {
         enum call_by
         {
@@ -27,23 +27,34 @@ namespace rtl
             ncref = 2   //non-const ref.
         };
 
-        template<class ...args_t>
-        requires (sizeof...(args_t) == sizeof...(signature_t))
-        constexpr Return operator()(args_t&&...params) const noexcept;
+        struct invoker
+        {
+            const record_t& target;
+            const method<record_t, Return(signature_t...)>& mt;
+
+            template<class ...args_t>
+            requires (sizeof...(args_t) == sizeof...(signature_t))
+            constexpr Return operator()(args_t&&...params) const noexcept;
+        };
 
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const function<Return(signature_t...)>& fn;
+            const record_t& target;
+            const method<record_t, Return(signature_t...)>& mt;
 
             template<class ...args_t>
             constexpr Return operator()(args_t&&...params) const noexcept;
         };
 
+        constexpr invoker operator()(const record_t& p_target) const noexcept {
+            return invoker{ p_target, *this };
+        }
+
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind() const noexcept {
-            return perfect_fwd<args_t...>{ *this };
+        constexpr const perfect_fwd<args_t...> bind(const record_t& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ p_target, *this };
         }
 
         constexpr operator bool() const noexcept {
@@ -51,15 +62,15 @@ namespace rtl
         }
 
         constexpr bool must_bind_refs() const noexcept {
-            return (m_lambdas[call_by::value] == nullptr && 
+            return (m_lambdas[call_by::value] == nullptr &&
                    (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
         }
 
     private:
 
-        using lambda_vt = std::function<void(const dispatch::lambda_base&, signature_t...)>;
+        using lambda_vt = std::function<void(const dispatch::lambda_base&, const record_t&, signature_t...)>;
 
-        using lambda_rt = std::function<std::any(const dispatch::lambda_base&, signature_t...)>;
+        using lambda_rt = std::function<std::any(const dispatch::lambda_base&, const record_t&, signature_t...)>;
 
         std::vector<lambda_rt> m_rhop = {};
 
@@ -71,42 +82,43 @@ namespace rtl
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
         GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
 
-        template<class ...>
-        friend struct detail::HopFunction;
+        template<class, class ...>
+        friend struct HopMethod;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
-                       "rtl::function<...>: any type cannot be specified as reference here");
+                      "rtl::method<...>: any type cannot be specified as reference here.");
     };
 }
 
 
-namespace rtl 
+namespace rtl
 {
-    template<class ...signature_t>
+    template<class record_t, class ...signature_t>
     template<class ...args_t>
     requires (sizeof...(args_t) == sizeof...(signature_t))
     [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-    ForceInline constexpr Return function<Return(signature_t...)>::operator()(args_t&&...params) const noexcept
+    ForceInline constexpr Return
+    method<record_t, Return(signature_t...)>::invoker::operator()(args_t&&...params) const noexcept
     {
-        if (!(*this)) [[unlikely]] {
+        if (!mt) [[unlikely]] {
             return { error::InvalidCaller, RObject{} };
         }
 
-        if (must_bind_refs()) [[unlikely]] {
+        if (mt.must_bind_refs()) [[unlikely]] {
             return { error::ExplicitRefBindingRequired, RObject{} };
         }
 
-        auto index = (m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
-        if (m_lambdas[index]->is_void())
+        auto index = (mt.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
+        if (mt.m_lambdas[index]->is_void())
         {
-            m_vhop[index](*m_lambdas[index], std::forward<args_t>(params)...);
+            mt.m_vhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...);
             return { error::None, RObject{} };
         }
         else
         {
             return { error::None,
-                     RObject{ m_rhop[index](*m_lambdas[index], std::forward<args_t>(params)...),
-                              m_lambdas.back()->get_return_id(), nullptr
+                     RObject{ mt.m_rhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...),
+                              mt.m_lambdas.back()->get_return_id(), nullptr
                      }
             };
         }
@@ -116,34 +128,34 @@ namespace rtl
 
 namespace rtl
 {
-    template<class ...signature_t>
+    template<class record_t, class ...signature_t>
     template<class ...fwd_args_t>
     template<class ...args_t>
     [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
     ForceInline constexpr Return
-    function<Return(signature_t...)>::perfect_fwd<fwd_args_t...>::operator()(args_t&&...params) const noexcept
+    method<record_t, Return(signature_t...)>::perfect_fwd<fwd_args_t...>::operator()(args_t&&...params) const noexcept
     {
-        if (!fn) [[unlikely]] {
+        if (!mt) [[unlikely]] {
             return { error::InvalidCaller, RObject{} };
         }
 
         auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
-        for (int index = 0; index < fn.m_lambdas.size(); index++)
+        for (int index = 0; index < mt.m_lambdas.size(); index++)
         {
-            if (fn.m_lambdas[index] != nullptr)
+            if (mt.m_lambdas[index] != nullptr)
             {
-                if (signature_id == fn.m_lambdas[index]->get_strict_sign_id())
+                if (signature_id == mt.m_lambdas[index]->get_strict_sign_id())
                 {
-                    if (fn.m_lambdas[index]->is_void())
+                    if (mt.m_lambdas[index]->is_void())
                     {
-                        fn.m_vhop[index](*fn.m_lambdas[index], std::forward<args_t>(params)...);
+                        mt.m_vhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...);
                         return { error::None, RObject{} };
                     }
                     else
                     {
                         return { error::None,
-                                 RObject{ fn.m_rhop[index](*fn.m_lambdas[index], std::forward<args_t>(params)...),
-                                          fn.m_lambdas.back()->get_return_id(), nullptr
+                                 RObject{ mt.m_rhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...),
+                                          mt.m_lambdas.back()->get_return_id(), nullptr
                                  }
                         };
                     }

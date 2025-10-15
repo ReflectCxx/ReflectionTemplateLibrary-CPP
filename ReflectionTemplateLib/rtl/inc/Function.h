@@ -112,7 +112,7 @@ namespace rtl {
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;
 
-        template<bool is_binding_v, class ..._signature>
+        template<bool, class ...>
         friend struct detail::ErasedCaller;
     };
 }
