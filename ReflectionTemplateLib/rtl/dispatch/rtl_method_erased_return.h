@@ -83,7 +83,7 @@ namespace rtl
         GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
 
         template<class, class ...>
-        friend struct HopMethod;
+        friend struct detail::HopMethod;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
                       "rtl::method<...>: any type cannot be specified as reference here.");

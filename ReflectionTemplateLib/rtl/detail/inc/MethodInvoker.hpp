@@ -17,6 +17,8 @@
 #include "MethodContainer.h"
 #include "erased_hopper_rec.h"
 
+#include "rtl_method_erased_return.h"
+
 namespace rtl::detail
 {
 /*  @method: call()
@@ -152,6 +154,90 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
+
+    template<class record_t, class ...args_t>
+    template<class return_t>
+    requires (!std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const
+    method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    {
+        if (m_lambda != nullptr)
+        {
+            const auto retId = traits::uid<return_t>::value;
+            return m_lambda->template get_hopper<return_t>(retId);
+        }
+        return method<record_t, return_t(args_t...)>();
+    }
+
+
+    template<class record_t, class ...args_t>
+    template<class return_t>
+    requires (std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const
+    method<const record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    {
+        if (m_lambda != nullptr)
+        {
+            const auto retId = traits::uid<return_t>::value;
+            return m_lambda->template get_hopper<return_t>(retId);
+        }
+        return method<const record_t, return_t(args_t...)>();
+    }
+
+
+    template<class record_t, class ...args_t>
+    template<class return_t>
+    requires (std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const
+    method<const record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    {
+        if (m_lambda != nullptr)
+        {
+            const auto retId = traits::uid<return_t>::value;
+            return m_lambda->template get_hopper<return_t>(retId);
+        }
+        return method<const record_t, return_t(args_t...)>();
+    }
+
+
+    template<class record_t, class ...args_t>
+    template<class return_t>
+    requires (!std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const
+    method<record_t, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    {
+        bool isRetTypeVoid = false;
+        method<record_t, Return(traits::normal_sign_t<args_t>...)> erasedReturnMthd;
+
+        for (auto lambda : m_lambdaRefOverloads)
+        {
+            erasedReturnMthd.get_overloads().push_back(lambda);
+            if (lambda)
+            {
+                auto eret = lambda->get_unerasure().to_erased_return_rec<record_t, traits::normal_sign_t<args_t>...>();
+                if (lambda->is_void()) {
+                    erasedReturnMthd.get_vhop().push_back(eret.get_void_hopper());
+                    isRetTypeVoid = true;
+                }
+                else {
+                    erasedReturnMthd.get_rhop().push_back(eret.get_return_hopper());
+                }
+            }
+            else {
+                erasedReturnMthd.get_vhop().push_back(nullptr);
+                erasedReturnMthd.get_rhop().push_back(nullptr);
+            }
+        }
+        if (isRetTypeVoid) {
+            erasedReturnMthd.get_rhop().clear();
+        }
+        else {
+            erasedReturnMthd.get_vhop().clear();
+        }
+        return erasedReturnMthd;
+    }
+
+
     template<class record_t>
     template<class ...args_t>
     inline constexpr HopMethod<record_t, args_t...> Hopper<record_t>::argsT() const
@@ -160,7 +246,7 @@ namespace rtl::detail
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
 
-        const dispatch::lambda_method<record_t, args_t...>* lambda_fn = nullptr;
+        const dispatch::lambda_method<record_t, args_t...>* lambda_mt = nullptr;
         std::vector<const dispatch::lambda_base*> refOverloads = { nullptr };
 
         for (auto& functorId : m_functorIds)
@@ -169,8 +255,8 @@ namespace rtl::detail
             if (recordId != lambda.get_record_id()) {
                 continue;
             }
-            if (!lambda_fn && strictArgsId == lambda.get_strict_sign_id()) {
-                lambda_fn = &(lambda.to_method<record_t, args_t...>());
+            if (!lambda_mt && strictArgsId == lambda.get_strict_sign_id()) {
+                lambda_mt = &(lambda.to_method<record_t, args_t...>());
             }
             if (normalArgsId == lambda.get_normal_sign_id())
             {
@@ -190,35 +276,7 @@ namespace rtl::detail
                 refOverloads.push_back(&lambda);
             }
         }
-        return { lambda_fn, refOverloads };
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class _returnType> requires (std::is_const_v<record_t> == false)
-    inline constexpr const method<record_t, _returnType(args_t...)>
-                                    HopMethod<record_t, args_t...>::returnT() const
-    {
-        if (m_lambda != nullptr) [[likely]]
-        {
-            const auto retId = traits::uid<_returnType>::value;
-            return m_lambda->template get_hopper<_returnType>(retId);
-        }
-        return method<record_t, _returnType(args_t...)>();
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class _returnType> requires (std::is_const_v<record_t> == true)
-    inline constexpr const method<const record_t, _returnType(args_t...)> 
-                                          HopMethod<record_t, args_t...>::returnT() const
-    {
-        if (m_lambda != nullptr) [[likely]]
-        {
-            const auto retId = traits::uid<_returnType>::value;
-            return m_lambda->template get_hopper<_returnType>(retId);
-        }
-        return method<const record_t, _returnType(args_t...)>();
+        return { lambda_mt, refOverloads };
     }
 }
 

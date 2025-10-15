@@ -89,26 +89,36 @@ namespace rtl::detail {
 
 namespace rtl::detail
 {
-    template<class recordT, class ...signatureT>
+    template<class record_t, class ...signature_t>
     struct HopMethod
     {
-        const dispatch::lambda_method<recordT, signatureT...>* m_lambda = nullptr;
+        const dispatch::lambda_method<record_t, signature_t...>* m_lambda = nullptr;
 
         std::vector<const dispatch::lambda_base*> m_lambdaRefOverloads = {};
 
-        template<class retT> requires (std::is_const_v<recordT> == false)
-        constexpr const method<recordT, retT(signatureT...)> returnT() const;
+        template<class return_t = rtl::Return>
+        requires (!std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<record_t, rtl::Return(signature_t...)> returnT() const;
 
-        template<class retT> requires (std::is_const_v<recordT> == true)
-        constexpr const method<const recordT, retT(signatureT...)> returnT() const;
+        template<class return_t = rtl::Return>
+        requires (!std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+
+        template<class return_t = rtl::Return>
+        requires (std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<const record_t, return_t(signature_t...)> returnT() const;
+
+        template<class return_t = rtl::Return>
+        requires (std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<const record_t, return_t(signature_t...)> returnT() const;
     };
 
-    template<class recordT>
+    template<class record_t>
     struct Hopper
     {
         const std::vector<FunctorId>& m_functorIds;
 
-        template<class ...signatureT>
-        constexpr HopMethod<recordT, signatureT...> argsT() const;
+        template<class ...signature_t>
+        constexpr HopMethod<record_t, signature_t...> argsT() const;
     };
 }

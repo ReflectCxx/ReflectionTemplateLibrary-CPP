@@ -41,6 +41,18 @@ namespace rtl::detail
 namespace rtl::detail
 {
     template<class ...args_t>
+    template<class return_t> requires (!std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
+    {
+        const auto retId = traits::uid<return_t>::value;
+        if (m_lambda != nullptr) {
+            return m_lambda->template get_hopper<return_t>(retId);
+        }
+        return function<return_t(args_t...)>();
+    }
+
+
+    template<class ...args_t>
     inline constexpr const HopFunction<args_t...> Hopper<>::argsT() const
     {
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
@@ -111,18 +123,6 @@ namespace rtl::detail
             erasedReturnFunc.get_vhop().clear();
         }
         return erasedReturnFunc;
-    }
-
-
-    template<class ...args_t>
-    template<class return_t> requires (!std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
-    {
-        const auto retId = traits::uid<return_t>::value;
-        if (m_lambda != nullptr) [[likely]] {
-            return m_lambda->template get_hopper<return_t>(retId);
-        }
-        return function<return_t(args_t...)>();
     }
 
 

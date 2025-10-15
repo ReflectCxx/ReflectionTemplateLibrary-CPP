@@ -172,19 +172,17 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
-        ASSERT_TRUE(setReal);
+        optional<Function> setRealOpt = cxx::mirror().getFunction(str_complex, str_setReal);
+        ASSERT_TRUE(setRealOpt);
 
-        EXPECT_TRUE(setReal->hasSignature<double>());
-        EXPECT_FALSE(setReal->hasSignature<float>());
+        EXPECT_TRUE(setRealOpt->hasSignature<double>());
+        EXPECT_FALSE(setRealOpt->hasSignature<float>());
 
-        //g_real's type is "const double", so can't be passed directly to setReal.
-        //Instead we can explicitly specify the types as template parameter,
-        //like, (*setReal).operator()<float>(g_real);
-        //or we can use the bind<...>().call(), specifying type as template param, like,
-        auto [err, robj] = setReal->bind<float>()(g_real);
+        rtl::function<rtl::Return(float)> setReal_bad_fn = setRealOpt->argsT<float>().returnT<>();
+        EXPECT_FALSE(setReal_bad_fn);
 
-        EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+        auto [err, robj] = setReal_bad_fn(g_real);
+        EXPECT_EQ(err, rtl::error::InvalidCaller);
         ASSERT_TRUE(robj.isEmpty());
     }
 
