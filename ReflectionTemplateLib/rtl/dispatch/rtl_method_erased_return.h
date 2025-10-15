@@ -32,9 +32,33 @@ namespace rtl
             const record_t& target;
             const method<record_t, Return(signature_t...)>& mt;
 
-            template<class ...args_t>
-            requires (sizeof...(args_t) == sizeof...(signature_t))
-            constexpr Return operator()(args_t&&...params) const noexcept;
+            template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
+            [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
+            constexpr Return operator()(args_t&&...params) const noexcept
+            {
+                if (!mt) [[unlikely]] {
+                    return { error::InvalidCaller, RObject{} };
+                }
+
+                if (mt.must_bind_refs()) [[unlikely]] {
+                    return { error::ExplicitRefBindingRequired, RObject{} };
+                }
+
+                auto index = (mt.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
+                if (mt.m_lambdas[index]->is_void())
+                {
+                    mt.m_vhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...);
+                    return { error::None, RObject{} };
+                }
+                else
+                {
+                    return { error::None,
+                             RObject{ mt.m_rhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...),
+                                      mt.m_lambdas.back()->get_return_id(), nullptr
+                            }
+                    };
+                }
+            }
         };
 
         template<class ...fwd_args_t>
@@ -44,7 +68,38 @@ namespace rtl
             const method<record_t, Return(signature_t...)>& mt;
 
             template<class ...args_t>
-            constexpr Return operator()(args_t&&...params) const noexcept;
+            [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
+            constexpr Return operator()(args_t&&...params) const noexcept
+            {
+                if (!mt) [[unlikely]] {
+                    return { error::InvalidCaller, RObject{} };
+                }
+
+                auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
+                for (int index = 0; index < mt.m_lambdas.size(); index++)
+                {
+                    if (mt.m_lambdas[index] != nullptr)
+                    {
+                        if (signature_id == mt.m_lambdas[index]->get_strict_sign_id())
+                        {
+                            if (mt.m_lambdas[index]->is_void())
+                            {
+                                mt.m_vhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...);
+                                return { error::None, RObject{} };
+                            }
+                            else
+                            {
+                                return { error::None,
+                                         RObject{ mt.m_rhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...),
+                                                  mt.m_lambdas.back()->get_return_id(), nullptr
+                                        }
+                                };
+                            }
+                        }
+                    }
+                }
+                return { error::RefBindingMismatch, RObject{} };
+            }
         };
 
         constexpr invoker operator()(const record_t& p_target) const noexcept {
@@ -88,80 +143,4 @@ namespace rtl
         static_assert((!std::is_reference_v<signature_t> && ...),
                       "rtl::method<...>: any type cannot be specified as reference here.");
     };
-}
-
-
-namespace rtl
-{
-    template<class record_t, class ...signature_t>
-    template<class ...args_t>
-    requires (sizeof...(args_t) == sizeof...(signature_t))
-    [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-    ForceInline constexpr Return
-    method<record_t, Return(signature_t...)>::invoker::operator()(args_t&&...params) const noexcept
-    {
-        if (!mt) [[unlikely]] {
-            return { error::InvalidCaller, RObject{} };
-        }
-
-        if (mt.must_bind_refs()) [[unlikely]] {
-            return { error::ExplicitRefBindingRequired, RObject{} };
-        }
-
-        auto index = (mt.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
-        if (mt.m_lambdas[index]->is_void())
-        {
-            mt.m_vhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...);
-            return { error::None, RObject{} };
-        }
-        else
-        {
-            return { error::None,
-                     RObject{ mt.m_rhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...),
-                              mt.m_lambdas.back()->get_return_id(), nullptr
-                     }
-            };
-        }
-    }
-}
-
-
-namespace rtl
-{
-    template<class record_t, class ...signature_t>
-    template<class ...fwd_args_t>
-    template<class ...args_t>
-    [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-    ForceInline constexpr Return
-    method<record_t, Return(signature_t...)>::perfect_fwd<fwd_args_t...>::operator()(args_t&&...params) const noexcept
-    {
-        if (!mt) [[unlikely]] {
-            return { error::InvalidCaller, RObject{} };
-        }
-
-        auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
-        for (int index = 0; index < mt.m_lambdas.size(); index++)
-        {
-            if (mt.m_lambdas[index] != nullptr)
-            {
-                if (signature_id == mt.m_lambdas[index]->get_strict_sign_id())
-                {
-                    if (mt.m_lambdas[index]->is_void())
-                    {
-                        mt.m_vhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...);
-                        return { error::None, RObject{} };
-                    }
-                    else
-                    {
-                        return { error::None,
-                                 RObject{ mt.m_rhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...),
-                                          mt.m_lambdas.back()->get_return_id(), nullptr
-                                 }
-                        };
-                    }
-                }
-            }
-        }
-        return { error::RefBindingMismatch, RObject{} };
-    }
 }
