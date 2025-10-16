@@ -20,41 +20,34 @@ namespace rtl
     template<class record_t, class ...signature_t>
     struct method<record_t, Return(signature_t...)>
     {
-        enum call_by
-        {
-            value = 0,
-            cref = 1,   //const ref.
-            ncref = 2   //non-const ref.
-        };
-
         struct invoker
         {
             const record_t& target;
-            const method<record_t, Return(signature_t...)>& mt;
+            const method<record_t, Return(signature_t...)>& fn;
 
             template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr Return operator()(args_t&&...params) const noexcept
             {
-                if (!mt) [[unlikely]] {
+                if (!fn) [[unlikely]] {
                     return { error::InvalidCaller, RObject{} };
                 }
 
-                if (mt.must_bind_refs()) [[unlikely]] {
+                if (fn.must_bind_refs()) [[unlikely]] {
                     return { error::ExplicitRefBindingRequired, RObject{} };
                 }
 
-                auto index = (mt.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
-                if (mt.m_lambdas[index]->is_void())
+                auto index = (fn.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
+                if (fn.m_lambdas[index]->is_void())
                 {
-                    mt.m_vhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...);
+                    fn.m_vhop[index] (*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...);
                     return { error::None, RObject{} };
                 }
                 else
                 {
                     return { error::None,
-                             RObject{ mt.m_rhop[index] (*(mt.m_lambdas[index]), target, std::forward<args_t>(params)...),
-                                      mt.m_lambdas.back()->get_return_id(), nullptr
+                             RObject{ fn.m_rhop[index] (*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...),
+                                      fn.m_lambdas.back()->get_return_id(), nullptr
                             }
                     };
                 }
@@ -65,33 +58,33 @@ namespace rtl
         struct perfect_fwd
         {
             const record_t& target;
-            const method<record_t, Return(signature_t...)>& mt;
+            const method<record_t, Return(signature_t...)>& fn;
 
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr Return operator()(args_t&&...params) const noexcept
             {
-                if (!mt) [[unlikely]] {
+                if (!fn) [[unlikely]] {
                     return { error::InvalidCaller, RObject{} };
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
-                for (int index = 0; index < mt.m_lambdas.size(); index++)
+                for (int index = 0; index < fn.m_lambdas.size(); index++)
                 {
-                    if (mt.m_lambdas[index] != nullptr)
+                    if (fn.m_lambdas[index] != nullptr)
                     {
-                        if (signature_id == mt.m_lambdas[index]->get_strict_sign_id())
+                        if (signature_id == fn.m_lambdas[index]->get_strict_sign_id())
                         {
-                            if (mt.m_lambdas[index]->is_void())
+                            if (fn.m_lambdas[index]->is_void())
                             {
-                                mt.m_vhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...);
+                                fn.m_vhop[index] (*fn.m_lambdas[index], target, std::forward<args_t>(params)...);
                                 return { error::None, RObject{} };
                             }
                             else
                             {
                                 return { error::None,
-                                         RObject{ mt.m_rhop[index] (*mt.m_lambdas[index], target, std::forward<args_t>(params)...),
-                                                  mt.m_lambdas.back()->get_return_id(), nullptr
+                                         RObject{ fn.m_rhop[index] (*fn.m_lambdas[index], target, std::forward<args_t>(params)...),
+                                                  fn.m_lambdas.back()->get_return_id(), nullptr
                                         }
                                 };
                             }
@@ -102,13 +95,23 @@ namespace rtl
             }
         };
 
-        constexpr invoker operator()(const record_t& p_target) const noexcept {
+        constexpr invoker operator()(record_t& p_target) const noexcept {
+            return invoker{ p_target, *this };
+        }
+
+        constexpr invoker operator()(record_t&& p_target) const noexcept {
             return invoker{ p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(const record_t& p_target) const noexcept {
+        constexpr const perfect_fwd<args_t...> bind(record_t& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ p_target, *this };
+        }
+
+        template<class ...args_t>
+        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind(record_t&& p_target) const noexcept {
             return perfect_fwd<args_t...>{ p_target, *this };
         }
 
@@ -120,6 +123,13 @@ namespace rtl
             return (m_lambdas[call_by::value] == nullptr &&
                    (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
         }
+
+        enum call_by
+        {
+            value = 0,
+            cref = 1,   //const ref.
+            ncref = 2   //non-const ref.
+        };
 
     private:
 

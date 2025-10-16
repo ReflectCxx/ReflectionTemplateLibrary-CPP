@@ -35,7 +35,7 @@ namespace rtl::cache
 
             m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
 
-            p_functor.m_lambda = &m_cache.back();
+            p_functor.set_lambda(&m_cache.back());
             
             return m_cache.back();
         }

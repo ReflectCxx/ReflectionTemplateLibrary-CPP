@@ -44,20 +44,24 @@ namespace rtl::dispatch
 
     private:
 
+        constexpr void set_lambda(const lambda_base* p_lambda) const {
+            m_lambda = p_lambda;
+        }
+
         mutable const lambda_base* m_lambda = nullptr;
 
         friend lambda_base;
 
-        template<class ...signature_t>
+        template<class ...>
         friend struct lambda_function;
 
-        template<class record_t, class ...signature_t>
+        template<class, class ...>
         friend struct lambda_method;
 
-        template<class return_t, class ...signature_t>
+        template<class, class ...>
         friend struct cache::lambda_function;
 
-        template<class return_t, class record_t, class ...signature_t>
+        template<class, class, class ...>
         friend struct cache::lambda_method;
     };
 }

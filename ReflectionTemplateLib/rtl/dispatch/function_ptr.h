@@ -20,13 +20,11 @@ namespace rtl::dispatch
 	{
 		using functor_t = return_t(*)(signature_t...);
 
-		[[nodiscard]] constexpr auto f_ptr() const
-		{
+		constexpr auto f_ptr() const {
 			return m_functor;
 		}
 
-		constexpr bool is_same(functor_t fptr) const
-		{
+		constexpr bool is_same(functor_t fptr) const {
 			return (fptr == m_functor);
 		}
 

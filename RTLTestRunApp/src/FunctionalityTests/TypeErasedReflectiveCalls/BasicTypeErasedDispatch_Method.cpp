@@ -46,7 +46,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto reverseStrOpt = optStringUtil->getMethod(str_reverseString);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_reverseString);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
@@ -218,21 +218,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValCRefOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
-		ASSERT_TRUE(revStrOverloadValCRefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
-		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		// Both by-value (T) and const-ref (const T&) overloads exist.
-		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<std::string_view>());
-		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<const std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValCRefOpt->recordT<StringUtil>()
-																										.argsT<std::string_view>()
-																										.returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString); 
 		{
 			// RTL chooses the safe by-value overload implicitly. The const-ref
@@ -268,21 +268,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValCRefOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
-		ASSERT_TRUE(revStrOverloadValCRefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
-		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
 		
 		// Both by-value (T) and const-ref (const T&) overloads exist.		
-		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<std::string_view>());
-		EXPECT_TRUE(revStrOverloadValCRefOpt->hasSignature<const std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValCRefOpt->recordT<StringUtil>()
-																										.argsT<std::string_view>()
-																										.returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// Explicitly selecting the const-ref overload using .bind<const T&>().
@@ -311,21 +311,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValRefOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
-		ASSERT_TRUE(revStrOverloadValRefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
-		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<const std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		// Here both by-value (T) and non-const ref (T&) overloads exist.
-		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view>());
-		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValRefOpt->recordT<StringUtil>()
-																									   .argsT<std::string_view>()
-																									   .returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// Here also, RTL prioritizes the safe-by-value overload automatically
@@ -358,21 +358,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValRefOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
-		ASSERT_TRUE(revStrOverloadValRefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
+		ASSERT_TRUE(reverseStrOpt);
 		
-		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
-		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<const std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		// Here both by-value (T) and non-const ref (T&) overloads exist.
-		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view>());
-		EXPECT_TRUE(revStrOverloadValRefOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValRefOpt->recordT<StringUtil>()
-																									   .argsT<std::string_view>()
-																									   .returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// Explicitly selecting the non-const ref overload.
@@ -400,21 +400,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrNonConstRefArgOpt = optStringUtil->getMethod(str_revStrNonConstRefArg);
-		ASSERT_TRUE(revStrNonConstRefArgOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrNonConstRefArg);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<std::string_view>());
-		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<std::string_view&&>());
-		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<const std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<const std::string_view&>());
 
 		// Here no overloads exists, only non-const ref (T&) argument.
-		EXPECT_TRUE(revStrNonConstRefArgOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrNonConstRefArgOpt->recordT<StringUtil>()
-																									   .argsT<std::string_view>()
-																									   .returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																						     .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		// Calls that may mutate user data (T&) require explicit intent.
 		// Hence, the dispatcher returns 'ExplicitRefBindingRequired' error.
@@ -448,21 +448,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrConstRefArgOpt = optStringUtil->getMethod(str_revStrConstRefArg);
-		ASSERT_TRUE(revStrConstRefArgOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrConstRefArg);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view>());
-		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view&>());
-		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		// Here no overloads exists, only non-const ref (T&) argument.
-		EXPECT_TRUE(revStrConstRefArgOpt->hasSignature<const std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrConstRefArgOpt->recordT<StringUtil>()
-																									.argsT<std::string_view>()
-																									.returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							  .argsT<std::string_view>()
+																							  .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// This call resolves to the const-ref overload (no other overloads exist),
@@ -503,20 +503,20 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrRValueRefArgOpt = optStringUtil->getMethod(str_revStrRValueRefArg);
-		ASSERT_TRUE(revStrRValueRefArgOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrRValueRefArg);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<std::string_view>());
-		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<std::string_view&>());
-		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<const std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		// Here no overloads exists, only non-const ref (T&) argument.
-		EXPECT_TRUE(revStrRValueRefArgOpt->hasSignature<std::string_view&&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		StringUtil target;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrRValueRefArgOpt->recordT<StringUtil>()
-																									 .argsT<std::string_view>()
-																									 .returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			auto [err, robj] = reverseString(target)(std::string_view(STRA));
@@ -540,21 +540,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValRefNCrefOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
-		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());
-		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		// Here distinct overloads exists, with non-const ref (T&) and const-ref (const T&).
-		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&>());
-		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<const std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValRefNCrefOpt->recordT<StringUtil>()
-																											.argsT<std::string_view>()
-																											.returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// Both T& and const T& overloads are viable for an lvalue argument.
@@ -577,21 +577,21 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringUtil::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		auto revStrOverloadValRefNCrefOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
-		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
+		ASSERT_TRUE(reverseStrOpt);
 
-		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());
-		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&&>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
+		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		// Here distinct overloads exists, with non-const ref (T&) and const-ref (const T&).
-		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view&>());
-		EXPECT_TRUE(revStrOverloadValRefNCrefOpt->hasSignature<const std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
 		StringUtil target;
 		std::string_view str = STRA;
-		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = revStrOverloadValRefNCrefOpt->recordT<StringUtil>()
-																											.argsT<std::string_view>()
-																											.returnT<>();
+		rtl::method<StringUtil, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringUtil>()
+																							 .argsT<std::string_view>()
+																							 .returnT<>();
 		EXPECT_TRUE(reverseString);
 		{
 			// Explicitly selecting the non-const ref overload.
