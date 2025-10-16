@@ -50,6 +50,8 @@ std::string revStrOverloadRefAndCRef(const std::string_view& pStr);
 
 struct StringUtil
 {
+	constexpr static const char* struct_ = "StringUtil";
+
 	std::string reverseString();
 
 	std::string reverseString(const char* pStr);

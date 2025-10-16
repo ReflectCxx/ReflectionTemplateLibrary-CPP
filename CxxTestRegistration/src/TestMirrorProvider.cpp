@@ -125,7 +125,7 @@ namespace test_mirror
             rtl::type().function<std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
             rtl::type().function<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
 
-            rtl::type().record<StringUtil>(StringUtil_struct).build(),
+            rtl::type().record<StringUtil>(StringUtil::struct_).build(),
 
         //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
             rtl::type().member<StringUtil>().method<void>(str_reverseString).build(&StringUtil::reverseString),
@@ -379,7 +379,7 @@ namespace test_mirror
             { person::class_, person },
             { library::class_, library },
             { calender::struct_, calender },
-            { StringUtil_struct, string_util }
+            { StringUtil::struct_, string_util }
         });
 
         const auto& itr = nameIdMap.find(pRecordName);

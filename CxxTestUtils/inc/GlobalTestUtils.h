@@ -36,8 +36,6 @@ namespace test_utils {
 	static constexpr const char* STRB = "cxxReflection";
 	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
 
-	constexpr static const char* StringUtil_struct = "StringUtil";
-
 	static constexpr const char* str_reverseString = "reverseString"; 
 	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
 	static constexpr const char* str_revStrRValueRefArg = "revStrRValueRefArg";
