@@ -186,3 +186,138 @@ std::string revStrOverloadRefAndCRef(const std::string_view& pStr)
 	std::reverse(retStr.begin(), retStr.end());
 	return retStr + SUFFIX_ARG_std_string_view_clvref;
 }
+
+//---------------------------StringUtil--------------------------------
+
+std::string StringUtil::reverseString()
+{
+	return std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+}
+
+
+std::string StringUtil::reverseString(const char* pStr)
+{
+	std::string retStr = pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_const_char_ptr;
+}
+
+
+std::string StringUtil::reverseString(std::string pStr)
+{
+	std::string retStr = pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string;
+}
+
+
+std::string StringUtil::reverseString(std::string& pStr)
+{
+	std::string retStr = pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_lvref;
+}
+
+
+std::string StringUtil::reverseString(std::string&& pStr)
+{
+	std::string retStr = pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_rvref;
+}
+
+
+std::string StringUtil::reverseString(const std::string& pStr)
+{
+	std::string retStr = pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_clvref;
+}
+
+
+std::string StringUtil::reverseString(std::string* pStr)
+{
+	std::string retStr = *pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_ptr;
+}
+
+
+std::string StringUtil::reverseString(const std::string* pStr)
+{
+	std::string retStr = *pStr;
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_cptr;
+}
+
+
+std::string StringUtil::revStrConstRefArg(const std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_clvref;
+}
+
+
+std::string StringUtil::revStrRValueRefArg(std::string_view&& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_rvref;
+}
+
+
+std::string StringUtil::revStrNonConstRefArg(std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_lvref;
+}
+
+
+std::string StringUtil::revStrOverloadValCRef(std::string_view pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view;
+}
+
+
+std::string StringUtil::revStrOverloadValCRef(const std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_clvref;
+}
+
+
+std::string StringUtil::revStrOverloadValRef(std::string_view pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view;
+}
+
+
+std::string StringUtil::revStrOverloadValRef(std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_lvref;
+}
+
+
+std::string StringUtil::revStrOverloadRefAndCRef(std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_lvref;
+}
+
+
+std::string StringUtil::revStrOverloadRefAndCRef(const std::string_view& pStr)
+{
+	std::string retStr(pStr);
+	std::reverse(retStr.begin(), retStr.end());
+	return retStr + SUFFIX_ARG_std_string_view_clvref;
+}

@@ -30,7 +30,8 @@ namespace rtl
         }
 
         template<class ...args_t>
-        [[nodiscard]] constexpr decltype(auto) operator()(args_t&&...params) const noexcept
+        [[nodiscard]] [[gnu::hot]]
+        constexpr decltype(auto) operator()(args_t&&...params) const noexcept
         {
             return (*m_functor)(std::forward<args_t>(params)...);
         }

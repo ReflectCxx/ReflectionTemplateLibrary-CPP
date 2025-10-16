@@ -113,12 +113,12 @@ namespace
 
         auto [err, robj] = Node->create<rtl::alloc::Stack>();
         if (robj.isEmpty()) {
-            std::cout << "[x] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[x] error: " << rtl::to_string(err) << "\n";
         }
         return std::move(robj);
     }();
 }
- 
+
 
 namespace
 {
@@ -126,7 +126,7 @@ namespace
     {
         auto err = SendMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[00] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[00] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -135,7 +135,7 @@ namespace
     {
         auto err = NodeSendMessage(bm::Node())(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[01] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[01] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -144,7 +144,7 @@ namespace
     {
         auto err = GetMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[02] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[02] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -153,7 +153,7 @@ namespace
     {
         auto err = NodeGetMessage(bm::Node())(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[03] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[03] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -163,7 +163,7 @@ namespace
     {
         auto err = ErasedTargetSendMessage(nodeObj)(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[01] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[01] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
@@ -173,13 +173,13 @@ namespace
     {
         auto err = ErasedTargetGetMessage(nodeObj)(bm::g_longStr).err;
         if (err != rtl::error::None) {
-            std::cout << "[03] error: " << rtl::to_string(err) << "\n";
+            std::cerr << "[03] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
 
     static auto _new_line = []() {
-        std::cout << std::endl;
+        std::cerr << std::endl;
         return 0;
     };
 }
@@ -192,7 +192,7 @@ void RtlErasedReturnType_call::returnVoid(benchmark::State& state)
     static auto _ = _test0();
     for (auto _ : state) 
     {
-        benchmark::DoNotOptimize(SendMessage(bm::g_longStr));
+        benchmark::DoNotOptimize(SendMessage(bm::g_longStr).err);
     }
 }
 
@@ -203,7 +203,7 @@ void RtlErasedReturnType_call::returnNonVoid(benchmark::State& state)
     static auto _ = _test2();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(GetMessage(bm::g_longStr));
+        benchmark::DoNotOptimize(GetMessage(bm::g_longStr).err);
     }
 }
 
@@ -214,7 +214,7 @@ void RtlErasedReturnType_callMethod::returnVoid(benchmark::State& state)
     static bm::Node node;
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeSendMessage(node)(bm::g_longStr));
+        benchmark::DoNotOptimize(NodeSendMessage(node)(bm::g_longStr).err);
     }
 }
 
@@ -225,7 +225,7 @@ void RtlErasedReturnType_callMethod::returnNonVoid(benchmark::State& state)
     static bm::Node node;
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeGetMessage(node)(bm::g_longStr));
+        benchmark::DoNotOptimize(NodeGetMessage(node)(bm::g_longStr).err);
     }
 }
 
@@ -235,7 +235,7 @@ void RtlErasedReturnType_callMethod::unknownTarget_returnVoid(benchmark::State& 
     static auto _ = _test4();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(ErasedTargetSendMessage(nodeObj)(bm::g_longStr));
+        benchmark::DoNotOptimize(ErasedTargetSendMessage(nodeObj)(bm::g_longStr).err);
     }
 }
 
@@ -245,6 +245,6 @@ void RtlErasedReturnType_callMethod::unknownTarget_returnNonVoid(benchmark::Stat
     static auto _ = _test5();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(ErasedTargetGetMessage(nodeObj)(bm::g_longStr));
+        benchmark::DoNotOptimize(ErasedTargetGetMessage(nodeObj)(bm::g_longStr).err);
     }
 }

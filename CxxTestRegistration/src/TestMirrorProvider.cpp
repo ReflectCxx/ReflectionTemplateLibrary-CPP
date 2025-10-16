@@ -125,6 +125,53 @@ namespace test_mirror
             rtl::type().function<std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
             rtl::type().function<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
 
+            rtl::type().record<StringUtil>(StringUtil_struct).build(),
+
+        //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
+            rtl::type().member<StringUtil>().method<void>(str_reverseString).build(&StringUtil::reverseString),
+
+        //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
+            rtl::type().member<StringUtil>().method<string>(str_reverseString).build(&StringUtil::reverseString),
+
+        //  Overloaded function, takes 'const char*' arguments.
+            rtl::type().member<StringUtil>().method<const char*>(str_reverseString).build(&StringUtil::reverseString),
+
+        //  numereous other overloads.
+            #if defined(__GNUC__) && !defined(__clang__)
+                /*
+                    GCC here fails to automatically resolve the correct overloaded functor
+                    when both a lvalue reference and an rvalue overload exist.
+                    To disambiguate, explicitly cast the function pointer, e.g.:
+
+                        static_cast<std::string(*)(std::string&&)>(reverseString)
+                */
+                rtl::type().member<StringUtil>().method<std::string&>(str_reverseString)
+                           .build(static_cast<std::string(StringUtil::*)(std::string&)>(&StringUtil::reverseString)),
+                rtl::type().member<StringUtil>().method<const std::string&>(str_reverseString)
+                           .build(static_cast<std::string(StringUtil::*)(const std::string&)>(&StringUtil::reverseString)),
+                rtl::type().member<StringUtil>().method<std::string&&>(str_reverseString)
+                           .build(static_cast<std::string(StringUtil::*)(std::string&&)>(&StringUtil::reverseString)),
+            #else
+                rtl::type().member<StringUtil>().method<std::string&>(str_reverseString).build(&StringUtil::reverseString),
+                rtl::type().member<StringUtil>().method<std::string&&>(str_reverseString).build(&StringUtil::reverseString),
+                rtl::type().member<StringUtil>().method<const std::string&>(str_reverseString).build(&StringUtil::reverseString),
+            #endif
+            rtl::type().member<StringUtil>().method<std::string*>(str_reverseString).build(&StringUtil::reverseString),
+            rtl::type().member<StringUtil>().method<const std::string*>(str_reverseString).build(&StringUtil::reverseString),
+
+            rtl::type().member<StringUtil>().method<std::string_view&>(str_revStrNonConstRefArg).build(&StringUtil::revStrNonConstRefArg),
+            rtl::type().member<StringUtil>().method<std::string_view&&>(str_revStrRValueRefArg).build(&StringUtil::revStrRValueRefArg),
+            rtl::type().member<StringUtil>().method<const std::string_view&>(str_revStrConstRefArg).build(&StringUtil::revStrConstRefArg),
+
+            rtl::type().member<StringUtil>().method<std::string_view>(str_revStrOverloadValRef).build(&StringUtil::revStrOverloadValRef),
+            rtl::type().member<StringUtil>().method<std::string_view&>(str_revStrOverloadValRef).build(&StringUtil::revStrOverloadValRef),
+
+            rtl::type().member<StringUtil>().method<std::string_view>(str_revStrOverloadValCRef).build(&StringUtil::revStrOverloadValCRef),
+            rtl::type().member<StringUtil>().method<const std::string_view&>(str_revStrOverloadValCRef).build(&StringUtil::revStrOverloadValCRef),
+
+            rtl::type().member<StringUtil>().method<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringUtil::revStrOverloadRefAndCRef),
+            rtl::type().member<StringUtil>().method<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringUtil::revStrOverloadRefAndCRef),
+
         //  Unique function, no overloads, no need to specify signature as template parameters.
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
 
@@ -308,6 +355,7 @@ namespace test_mirror
     std::size_t reflected_id::date = rtl::detail::TypeId<nsdate::Date>::get();
     std::size_t reflected_id::event = rtl::detail::TypeId<nsdate::Event>::get();
     std::size_t reflected_id::calender = rtl::detail::TypeId<nsdate::Calender>::get();
+    std::size_t reflected_id::string_util = rtl::detail::TypeId<StringUtil>::get();
 
     std::size_t reflected_id::int_t = rtl::detail::TypeId<int>::get();
     std::size_t reflected_id::char_t = rtl::detail::TypeId<char>::get();
@@ -330,7 +378,8 @@ namespace test_mirror
             { animal::class_, animal },
             { person::class_, person },
             { library::class_, library },
-            { calender::struct_, calender }
+            { calender::struct_, calender },
+            { StringUtil_struct, string_util }
         });
 
         const auto& itr = nameIdMap.find(pRecordName);

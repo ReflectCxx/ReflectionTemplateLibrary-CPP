@@ -155,7 +155,7 @@ void RtlStaticTyped_callMethod::returnNonVoid(benchmark::State& state)
     static auto is_ok = test(getMessageNode, 4);
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(getMessageNode(nodeObj, bm::g_longStr));
+        benchmark::DoNotOptimize(getMessageNode(nodeObj)(bm::g_longStr));
     }
 }
 
@@ -176,7 +176,7 @@ void RtlStaticTyped_callMethod::returnVoid(benchmark::State& state)
     static auto is_ok = test(sendMessageNode, 5);
     for (auto _ : state)
     {
-        sendMessageNode(nodeObj, bm::g_longStr);
+        sendMessageNode(nodeObj)(bm::g_longStr);
         benchmark::DoNotOptimize(bm::g_work_done->c_str());
     }
 }

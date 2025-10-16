@@ -6,27 +6,18 @@
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
 
-#include <rtl/dispatch/rtl_method_erased_return.h>
-
 using namespace test_utils;
 using namespace test_mirror;
 
 namespace rtl_tests
 {
-	TEST(BasicTypeErasedDispatch, invalid_erased_return_rtl_function)
+	TEST(BasicTypeErasedRtl_function, invalid_erased_return_rtl_function)
 	{
 		{
 			rtl::function<rtl::Return()> erased_ret_fn;
 			EXPECT_FALSE(erased_ret_fn);
 
 			auto [err, robj] = erased_ret_fn();
-			EXPECT_EQ(err, rtl::error::InvalidCaller);
-			EXPECT_TRUE(robj.isEmpty());
-		} {
-			rtl::method<int, rtl::Return()> erased_ret_mt;
-			EXPECT_FALSE(erased_ret_mt);
-
-			auto [err, robj] = erased_ret_mt(0)();
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}
@@ -46,26 +37,10 @@ namespace rtl_tests
 			EXPECT_EQ(err, rtl::error::InvalidCaller);
 			EXPECT_TRUE(robj.isEmpty());
 		}
-
-		rtl::method<char, rtl::Return(int)> erased_ret_mt;
-		EXPECT_FALSE(erased_ret_mt);
-		{
-			auto [err, robj] = erased_ret_mt('a')(0);
-			EXPECT_EQ(err, rtl::error::InvalidCaller);
-			EXPECT_TRUE(robj.isEmpty());
-		} {
-			auto [err, robj] = erased_ret_mt.bind<int>('a')(0);
-			EXPECT_EQ(err, rtl::error::InvalidCaller);
-			EXPECT_TRUE(robj.isEmpty());
-		} {
-			auto [err, robj] = erased_ret_mt.bind<int&&>('a')(0);
-			EXPECT_EQ(err, rtl::error::InvalidCaller);
-			EXPECT_TRUE(robj.isEmpty());
-		}
 	}
 
 
-	TEST(BasicTypeErasedDispatch, implicit_resolutions_to_call_by_value_overloads)
+	TEST(BasicTypeErasedRtl_function, implicit_resolutions_to_call_by_value_overloads)
 	{
 		auto reverseStrOpt = cxx::mirror().getFunction(str_reverseString);
 		ASSERT_TRUE(reverseStrOpt);
@@ -222,7 +197,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
+	TEST(BasicTypeErasedRtl_function, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
 		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
@@ -266,7 +241,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
+	TEST(BasicTypeErasedRtl_function, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
 		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
@@ -303,7 +278,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	TEST(BasicTypeErasedRtl_function, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
 		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
@@ -343,7 +318,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	TEST(BasicTypeErasedRtl_function, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
 		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
@@ -378,7 +353,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, calling_non_overloaded_non_const_ref_argument)
+	TEST(BasicTypeErasedRtl_function, calling_non_overloaded_non_const_ref_argument)
 	{
 		auto revStrNonConstRefArgOpt = cxx::mirror().getFunction(str_revStrNonConstRefArg);
 		ASSERT_TRUE(revStrNonConstRefArgOpt);
@@ -421,7 +396,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, calling_non_overloaded_const_ref_argument)
+	TEST(BasicTypeErasedRtl_function, calling_non_overloaded_const_ref_argument)
 	{
 		auto revStrConstRefArgOpt = cxx::mirror().getFunction(str_revStrConstRefArg);
 		ASSERT_TRUE(revStrConstRefArgOpt);
@@ -470,7 +445,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, calling_non_overloaded_rvalue_ref_argument)
+	TEST(BasicTypeErasedRtl_function, calling_non_overloaded_rvalue_ref_argument)
 	{
 		auto revStrRValueRefArgOpt = cxx::mirror().getFunction(str_revStrRValueRefArg);
 		ASSERT_TRUE(revStrRValueRefArgOpt);
@@ -501,7 +476,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, implicit_resolution_to_ambiguous_ref_and_cref_overload)
+	TEST(BasicTypeErasedRtl_function, implicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
 		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
@@ -532,7 +507,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedDispatch, explicit_resolution_to_ambiguous_ref_and_cref_overload)
+	TEST(BasicTypeErasedRtl_function, explicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
 		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);

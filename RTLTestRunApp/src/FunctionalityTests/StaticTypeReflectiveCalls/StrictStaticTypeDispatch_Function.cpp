@@ -11,7 +11,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StrictStaticTypeDispatch, namespace_function_validation_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, namespace_fn_validation_with_known_signature)
     {
         std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
@@ -43,7 +43,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, namespace_function_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, namespace_fn_call_with_known_signature)
     {
         std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
         ASSERT_TRUE(getMagnitude);
@@ -74,7 +74,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, global_function_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, global_fn_call_with_known_signature)
     {
         std::optional<rtl::Function> getComplexNumStr = cxx::mirror().getFunction(str_getComplexNumAsString);
         ASSERT_TRUE(getComplexNumStr);
@@ -97,7 +97,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, overload_resolution_with_known_signatures)
+    TEST(StrictStaticTypeRtl_function, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -132,7 +132,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, lvalue_ref_overload_resolution_with_known_signatures)
+    TEST(StrictStaticTypeRtl_function, lvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -156,7 +156,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, rvalue_ref_overload_resolution_with_known_signatures)
+    TEST(StrictStaticTypeRtl_function, rvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -174,7 +174,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, ptr_and_const_ptr_overload_resolution_with_known_signatures)
+    TEST(StrictStaticTypeRtl_function, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
         std::string str = STRA;
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
@@ -197,61 +197,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, std_string_method_call_with_known_signature)
-    {
-        std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std", "string");
-        ASSERT_TRUE(stdStringClass);
-
-        std::optional<rtl::Method> isStringEmpty = stdStringClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
-        {
-            rtl::method<std::string, bool()> is_empty = isStringEmpty->recordT<std::string>().argsT<>().returnT<bool>();
-            EXPECT_FALSE(is_empty);
-        } {
-            rtl::method<const std::string, bool()> is_empty = isStringEmpty->recordT<const std::string>().argsT<>().returnT<bool>();
-            ASSERT_TRUE(is_empty);
-
-            EXPECT_TRUE(is_empty(std::string("")));
-
-            EXPECT_FALSE(is_empty(std::string("not_empty")));
-
-            EXPECT_TRUE(is_empty(""));
-
-            EXPECT_FALSE(is_empty("view_not_empty"));
-        }
-    }
-
-
-    TEST(StrictStaticTypeDispatch, std_string_view_method_call_with_known_signature)
-    {
-        std::optional<rtl::Record> stdStringViewClass = cxx::mirror().getRecord("std", "string_view");
-        ASSERT_TRUE(stdStringViewClass);
-
-        std::optional<rtl::Method> isStringEmpty = stdStringViewClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
-        {
-            rtl::method<std::string_view, bool()> is_empty = isStringEmpty->recordT<std::string_view>().argsT<>().returnT<bool>();
-            EXPECT_FALSE(is_empty);
-        } {
-            rtl::method<const std::string_view, bool()> is_empty = isStringEmpty->recordT<const std::string_view>().argsT<>().returnT<bool>();
-            ASSERT_TRUE(is_empty);
-
-            EXPECT_TRUE(is_empty(std::string("")));
-
-            EXPECT_FALSE(is_empty(std::string("not_empty")));
-
-            EXPECT_TRUE(is_empty(std::string_view("")));
-
-            EXPECT_FALSE(is_empty(std::string_view("view_not_empty")));
-
-            EXPECT_TRUE(is_empty(""));
-
-            EXPECT_FALSE(is_empty("view_not_empty"));
-        }
-    }
-
-
-    TEST(StrictStaticTypeDispatch, distinct_functions_with_ref_args_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, distinct_functions_with_ref_args_call_with_known_signature)
     {
         std::string str = STRA;
         {
@@ -289,7 +235,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, overloads_with_ref_and_value_args_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, overloads_with_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRef);
         ASSERT_TRUE(reverseString);
@@ -312,7 +258,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, overloads_with_const_ref_and_value_args_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValCRef);
         ASSERT_TRUE(reverseString);
@@ -334,7 +280,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeDispatch, overloads_with_ref_and_const_ref_args_call_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, overloads_with_ref_and_const_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
         ASSERT_TRUE(reverseString);

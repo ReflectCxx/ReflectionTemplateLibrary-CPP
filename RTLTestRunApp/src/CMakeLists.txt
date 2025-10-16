@@ -16,8 +16,10 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/PerfectForwardingTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/MoveConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReturnValueReflectionTest.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Function.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Function.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Method.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Method.cpp"
 )
 
 # Create a variable containing the source files for your target
