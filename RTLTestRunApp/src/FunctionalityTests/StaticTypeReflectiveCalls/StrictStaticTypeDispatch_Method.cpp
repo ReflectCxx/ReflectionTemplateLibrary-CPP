@@ -4,7 +4,7 @@
 
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
-#include "..\CxxTestProps\inc\ComplexStrings.h"
+#include "../CxxTestProps/inc/ComplexStrings.h"
 
 using namespace test_utils;
 using namespace test_mirror;
