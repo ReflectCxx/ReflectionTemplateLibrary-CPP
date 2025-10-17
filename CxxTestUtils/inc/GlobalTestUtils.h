@@ -11,20 +11,20 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 namespace test_utils {
 
 	extern const char* SUFFIX_const;
-	extern const char* SUFFIX_ARG_void;
-	extern const char* SUFFIX_ARG_const_char_ptr;
+	extern const char* SUFFIX_void;
+	extern const char* SUFFIX_const_char_ptr;
 
-	extern const char* SUFFIX_ARG_std_string;
-	extern const char* SUFFIX_ARG_std_string_ptr;
-	extern const char* SUFFIX_ARG_std_string_cptr;
-	extern const char* SUFFIX_ARG_std_string_lvref;
-	extern const char* SUFFIX_ARG_std_string_rvref;
-	extern const char* SUFFIX_ARG_std_string_clvref;
+	extern const char* SUFFIX_std_string;
+	extern const char* SUFFIX_std_string_ptr;
+	extern const char* SUFFIX_std_string_cptr;
+	extern const char* SUFFIX_std_string_lvref;
+	extern const char* SUFFIX_std_string_rvref;
+	extern const char* SUFFIX_std_string_clvref;
 
-	extern const char* SUFFIX_ARG_std_string_view;
-	extern const char* SUFFIX_ARG_std_string_view_lvref;
-	extern const char* SUFFIX_ARG_std_string_view_rvref;
-	extern const char* SUFFIX_ARG_std_string_view_clvref;
+	extern const char* SUFFIX_std_string_view;
+	extern const char* SUFFIX_std_string_view_lvref;
+	extern const char* SUFFIX_std_string_view_rvref;
+	extern const char* SUFFIX_std_string_view_clvref;
 
 	extern const char* REV_STR_VOID_RET;
 

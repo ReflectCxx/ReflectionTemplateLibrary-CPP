@@ -50,7 +50,7 @@ namespace rtl_tests
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
-			rtl::method<StringM, rtl::Return(char*)> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return(char*)> reverseString = reverseStrOpt->targetT<StringM>()
 																				   .argsT<char*>()
 																				   .returnT<>();
 			EXPECT_FALSE(reverseString);
@@ -68,7 +68,7 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const char*>());
 		{
-			rtl::method<StringM, rtl::Return(const char*)> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return(const char*)> reverseString = reverseStrOpt->targetT<StringM>()
 																					     .argsT<const char*>()
 																						 .returnT<>();
 			EXPECT_TRUE(reverseString);
@@ -80,7 +80,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				auto [err, robj] = reverseString.bind<const char*>(StringM())(STRA);
@@ -90,13 +90,13 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string>());
 		{
-			rtl::method<StringM, rtl::Return(std::string)> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return(std::string)> reverseString = reverseStrOpt->targetT<StringM>()
 																						 .argsT<std::string>()
 																						 .returnT<>();
 			EXPECT_TRUE(reverseString);
@@ -108,7 +108,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				auto [err, robj] = reverseString.bind<std::string>(StringM())(STRA);
@@ -118,13 +118,13 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string*>());
 		{
-			rtl::method<StringM, rtl::Return(std::string*)> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return(std::string*)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string*>()
 																						  .returnT<>();
 			EXPECT_TRUE(reverseString);
@@ -137,7 +137,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				std::string str = STRA;
@@ -148,13 +148,13 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string*>());
 		{
-			rtl::method<StringM, rtl::Return(const std::string*)> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return(const std::string*)> reverseString = reverseStrOpt->targetT<StringM>()
 																								.argsT<const std::string*>()
 																								.returnT<>();
 			EXPECT_TRUE(reverseString);
@@ -167,7 +167,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				const std::string str = STRA;
@@ -178,13 +178,13 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<>());
 		{
-			rtl::method<StringM, rtl::Return()> reverseString = reverseStrOpt->recordT<StringM>()
+			rtl::method<StringM, rtl::Return()> reverseString = reverseStrOpt->targetT<StringM>()
 																			  .argsT<>()
 																		      .returnT<>();
 			EXPECT_TRUE(reverseString);
@@ -196,7 +196,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				auto [err, robj] = reverseString.bind(StringM())();
@@ -206,7 +206,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
@@ -230,7 +230,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																					      .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString); 
@@ -246,7 +246,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			// explicit call by value resolution.
@@ -257,7 +257,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}
@@ -280,7 +280,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -295,7 +295,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			auto [err, robj] = reverseString.bind<std::string_view&>(target)(str);
@@ -323,7 +323,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -337,7 +337,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			// explicit call by value resolution.
@@ -347,7 +347,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}
@@ -370,7 +370,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -385,7 +385,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			auto [err, robj] = reverseString.bind<const std::string_view&>(target)(str);
@@ -412,7 +412,7 @@ namespace rtl_tests
 
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -437,7 +437,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}
@@ -460,7 +460,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -474,7 +474,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			// explicit binding must also behave the same way.
@@ -485,7 +485,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			// explicit binding to non-const ref returns error.
@@ -514,7 +514,7 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&&>());
 
 		StringM target;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -529,7 +529,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_rvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_rvref;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}
@@ -552,7 +552,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -589,7 +589,7 @@ namespace rtl_tests
 		
 		StringM target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->recordT<StringM>()
+		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -602,7 +602,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
 			EXPECT_EQ(retStr, expStr);
 		} {
 			// Explicitly selecting the const ref overload.
@@ -616,7 +616,7 @@ namespace rtl_tests
 			ASSERT_TRUE(robj.canViewAs<std::string>());
 
 			const std::string& retStr = robj.view<std::string>()->get();
-			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+			std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
 			EXPECT_EQ(retStr, expStr);
 		}
 	}

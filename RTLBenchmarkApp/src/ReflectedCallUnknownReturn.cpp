@@ -51,7 +51,7 @@ namespace
             std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
             std::abort();
         }
-        return method->recordT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
+        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
     }();
 
     static rtl::method<bm::Node, rtl::Return(bm::argStr_t)> NodeSendMessage = []()
@@ -67,7 +67,7 @@ namespace
             std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
             std::abort();
         }
-        return method->recordT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
+        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
     }();
 
 

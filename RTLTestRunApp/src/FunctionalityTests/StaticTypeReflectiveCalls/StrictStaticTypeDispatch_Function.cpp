@@ -112,21 +112,21 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(STRA);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_const_char_ptr;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(std::string)> reverse_string = reverseString->argsT<std::string>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(STRB);
-            auto exp_str = std::string(STRB_REVERSE) + SUFFIX_ARG_std_string;
+            auto exp_str = std::string(STRB_REVERSE) + SUFFIX_std_string;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string()> reverse_string = reverseString->argsT<>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string();
-            auto exp_str = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+            auto exp_str = std::string(REV_STR_VOID_RET) + SUFFIX_void;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -142,7 +142,7 @@ namespace rtl_tests
 
             std::string lv_str = STRA;
             std::string ret_str = reverse_string(lv_str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_lvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_lvref;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string&)> reverse_string = reverseString->argsT<const std::string&>().returnT<std::string>();
@@ -150,7 +150,7 @@ namespace rtl_tests
 
             const std::string lv_str = STRA;
             std::string ret_str = reverse_string(lv_str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_clvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_clvref;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -165,7 +165,7 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(STRA);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_rvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_rvref;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string&&)> reverse_string = reverseString->argsT<const std::string&&>().returnT<std::string>();
@@ -184,14 +184,14 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(&str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_ptr;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string*)> reverse_string = reverseString->argsT<const std::string*>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(&str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_cptr;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -208,7 +208,7 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
             EXPECT_EQ(ret_str, exp_str);
         } {
             std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrNonConstRefArg);
@@ -219,7 +219,7 @@ namespace rtl_tests
 
             auto lvstr = std::string_view(str);
             std::string ret_str = reverse_string(lvstr);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
             EXPECT_EQ(ret_str, exp_str);
         } {
             std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrRValueRefArg);
@@ -229,7 +229,7 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(std::string_view(str));
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_rvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_rvref;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -244,7 +244,7 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(std::string_view(STRA));
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(std::string_view&)> reverse_string = reverseString->argsT<std::string_view&>().returnT<std::string>();
@@ -252,7 +252,7 @@ namespace rtl_tests
 
             std::string_view str = STRA;
             std::string ret_str = reverse_string(str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -267,14 +267,14 @@ namespace rtl_tests
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(std::string_view(STRA));
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(std::string_view(STRA));
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
             EXPECT_EQ(ret_str, exp_str);
         }
     }
@@ -290,14 +290,14 @@ namespace rtl_tests
 
             std::string_view str = STRA;
             std::string ret_str = reverse_string(str);
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_lvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref;
             EXPECT_EQ(ret_str, exp_str);
         } {
             rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
             std::string ret_str = reverse_string(std::string_view(STRA));
-            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string_view_clvref;
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref;
             EXPECT_EQ(ret_str, exp_str);
         }
     }

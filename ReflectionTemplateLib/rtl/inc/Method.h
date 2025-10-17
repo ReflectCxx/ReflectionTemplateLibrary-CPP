@@ -61,7 +61,7 @@ namespace rtl {
         constexpr const detail::HopFunction<signatureT...> argsT() const = delete;
 
         template<class recT, class ...signatureT>
-        constexpr detail::Hopper<recT> recordT() const;
+        constexpr detail::Hopper<recT> targetT() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

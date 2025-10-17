@@ -220,7 +220,7 @@ namespace rtl_tests
             EXPECT_TRUE(ret.canViewAs<string>());
 
             string retStr = ret.view<std::string>()->get();
-            auto expStr = std::string(STRA_REVERSE) + SUFFIX_ARG_std_string;
+            auto expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
             EXPECT_EQ(retStr, expStr);
         } {
             //STRB's type is 'const char*', function accepts 'string',
@@ -232,7 +232,7 @@ namespace rtl_tests
             EXPECT_TRUE(ret.canViewAs<string>());
 
             string retStr = ret.view<std::string>()->get();
-            auto expStr = std::string(STRB_REVERSE) + SUFFIX_ARG_std_string;
+            auto expStr = std::string(STRB_REVERSE) + SUFFIX_std_string;
             EXPECT_EQ(retStr, expStr);
         } {
             rtl::function<rtl::Return()> reverseStr = reverseStringOpt->argsT<>().returnT<>();
@@ -243,7 +243,7 @@ namespace rtl_tests
             EXPECT_TRUE(ret.canViewAs<string>());
             
             string retStr = ret.view<std::string>()->get();
-            auto expStr = std::string(REV_STR_VOID_RET) + SUFFIX_ARG_void;
+            auto expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
             EXPECT_EQ(retStr, expStr);
         }
     }
