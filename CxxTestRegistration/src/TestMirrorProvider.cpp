@@ -193,9 +193,9 @@ namespace test_mirror
                     static_cast<std::string(*)(std::string&&)>(reverseString)
             */
                 rtl::type().member<StringC>().methodConst<std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(StringM::*)(std::string&) const>(&StringM::reverseString)),
+                                             .build(static_cast<std::string(StringC::*)(std::string&) const>(&StringC::reverseString)),
                 rtl::type().member<StringC>().methodConst<const std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(StringM::*)(const std::string&) const>(&StringM::reverseString)),
+                                             .build(static_cast<std::string(StringC::*)(const std::string&) const>(&StringC::reverseString)),
                 rtl::type().member<StringC>().methodConst<std::string&&>(str_reverseString)
                                              .build(static_cast<std::string(StringC::*)(std::string&&) const>(&StringC::reverseString)),
             #else
