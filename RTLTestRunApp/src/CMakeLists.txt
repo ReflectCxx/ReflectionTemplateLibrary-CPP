@@ -20,6 +20,7 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Function.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Method.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Method.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_ConstMethod.cpp"
 )
 
 # Create a variable containing the source files for your target

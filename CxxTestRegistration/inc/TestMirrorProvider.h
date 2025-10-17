@@ -20,7 +20,8 @@ namespace test_mirror
 		static std::size_t person;
 		static std::size_t library;
 		static std::size_t calender;
-		static std::size_t string_util;
+		static std::size_t string_m;
+		static std::size_t string_c;
 
 		static std::size_t char_t;
 		static std::size_t int_t;

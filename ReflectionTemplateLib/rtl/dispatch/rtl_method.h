@@ -45,7 +45,12 @@ namespace rtl
         };
 
         [[gnu::hot]]
-        constexpr const invoker operator()(const record_t& p_target) const noexcept {
+        constexpr const invoker operator()(record_t& p_target) const noexcept {
+            return invoker{ m_functor, p_target };
+        }
+
+        [[gnu::hot]]
+        constexpr const invoker operator()(record_t&& p_target) const noexcept {
             return invoker{ m_functor, p_target };
         }
 

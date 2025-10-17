@@ -18,11 +18,11 @@
 namespace rtl
 {
     template<class record_t, class ...signature_t>
-    struct method<record_t, Return(signature_t...)>
+    struct method<const record_t, Return(signature_t...)>
     {
         struct invoker
         {
-            const record_t& target;
+            record_t& target;
             const method<record_t, Return(signature_t...)>& fn;
 
             template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
@@ -99,19 +99,9 @@ namespace rtl
             return invoker{ p_target, *this };
         }
 
-        constexpr invoker operator()(record_t&& p_target) const noexcept {
-            return invoker{ p_target, *this };
-        }
-
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(record_t& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ p_target, *this };
-        }
-
-        template<class ...args_t>
-        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(record_t&& p_target) const noexcept {
             return perfect_fwd<args_t...>{ p_target, *this };
         }
 

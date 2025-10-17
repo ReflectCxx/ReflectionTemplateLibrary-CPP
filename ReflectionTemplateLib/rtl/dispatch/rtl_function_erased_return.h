@@ -20,12 +20,33 @@ namespace rtl
     template<class ...signature_t>
     struct function<Return(signature_t...)>
     {
-        enum call_by
+        template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
+        [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
+        constexpr Return operator()(args_t&&...params) const noexcept
         {
-            value = 0,
-            cref = 1,   //const ref.
-            ncref = 2   //non-const ref.
-        };
+            if (!(*this)) [[unlikely]] {
+                return { error::InvalidCaller, RObject{} };
+            }
+
+            if (must_bind_refs()) [[unlikely]] {
+                return { error::ExplicitRefBindingRequired, RObject{} };
+            }
+
+            auto index = (m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
+            if (m_lambdas[index]->is_void())
+            {
+                m_vhop[index](*m_lambdas[index], std::forward<args_t>(params)...);
+                return { error::None, RObject{} };
+            }
+            else
+            {
+                return { error::None,
+                         RObject{ m_rhop[index](*m_lambdas[index], std::forward<args_t>(params)...),
+                                  m_lambdas.back()->get_return_id(), nullptr
+                         }
+                };
+            }
+        }
 
         template<class ...fwd_args_t>
         struct perfect_fwd
@@ -57,7 +78,7 @@ namespace rtl
                                 return { error::None,
                                          RObject{ fn.m_rhop[index](*fn.m_lambdas[index], std::forward<args_t>(params)...),
                                                   fn.m_lambdas.back()->get_return_id(), nullptr
-                                        }
+                                         }
                                 };
                             }
                         }
@@ -66,34 +87,6 @@ namespace rtl
                 return { error::RefBindingMismatch, RObject{} };
             }
         };
-
-        template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
-        [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-        constexpr Return operator()(args_t&&...params) const noexcept
-        {
-            if (!(*this)) [[unlikely]] {
-                return { error::InvalidCaller, RObject{} };
-            }
-
-            if (must_bind_refs()) [[unlikely]] {
-                return { error::ExplicitRefBindingRequired, RObject{} };
-            }
-
-            auto index = (m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
-            if (m_lambdas[index]->is_void())
-            {
-                m_vhop[index](*m_lambdas[index], std::forward<args_t>(params)...);
-                return { error::None, RObject{} };
-            }
-            else
-            {
-                return { error::None,
-                         RObject{ m_rhop[index](*m_lambdas[index], std::forward<args_t>(params)...),
-                                  m_lambdas.back()->get_return_id(), nullptr
-                        }
-                };
-            }
-        }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
@@ -109,6 +102,13 @@ namespace rtl
             return (m_lambdas[call_by::value] == nullptr && 
                    (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
         }
+
+        enum call_by
+        {
+            value = 0,
+            cref = 1,   //const ref.
+            ncref = 2   //non-const ref.
+        };
 
     private:
 

@@ -18,9 +18,9 @@
 namespace rtl
 {
     template<class record_t, class return_t, class... signature_t>
-    struct method<const record_t, return_t (signature_t...)>
+    struct method<const record_t, return_t(signature_t...)>
     {
-        using fptr_t = return_t (record_t::*)(signature_t...) const;
+        using fptr_t = return_t(record_t::*)(signature_t...) const;
 
         constexpr auto f_ptr() const {
             return m_functor;
@@ -30,10 +30,23 @@ namespace rtl
             return (m_functor != nullptr);
         }
 
-        template<class ...args_t>
-        [[nodiscard]] constexpr decltype(auto) operator()(const record_t& target, args_t&&...params) const noexcept
+        struct invoker
         {
-            return (target.*m_functor)(std::forward<args_t>(params)...);
+            fptr_t functor;
+            const record_t& target;
+
+            template<class ...args_t>
+            requires (sizeof...(args_t) == sizeof...(signature_t))
+            [[nodiscard]] [[gnu::hot]]
+            constexpr decltype(auto) operator()(args_t&&...params) const noexcept
+            {
+                return (target.*functor)(std::forward<args_t>(params)...);
+            }
+        };
+
+        [[gnu::hot]]
+        constexpr const invoker operator()(const record_t& p_target) const noexcept {
+            return invoker{ m_functor, p_target };
         }
 
         method(fptr_t p_functor) : m_functor(p_functor)

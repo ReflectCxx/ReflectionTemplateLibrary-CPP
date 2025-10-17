@@ -10,6 +10,7 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 */
 namespace test_utils {
 
+	extern const char* SUFFIX_const;
 	extern const char* SUFFIX_ARG_void;
 	extern const char* SUFFIX_ARG_const_char_ptr;
 
