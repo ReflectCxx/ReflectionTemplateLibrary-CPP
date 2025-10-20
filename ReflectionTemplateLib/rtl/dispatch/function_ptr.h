@@ -33,7 +33,7 @@ namespace rtl::dispatch
 			m_returnId = traits::uid<return_t>::value;
 			m_is_void = (m_returnId == traits::uid<void>::value);
 
-			m_is_any_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
+			m_is_any_arg_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
 			m_normal_signId = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
 			m_strict_signId = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
 			

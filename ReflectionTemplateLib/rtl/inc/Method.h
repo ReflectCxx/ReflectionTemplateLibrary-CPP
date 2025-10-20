@@ -34,8 +34,8 @@ namespace rtl {
         { }
 
         //private ctor, called by 'Record' class.
-        Method(const Function& pFunction, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
-            : Function(pFunction, pFunctorId, pFunctorName)
+        Method(const Function& pFunction, const type_meta& pFunctorMeta, const detail::FunctorId& pFunctorId, const std::string& pFunctorName)
+            : Function(pFunction, pFunctorMeta, pFunctorId, pFunctorName)
         { }
 
         //invokes the constructor associated with this 'Method'

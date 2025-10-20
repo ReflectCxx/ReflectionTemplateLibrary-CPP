@@ -5,7 +5,8 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/Person.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Animal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Library.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/ComplexStrings.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/Complex.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringOps.cpp"
 )
 
 SET(LOCAL_HEADERS
@@ -14,7 +15,8 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/Animal.h"
 	"${PROJECT_SOURCE_DIR}/inc/Person.h"
 	"${PROJECT_SOURCE_DIR}/inc/Library.h"
-	"${PROJECT_SOURCE_DIR}/inc/ComplexStrings.h"
+	"${PROJECT_SOURCE_DIR}/inc/Complex.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringOps.h"
 )
 
 # Add any additional source files if needed

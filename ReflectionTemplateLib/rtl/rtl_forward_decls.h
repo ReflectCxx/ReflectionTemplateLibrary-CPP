@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include "rtl_constants.h"
-
 namespace rtl 
 {
     struct Return;
@@ -25,6 +23,8 @@ namespace rtl
 
     class CxxMirror;
 
+    struct type_meta;
+
     template<class return_t, class ...signature_t>
     struct function;
 
@@ -34,6 +34,8 @@ namespace rtl
     namespace detail
     {
         struct FunctorId;
+
+        struct RObjectId;
 
         template<class ..._signature>
         class FunctorContainer;
@@ -69,6 +71,8 @@ namespace rtl
 
         struct lambda_base;
 
+        struct erased_fnbase;
+
         template<class ...signature_t>
         struct lambda_function;
 
@@ -84,19 +88,16 @@ namespace rtl
         template<class record_t, class return_t, class ...signature_t>
         struct const_method_ptr;
 
-        namespace erase
-        {
-            template<class ...signature_t>
-            struct erased_hopper;
+        template<class ...signature_t>
+        struct erased_return_fn;
 
-            template<class record_t, class ...signature_t>
-            struct erased_hopper_rec;
+        template<class record_t, class ...signature_t>
+        struct erased_return_fn_rec;
 
-            template<class return_t, class ...signature_t>
-            struct aware_hopper;
+        template<class return_t, class ...signature_t>
+        struct aware_hopper;
 
-            template<class record_t, class return_t, class ...signature_t>
-            struct aware_hopper_rec;
-        }
+        template<class record_t, class return_t, class ...signature_t>
+        struct aware_hopper_rec;
     }
 }

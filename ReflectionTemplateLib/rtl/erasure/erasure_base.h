@@ -15,12 +15,12 @@
 #include "RObjectId.h"
 #include "rtl_constants.h"
 
-namespace rtl::dispatch::erase
+namespace rtl::dispatch
 {
-	struct erasure_base
+	struct erased_fnbase
 	{
         template<class ...args_t>
-        using ehop_t = erased_hopper<traits::normal_sign_t<args_t>...>;
+        using ehop_t = erased_return_fn<traits::normal_sign_t<args_t>...>;
 
         template<class ...signature_t>
         constexpr const ehop_t<signature_t...>& to_erased_return() const
@@ -29,7 +29,7 @@ namespace rtl::dispatch::erase
         }
 
         template<class record_t, class ...args_t>
-        using ehop_rt = erased_hopper_rec<record_t, traits::normal_sign_t<args_t>...>;
+        using ehop_rt = erased_return_fn_rec<record_t, traits::normal_sign_t<args_t>...>;
 
         template<class record_t, class ...signature_t>
         constexpr const ehop_rt<record_t, signature_t...>& to_erased_return_rec() const
@@ -37,7 +37,7 @@ namespace rtl::dispatch::erase
             return static_cast<const ehop_rt<record_t, signature_t...>&>(*this);
         }
 
-        erasure_base(const dispatch::functor& p_functor, const detail::RObjectId& p_ret_id) noexcept
+        erased_fnbase(const dispatch::functor& p_functor, const detail::RObjectId& p_ret_id) noexcept
             : m_functor(p_functor)
             , m_return_id(p_ret_id)
         { }
@@ -45,9 +45,5 @@ namespace rtl::dispatch::erase
         const dispatch::functor& m_functor;
 
         const detail::RObjectId m_return_id;
-
-        GETTER_CREF(detail::RObjectId, _return_id, m_return_id);
-
-        GETTER_CREF(dispatch::lambda_base, _lambda, (*m_functor.get_lambda()));
 	};
 }

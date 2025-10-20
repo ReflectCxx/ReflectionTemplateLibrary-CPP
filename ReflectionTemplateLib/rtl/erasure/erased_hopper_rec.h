@@ -17,10 +17,10 @@
 #include "erased_hopper.h"
 #include "rtl_forward_decls.h"
 
-namespace rtl::dispatch::erase
+namespace rtl::dispatch
 {
     template<class record_t, class ...normal_sign_t>
-    struct erased_hopper_rec : public erased_hopper<normal_sign_t...>
+    struct erased_return_fn_rec : public erased_return_fn<normal_sign_t...>
     {
         using lambda_vt = std::function<void(const lambda_base&, const record_t&, normal_sign_t...)>;
 
@@ -36,14 +36,14 @@ namespace rtl::dispatch::erase
 
         lambda_rt m_rhopper;
 
-        using base_t = erased_hopper<normal_sign_t...>;
+        using base_t = erased_return_fn<normal_sign_t...>;
 
-        erased_hopper_rec( const dispatch::functor& p_functor, 
-                           const lambda_vt& p_void_hop,
-                           const lambda_rt& p_any_ret_hop,
-                           const base_t::lambda_robj_vt& p_void_robj_hop,
-                           const base_t::lambda_robj_rt& p_any_ret_robj_hop,
-                           const detail::RObjectId& p_ret_id ) noexcept
+        erased_return_fn_rec( const dispatch::functor& p_functor, 
+                              const lambda_vt& p_void_hop,
+                              const lambda_rt& p_any_ret_hop,
+                              const base_t::lambda_robj_vt& p_void_robj_hop,
+                              const base_t::lambda_robj_rt& p_any_ret_robj_hop,
+                              const detail::RObjectId& p_ret_id ) noexcept
 
             : base_t(p_functor, p_void_robj_hop, p_any_ret_robj_hop, p_ret_id)
             , m_vhopper(p_void_hop)

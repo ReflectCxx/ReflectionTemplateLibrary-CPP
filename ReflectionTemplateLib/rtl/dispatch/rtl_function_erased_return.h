@@ -100,7 +100,7 @@ namespace rtl
 
         constexpr bool must_bind_refs() const noexcept {
             return (m_lambdas[call_by::value] == nullptr && 
-                   (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_ncref()));
+                   (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_arg_ncref()));
         }
 
         enum call_by

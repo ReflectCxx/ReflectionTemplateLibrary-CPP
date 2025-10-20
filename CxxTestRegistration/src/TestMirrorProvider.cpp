@@ -11,7 +11,8 @@
 #include "Date.h"
 #include "Book.h"
 #include "Person.h"
-#include "ComplexStrings.h"
+#include "Complex.h"
+#include "StringOps.h"
 #include "Animal.h"
 #include "Library.h"
 

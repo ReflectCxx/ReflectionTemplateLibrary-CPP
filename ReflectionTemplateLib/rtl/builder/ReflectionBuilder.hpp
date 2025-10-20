@@ -42,8 +42,8 @@ namespace rtl::detail
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...)) const
     {
         using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
-        const FunctorId& functorId = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
-        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+        auto [typeMeta, functorId] = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
+        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, methodQ::None);
     }
 
 
@@ -58,8 +58,8 @@ namespace rtl::detail
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
         using Container = MethodContainer<detail::methodQ::NonConst, traits::remove_const_if_not_reference<_signature>...>;
-        const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::NonConst);
+        auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, methodQ::NonConst);
     }
 
 
@@ -74,8 +74,8 @@ namespace rtl::detail
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
         using Container = MethodContainer<detail::methodQ::Const, traits::remove_const_if_not_reference<_signature>...>;
-        const FunctorId& functorId = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::Const);
+        auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, methodQ::Const);
     }
 
 
@@ -90,7 +90,7 @@ namespace rtl::detail
         using Container = FunctorContainer < rtl::alloc, FunctorId, traits::remove_const_if_not_reference<_ctorSignature>... > ;
         const FunctorId& functorId = Container::template addConstructor<_recordType, _ctorSignature...>();
         const FunctorId& copyCtorId = traits::Cloner::template addCopyConstructor<_recordType, RObject, alloc>();
-        const Function& ctorFunction = Function(m_namespace, m_record, m_function, functorId, m_recordId, methodQ::None);
+        const Function& ctorFunction = Function(m_namespace, m_record, m_function, rtl::type_meta(), functorId, m_recordId, methodQ::None);
 
         ctorFunction.getFunctorIds().push_back(copyCtorId);
         return ctorFunction;

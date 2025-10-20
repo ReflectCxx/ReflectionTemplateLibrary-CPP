@@ -50,8 +50,7 @@ namespace rtl {
             : m_recordId(pRecordId)
             , m_namespace(pNamespace)
             , m_recordName(pRecordName)
-        {
-        }
+        { }
 
         GETTER_REF_C(MethodMap, FunctionsMap, m_methods)
 

@@ -49,9 +49,9 @@ namespace rtl::detail {
     protected:
 
         template<class _recordType, class _returnType, class ..._signature>
-        static const detail::FunctorId addFunctor(_returnType(_recordType::* pFunctor)(_signature...));
+        static std::pair<type_meta, detail::FunctorId> addFunctor(_returnType(_recordType::* pFunctor)(_signature...));
 
         template<class _recordType, class _returnType, class ..._signature>
-        static const detail::FunctorId addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const);
+        static std::pair<type_meta, detail::FunctorId> addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const);
     };
 }

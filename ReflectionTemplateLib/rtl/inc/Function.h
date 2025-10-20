@@ -49,29 +49,31 @@ namespace rtl {
         //name of the namespace as supplied by the user.
         std::string m_namespace;
 
+        mutable std::vector<type_meta> m_functorsMeta;
+
         //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
         mutable std::vector<detail::FunctorId> m_functorIds;
 
     private:
 
         Function(const std::string_view pNamespace, const std::string_view pClassName,
-                 const std::string_view pFuncName, const detail::FunctorId& pFunctorId,
+                 const std::string_view pFuncName, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                  const std::size_t pRecordTypeId, const detail::methodQ pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
     protected:
 
-        Function(const Function& pOther, const detail::FunctorId& pFunctorId,
+        Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                  const std::string_view pFunctorName);
 
         const std::size_t hasSignatureId(const std::size_t pSignatureId) const;
 
         const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
 
-        std::pair<const detail::FunctorId*, bool> getLambdaByNormalId(const std::size_t pSignatureId) const;
+        std::pair<std::optional<type_meta>, bool> getLambdaByNormalId(const std::size_t pSignatureId) const;
 
-        constexpr const detail::FunctorId* getLambdaByStrictId(const std::size_t pSignatureId) const;
+        constexpr std::optional<type_meta> getLambdaByStrictId(const std::size_t pSignatureId) const;
 
         GETTER(detail::methodQ, Qualifier, m_qualifier);
 
@@ -84,6 +86,7 @@ namespace rtl {
         GETTER_CREF(std::string, RecordName, m_record);
         GETTER_CREF(std::string, Namespace, m_namespace);
         GETTER_CREF(std::string, FunctionName, m_function);
+        GETTER_CREF(std::vector<type_meta>, FunctorsMeta, m_functorsMeta)
         GETTER_CREF(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
         Function() = default;

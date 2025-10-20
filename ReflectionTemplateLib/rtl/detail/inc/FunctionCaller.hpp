@@ -45,8 +45,11 @@ namespace rtl::detail
     inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
     {
         const auto retId = traits::uid<return_t>::value;
-        if (m_lambda != nullptr) {
-            return m_lambda->template get_hopper<return_t>(retId);
+        if (!m_argsTfnMeta.is_empty()) 
+        {
+            return m_argsTfnMeta.get_lambda()
+                                .template to_function<args_t...>()
+                                .template get_hopper<return_t>(retId);
         }
         return function<return_t(args_t...)>();
     }
@@ -58,35 +61,37 @@ namespace rtl::detail
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
 
-        const dispatch::lambda_function<args_t...>* lambda_fn = nullptr;
-        std::vector<const dispatch::lambda_base*> refOverloads = { nullptr };
+        rtl::type_meta argsTfnMeta;
+        //initializing pos '0' with empty 'type_meta'.
+        std::vector<rtl::type_meta> overloadsFnMeta = { rtl::type_meta() };
 
-        for (auto& functorId : m_functorIds)
+        for (auto& fnMeta : m_functorsMeta)
         {
-            auto& lambda = functorId.get_lambda();
-            if (!lambda_fn && strictArgsId == lambda.get_strict_sign_id()) {
-                lambda_fn = &(lambda.to_function<args_t...>());
+            if (argsTfnMeta.is_empty() && strictArgsId == fnMeta.get_strict_args_id()) {
+                argsTfnMeta = fnMeta;
             }
-            if (normalArgsId == lambda.get_normal_sign_id())
+            if (normalArgsId == fnMeta.get_normal_args_id())
             {
-                if (normalArgsId == lambda.get_strict_sign_id()) {
-                    refOverloads[0] = &lambda;
+                if (normalArgsId == fnMeta.get_strict_args_id()) {
+                    // same normal & strict ids, means no refs exists in target function's signature
+                    // target's function signature is call by value, always at pos '0'.
+                    // if doesn't exists, this pos is occupied by an empty 'type_meta'.
+                    overloadsFnMeta[0] = fnMeta;
                 }
-                else if (!lambda.is_any_ncref()) {
-                    refOverloads.push_back(&lambda);
+                else if (!fnMeta.is_any_arg_ncref()) {
+                    // its a const-ref-overload with no non-const-ref in signature, added from pos '1' onwards.
+                    overloadsFnMeta.push_back(fnMeta);
                 }
             }
         }
 
-        for (auto& functorId : m_functorIds)
-        {
-            auto& lambda = functorId.get_lambda();
-            if (normalArgsId == lambda.get_normal_sign_id() && lambda.is_any_ncref()) {
-                refOverloads.push_back(&lambda);
+        for (auto& fnMeta : m_functorsMeta) {
+            if (normalArgsId == fnMeta.get_normal_args_id() && fnMeta.is_any_arg_ncref()) {
+                // any remaining overload, const/non-const ref added from pos '1' onwards.
+                overloadsFnMeta.push_back(fnMeta);
             }
         }
-
-        return { lambda_fn, refOverloads };
+        return { argsTfnMeta, overloadsFnMeta };
     }
 
 
@@ -94,92 +99,36 @@ namespace rtl::detail
     template<class return_t> requires (std::is_same_v<return_t, rtl::Return>)
     inline constexpr function<Return(args_t...)> HopFunction<args_t...>::returnT() const
     {
-        bool isRetTypeVoid = false;
-        function<Return(traits::normal_sign_t<args_t>...)> erasedReturnFunc;
+        bool isReturnTvoid = false;
+        function<Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
         
-        for (auto lambda : m_lambdaRefOverloads)
-        {
-            erasedReturnFunc.get_overloads().push_back(lambda);
-            if (lambda)
+        for (auto& fnMeta : m_overloadsFnMeta)
+        {            
+            if (!fnMeta.is_empty())
             {
-                auto eret = lambda->get_unerasure().to_erased_return<traits::normal_sign_t<args_t>...>();
-                if (lambda->is_void()) {
-                    erasedReturnFunc.get_vhop().push_back(eret.get_void_hopper());
-                    isRetTypeVoid = true;
+                auto erasedRetFn = fnMeta.get_erased_lambda()
+                                         .template to_erased_return<traits::normal_sign_t<args_t>...>();
+                if (fnMeta.is_void()) {
+                    isReturnTvoid = true;
+                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
                 }
                 else {
-                    erasedReturnFunc.get_rhop().push_back(eret.get_return_hopper());
+                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
                 }
+                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
             }
             else {
-                erasedReturnFunc.get_vhop().push_back(nullptr);
-                erasedReturnFunc.get_rhop().push_back(nullptr);
+                erasedRetHop.get_vhop().push_back(nullptr);
+                erasedRetHop.get_rhop().push_back(nullptr);
+                erasedRetHop.get_overloads().push_back(nullptr);
             }
         }
-        if (isRetTypeVoid) {
-            erasedReturnFunc.get_rhop().clear();
+        if (isReturnTvoid) {
+            erasedRetHop.get_rhop().clear();
         }
         else {
-            erasedReturnFunc.get_vhop().clear();
+            erasedRetHop.get_vhop().clear();
         }
-        return erasedReturnFunc;
-    }
-
-
-    template<bool is_binding_v, class ...signatureT>
-    template<class ...args_t> requires (is_binding_v == true)
-    ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(args_t&&...params) const noexcept
-    {
-        //auto functorId = m_function.getLambdaByStrictId(traits::uid<traits::strict_sign_id_t<signatureT...>>::value);
-        //if (functorId) [[likely]]
-        //{
-        //    const auto& erased = functorId->m_lambda->m_erasure;
-        //    const auto& caller = erased.template to_erased_return<signatureT...>();
-        //    if (functorId->m_lambda->is_void())
-        //    {
-        //        caller.hop_void(std::forward<args_t>(params)...);
-        //        return { error::None, RObject{} };
-        //    }
-        //    else
-        //    {
-        //        return{ error::None,
-        //                RObject{ caller.hop_return(std::forward<args_t>(params)...),
-        //                         caller.get_return_id(), nullptr }
-        //        };
-        //    }
-        //}
-        //else [[unlikely]] {
-            return { error::SignatureMismatch, RObject{} };
-        //}
-    }
-
-
-    template<bool is_binding_v, class ...signatureT>
-    template<class ...args_t> requires (is_binding_v == false)
-    ForceInline constexpr Return ErasedCaller<is_binding_v, signatureT...>::operator()(args_t&&...params) const noexcept
-    {
-        return { error::InvalidCaller, RObject{} };
-
-        auto functorId = m_function.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<args_t...>>::value);
-        if (functorId.first) [[likely]]
-        {
-            const auto& erased = functorId.first->m_lambda->m_erasure;
-            const auto& caller = erased.template to_erased_return<args_t...>();
-            //if (functorId.first->m_lambda->is_void())
-            //{
-            //  caller.hop_void(std::forward<args_t>(params)...);
-                return { error::None, RObject{} };
-            //}
-            //else
-            //{
-            //    return{ error::None,
-            //            RObject{ caller.hop_return(std::forward<args_t>(params)...),
-            //                     caller.get_return_id(), nullptr }
-            //    };
-            //}
-        }
-        else [[unlikely]] {
-            return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
-        }
+        return erasedRetHop;
     }
 }

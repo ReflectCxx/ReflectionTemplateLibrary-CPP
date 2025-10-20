@@ -32,7 +32,7 @@ namespace rtl
     template<class recT, class ...signatureT>
     inline constexpr detail::Hopper<recT> Method::targetT() const
     {
-        return detail::Hopper<recT>{ getFunctorIds() };
+        return detail::Hopper<recT>{ getFunctorsMeta() };
     }
 
 

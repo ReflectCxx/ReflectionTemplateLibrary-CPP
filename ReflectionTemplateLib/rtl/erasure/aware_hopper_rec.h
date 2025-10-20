@@ -16,12 +16,12 @@
 #include "RObjectId.h"
 #include "erased_hopper_rec.h"
 
-namespace rtl::dispatch::erase
+namespace rtl::dispatch
 {
     template<class record_t, class return_t, class ...signature_t>
-    struct aware_hopper_rec : public erased_hopper_rec<record_t, traits::normal_sign_t<signature_t>...>
+    struct aware_hopper_rec : public erased_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>
     {
-        using base_t = erased_hopper_rec<record_t, traits::normal_sign_t<signature_t>...>;
+        using base_t = erased_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>;
         
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 

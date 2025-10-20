@@ -4,7 +4,7 @@
 
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
-#include "../CxxTestProps/inc/ComplexStrings.h"
+#include "../CxxTestProps/inc/StringOps.h"
 
 using namespace test_utils;
 using namespace test_mirror;
@@ -178,7 +178,6 @@ namespace rtl_tests
                                                                                                   .argsT<std::string&&>()
                                                                                                   .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
-
             {
                 //non-const target.
                 StringC target;

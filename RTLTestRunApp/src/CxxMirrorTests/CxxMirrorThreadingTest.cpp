@@ -10,7 +10,8 @@
 #include "../../CxxTestProps/inc/Animal.h"
 #include "../../CxxTestProps/inc/Person.h"
 #include "../../CxxTestProps/inc/Library.h"
-#include "../../CxxTestProps/inc/ComplexStrings.h"
+#include "../../CxxTestProps/inc/Complex.h"
+#include "../../CxxTestProps/inc/StringOps.h"
 #include "../MyReflectionTests/MyReflectingType.h"
 
 #include "TestUtilsBook.h"

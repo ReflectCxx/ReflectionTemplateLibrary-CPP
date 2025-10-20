@@ -13,6 +13,7 @@
 
 #include "Function.h"
 #include "FunctorId.h"
+#include "type_meta.h"
 
 namespace rtl 
 {
@@ -25,13 +26,14 @@ namespace rtl
     *        pQualifier - whether the member-function is const or non-const. methodQ::None for non-member & static-member functions.
     * 'Function' object is created for every functor (member/non-member) being registered.
 */  Function::Function(const std::string_view pNamespace, const std::string_view pRecord,
-                       const std::string_view pFunction, const detail::FunctorId& pFunctorId,
+                       const std::string_view pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                        const std::size_t pRecordTypeId, const detail::methodQ pQualifier)
         : m_qualifier(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_record(pRecord)
         , m_function(pFunction)
         , m_namespace(pNamespace)
+        , m_functorsMeta({ pFunctorsMeta })
         , m_functorIds({ pFunctorId }) {
     }
 
@@ -44,13 +46,14 @@ namespace rtl
     * the copy-constructor's 'FunctorId' is added to the 'Function' object associated with a constructor while registration.
     * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
         'FunctorId' with the 'Function' object associated with a constructor.
-*/  Function::Function(const Function& pOther, const detail::FunctorId& pFunctorId,
+*/  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                        const std::string_view pFunctorName)
         : m_qualifier(pOther.m_qualifier)
         , m_recordTypeId(pOther.m_recordTypeId)
         , m_record(pOther.m_record)
         , m_function(pFunctorName)
         , m_namespace(pOther.m_namespace)
+        , m_functorsMeta({ pFunctorsMeta })
         , m_functorIds({ pFunctorId }) {
     }
 
@@ -76,5 +79,6 @@ namespace rtl
         }
         //add the 'functorId' of the overloaded functor.
         m_functorIds.push_back(pOtherFunc.m_functorIds[0]);
+        m_functorsMeta.push_back(pOtherFunc.m_functorsMeta[0]);
     }
 }

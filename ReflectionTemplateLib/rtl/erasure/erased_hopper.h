@@ -15,10 +15,10 @@
 
 #include "erasure_base.h"
 
-namespace rtl::dispatch::erase
+namespace rtl::dispatch
 {
     template<class ...normal_sign_t>
-    struct erased_hopper : public erasure_base
+    struct erased_return_fn : public erased_fnbase
     {
         using lambda_vt = std::function<void(const lambda_base&, normal_sign_t...)>;
 
@@ -43,22 +43,22 @@ namespace rtl::dispatch::erase
 
         lambda_robj_rt m_rmhopper;
 
-        erased_hopper( const dispatch::functor& p_functor,
-                       const lambda_vt& p_void_hop,
-                       const lambda_rt& p_any_ret_hop,
-                       const detail::RObjectId& p_ret_id ) noexcept
+        erased_return_fn( const dispatch::functor& p_functor,
+                          const lambda_vt& p_void_hop,
+                          const lambda_rt& p_any_ret_hop,
+                          const detail::RObjectId& p_ret_id ) noexcept
 
-            : erasure_base(p_functor, p_ret_id)
+            : erased_fnbase(p_functor, p_ret_id)
             , m_vhopper(p_void_hop)
             , m_rhopper(p_any_ret_hop)
         { }
 
-        erased_hopper( const dispatch::functor& p_functor,
-                       const lambda_robj_vt& p_void_method_hop,
-                       const lambda_robj_rt& p_any_ret_method_hop,
-                       const detail::RObjectId& p_ret_id ) noexcept
+        erased_return_fn( const dispatch::functor& p_functor,
+                          const lambda_robj_vt& p_void_method_hop,
+                          const lambda_robj_rt& p_any_ret_method_hop,
+                          const detail::RObjectId& p_ret_id ) noexcept
 
-            : erasure_base(p_functor, p_ret_id)
+            : erased_fnbase(p_functor, p_ret_id)
             , m_vmhopper(p_void_method_hop)
             , m_rmhopper(p_any_ret_method_hop)
         { }

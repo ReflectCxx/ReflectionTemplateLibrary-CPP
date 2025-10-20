@@ -157,14 +157,16 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t>
-    requires (!std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+    requires (!std::is_same_v<return_t, rtl::Return>)
     inline constexpr const
     method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
-        if (m_lambda != nullptr)
+        if (!m_argsTfnMeta.is_empty())
         {
             const auto retId = traits::uid<return_t>::value;
-            return m_lambda->template get_hopper<return_t>(retId);
+            return m_argsTfnMeta.get_lambda()
+                                .template to_method<record_t, args_t...>()
+                                .template get_hopper<return_t>(retId);
         }
         return method<record_t, return_t(args_t...)>();
     }
@@ -172,69 +174,41 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t>
-    requires (std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const
-    method<const record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
-    {
-        if (m_lambda != nullptr)
-        {
-            const auto retId = traits::uid<return_t>::value;
-            return m_lambda->template get_hopper<return_t>(retId);
-        }
-        return method<const record_t, return_t(args_t...)>();
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const
-    method<const record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
-    {
-        if (m_lambda != nullptr)
-        {
-            const auto retId = traits::uid<return_t>::value;
-            return m_lambda->template get_hopper<return_t>(retId);
-        }
-        return method<const record_t, return_t(args_t...)>();
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (!std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
+    requires (std::is_same_v<return_t, rtl::Return>)
     inline constexpr const
     method<record_t, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
-        bool isRetTypeVoid = false;
-        method<record_t, Return(traits::normal_sign_t<args_t>...)> erasedReturnMthd;
+        bool isReturnTvoid = false;
+        method<record_t, Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
 
-        for (auto lambda : m_lambdaRefOverloads)
+        for (auto& fnMeta : m_overloadsFnMeta)
         {
-            erasedReturnMthd.get_overloads().push_back(lambda);
-            if (lambda)
+            if (!fnMeta.is_empty())
             {
-                auto eret = lambda->get_unerasure().to_erased_return_rec<record_t, traits::normal_sign_t<args_t>...>();
-                if (lambda->is_void()) {
-                    erasedReturnMthd.get_vhop().push_back(eret.get_void_hopper());
-                    isRetTypeVoid = true;
+                auto erasedRetFn = fnMeta.get_erased_lambda()
+                                         .template to_erased_return_rec<record_t, traits::normal_sign_t<args_t>...>();
+                if (fnMeta.is_void()) {
+                    isReturnTvoid = true;
+                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
                 }
                 else {
-                    erasedReturnMthd.get_rhop().push_back(eret.get_return_hopper());
+                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
                 }
+                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
             }
             else {
-                erasedReturnMthd.get_vhop().push_back(nullptr);
-                erasedReturnMthd.get_rhop().push_back(nullptr);
+                erasedRetHop.get_vhop().push_back(nullptr);
+                erasedRetHop.get_rhop().push_back(nullptr);
+                erasedRetHop.get_overloads().push_back(nullptr);
             }
         }
-        if (isRetTypeVoid) {
-            erasedReturnMthd.get_rhop().clear();
+        if (isReturnTvoid) {
+            erasedRetHop.get_rhop().clear();
         }
         else {
-            erasedReturnMthd.get_vhop().clear();
+            erasedRetHop.get_vhop().clear();
         }
-        return erasedReturnMthd;
+        return erasedRetHop;
     }
 
 
@@ -246,97 +220,39 @@ namespace rtl::detail
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
 
-        const dispatch::lambda_method<record_t, args_t...>* lambda_mt = nullptr;
-        std::vector<const dispatch::lambda_base*> refOverloads = { nullptr };
+        rtl::type_meta argsTfnMeta;
+        //initializing pos '0' with empty 'type_meta'.
+        std::vector<rtl::type_meta> overloadsFnMeta = { rtl::type_meta() };
 
-        for (auto& functorId : m_functorIds)
+        for (auto& fnMeta : m_functorsMeta)
         {
-            auto& lambda = functorId.get_lambda();
-            if (recordId != lambda.get_record_id()) {
+            if (recordId != fnMeta.get_record_id()) {
                 continue;
             }
-            if (!lambda_mt && strictArgsId == lambda.get_strict_sign_id()) {
-                lambda_mt = &(lambda.to_method<record_t, args_t...>());
+            if (argsTfnMeta.is_empty() && strictArgsId == fnMeta.get_strict_args_id()) {
+                argsTfnMeta = fnMeta;
             }
-            if (normalArgsId == lambda.get_normal_sign_id())
+            if (normalArgsId == fnMeta.get_normal_args_id())
             {
-                if (normalArgsId == lambda.get_strict_sign_id()) {
-                    refOverloads[0] = &lambda;
+                if (normalArgsId == fnMeta.get_strict_args_id()) {
+                    // same normal & strict ids, means no refs exists in target function's signature
+                    // target's function signature is call by value, always at pos '0'.
+                    // if doesn't exists, this pos is occupied by an empty 'type_meta'.
+                    overloadsFnMeta[0] = fnMeta;
                 }
-                else if (!lambda.is_any_ncref()) {
-                    refOverloads.push_back(&lambda);
+                else if (!fnMeta.is_any_arg_ncref()) {
+                    // its a const-ref-overload with no non-const-ref in signature, added from pos '1' onwards.
+                    overloadsFnMeta.push_back(fnMeta);
                 }
             }
         }
-        for (auto& functorId : m_functorIds)
-        {
-            auto& lambda = functorId.get_lambda();
-            if (recordId == lambda.get_record_id() && 
-                normalArgsId == lambda.get_normal_sign_id() && lambda.is_any_ncref()) {
-                refOverloads.push_back(&lambda);
+
+        for (auto& fnMeta : m_functorsMeta) {
+            if (recordId == fnMeta.get_record_id() &&
+                normalArgsId == fnMeta.get_normal_args_id() && fnMeta.is_any_arg_ncref()) {
+                overloadsFnMeta.push_back(fnMeta);
             }
         }
-        return { lambda_mt, refOverloads };
-    }
-}
-
-
-namespace rtl::detail 
-{
-    template<class record_t>
-    template<class ...argsT> requires (std::is_same_v<traits::raw_t<record_t>, RObject> == false)
-    ForceInline constexpr Return ErasedInvoker<record_t>::operator()(argsT&&...params) const noexcept
-    {
-        return { error::InvalidCaller, RObject{} };
-
-        auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
-        if (functorId.first) [[likely]]
-        {
-            const auto& erased = functorId.first->m_lambda->get_unerasure();
-            const auto& caller = erased.template to_erased_return_rec<record_t, argsT...>();
-            //if(functorId.first->m_lambda->is_void())
-            //{
-            //    caller.hop_void(m_target, std::forward<argsT>(params)...);
-                return { error::None, RObject{} };
-            //}
-            //else
-            //{
-            //    return{ error::None,
-            //            RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
-            //                     caller.get_return_id(), nullptr }
-            //        };
-            //}
-        }
-        else [[unlikely]] {
-            return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
-        }
-    }
-
-
-    template<class record_t>
-    template<class ...argsT> requires (std::is_same_v<traits::raw_t<record_t>, RObject> == true)
-    ForceInline constexpr Return ErasedInvoker<record_t>::operator()(argsT&&...params) const noexcept
-    {
-        return { error::InvalidCaller, RObject{} };
-
-        auto functorId = m_method.getLambdaByNormalId(traits::uid<traits::normal_sign_id_t<argsT...>>::value);
-        if (functorId.first) [[likely]]
-        {
-            const auto& erased = functorId.first->m_lambda->get_unerasure();
-            const auto& caller = erased.template to_erased_return<argsT...>();
-            //if (functorId.first->m_lambda->is_void())
-            //{
-            //    caller.hop_void(m_target, std::forward<argsT>(params)...);
-                return { error::None, RObject{} };
-            //}
-            //else
-            //{
-            //    return{ error::None,
-            //            RObject{ caller.hop_return(m_target, std::forward<argsT>(params)...),
-            //                     caller.get_return_id(), nullptr }
-            //    };
-            //}
-        }
-        else return { (functorId.second ? error::ExplicitRefBindingRequired:error::SignatureMismatch), RObject{} };
+        return { argsTfnMeta, overloadsFnMeta };
     }
 }

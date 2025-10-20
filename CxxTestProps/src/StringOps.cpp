@@ -1,33 +1,7 @@
 
-#include <complex>
 #include <algorithm>
 
-#include "ComplexStrings.h"
-
-namespace complex
-{
-	static double g_imgNumber;
-	static double g_realNumber;
-
-	double getMagnitude()
-	{
-		std::complex<double> z(g_realNumber, g_imgNumber);
-		return std::abs(z);
-	}
-
-	void setReal(double pNum) {
-		g_realNumber = pNum;
-	}
-
-	void setImaginary(double pNum) {
-		g_imgNumber = pNum;
-	}
-}
-
-std::string getComplexNumAsString()
-{
-	return std::to_string(complex::g_realNumber) + "i" + (std::to_string(complex::g_imgNumber));
-}
+#include "StringOps.h"
 
 namespace test_utils {
 
@@ -47,10 +21,10 @@ namespace test_utils {
 
 	const char* REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
 
-	const char* SUFFIX_std_string_view = "_arg_std::string_view";
-	const char* SUFFIX_std_string_view_lvref = "_arg_std::string_view&";
-	const char* SUFFIX_std_string_view_rvref = "_arg_std::string_view&&";
-	const char* SUFFIX_std_string_view_clvref = "_arg_const_std::string_view&";
+	const char* SUFFIX_std_string_view = "_std::string_view";
+	const char* SUFFIX_std_string_view_lvref = "_std::string_view&";
+	const char* SUFFIX_std_string_view_rvref = "_std::string_view&&";
+	const char* SUFFIX_std_string_view_clvref = "_const_std::string_view&";
 }
 
 using namespace test_utils;

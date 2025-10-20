@@ -13,6 +13,7 @@
 
 #include "rtl_typeid.h"
 #include "rtl_forward_decls.h"
+#include "type_meta.h"
 
 namespace rtl::detail
 {
@@ -24,10 +25,16 @@ namespace rtl::detail
         const _recordType& m_target;
 
         template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == false)
-        constexpr Return operator()(_args&&...params) const noexcept;
+        constexpr Return operator()(_args&&...params) const noexcept
+        {
+            return { error::InvalidCaller, RObject{} };
+        }
         
         template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == true)
-        constexpr Return operator()(_args&&...params) const noexcept;
+        constexpr Return operator()(_args&&...params) const noexcept
+        {
+            return { error::InvalidCaller, RObject{} };
+        }
     };
 }
 
@@ -92,31 +99,23 @@ namespace rtl::detail
     template<class record_t, class ...signature_t>
     struct HopMethod
     {
-        const dispatch::lambda_method<record_t, signature_t...>* m_lambda = nullptr;
+        rtl::type_meta m_argsTfnMeta;
 
-        std::vector<const dispatch::lambda_base*> m_lambdaRefOverloads = {};
-
-        template<class return_t = rtl::Return>
-        requires (!std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
-        constexpr const method<record_t, rtl::Return(signature_t...)> returnT() const;
+        std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
         template<class return_t = rtl::Return>
-        requires (!std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
+        requires (!std::is_same_v<return_t, rtl::Return>)
         constexpr const method<record_t, return_t(signature_t...)> returnT() const;
 
         template<class return_t = rtl::Return>
-        requires (std::is_const_v<record_t> && std::is_same_v<return_t, rtl::Return>)
-        constexpr const method<const record_t, return_t(signature_t...)> returnT() const;
-
-        template<class return_t = rtl::Return>
-        requires (std::is_const_v<record_t> && !std::is_same_v<return_t, rtl::Return>)
-        constexpr const method<const record_t, return_t(signature_t...)> returnT() const;
+        requires (std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<record_t, rtl::Return(signature_t...)> returnT() const;
     };
 
     template<class record_t>
     struct Hopper
     {
-        const std::vector<FunctorId>& m_functorIds;
+        const std::vector<rtl::type_meta>& m_functorsMeta;
 
         template<class ...signature_t>
         constexpr HopMethod<record_t, signature_t...> argsT() const;

@@ -29,7 +29,7 @@ namespace rtl
     template<class ...signatureT>
     inline constexpr const detail::HopFunction<signatureT...> Function::argsT() const
     {
-        return detail::Hopper<>{ m_functorIds }.argsT<signatureT...>();
+        return detail::Hopper<>{ m_functorsMeta }.argsT<signatureT...>();
     }
 
 
@@ -76,41 +76,41 @@ namespace rtl
     }
 
 
-    inline constexpr const detail::FunctorId* Function::getLambdaByStrictId(const std::size_t pSignatureId) const
+    inline constexpr std::optional<type_meta> Function::getLambdaByStrictId(const std::size_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (pSignatureId == functorId.get_lambda().get_strict_sign_id()) [[likely]] {
-                return &functorId;
+        for (const auto& functorMeta : m_functorsMeta) {
+            if (pSignatureId == functorMeta.get_strict_args_id()) [[likely]] {
+                return { functorMeta };
             }
         }
-        return nullptr;
+        return std::nullopt;
     }
 
 
-    ForceInline std::pair<const detail::FunctorId*, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
+    ForceInline std::pair<std::optional<type_meta>, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
     {
-        const detail::FunctorId* functorId = getLambdaByStrictId(pSignatureId);
-        if (functorId != nullptr) {
-            return { functorId, false };
+        std::optional<type_meta> functorMeta = getLambdaByStrictId(pSignatureId);
+        if (functorMeta) {
+            return { functorMeta, false };
         }
 
         std::size_t index = rtl::index_none;
-        for (int i = 0; i < m_functorIds.size(); i++)
+        for (int i = 0; i < m_functorsMeta.size(); i++)
         {
-            if (pSignatureId == m_functorIds[i].get_lambda().get_normal_sign_id()) [[likely]] {
+            if (pSignatureId == m_functorsMeta[i].get_normal_args_id()) [[likely]] {
                 if (index == rtl::index_none) {
                     index = i;
                 }
-                else return { nullptr, true };
+                else return { std::nullopt, true };
             }
         }
 
         if (index != rtl::index_none)
         {
-            auto isAnyNonConstRefInArgsT = (m_functorIds[index].get_lambda().is_any_ncref());
-            return { (isAnyNonConstRefInArgsT ? nullptr : &m_functorIds[index]), isAnyNonConstRefInArgsT };
+            auto isAnyNonConstRefInArgsT = (m_functorsMeta[index].is_any_arg_ncref());
+            return { (isAnyNonConstRefInArgsT ? std::nullopt : std::make_optional(m_functorsMeta[index])), isAnyNonConstRefInArgsT };
         }
-        return { nullptr, false };
+        return { std::nullopt, false };
     }
 }

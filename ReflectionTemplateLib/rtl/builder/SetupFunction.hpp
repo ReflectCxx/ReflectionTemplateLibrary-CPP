@@ -13,8 +13,7 @@
 
 #include <cassert>
 
-#include "cache_function_ptr.h"
-#include "cache_lambda_function.h"
+#include "type_meta.hpp"
 
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
@@ -91,19 +90,11 @@ namespace rtl
         * thread safe, multiple functors can be registered simultaneously.
     */  template<class _derivedType>
         template<class _returnType, class ..._signature>
-        inline const detail::FunctorId SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
+        inline std::pair<type_meta, detail::FunctorId> SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId)
         {
-            const dispatch::lambda_base* lambdaPtr = nullptr;
-
-            const auto& updateIndex = [&](std::size_t pIndex)-> void
-            {
-                auto& lambdaCache = cache::lambda_function<_returnType, _signature...>::instance();
-                auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
-
-                auto& functor = functorCache.push(pFunctor, pIndex);
-                auto& lambda = lambdaCache.push(functor);
-
-                lambdaPtr = &lambda;
+            rtl::type_meta typeMeta;
+            const auto& updateIndex = [&](std::size_t pIndex)-> void {
+                typeMeta = rtl::type_meta::add_function(pFunctor, pIndex);
             };
 
             const auto& getIndex = [&]()-> std::size_t
@@ -111,7 +102,7 @@ namespace rtl
                 auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
                 auto [functor, lambdaIndex] = functorCache.find(pFunctor);
                 if (lambdaIndex != rtl::index_none) {
-                    lambdaPtr = functor->get_lambda();
+                    typeMeta = rtl::type_meta(*functor);
                 }
                 return lambdaIndex;
             };
@@ -122,14 +113,17 @@ namespace rtl
             auto lambdaIndex = _derivedType::pushBack(getCaller(pFunctor), getIndex, updateIndex);
 
             //construct the hash-key 'FunctorId' and return.
-            return detail::FunctorId{
-
-                lambdaIndex,
-                returnId,
-                pRecordId,
-                _derivedType::getContainerId(),
-                _derivedType::template getSignatureStr<_returnType>(),
-                lambdaPtr
+            return { 
+                typeMeta,
+                FunctorId 
+                {
+                    lambdaIndex,
+                    returnId,
+                    pRecordId,
+                    _derivedType::getContainerId(),
+                    _derivedType::template getSignatureStr<_returnType>(),
+                    &(typeMeta.get_lambda())
+                }
             };
         }
     }
