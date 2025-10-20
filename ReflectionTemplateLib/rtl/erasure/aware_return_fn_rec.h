@@ -14,23 +14,23 @@
 #include <any>
 
 #include "RObjectId.h"
-#include "erased_hopper_rec.h"
+#include "erase_return_fn_rec.h"
 
 namespace rtl::dispatch
 {
     template<class record_t, class return_t, class ...signature_t>
-    struct aware_hopper_rec<const record_t, return_t, signature_t...> : public erased_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>
+    struct aware_return_fn_rec : public erase_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>
     {
-        using base_t = erased_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>;
-
+        using base_t = erase_return_fn_rec<record_t, traits::normal_sign_t<signature_t>...>;
+        
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-        aware_hopper_rec(const dispatch::functor& p_functor)
+        aware_return_fn_rec(const dispatch::functor& p_functor)
         : base_t( p_functor,
-                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void() : decltype(aware_hopper_rec::get_lambda_void()){},
-                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret() : decltype(aware_hopper_rec::get_lambda_any_ret()){},
-                  p_functor.is_void() ? aware_hopper_rec::get_lambda_void_robj() : decltype(aware_hopper_rec::get_lambda_void_robj()){},
-                 !p_functor.is_void() ? aware_hopper_rec::get_lambda_any_ret_robj() : decltype(aware_hopper_rec::get_lambda_any_ret_robj()){},
+                  p_functor.is_void() ? aware_return_fn_rec::get_lambda_void() : decltype(aware_return_fn_rec::get_lambda_void()){},
+                 !p_functor.is_void() ? aware_return_fn_rec::get_lambda_any_ret() : decltype(aware_return_fn_rec::get_lambda_any_ret()){},
+                  p_functor.is_void() ? aware_return_fn_rec::get_lambda_void_robj() : decltype(aware_return_fn_rec::get_lambda_void_robj()){},
+                 !p_functor.is_void() ? aware_return_fn_rec::get_lambda_any_ret_robj() : decltype(aware_return_fn_rec::get_lambda_any_ret_robj()){},
                   detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe) )
         { }
 
@@ -43,7 +43,7 @@ namespace rtl::dispatch
                     auto mptr = lambda.template to_method<record_t, signature_t...>()
                                       .template get_functor<void>();
 
-                    (p_target.*mptr)(std::forward<signature_t>(params)...);
+                    (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
                 }
             };
         }
@@ -59,7 +59,7 @@ namespace rtl::dispatch
 
                     const auto& target = p_target.view<record_t>()->get();
 
-                    (target.*mptr)(std::forward<signature_t>(params)...);
+                    (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
                 }
             };
         }
@@ -73,7 +73,7 @@ namespace rtl::dispatch
                     auto mptr = lambda.template to_method<record_t, signature_t...>()
                                       .template get_functor<return_t>();
 
-                    auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
+                    auto&& ret_v = (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {
@@ -97,7 +97,7 @@ namespace rtl::dispatch
 
         constexpr static auto get_lambda_any_ret_robj() noexcept
         {
-            return[](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
@@ -106,7 +106,7 @@ namespace rtl::dispatch
 
                     const auto& target = p_target.view<record_t>()->get();
 
-                    auto&& ret_v = (target.*mptr)(std::forward<signature_t>(params)...);
+                    auto&& ret_v = (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)
                     {

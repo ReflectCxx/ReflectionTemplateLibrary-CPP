@@ -3,13 +3,13 @@
 # Collect headers in this folder (absolute paths)
 set(LOCAL_HEADERS
 
-	"${CMAKE_CURRENT_SOURCE_DIR}/erasure_base.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/erased_hopper.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/erased_hopper_rec.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/erase_fn_base.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/erase_return_fn.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/erase_return_fn_rec.h"
 	
-	"${CMAKE_CURRENT_SOURCE_DIR}/aware_hopper.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/aware_hopper_rec.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/aware_hopper_rec_const.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return_fn.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/aware_return_fn_rec.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return_fn_rec_const.h"
 )
 
 target_sources(ReflectionTemplateLib PRIVATE ${LOCAL_HEADERS})

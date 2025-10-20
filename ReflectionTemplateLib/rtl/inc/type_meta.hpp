@@ -14,7 +14,7 @@
 #include "type_meta.h"
 
 #include "lambda_base.h"
-#include "erasure_base.h"
+#include "erase_fn_base.h"
 
 #include "cache_method_ptr.h"
 #include "cache_function_ptr.h"

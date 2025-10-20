@@ -15,7 +15,7 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
-#include "erased_hopper_rec.h"
+#include "erase_return_fn_rec.h"
 
 #include "rtl_method_erased_return.h"
 

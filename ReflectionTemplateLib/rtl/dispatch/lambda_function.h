@@ -14,7 +14,7 @@
 #include "lambda_base.h"
 #include "rtl_function.h"
 #include "function_ptr.h"
-#include "erased_hopper.h"
+#include "erase_return_fn.h"
 
 namespace rtl::dispatch
 {
@@ -41,7 +41,7 @@ namespace rtl::dispatch
             return hopper_t<return_t>();
         }
 
-        lambda_function(const functor& p_functor, const erased_fnbase& p_erasure) noexcept
+        lambda_function(const functor& p_functor, const erase_fn_base& p_erasure) noexcept
             : lambda_base(p_functor, p_erasure)
         { }
     };

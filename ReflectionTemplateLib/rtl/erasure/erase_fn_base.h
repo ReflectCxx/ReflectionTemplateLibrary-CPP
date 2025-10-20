@@ -17,27 +17,27 @@
 
 namespace rtl::dispatch
 {
-	struct erased_fnbase
+	struct erase_fn_base
 	{
         template<class ...args_t>
-        using ehop_t = erased_return_fn<traits::normal_sign_t<args_t>...>;
+        using erasure_t = erase_return_fn<traits::normal_sign_t<args_t>...>;
 
         template<class ...signature_t>
-        constexpr const ehop_t<signature_t...>& to_erased_return() const
+        constexpr const erasure_t<signature_t...>& to_erased_return() const
         {
-            return static_cast<const ehop_t<signature_t...>&>(*this);
+            return static_cast<const erasure_t<signature_t...>&>(*this);
         }
-
+        
         template<class record_t, class ...args_t>
-        using ehop_rt = erased_return_fn_rec<record_t, traits::normal_sign_t<args_t>...>;
+        using erasure_rt = erase_return_fn_rec<record_t, traits::normal_sign_t<args_t>...>;
 
         template<class record_t, class ...signature_t>
-        constexpr const ehop_rt<record_t, signature_t...>& to_erased_return_rec() const
+        constexpr const erasure_rt<record_t, signature_t...>& to_erased_return_rec() const
         {
-            return static_cast<const ehop_rt<record_t, signature_t...>&>(*this);
+            return static_cast<const erasure_rt<record_t, signature_t...>&>(*this);
         }
 
-        erased_fnbase(const dispatch::functor& p_functor, const detail::RObjectId& p_ret_id) noexcept
+        erase_fn_base(const dispatch::functor& p_functor, const detail::RObjectId& p_ret_id) noexcept
             : m_functor(p_functor)
             , m_return_id(p_ret_id)
         { }

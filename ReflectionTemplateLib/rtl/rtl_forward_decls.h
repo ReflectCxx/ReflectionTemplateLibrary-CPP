@@ -71,7 +71,7 @@ namespace rtl
 
         struct lambda_base;
 
-        struct erased_fnbase;
+        struct erase_fn_base;
 
         template<class ...signature_t>
         struct lambda_function;
@@ -89,15 +89,15 @@ namespace rtl
         struct const_method_ptr;
 
         template<class ...signature_t>
-        struct erased_return_fn;
+        struct erase_return_fn;
 
         template<class record_t, class ...signature_t>
-        struct erased_return_fn_rec;
+        struct erase_return_fn_rec;
 
         template<class return_t, class ...signature_t>
-        struct aware_hopper;
+        struct aware_return_fn;
 
         template<class record_t, class return_t, class ...signature_t>
-        struct aware_hopper_rec;
+        struct aware_return_fn_rec;
     }
 }

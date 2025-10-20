@@ -16,7 +16,7 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
-#include "erased_hopper.h"
+#include "erase_return_fn.h"
 #include "rtl_function_erased_return.h"
 
 namespace rtl::detail

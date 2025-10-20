@@ -12,21 +12,21 @@
 #pragma once
 
 #include <any>
-#include "erased_hopper.h"
+#include "erase_return_fn.h"
 
 namespace rtl::dispatch
 {
     template<class return_t, class ...signature_t>
-    struct aware_hopper : public erased_return_fn<traits::normal_sign_t<signature_t>...>
+    struct aware_return_fn : public erase_return_fn<traits::normal_sign_t<signature_t>...>
     {
-        using base_t = erased_return_fn<traits::normal_sign_t<signature_t>...>;
+        using base_t = erase_return_fn<traits::normal_sign_t<signature_t>...>;
 
         constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
 
-        aware_hopper(const dispatch::functor& p_functor)
+        aware_return_fn(const dispatch::functor& p_functor)
             : base_t( p_functor, 
-                      p_functor.is_void() ? aware_hopper::get_lambda_void() : decltype(aware_hopper::get_lambda_void()){},
-                     !p_functor.is_void() ? aware_hopper::get_lambda_any_return() : decltype(aware_hopper::get_lambda_any_return()){},
+                      p_functor.is_void() ? aware_return_fn::get_lambda_void() : decltype(aware_return_fn::get_lambda_void()){},
+                     !p_functor.is_void() ? aware_return_fn::get_lambda_any_return() : decltype(aware_return_fn::get_lambda_any_return()){},
                       detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe) )
         { }
 

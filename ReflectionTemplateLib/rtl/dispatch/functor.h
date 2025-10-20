@@ -47,13 +47,13 @@ namespace rtl::dispatch
             m_lambda = p_lambda;
         }
 
-        constexpr void set_erased_lambda(const dispatch::erased_fnbase* p_elambda) const {
+        constexpr void set_erased_lambda(const dispatch::erase_fn_base* p_elambda) const {
             m_erased_lambda = p_elambda;
         }
 
         mutable const dispatch::lambda_base* m_lambda = nullptr;
 
-        mutable const dispatch::erased_fnbase* m_erased_lambda = nullptr;
+        mutable const dispatch::erase_fn_base* m_erased_lambda = nullptr;
         
         friend rtl::type_meta;
 

@@ -14,13 +14,13 @@
 #include <any>
 #include <functional>
 
-#include "erased_hopper.h"
+#include "erase_return_fn.h"
 #include "rtl_forward_decls.h"
 
 namespace rtl::dispatch
 {
     template<class record_t, class ...normal_sign_t>
-    struct erased_return_fn_rec : public erased_return_fn<normal_sign_t...>
+    struct erase_return_fn_rec : public erase_return_fn<normal_sign_t...>
     {
         using lambda_vt = std::function<void(const lambda_base&, const record_t&, normal_sign_t...)>;
 
@@ -36,9 +36,9 @@ namespace rtl::dispatch
 
         lambda_rt m_rhopper;
 
-        using base_t = erased_return_fn<normal_sign_t...>;
+        using base_t = erase_return_fn<normal_sign_t...>;
 
-        erased_return_fn_rec( const dispatch::functor& p_functor, 
+        erase_return_fn_rec( const dispatch::functor& p_functor, 
                               const lambda_vt& p_void_hop,
                               const lambda_rt& p_any_ret_hop,
                               const base_t::lambda_robj_vt& p_void_robj_hop,
