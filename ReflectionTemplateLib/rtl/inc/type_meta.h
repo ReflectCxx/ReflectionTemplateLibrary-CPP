@@ -30,7 +30,6 @@ namespace rtl
 		type_meta(const type_meta&) = default;
 		type_meta& operator=(type_meta&&) = default;
 		type_meta& operator=(const type_meta&) = default;
-		bool operator==(const type_meta&) const = default;
 
 		GETTER_BOOL(_empty, !m_functor.has_value())
 		GETTER_BOOL(_void, m_functor->get().m_is_void)
