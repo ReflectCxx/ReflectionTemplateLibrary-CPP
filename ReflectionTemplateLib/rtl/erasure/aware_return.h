@@ -12,29 +12,31 @@
 #pragma once
 
 #include <any>
-#include "erase_return_fn.h"
+#include "erase_return.h"
 
 namespace rtl::dispatch
 {
     template<class return_t, class ...signature_t>
-    struct aware_return_fn : public erase_return_fn<traits::normal_sign_t<signature_t>...>
+    struct aware_return : public erase_return<traits::normal_sign_t<signature_t>...>
     {
-        using base_t = erase_return_fn<traits::normal_sign_t<signature_t>...>;
+        using this_t = aware_return;
+        using base_t = erase_return<traits::normal_sign_t<signature_t>...>;
 
-        constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
+        constexpr static bool is_void = (std::is_void_v<return_t>);
 
-        aware_return_fn(const dispatch::functor& p_functor)
-            : base_t( p_functor, 
-                      p_functor.is_void() ? aware_return_fn::get_lambda_void() : decltype(aware_return_fn::get_lambda_void()){},
-                     !p_functor.is_void() ? aware_return_fn::get_lambda_any_return() : decltype(aware_return_fn::get_lambda_any_return()){},
-                      detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe) )
-        { }
+        aware_return()
+            : base_t( is_void ? this_t::get_lambda_void() : decltype(this_t::get_lambda_void()) {},
+                     !is_void ? this_t::get_lambda_any_return() : decltype(this_t::get_lambda_any_return()) {})
+        {
+            constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
+            base_t::m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
+        }
 
         constexpr static auto get_lambda_void() noexcept
         {
             return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                if constexpr (std::is_void_v<return_t>)
+                if constexpr (is_void)
                 {
                     auto fptr = lambda.template to_function<signature_t...>()
                                       .template get_functor<void>();
@@ -48,7 +50,7 @@ namespace rtl::dispatch
         {
             return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                if constexpr (!std::is_void_v<return_t>)
+                if constexpr (!is_void)
                 {
                     auto fptr = lambda.template to_function<signature_t...>()
                                       .template get_functor<return_t>();

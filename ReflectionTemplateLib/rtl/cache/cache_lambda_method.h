@@ -14,8 +14,8 @@
 #include <list>
 
 #include "lambda_method.h"
-#include "aware_return_fn_rec.h"
-#include "aware_return_fn_rec_const.h"
+#include "aware_return_n_target.h"
+#include "aware_return_n_target_const.h"
 
 namespace rtl::cache
 {
@@ -28,15 +28,15 @@ namespace rtl::cache
             return instance_;
         }
 
-        std::pair<const dispatch::lambda_base*, const dispatch::erase_fn_base*> push(const dispatch::functor& p_functor) const
+        std::pair<const dispatch::lambda_base*, const dispatch::erasure_base*> push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.push_back(dispatch::aware_return_fn_rec<record_t, return_t, signature_t...>(p_functor));
+            m_erasure_cache.emplace_back(dispatch::aware_return_n_target<record_t, return_t, signature_t...>());
             
-            const dispatch::erase_fn_base& eb = m_erasure_cache.back();
-
+            auto& eb = m_erasure_cache.back();
+            eb.init_base();
             m_cache.push_back(dispatch::lambda_method<record_t, signature_t...>(p_functor, eb));
 
-            return { &m_cache.back(), &m_erasure_cache.back() };
+            return { &m_cache.back(), &eb };
         }
 
         lambda_method(lambda_method&&) = delete;
@@ -48,7 +48,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_method<record_t, signature_t...>> m_cache;
-        mutable std::list<dispatch::aware_return_fn_rec<record_t, return_t, signature_t...>> m_erasure_cache;
+        mutable std::list<dispatch::aware_return_n_target<record_t, return_t, signature_t...>> m_erasure_cache;
 
         lambda_method() = default;
     };

@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "functor.h"
-#include "erase_fn_base.h"
+#include "erasure_base.h"
 
 namespace rtl
 {
@@ -46,7 +46,7 @@ namespace rtl
 		GETTER(detail::methodQ, _method_qual, m_functor->get().m_qualifier)
 		
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
-		GETTER_CREF(dispatch::erase_fn_base, _erased_lambda, *(m_functor->get().m_erased_lambda))
+		GETTER_CREF(dispatch::erasure_base, _erased_lambda, *(m_functor->get().m_erasure))
 
 		template<class return_t, class ...signature_t>
 		static type_meta add_function(return_t(*pFunctor)(signature_t...), std::size_t p_index);

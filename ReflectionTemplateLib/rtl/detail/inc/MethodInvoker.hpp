@@ -15,9 +15,10 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
-#include "erase_return_fn_rec.h"
+#include "erasure_base.h"
 
 #include "rtl_method_erased_return.h"
+#include "erasure_base.hpp"
 
 namespace rtl::detail
 {
@@ -185,8 +186,8 @@ namespace rtl::detail
         {
             if (!fnMeta.is_empty())
             {
-                auto erasedRetFn = fnMeta.get_erased_lambda()
-                                         .template to_erased_return_rec<record_t, traits::normal_sign_t<args_t>...>();
+                auto& erasedRetFn = fnMeta.get_erased_lambda()
+                                          .template to_erased_return_aware_target<record_t, traits::normal_sign_t<args_t>...>();
                 if (fnMeta.is_void()) {
                     isReturnTvoid = true;
                     erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());

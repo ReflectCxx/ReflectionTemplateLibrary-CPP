@@ -14,7 +14,7 @@
 #include "type_meta.h"
 
 #include "lambda_base.h"
-#include "erase_fn_base.h"
+#include "erasure_base.h"
 
 #include "cache_method_ptr.h"
 #include "cache_function_ptr.h"
@@ -47,7 +47,7 @@ namespace rtl
 		auto [lambda, elambda] = lc.push(functor);
 		
 		functor.set_lambda(lambda);
-		functor.set_erased_lambda(elambda);
+		functor.set_erasure(elambda);
 
 		return type_meta(functor);
 	}
@@ -62,7 +62,7 @@ namespace rtl
 		auto [lambda, elambda] = lc.push(functor);
 
 		functor.set_lambda(lambda);
-		functor.set_erased_lambda(elambda);
+		functor.set_erasure(elambda);
 
 		return type_meta(functor);
 	}
@@ -77,7 +77,7 @@ namespace rtl
 		auto [lambda, elambda] = lc.push(functor);
 		
 		functor.set_lambda(lambda);
-		functor.set_erased_lambda(elambda);
+		functor.set_erasure(elambda);
 
 		return type_meta(functor);
 	}

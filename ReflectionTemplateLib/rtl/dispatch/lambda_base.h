@@ -13,7 +13,7 @@
 
 #include "rtl_traits.h"
 #include "functor.h"
-#include "erase_fn_base.h"
+#include "erasure_base.h"
 
 namespace rtl::dispatch
 {
@@ -65,13 +65,13 @@ namespace rtl::dispatch
         GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
         GETTER_CREF(detail::RObjectId, _return_id, m_erasure.m_return_id)
 
-        lambda_base(const functor& p_functor, const erase_fn_base& p_erasure) noexcept
+        lambda_base(const functor& p_functor, const erasure_base& p_erasure) noexcept
             : m_functor(p_functor)
             , m_erasure(p_erasure)
         { }
 
         const functor& m_functor;
 
-        const erase_fn_base& m_erasure;
+        const erasure_base& m_erasure;
     };
 }

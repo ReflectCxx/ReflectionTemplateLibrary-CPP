@@ -14,7 +14,6 @@
 #include "lambda_base.h"
 
 #include "method_ptr.h"
-#include "erase_return_fn_rec.h"
 
 #include "rtl_method.h"
 #include "rtl_method_const.h"
@@ -59,7 +58,7 @@ namespace rtl::dispatch
             return hopper_ct<return_t>();
         }
 
-        lambda_method(const functor& p_functor, const erase_fn_base& p_erasure) noexcept
+        lambda_method(const functor& p_functor, const erasure_base& p_erasure) noexcept
             : lambda_base(p_functor, p_erasure)
         { }
     };

@@ -16,7 +16,7 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
-#include "erase_return_fn.h"
+#include "erasure_base.h"
 #include "rtl_function_erased_return.h"
 
 namespace rtl::detail
@@ -106,8 +106,8 @@ namespace rtl::detail
         {            
             if (!fnMeta.is_empty())
             {
-                auto erasedRetFn = fnMeta.get_erased_lambda()
-                                         .template to_erased_return<traits::normal_sign_t<args_t>...>();
+                auto& erasedRetFn = fnMeta.get_erased_lambda()
+                                          .template to_erased_return<traits::normal_sign_t<args_t>...>();
                 if (fnMeta.is_void()) {
                     isReturnTvoid = true;
                     erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
