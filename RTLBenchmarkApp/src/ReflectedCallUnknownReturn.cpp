@@ -17,7 +17,29 @@ namespace cxx
 
 namespace
 {
-    static rtl::function<rtl::Return(bm::argStr_t)> GetMessage = []()
+    static rtl::Record class_Node = []()
+    {
+        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
+        if (!Node) {
+            std::cerr << "[x] error: record 'Node' not found.\n";
+            std::abort();
+        }
+        return Node.value();
+    }();
+
+    static const rtl::RObject nodeObj = []()
+    {
+        auto [err, robj] = class_Node.create<rtl::alloc::Stack>();
+        if (robj.isEmpty()) {
+            std::cerr << "[x] error: " << rtl::to_string(err) << "\n";
+        }
+        return std::move(robj);
+    }();
+}
+
+namespace
+{
+    static rtl::function<rtl::Return(bm::argStr_t)> ErasedReturnFn_GetMessage = []()
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("getMessage");
         if (!function) {
@@ -27,7 +49,7 @@ namespace
         return function->argsT<bm::argStr_t>().returnT();
     }();
 
-    static rtl::function<rtl::Return(bm::argStr_t)> SendMessage = []()
+    static rtl::function<rtl::Return(bm::argStr_t)> ErasedReturnFn_SendMessage = []()
     {
         std::optional<rtl::Function> function = cxx::mirror().getFunction("sendMessage");
         if (!function) {
@@ -36,50 +58,13 @@ namespace
         }
         return function->argsT<bm::argStr_t>().returnT();
     }();
+}
 
-
-    static rtl::method<bm::Node, rtl::Return(bm::argStr_t)> NodeGetMessage = []()
-    {
-        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-        if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\n";
-            std::abort();
-        }
-
-        std::optional<rtl::Method> method = Node->getMethod("getMessage");
-        if (!method) {
-            std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
-            std::abort();
-        }
-        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
-    }();
-
-    static rtl::method<bm::Node, rtl::Return(bm::argStr_t)> NodeSendMessage = []()
-    {
-        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-        if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\n";
-            std::abort();
-        }
-
-        std::optional<rtl::Method> method = Node->getMethod("sendMessage");
-        if (!method) {
-            std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
-            std::abort();
-        }
-        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
-    }();
-
-
+namespace
+{
     static rtl::Method ErasedTargetGetMessage = []()
     {
-        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-        if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\n";
-            std::abort();
-        }
-
-        std::optional<rtl::Method> method = Node->getMethod("getMessage");
+        std::optional<rtl::Method> method = class_Node.getMethod("getMessage");
         if (!method) {
             std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
             std::abort();
@@ -89,13 +74,7 @@ namespace
 
     static rtl::Method ErasedTargetSendMessage = []()
     {
-        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-        if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\n";
-            std::abort();
-        }
-
-        std::optional<rtl::Method> method = Node->getMethod("sendMessage");
+        std::optional<rtl::Method> method = class_Node.getMethod("sendMessage");
         if (!method) {
             std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
             std::abort();
@@ -103,28 +82,54 @@ namespace
         return *method;
     }();
 
-    static const rtl::RObject nodeObj = []()
+    //----------------------------------------------------------------------------
+    static rtl::method<bm::Node, rtl::Return(bm::argStr_t)> ErasedReturnNode_SendMessage = []()
     {
-        std::optional<rtl::Record> Node = cxx::mirror().getRecord("Node");
-        if (!Node) {
-            std::cerr << "[x] error: record 'Node' not found.\n";
+        std::optional<rtl::Method> method = class_Node.getMethod("sendMessage");
+        if (!method) {
+            std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
             std::abort();
         }
+        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
+    }();
 
-        auto [err, robj] = Node->create<rtl::alloc::Stack>();
-        if (robj.isEmpty()) {
-            std::cerr << "[x] error: " << rtl::to_string(err) << "\n";
+    //----------------------------------------------------------------------------
+    static rtl::method<bm::Node, rtl::Return(bm::argStr_t)> ErasedReturn_GetMessage = []()
+    {
+        std::optional<rtl::Method> method = class_Node.getMethod("getMessage");
+        if (!method) {
+            std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
+            std::abort();
         }
-        return std::move(robj);
+        return method->targetT<bm::Node>().argsT<bm::argStr_t>().returnT<>();
+    }();
+
+    static rtl::method<rtl::RObject, bm::retStr_t(bm::argStr_t)> ErasedTarget_GetMessage = []()
+    {
+        std::optional<rtl::Method> method = class_Node.getMethod("getMessage");
+        if (!method) {
+            std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
+            std::abort();
+        }
+        return method->targetT<>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+    }();
+
+    static rtl::method<rtl::RObject, rtl::Return(bm::argStr_t)> ErasedReturnAndTarget_GetMessage = []()
+    {
+        std::optional<rtl::Method> method = class_Node.getMethod("getMessage");
+        if (!method) {
+            std::cerr << "[2] error: method 'Node::getMessage' not found.\n";
+            std::abort();
+        }
+        return method->targetT<>().argsT<bm::argStr_t>().returnT<>();
     }();
 }
-
 
 namespace
 {
     static auto _test0 = []()
     {
-        auto err = SendMessage(bm::g_longStr).err;
+        auto err = ErasedReturnFn_SendMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cerr << "[00] error: " << rtl::to_string(err) << "\n";
         }
@@ -133,7 +138,7 @@ namespace
 
     static auto _test1 = []()
     {
-        auto err = NodeSendMessage(bm::Node())(bm::g_longStr).err;
+        auto err = ErasedReturnNode_SendMessage(bm::Node())(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cerr << "[01] error: " << rtl::to_string(err) << "\n";
         }
@@ -142,7 +147,7 @@ namespace
 
     static auto _test2 = []()
     {
-        auto err = GetMessage(bm::g_longStr).err;
+        auto err = ErasedReturnFn_GetMessage(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cerr << "[02] error: " << rtl::to_string(err) << "\n";
         }
@@ -151,13 +156,12 @@ namespace
 
     static auto _test3 = []()
     {
-        auto err = NodeGetMessage(bm::Node())(bm::g_longStr).err;
+        auto err = ErasedReturn_GetMessage(bm::Node())(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cerr << "[03] error: " << rtl::to_string(err) << "\n";
         }
         return 0;
     };
-
 
     static auto _test4 = []()
     {
@@ -168,9 +172,12 @@ namespace
         return 0;
     };
 
-
     static auto _test5 = []()
     {
+        //{
+        //    auto [err, retOpt] = ErasedReturnAndTarget_GetMessage(rtl::RObject())(bm::g_longStr);
+        //}
+
         auto err = ErasedTargetGetMessage(nodeObj)(bm::g_longStr).err;
         if (err != rtl::error::None) {
             std::cerr << "[03] error: " << rtl::to_string(err) << "\n";
@@ -192,7 +199,7 @@ void RtlErasedReturnType_call::returnVoid(benchmark::State& state)
     static auto _ = _test0();
     for (auto _ : state) 
     {
-        benchmark::DoNotOptimize(SendMessage(bm::g_longStr).err);
+        benchmark::DoNotOptimize(ErasedReturnFn_SendMessage(bm::g_longStr).err);
     }
 }
 
@@ -203,7 +210,7 @@ void RtlErasedReturnType_call::returnNonVoid(benchmark::State& state)
     static auto _ = _test2();
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(GetMessage(bm::g_longStr).err);
+        benchmark::DoNotOptimize(ErasedReturnFn_GetMessage(bm::g_longStr).err);
     }
 }
 
@@ -214,7 +221,7 @@ void RtlErasedReturnType_callMethod::returnVoid(benchmark::State& state)
     static bm::Node node;
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeSendMessage(node)(bm::g_longStr).err);
+        benchmark::DoNotOptimize(ErasedReturnNode_SendMessage(node)(bm::g_longStr).err);
     }
 }
 
@@ -225,7 +232,7 @@ void RtlErasedReturnType_callMethod::returnNonVoid(benchmark::State& state)
     static bm::Node node;
     for (auto _ : state)
     {
-        benchmark::DoNotOptimize(NodeGetMessage(node)(bm::g_longStr).err);
+        benchmark::DoNotOptimize(ErasedReturn_GetMessage(node)(bm::g_longStr).err);
     }
 }
 

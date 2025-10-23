@@ -36,7 +36,7 @@ namespace rtl::dispatch
         template<class return_t>
         const erase_target_aware_return<return_t, normal_sign_t...>& to_erased_target() const
         {
-            return static_cast<const erase_return_aware_target<return_t, normal_sign_t...>&>(*m_erased_target);
+            return static_cast<const erase_target_aware_return<return_t, normal_sign_t...>&>(*m_erased_target);
         }
 
     protected:

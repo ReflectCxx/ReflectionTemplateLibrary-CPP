@@ -17,13 +17,13 @@
 
 namespace rtl
 {
-    template<class record_t, class ...signature_t> requires (!std::is_same_v<record_t, RObject>)
-    struct method<record_t, Return(signature_t...)>
+    template<class ...signature_t>
+    struct method<RObject, Return(signature_t...)>
     {
         struct invoker
         {
-            const record_t& target;
-            const method<record_t, Return(signature_t...)>& fn;
+            const RObject& target;
+            const method<RObject, Return(signature_t...)>& fn;
 
             template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
@@ -57,8 +57,8 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const record_t& target;
-            const method<record_t, Return(signature_t...)>& fn;
+            const RObject& target;
+            const method<RObject, Return(signature_t...)>& fn;
 
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
@@ -95,23 +95,23 @@ namespace rtl
             }
         };
 
-        constexpr invoker operator()(record_t& p_target) const noexcept {
+        constexpr invoker operator()(RObject& p_target) const noexcept {
             return invoker{ p_target, *this };
         }
 
-        constexpr invoker operator()(record_t&& p_target) const noexcept {
+        constexpr invoker operator()(RObject&& p_target) const noexcept {
             return invoker{ p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(record_t& p_target) const noexcept {
+        constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
             return perfect_fwd<args_t...>{ p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(record_t&& p_target) const noexcept {
+        constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
             return perfect_fwd<args_t...>{ p_target, *this };
         }
 
@@ -133,9 +133,9 @@ namespace rtl
 
     private:
 
-        using lambda_vt = std::function<void(const dispatch::lambda_base&, const record_t&, signature_t...)>;
+        using lambda_vt = std::function<void(const dispatch::lambda_base&, const RObject&, signature_t...)>;
 
-        using lambda_rt = std::function<std::any(const dispatch::lambda_base&, const record_t&, signature_t...)>;
+        using lambda_rt = std::function<std::any(const dispatch::lambda_base&, const RObject&, signature_t...)>;
 
         std::vector<lambda_rt> m_rhop = {};
 

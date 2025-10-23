@@ -18,6 +18,7 @@
 namespace rtl
 {
     template<class record_t, class return_t, class... signature_t>
+    requires (!std::is_same_v<record_t, RObject> || !std::is_same_v<return_t, Return>)
     struct method<record_t, return_t(signature_t...)>
     {
         using fptr_t = return_t (record_t::*)(signature_t...);

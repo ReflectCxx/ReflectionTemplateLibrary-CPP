@@ -106,7 +106,7 @@ namespace rtl::detail
         {            
             if (!fnMeta.is_empty())
             {
-                auto& erasedRetFn = fnMeta.get_erased_lambda()
+                auto& erasedRetFn = fnMeta.get_erasure_base()
                                           .template to_erased_return<traits::normal_sign_t<args_t>...>();
                 if (fnMeta.is_void()) {
                     isReturnTvoid = true;

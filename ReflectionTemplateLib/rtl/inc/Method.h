@@ -60,7 +60,7 @@ namespace rtl {
         template<class ...signatureT>
         constexpr const detail::HopFunction<signatureT...> argsT() const = delete;
 
-        template<class recT, class ...signatureT>
+        template<class recT = RObject, class ...signatureT>
         constexpr detail::Hopper<recT> targetT() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
@@ -82,10 +82,10 @@ namespace rtl {
         friend Record;
         friend detail::CxxReflection;
 
-        template<class ...>
+        template<class...>
         friend struct detail::DefaultInvoker;
 
-        template<class ...>
+        template<class...>
         friend struct detail::NonConstInvoker;
 
         template<class>

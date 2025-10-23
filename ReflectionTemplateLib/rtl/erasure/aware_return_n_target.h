@@ -80,7 +80,7 @@ namespace rtl::dispatch
                 if constexpr (is_void)
                 {
                     auto mptr = lambda.template to_method<record_t, signature_t...>()
-                        .template get_functor<void>();
+                                      .template get_functor<void>();
 
                     const auto& target = p_target.view<record_t>()->get();
 

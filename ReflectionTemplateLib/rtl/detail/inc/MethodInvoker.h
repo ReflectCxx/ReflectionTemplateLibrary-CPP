@@ -104,12 +104,20 @@ namespace rtl::detail
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
         template<class return_t = rtl::Return>
-        requires (!std::is_same_v<return_t, rtl::Return>)
-        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+        requires (std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<rtl::RObject, rtl::Return(signature_t...)> returnT() const;
 
         template<class return_t = rtl::Return>
-        requires (std::is_same_v<return_t, rtl::Return>)
+        requires (std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<rtl::RObject, return_t(signature_t...)> returnT() const;
+
+        template<class return_t = rtl::Return>
+        requires (!std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>)
         constexpr const method<record_t, rtl::Return(signature_t...)> returnT() const;
+        
+        template<class return_t>
+        requires (!std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>)
+        constexpr const method<record_t, return_t(signature_t...)> returnT() const;    
     };
 
     template<class record_t>

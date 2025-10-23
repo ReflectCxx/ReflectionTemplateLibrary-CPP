@@ -31,6 +31,6 @@ namespace rtl::dispatch
     erasure_base::to_erased_target_aware_return() const
     {
         auto& erased_record = static_cast<const erase_return_n_target<signature_t...>&>(*this);
-        return erased_record.template to_erased_record<return_t>();
+        return erased_record.template to_erased_target<return_t>();
     }
 }

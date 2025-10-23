@@ -17,39 +17,36 @@
 
 namespace rtl
 {
-    template<class record_t, class ...signature_t> requires (!std::is_same_v<record_t, RObject>)
-    struct method<record_t, Return(signature_t...)>
+    template<class return_t, class ...signature_t> requires (!std::is_same_v<return_t, Return>)
+    struct method<RObject, return_t(signature_t...)>
     {
         struct invoker
         {
-            const record_t& target;
-            const method<record_t, Return(signature_t...)>& fn;
+            const RObject& target;
+            const method<RObject, return_t(signature_t...)>& fn;
 
             template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-            constexpr Return operator()(args_t&&...params) const noexcept
+            constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
             {
                 if (!fn) [[unlikely]] {
-                    return { error::InvalidCaller, RObject{} };
+                    return { error::InvalidCaller, std::nullopt };
                 }
 
                 if (fn.must_bind_refs()) [[unlikely]] {
-                    return { error::ExplicitRefBindingRequired, RObject{} };
+                    return { error::ExplicitRefBindingRequired, std::nullopt };
                 }
 
                 auto index = (fn.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
                 if (fn.m_lambdas[index]->is_void())
                 {
                     fn.m_vhop[index] (*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...);
-                    return { error::None, RObject{} };
+                    return { error::None, std::nullopt };
                 }
                 else
                 {
-                    return { error::None,
-                             RObject{ fn.m_rhop[index] (*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...),
-                                      fn.m_lambdas.back()->get_return_id(), nullptr
-                             }
-                    };
+                    auto&& ret_v = fn.m_rhop[index](*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...);
+                    return { error::None, std::optional<return_t>(std::move(ret_v)) };
                 }
             }
         };
@@ -57,15 +54,15 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const record_t& target;
-            const method<record_t, Return(signature_t...)>& fn;
+            const RObject& target;
+            const method<RObject, return_t(signature_t...)>& fn;
 
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-            constexpr Return operator()(args_t&&...params) const noexcept
+            constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
             {
                 if (!fn) [[unlikely]] {
-                    return { error::InvalidCaller, RObject{} };
+                    return { error::InvalidCaller, std::nullopt };
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
@@ -78,40 +75,37 @@ namespace rtl
                             if (fn.m_lambdas[index]->is_void())
                             {
                                 fn.m_vhop[index] (*fn.m_lambdas[index], target, std::forward<args_t>(params)...);
-                                return { error::None, RObject{} };
+                                return { error::None, std::nullopt };
                             }
                             else
                             {
-                                return { error::None,
-                                         RObject{ fn.m_rhop[index] (*fn.m_lambdas[index], target, std::forward<args_t>(params)...),
-                                                  fn.m_lambdas.back()->get_return_id(), nullptr
-                                         }
-                                };
+                                auto&& ret_v = fn.m_rhop[index](*fn.m_lambdas[index], target, std::forward<args_t>(params)...);
+                                return { error::None, std::optional<return_t>(std::move(ret_v)) };
                             }
                         }
                     }
                 }
-                return { error::RefBindingMismatch, RObject{} };
+                return { error::RefBindingMismatch, std::nullopt };
             }
         };
 
-        constexpr invoker operator()(record_t& p_target) const noexcept {
-            return invoker{ p_target, *this };
+        constexpr invoker operator()() const noexcept {
+            return invoker{ RObject{}, *this };
         }
 
-        constexpr invoker operator()(record_t&& p_target) const noexcept {
+        constexpr invoker operator()(const RObject& p_target) const noexcept {
             return invoker{ p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(record_t& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ p_target, *this };
+        constexpr const perfect_fwd<args_t...> bind() const noexcept {
+            return perfect_fwd<args_t...>{ RObject{}, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(record_t&& p_target) const noexcept {
+        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
             return perfect_fwd<args_t...>{ p_target, *this };
         }
 
@@ -133,9 +127,9 @@ namespace rtl
 
     private:
 
-        using lambda_vt = std::function<void(const dispatch::lambda_base&, const record_t&, signature_t...)>;
+        using lambda_vt = std::function<void(const dispatch::lambda_base&, const RObject&, signature_t...)>;
 
-        using lambda_rt = std::function<std::any(const dispatch::lambda_base&, const record_t&, signature_t...)>;
+        using lambda_rt = std::function<return_t(const dispatch::lambda_base&, const RObject&, signature_t...)>;
 
         std::vector<lambda_rt> m_rhop = {};
 
