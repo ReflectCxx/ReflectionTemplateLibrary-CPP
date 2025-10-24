@@ -159,8 +159,7 @@ namespace rtl::detail
 namespace rtl::detail
 {
     template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (!std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>)
+    template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
     inline constexpr const
     method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
@@ -176,8 +175,7 @@ namespace rtl::detail
 
 
     template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>)
+    template<class return_t> requires (traits::type_erased_v<record_t, return_t>)
     inline constexpr const
     method<RObject, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
@@ -216,8 +214,7 @@ namespace rtl::detail
 
 
     template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>)
+    template<class return_t> requires (traits::target_erased_v<record_t, return_t>)
     inline constexpr const
     method<RObject, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
@@ -256,8 +253,7 @@ namespace rtl::detail
 
 
     template<class record_t, class ...args_t>
-    template<class return_t>
-    requires (!std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>)
+    template<class return_t> requires (traits::return_erased_v<record_t, return_t>)
     inline constexpr const
     method<record_t, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {

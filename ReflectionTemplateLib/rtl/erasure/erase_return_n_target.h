@@ -28,13 +28,13 @@ namespace rtl::dispatch
         GETTER_CREF(lambda_rt, _return_hopper, m_rhopper)
 
         template<class record_t>
-        const erase_return_aware_target<record_t, normal_sign_t...>& to_erased_return() const
+        constexpr const erase_return_aware_target<record_t, normal_sign_t...>& to_erased_return() const
         {
             return static_cast<const erase_return_aware_target<record_t, normal_sign_t...>&>(*m_erased_return);
         }
 
         template<class return_t>
-        const erase_target_aware_return<return_t, normal_sign_t...>& to_erased_target() const
+        constexpr const erase_target_aware_return<return_t, normal_sign_t...>& to_erased_target() const
         {
             return static_cast<const erase_target_aware_return<return_t, normal_sign_t...>&>(*m_erased_target);
         }

@@ -185,4 +185,17 @@ namespace rtl::traits
     template<class T>
     inline constexpr bool is_nonconst_ref_v = ((std::is_lvalue_reference_v<T> || std::is_rvalue_reference_v<T>) &&
                                                !std::is_const_v<std::remove_reference_t<T>>);
+    
+    template<class recordT, class returnT>
+    constexpr static const bool type_aware_v = (!std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+
+    template<class recordT, class returnT>
+    constexpr static const bool return_erased_v = (!std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
+
+    template<class recordT, class returnT>
+    constexpr static const bool target_erased_v = (std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+
+    template<class recordT, class returnT>
+    constexpr static const bool type_erased_v = (std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
+
 }

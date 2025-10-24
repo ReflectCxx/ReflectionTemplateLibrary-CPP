@@ -29,10 +29,10 @@ namespace rtl
     }
 
 
-    template<class recT, class ...signatureT>
-    inline constexpr detail::Hopper<recT> Method::targetT() const
+    template<class recordT, class ...signatureT>
+    inline constexpr detail::Hopper<recordT> Method::targetT() const
     {
-        return detail::Hopper<recT>{ getFunctorsMeta() };
+        return detail::Hopper<recordT>{ getFunctorsMeta() };
     }
 
 
