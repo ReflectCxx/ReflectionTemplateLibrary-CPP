@@ -2,21 +2,33 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlErasedReturnType_call
+namespace bm_rtl
 {
-    static void returnVoid(benchmark::State& state);
+    struct function_ErasedReturnType
+    {
+        static void set_string(benchmark::State& state);
 
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
 
+    struct method___ErasedReturnType
+    {
+        static void set_string(benchmark::State& state);
 
-struct RtlErasedReturnType_callMethod
-{    
-    static void returnVoid(benchmark::State& state);
+        static void get_string(benchmark::State& state);
+    };
 
-    static void returnNonVoid(benchmark::State& state);
+    struct method___ErasedTargetType
+    {
+        static void set_string(benchmark::State& state);
 
-    static void unknownTarget_returnVoid(benchmark::State& state);
+        static void get_string(benchmark::State& state);
+    };
 
-    static void unknownTarget_returnNonVoid(benchmark::State& state);
-};
+    struct method___ErasedTargetAndReturnType
+    {
+        static void set_string(benchmark::State& state);
+
+        static void get_string(benchmark::State& state);
+    };
+}

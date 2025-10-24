@@ -2,25 +2,30 @@
 
 #include <benchmark/benchmark.h>
 
-struct NativeCall
+namespace bm_call
 {
-    static void returnVoid(benchmark::State& state);
-    
-    static void returnNonVoid(benchmark::State& state);
-};
+    struct direct_Function
+    {
+        static void set_string(benchmark::State& state);
 
+        static void get_string(benchmark::State& state);
+    };
+}
 
-struct StdFunction_call
+namespace bm_std
 {
-    static void returnVoid(benchmark::State& state);
+    struct function_CallsFunction
+    {
+        static void set_string(benchmark::State& state);
 
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
 
 
-struct StdFunction_callMethod
-{    
-    static void returnVoid(benchmark::State& state);
+    struct function___CallsMethod
+    {
+        static void set_string(benchmark::State& state);
 
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
+}

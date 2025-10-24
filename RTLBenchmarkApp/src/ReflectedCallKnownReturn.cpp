@@ -95,88 +95,93 @@ namespace
 }
 
 
-void NativeFunctionPtr_call::returnNonVoid(benchmark::State& state)
+namespace bm_call
 {
-    static auto _=_new_line();
-    static auto is_ok = test(getMessage, 0);
-    for (auto _ : state)
+    void by_FunctionPtr_Function::get_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize((getMessage.f_ptr())(bm::g_longStr));
+        static auto _ = _new_line();
+        static auto is_ok = test(getMessage, 0);
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize((getMessage.f_ptr())(bm::g_longStr));
+        }
+    }
+
+    void by_FunctionPtr___Method::get_string(benchmark::State& state)
+    {
+        static bm::Node nodeObj;
+        static auto is_ok = test(getMessageNode, 1);
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize((nodeObj.*getMessageNode.f_ptr())(bm::g_longStr));
+        }
+    }
+
+    void by_FunctionPtr_Function::set_string(benchmark::State& state)
+    {
+        static auto _ = _new_line();
+        static auto is_ok = test(sendMessage, 2);
+        for (auto _ : state)
+        {
+            (sendMessage.f_ptr())(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
+    }
+
+    void by_FunctionPtr___Method::set_string(benchmark::State& state)
+    {
+        static bm::Node nodeObj;
+        static auto is_ok = test(getMessageNode, 2);
+        for (auto _ : state)
+        {
+            (nodeObj.*sendMessageNode.f_ptr())(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
     }
 }
 
-void NativeFunctionPtr_callMethod::returnNonVoid(benchmark::State& state)
+
+namespace bm_rtl
 {
-    static bm::Node nodeObj;
-    static auto is_ok = test(getMessageNode, 1);
-    for (auto _ : state)
+    void function_CallsFunction::get_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize((nodeObj.*getMessageNode.f_ptr())(bm::g_longStr));
+        static auto _ = _new_line();
+        static auto is_ok = test(getMessage, 3);
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(getMessage(bm::g_longStr));
+        }
     }
-}
 
-void NativeFunctionPtr_call::returnVoid(benchmark::State& state)
-{
-    static auto _ = _new_line();
-    static auto is_ok = test(sendMessage, 2);
-    for (auto _ : state)
+    void function_CallsFunction::set_string(benchmark::State& state)
     {
-        (sendMessage.f_ptr())(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        static auto _ = _new_line();
+        static auto is_ok = test(sendMessage, 0);
+        for (auto _ : state)
+        {
+            sendMessage(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
     }
-}
 
-void NativeFunctionPtr_callMethod::returnVoid(benchmark::State& state)
-{
-    static bm::Node nodeObj;
-    static auto is_ok = test(getMessageNode, 2);
-    for (auto _ : state)
+    void method_____CallsMethod::get_string(benchmark::State& state)
     {
-        (nodeObj.*sendMessageNode.f_ptr())(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        static bm::Node nodeObj;
+        static auto is_ok = test(getMessageNode, 4);
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(getMessageNode(nodeObj)(bm::g_longStr));
+        }
     }
-}
 
-
-
-void RtlStaticTyped_call::returnNonVoid(benchmark::State &state)
-{
-    static auto _ = _new_line();
-    static auto is_ok = test(getMessage, 3);
-    for (auto _ : state)
+    void method_____CallsMethod::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(getMessage(bm::g_longStr));
-    }
-}
-
-void RtlStaticTyped_callMethod::returnNonVoid(benchmark::State& state)
-{
-    static bm::Node nodeObj;
-    static auto is_ok = test(getMessageNode, 4);
-    for (auto _ : state)
-    {
-        benchmark::DoNotOptimize(getMessageNode(nodeObj)(bm::g_longStr));
-    }
-}
-
-void RtlStaticTyped_call::returnVoid(benchmark::State& state)
-{
-    static auto _ = _new_line();
-    static auto is_ok = test(sendMessage, 0);
-    for (auto _ : state)
-    {
-        sendMessage(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
-    }
-}
-
-void RtlStaticTyped_callMethod::returnVoid(benchmark::State& state)
-{
-    static bm::Node nodeObj;
-    static auto is_ok = test(sendMessageNode, 5);
-    for (auto _ : state)
-    {
-        sendMessageNode(nodeObj)(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        static bm::Node nodeObj;
+        static auto is_ok = test(sendMessageNode, 5);
+        for (auto _ : state)
+        {
+            sendMessageNode(nodeObj)(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
     }
 }

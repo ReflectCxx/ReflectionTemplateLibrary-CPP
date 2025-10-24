@@ -6,35 +6,37 @@
 #include "ReflectedCallKnownReturn.h"
 #include "ReflectedCallUnknownReturn.h"
 
-BENCHMARK(NativeCall::returnVoid);
+BENCHMARK(bm_call::direct_Function::set_string);
 
-BENCHMARK(NativeFunctionPtr_call::returnVoid);
-BENCHMARK(NativeFunctionPtr_callMethod::returnVoid);
+BENCHMARK(bm_call::by_FunctionPtr_Function::set_string);
+BENCHMARK(bm_call::by_FunctionPtr___Method::set_string);
 
-BENCHMARK(StdFunction_call::returnVoid);
-BENCHMARK(StdFunction_callMethod::returnVoid);
+BENCHMARK(bm_std::function_CallsFunction::set_string);
+BENCHMARK(bm_std::function___CallsMethod::set_string);
 
-BENCHMARK(RtlStaticTyped_call::returnVoid);
-BENCHMARK(RtlStaticTyped_callMethod::returnVoid);
+BENCHMARK(bm_rtl::function_CallsFunction::set_string);
+BENCHMARK(bm_rtl::method_____CallsMethod::set_string);
 
-BENCHMARK(RtlErasedReturnType_call::returnVoid);
-BENCHMARK(RtlErasedReturnType_callMethod::returnVoid);
-BENCHMARK(RtlErasedReturnType_callMethod::unknownTarget_returnVoid);
+BENCHMARK(bm_rtl::function_ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method___ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method___ErasedTargetType::set_string);
+BENCHMARK(bm_rtl::method___ErasedTargetAndReturnType::set_string);
 
-BENCHMARK(NativeCall::returnNonVoid);
+BENCHMARK(bm_call::direct_Function::get_string);
 
-BENCHMARK(NativeFunctionPtr_call::returnNonVoid);
-BENCHMARK(NativeFunctionPtr_callMethod::returnNonVoid);
+BENCHMARK(bm_call::by_FunctionPtr_Function::get_string);
+BENCHMARK(bm_call::by_FunctionPtr___Method::get_string);
 
-BENCHMARK(StdFunction_call::returnNonVoid);
-BENCHMARK(StdFunction_callMethod::returnNonVoid);
+BENCHMARK(bm_std::function_CallsFunction::get_string);
+BENCHMARK(bm_std::function___CallsMethod::get_string);
 
-BENCHMARK(RtlStaticTyped_call::returnNonVoid);
-BENCHMARK(RtlStaticTyped_callMethod::returnNonVoid);
+BENCHMARK(bm_rtl::function_CallsFunction::get_string);
+BENCHMARK(bm_rtl::method_____CallsMethod::get_string);
 
-BENCHMARK(RtlErasedReturnType_call::returnNonVoid);
-BENCHMARK(RtlErasedReturnType_callMethod::returnNonVoid);
-BENCHMARK(RtlErasedReturnType_callMethod::unknownTarget_returnNonVoid);
+BENCHMARK(bm_rtl::function_ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method___ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method___ErasedTargetType::get_string);
+BENCHMARK(bm_rtl::method___ErasedTargetAndReturnType::get_string);
 
 namespace bm 
 {

@@ -226,6 +226,24 @@ namespace
         return 0;
     };
 
+    static auto _test6 = []()
+    {
+        auto [err, returnOpt] = ErasedTargetAwareReturn_SendMessage(nodeObj)(bm::g_longStr);
+        if (err != rtl::error::None) {
+            std::cerr << "[06] error: " << rtl::to_string(err) << "\n";
+        }
+        return 0;
+    };
+
+    static auto _test7 = []()
+    {
+        auto [err, returnOpt] = ErasedTargetAwareReturn_SendMessage(nodeObj)(bm::g_longStr);
+        if (err != rtl::error::None) {
+            std::cerr << "[07] error: " << rtl::to_string(err) << "\n";
+        }
+        return 0;
+    };
+
     static auto _new_line = []() {
         std::cerr << std::endl;
         return 0;
@@ -233,66 +251,89 @@ namespace
 }
 
 
-
-void RtlErasedReturnType_call::returnVoid(benchmark::State& state)
+namespace bm_rtl
 {
-    static auto __= _new_line();
-    static auto _ = _test0();
-    for (auto _ : state) 
+    void function_ErasedReturnType::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnFn_SendMessage(bm::g_longStr).err);
+        static auto __ = _new_line();
+        static auto _ = _test0();
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnFn_SendMessage(bm::g_longStr).err);
+        }
+    }
+
+    void function_ErasedReturnType::get_string(benchmark::State& state)
+    {
+        static auto __ = _new_line();
+        static auto _ = _test1();
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnFn_GetMessage(bm::g_longStr).err);
+        }
     }
 }
 
 
-void RtlErasedReturnType_call::returnNonVoid(benchmark::State& state)
+namespace bm_rtl
 {
-    static auto __= _new_line();
-    static auto _ = _test1();
-    for (auto _ : state)
+    void method___ErasedReturnType::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnFn_GetMessage(bm::g_longStr).err);
+        static auto _ = _test2();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnAwareTarget_SendMessage(node)(bm::g_longStr));
+        }
     }
-}
 
-
-void RtlErasedReturnType_callMethod::returnVoid(benchmark::State& state)
-{
-    static auto _ = _test2();
-    static bm::Node node;
-    for (auto _ : state)
+    void method___ErasedReturnType::get_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnAwareTarget_SendMessage(node)(bm::g_longStr).err);
+        static auto _ = _test3();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnAwareTarget_GetMessage(node)(bm::g_longStr));
+        }
     }
-}
 
-
-void RtlErasedReturnType_callMethod::returnNonVoid(benchmark::State& state)
-{
-    static auto _ = _test3();
-    static bm::Node node;
-    for (auto _ : state)
+    void method___ErasedTargetType::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnAwareTarget_GetMessage(node)(bm::g_longStr).err);
+        static auto _ = _test2();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedTargetAwareReturn_SendMessage(nodeObj)(bm::g_longStr));
+        }
     }
-}
 
-
-void RtlErasedReturnType_callMethod::unknownTarget_returnVoid(benchmark::State& state)
-{
-    static auto _ = _test4();
-    for (auto _ : state)
+    void method___ErasedTargetType::get_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnAndTarget_SendMessage(nodeObj)(bm::g_longStr).err);
+        static auto _ = _test3();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedTargetAwareReturn_GetMessage(nodeObj)(bm::g_longStr));
+        }
     }
-}
 
-
-void RtlErasedReturnType_callMethod::unknownTarget_returnNonVoid(benchmark::State& state)
-{
-    static auto _ = _test5();
-    for (auto _ : state)
+    void method___ErasedTargetAndReturnType::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(ErasedReturnAndTarget_GetMessage(nodeObj)(bm::g_longStr).err);
+        static auto _ = _test2();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnAndTarget_SendMessage(nodeObj)(bm::g_longStr));
+        }
+    }
+
+    void method___ErasedTargetAndReturnType::get_string(benchmark::State& state)
+    {
+        static auto _ = _test3();
+        static bm::Node node;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(ErasedReturnAndTarget_GetMessage(nodeObj)(bm::g_longStr));
+        }
     }
 }

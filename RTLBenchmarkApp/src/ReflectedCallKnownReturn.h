@@ -2,33 +2,36 @@
 
 #include <benchmark/benchmark.h>
 
-struct RtlStaticTyped_call
+namespace bm_call
 {
-    static void returnVoid(benchmark::State& state);
+    struct by_FunctionPtr_Function
+    {
+        static void set_string(benchmark::State& state);
 
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
 
+    struct by_FunctionPtr___Method
+    {
+        static void set_string(benchmark::State& state);
 
-struct NativeFunctionPtr_call
+        static void get_string(benchmark::State& state);
+    };
+}
+
+namespace bm_rtl
 {
-    static void returnVoid(benchmark::State& state);
+    struct function_CallsFunction
+    {
+        static void set_string(benchmark::State& state);
 
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
 
+    struct method_____CallsMethod
+    {
+        static void set_string(benchmark::State& state);
 
-struct NativeFunctionPtr_callMethod
-{
-    static void returnVoid(benchmark::State& state);
-
-    static void returnNonVoid(benchmark::State& state);
-};
-
-
-struct RtlStaticTyped_callMethod
-{
-    static void returnVoid(benchmark::State& state);
-
-    static void returnNonVoid(benchmark::State& state);
-};
+        static void get_string(benchmark::State& state);
+    };
+}

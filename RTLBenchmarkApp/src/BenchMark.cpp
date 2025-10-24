@@ -35,7 +35,7 @@ namespace bm
 
     retStr_t getMessage(argStr_t pMsg) noexcept
     {
-        retStr_t retStr;
+        retStr_t retStr = g_work_done->c_str();
         if(g_work_load){
             g_work_done = perform_work(pMsg);
             retStr = g_work_done->c_str();
@@ -45,7 +45,7 @@ namespace bm
 
     retStr_t Node::getMessage(argStr_t pMsg) noexcept
     {
-        retStr_t retStr;
+        retStr_t retStr = g_work_done->c_str();
         if(g_work_load){
             g_work_done = perform_work(pMsg);
             retStr = g_work_done->c_str();
