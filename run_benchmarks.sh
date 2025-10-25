@@ -31,28 +31,28 @@ run_benchmark() {
 # ---------------------------
 # Phase 1: Baseline runs (scale 0, 10 reps)
 # ---------------------------
-run_benchmark 0 10
+run_benchmark 0 5
 
 # ---------------------------
 # Phase 2: Scales 1 → 50
 # ---------------------------
 SCALES_PHASE2=(1 5 10 15 20 25 30 35 40 45 50)
 for SCALE in "${SCALES_PHASE2[@]}"; do
-    run_benchmark "$SCALE" 5
+    run_benchmark "$SCALE" 3
 done
 
 # ---------------------------
 # Phase 3: Scales 58 → 90 (step 8)
 # ---------------------------
 for SCALE in $(seq 58 8 90); do
-    run_benchmark "$SCALE" 5
+    run_benchmark "$SCALE" 3
 done
 
 # ---------------------------
 # Phase 4: Final higher scales
 # ---------------------------
 for SCALE in 100 120 150; do
-    run_benchmark "$SCALE" 5
+    run_benchmark "$SCALE" 3
 done
 
 echo "All benchmarks completed." | tee -a "$LOGFILE"
