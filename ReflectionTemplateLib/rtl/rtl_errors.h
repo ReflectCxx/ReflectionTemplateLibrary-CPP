@@ -26,6 +26,7 @@ namespace rtl
         SignatureMismatch,
         RefBindingMismatch,
         ExplicitRefBindingRequired,
+        NonStaticMethodRequiresTarget,
 
         CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type.
         FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.

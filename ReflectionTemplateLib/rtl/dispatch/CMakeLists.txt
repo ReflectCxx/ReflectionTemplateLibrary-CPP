@@ -22,9 +22,9 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const_erased.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const_erased_return.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const_erased_target.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_const.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_return_const.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target_const.h"
 )
 
 target_sources(ReflectionTemplateLib PRIVATE ${LOCAL_HEADERS})
