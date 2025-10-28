@@ -43,7 +43,7 @@ namespace rtl
 		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_signId)
 		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_signId)
 		
-		GETTER(detail::methodQ, _method_qual, m_functor->get().m_qualifier)
+		GETTER(detail::member, _method_qual, m_functor->get().m_qualifier)
 		
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
 		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))

@@ -4,28 +4,28 @@
 
 namespace bm_rtl
 {
-    struct function_ErasedReturnType
+    struct function__ErasedReturnType
     {
         static void set_string(benchmark::State& state);
 
         static void get_string(benchmark::State& state);
     };
 
-    struct method___ErasedReturnType
+    struct method____ErasedReturnType
     {
         static void set_string(benchmark::State& state);
 
         static void get_string(benchmark::State& state);
     };
 
-    struct method___ErasedTargetType
+    struct method____ErasedTargetType
     {
         static void set_string(benchmark::State& state);
 
         static void get_string(benchmark::State& state);
     };
 
-    struct method___ErasedTargetAndReturnType
+    struct method____ErasedTargetAndReturnType
     {
         static void set_string(benchmark::State& state);
 

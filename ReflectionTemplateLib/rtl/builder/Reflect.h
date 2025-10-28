@@ -43,7 +43,7 @@ namespace rtl
         constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass);
 
         template<class ..._signature>
-        constexpr const builder::Builder<detail::methodQ::None, _signature...> function(const std::string_view pFunction);
+        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string_view pFunction);
 
     private:
 
@@ -79,7 +79,7 @@ namespace rtl
         }
 
         template<class ..._signature>
-        constexpr const builder::Builder<detail::methodQ::None, _signature...> function(const std::string_view pFunction) 
+        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string_view pFunction) 
         {
             constexpr bool hasConstRValueRef = ((std::is_const_v<std::remove_reference_t<_signature>> && std::is_rvalue_reference_v<_signature>) || ...);
             static_assert(!hasConstRValueRef, "Registration of functions with 'const T&&' parameters is not allowed.");

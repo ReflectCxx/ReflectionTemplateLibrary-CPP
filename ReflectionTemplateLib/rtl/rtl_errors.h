@@ -28,7 +28,7 @@ namespace rtl
         ExplicitRefBindingRequired,
         NonStaticMethodRequiresTarget,
 
-        CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type.
+        CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type returnd from a function.
         FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.
 
         IllegalConstCast,

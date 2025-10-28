@@ -46,20 +46,20 @@ namespace rtl {
     */  template<class _recordType>
         struct MethodBuilder
         {
-            const Builder<detail::methodQ::NonConst> method(const std::string_view pFunction) const;
+            const Builder<detail::member::NonConst> method(const std::string_view pFunction) const;
 
-            const Builder<detail::methodQ::Const> methodConst(const std::string_view pFunction) const;
+            const Builder<detail::member::Const> methodConst(const std::string_view pFunction) const;
 
-            const Builder<detail::methodQ::None> methodStatic(const std::string_view pFunction) const;
-
-            template<class ..._signature>
-            const Builder<detail::methodQ::NonConst, _signature...> method(const std::string_view pFunction) const;
+            const Builder<detail::member::None> methodStatic(const std::string_view pFunction) const;
 
             template<class ..._signature>
-            const Builder<detail::methodQ::Const, _signature...> methodConst(const std::string_view pFunction) const;
+            const Builder<detail::member::NonConst, _signature...> method(const std::string_view pFunction) const;
 
             template<class ..._signature>
-            const Builder<detail::methodQ::None, _signature...> methodStatic(const std::string_view pFunction) const;
+            const Builder<detail::member::Const, _signature...> methodConst(const std::string_view pFunction) const;
+
+            template<class ..._signature>
+            const Builder<detail::member::None, _signature...> methodStatic(const std::string_view pFunction) const;
 
             template<class ..._signature>
             constexpr const ConstructorBuilder<_recordType, traits::remove_cref_t<_signature>...> constructor() const;

@@ -253,7 +253,7 @@ namespace
 
 namespace bm_rtl
 {
-    void function_ErasedReturnType::set_string(benchmark::State& state)
+    void function__ErasedReturnType::set_string(benchmark::State& state)
     {
         static auto __ = _new_line();
         static auto _ = _test0();
@@ -263,7 +263,7 @@ namespace bm_rtl
         }
     }
 
-    void function_ErasedReturnType::get_string(benchmark::State& state)
+    void function__ErasedReturnType::get_string(benchmark::State& state)
     {
         static auto __ = _new_line();
         static auto _ = _test1();
@@ -277,7 +277,7 @@ namespace bm_rtl
 
 namespace bm_rtl
 {
-    void method___ErasedReturnType::set_string(benchmark::State& state)
+    void method____ErasedReturnType::set_string(benchmark::State& state)
     {
         static auto _ = _test2();
         static bm::Node node;
@@ -287,7 +287,7 @@ namespace bm_rtl
         }
     }
 
-    void method___ErasedReturnType::get_string(benchmark::State& state)
+    void method____ErasedReturnType::get_string(benchmark::State& state)
     {
         static auto _ = _test3();
         static bm::Node node;
@@ -297,7 +297,7 @@ namespace bm_rtl
         }
     }
 
-    void method___ErasedTargetType::set_string(benchmark::State& state)
+    void method____ErasedTargetType::set_string(benchmark::State& state)
     {
         static auto _ = _test2();
         static bm::Node node;
@@ -307,7 +307,7 @@ namespace bm_rtl
         }
     }
 
-    void method___ErasedTargetType::get_string(benchmark::State& state)
+    void method____ErasedTargetType::get_string(benchmark::State& state)
     {
         static auto _ = _test3();
         static bm::Node node;
@@ -317,7 +317,7 @@ namespace bm_rtl
         }
     }
 
-    void method___ErasedTargetAndReturnType::set_string(benchmark::State& state)
+    void method____ErasedTargetAndReturnType::set_string(benchmark::State& state)
     {
         static auto _ = _test2();
         static bm::Node node;
@@ -327,7 +327,7 @@ namespace bm_rtl
         }
     }
 
-    void method___ErasedTargetAndReturnType::get_string(benchmark::State& state)
+    void method____ErasedTargetAndReturnType::get_string(benchmark::State& state)
     {
         static auto _ = _test3();
         static bm::Node node;

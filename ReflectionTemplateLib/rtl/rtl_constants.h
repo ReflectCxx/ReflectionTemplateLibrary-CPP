@@ -128,11 +128,12 @@ namespace rtl::detail
 
 
     // MethodQ: Method qualifier + static marker.
-    enum class methodQ
+    enum class member
     {
-        None = 0,   // Static method (no const/non-const qualifier)
+        None = 0,   // non-member functions.
         Const,      // Const-qualified instance method
-        NonConst    // Non-const instance method
+        NonConst,   // Non-const instance method
+        Static      // Static methods
     };
 
     constexpr const std::string_view NAMESPACE_GLOBAL = "global";
@@ -142,9 +143,9 @@ namespace rtl::detail
         return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }
 
-#define GETTER(_varType, _name, _var)                       \
+#define GETTER(_varType, _name, _var)                      \
     inline constexpr const _varType get##_name() const {   \
-        return _var;                                        \
+        return _var;                                       \
     }
 
 #define GETTER_REF_C(_varType, _name, _var)           \

@@ -49,8 +49,8 @@ namespace rtl {
         /*  @method: build()
             @param: none
             @return: 'Function' object.
-            * constructs temparory object of class Builder<detail::methodQ::NonConst> with given class/struct, namespace name & constructor type.
-            * forwards the call to Builder<detail::methodQ::NonConst>::build().
+            * constructs temparory object of class Builder<detail::member::NonConst> with given class/struct, namespace name & constructor type.
+            * forwards the call to Builder<detail::member::NonConst>::build().
         */  const Function build() const
             {
                 // Check if the constructor is not deleted and publicly accessible (excluding default constructor).

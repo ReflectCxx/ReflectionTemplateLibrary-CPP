@@ -34,8 +34,8 @@ namespace rtl {
     * perform call on the functor represented by this object.
 */  class Function
     {
-        //methodQ::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
-        detail::methodQ m_qualifier;
+        //member::Const/Mute represents the const/non-const member-function, Type::None for non-member & static-member functions.
+        detail::member m_qualifier;
 
         //type id of class/struct (if it represents a member-function, else always '0')
         std::size_t m_recordTypeId;
@@ -58,7 +58,7 @@ namespace rtl {
 
         Function(const std::string_view pNamespace, const std::string_view pClassName,
                  const std::string_view pFuncName, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                 const std::size_t pRecordTypeId, const detail::methodQ pQualifier);
+                 const std::size_t pRecordTypeId, const detail::member pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
@@ -75,7 +75,7 @@ namespace rtl {
 
         constexpr std::optional<type_meta> getLambdaByStrictId(const std::size_t pSignatureId) const;
 
-        GETTER(detail::methodQ, Qualifier, m_qualifier);
+        GETTER(detail::member, Qualifier, m_qualifier);
 
         GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 

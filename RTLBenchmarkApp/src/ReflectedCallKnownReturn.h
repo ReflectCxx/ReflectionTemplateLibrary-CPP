@@ -4,14 +4,14 @@
 
 namespace bm_call
 {
-    struct by_FunctionPtr_Function
+    struct via_function_ptr__Function
     {
         static void set_string(benchmark::State& state);
 
         static void get_string(benchmark::State& state);
     };
 
-    struct by_FunctionPtr___Method
+    struct via_function_ptr____Method
     {
         static void set_string(benchmark::State& state);
 
@@ -21,14 +21,14 @@ namespace bm_call
 
 namespace bm_rtl
 {
-    struct function_CallsFunction
+    struct function_calls__Function
     {
         static void set_string(benchmark::State& state);
 
         static void get_string(benchmark::State& state);
     };
 
-    struct method_____CallsMethod
+    struct method_calls______Method
     {
         static void set_string(benchmark::State& state);
 

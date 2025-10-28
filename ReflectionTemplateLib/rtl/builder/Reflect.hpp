@@ -40,14 +40,14 @@ namespace rtl
 
 /*  @function: function()
     @param: std::string (name of the function).
-    @return: Builder<detail::methodQ::None>
+    @return: Builder<detail::member::None>
     * registers only non-member functions.
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if member function pointer is passed.
 */  template<>
-    inline const builder::Builder<detail::methodQ::None> type_ns::function(const std::string_view pFunction)
+    inline const builder::Builder<detail::member::None> type_ns::function(const std::string_view pFunction)
     {
-        return builder::Builder<detail::methodQ::None>(detail::TypeId<>::None, pFunction, m_namespace);
+        return builder::Builder<detail::member::None>(detail::TypeId<>::None, pFunction, m_namespace);
     }
 
 		
@@ -66,15 +66,15 @@ namespace rtl
 		
 /*  @method: function<...>()
     @param: std::string (name of function)
-    @return: Builder<detail::methodQ::None, _signature...>
+    @return: Builder<detail::member::None, _signature...>
     * registers only non-member functions.
     * used for registering overloads, if unique member function, use non-templated version 'function()'.
     * template parameters must be explicitly specified, should be exactly same as the function being registered.
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if any member function pointer is passed.
 */  template<class ..._signature>
-    inline constexpr const builder::Builder<detail::methodQ::None, _signature...> type_ns::function(const std::string_view pFunction)
+    inline constexpr const builder::Builder<detail::member::None, _signature...> type_ns::function(const std::string_view pFunction)
     {
-        return builder::Builder<detail::methodQ::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
+        return builder::Builder<detail::member::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
     }
 }

@@ -6,37 +6,37 @@
 #include "ReflectedCallKnownReturn.h"
 #include "ReflectedCallUnknownReturn.h"
 
-BENCHMARK(bm_call::direct_Function::set_string);
+BENCHMARK(bm_call::direct__Function::set_string);
 
-BENCHMARK(bm_call::by_FunctionPtr_Function::set_string);
-BENCHMARK(bm_call::by_FunctionPtr___Method::set_string);
+BENCHMARK(bm_call::via_function_ptr__Function::set_string);
+BENCHMARK(bm_call::via_function_ptr____Method::set_string);
 
-BENCHMARK(bm_std::function_CallsFunction::set_string);
-BENCHMARK(bm_std::function___CallsMethod::set_string);
+BENCHMARK(bm_std::function_calls__Function::set_string);
+BENCHMARK(bm_std::function_calls____Method::set_string);
 
-BENCHMARK(bm_rtl::function_CallsFunction::set_string);
-BENCHMARK(bm_rtl::method_____CallsMethod::set_string);
+BENCHMARK(bm_rtl::function_calls__Function::set_string);
+BENCHMARK(bm_rtl::method_calls______Method::set_string);
 
-BENCHMARK(bm_rtl::function_ErasedReturnType::set_string);
-BENCHMARK(bm_rtl::method___ErasedReturnType::set_string);
-BENCHMARK(bm_rtl::method___ErasedTargetType::set_string);
-BENCHMARK(bm_rtl::method___ErasedTargetAndReturnType::set_string);
+BENCHMARK(bm_rtl::function__ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method____ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method____ErasedTargetType::set_string);
+BENCHMARK(bm_rtl::method____ErasedTargetAndReturnType::set_string);
 
-BENCHMARK(bm_call::direct_Function::get_string);
+BENCHMARK(bm_call::direct__Function::get_string);
 
-BENCHMARK(bm_call::by_FunctionPtr_Function::get_string);
-BENCHMARK(bm_call::by_FunctionPtr___Method::get_string);
+BENCHMARK(bm_call::via_function_ptr__Function::get_string);
+BENCHMARK(bm_call::via_function_ptr____Method::get_string);
 
-BENCHMARK(bm_std::function_CallsFunction::get_string);
-BENCHMARK(bm_std::function___CallsMethod::get_string);
+BENCHMARK(bm_std::function_calls__Function::get_string);
+BENCHMARK(bm_std::function_calls____Method::get_string);
 
-BENCHMARK(bm_rtl::function_CallsFunction::get_string);
-BENCHMARK(bm_rtl::method_____CallsMethod::get_string);
+BENCHMARK(bm_rtl::function_calls__Function::get_string);
+BENCHMARK(bm_rtl::method_calls______Method::get_string);
 
-BENCHMARK(bm_rtl::function_ErasedReturnType::get_string);
-BENCHMARK(bm_rtl::method___ErasedReturnType::get_string);
-BENCHMARK(bm_rtl::method___ErasedTargetType::get_string);
-BENCHMARK(bm_rtl::method___ErasedTargetAndReturnType::get_string);
+BENCHMARK(bm_rtl::function__ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method____ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method____ErasedTargetType::get_string);
+BENCHMARK(bm_rtl::method____ErasedTargetAndReturnType::get_string);
 
 namespace bm 
 {

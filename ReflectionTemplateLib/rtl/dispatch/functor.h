@@ -39,7 +39,7 @@ namespace rtl::dispatch
         bool m_is_any_arg_ncref = false;
         std::vector<std::size_t> m_argumentsId = {};
 
-        detail::methodQ m_qualifier = detail::methodQ::None;
+        detail::member m_qualifier = detail::member::None;
 
     private:
 

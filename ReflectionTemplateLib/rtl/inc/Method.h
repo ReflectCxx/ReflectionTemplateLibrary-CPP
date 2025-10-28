@@ -50,7 +50,7 @@ namespace rtl {
         Method& operator=(Method&&) = default;
         Method& operator=(const Method&) = default;
 
-        GETTER_BOOL(Const, (getQualifier() == detail::methodQ::Const));
+        GETTER_BOOL(Const, (getQualifier() == detail::member::Const));
 
         using Function::bind;
 

@@ -97,7 +97,7 @@ namespace
 
 namespace bm_call
 {
-    void by_FunctionPtr_Function::get_string(benchmark::State& state)
+    void via_function_ptr__Function::get_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         static auto is_ok = test(getMessage, 0);
@@ -107,7 +107,7 @@ namespace bm_call
         }
     }
 
-    void by_FunctionPtr___Method::get_string(benchmark::State& state)
+    void via_function_ptr____Method::get_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         static auto is_ok = test(getMessageNode, 1);
@@ -117,7 +117,7 @@ namespace bm_call
         }
     }
 
-    void by_FunctionPtr_Function::set_string(benchmark::State& state)
+    void via_function_ptr__Function::set_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         static auto is_ok = test(sendMessage, 2);
@@ -128,7 +128,7 @@ namespace bm_call
         }
     }
 
-    void by_FunctionPtr___Method::set_string(benchmark::State& state)
+    void via_function_ptr____Method::set_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         static auto is_ok = test(getMessageNode, 2);
@@ -143,7 +143,7 @@ namespace bm_call
 
 namespace bm_rtl
 {
-    void function_CallsFunction::get_string(benchmark::State& state)
+    void function_calls__Function::get_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         static auto is_ok = test(getMessage, 3);
@@ -153,7 +153,7 @@ namespace bm_rtl
         }
     }
 
-    void function_CallsFunction::set_string(benchmark::State& state)
+    void function_calls__Function::set_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         static auto is_ok = test(sendMessage, 0);
@@ -164,7 +164,7 @@ namespace bm_rtl
         }
     }
 
-    void method_____CallsMethod::get_string(benchmark::State& state)
+    void method_calls______Method::get_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         static auto is_ok = test(getMessageNode, 4);
@@ -174,7 +174,7 @@ namespace bm_rtl
         }
     }
 
-    void method_____CallsMethod::set_string(benchmark::State& state)
+    void method_calls______Method::set_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         static auto is_ok = test(sendMessageNode, 5);

@@ -33,8 +33,8 @@ namespace rtl::detail
     template<class ..._args>
     ForceInline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
-        //Only static-member-functions have Qualifier- 'methodQ::None'
-        if (m_method->getQualifier() == methodQ::None) [[unlikely]] {
+        //Only static-member-functions have Qualifier- 'member::None'
+        if (m_method->getQualifier() == member::None) [[unlikely]] {
             return static_cast<Function>(*m_method).bind().call(std::forward<_args>(params)...);
         }
         else if (m_target->isEmpty()) [[unlikely]] {
@@ -67,7 +67,7 @@ namespace rtl::detail
                                                                        const RObject& pTarget,
                                                                        _args&&... params)
     {
-        using containerConst = detail::MethodContainer<detail::methodQ::Const, _invokSignature...>;
+        using containerConst = detail::MethodContainer<detail::member::Const, _invokSignature...>;
         const FunctorId* constFunctorId = pMethod.hasFunctorId(containerConst::getContainerId());
 
         if (constFunctorId != nullptr) [[likely]]
@@ -76,7 +76,7 @@ namespace rtl::detail
         }
         else [[unlikely]]
         {
-            using containerNonConst = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
+            using containerNonConst = detail::MethodContainer<detail::member::NonConst, _invokSignature...>;
             const FunctorId* functorId = pMethod.hasFunctorId(containerNonConst::getContainerId());
 
             if (functorId != nullptr)
@@ -102,7 +102,7 @@ namespace rtl::detail
     template<class ..._args>
     ForceInline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
-        if (m_method->getQualifier() == methodQ::None) [[unlikely]] {
+        if (m_method->getQualifier() == member::None) [[unlikely]] {
             return static_cast<Function>(*m_method).bind().call(std::forward<_args>(params)...);
         }
         else if (m_target->isEmpty()) [[unlikely]] {
@@ -134,7 +134,7 @@ namespace rtl::detail
                                                                         const RObject& pTarget,
                                                                         _args&&... params)
     {
-        using container0 = detail::MethodContainer<detail::methodQ::NonConst, _invokSignature...>;
+        using container0 = detail::MethodContainer<detail::member::NonConst, _invokSignature...>;
         const FunctorId* functorId = pMethod.hasFunctorId(container0::getContainerId());
 
         if (functorId != nullptr) [[likely]] {
@@ -143,7 +143,7 @@ namespace rtl::detail
         else 
         {
             // check if the const-overload method is present.
-            using container2 = detail::MethodContainer<detail::methodQ::Const, _invokSignature...>;
+            using container2 = detail::MethodContainer<detail::member::Const, _invokSignature...>;
             std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
             if (index != rtl::index_none) {
                 // So, const-overload is present and non-const overload is not registered or doesn't exists.

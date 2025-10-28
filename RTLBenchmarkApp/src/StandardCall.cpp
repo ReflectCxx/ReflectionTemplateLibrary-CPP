@@ -11,7 +11,7 @@ namespace
 {
     static auto _put_line = []() {
         std::cout << "-----------------------------------------------"
-                  "--------------------------------------------------" << std::endl;
+                 "---------------------------------------------------" << std::endl;
         return 0;
     };
 
@@ -41,7 +41,7 @@ namespace bm
 
 namespace bm_call
 {
-    void direct_Function::set_string(benchmark::State& state)
+    void direct__Function::set_string(benchmark::State& state)
     {
         for (auto _ : state)
         {
@@ -50,7 +50,7 @@ namespace bm_call
         }
     }
 
-    void direct_Function::get_string(benchmark::State& state)
+    void direct__Function::get_string(benchmark::State& state)
     {
         static auto _ = _put_line();
         for (auto _ : state)
@@ -63,7 +63,7 @@ namespace bm_call
 
 namespace bm_std
 {
-    void function_CallsFunction::set_string(benchmark::State& state)
+    void function_calls__Function::set_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         for (auto _ : state)
@@ -73,7 +73,7 @@ namespace bm_std
         }
     }
 
-    void function___CallsMethod::set_string(benchmark::State& state)
+    void function_calls____Method::set_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         for (auto _ : state)
@@ -83,7 +83,7 @@ namespace bm_std
         }
     }
 
-    void function_CallsFunction::get_string(benchmark::State& state)
+    void function_calls__Function::get_string(benchmark::State& state)
     {
         static auto _ = _new_line();
         for (auto _ : state)
@@ -92,7 +92,7 @@ namespace bm_std
         }
     }
 
-    void function___CallsMethod::get_string(benchmark::State& state)
+    void function_calls____Method::get_string(benchmark::State& state)
     {
         static bm::Node nodeObj;
         for (auto _ : state)

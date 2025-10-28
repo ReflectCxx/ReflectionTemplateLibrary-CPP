@@ -30,7 +30,7 @@ namespace rtl::detail
            SetupMethod<_derivedType>::getMethodCaller(void(_recordType::* pFunctor)(_signature...))
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-        this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
+        this is stored in _derivedType's (MethodContainer<detail::member::NonConst, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {   
             auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>()
@@ -54,7 +54,7 @@ namespace rtl::detail
            SetupMethod<_derivedType>::getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...))
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-        this is stored in _derivedType's (MethodContainer<detail::methodQ::NonConst, _signature...>) vector holding lambda's.
+        this is stored in _derivedType's (MethodContainer<detail::member::NonConst, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
             auto fptr = pFunctorId.get_lambda_method<_recordType, _signature...>()
@@ -99,7 +99,7 @@ namespace rtl::detail
            SetupMethod<_derivedType>::getMethodCaller(void(_recordType::* pFunctor)(_signature...) const)
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-        this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
+        this is stored in _derivedType's (MethodContainer<detail::member::Const, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
             auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>()
@@ -119,7 +119,7 @@ namespace rtl::detail
            SetupMethod<_derivedType>::getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const)
     {
     /*  a variable arguments lambda, which finally calls the 'pFunctor' with 'params...'.
-        this is stored in _derivedType's (MethodContainer<detail::methodQ::Const, _signature...>) vector holding lambda's.
+        this is stored in _derivedType's (MethodContainer<detail::member::Const, _signature...>) vector holding lambda's.
     */  return [](const FunctorId& pFunctorId, const RObject& pTargetObj, _signature&&...params)-> Return
         {
             auto fptr = pFunctorId.get_lambda_method<const _recordType, _signature...>()
@@ -155,12 +155,12 @@ namespace rtl::detail
 
 /*  @method: addFunctor().
     @param: 'pFuntor' (a non-const, non-static-member function pointer).
-        '_derivedType' : class deriving this class ('MethodContainer<detail::methodQ::NonConst, _signature...>').
+        '_derivedType' : class deriving this class ('MethodContainer<detail::member::NonConst, _signature...>').
         '_recordType' : the owner 'class/stuct' type of the functor.
         '_returnType' : return type deduced from 'pFunctor'.
         '_signature...' : function signature deduced from 'pFunctor'.
     @return: 'FunctorId' object, a hash-key to lookup the lambda (functor-wrapped) in the _derivedType's lambda-table.
-    * adds lambda (functor-wrapped) in '_derivedType' (MethodContainer<detail::methodQ::NonConst, _signature...>) and maintains functorSet.
+    * adds lambda (functor-wrapped) in '_derivedType' (MethodContainer<detail::member::NonConst, _signature...>) and maintains functorSet.
     * thread safe, multiple functors can be registered simultaneously.
 */  template<class _derivedType>
     template<class _recordType, class _returnType, class ..._signature>
@@ -185,7 +185,7 @@ namespace rtl::detail
 
         //generate a type-id of '_returnType'.
         const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
-        //finally add the lambda 'functor' in 'MethodContainer<detail::methodQ::NonConst, _signature...>' lambda vector and get the index.
+        //finally add the lambda 'functor' in 'MethodContainer<detail::member::NonConst, _signature...>' lambda vector and get the index.
 
         auto lambdaIndex = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
         //construct the hash-key 'FunctorId' and return.
@@ -206,12 +206,12 @@ namespace rtl::detail
 
 /*  @method: addFunctor().
     @param: 'pFuntor' (a const, non-static-member function pointer).
-        '_derivedType' : class deriving this class ('MethodContainer<detail::methodQ::Const, _signature...>').
+        '_derivedType' : class deriving this class ('MethodContainer<detail::member::Const, _signature...>').
         '_recordType' : the owner 'class/stuct' type of the functor.
         '_returnType' : return type deduced from 'pFunctor'.
         '_signature...' : function signature deduced from 'pFunctor'.
     @return: 'FunctorId' object, a hash-key to lookup the lambda (containing functor) in the _derivedType's lambda table.
-    * adds lambda (containing functor) in '_derivedType' (MethodContainer<detail::methodQ::Const, _signature...>) and maintains a functorSet.
+    * adds lambda (containing functor) in '_derivedType' (MethodContainer<detail::member::Const, _signature...>) and maintains a functorSet.
     * thread safe, multiple functors can be registered simultaneously.
 */  template<class _derivedType>
     template<class _recordType, class _returnType, class ..._signature>
@@ -235,7 +235,7 @@ namespace rtl::detail
 
         //generate a type-id of '_returnType'.
         const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
-        //finally add the lambda 'functor' in 'MethodContainer<detail::methodQ::Const, _signature...>' lambda vector and get the index.
+        //finally add the lambda 'functor' in 'MethodContainer<detail::member::Const, _signature...>' lambda vector and get the index.
 
         auto lambdaIndex = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
 

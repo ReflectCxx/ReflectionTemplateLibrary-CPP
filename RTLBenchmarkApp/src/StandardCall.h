@@ -4,7 +4,7 @@
 
 namespace bm_call
 {
-    struct direct_Function
+    struct direct__Function
     {
         static void set_string(benchmark::State& state);
 
@@ -14,7 +14,7 @@ namespace bm_call
 
 namespace bm_std
 {
-    struct function_CallsFunction
+    struct function_calls__Function
     {
         static void set_string(benchmark::State& state);
 
@@ -22,7 +22,7 @@ namespace bm_std
     };
 
 
-    struct function___CallsMethod
+    struct function_calls____Method
     {
         static void set_string(benchmark::State& state);
 
