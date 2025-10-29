@@ -57,21 +57,21 @@ namespace rtl::builder
 
 /*  @method: methodStatic()
     @param: std::string, name of function as string.
-    @return: Builder<detail::member::None, _signature...>
+    @return: Builder<detail::member::Static, _signature...>
     * registers only static member functions.
     * used for registering unique static member function, if overload exists, use templated version 'methodStatic<...>()'.
     * the 'build(..)' called on return object will accepts static member function pointer only.
     * compiler error on 'build(..)' if non-static member or non-member function pointer is passed.
 */  template<class _recordType>
-    inline const Builder<detail::member::None> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
+    inline const Builder<detail::member::Static> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<detail::member::None>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::member::Static>(detail::TypeId<_recordType>::get(), pFunction, "");
     }
 
 
 /*  @method: methodStatic<...>()
     @param: std::string, name of function as string.
-    @return: Builder<detail::member::None, _signature...>
+    @return: Builder<detail::member::Static, _signature...>
     * registers only static member functions.
     * used for registering overloads, if unique member function, use non-templated version 'methodStatic()'.
     * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
@@ -79,9 +79,9 @@ namespace rtl::builder
     * compiler error on 'build(..)' if const member or non-member function pointer is passed.
 */  template<class _recordType>
     template<class ..._signature>
-    inline const Builder<detail::member::None, _signature...> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
+    inline const Builder<detail::member::Static, _signature...> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<detail::member::None, _signature...>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::member::Static, _signature...>(detail::TypeId<_recordType>::get(), pFunction, "");
     }
 
 

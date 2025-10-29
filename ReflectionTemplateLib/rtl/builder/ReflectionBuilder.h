@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Function.h"
+#include "rtl_constants.h"
 
 namespace rtl {
 
@@ -40,7 +41,7 @@ namespace rtl {
 
             //adds 'pFunctor' to the 'FunctorContainer'.
             template<class _returnType, class ..._signature>
-            const Function buildFunctor(_returnType(*pFunctor)(_signature...)) const;
+            const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const;
 
             //adds 'pFunctor' to the 'MethodContainer'.
             template<class _recordType, class _returnType, class ..._signature>

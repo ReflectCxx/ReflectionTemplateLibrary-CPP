@@ -50,7 +50,7 @@ namespace rtl {
 
             const Builder<detail::member::Const> methodConst(const std::string_view pFunction) const;
 
-            const Builder<detail::member::None> methodStatic(const std::string_view pFunction) const;
+            const Builder<detail::member::Static> methodStatic(const std::string_view pFunction) const;
 
             template<class ..._signature>
             const Builder<detail::member::NonConst, _signature...> method(const std::string_view pFunction) const;
@@ -59,7 +59,7 @@ namespace rtl {
             const Builder<detail::member::Const, _signature...> methodConst(const std::string_view pFunction) const;
 
             template<class ..._signature>
-            const Builder<detail::member::None, _signature...> methodStatic(const std::string_view pFunction) const;
+            const Builder<detail::member::Static, _signature...> methodStatic(const std::string_view pFunction) const;
 
             template<class ..._signature>
             constexpr const ConstructorBuilder<_recordType, traits::remove_cref_t<_signature>...> constructor() const;
