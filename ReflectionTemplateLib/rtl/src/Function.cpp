@@ -28,7 +28,7 @@ namespace rtl
 */  Function::Function(const std::string_view pNamespace, const std::string_view pRecord,
                        const std::string_view pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                        const std::size_t pRecordTypeId, const detail::member pQualifier)
-        : m_qualifier(pQualifier)
+        : m_member_kind(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_record(pRecord)
         , m_function(pFunction)
@@ -48,7 +48,7 @@ namespace rtl
         'FunctorId' with the 'Function' object associated with a constructor.
 */  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                        const std::string_view pFunctorName)
-        : m_qualifier(pOther.m_qualifier)
+        : m_member_kind(pOther.m_member_kind)
         , m_recordTypeId(pOther.m_recordTypeId)
         , m_record(pOther.m_record)
         , m_function(pFunctorName)

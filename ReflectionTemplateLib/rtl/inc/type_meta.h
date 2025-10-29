@@ -43,13 +43,13 @@ namespace rtl
 		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_signId)
 		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_signId)
 		
-		GETTER(detail::member, _method_qual, m_functor->get().m_qualifier)
+		GETTER(detail::member, _method_qual, m_functor->get().m_member_kind)
 		
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
 		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))
 
 		template<class return_t, class ...signature_t>
-		static type_meta add_function(return_t(*pFunctor)(signature_t...), std::size_t p_index);
+		static type_meta add_function(return_t(*pFunctor)(signature_t...), detail::member pMemberType, std::size_t p_index);
 
 		template<class record_t, class return_t, class ...signature_t>
 		static type_meta add_method(return_t(record_t::* pFunctor)(signature_t...), std::size_t p_index);

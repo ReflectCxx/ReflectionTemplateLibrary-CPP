@@ -28,11 +28,12 @@ namespace rtl::dispatch
 			return (fptr == m_functor);
 		}
 
-		function_ptr(functor_t fptr) :m_functor(fptr)
+		function_ptr(functor_t fptr, detail::member member_kind) :m_functor(fptr)
 		{
 			m_returnId = traits::uid<return_t>::value;
 			m_is_void = (m_returnId == traits::uid<void>::value);
 
+			m_member_kind = member_kind;
 			m_is_any_arg_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
 			m_normal_signId = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
 			m_strict_signId = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;

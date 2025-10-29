@@ -42,7 +42,7 @@ namespace rtl::detail
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const
     {
         using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
-        auto [typeMeta, functorId] = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId);
+        auto [typeMeta, functorId] = Container::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId, pMemberType);
         return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, pMemberType);
     }
 

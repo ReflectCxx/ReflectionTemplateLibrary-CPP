@@ -32,7 +32,7 @@ namespace rtl::dispatch
 
 		method_ptr(functor_t fptr) :m_functor(fptr)
 		{
-			m_qualifier = detail::member::NonConst;
+			m_member_kind = detail::member::NonConst;
 			
 			m_returnId = traits::uid<return_t>::value;
 			m_is_void = (m_returnId == traits::uid<void>::value);

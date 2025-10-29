@@ -191,8 +191,7 @@ namespace rtl::detail
         //construct the hash-key 'FunctorId' and return.
         return {
             typeMeta,
-            FunctorId
-            {
+            FunctorId {
                 lambdaIndex,
                 retTypeId,
                 TypeId<_recordType>::get(),
@@ -242,8 +241,7 @@ namespace rtl::detail
         //construct the hash-key 'FunctorId' and return.
         return {
             typeMeta,
-            FunctorId 
-            {
+            FunctorId {
                 lambdaIndex,
                 retTypeId,
                 TypeId<_recordType>::get(),
