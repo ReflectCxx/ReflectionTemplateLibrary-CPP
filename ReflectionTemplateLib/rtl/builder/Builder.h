@@ -45,6 +45,22 @@ namespace rtl {
 
     namespace builder
     {
+    /*  @struct: Builder<detail::member::None, void>
+        * specialized specifically to register overloaded non-member & static member functions with no arguments.
+        * Objects of this class will be created & returned by these functions,
+        *   - type::function<void>(..)
+        *   - RecordBuilder<_recordType>::methodStatic<void>(..)
+        * with template parameter is only 'void', explicitly specified.
+    */  template<>
+        struct Builder<detail::member::None, void> : protected detail::ReflectionBuilder
+        {
+            Builder(std::size_t pRecordId, const std::string_view pFunction,
+                    const std::string_view pNamespace);
+
+            template<class _returnType>
+            const Function build(_returnType(*pFunctor)()) const;
+        };
+
 
     /*  @struct: Builder<detail::member::None, _signature...>
         * specialized specifically to register overloaded non-member  & static member functions with any arguments.
@@ -83,6 +99,20 @@ namespace rtl {
 
     namespace builder
     {
+    /*  @struct: Builder<detail::member::Const, void>
+        * specialized specifically to register overloaded const-member-functions with no arguments.
+        * Objects of this class will be created & returned by function,
+        *   - RecordBuilder<_recordType>::methodConst<void>(..)
+        * with template parameters is only 'void' explicitly specified.
+    */  template<>
+        struct Builder<detail::member::Const, void> : protected detail::ReflectionBuilder
+        {
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
+
+            template<class _recordType, class _returnType>
+            const Function build(_returnType(_recordType::* pFunctor)() const) const;
+        };
+
 
     /*  @struct: Builder<detail::member::Const, _signature...>
         * specialized specifically to register overloaded const-member-functions with any arguments.
@@ -117,6 +147,20 @@ namespace rtl {
 
     namespace builder 
     {
+    /*  @struct: Builder<detail::member::NonConst, void>
+        * specialized specifically to register overloaded non-const-member-functions with no arguments.
+        * Objects of this class will be created & returned by function,
+        *   - RecordBuilder<_recordType>::method<void>(..)
+        * with template parameters is only 'void' explicitly specified.
+    */  template<>
+        struct Builder<detail::member::NonConst, void> : protected detail::ReflectionBuilder
+        {
+            Builder(const std::string_view pFunction, std::size_t pRecordId);
+
+            template<class _recordType, class _returnType>
+            const Function build(_returnType(_recordType::* pFunctor)()) const;
+        };
+
 
     /*  @struct: Builder<detail::member::NonConst, _signature...>
         * specialized specifically to register overloaded non-const-member-functions with no arguments.

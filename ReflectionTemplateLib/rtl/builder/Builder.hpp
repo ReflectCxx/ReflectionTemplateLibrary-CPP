@@ -61,6 +61,27 @@ namespace rtl
         }
     }
 
+
+    namespace builder
+    {
+        inline Builder<detail::member::None, void>::Builder(std::size_t pRecordId, const std::string_view pFunction, const std::string_view pNamespace)
+            : ReflectionBuilder(pFunction, pRecordId, pNamespace)
+        { }
+
+    /*  @method: build()
+        @param: _returnType(*)()
+        @return: 'Function' object.
+        * accepts a non-member or static-member function pointer with no arguments.
+        * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<_recordType>::methodStatic<void>(..)'
+        * template param 'void' is explicitly specified.
+    */  template<class _returnType>
+        inline const Function Builder<detail::member::None, void>::build(_returnType(*pFunctor)()) const
+        {
+            return buildFunctor(pFunctor);
+        }
+    }
+
+
     namespace builder
     {
         template<class ..._signature>
@@ -107,6 +128,26 @@ namespace rtl
     }
 
 
+    namespace builder
+    {
+        inline Builder<detail::member::Const, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pFunction, pRecordId)
+        { }
+
+    /*  @method: build()
+        @param: _returnType(_recordType::*)() const.
+        @return: 'Function' object.
+        * accepts a const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::methodConst<void>()'
+        * template param 'void' is explicitly specified.
+    */  template<class _recordType, class _returnType>
+        inline const Function Builder<detail::member::Const, void>::build(_returnType(_recordType::* pFunctor)() const) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
+    }
+	
+
     namespace builder 
     {
         template<class ..._signature>
@@ -147,6 +188,27 @@ namespace rtl
         * template params are auto deduced from the pointer passed.
     */  template<class _recordType, class _returnType, class ..._signature>
         inline const Function Builder<detail::member::NonConst>::build(_returnType(_recordType::* pFunctor)(_signature...)) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
+    }
+
+  
+    namespace builder
+    {
+        inline Builder<detail::member::NonConst, void>::Builder(const std::string_view pFunction, std::size_t pRecordId)
+            : ReflectionBuilder(pFunction, pRecordId)
+        { }
+
+
+    /*  @method: build()
+        @param: _returnType(_recordType::*)()
+        @return: 'Function' object.
+        * accepts a non-const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<_recordType>::method<void>()'
+        * template param 'void' is explicitly specified.
+    */  template<class _recordType, class _returnType>
+        inline const Function Builder<detail::member::NonConst, void>::build(_returnType(_recordType::* pFunctor)()) const
         {
             return buildMethodFunctor(pFunctor);
         }
