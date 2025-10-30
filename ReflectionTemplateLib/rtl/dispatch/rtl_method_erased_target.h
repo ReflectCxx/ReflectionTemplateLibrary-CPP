@@ -89,18 +89,8 @@ namespace rtl
             }
         };
 
-        constexpr invoker operator()() const noexcept {
-            return invoker{ RObject{}, *this };
-        }
-
         constexpr invoker operator()(const RObject& p_target) const noexcept {
             return invoker{ p_target, *this };
-        }
-
-        template<class ...args_t>
-        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind() const noexcept {
-            return perfect_fwd<args_t...>{ RObject{}, *this };
         }
 
         template<class ...args_t>

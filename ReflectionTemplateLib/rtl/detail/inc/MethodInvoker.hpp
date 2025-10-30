@@ -163,7 +163,7 @@ namespace rtl::detail
     inline constexpr const
     method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
-        if (!m_argsTfnMeta.is_empty())
+        if (!m_argsTfnMeta.is_empty() && m_argsTfnMeta.get_member_kind() != member::Static)
         {
             const auto retId = traits::uid<return_t>::value;
             return m_argsTfnMeta.get_lambda()

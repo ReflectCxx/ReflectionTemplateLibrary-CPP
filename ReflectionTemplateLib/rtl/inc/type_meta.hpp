@@ -38,12 +38,12 @@ namespace rtl
 	}
 
 	template<class return_t, class ...signature_t>
-	inline type_meta type_meta::add_function(return_t(*pFunctor)(signature_t...), detail::member pMemberKind, std::size_t p_index)
+	inline type_meta type_meta::add_function(return_t(*p_fptr)(signature_t...), detail::member p_member_kind, std::size_t p_index)
 	{
 		auto& fc = cache::function_ptr<return_t, signature_t...>::instance();
 		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
 
-		auto& functor = fc.push(pFunctor, pMemberKind, p_index);
+		auto& functor = fc.push(p_fptr, p_member_kind, p_index);
 		auto [lambda, elambda] = lc.push(functor);
 		
 		functor.set_lambda(lambda);
@@ -53,12 +53,12 @@ namespace rtl
 	}
 
 	template<class record_t, class return_t, class ...signature_t>
-	inline type_meta type_meta::add_method(return_t(record_t::* pFunctor)(signature_t...), std::size_t p_index)
+	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index)
 	{
 		auto& fc = cache::method_ptr<record_t, return_t, signature_t...>::instance();
 		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
 
-		auto& functor = fc.push(pFunctor, p_index);
+		auto& functor = fc.push(p_fptr, p_index);
 		auto [lambda, elambda] = lc.push(functor);
 
 		functor.set_lambda(lambda);
@@ -68,12 +68,12 @@ namespace rtl
 	}
 
 	template<class record_t, class return_t, class ...signature_t>
-	inline type_meta type_meta::add_method(return_t(record_t::* pFunctor)(signature_t...) const, std::size_t p_index)
+	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index)
 	{
 		auto& fc = cache::method_ptr<const record_t, return_t, signature_t...>::instance();
 		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
 
-		auto& functor = fc.push(pFunctor, p_index);
+		auto& functor = fc.push(p_fptr, p_index);
 		auto [lambda, elambda] = lc.push(functor);
 		
 		functor.set_lambda(lambda);

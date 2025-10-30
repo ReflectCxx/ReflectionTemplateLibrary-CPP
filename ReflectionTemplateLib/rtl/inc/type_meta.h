@@ -43,19 +43,19 @@ namespace rtl
 		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_signId)
 		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_signId)
 		
-		GETTER(detail::member, _method_qual, m_functor->get().m_member_kind)
+		GETTER(detail::member, _member_kind, m_functor->get().m_member_kind)
 		
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
 		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))
 
 		template<class return_t, class ...signature_t>
-		static type_meta add_function(return_t(*pFunctor)(signature_t...), detail::member pMemberType, std::size_t p_index);
+		static type_meta add_function(return_t(*p_fptr)(signature_t...), detail::member p_member_kind, std::size_t p_index);
 
 		template<class record_t, class return_t, class ...signature_t>
-		static type_meta add_method(return_t(record_t::* pFunctor)(signature_t...), std::size_t p_index);
+		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index);
 
 		template<class record_t, class return_t, class ...signature_t>
-		static type_meta add_method(return_t(record_t::* pFunctor)(signature_t...) const, std::size_t p_index);
+		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index);
 
 		template<class ..._signature>
 		using lambda_fn_t = dispatch::lambda_function<_signature...>;
@@ -64,10 +64,10 @@ namespace rtl
 		using lambda_mth_t = dispatch::lambda_method<rec_t, _signature...>;
 
 		template<class ...args_t>
-		constexpr const lambda_fn_t<args_t...>* get_lambda_function(std::size_t p_argsId = 0) const;
+		constexpr const lambda_fn_t<args_t...>* get_lambda_function(std::size_t p_args_id = 0) const;
 
 		template<class record_t, class ...args_t>
-		constexpr const lambda_mth_t<record_t, args_t...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_argsId = 0) const;
+		constexpr const lambda_mth_t<record_t, args_t...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_args_id = 0) const;
 
 	private:
 
