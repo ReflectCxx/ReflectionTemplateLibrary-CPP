@@ -57,11 +57,11 @@ namespace rtl {
         template<class ..._args>
         constexpr const detail::ErasedCaller<false, _args...> operator()(_args&&...params) const noexcept = delete;
 
-        //template<class ...signatureT>
-        //constexpr const detail::HopFunction<signatureT...> argsT() const = delete;
+        template<class ...signatureT>
+        constexpr const detail::HopFunction<detail::member::Static, signatureT...> argsT() const;
 
         template<class recordT = RObject, class ...signatureT>
-        constexpr detail::Hopper<recordT> targetT() const;
+        constexpr detail::Hopper<detail::member::None, recordT> targetT() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

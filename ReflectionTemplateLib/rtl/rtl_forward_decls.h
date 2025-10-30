@@ -31,6 +31,9 @@ namespace rtl
     template<class record_t, class return_t, class ...signature_t>
     struct method;
 
+    template<class return_t, class ...signature_t>
+    struct static_method;
+
     namespace detail
     {
         struct FunctorId;
@@ -49,10 +52,10 @@ namespace rtl
         template<class _derivedType>
         class SetupMethod;
 
-        template<class _recordType = std::nullptr_t>
+        template<member, class _recordType = std::nullptr_t>
         struct Hopper;
 
-        template<class ..._signature>
+        template<member, class ..._signature>
         struct HopFunction;
     }
 

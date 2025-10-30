@@ -96,7 +96,7 @@ namespace rtl {
         Function& operator=(const Function&) = default;
 
         template<class ...signatureT>
-        constexpr const detail::HopFunction<signatureT...> argsT() const;
+        constexpr const detail::HopFunction<detail::member::None, signatureT...> argsT() const;
 
         bool hasSignature() const;
 

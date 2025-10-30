@@ -46,8 +46,28 @@ namespace rtl
         function& operator=(function&&) = default;
         function& operator=(const function&) = default;
 
-    private:
+    protected:
 
         fptr_t m_functor = nullptr;
+    };
+}
+
+
+namespace rtl 
+{
+    template<class return_t, class ...signature_t>
+    struct static_method<return_t(signature_t...)> : function<return_t(signature_t...)> 
+    {
+        using base_t = function<return_t(signature_t...)>;
+
+        static_method(base_t::fptr_t p_functor) : base_t(p_functor)
+        { }
+
+        static_method() = default;
+        static_method(static_method&&) = default;
+        static_method(const static_method&) = default;
+
+        static_method& operator=(static_method&&) = default;
+        static_method& operator=(const static_method&) = default;
     };
 }

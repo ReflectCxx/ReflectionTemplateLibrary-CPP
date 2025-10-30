@@ -126,7 +126,7 @@ namespace rtl
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
         GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
 
-        template<class ...>
+        template<detail::member, class ...>
         friend struct detail::HopFunction;
 
         static_assert((!std::is_reference_v<signature_t> && ...),

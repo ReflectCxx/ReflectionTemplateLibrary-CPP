@@ -291,9 +291,9 @@ namespace rtl::detail
     }
 
 
-    template<class record_t>
+    template<member member_kind, class record_t>
     template<class ...args_t>
-    inline constexpr HopMethod<record_t, args_t...> Hopper<record_t>::argsT() const
+    inline constexpr HopMethod<record_t, args_t...> Hopper<member_kind, record_t>::argsT() const
     {
         auto recordId = traits::uid<record_t>::value;
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;

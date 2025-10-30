@@ -40,9 +40,33 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class ...args_t>
-    template<class return_t> requires (!std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const function<return_t(args_t...)> HopFunction<args_t...>::returnT() const
+    template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::Static && !std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    {
+        const auto retId = traits::uid<return_t>::value;
+        if (!m_argsTfnMeta.is_empty()) 
+        {
+            return m_argsTfnMeta.get_lambda()
+                                .template to_function<args_t...>()
+                                .template get_hopper<return_t>(retId)
+                                .f_ptr();
+        }
+        return static_method<return_t(args_t...)>();
+    }
+
+
+    template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    {
+        return static_method<Return(args_t...)>();
+    }
+
+
+    template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::None && !std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const function<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
         const auto retId = traits::uid<return_t>::value;
         if (!m_argsTfnMeta.is_empty()) 
@@ -55,8 +79,47 @@ namespace rtl::detail
     }
 
 
+    template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    {
+        bool isReturnTvoid = false;
+        function<Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
+        
+        for (auto& fnMeta : m_overloadsFnMeta)
+        {            
+            if (!fnMeta.is_empty())
+            {
+                auto& erasedRetFn = fnMeta.get_erasure_base()
+                                          .template to_erased_return<traits::normal_sign_t<args_t>...>();
+                if (fnMeta.is_void()) {
+                    isReturnTvoid = true;
+                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
+                }
+                else {
+                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
+                }
+                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
+            }
+            else {
+                erasedRetHop.get_vhop().push_back(nullptr);
+                erasedRetHop.get_rhop().push_back(nullptr);
+                erasedRetHop.get_overloads().push_back(nullptr);
+            }
+        }
+        if (isReturnTvoid) {
+            erasedRetHop.get_rhop().clear();
+        }
+        else {
+            erasedRetHop.get_vhop().clear();
+        }
+        return erasedRetHop;
+    }
+
+
+    template<detail::member member_kind>
     template<class ...args_t>
-    inline constexpr const HopFunction<args_t...> Hopper<>::argsT() const
+    inline constexpr const HopFunction<member_kind, args_t...> Hopper<member_kind>::argsT() const
     {
         auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
@@ -92,43 +155,5 @@ namespace rtl::detail
             }
         }
         return { argsTfnMeta, overloadsFnMeta };
-    }
-
-
-    template<class ...args_t>
-    template<class return_t> requires (std::is_same_v<return_t, rtl::Return>)
-    inline constexpr function<Return(args_t...)> HopFunction<args_t...>::returnT() const
-    {
-        bool isReturnTvoid = false;
-        function<Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
-        
-        for (auto& fnMeta : m_overloadsFnMeta)
-        {            
-            if (!fnMeta.is_empty())
-            {
-                auto& erasedRetFn = fnMeta.get_erasure_base()
-                                          .template to_erased_return<traits::normal_sign_t<args_t>...>();
-                if (fnMeta.is_void()) {
-                    isReturnTvoid = true;
-                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
-                }
-                else {
-                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
-                }
-                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
-            }
-            else {
-                erasedRetHop.get_vhop().push_back(nullptr);
-                erasedRetHop.get_rhop().push_back(nullptr);
-                erasedRetHop.get_overloads().push_back(nullptr);
-            }
-        }
-        if (isReturnTvoid) {
-            erasedRetHop.get_rhop().clear();
-        }
-        else {
-            erasedRetHop.get_vhop().clear();
-        }
-        return erasedRetHop;
     }
 }

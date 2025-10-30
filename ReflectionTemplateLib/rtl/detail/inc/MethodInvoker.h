@@ -116,7 +116,7 @@ namespace rtl::detail
         constexpr const method<rtl::RObject, rtl::Return(signature_t...)> returnT() const;
     };
 
-    template<class record_t>
+    template<member member_kind, class record_t>
     struct Hopper
     {
         const std::vector<rtl::type_meta>& m_functorsMeta;

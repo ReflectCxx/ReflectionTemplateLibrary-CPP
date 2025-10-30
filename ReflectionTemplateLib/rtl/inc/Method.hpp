@@ -30,11 +30,16 @@ namespace rtl
 
 
     template<class recordT, class ...signatureT>
-    inline constexpr detail::Hopper<recordT> Method::targetT() const
+    inline constexpr detail::Hopper<detail::member::None, recordT> Method::targetT() const
     {
-        return detail::Hopper<recordT>{ getFunctorsMeta() };
+        return detail::Hopper<detail::member::None, recordT>{ getFunctorsMeta() };
     }
 
+    template<class ...signatureT>
+    constexpr const detail::HopFunction<detail::member::Static, signatureT...> Method::argsT() const
+    {
+        return detail::Hopper<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
+    }
 
 /*  @method: invokeCtor()
     @params: variable arguments.

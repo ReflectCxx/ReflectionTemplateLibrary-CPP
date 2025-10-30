@@ -41,27 +41,33 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class ..._signature>
+    template<member member_kind, class ..._signature>
     struct HopFunction
     {
         rtl::type_meta m_argsTfnMeta;
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
-        template<class _returnType = rtl::Return> requires (std::is_same_v<_returnType, rtl::Return>)
+        template<class _returnType = rtl::Return> requires (member_kind == member::None && std::is_same_v<_returnType, rtl::Return>)
         constexpr function<rtl::Return(_signature...)> returnT() const;
 
-        template<class _returnType = rtl::Return> requires (!std::is_same_v<_returnType, rtl::Return>)
+        template<class _returnType = rtl::Return> requires (member_kind == member::None && !std::is_same_v<_returnType, rtl::Return>)
         constexpr const function<_returnType(_signature...)> returnT() const;
+
+        template<class _returnType = rtl::Return> requires (member_kind == member::Static && std::is_same_v<_returnType, rtl::Return>)
+        constexpr const static_method<rtl::Return(_signature...)> returnT() const;
+
+        template<class _returnType = rtl::Return> requires (member_kind == member::Static && !std::is_same_v<_returnType, rtl::Return>)
+        constexpr const static_method<_returnType(_signature...)> returnT() const;
     };
 
 
-    template<>
-    struct Hopper<>
+    template<detail::member member_kind>
+    struct Hopper<member_kind>
     {
         const std::vector<rtl::type_meta>& m_functorsMeta;
 
         template<class ..._signature>
-        constexpr const HopFunction<_signature...> argsT() const;
+        constexpr const HopFunction<member_kind, _signature...> argsT() const;
     };
 }
