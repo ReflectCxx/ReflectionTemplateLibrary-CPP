@@ -42,6 +42,6 @@ namespace rtl::detail
     protected:
 
         template<class _returnType, class ..._signature>
-        static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId, member pMemberType);
+        static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(_returnType(*pFunctor)(_signature...), traits::uid_t pRecordUid, std::size_t pRecordId, member pMemberType);
     };    
 }

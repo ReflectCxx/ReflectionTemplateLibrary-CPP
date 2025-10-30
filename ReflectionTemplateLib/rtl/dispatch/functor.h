@@ -25,19 +25,19 @@ namespace rtl::dispatch
 
     protected:
 
-        std::string m_recordStr;
-        std::string m_returnStr;
-        std::string m_signatureStr;
+        std::string m_record_str;
+        std::string m_return_str;
+        std::string m_signature_str;
 
-        traits::uid_t m_recordId = traits::uid<>::none;
-        traits::uid_t m_returnId = traits::uid<>::none;
+        traits::uid_t m_record_id = traits::uid<>::none;
+        traits::uid_t m_return_id = traits::uid<>::none;
 
-        traits::uid_t m_normal_signId = traits::uid<>::none;
-        traits::uid_t m_strict_signId = traits::uid<>::none;
+        traits::uid_t m_normal_args_id = traits::uid<>::none;
+        traits::uid_t m_strict_args_id = traits::uid<>::none;
 
         bool m_is_void = false;
         bool m_is_any_arg_ncref = false;
-        std::vector<std::size_t> m_argumentsId = {};
+        std::vector<std::size_t> m_args_type_ids = {};
 
         detail::member m_member_kind = detail::member::None;
 

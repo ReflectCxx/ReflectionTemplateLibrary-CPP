@@ -34,17 +34,17 @@ namespace rtl::dispatch
 		{
 			m_member_kind = detail::member::NonConst;
 			
-			m_returnId = traits::uid<return_t>::value;
-			m_is_void = (m_returnId == traits::uid<void>::value);
-			m_recordId = traits::uid<record_t>::value;
+			m_is_void = std::is_void_v<return_t>;
+			m_return_id = traits::uid<return_t>::value;
+			m_record_id = traits::uid<record_t>::value;
 
 			m_is_any_arg_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
-			m_normal_signId = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
-			m_strict_signId = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
+			m_normal_args_id = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
+			m_strict_args_id = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
 
-			m_returnStr = detail::TypeId<return_t>::toString();
-			m_recordStr = detail::TypeId<record_t>::toString();
-			m_signatureStr = detail::TypeId<signature_t...>::toString();
+			m_return_str = detail::TypeId<return_t>::toString();
+			m_record_str = detail::TypeId<record_t>::toString();
+			m_signature_str = detail::TypeId<signature_t...>::toString();
 		}
 
 	private:

@@ -31,7 +31,7 @@ namespace rtl::dispatch
         template<class ...signature_t>
         constexpr const function_t<signature_t...>* to_function(std::size_t p_argsId) const
         {
-            if (p_argsId == 0 || p_argsId == m_functor.m_strict_signId) [[likely]]
+            if (p_argsId == 0 || p_argsId == m_functor.m_strict_args_id) [[likely]]
             {
                 return static_cast<const function_t<signature_t...>*>(this);
             }
@@ -51,7 +51,7 @@ namespace rtl::dispatch
         constexpr const method_t<record_t, signature_t...>* to_method(std::size_t p_recordId, std::size_t p_argsId) const
         {
             if (p_recordId == 0 || p_argsId ==0 ||
-               (p_recordId == m_functor.m_recordId && p_argsId == m_functor.m_strict_signId)) [[likely]]
+               (p_recordId == m_functor.m_record_id && p_argsId == m_functor.m_strict_args_id)) [[likely]]
             {
                 return static_cast<const method_t<record_t, signature_t...>*>(this);
             }
@@ -61,8 +61,8 @@ namespace rtl::dispatch
         GETTER_BOOL(_void, m_functor.m_is_void)
         GETTER_BOOL(_any_arg_ncref, m_functor.m_is_any_arg_ncref)
 
-        GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_signId)
-        GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_signId)
+        GETTER(traits::uid_t, _strict_sign_id, m_functor.m_strict_args_id)
+        GETTER(traits::uid_t, _normal_sign_id, m_functor.m_normal_args_id)
         GETTER_CREF(detail::RObjectId, _return_id, m_erasure.m_return_id)
 
         lambda_base(const functor& p_functor, const erasure_base& p_erasure) noexcept

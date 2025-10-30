@@ -57,8 +57,8 @@ namespace rtl {
         template<class ..._args>
         constexpr const detail::ErasedCaller<false, _args...> operator()(_args&&...params) const noexcept = delete;
 
-        template<class ...signatureT>
-        constexpr const detail::HopFunction<signatureT...> argsT() const = delete;
+        //template<class ...signatureT>
+        //constexpr const detail::HopFunction<signatureT...> argsT() const = delete;
 
         template<class recordT = RObject, class ...signatureT>
         constexpr detail::Hopper<recordT> targetT() const;

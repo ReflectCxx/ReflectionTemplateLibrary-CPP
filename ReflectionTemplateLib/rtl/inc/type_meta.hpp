@@ -38,12 +38,12 @@ namespace rtl
 	}
 
 	template<class return_t, class ...signature_t>
-	inline type_meta type_meta::add_function(return_t(*p_fptr)(signature_t...), detail::member p_member_kind, std::size_t p_index)
+	inline type_meta type_meta::add_function(return_t(*p_fptr)(signature_t...), traits::uid_t p_record_uid, detail::member p_member_kind, std::size_t p_index)
 	{
 		auto& fc = cache::function_ptr<return_t, signature_t...>::instance();
 		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
 
-		auto& functor = fc.push(p_fptr, p_member_kind, p_index);
+		auto& functor = fc.push(p_fptr, p_record_uid, p_member_kind, p_index);
 		auto [lambda, elambda] = lc.push(functor);
 		
 		functor.set_lambda(lambda);

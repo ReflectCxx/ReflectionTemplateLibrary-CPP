@@ -32,7 +32,7 @@ namespace rtl::dispatch
         template<class return_t>
         constexpr const hopper_t<return_t> get_hopper(const std::size_t p_returnId = 0) const
         {
-            if (p_returnId == 0 || p_returnId == m_functor.m_returnId) [[likely]]
+            if (p_returnId == 0 || p_returnId == m_functor.m_return_id) [[likely]]
             {
                 auto fptr = static_cast<const function_ptr<return_t, signature_t...>&>(m_functor).f_ptr();
                 return hopper_t<return_t>(fptr);

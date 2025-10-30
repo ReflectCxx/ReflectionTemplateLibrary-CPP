@@ -41,7 +41,7 @@ namespace rtl {
 
             //adds 'pFunctor' to the 'FunctorContainer'.
             template<class _returnType, class ..._signature>
-            const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const;
+            const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const;
 
             //adds 'pFunctor' to the 'MethodContainer'.
             template<class _recordType, class _returnType, class ..._signature>

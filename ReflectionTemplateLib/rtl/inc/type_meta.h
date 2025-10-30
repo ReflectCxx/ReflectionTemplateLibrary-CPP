@@ -35,13 +35,13 @@ namespace rtl
 		GETTER_BOOL(_void, m_functor->get().m_is_void)
 		GETTER_BOOL(_any_arg_ncref, m_functor->get().m_is_any_arg_ncref)
 
-		GETTER(std::string, _record_str, m_functor->get().m_recordStr)
-		GETTER(std::string, _return_str, m_functor->get().m_returnStr)
-		GETTER_CREF(std::vector<std::size_t>, _args_id_arr, m_functor->get().m_argumentsId)
+		GETTER(std::string, _record_str, m_functor->get().m_record_str)
+		GETTER(std::string, _return_str, m_functor->get().m_return_str)
+		GETTER_CREF(std::vector<std::size_t>, _args_id_arr, m_functor->get().m_args_type_ids)
 		
-		GETTER(traits::uid_t, _record_id, m_functor->get().m_recordId)
-		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_signId)
-		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_signId)
+		GETTER(traits::uid_t, _record_id, m_functor->get().m_record_id)
+		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_args_id)
+		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_args_id)
 		
 		GETTER(detail::member, _member_kind, m_functor->get().m_member_kind)
 		
@@ -49,7 +49,7 @@ namespace rtl
 		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))
 
 		template<class return_t, class ...signature_t>
-		static type_meta add_function(return_t(*p_fptr)(signature_t...), detail::member p_member_kind, std::size_t p_index);
+		static type_meta add_function(return_t(*p_fptr)(signature_t...), traits::uid_t p_record_uid, detail::member p_member_kind, std::size_t p_index);
 
 		template<class record_t, class return_t, class ...signature_t>
 		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index);

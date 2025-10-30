@@ -91,11 +91,11 @@ namespace rtl
     */  template<class _derivedType>
         template<class _returnType, class ..._signature>
         inline std::pair<type_meta, detail::FunctorId> 
-        SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), std::size_t pRecordId, member pMemberType)
+        SetupFunction<_derivedType>::addFunctor(_returnType(*pFunctor)(_signature...), traits::uid_t pRecordUid, std::size_t pRecordId, member pMemberType)
         {
             rtl::type_meta typeMeta;
             const auto& updateIndex = [&](std::size_t pIndex)-> void {
-                typeMeta = rtl::type_meta::add_function(pFunctor, pMemberType, pIndex);
+                typeMeta = rtl::type_meta::add_function(pFunctor, pRecordUid, pMemberType, pIndex);
             };
 
             const auto& getIndex = [&]()-> std::size_t

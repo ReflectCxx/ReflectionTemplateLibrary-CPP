@@ -65,7 +65,7 @@ namespace rtl::builder
 */  template<class _recordType>
     inline const Builder<detail::member::Static> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<detail::member::Static>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::member::Static>(traits::uid<_recordType>::value, pFunction, detail::TypeId<_recordType>::get(), "");
     }
 
 
@@ -81,7 +81,7 @@ namespace rtl::builder
     template<class ..._signature>
     inline const Builder<detail::member::Static, _signature...> MethodBuilder<_recordType>::methodStatic(const std::string_view pFunction) const
     {
-        return Builder<detail::member::Static, _signature...>(detail::TypeId<_recordType>::get(), pFunction, "");
+        return Builder<detail::member::Static, _signature...>(traits::uid<_recordType>::value, pFunction, detail::TypeId<_recordType>::get(), "");
     }
 
 
