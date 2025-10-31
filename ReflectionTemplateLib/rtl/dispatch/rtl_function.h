@@ -36,7 +36,9 @@ namespace rtl
             return (*m_functor)(std::forward<args_t>(params)...);
         }
 
-        function(fptr_t p_functor): m_functor(p_functor)
+        function(fptr_t p_functor)
+            : m_init_err(error::None)
+            , m_functor(p_functor)
         { }
         
         function() = default;
@@ -46,9 +48,16 @@ namespace rtl
         function& operator=(function&&) = default;
         function& operator=(const function&) = default;
 
+        GETTER(rtl::error, _init_error, m_init_err)
+
     protected:
 
         fptr_t m_functor = nullptr;
+        error m_init_err = error::InvalidCaller;
+
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
+        }
     };
 }
 

@@ -41,6 +41,25 @@ namespace rtl::detail
 namespace rtl::detail
 {
     template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    {
+        function<Return(traits::normal_sign_t<args_t>...)> erasedFn;
+        initHopper(erasedFn);
+        return erasedFn;
+    }
+
+
+    template<member member_kind, class ...args_t>
+    template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
+    inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    {
+        static_method<Return(args_t...)> erasedFn;
+        initHopper(erasedFn);
+        return erasedFn;
+    }
+
+    template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::Static && !std::is_same_v<return_t, rtl::Return>)
     inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
@@ -53,14 +72,6 @@ namespace rtl::detail
                                 .f_ptr();
         }
         return static_method<return_t(args_t...)>();
-    }
-
-
-    template<member member_kind, class ...args_t>
-    template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
-    {
-        return static_method<Return(args_t...)>();
     }
 
 
@@ -80,40 +91,39 @@ namespace rtl::detail
 
 
     template<member member_kind, class ...args_t>
-    template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
-    inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    inline void HopFunction<member_kind, args_t...>::initHopper(function<rtl::Return(args_t...)>& pHopFn) const
     {
         bool isReturnTvoid = false;
-        function<Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
-        
         for (auto& fnMeta : m_overloadsFnMeta)
-        {            
-            if (!fnMeta.is_empty())
+        {
+            if (fnMeta.is_empty())
             {
-                auto& erasedRetFn = fnMeta.get_erasure_base()
-                                          .template to_erased_return<traits::normal_sign_t<args_t>...>();
-                if (fnMeta.is_void()) {
-                    isReturnTvoid = true;
-                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
-                }
-                else {
-                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
-                }
-                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
+                pHopFn.get_vhop().push_back(nullptr);
+                pHopFn.get_rhop().push_back(nullptr);
+                pHopFn.get_overloads().push_back(nullptr);
+                continue;
+            }
+
+            auto& erasedRetFn = fnMeta.get_erasure_base()
+                                      .template to_erased_return<traits::normal_sign_t<args_t>...>();
+            if (fnMeta.is_void()) {
+                isReturnTvoid = true;
+                pHopFn.get_vhop().push_back(erasedRetFn.get_void_hopper());
             }
             else {
-                erasedRetHop.get_vhop().push_back(nullptr);
-                erasedRetHop.get_rhop().push_back(nullptr);
-                erasedRetHop.get_overloads().push_back(nullptr);
+                pHopFn.get_rhop().push_back(erasedRetFn.get_return_hopper());
             }
+            pHopFn.get_overloads().push_back(&fnMeta.get_lambda());
         }
         if (isReturnTvoid) {
-            erasedRetHop.get_rhop().clear();
+            pHopFn.get_rhop().clear();
         }
         else {
-            erasedRetHop.get_vhop().clear();
+            pHopFn.get_vhop().clear();
         }
-        return erasedRetHop;
+        if (pHopFn) {
+            pHopFn.set_init_error(error::None);
+        }
     }
 
 

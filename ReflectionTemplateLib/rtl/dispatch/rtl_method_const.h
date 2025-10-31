@@ -50,7 +50,9 @@ namespace rtl
             return invoker{ m_functor, p_target };
         }
 
-        method(fptr_t p_functor) : m_functor(p_functor)
+        method(fptr_t p_functor) 
+            : m_init_err(error::None)
+            , m_functor(p_functor)
         { }
 
         method() = default;
@@ -60,8 +62,15 @@ namespace rtl
         method& operator=(method&&) = default;
         method& operator=(const method&) = default;
 
+        GETTER(rtl::error, _init_error, m_init_err)
+
     private:
 
         fptr_t m_functor = nullptr;
+        error m_init_err = error::InvalidCaller;
+
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
+        }
     };
 }

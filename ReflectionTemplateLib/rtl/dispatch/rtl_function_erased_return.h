@@ -25,7 +25,7 @@ namespace rtl
         constexpr Return operator()(args_t&&...params) const noexcept
         {
             if (!(*this)) [[unlikely]] {
-                return { error::InvalidCaller, RObject{} };
+                return { m_init_err, RObject{} };
             }
 
             if (must_bind_refs()) [[unlikely]] {
@@ -58,7 +58,7 @@ namespace rtl
             constexpr Return operator()(args_t&&...params) const noexcept
             {
                 if (!fn) [[unlikely]] {
-                    return { error::InvalidCaller, RObject{} };
+                    return { fn.m_init_err, RObject{} };
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
@@ -110,6 +110,8 @@ namespace rtl
             ncref = 2   //non-const ref.
         };
 
+        GETTER(rtl::error, _init_error, m_init_err)
+
     private:
 
         using lambda_vt = std::function<void(const dispatch::lambda_base&, signature_t...)>;
@@ -122,6 +124,12 @@ namespace rtl
 
         std::vector<const dispatch::lambda_base*> m_lambdas = {};
 
+        error m_init_err = error::InvalidCaller;
+
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
+        }
+
         GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
         GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
@@ -132,4 +140,12 @@ namespace rtl
         static_assert((!std::is_reference_v<signature_t> && ...),
                        "rtl::function<...>: any type cannot be specified as reference here");
     };
+}
+
+
+namespace rtl
+{
+    template<class ...signature_t>
+    struct static_method<Return(signature_t...)> : function<Return(signature_t...)>
+    { };
 }

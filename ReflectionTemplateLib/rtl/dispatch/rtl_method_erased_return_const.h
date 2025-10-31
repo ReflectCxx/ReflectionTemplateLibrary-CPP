@@ -30,7 +30,7 @@ namespace rtl
             constexpr Return operator()(args_t&&...params) const noexcept
             {
                 if (!fn) [[unlikely]] {
-                    return { error::InvalidCaller, RObject{} };
+                    return { fn.m_init_err, RObject{} };
                 }
 
                 if (fn.must_bind_refs()) [[unlikely]] {
@@ -65,7 +65,7 @@ namespace rtl
             constexpr Return operator()(args_t&&...params) const noexcept
             {
                 if (!fn) [[unlikely]] {
-                    return { error::InvalidCaller, RObject{} };
+                    return { fn.m_init_err, RObject{} };
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
@@ -121,6 +121,8 @@ namespace rtl
             ncref = 2   //non-const ref.
         };
 
+        GETTER(rtl::error, _init_error, m_init_err)
+
     private:
 
         using lambda_vt = std::function<void(const dispatch::lambda_base&, const record_t&, signature_t...)>;
@@ -132,7 +134,13 @@ namespace rtl
         std::vector<lambda_vt> m_vhop = {};
 
         std::vector<const dispatch::lambda_base*> m_lambdas = {};
+        
+        error m_init_err = error::InvalidCaller;
 
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
+        }
+        
         GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
         GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)

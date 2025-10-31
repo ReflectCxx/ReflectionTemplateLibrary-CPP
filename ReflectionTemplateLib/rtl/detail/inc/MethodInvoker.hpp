@@ -159,9 +159,18 @@ namespace rtl::detail
 namespace rtl::detail
 {
     template<class record_t, class ...args_t>
+    template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
+    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    {
+        method<record_t, return_t(traits::normal_sign_t<args_t>...)> erasedMth;
+        initHopper<return_t>(erasedMth);
+        return erasedMth;
+    }
+
+
+    template<class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr const
-    method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         if (!m_argsTfnMeta.is_empty() && m_argsTfnMeta.get_member_kind() != member::Static)
         {
@@ -171,123 +180,6 @@ namespace rtl::detail
                                 .template get_hopper<return_t>(retId);
         }
         return method<record_t, return_t(args_t...)>();
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t> requires (traits::type_erased_v<record_t, return_t>)
-    inline constexpr const
-    method<RObject, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
-    {
-        bool isReturnTvoid = false;
-        method<RObject, Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
-
-        for (auto& fnMeta : m_overloadsFnMeta)
-        {
-            if (!fnMeta.is_empty())
-            {
-                auto& erasedRetFn = fnMeta.get_erasure_base()
-                                          .template to_erased_record<traits::normal_sign_t<args_t>...>();
-                if (fnMeta.is_void()) {
-                    isReturnTvoid = true;
-                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
-                }
-                else {
-                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
-                }
-                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
-            }
-            else {
-                erasedRetHop.get_vhop().push_back(nullptr);
-                erasedRetHop.get_rhop().push_back(nullptr);
-                erasedRetHop.get_overloads().push_back(nullptr);
-            }
-        }
-        if (isReturnTvoid) {
-            erasedRetHop.get_rhop().clear();
-        }
-        else {
-            erasedRetHop.get_vhop().clear();
-        }
-        return erasedRetHop;
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t> requires (traits::target_erased_v<record_t, return_t>)
-    inline constexpr const
-    method<RObject, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
-    {
-        bool isReturnTvoid = false;
-        method<RObject, return_t(traits::normal_sign_t<args_t>...)> erasedRetHop;
-
-        for (auto& fnMeta : m_overloadsFnMeta)
-        {
-            if (!fnMeta.is_empty())
-            {
-                auto& erasedRetFn = fnMeta.get_erasure_base()
-                                          .template to_erased_target_aware_return<return_t, traits::normal_sign_t<args_t>...>();
-                if (fnMeta.is_void()) {
-                    isReturnTvoid = true;
-                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
-                }
-                else {
-                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
-                }
-                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
-            }
-            else {
-                erasedRetHop.get_vhop().push_back(nullptr);
-                erasedRetHop.get_rhop().push_back(nullptr);
-                erasedRetHop.get_overloads().push_back(nullptr);
-            }
-        }
-        if (isReturnTvoid) {
-            erasedRetHop.get_rhop().clear();
-        }
-        else {
-            erasedRetHop.get_vhop().clear();
-        }
-        return erasedRetHop;
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t> requires (traits::return_erased_v<record_t, return_t>)
-    inline constexpr const
-    method<record_t, Return(args_t...)> HopMethod<record_t, args_t...>::returnT() const
-    {
-        bool isReturnTvoid = false;
-        method<record_t, Return(traits::normal_sign_t<args_t>...)> erasedRetHop;
-
-        for (auto& fnMeta : m_overloadsFnMeta)
-        {
-            if (!fnMeta.is_empty())
-            {
-                auto& erasedRetFn = fnMeta.get_erasure_base()
-                                          .template to_erased_return_aware_target<record_t, traits::normal_sign_t<args_t>...>();
-                if (fnMeta.is_void()) {
-                    isReturnTvoid = true;
-                    erasedRetHop.get_vhop().push_back(erasedRetFn.get_void_hopper());
-                }
-                else {
-                    erasedRetHop.get_rhop().push_back(erasedRetFn.get_return_hopper());
-                }
-                erasedRetHop.get_overloads().push_back(&fnMeta.get_lambda());
-            }
-            else {
-                erasedRetHop.get_vhop().push_back(nullptr);
-                erasedRetHop.get_rhop().push_back(nullptr);
-                erasedRetHop.get_overloads().push_back(nullptr);
-            }
-        }
-        if (isReturnTvoid) {
-            erasedRetHop.get_rhop().clear();
-        }
-        else {
-            erasedRetHop.get_vhop().clear();
-        }
-        return erasedRetHop;
     }
 
 
@@ -337,5 +229,62 @@ namespace rtl::detail
             }
         }
         return { argsTfnMeta, overloadsFnMeta };
+    }
+
+
+    template<class record_t, class ...args_t>
+    template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
+    inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pMth) const
+    {
+        bool isReturnTvoid = false;
+        for (auto& fnMeta : m_overloadsFnMeta)
+        {
+            if (fnMeta.is_empty())
+            {
+                pMth.get_vhop().push_back(nullptr);
+                pMth.get_rhop().push_back(nullptr);
+                pMth.get_overloads().push_back(nullptr);
+                continue;
+            }
+
+            if (fnMeta.get_member_kind() == member::Static) {
+                pMth.set_init_error(error::InvalidStaticMethodCaller);
+                return;
+            }
+
+            auto& erasedFn = [&]() -> decltype(auto) {
+                if constexpr (traits::type_erased_v<record_t, return_t>) {
+                    return fnMeta.get_erasure_base()
+                                 .template to_erased_record<traits::normal_sign_t<args_t>...>();
+                }
+                else if constexpr (traits::target_erased_v<record_t, return_t>) {
+                    return fnMeta.get_erasure_base()
+                                 .template to_erased_target_aware_return<return_t, traits::normal_sign_t<args_t>...>();
+                }
+                else if constexpr (traits::return_erased_v<record_t, return_t>) {
+                    return fnMeta.get_erasure_base()
+                                 .template to_erased_return_aware_target<record_t, traits::normal_sign_t<args_t>...>();
+                }
+            }();
+
+            if (fnMeta.is_void()) {
+                isReturnTvoid = true;
+                pMth.get_vhop().push_back(erasedFn.get_void_hopper());
+            }
+            else {
+                pMth.get_rhop().push_back(erasedFn.get_return_hopper());
+            }
+            pMth.get_overloads().push_back(&fnMeta.get_lambda());
+
+        }
+        if (isReturnTvoid) {
+            pMth.get_rhop().clear();
+        }
+        else {
+            pMth.get_vhop().clear();
+        }
+        if (pMth) {
+            pMth.set_init_error(error::None);
+        }
     }
 }

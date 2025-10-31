@@ -48,6 +48,8 @@ namespace rtl::detail
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
+        void initHopper(function<rtl::Return(_signature...)>& pFn) const;
+
         template<class _returnType = rtl::Return> requires (member_kind == member::None && std::is_same_v<_returnType, rtl::Return>)
         constexpr function<rtl::Return(_signature...)> returnT() const;
 

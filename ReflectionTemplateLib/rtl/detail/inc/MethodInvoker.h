@@ -103,17 +103,14 @@ namespace rtl::detail
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
+        template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
+        void initHopper(method<record_t, return_t(signature_t...)>& pMth) const;
+
         template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
         constexpr const method<record_t, return_t(signature_t...)> returnT() const;   
 
-        template<class return_t = rtl::Return> requires (traits::target_erased_v<record_t, return_t>)
-        constexpr const method<rtl::RObject, return_t(signature_t...)> returnT() const;
-
-        template<class return_t = rtl::Return> requires (traits::return_erased_v<record_t, return_t>)
-        constexpr const method<record_t, rtl::Return(signature_t...)> returnT() const;
-
-        template<class return_t = rtl::Return> requires (traits::type_erased_v<record_t, return_t>)
-        constexpr const method<rtl::RObject, rtl::Return(signature_t...)> returnT() const;
+        template<class return_t = rtl::Return> requires (!traits::type_aware_v<record_t, return_t>)
+        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
     };
 
     template<member member_kind, class record_t>
