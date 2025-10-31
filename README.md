@@ -1,6 +1,6 @@
 # Reflection Template Library - Modern C++ Reflection Framework
 
-***Reflection Template Library (RTL)*** brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
+**Reflection Template Library (RTL)** brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
 
 🪞 What is “Reflection”? — Imagine you’ve written a simple function,
 ```c++
@@ -8,19 +8,19 @@ std::string GetAsString(int num);
 ```
 Now, somewhere else in your codebase — without a direct include, without knowing the function’s signature — you can do this:
 ```c++
-rtl::function<std::string(int)> toString = rtl::CxxMirror(...).getFunction("GetAsString");
-std::string result = toString(69375);
+rtl::function<std::string(int)> toStr = ... getFunction("GetAsString").argsT<int>().returnT<std::string>();
+std::string result = toStr(69375);
 ```
 That’s it.
 You just looked up a function by name, called it safely, and got a real return value — all through RTL.
 
 ⚡ Performance? Overhead? Practically none.
-This RTL reflective call is just a native function pointer hop — faster than std::function in the example above.
+This RTL reflective call is just a native function pointer hop — faster than `std::function`.
 
-Yes, RTL performs reflective invocations — for free functions, methods, constructors, or even unknown instance types — at near-zero runtime cost, even when the types involved are not known at compile time.
+Yes, RTL performs reflective invocations — for free functions, methods, constructors — at near-zero runtime cost, even when the types involved are not known at compile time.
 
 💡 In One Line
-> RTL is a lightweight, static library that brings a robust, type-safe runtime reflection system to C++ — as flexible as in managed languages, yet as fast as native code.
+> RTL is a lightweight, static library that brings a robust, type-safe runtime reflection system to C++ — as flexible as in managed languages, yet as fast as possible to native code.
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
