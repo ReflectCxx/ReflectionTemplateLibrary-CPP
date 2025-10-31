@@ -1,6 +1,6 @@
 # Reflection Template Library - Modern C++ Reflection Framework
 
-*Reflection Template Library (RTL)* brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
+***Reflection Template Library (RTL)*** brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
 
 🪞 What is “Reflection”? — Imagine you’ve written a simple function,
 ```c++
