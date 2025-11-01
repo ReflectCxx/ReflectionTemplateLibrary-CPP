@@ -2,7 +2,8 @@
 
 **Reflection Template Library (RTL)** brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
 
-🪞 What's “Reflection” ?
+🪞 What's “Reflection”?
+
 Reflection lets you interact with code by `name` instead of by `type`. Imagine you’ve written a simple function,
 ```c++
 std::string GetAsString(int num);
@@ -19,12 +20,15 @@ if(toStr) {   // All's well?
 **No includes. No compile-time linking. Just run-time lookup & type-safe invocation**.
 
 ⚡ Performance!
+
 Overhead? Practically none. **RTL**'s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
+
 Yes! `rtl::function` is faster than `std::function`.
 
 RTL performs reflective invocations — for free functions, methods, constructors — at near-zero cost, even when types are unknown at compile time.
 
 💡 In One Line
+
 ***RTL is a lightweight, static library that enables a robust, type-safe runtime reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance.***
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
