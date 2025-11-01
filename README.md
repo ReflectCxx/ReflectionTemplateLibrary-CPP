@@ -23,7 +23,7 @@ RTL performs reflective invocations — for free functions, methods, constructor
 
 💡 In One Line
 
-*** RTL is a lightweight, static library that enables a robust, type-safe runtime reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance. ***
+***RTL is a lightweight, static library that enables a robust, type-safe runtime reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance.***
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
