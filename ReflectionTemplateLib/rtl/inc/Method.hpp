@@ -67,7 +67,7 @@ namespace rtl
     {
         switch (getQualifier())
         {
-            case detail::member::None: {
+            case detail::member::Static: {
                 return Function::hasSignature<_args...>();
             }
             case detail::member::NonConst: {

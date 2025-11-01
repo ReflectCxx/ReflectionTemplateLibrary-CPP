@@ -38,7 +38,8 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const char*>());
 		{
-			rtl::method<StringS, rtl::Return(const char*)> reverseString = reverseStrOpt.value().targetT<StringS>()
+			rtl::method<StringS, rtl::Return(const char*)> reverseString = reverseStrOpt.value()
+																						.targetT<StringS>()
 																						.argsT<const char*>()
 																						.returnT<>();
 			EXPECT_FALSE(reverseString);
@@ -46,134 +47,137 @@ namespace rtl_tests
 				auto [err, robj] = reverseString(StringS())(STRA);
 				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
 			} 
+		} {
+			rtl::static_method<rtl::Return(const char*)> reverseString = reverseStrOpt.value()
+																					  .argsT<const char*>()
+																					  .returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString(STRA);
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
+
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			}
 		}
-			//{
-		//		auto [err, robj] = reverseString.bind<const char*>(StringS())(STRA);
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string>());
+		{
+			rtl::static_method<rtl::Return(std::string)> reverseString = reverseStrOpt.value()
+																					  .argsT<std::string>()
+																				      .returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString(STRA);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
-		//		EXPECT_EQ(retStr, expStr);
-		//	}
-		//}
-		//EXPECT_TRUE(reverseStrOpt->hasSignature<std::string>());
-		//{
-		//	rtl::method<StringS, rtl::Return(std::string)> reverseString = reverseStrOpt.value().targetT<StringS>()
-		//		.argsT<std::string>()
-		//		.returnT<>();
-		//	EXPECT_TRUE(reverseString);
-		//	{
-		//		auto [err, robj] = reverseString(StringS())(STRA);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				auto [err, robj] = reverseString.bind<std::string>()(STRA);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
-		//		EXPECT_EQ(retStr, expStr);
-		//	} {
-		//		auto [err, robj] = reverseString.bind<std::string>(StringS())(STRA);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string*>());
+		{
+			rtl::static_method<rtl::Return(std::string*)> reverseString = reverseStrOpt.value()
+																					   .argsT<std::string*>()
+																					   .returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				std::string str = STRA;
+				auto [err, robj] = reverseString(&str);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
-		//		EXPECT_EQ(retStr, expStr);
-		//	}
-		//}
-		//EXPECT_TRUE(reverseStrOpt->hasSignature<std::string*>());
-		//{
-		//	rtl::method<StringS, rtl::Return(std::string*)> reverseString = reverseStrOpt.value().targetT<StringS>()
-		//		.argsT<std::string*>()
-		//		.returnT<>();
-		//	EXPECT_TRUE(reverseString);
-		//	{
-		//		std::string str = STRA;
-		//		auto [err, robj] = reverseString(StringS())(&str);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				std::string str = STRA;
+				auto [err, robj] = reverseString.bind<std::string*>()(&str);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
-		//		EXPECT_EQ(retStr, expStr);
-		//	} {
-		//		std::string str = STRA;
-		//		auto [err, robj] = reverseString.bind<std::string*>(StringS())(&str);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string*>());
+		{
+			rtl::static_method<rtl::Return(const std::string*)> reverseString = reverseStrOpt.value()
+																							 .argsT<const std::string*>()
+																							 .returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				const std::string str = STRA;
+				auto [err, robj] = reverseString(&str);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
-		//		EXPECT_EQ(retStr, expStr);
-		//	}
-		//}
-		//EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string*>());
-		//{
-		//	rtl::method<StringS, rtl::Return(const std::string*)> reverseString = reverseStrOpt.value().targetT<StringS>()
-		//		.argsT<const std::string*>()
-		//		.returnT<>();
-		//	EXPECT_TRUE(reverseString);
-		//	{
-		//		const std::string str = STRA;
-		//		auto [err, robj] = reverseString(StringS())(&str);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				const std::string str = STRA;
+				auto [err, robj] = reverseString.bind<const std::string*>()(&str);
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
-		//		EXPECT_EQ(retStr, expStr);
-		//	} {
-		//		const std::string str = STRA;
-		//		auto [err, robj] = reverseString.bind<const std::string*>(StringS())(&str);
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
+		EXPECT_TRUE(reverseStrOpt->hasSignature<>());
+		{
+			rtl::static_method<rtl::Return()> reverseString = reverseStrOpt.value()
+																		   .argsT<>()
+																		   .returnT<>();
+			EXPECT_TRUE(reverseString);
+			{
+				auto [err, robj] = reverseString();
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
-		//		EXPECT_EQ(retStr, expStr);
-		//	}
-		//}
-		//EXPECT_TRUE(reverseStrOpt->hasSignature<>());
-		//{
-		//	rtl::method<StringS, rtl::Return()> reverseString = reverseStrOpt.value().targetT<StringS>()
-		//		.argsT<>()
-		//		.returnT<>();
-		//	EXPECT_TRUE(reverseString);
-		//	{
-		//		auto [err, robj] = reverseString(StringS())();
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			} {
+				auto [err, robj] = reverseString.bind()();
 
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
+				EXPECT_EQ(err, rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				ASSERT_TRUE(robj.canViewAs<std::string>());
 
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
-		//		EXPECT_EQ(retStr, expStr);
-		//	} {
-		//		auto [err, robj] = reverseString.bind(StringS())();
-
-		//		EXPECT_EQ(err, rtl::error::None);
-		//		ASSERT_FALSE(robj.isEmpty());
-		//		ASSERT_TRUE(robj.canViewAs<std::string>());
-
-		//		const std::string& retStr = robj.view<std::string>()->get();
-		//		std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
-		//		EXPECT_EQ(retStr, expStr);
-		//	}
-		//}
+				const std::string& retStr = robj.view<std::string>()->get();
+				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void + SUFFIX_static;
+				EXPECT_EQ(retStr, expStr);
+			}
+		}
 	}
 }
