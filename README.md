@@ -2,25 +2,27 @@
 
 **Reflection Template Library (RTL)** brings rich runtime reflection to modern C++ — combining compile-time safety with runtime flexibility.
 
-🪞 What is “Reflection”? — Imagine you’ve written a simple function,
+🪞 What is “Reflection”? — Reflection lets you intract with code **by name** instead of **by type**.
+Imagine you’ve written a simple function,
 ```c++
 std::string GetAsString(int num);
 ```
-Now, somewhere else in your codebase — without a direct include, without knowing the function’s signature — you can do this:
+**RTL** lets you call it dynamically:
 ```c++
-rtl::function<std::string(int)> toStr = ... getFunction("GetAsString").argsT<int>().returnT<std::string>();
-std::string result = toStr(69375);
+rtl::function<std::string(int)> toStr = rtl_mirror.getFunction("GetAsString")	//rtl_mirror?? see quick-preview!
+                                                  ->argsT<int>()
+                                                  .returnT<std::string>();
+std::string result = toStr(69375);	// Works!
 ```
-That’s it.
-You just looked up a function by name, called it safely, and got a real return value — all through RTL.
+**No includes** | **No compile-timetype knowledge** | **Just runtime lookup & type-safe invocation**
 
 ⚡ Performance? Overhead? Practically none.
 This RTL reflective call is just a native function pointer hop — faster than `std::function`.
 
-Yes, RTL performs reflective invocations — for free functions, methods, constructors — at near-zero runtime cost, even when the types involved are not known at compile time.
+Yes, RTL performs reflective invocations — for free functions, methods, constructors — at near-zero cost, even when types are unknown at compile time.
 
 💡 In One Line
-> RTL is a lightweight, static library that brings a robust, type-safe runtime reflection system to C++ — as flexible as in managed languages, yet as fast as possible to native code.
+*** RTL is a lightweight, static library that enables a robust, type-safe runtime reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance. ***
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -54,7 +56,7 @@ Yes, RTL performs reflective invocations — for free functions, methods, constr
 ```
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
 ```c++
-auto cxx_mirror = rtl::CxxMirror({
+auto rtl_mirror = rtl::CxxMirror({
 	/* ...register all types here... */
 	rtl::type().record<Person>("Person").build(),
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
@@ -63,7 +65,7 @@ auto cxx_mirror = rtl::CxxMirror({
 });
 ```
 
-With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
+With just this much, you’ve registered your types and unlocked full runtime reflection. The `rtl_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
 
 **Without reflection:**
 
@@ -77,7 +79,7 @@ std::cout << p.getName();
 
 ```c++
 // Look up the class by name
-std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
+std::optional<rtl::Record> classPerson = rtl_mirror.getRecord("Person");
 
 if (classPerson)  // Check has_value() before use.
 {
