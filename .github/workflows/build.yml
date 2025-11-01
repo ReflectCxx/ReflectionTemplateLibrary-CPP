@@ -2,11 +2,11 @@ name: RTL Build
 
 on:
   push:
-    branches: [ release ]
+    branches: [ release, develop ]
     paths-ignore:
       - '**/*.md'
   pull_request:
-    branches: [ release ]
+    branches: [ release, develop ]
     paths-ignore:
       - '**/*.md'
   workflow_dispatch:
