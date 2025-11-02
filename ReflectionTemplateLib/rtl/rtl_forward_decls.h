@@ -40,23 +40,26 @@ namespace rtl
 
         struct RObjectId;
 
-        template<class ..._signature>
+        template<class ...signature_t>
         class FunctorContainer;
 
-        template<bool is_bind_v, class ..._signature>
+        template<bool is_bind_v, class ...signature_t>
         struct ErasedCaller;
 
-        template<class _recordType>
+        template<class record_t>
         struct ErasedInvoker;
 
         template<class _derivedType>
         class SetupMethod;
 
-        template<member, class _recordType = std::nullptr_t>
+        template<member, class record_t = std::nullptr_t>
         struct Hopper;
 
-        template<member, class ..._signature>
+        template<member, class ...signature_t>
         struct HopFunction;
+
+        template<class record_t, class ...signature_t>
+        struct HopMethod;
     }
 
     namespace cache

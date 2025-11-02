@@ -54,7 +54,7 @@ namespace rtl::detail
     template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
     inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        static_method<Return(args_t...)> erasedFn;
+        static_method<Return(traits::normal_sign_t<args_t>...)> erasedFn;
         initHopper(erasedFn);
         return erasedFn;
     }
@@ -63,15 +63,22 @@ namespace rtl::detail
     template<class return_t> requires (member_kind == member::Static && !std::is_same_v<return_t, rtl::Return>)
     inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        const auto retId = traits::uid<return_t>::value;
+        static_method<return_t(args_t...)> fn;
         if (!m_argsTfnMeta.is_empty()) 
         {
-            return m_argsTfnMeta.get_lambda()
-                                .template to_function<args_t...>()
-                                .template get_hopper<return_t>(retId)
-                                .f_ptr();
+            if (m_argsTfnMeta.get_member_kind() != member::Static) {
+                fn.set_init_error(error::InvalidNonStaticMethodCaller);
+            }
+            else if (m_argsTfnMeta.get_member_kind() == member::Static) {
+                
+                const auto retId = traits::uid<return_t>::value;
+                return m_argsTfnMeta.get_lambda()
+                                    .template to_function<args_t...>()
+                                    .template get_hopper<return_t>(retId)
+                                    .f_ptr();
+            }
         }
-        return static_method<return_t(args_t...)>();
+        return fn;
     }
 
 
@@ -79,14 +86,21 @@ namespace rtl::detail
     template<class return_t> requires (member_kind == member::None && !std::is_same_v<return_t, rtl::Return>)
     inline constexpr const function<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        const auto retId = traits::uid<return_t>::value;
+        function<return_t(args_t...)> fn;
         if (!m_argsTfnMeta.is_empty()) 
         {
-            return m_argsTfnMeta.get_lambda()
-                                .template to_function<args_t...>()
-                                .template get_hopper<return_t>(retId);
+            if (m_argsTfnMeta.get_member_kind() == member::Static) {
+                fn.set_init_error(error::InvalidStaticMethodCaller);
+            }
+            else if (m_argsTfnMeta.get_member_kind() == member::None) {
+
+                const auto retId = traits::uid<return_t>::value;
+                return m_argsTfnMeta.get_lambda()
+                                    .template to_function<args_t...>()
+                                    .template get_hopper<return_t>(retId);
+            }
         }
-        return function<return_t(args_t...)>();
+        return fn;
     }
 
 
@@ -104,6 +118,11 @@ namespace rtl::detail
                 continue;
             }
 
+            if (fnMeta.get_member_kind() != member::None && fnMeta.get_member_kind() != member::Static) {
+                pHopFn.set_init_error(error::InvalidNonStaticMethodCaller);
+                return;
+            }
+
             auto& erasedRetFn = fnMeta.get_erasure_base()
                                       .template to_erased_return<traits::normal_sign_t<args_t>...>();
             if (fnMeta.is_void()) {
@@ -114,15 +133,13 @@ namespace rtl::detail
                 pHopFn.get_rhop().push_back(erasedRetFn.get_return_hopper());
             }
             pHopFn.get_overloads().push_back(&fnMeta.get_lambda());
+            pHopFn.set_init_error(error::None);
         }
         if (isReturnTvoid) {
             pHopFn.get_rhop().clear();
         }
         else {
             pHopFn.get_vhop().clear();
-        }
-        if (pHopFn) {
-            pHopFn.set_init_error(error::None);
         }
     }
 

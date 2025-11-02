@@ -72,5 +72,8 @@ namespace rtl
         void set_init_error(error p_err) {
             m_init_err = p_err;
         }
+
+        template<class, class ...>
+        friend struct detail::HopMethod;
     };
 }

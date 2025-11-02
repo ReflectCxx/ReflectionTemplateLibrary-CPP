@@ -58,6 +58,9 @@ namespace rtl
         void set_init_error(error p_err) {
             m_init_err = p_err;
         }
+
+        template<detail::member, class ...>
+        friend struct detail::HopFunction;
     };
 }
 
@@ -78,5 +81,8 @@ namespace rtl
 
         static_method& operator=(static_method&&) = default;
         static_method& operator=(const static_method&) = default;
+
+        template<detail::member, class ...>
+        friend struct detail::HopFunction;
     };
 }

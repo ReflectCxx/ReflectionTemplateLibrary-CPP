@@ -172,14 +172,21 @@ namespace rtl::detail
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
     inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
-        if (!m_argsTfnMeta.is_empty() && m_argsTfnMeta.get_member_kind() != member::Static)
+        method<record_t, return_t(args_t...)> mth;
+        if (!m_argsTfnMeta.is_empty())
         {
-            const auto retId = traits::uid<return_t>::value;
-            return m_argsTfnMeta.get_lambda()
-                                .template to_method<record_t, args_t...>()
-                                .template get_hopper<return_t>(retId);
+            if (m_argsTfnMeta.get_member_kind() == member::Static) {
+                mth.set_init_error(error::InvalidStaticMethodCaller);
+            }
+            else {
+
+                const auto retId = traits::uid<return_t>::value;
+                return m_argsTfnMeta.get_lambda()
+                                    .template to_method<record_t, args_t...>()
+                                    .template get_hopper<return_t>(retId);
+            }
         }
-        return method<record_t, return_t(args_t...)>();
+        return mth;
     }
 
 
@@ -275,16 +282,13 @@ namespace rtl::detail
                 pMth.get_rhop().push_back(erasedFn.get_return_hopper());
             }
             pMth.get_overloads().push_back(&fnMeta.get_lambda());
-
+            pMth.set_init_error(error::None);
         }
         if (isReturnTvoid) {
             pMth.get_rhop().clear();
         }
         else {
             pMth.get_vhop().clear();
-        }
-        if (pMth) {
-            pMth.set_init_error(error::None);
         }
     }
 }

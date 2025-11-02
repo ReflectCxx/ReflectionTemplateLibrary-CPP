@@ -27,6 +27,7 @@ namespace rtl
         RefBindingMismatch,
         ExplicitRefBindingRequired,
         InvalidStaticMethodCaller,
+        InvalidNonStaticMethodCaller,
 
         CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type returnd from a function.
         FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.
@@ -49,14 +50,18 @@ namespace rtl
             return "No error (operation successful)";
         case error::EmptyRObject:
             return "Empty instance: RObject does not hold any reflected object";
-        case error::InvalidCaller:
-            return "Invalid callable: rtl::function/rtl::method object bieng used is empty.";
         case error::SignatureMismatch:
             return "Signature mismatch: Function parameters do not match the expected signature";
         case error::RefBindingMismatch:
             return "Reference binding mismatch: Argument references do not match the expected parameter bindings";
         case error::ExplicitRefBindingRequired:
             return "Explicit reference binding required for correct overload resolution";
+        case error::InvalidCaller:
+            return "Invalid callable: rtl::function/rtl::method object being used is empty.";
+        case error::InvalidStaticMethodCaller:
+            return "Invalid callable: rtl::method being used to call a static method; use rtl::static_method instead.";
+        case error::InvalidNonStaticMethodCaller:
+            return "Invalid callable: rtl::static_method being used to call a non-static method; use rtl::method instead.";
         case error::CloningDisabled:
             return "Type not registered: The requested type is not explicitly registered in the Reflection system";
         case error::FunctionNotRegistered:

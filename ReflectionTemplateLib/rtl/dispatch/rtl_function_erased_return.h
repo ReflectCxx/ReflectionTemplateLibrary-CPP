@@ -95,7 +95,9 @@ namespace rtl
         }
 
         constexpr operator bool() const noexcept {
-            return !(m_lambdas.empty() || (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+            return !(m_init_err != error::None || m_lambdas.empty() ||
+                     (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+
         }
 
         constexpr bool must_bind_refs() const noexcept {
@@ -147,5 +149,8 @@ namespace rtl
 {
     template<class ...signature_t>
     struct static_method<Return(signature_t...)> : function<Return(signature_t...)>
-    { };
+    { 
+        template<detail::member, class ...>
+        friend struct detail::HopFunction;
+    };
 }

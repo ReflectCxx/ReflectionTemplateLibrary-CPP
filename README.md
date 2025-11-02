@@ -1,6 +1,6 @@
-# Reflection Template Library - Modern C++ Reflection Framework
+# Reflection Template Library (RTL) — A Modern C++ Run-Time Reflection Framework
 
-**Reflection Template Library (RTL)** brings rich run-time reflection to modern C++ — combining compile-time safety with run-time flexibility.
+**RTL** brings rich, type-safe run-time reflection to modern C++ — combining compile-time guarantees with run-time flexibility.
 
 🪞 What's “Reflection”?
 
@@ -13,11 +13,12 @@ std::string complexToStr(float real, float img);
 rtl::function<std::string(float, float)> cToStr = cxx_mirror.getFunction("complexToStr")  // cxx_mirror?? see quick preview!
                                                             ->argsT<float, float>()
                                                             .returnT<std::string>();
-if(cToStr) {   // All's well?
+if(cToStr) {   // Function found?
     std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
 }
 ```
-*No includes. No compile-time linking. No argument type-casting. No guess work. Just run-time lookup & type-safe invocation*.
+*No includes. No compile-time linking. No argument type-casting. No guess work.*
+*Just run-time lookup and type-safe invocation*.
 
 ⚡ Performance!
 

@@ -106,7 +106,9 @@ namespace rtl
         }
 
         constexpr operator bool() const noexcept {
-            return !(m_lambdas.empty() || (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+            return !(m_init_err != error::None || m_lambdas.empty() ||
+                     (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+
         }
 
         constexpr bool must_bind_refs() const noexcept {
