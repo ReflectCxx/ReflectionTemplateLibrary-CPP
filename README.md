@@ -24,9 +24,10 @@ if(cToStr) {   // Function materialized?
 
 Overhead? Practically none. **RTL**'s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
 
-Yes! `rtl::function` is faster than `std::function`.
+Yes — `rtl::function` is faster than `std::function`.
 
-RTL performs reflective invocations — for free functions, methods, constructors — at near-zero cost, even when types are unknown at compile time.
+Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection.
+Once the functions start doing real work, both perform identically — always, under all conditions.
 
 💡 In One Line
 
