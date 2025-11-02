@@ -1,6 +1,6 @@
 # Reflection Template Library (RTL) — A Modern C++ Run-Time Reflection Framework
 
-**RTL** brings rich, type-safe run-time reflection to modern C++ — combining compile-time guarantees with run-time flexibility.
+**RTL** brings rich, type-safe run-time reflection to modern C++ — combining compile-time safety with run-time flexibility.
 
 🪞 What's “Reflection”?
 
@@ -18,6 +18,7 @@ if(cToStr) {   // Function found?
 }
 ```
 *No includes. No compile-time linking. No argument type-casting. No guess work.*
+
 *Just run-time lookup and type-safe invocation*.
 
 ⚡ Performance!
