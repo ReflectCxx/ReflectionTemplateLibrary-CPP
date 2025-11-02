@@ -13,12 +13,11 @@ std::string complexToStr(float real, float img);
 rtl::function<std::string(float, float)> cToStr = cxx_mirror.getFunction("complexToStr")  // cxx_mirror?? see quick preview!
                                                             ->argsT<float, float>()
                                                             .returnT<std::string>();
-if(cToStr) {   // Function found?
+if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
 }
 ```
 *No includes. No compile-time linking. No argument type-casting. No guess work.*
-
 *Just run-time lookup and type-safe invocation*.
 
 ⚡ Performance!
