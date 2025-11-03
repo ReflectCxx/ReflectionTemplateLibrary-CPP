@@ -179,28 +179,6 @@ namespace
             const std::string& retStr = strView->get();
             // Confirms the expected static function was invoked.
             EXPECT_EQ(retStr, expectReturnStr);
-        } {
-            // Now create a `Person` object and reflect it into RTL.
-            rtl::RObject robj = rtl::reflect(Person(""));
-
-            // Even if we bind a target object before calling the static function,
-            // it has no effect — the call remains valid and succeeds.
-            // This matches C++ native semantics: binding an instance is irrelevant
-            // for static member functions.
-            auto [err, ret] = getDefaults->bind(robj).call();
-
-            // Validate reflective call succeeded.
-            EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
-
-            // Verify return type and extract result.
-            EXPECT_TRUE(ret.canViewAs<std::string>());
-            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-            ASSERT_TRUE(strView);
-
-            const std::string& retStr = strView->get();
-            // Confirms the expected static function was invoked.
-            EXPECT_EQ(retStr, expectReturnStr);
         }
     }
 

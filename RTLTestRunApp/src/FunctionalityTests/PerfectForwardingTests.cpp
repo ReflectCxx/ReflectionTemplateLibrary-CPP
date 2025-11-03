@@ -321,8 +321,11 @@ namespace rtl_tests
             const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            const auto zookeeper = std::string(animal::ZOO_KEEPER);
-            auto [err, ret] = updateZooKeeper->bind<const std::string&>()(zookeeper);
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = updateZooKeeper.value()
+                                                                                             .argsT<std::string>()
+                                                                                             .returnT<>();
+
+            auto [err, ret] = updateZooKeeperMth.bind<const std::string&>()(animal::ZOO_KEEPER);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -349,8 +352,10 @@ namespace rtl_tests
             const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            auto zookeeper = std::string(animal::ZOO_KEEPER);
-            auto [err, ret] = updateZooKeeper->bind<std::string&>()(zookeeper);
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = updateZooKeeper.value()
+                                                                                             .argsT<std::string>()
+                                                                                             .returnT<>();
+            auto [err, ret] = updateZooKeeperMth.bind<std::string&>()(animal::ZOO_KEEPER);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());

@@ -22,14 +22,14 @@ if(cToStr) {   // Function materialized?
 *No includes. No compile-time linking. No argument type-casting. No guesswork.*
 *Just run-time lookup and type-safe invocation*.
 
-### ⚡ Performance!
+### ⚡ Performance
 
 Overhead? Practically none. **RTL**’s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
 
 Yes — `rtl::function` is faster than `std::function`.
 
 Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection.
-Once the functions start doing real work, both perform identically — always, under all conditions.
+Once the functions start doing real work, both perform identically.
 
 ### 💡 In One Line
 

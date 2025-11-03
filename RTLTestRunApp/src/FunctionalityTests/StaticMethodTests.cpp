@@ -112,25 +112,30 @@ namespace rtl_tests
 		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
-		ASSERT_TRUE(getDefaults);
-		EXPECT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
-
-		auto [err0, person] = classPerson->create<alloc::Heap>();
-
-		EXPECT_TRUE(err0 == error::None);
-		ASSERT_FALSE(person.isEmpty());
+		optional<Method> getDefaultsOpt = classPerson->getMethod(person::str_getDefaults);
+		ASSERT_TRUE(getDefaultsOpt);
+		EXPECT_TRUE(getDefaultsOpt->hasSignature<>());	//empty template params checks for zero arguments.
 		{
-			auto [err, ret] = getDefaults->bind(person).call();
-			EXPECT_TRUE(err == error::None);
-			ASSERT_FALSE(ret.isEmpty());
-			EXPECT_TRUE(ret.canViewAs<string>());
+			rtl::method<rtl::RObject, rtl::Return()> getDefaults = getDefaultsOpt.value().targetT().argsT().returnT();
 
-			auto& retStr = ret.view<string>()->get();
-			EXPECT_EQ(retStr, person::get_str_returned_on_call_getDefaults());
+			EXPECT_FALSE(getDefaults);
+			EXPECT_EQ(getDefaults.get_init_error(), error::InvalidStaticMethodCaller);
+
+			auto [err0, person] = classPerson->create<alloc::Heap>();
+
+			EXPECT_EQ(err0, error::None);
+			ASSERT_FALSE(person.isEmpty());
+
+			auto [err, ret] = getDefaults(person)();
+
+			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
+			EXPECT_TRUE(ret.isEmpty());
 		} {
-			auto [err, ret] = getDefaults->bind(person).call();
-			EXPECT_TRUE(err == error::None);
+			rtl::static_method<rtl::Return()> getDefaults = getDefaultsOpt.value().argsT().returnT();
+
+			auto [err, ret] = getDefaults();
+
+			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
@@ -145,38 +150,39 @@ namespace rtl_tests
 		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
-		auto [err0, person] = classPerson->create<alloc::Heap>();
+		optional<Method> getProfileOpt = classPerson->getMethod(person::str_getProfile);
+		ASSERT_TRUE(getProfileOpt);
+		EXPECT_TRUE((getProfileOpt->hasSignature<string, size_t>()));
 
-		EXPECT_TRUE(err0 == error::None);
-		ASSERT_FALSE(person.isEmpty());
-
-		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-		ASSERT_TRUE(getProfile);
-		EXPECT_TRUE((getProfile->hasSignature<string, size_t>()));
-
-		size_t age = person::AGE;
-		string occupation = person::OCCUPATION;
 		{
-			auto [err, ret] = getProfile->bind(person).call(occupation, age);
+			rtl::method<rtl::RObject, rtl::Return(std::string, std::size_t)> getProfile = getProfileOpt.value()
+																									   .targetT()
+																									   .argsT<std::string, std::size_t>()
+																									   .returnT();
+			EXPECT_FALSE(getProfile);
+			EXPECT_EQ(getProfile.get_init_error(), error::InvalidStaticMethodCaller);
 
-			EXPECT_TRUE(err == error::None);
-			ASSERT_FALSE(ret.isEmpty());
-			EXPECT_TRUE(ret.canViewAs<string>());
+			auto [err0, person] = classPerson->create<alloc::Heap>();
 
-			const string& retStr = ret.view<string>()->get();
-			const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
+			EXPECT_EQ(err0, error::None);
+			ASSERT_FALSE(person.isEmpty());
 
-			EXPECT_EQ(retStr, checkStr);
+			auto [err, ret] = getProfile(person)(person::OCCUPATION, person::AGE);
+
+			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
+			ASSERT_TRUE(ret.isEmpty());
 		} {
-			auto [err, ret] = getProfile->bind(person).call(occupation, age);
+			rtl::static_method<rtl::Return(std::string, std::size_t)> getProfile = getProfileOpt.value()
+																							    .argsT<std::string, std::size_t>()
+																							    .returnT();
+			auto [err, ret] = getProfile(person::OCCUPATION, person::AGE);
 
-			EXPECT_TRUE(err == error::None);
+			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
 
 			const string& retStr = ret.view<string>()->get();
 			const string& checkStr = person::get_str_returned_on_call_getProfile<string, size_t>();
-
 			EXPECT_EQ(retStr, checkStr);
 		}
 	}
