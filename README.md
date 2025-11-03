@@ -2,7 +2,9 @@
 
 **RTL** brings rich, type-safe run-time reflection to modern C++ — combining compile-time safety with run-time flexibility.
 
-🪞 What's “Reflection”?
+[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+### 🪞 What’s “Reflection”?
 
 Reflection lets you interact with code by `name` instead of by `type`. Imagine you’ve written a simple function,
 ```c++
@@ -17,28 +19,23 @@ if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
 }
 ```
-*No includes. No compile-time linking. No argument type-casting. No guess work.*
+*No includes. No compile-time linking. No argument type-casting. No guesswork.*
 *Just run-time lookup and type-safe invocation*.
 
-⚡ Performance!
+### ⚡ Performance!
 
-Overhead? Practically none. **RTL**'s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
+Overhead? Practically none. **RTL**’s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
 
 Yes — `rtl::function` is faster than `std::function`.
 
 Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection.
 Once the functions start doing real work, both perform identically — always, under all conditions.
 
-💡 In One Line
+### 💡 In One Line
 
 ***"RTL is a lightweight, static library that enables a robust, type-safe run-time reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance."***
 
-[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-
-## What RTL Brings to Your Code
-
-* ***Runtime Reflection for C++*** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
+## What’s more?
 
 * ***Single Source of Truth*** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
 
@@ -63,7 +60,7 @@ Once the functions start doing real work, both perform identically — always, u
 ```c++
 #include "RTLibInterface.h" // Reflection access interface.
 ```
-Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	/* ...register all types here... */
@@ -154,7 +151,7 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 * ✅ **Perfect Forwarding** 🚀 – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** ⚡ – No temporaries or copies during method forwarding.
 * ✅ **Namespace Support** 🗂️ – Group and reflect under namespaces.
-* ✅ **Reflected Returns** 🔍 – Access return values whose types are unknown at compile time. Validate against the expected type and use them as if the type was known all along.
+* ✅ **Reflected Returns** 🔍 – Access return values whose types are unknown at compile-time. Validate against the expected type and use them as if the type was known all along.
 * ✅ **Smart Pointer Reflection** 🔗 – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
 * 🟨 **Conservative Conversions** 🛡️ – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
 * 🟨 **Materialize New Types** 🔄 – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*

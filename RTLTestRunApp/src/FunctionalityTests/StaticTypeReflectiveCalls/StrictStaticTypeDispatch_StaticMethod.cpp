@@ -181,4 +181,24 @@ namespace rtl_tests
             EXPECT_EQ(ret_str, exp_str);
         }
     }
+
+
+    TEST(StrictStaticTypeRtl_static_method, rvalue_ref_overload_resolution_with_known_signatures)
+    {
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringS::struct_);
+        ASSERT_TRUE(optStringUtil);
+
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::static_method<std::string(std::string&&)> reverse_string = reverseString.value()
+                                                                                         .argsT<std::string&&>()
+                                                                                         .returnT<std::string>();
+            ASSERT_TRUE(reverse_string);
+
+            std::string ret_str = reverse_string(STRA);
+            auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_rvref + SUFFIX_static;
+            EXPECT_EQ(ret_str, exp_str);
+        }
+    }
 }
