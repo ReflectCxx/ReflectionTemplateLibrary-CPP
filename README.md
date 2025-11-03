@@ -5,7 +5,6 @@
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ### 🪞 What’s “Reflection”?
-
 Reflection lets you interact with code by `name` instead of by `type`. Imagine you’ve written a simple function,
 ```c++
 std::string complexToStr(float real, float img);
@@ -23,7 +22,6 @@ if(cToStr) {   // Function materialized?
 *Just run-time lookup and type-safe invocation*.
 
 ### ⚡ Performance!
-
 Overhead? Practically none. **RTL**’s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
 
 Yes — `rtl::function` is faster than `std::function`.
@@ -32,7 +30,6 @@ Microbenchmarks show reflective invocations through `rtl::function` have lower c
 Once the functions start doing real work, both perform identically — always, under all conditions.
 
 ### 💡 In One Line
-
 ***"RTL is a lightweight, static library that enables a robust, type-safe run-time reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance."***
 
 ## What’s more?
@@ -131,19 +128,19 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 
 ## Reflection Features
 
-* ✅ **Function Reflection** 🔧 – Register and invoke C-style functions, supporting all kinds of overloads.
-* ✅ **Class and Struct Reflection** 🏗️ – Register and dynamically reflect their methods, constructors, and destructors.
-* ✅ **Complete Constructor Support** 🏗️:
+* ✅ **Function Reflection** – Register and invoke C-style functions, supporting all kinds of overloads.
+* ✅ **Class and Struct Reflection** – Register and dynamically reflect their methods, constructors, and destructors.
+* ✅ **Complete Constructor Support** :
   * Default construction.
   * Copy/Move construction.
   * Any overloaded constructor.
 
-* ✅ **Allocation Strategies & Ownership** 📂:
+* ✅ **Allocation Strategies & Ownership** :
   * Choose between `Heap` or `Stack` allocation.
   * Automatic move semantics for ownership transfers.
   * Scope-based destruction for `Heap` allocated instances.
 
-* ✅ **Member Function Invocation** 🎯:
+* ✅ **Member Function Invocation** :
   * Static methods.
   * Const/Non-const methods.
   * Any overloaded method, Const/Non-Const based as well.
@@ -182,10 +179,12 @@ To build, use any IDE applicable to the generator, or build straight from CMake:
 cmake --build .
 ```
 
-Run the **CxxRTLTestApplication** binary generated in the `../bin` folder. *(Tested MSVC-19, GCC-14 & Clang-19)*
-* See `CxxTestRegistration/src/MyReflectionTests/` for introductory type registration & reflective programming examples.
-* See `CxxRTLTestApplication/src` for detailed test cases.
-
+Run the `RTLTestRunApp` or `RTLBenchmarkApp` binaries generated in the `bin/` directory. (Tested with MSVC 19, GCC 14, and Clang 19)
+* See `CxxTestRegistration/src/MyReflectionTests/` for introductory examples of type registration and reflective programming.
+* See `RTLTestRunApp/src` for detailed test cases.
+* See `RTLBenchmarkApp/src` for benchmarking implementations.
+* Run `run_benchmarks.sh` to perform automated benchmarking, from micro-level tests to scaled workloads.
+  
 ## Contributions
 
 Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
