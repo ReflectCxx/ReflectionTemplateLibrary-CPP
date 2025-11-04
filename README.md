@@ -11,9 +11,9 @@ std::string complexToStr(float real, float img);
 ```
 **RTL** lets you call it dynamically:
 ```c++
-rtl::function<std::string(float, float)> cToStr = cxx_mirror.getFunction("complexToStr")  // cxx_mirror?? see quick preview!
-                                                            ->argsT<float, float>()
-                                                            .returnT<std::string>();
+rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")  // cxx::mirror?? see quick preview!
+                                                               ->argsT<float, float>()
+                                                               .returnT<std::string>();
 if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
 }
@@ -43,8 +43,6 @@ Once the functions start doing real work, both perform identically.
 * ***Zero-Overhead by Design*** – Metadata is registered and resolved only when used. Reflection introduces no cost beyond the features you explicitly employ.
 
 * ***Exception-Free Surface*** – All predictable failures return error codes; no hidden throws.
-
-* ***Deterministic Lifetimes*** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
 * ***Cross-Compiler Consistency*** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
 
