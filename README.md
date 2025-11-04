@@ -18,17 +18,14 @@ if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
 }
 ```
-*No includes. No compile-time linking. No argument type-casting. No guesswork.*
-*Just run-time lookup and type-safe invocation*.
-
+> *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
 ### ⚡ Performance
 
 Overhead? Practically none. **RTL**’s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
 
 Yes — `rtl::function`’s dispatch is faster than `std::function`.
 
-Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection.
-Once the functions start doing real work, both perform identically.
+> Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection. Once the functions start doing real work, both perform identically.
 
 ### 💡 In One Line
 
@@ -70,7 +67,7 @@ auto cxx_mirror = rtl::CxxMirror({
 ```
 The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge or static coupling. It can live anywhere — in any translation unit, quietly sitting in a corner of your codebase. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
-And what better way to do that than a Singleton:
+And what better way to do that than a **Singleton**:
 ```c++
 struct cxx { static rtl::CxxMirror& mirror(); };
 ```
