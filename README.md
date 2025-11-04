@@ -55,20 +55,35 @@ Once the functions start doing real work, both perform identically.
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 ```c++
-#include "RTLibInterface.h" // Reflection access interface.
+#include <rtl/rtl.h> // Reflection access interface.
 ```
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	/* ...register all types here... */
+    rtl::type().function("complexToStr").build(complexToStr),
 	rtl::type().record<Person>("Person").build(),
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
 	rtl::type().member<Person>().method("setAge").build(Person::setAge),
 	rtl::type().member<Person>().method("getName").build(Person::getName)
 });
 ```
+The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge or static coupling. It can live anywhere — in any translation unit, quietly sitting in a corner of your codebase. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
-With just this much, you’ve registered your types and unlocked full run-time reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at run-time — all without compile-time knowledge of those types, without strict static coupling.
+And what better way to do that than a Singleton:
+```c++
+struct cxx { static rtl::CxxMirror& mirror(); };
+```
+define and register everything in an isolated translation unit.
+```c++
+rtl::CxxMirror& cxx::mirror() {
+    static auto cxx_mirror = rtl::CxxMirror({
+        /* ...all type registrations... */
+    });
+    return cxx_mirror;
+}
+```
+> Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
 
 **Without reflection:**
 
@@ -82,7 +97,7 @@ std::cout << p.getName();
 
 ```c++
 // Look up the class by name
-std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
 if (classPerson)  // Check has_value() before use.
 {
