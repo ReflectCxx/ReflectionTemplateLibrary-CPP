@@ -25,13 +25,21 @@ namespace rtl_tests
                                                                                              .returnT<>();
                 EXPECT_FALSE(reverse_string);
                 EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidStaticMethodCaller);
+
+				auto [err, robj] = reverse_string(StringS())(std::string());
+				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
+				EXPECT_TRUE(robj.isEmpty());
             } {
                 rtl::function<rtl::Return(std::string)> reverse_string = static_cast<rtl::Function>(reverseString.value())
                                                                                                                  .argsT<std::string>()
                                                                                                                  .returnT<>();
                 EXPECT_FALSE(reverse_string);
                 EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidStaticMethodCaller);
-            }
+			
+				auto [err, robj] = reverse_string(std::string());
+				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
+				EXPECT_TRUE(robj.isEmpty());
+			}
         } {
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
@@ -44,6 +52,10 @@ namespace rtl_tests
                                                                                        .returnT<>();
             EXPECT_FALSE(reverse_string);
             EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidNonStaticMethodCaller);
+
+			auto [err, robj] = reverse_string(std::string());
+			EXPECT_EQ(err, rtl::error::InvalidNonStaticMethodCaller);
+			EXPECT_TRUE(robj.isEmpty());
         } {
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
@@ -56,6 +68,10 @@ namespace rtl_tests
                                                                                            .returnT<>();
                 EXPECT_FALSE(reverse_string);
                 EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidNonStaticMethodCaller);
+
+				auto [err, robj] = reverse_string(std::string());
+				EXPECT_EQ(err, rtl::error::InvalidNonStaticMethodCaller);
+				EXPECT_TRUE(robj.isEmpty());
             }
         }
     }

@@ -66,7 +66,7 @@ auto cxx_mirror = rtl::CxxMirror({
 	rtl::type().member<Person>().method("getName").build(Person::getName)	// and a getter.
 });
 ```
-The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly sitting in a corner of your codebase. All you need is to expose the `cxx_mirror` wherever reflection is required.
+The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
 And what better way to do that than a **Singleton**:
 ```c++
