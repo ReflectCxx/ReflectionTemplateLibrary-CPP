@@ -12,7 +12,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-	TEST(BasicTypeErasedRtl_method, invalid_erased_return_rtl_function)
+	TEST(ReturnTypeErased_rtl_method, invalid_erased_return_rtl_function)
 	{
 		{
 			rtl::method<int, rtl::Return()> erased_ret_mt;
@@ -41,7 +41,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, implicit_resolutions_to_call_by_value_overloads)
+	TEST(ReturnTypeErased_rtl_method, implicit_resolutions_to_call_by_value_overloads)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -213,7 +213,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
+	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -263,7 +263,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
+	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -306,7 +306,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -353,7 +353,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
+	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -395,7 +395,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, calling_non_overloaded_non_const_ref_argument)
+	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_non_const_ref_argument)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -443,7 +443,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, calling_non_overloaded_const_ref_argument)
+	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_const_ref_argument)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -498,7 +498,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, calling_non_overloaded_rvalue_ref_argument)
+	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_rvalue_ref_argument)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -535,7 +535,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, implicit_resolution_to_ambiguous_ref_and_cref_overload)
+	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);
@@ -572,7 +572,7 @@ namespace rtl_tests
 	}
 
 
-	TEST(BasicTypeErasedRtl_method, explicit_resolution_to_ambiguous_ref_and_cref_overload)
+	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
 		ASSERT_TRUE(optStringUtil);

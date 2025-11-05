@@ -118,9 +118,17 @@ namespace rtl::detail
                 continue;
             }
 
-            if (fnMeta.get_member_kind() != member::None && fnMeta.get_member_kind() != member::Static) {
-                pHopFn.set_init_error(error::InvalidNonStaticMethodCaller);
-                return;
+            if constexpr (member_kind == member::Static) {
+                if (fnMeta.get_member_kind() != member::Static) {
+                    pHopFn.set_init_error(error::InvalidNonStaticMethodCaller);
+                    return;
+                }
+            }
+            else if constexpr (member_kind == member::None) {
+                if (fnMeta.get_member_kind() == member::Static) {
+                    pHopFn.set_init_error(error::InvalidStaticMethodCaller);
+                    return;
+                }
             }
 
             auto& erasedRetFn = fnMeta.get_erasure_base()

@@ -8,7 +8,7 @@
 *	rtl::error::NonConstOverloadMissing
 *   rtl::error::ConstCallViolation
 * 
-* Covered in BasicTypeErasedDispatch.cpp
+* Covered in ReturnTypeErasedDispatch.cpp
 *   rtl::error::ExplicitRefBindingRequired
 * 
 * and,

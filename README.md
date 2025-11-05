@@ -25,11 +25,11 @@ Overhead? Practically none. **RTL**’s reflective calls — when return and arg
 
 Yes — `rtl::function`’s dispatch is faster than `std::function`.
 
-> Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection. Once the functions start doing real work, both perform identically.
+> *Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection. Once the functions start doing real work, both perform identically.*
 
 ### 💡 In One Line
 
-***"RTL is a lightweight, static library that enables a robust, type-safe run-time reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance."***
+*"RTL is a lightweight, static library that enables a robust, type-safe run-time reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance."*
 
 ## What’s more?
 
@@ -57,12 +57,13 @@ Yes — `rtl::function`’s dispatch is faster than `std::function`.
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
-	/* ...register all types here... */
-    rtl::type().function("complexToStr").build(complexToStr),
+	// Register free function -
+	rtl::type().function("complexToStr").build(complexToStr),
+	// Register class 'Person'-
 	rtl::type().record<Person>("Person").build(),
-	rtl::type().member<Person>().constructor<std::string, int>().build(),
-	rtl::type().member<Person>().method("setAge").build(Person::setAge),
-	rtl::type().member<Person>().method("getName").build(Person::getName)
+	rtl::type().member<Person>().constructor<std::string, int>().build(),	// User defined ctor.
+	rtl::type().member<Person>().method("setAge").build(Person::setAge),	// a setter method.
+	rtl::type().member<Person>().method("getName").build(Person::getName)	// and a getter.
 });
 ```
 The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly sitting in a corner of your codebase. All you need is to expose the `cxx_mirror` wherever reflection is required.
@@ -75,7 +76,7 @@ define and register everything in an isolated translation unit.
 ```c++
 rtl::CxxMirror& cxx::mirror() {
     static auto cxx_mirror = rtl::CxxMirror({
-        /* ...all type registrations... */
+        /* ...register all types here... */
     });
     return cxx_mirror;
 }
