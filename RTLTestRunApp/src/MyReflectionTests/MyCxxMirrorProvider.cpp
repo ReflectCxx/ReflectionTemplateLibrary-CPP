@@ -50,7 +50,9 @@ namespace my_type
         /*  Register a class/struct type without a namespace.
             Since no namespace is provided, it will be queried directly by name, e.g.:
                 cxx_mirror().getRecord("Person");
-         
+        
+            (class/struct- generally termed as 'Record' as per LLVM's naming convention)
+
             This registration implicitly adds the default constructor, copy constructor,
             and destructor. Explicitly registering these members is not allowed and
             will result in a compile-time error.

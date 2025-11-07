@@ -16,6 +16,8 @@
  * - `RObject`: A type-erased wrapper for return values and objects created via reflection, ensuring proper memory management.
  */
 
+
+#include <rtl/rtl.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"

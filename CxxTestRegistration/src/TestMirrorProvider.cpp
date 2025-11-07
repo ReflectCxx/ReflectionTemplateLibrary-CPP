@@ -19,7 +19,9 @@
 /*
 TestUtils, provides the interface to test/compare reflected type objects with actual objects (created via strict typing)
 without exposing the actual type objects to "CxxReflectionTests" project.*/
-#include "Reflect.h"
+#include "Reflect.hpp"
+#include "CxxMirror.h"
+
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"

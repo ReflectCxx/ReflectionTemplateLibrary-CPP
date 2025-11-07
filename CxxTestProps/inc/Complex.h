@@ -1,5 +1,10 @@
 #pragma once
 
+#include <string>
+
+// C-style/free-functions.
+std::string getComplexNumAsString();
+
 namespace complex
 {
 	double getMagnitude();

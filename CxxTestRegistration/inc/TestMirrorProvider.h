@@ -1,15 +1,19 @@
 #pragma once
 
-#include <rtl/rtl.h>
+namespace rtl {
+	class CxxMirror;
+}
 
 namespace test_mirror
 {
-	struct cxx
-	{
+	struct cxx {
+
 		static const rtl::CxxMirror& mirror();
 	};
+}
 
-
+namespace test_mirror
+{
 	// Optional setup: do this if you prefer to access your registered types by unique 'ID', not by string.
 	struct reflected_id {
 

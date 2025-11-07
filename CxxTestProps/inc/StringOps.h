@@ -2,9 +2,6 @@
 
 #include <string>
 
-// C-style/free-functions.
-std::string getComplexNumAsString();
-
 std::string reverseString();
 
 std::string reverseString(const char* pStr);

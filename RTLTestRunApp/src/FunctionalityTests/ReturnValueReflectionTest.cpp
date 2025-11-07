@@ -1,10 +1,9 @@
 
+#include <rtl/rtl.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
 #include "TestUtilsDate.h"
-//#include "TestUtilsBook.h"
-//#include "GlobalTestUtils.h"
 
 using namespace test_utils;
 using namespace test_mirror;
