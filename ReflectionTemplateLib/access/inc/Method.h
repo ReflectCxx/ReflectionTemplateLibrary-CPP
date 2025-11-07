@@ -60,9 +60,11 @@ namespace rtl {
         bool hasSignature() const;
 
         template<class ..._signature>
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         const detail::DefaultInvoker<_signature...> bind(const RObject& pTarget) const;
 
         template<class ..._signature>
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
 
     /*  @method: operator()()
@@ -70,7 +72,8 @@ namespace rtl {
         * accepts no arguments for 'target', since associated functor is static-member-functions.
         * returns a lambda, which forwards the call to finally call the associated static-member-function functor.
         * provides syntax like,'method()(params...)', first'()' is empty & second'()' takes the actual params.
-    */  constexpr auto operator()() const
+    */  [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
+        constexpr auto operator()() const
         {
             return detail::FunctionCaller<>{ this };
         }
@@ -82,11 +85,13 @@ namespace rtl {
         * accepts 'pTarget', which contains the actual object on which the member-function functor associated with 'this' is invoked.
         * returns a lambda, which forwards the call to 'call', finally invoking the associated non-static-member-function functor.
         * provides syntax like, 'method(pTarget)(params...)', keeping the target & params seperate.
-    */  constexpr detail::DefaultInvoker<> operator()(const RObject& pTarget) const
+    */  [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
+        constexpr detail::DefaultInvoker<> operator()(const RObject& pTarget) const
         {
             return detail::DefaultInvoker<>{ this, &pTarget };
         }
 
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         constexpr detail::NonConstInvoker<> operator()(constCast<RObject>&& pTarget) const
         {
             return detail::NonConstInvoker<>{ this, &pTarget.m_target };

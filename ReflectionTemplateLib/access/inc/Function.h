@@ -93,9 +93,11 @@ namespace rtl {
         bool hasSignature() const;
 
         template<class ..._args>
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         Return operator()(_args&&...params) const noexcept;
 
         template<class ..._signature>
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         const detail::FunctionCaller<_signature...> bind() const noexcept;
 
         friend detail::CxxReflection;

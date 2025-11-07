@@ -90,6 +90,7 @@ namespace rtl {
         * if no constructor found, error::ConstructorNotRegisteredInRtl is returned with empty 'RObject'.
         * on success error::None and newly constructed object wrapped under 'RObject' (type erased, treated as non-const) is returned.
 */      template<alloc _alloc, class ..._ctorArgs>
+        [[deprecated("Will be removed soon from the 'release' branch. Replacement API in progress.")]]
         Return create(_ctorArgs&& ...params) const
         {
             static_assert(_alloc != rtl::alloc::None, "Instance cannot be created with 'rtl::alloc::None' option.");
