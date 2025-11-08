@@ -44,15 +44,15 @@ namespace test_mirror
         */
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string&>(str_reverseString)
-                                 .build(static_cast<std::string(StrConst::*)(std::string&)>(&StrConst::reverseString)));
+                                 .build(static_cast<std::string(StrConst::*)(std::string&) const>(&StrConst::reverseString)));
         
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<const std::string&>(str_reverseString)
-                                 .build(static_cast<std::string(StrConst::*)(const std::string&)>(&StrConst::reverseString)));
+                                 .build(static_cast<std::string(StrConst::*)(const std::string&) const>(&StrConst::reverseString)));
         
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string&&>(str_reverseString)
-                                 .build(static_cast<std::string(StrConst::*)(std::string&&)>(&StrConst::reverseString)));
+                                 .build(static_cast<std::string(StrConst::*)(std::string&&) const>(&StrConst::reverseString)));
 #else
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string&>(str_reverseString)
