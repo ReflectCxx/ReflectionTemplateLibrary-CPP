@@ -57,13 +57,15 @@ Yes — `rtl::function`’s dispatch is faster than `std::function`.
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
-	// Register free function -
+	// Register free(C-Style) function -
 	rtl::type().function("complexToStr").build(complexToStr),
-	// Register class 'Person'-
-	rtl::type().record<Person>("Person").build(),
-	rtl::type().member<Person>().constructor<std::string, int>().build(),	// User defined ctor.
-	rtl::type().member<Person>().method("setAge").build(Person::setAge),	// a setter method.
-	rtl::type().member<Person>().method("getName").build(Person::getName)	// and a getter.
+	// Register class 'Person' ('record' is general term used for 'struct/class') -
+	rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
+	// Register user-defined ctor -
+	rtl::type().member<Person>().constructor<std::string, int>().build(),
+    // Register methods -
+	rtl::type().member<Person>().method("setAge").build(&Person::setAge),
+	rtl::type().member<Person>().method("getName").build(&Person::getName)
 });
 ```
 The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
