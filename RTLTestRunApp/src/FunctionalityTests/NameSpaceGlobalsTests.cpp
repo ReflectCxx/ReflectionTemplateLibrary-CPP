@@ -18,7 +18,7 @@ namespace rtl_tests
 
     TEST(Reflecting_pod, construct_char_on_heap_and_stack)
     {
-        optional<Record> charType = cxx::mirror().getRecord(reflected_id::char_t);
+        optional<Record> charType = cxx::mirror().getRecord(cxx::reflected_id("char"));
         ASSERT_TRUE(charType);
         {
     /*      Attempting to construct a POD type('char') with a value directly via Record::create<>().

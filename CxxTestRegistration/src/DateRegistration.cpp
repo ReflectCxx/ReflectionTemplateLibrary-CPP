@@ -9,6 +9,11 @@ using namespace test_utils;
 
 namespace test_mirror
 {
+    void addTypeIdDate(std::unordered_map<std::string, std::size_t>& id)
+    {
+        id.insert(std::make_pair(date::struct_, rtl::detail::TypeId<nsdate::Date>::get()));
+    }
+
 	void registerTypeDate(std::vector<rtl::Function>& fns)
 	{
         //  Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.

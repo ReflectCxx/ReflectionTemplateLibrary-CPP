@@ -10,6 +10,11 @@ using namespace test_utils;
 
 namespace test_mirror
 {
+    void addTypeIdLibrary(std::unordered_map<std::string, std::size_t>& id)
+    {
+        id.insert(std::make_pair(library::class_, rtl::detail::TypeId<Library>::get()));
+    }
+
 	void registerTypeLibrary(std::vector<rtl::Function>& fns)
 	{
 		//  Registering Library's constructor. Stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted 

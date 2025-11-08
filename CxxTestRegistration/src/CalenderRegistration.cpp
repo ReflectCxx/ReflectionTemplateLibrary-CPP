@@ -10,6 +10,11 @@ using namespace test_utils;
 
 namespace test_mirror
 {
+    void addTypeIdCalender(std::unordered_map<std::string, std::size_t>& id)
+    {
+        id.insert(std::make_pair(calender::struct_, rtl::detail::TypeId<nsdate::Calender>::get()));
+    }
+
 	void registerTypeCalender(std::vector<rtl::Function>& fns)
 	{
         //  Registring static-method, 'methodStatic()' function must be used. compiler error otherwise.

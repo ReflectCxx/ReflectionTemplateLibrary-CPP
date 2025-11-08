@@ -9,6 +9,11 @@ using namespace test_utils;
 
 namespace test_mirror
 {
+    void addTypeIdPerson(std::unordered_map<std::string, std::size_t>& id)
+    {
+        id.insert(std::make_pair(person::class_, rtl::detail::TypeId<Person>::get()));
+    }
+
 	void registerTypePerson(std::vector<rtl::Function>& fns)
 	{
 		// class 'Person', methods & constructors.

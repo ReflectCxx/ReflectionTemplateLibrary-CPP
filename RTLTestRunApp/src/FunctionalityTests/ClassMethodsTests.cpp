@@ -35,7 +35,7 @@ namespace rtl_tests
 			for (const auto& itr1 : namespaceRecordMap)
 			{
 				const std::string& recordName = itr1.first;
-				const std::size_t recordId = reflected_id::getRecordIdFor(recordName);
+				const std::size_t recordId = cxx::reflected_id(recordName);
 				const auto& itr = rtl_recordIdMap.find(recordId);
 
 				ASSERT_TRUE(itr != rtl_recordIdMap.end());

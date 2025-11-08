@@ -13,7 +13,7 @@ namespace rtl_tests
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
         //I don't know if the 'Event' is class or struct..Reflection YaY!. :P
-        auto classEvent = cxx::mirror().getRecord(reflected_id::event);
+        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(event::struct_));
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->create<rtl::alloc::Stack>();
@@ -22,7 +22,7 @@ namespace rtl_tests
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
         {
-            auto classCalender = cxx::mirror().getRecord(reflected_id::calender);
+            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(calender::struct_));
             ASSERT_TRUE(classCalender);
 
             auto [err1, calender] = classCalender->create<rtl::alloc::Stack>();
@@ -43,7 +43,7 @@ namespace rtl_tests
             auto [err2, event] = getEvent->bind(calender).call();
             EXPECT_TRUE(err2 == rtl::error::None);
             ASSERT_FALSE(event.isEmpty());
-            EXPECT_TRUE(event.getTypeId() == reflected_id::event);
+            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(event::struct_));
             {
                 {
                     auto [err, robj] = event.clone<rtl::alloc::Heap>();
