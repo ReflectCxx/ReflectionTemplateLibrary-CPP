@@ -46,56 +46,56 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(const char)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const char)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                .argsT<const char>()
                                                                                                .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<const StringC, std::string(char*)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(char*)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                           .argsT<char*>()
                                                                                           .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<StringC, std::string(const char*)> reverse_string = reverseString->targetT<StringC>()
+            rtl::method<StrConst, std::string(const char*)> reverse_string = reverseString->targetT<StrConst>()
                                                                                           .argsT<const char*>()
                                                                                           .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<StringC, std::string(std::string)> reverse_string = reverseString->targetT<StringC>()
+            rtl::method<StrConst, std::string(std::string)> reverse_string = reverseString->targetT<StrConst>()
                                                                                           .argsT<std::string>()
                                                                                           .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<const StringC, std::string(const char*)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const char*)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                 .argsT<const char*>()
                                                                                                 .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
-            std::string ret_str = reverse_string(StringC())(STRA);
+            std::string ret_str = reverse_string(StrConst())(STRA);
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string(std::string)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                 .argsT<std::string>()
                                                                                                 .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
-            std::string ret_str = reverse_string(StringC())(STRB);
+            std::string ret_str = reverse_string(StrConst())(STRB);
             auto exp_str = std::string(STRB_REVERSE) + SUFFIX_std_string + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string()> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string()> reverse_string = reverseString->targetT<const StrConst>()
                                                                                      .argsT<>()
                                                                                      .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
-            std::string ret_str = reverse_string(StringC())();
+            std::string ret_str = reverse_string(StrConst())();
             auto exp_str = std::string(REV_STR_VOID_RET) + SUFFIX_void + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         }
@@ -104,19 +104,19 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, lvalue_ref_overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
         ASSERT_TRUE(reverseString);
         {
             //argument lvalue-ref.
-            rtl::method<const StringC, std::string(std::string&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                  .argsT<std::string&>()
                                                                                                  .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
             //non-const target
-            StringC target;
+            StrConst target;
             std::string lv_str = STRA;
             std::string ret_str = reverse_string(target)(lv_str);
             
@@ -124,12 +124,12 @@ namespace rtl_tests
             EXPECT_EQ(ret_str, exp_str);
         } {
             //argument const-lvalue-ref.
-            rtl::method<const StringC, std::string(const std::string&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                        .argsT<const std::string&>()
                                                                                                        .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
             //non-const target
-            StringC target;
+            StrConst target;
             const std::string lv_str = STRA;
             std::string ret_str = reverse_string(target)(lv_str);
             
@@ -137,12 +137,12 @@ namespace rtl_tests
             EXPECT_EQ(ret_str, exp_str);
         } {
             //argument lvalue-ref.
-            rtl::method<const StringC, std::string(std::string&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                  .argsT<std::string&>()
                                                                                                  .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
             //const target.
-            const StringC target;
+            const StrConst target;
             std::string lv_str = STRA;
             std::string ret_str = reverse_string(target)(lv_str);
             
@@ -150,12 +150,12 @@ namespace rtl_tests
             EXPECT_EQ(ret_str, exp_str);
         } {
             //argument const-lvalue-ref.
-            rtl::method<const StringC, std::string(const std::string&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                        .argsT<const std::string&>()
                                                                                                        .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
             //const target.
-            const StringC target;
+            const StrConst target;
             const std::string lv_str = STRA;
             std::string ret_str = reverse_string(target)(lv_str);
             
@@ -167,34 +167,34 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, rvalue_ref_overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
         
         
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(std::string&&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string&&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                   .argsT<std::string&&>()
                                                                                                   .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
             {
                 //non-const target.
-                StringC target;
+                StrConst target;
                 std::string ret_str = reverse_string(target)(STRA);
 
                 auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_rvref + SUFFIX_const;
                 EXPECT_EQ(ret_str, exp_str);
             } {
                 //const-target
-                const StringC target;
+                const StrConst target;
                 std::string ret_str = reverse_string(target)(STRA);
 
                 auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_rvref + SUFFIX_const;
                 EXPECT_EQ(ret_str, exp_str);
             }
         } {
-            rtl::method<const StringC, std::string(const std::string&&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string&&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                         .argsT<const std::string&&>()
                                                                                                         .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
@@ -204,15 +204,15 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        StringC target;
+        StrConst target;
         std::string str = STRA;
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(std::string*)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string*)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                  .argsT<std::string*>()
                                                                                                  .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -221,7 +221,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string(const std::string*)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string*)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                        .argsT<const std::string*>()
                                                                                                        .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -264,21 +264,21 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, distinct_functions_with_ref_args_call_with_known_signature)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        StringC target;
+        StrConst target;
         std::string str = STRA;
         {
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrConstRefArg);
             ASSERT_TRUE(reverseString);
 
-            rtl::method<const StringC, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                             .argsT<const std::string_view&>()
                                                                                                             .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
 
-            StringC target;
+            StrConst target;
             std::string ret_str = reverse_string(target)(str);
             
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_clvref + SUFFIX_const;
@@ -287,7 +287,7 @@ namespace rtl_tests
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrNonConstRefArg);
             ASSERT_TRUE(reverseString);
 
-            rtl::method<const StringC, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                       .argsT<std::string_view&>()
                                                                                                       .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -301,7 +301,7 @@ namespace rtl_tests
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrRValueRefArg);
             ASSERT_TRUE(reverseString);
 
-            rtl::method<const StringC, std::string(std::string_view&&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view&&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                        .argsT<std::string_view&&>()
                                                                                                        .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -316,14 +316,14 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, overloads_with_ref_and_value_args_call_with_known_signature)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        StringC target;
+        StrConst target;
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrOverloadValRef);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(std::string_view)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                      .argsT<std::string_view>()
                                                                                                      .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -332,7 +332,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                       .argsT<std::string_view&>()
                                                                                                       .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -348,14 +348,14 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        StringC target;
+        StrConst target;
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrOverloadValCRef);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(std::string_view)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                      .argsT<std::string_view>()
                                                                                                      .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -364,7 +364,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                             .argsT<const std::string_view&>()
                                                                                                             .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -378,14 +378,14 @@ namespace rtl_tests
 
     TEST(StrictStaticTypeRtl_const_method, overloads_with_ref_and_const_ref_args_call_with_known_signature)
     {
-        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        StringC target;
+        StrConst target;
         std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
         ASSERT_TRUE(reverseString);
         {
-            rtl::method<const StringC, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                       .argsT<std::string_view&>()
                                                                                                       .returnT<std::string>();
             ASSERT_TRUE(reverse_string);
@@ -395,7 +395,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE) + SUFFIX_std_string_view_lvref + SUFFIX_const;
             EXPECT_EQ(ret_str, exp_str);
         } {
-            rtl::method<const StringC, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StringC>()
+            rtl::method<const StrConst, std::string(const std::string_view&)> reverse_string = reverseString->targetT<const StrConst>()
                                                                                                             .argsT<const std::string_view&>()
                                                                                                             .returnT<std::string>();
             ASSERT_TRUE(reverse_string);

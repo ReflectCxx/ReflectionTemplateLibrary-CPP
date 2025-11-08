@@ -37,10 +37,10 @@ std::string revStrOverloadRefAndCRef(std::string_view& pStr);
 std::string revStrOverloadRefAndCRef(const std::string_view& pStr);
 
 
-// 'StringM' - String-Mutable, all methods are non-const.
-struct StringM
+// 'StrMute' - String-Mutable, all methods are non-const.
+struct StrMute
 {
-	constexpr static const char* struct_ = "StringM";
+	constexpr static const char* struct_ = "StrMute";
 
 	std::string reverseString();
 
@@ -78,10 +78,10 @@ struct StringM
 };
 
 
-// 'StringC' - String-Const, all methods are const.
-struct StringC
+// 'StrConst' - String-Const, all methods are const.
+struct StrConst
 {
-	constexpr static const char* struct_ = "StringC";
+	constexpr static const char* struct_ = "StrConst";
 
 	std::string reverseString() const;
 
@@ -119,10 +119,10 @@ struct StringC
 };
 
 
-// 'StringS' - String-Static, all methods are static.
-struct StringS
+// 'StrStatic' - String-Static, all methods are static.
+struct StrStatic
 {
-	constexpr static const char* struct_ = "StringS";
+	constexpr static const char* struct_ = "StrStatic";
 
 	static std::string reverseString();
 

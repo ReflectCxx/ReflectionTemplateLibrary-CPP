@@ -15,20 +15,20 @@ namespace rtl_tests
 	TEST(ReturnTypeErased_rtl_static_method, using_wrong_class_n_callable_apis_for_static_method)
     {
         {
-            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringS::struct_);   // has only static-methods.
+            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);   // has only static-methods.
             ASSERT_TRUE(optStringUtil);
 
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
             ASSERT_TRUE(reverseString);
             {
-                rtl::method<StringS, rtl::Return(std::string)> reverse_string = reverseString.value()
-                                                                                             .targetT<StringS>()
-                                                                                             .argsT<std::string>()
-                                                                                             .returnT<>();
+                rtl::method<StrStatic, rtl::Return(std::string)> reverse_string = reverseString.value()
+                                                                                               .targetT<StrStatic>()
+                                                                                               .argsT<std::string>()
+                                                                                               .returnT<>();
                 EXPECT_FALSE(reverse_string);
                 EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidStaticMethodCaller);
 
-				auto [err, robj] = reverse_string(StringS())(std::string());
+				auto [err, robj] = reverse_string(StrStatic())(std::string());
 				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
 				EXPECT_TRUE(robj.isEmpty());
             } {
@@ -43,7 +43,7 @@ namespace rtl_tests
 				EXPECT_TRUE(robj.isEmpty());
 			}
         } {
-            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringC::struct_);   // doesn't have any static-methods.
+            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
 
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
@@ -59,7 +59,7 @@ namespace rtl_tests
 			EXPECT_EQ(err, rtl::error::InvalidNonStaticMethodCaller);
 			EXPECT_TRUE(robj.isEmpty());
         } {
-            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);   // doesn't have any static-methods.
+            std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
 
             std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
@@ -81,25 +81,25 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_static_method, implicit_resolutions_to_call_by_value_overloads)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringS::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_reverseString);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
-			rtl::method<StringS, rtl::Return(char*)> reverseString = reverseStrOpt.value()
-																				  .targetT<StringS>()
-																				  .argsT<char*>()
-																				  .returnT<>();
+			rtl::method<StrStatic, rtl::Return(char*)> reverseString = reverseStrOpt.value()
+																				    .targetT<StrStatic>()
+																				    .argsT<char*>()
+																				    .returnT<>();
 			EXPECT_FALSE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringS())(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString(StrStatic())(const_cast<char*>(STRA));
 
 				EXPECT_EQ(err, rtl::error::InvalidCaller);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
-				auto [err, robj] = reverseString.bind<char*>(StringS())(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString.bind<char*>(StrStatic())(const_cast<char*>(STRA));
 
 				EXPECT_EQ(err, rtl::error::InvalidCaller);
 				EXPECT_TRUE(robj.isEmpty());
@@ -107,13 +107,13 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const char*>());
 		{
-			rtl::method<StringS, rtl::Return(const char*)> reverseString = reverseStrOpt.value()
-																						.targetT<StringS>()
-																						.argsT<const char*>()
-																						.returnT<>();
+			rtl::method<StrStatic, rtl::Return(const char*)> reverseString = reverseStrOpt.value()
+																						  .targetT<StrStatic>()
+																						  .argsT<const char*>()
+																						  .returnT<>();
 			EXPECT_FALSE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringS())(STRA);
+				auto [err, robj] = reverseString(StrStatic())(STRA);
 				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
 			} 
 		} {

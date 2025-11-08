@@ -5,7 +5,6 @@ project(CxxTestRegistration)
 
 # Create a variable containing the source files for your target
 set(LOCAL_SOURCES
-	"${CMAKE_CURRENT_LIST_DIR}/TestMirrorProvider.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/AnimalRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/BookRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/CalenderRegistration.cpp"
@@ -15,6 +14,12 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/LibraryRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/PersonRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/PodStdRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrConstRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrDerivedRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrFuncsRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrMuteRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrStaticRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/TestMirrorProvider.cpp"
 )
 
 SET(LOCAL_HEADERS

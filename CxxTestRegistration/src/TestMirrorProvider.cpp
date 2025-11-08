@@ -130,16 +130,16 @@ namespace test_mirror
             rtl::type().function<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(revStrOverloadRefAndCRef),
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------
-            rtl::type().record<StringM>(StringM::struct_).build(),
+            rtl::type().record<StrMute>(StrMute::struct_).build(),
 
         //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
-            rtl::type().member<StringM>().method<void>(str_reverseString).build(&StringM::reverseString),
+            rtl::type().member<StrMute>().method<void>(str_reverseString).build(&StrMute::reverseString),
 
         //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
-            rtl::type().member<StringM>().method<string>(str_reverseString).build(&StringM::reverseString),
+            rtl::type().member<StrMute>().method<string>(str_reverseString).build(&StrMute::reverseString),
 
         //  Overloaded function, takes 'const char*' arguments.
-            rtl::type().member<StringM>().method<const char*>(str_reverseString).build(&StringM::reverseString),
+            rtl::type().member<StrMute>().method<const char*>(str_reverseString).build(&StrMute::reverseString),
 
         //  numereous other overloads.
             #if defined(__GNUC__) && !defined(__clang__)
@@ -150,44 +150,44 @@ namespace test_mirror
 
                         static_cast<std::string(*)(std::string&&)>(reverseString)
                 */
-                rtl::type().member<StringM>().method<std::string&>(str_reverseString)
-                           .build(static_cast<std::string(StringM::*)(std::string&)>(&StringM::reverseString)),
-                rtl::type().member<StringM>().method<const std::string&>(str_reverseString)
-                           .build(static_cast<std::string(StringM::*)(const std::string&)>(&StringM::reverseString)),
-                rtl::type().member<StringM>().method<std::string&&>(str_reverseString)
-                           .build(static_cast<std::string(StringM::*)(std::string&&)>(&StringM::reverseString)),
+                rtl::type().member<StrMute>().method<std::string&>(str_reverseString)
+                           .build(static_cast<std::string(StrMute::*)(std::string&)>(&StrMute::reverseString)),
+                rtl::type().member<StrMute>().method<const std::string&>(str_reverseString)
+                           .build(static_cast<std::string(StrMute::*)(const std::string&)>(&StrMute::reverseString)),
+                rtl::type().member<StrMute>().method<std::string&&>(str_reverseString)
+                           .build(static_cast<std::string(StrMute::*)(std::string&&)>(&StrMute::reverseString)),
             #else
-                rtl::type().member<StringM>().method<std::string&>(str_reverseString).build(&StringM::reverseString),
-                rtl::type().member<StringM>().method<std::string&&>(str_reverseString).build(&StringM::reverseString),
-                rtl::type().member<StringM>().method<const std::string&>(str_reverseString).build(&StringM::reverseString),
+                rtl::type().member<StrMute>().method<std::string&>(str_reverseString).build(&StrMute::reverseString),
+                rtl::type().member<StrMute>().method<std::string&&>(str_reverseString).build(&StrMute::reverseString),
+                rtl::type().member<StrMute>().method<const std::string&>(str_reverseString).build(&StrMute::reverseString),
             #endif
-            rtl::type().member<StringM>().method<std::string*>(str_reverseString).build(&StringM::reverseString),
-            rtl::type().member<StringM>().method<const std::string*>(str_reverseString).build(&StringM::reverseString),
+            rtl::type().member<StrMute>().method<std::string*>(str_reverseString).build(&StrMute::reverseString),
+            rtl::type().member<StrMute>().method<const std::string*>(str_reverseString).build(&StrMute::reverseString),
 
-            rtl::type().member<StringM>().method<std::string_view&>(str_revStrNonConstRefArg).build(&StringM::revStrNonConstRefArg),
-            rtl::type().member<StringM>().method<std::string_view&&>(str_revStrRValueRefArg).build(&StringM::revStrRValueRefArg),
-            rtl::type().member<StringM>().method<const std::string_view&>(str_revStrConstRefArg).build(&StringM::revStrConstRefArg),
+            rtl::type().member<StrMute>().method<std::string_view&>(str_revStrNonConstRefArg).build(&StrMute::revStrNonConstRefArg),
+            rtl::type().member<StrMute>().method<std::string_view&&>(str_revStrRValueRefArg).build(&StrMute::revStrRValueRefArg),
+            rtl::type().member<StrMute>().method<const std::string_view&>(str_revStrConstRefArg).build(&StrMute::revStrConstRefArg),
 
-            rtl::type().member<StringM>().method<std::string_view>(str_revStrOverloadValRef).build(&StringM::revStrOverloadValRef),
-            rtl::type().member<StringM>().method<std::string_view&>(str_revStrOverloadValRef).build(&StringM::revStrOverloadValRef),
+            rtl::type().member<StrMute>().method<std::string_view>(str_revStrOverloadValRef).build(&StrMute::revStrOverloadValRef),
+            rtl::type().member<StrMute>().method<std::string_view&>(str_revStrOverloadValRef).build(&StrMute::revStrOverloadValRef),
 
-            rtl::type().member<StringM>().method<std::string_view>(str_revStrOverloadValCRef).build(&StringM::revStrOverloadValCRef),
-            rtl::type().member<StringM>().method<const std::string_view&>(str_revStrOverloadValCRef).build(&StringM::revStrOverloadValCRef),
+            rtl::type().member<StrMute>().method<std::string_view>(str_revStrOverloadValCRef).build(&StrMute::revStrOverloadValCRef),
+            rtl::type().member<StrMute>().method<const std::string_view&>(str_revStrOverloadValCRef).build(&StrMute::revStrOverloadValCRef),
 
-            rtl::type().member<StringM>().method<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringM::revStrOverloadRefAndCRef),
-            rtl::type().member<StringM>().method<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringM::revStrOverloadRefAndCRef),
+            rtl::type().member<StrMute>().method<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrMute::revStrOverloadRefAndCRef),
+            rtl::type().member<StrMute>().method<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrMute::revStrOverloadRefAndCRef),
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------
-            rtl::type().record<StringC>(StringC::struct_).build(),
+            rtl::type().record<StrConst>(StrConst::struct_).build(),
 
             //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
-            rtl::type().member<StringC>().methodConst<void>(str_reverseString).build(&StringC::reverseString),
+            rtl::type().member<StrConst>().methodConst<void>(str_reverseString).build(&StrConst::reverseString),
 
             //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
-            rtl::type().member<StringC>().methodConst<string>(str_reverseString).build(&StringC::reverseString),
+            rtl::type().member<StrConst>().methodConst<string>(str_reverseString).build(&StrConst::reverseString),
 
             //  Overloaded function, takes 'const char*' arguments.
-            rtl::type().member<StringC>().methodConst<const char*>(str_reverseString).build(&StringC::reverseString),
+            rtl::type().member<StrConst>().methodConst<const char*>(str_reverseString).build(&StrConst::reverseString),
 
             //  numereous other overloads.
             #if defined(__GNUC__) && !defined(__clang__)
@@ -198,44 +198,44 @@ namespace test_mirror
 
                     static_cast<std::string(*)(std::string&&)>(reverseString)
             */
-                rtl::type().member<StringC>().methodConst<std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(StringC::*)(std::string&) const>(&StringC::reverseString)),
-                rtl::type().member<StringC>().methodConst<const std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(StringC::*)(const std::string&) const>(&StringC::reverseString)),
-                rtl::type().member<StringC>().methodConst<std::string&&>(str_reverseString)
-                                             .build(static_cast<std::string(StringC::*)(std::string&&) const>(&StringC::reverseString)),
+                rtl::type().member<StrConst>().methodConst<std::string&>(str_reverseString)
+                                             .build(static_cast<std::string(StrConst::*)(std::string&) const>(&StrConst::reverseString)),
+                rtl::type().member<StrConst>().methodConst<const std::string&>(str_reverseString)
+                                             .build(static_cast<std::string(StrConst::*)(const std::string&) const>(&StrConst::reverseString)),
+                rtl::type().member<StrConst>().methodConst<std::string&&>(str_reverseString)
+                                             .build(static_cast<std::string(StrConst::*)(std::string&&) const>(&StrConst::reverseString)),
             #else
-                rtl::type().member<StringC>().methodConst<std::string&>(str_reverseString).build(&StringC::reverseString),
-                rtl::type().member<StringC>().methodConst<std::string&&>(str_reverseString).build(&StringC::reverseString),
-                rtl::type().member<StringC>().methodConst<const std::string&>(str_reverseString).build(&StringC::reverseString),
+                rtl::type().member<StrConst>().methodConst<std::string&>(str_reverseString).build(&StrConst::reverseString),
+                rtl::type().member<StrConst>().methodConst<std::string&&>(str_reverseString).build(&StrConst::reverseString),
+                rtl::type().member<StrConst>().methodConst<const std::string&>(str_reverseString).build(&StrConst::reverseString),
             #endif
-            rtl::type().member<StringC>().methodConst<std::string*>(str_reverseString).build(&StringC::reverseString),
-            rtl::type().member<StringC>().methodConst<const std::string*>(str_reverseString).build(&StringC::reverseString),
+            rtl::type().member<StrConst>().methodConst<std::string*>(str_reverseString).build(&StrConst::reverseString),
+            rtl::type().member<StrConst>().methodConst<const std::string*>(str_reverseString).build(&StrConst::reverseString),
 
-            rtl::type().member<StringC>().methodConst<std::string_view&>(str_revStrNonConstRefArg).build(&StringC::revStrNonConstRefArg),
-            rtl::type().member<StringC>().methodConst<std::string_view&&>(str_revStrRValueRefArg).build(&StringC::revStrRValueRefArg),
-            rtl::type().member<StringC>().methodConst<const std::string_view&>(str_revStrConstRefArg).build(&StringC::revStrConstRefArg),
+            rtl::type().member<StrConst>().methodConst<std::string_view&>(str_revStrNonConstRefArg).build(&StrConst::revStrNonConstRefArg),
+            rtl::type().member<StrConst>().methodConst<std::string_view&&>(str_revStrRValueRefArg).build(&StrConst::revStrRValueRefArg),
+            rtl::type().member<StrConst>().methodConst<const std::string_view&>(str_revStrConstRefArg).build(&StrConst::revStrConstRefArg),
 
-            rtl::type().member<StringC>().methodConst<std::string_view>(str_revStrOverloadValRef).build(&StringC::revStrOverloadValRef),
-            rtl::type().member<StringC>().methodConst<std::string_view&>(str_revStrOverloadValRef).build(&StringC::revStrOverloadValRef),
+            rtl::type().member<StrConst>().methodConst<std::string_view>(str_revStrOverloadValRef).build(&StrConst::revStrOverloadValRef),
+            rtl::type().member<StrConst>().methodConst<std::string_view&>(str_revStrOverloadValRef).build(&StrConst::revStrOverloadValRef),
 
-            rtl::type().member<StringC>().methodConst<std::string_view>(str_revStrOverloadValCRef).build(&StringC::revStrOverloadValCRef),
-            rtl::type().member<StringC>().methodConst<const std::string_view&>(str_revStrOverloadValCRef).build(&StringC::revStrOverloadValCRef),
+            rtl::type().member<StrConst>().methodConst<std::string_view>(str_revStrOverloadValCRef).build(&StrConst::revStrOverloadValCRef),
+            rtl::type().member<StrConst>().methodConst<const std::string_view&>(str_revStrOverloadValCRef).build(&StrConst::revStrOverloadValCRef),
 
-            rtl::type().member<StringC>().methodConst<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringC::revStrOverloadRefAndCRef),
-            rtl::type().member<StringC>().methodConst<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringC::revStrOverloadRefAndCRef),
+            rtl::type().member<StrConst>().methodConst<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrConst::revStrOverloadRefAndCRef),
+            rtl::type().member<StrConst>().methodConst<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrConst::revStrOverloadRefAndCRef),
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
-            rtl::type().record<StringS>(StringS::struct_).build(),
+            rtl::type().record<StrStatic>(StrStatic::struct_).build(),
 
             //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
-            rtl::type().member<StringS>().methodStatic<void>(str_reverseString).build(&StringS::reverseString),
+            rtl::type().member<StrStatic>().methodStatic<void>(str_reverseString).build(&StrStatic::reverseString),
 
             //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
-            rtl::type().member<StringS>().methodStatic<string>(str_reverseString).build(&StringS::reverseString),
+            rtl::type().member<StrStatic>().methodStatic<string>(str_reverseString).build(&StrStatic::reverseString),
 
             //  Overloaded function, takes 'const char*' arguments.
-            rtl::type().member<StringS>().methodStatic<const char*>(str_reverseString).build(&StringS::reverseString),
+            rtl::type().member<StrStatic>().methodStatic<const char*>(str_reverseString).build(&StrStatic::reverseString),
 
             //  numereous other overloads.
             #if defined(__GNUC__) && !defined(__clang__)
@@ -246,32 +246,32 @@ namespace test_mirror
 
                     static_cast<std::string(*)(std::string&&)>(reverseString)
             */
-                rtl::type().member<StringS>().methodStatic<std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(*)(std::string&)>(&StringS::reverseString)),
-                rtl::type().member<StringS>().methodStatic<const std::string&>(str_reverseString)
-                                             .build(static_cast<std::string(*)(const std::string&)>(&StringS::reverseString)),
-                rtl::type().member<StringS>().methodStatic<std::string&&>(str_reverseString)
-                                             .build(static_cast<std::string(*)(std::string&&)>(&StringS::reverseString)),
+                rtl::type().member<StrStatic>().methodStatic<std::string&>(str_reverseString)
+                                             .build(static_cast<std::string(*)(std::string&)>(&StrStatic::reverseString)),
+                rtl::type().member<StrStatic>().methodStatic<const std::string&>(str_reverseString)
+                                             .build(static_cast<std::string(*)(const std::string&)>(&StrStatic::reverseString)),
+                rtl::type().member<StrStatic>().methodStatic<std::string&&>(str_reverseString)
+                                             .build(static_cast<std::string(*)(std::string&&)>(&StrStatic::reverseString)),
             #else
-                rtl::type().member<StringS>().methodStatic<std::string&>(str_reverseString).build(&StringS::reverseString),
-                rtl::type().member<StringS>().methodStatic<std::string&&>(str_reverseString).build(&StringS::reverseString),
-                rtl::type().member<StringS>().methodStatic<const std::string&>(str_reverseString).build(&StringS::reverseString),
+                rtl::type().member<StrStatic>().methodStatic<std::string&>(str_reverseString).build(&StrStatic::reverseString),
+                rtl::type().member<StrStatic>().methodStatic<std::string&&>(str_reverseString).build(&StrStatic::reverseString),
+                rtl::type().member<StrStatic>().methodStatic<const std::string&>(str_reverseString).build(&StrStatic::reverseString),
             #endif
-            rtl::type().member<StringS>().methodStatic<std::string*>(str_reverseString).build(&StringS::reverseString),
-            rtl::type().member<StringS>().methodStatic<const std::string*>(str_reverseString).build(&StringS::reverseString),
+            rtl::type().member<StrStatic>().methodStatic<std::string*>(str_reverseString).build(&StrStatic::reverseString),
+            rtl::type().member<StrStatic>().methodStatic<const std::string*>(str_reverseString).build(&StrStatic::reverseString),
 
-            rtl::type().member<StringS>().methodStatic<std::string_view&>(str_revStrNonConstRefArg).build(&StringS::revStrNonConstRefArg),
-            rtl::type().member<StringS>().methodStatic<std::string_view&&>(str_revStrRValueRefArg).build(&StringS::revStrRValueRefArg),
-            rtl::type().member<StringS>().methodStatic<const std::string_view&>(str_revStrConstRefArg).build(&StringS::revStrConstRefArg),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view&>(str_revStrNonConstRefArg).build(&StrStatic::revStrNonConstRefArg),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view&&>(str_revStrRValueRefArg).build(&StrStatic::revStrRValueRefArg),
+            rtl::type().member<StrStatic>().methodStatic<const std::string_view&>(str_revStrConstRefArg).build(&StrStatic::revStrConstRefArg),
 
-            rtl::type().member<StringS>().methodStatic<std::string_view>(str_revStrOverloadValRef).build(&StringS::revStrOverloadValRef),
-            rtl::type().member<StringS>().methodStatic<std::string_view&>(str_revStrOverloadValRef).build(&StringS::revStrOverloadValRef),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view>(str_revStrOverloadValRef).build(&StrStatic::revStrOverloadValRef),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view&>(str_revStrOverloadValRef).build(&StrStatic::revStrOverloadValRef),
 
-            rtl::type().member<StringS>().methodStatic<std::string_view>(str_revStrOverloadValCRef).build(&StringS::revStrOverloadValCRef),
-            rtl::type().member<StringS>().methodStatic<const std::string_view&>(str_revStrOverloadValCRef).build(&StringS::revStrOverloadValCRef),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view>(str_revStrOverloadValCRef).build(&StrStatic::revStrOverloadValCRef),
+            rtl::type().member<StrStatic>().methodStatic<const std::string_view&>(str_revStrOverloadValCRef).build(&StrStatic::revStrOverloadValCRef),
 
-            rtl::type().member<StringS>().methodStatic<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringS::revStrOverloadRefAndCRef),
-            rtl::type().member<StringS>().methodStatic<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StringS::revStrOverloadRefAndCRef),
+            rtl::type().member<StrStatic>().methodStatic<std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrStatic::revStrOverloadRefAndCRef),
+            rtl::type().member<StrStatic>().methodStatic<const std::string_view&>(str_revStrOverloadValRefAndCRef).build(&StrStatic::revStrOverloadRefAndCRef),
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
         //  Unique function, no overloads, no need to specify signature as template parameters.
@@ -456,9 +456,9 @@ namespace test_mirror
     std::size_t reflected_id::date = rtl::detail::TypeId<nsdate::Date>::get();
     std::size_t reflected_id::event = rtl::detail::TypeId<nsdate::Event>::get();
     std::size_t reflected_id::calender = rtl::detail::TypeId<nsdate::Calender>::get();
-    std::size_t reflected_id::string_m = rtl::detail::TypeId<StringM>::get();
-    std::size_t reflected_id::string_c = rtl::detail::TypeId<StringC>::get();
-    std::size_t reflected_id::string_s = rtl::detail::TypeId<StringS>::get();
+    std::size_t reflected_id::string_m = rtl::detail::TypeId<StrMute>::get();
+    std::size_t reflected_id::string_c = rtl::detail::TypeId<StrConst>::get();
+    std::size_t reflected_id::string_s = rtl::detail::TypeId<StrStatic>::get();
 
     std::size_t reflected_id::int_t = rtl::detail::TypeId<int>::get();
     std::size_t reflected_id::char_t = rtl::detail::TypeId<char>::get();
@@ -482,9 +482,9 @@ namespace test_mirror
             { person::class_, person },
             { library::class_, library },
             { calender::struct_, calender },
-            { StringM::struct_, string_m },
-            { StringC::struct_, string_c },
-            { StringS::struct_, string_s }
+            { StrMute::struct_, string_m },
+            { StrConst::struct_, string_c },
+            { StrStatic::struct_, string_s }
         });
 
         const auto& itr = nameIdMap.find(pRecordName);

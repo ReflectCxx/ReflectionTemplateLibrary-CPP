@@ -44,24 +44,24 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, implicit_resolutions_to_call_by_value_overloads)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_reverseString);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
-			rtl::method<StringM, rtl::Return(char*)> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return(char*)> reverseString = reverseStrOpt->targetT<StrMute>()
 																				   .argsT<char*>()
 																				   .returnT<>();
 			EXPECT_FALSE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringM())(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString(StrMute())(const_cast<char*>(STRA));
 
 				EXPECT_EQ(err, rtl::error::InvalidCaller);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
-				auto [err, robj] = reverseString.bind<char*>(StringM())(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString.bind<char*>(StrMute())(const_cast<char*>(STRA));
 
 				EXPECT_EQ(err, rtl::error::InvalidCaller);
 				EXPECT_TRUE(robj.isEmpty());
@@ -69,12 +69,12 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const char*>());
 		{
-			rtl::method<StringM, rtl::Return(const char*)> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return(const char*)> reverseString = reverseStrOpt->targetT<StrMute>()
 																					     .argsT<const char*>()
 																						 .returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringM())(STRA);
+				auto [err, robj] = reverseString(StrMute())(STRA);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -84,7 +84,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				auto [err, robj] = reverseString.bind<const char*>(StringM())(STRA);
+				auto [err, robj] = reverseString.bind<const char*>(StrMute())(STRA);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -97,12 +97,12 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string>());
 		{
-			rtl::method<StringM, rtl::Return(std::string)> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return(std::string)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						 .argsT<std::string>()
 																						 .returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringM())(STRA);
+				auto [err, robj] = reverseString(StrMute())(STRA);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -112,7 +112,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				auto [err, robj] = reverseString.bind<std::string>(StringM())(STRA);
+				auto [err, robj] = reverseString.bind<std::string>(StrMute())(STRA);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -125,13 +125,13 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string*>());
 		{
-			rtl::method<StringM, rtl::Return(std::string*)> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return(std::string*)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string*>()
 																						  .returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
 				std::string str = STRA;
-				auto [err, robj] = reverseString(StringM())(&str);
+				auto [err, robj] = reverseString(StrMute())(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -142,7 +142,7 @@ namespace rtl_tests
 				EXPECT_EQ(retStr, expStr);
 			} {
 				std::string str = STRA;
-				auto [err, robj] = reverseString.bind<std::string*>(StringM())(&str);
+				auto [err, robj] = reverseString.bind<std::string*>(StrMute())(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -155,13 +155,13 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string*>());
 		{
-			rtl::method<StringM, rtl::Return(const std::string*)> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return(const std::string*)> reverseString = reverseStrOpt->targetT<StrMute>()
 																								.argsT<const std::string*>()
 																								.returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
 				const std::string str = STRA;
-				auto [err, robj] = reverseString(StringM())(&str);
+				auto [err, robj] = reverseString(StrMute())(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -172,7 +172,7 @@ namespace rtl_tests
 				EXPECT_EQ(retStr, expStr);
 			} {
 				const std::string str = STRA;
-				auto [err, robj] = reverseString.bind<const std::string*>(StringM())(&str);
+				auto [err, robj] = reverseString.bind<const std::string*>(StrMute())(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -185,12 +185,12 @@ namespace rtl_tests
 		}
 		EXPECT_TRUE(reverseStrOpt->hasSignature<>());
 		{
-			rtl::method<StringM, rtl::Return()> reverseString = reverseStrOpt->targetT<StringM>()
+			rtl::method<StrMute, rtl::Return()> reverseString = reverseStrOpt->targetT<StrMute>()
 																			  .argsT<>()
 																		      .returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				auto [err, robj] = reverseString(StringM())();
+				auto [err, robj] = reverseString(StrMute())();
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -200,7 +200,7 @@ namespace rtl_tests
 				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				auto [err, robj] = reverseString.bind(StringM())();
+				auto [err, robj] = reverseString.bind(StrMute())();
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -216,7 +216,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
@@ -229,9 +229,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																					      .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString); 
@@ -266,7 +266,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
@@ -279,9 +279,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -309,7 +309,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
@@ -322,9 +322,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -356,7 +356,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
@@ -369,9 +369,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -398,7 +398,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_non_const_ref_argument)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrNonConstRefArg);
@@ -411,9 +411,9 @@ namespace rtl_tests
 		// Here no overloads exists, only non-const ref (T&) argument.
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -446,7 +446,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_const_ref_argument)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrConstRefArg);
@@ -459,9 +459,9 @@ namespace rtl_tests
 		// Here no overloads exists, only non-const ref (T&) argument.
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -501,7 +501,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, calling_non_overloaded_rvalue_ref_argument)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrRValueRefArg);
@@ -514,8 +514,8 @@ namespace rtl_tests
 		// Here no overloads exists, only non-const ref (T&) argument.
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&&>());
 
-		StringM target;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		StrMute target;
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -538,7 +538,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, implicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
@@ -551,9 +551,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
@@ -575,7 +575,7 @@ namespace rtl_tests
 
 	TEST(ReturnTypeErased_rtl_method, explicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
-		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StringM::struct_);
+		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
 		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRefAndCRef);
@@ -588,9 +588,9 @@ namespace rtl_tests
 		EXPECT_TRUE(reverseStrOpt->hasSignature<std::string_view&>());
 		EXPECT_TRUE(reverseStrOpt->hasSignature<const std::string_view&>());
 		
-		StringM target;
+		StrMute target;
 		std::string_view str = STRA;
-		rtl::method<StringM, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StringM>()
+		rtl::method<StrMute, rtl::Return(std::string_view)> reverseString = reverseStrOpt->targetT<StrMute>()
 																						  .argsT<std::string_view>()
 																						  .returnT<>();
 		EXPECT_TRUE(reverseString);
