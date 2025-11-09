@@ -6,7 +6,8 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor.h"
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.h"	
+    "${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/constructor_ptr.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/method_ptr_const.h"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_base.h"
