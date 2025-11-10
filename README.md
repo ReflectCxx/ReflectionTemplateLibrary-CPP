@@ -51,9 +51,6 @@ Yes — `rtl::function`’s dispatch is faster than `std::function`.
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-```c++
-#include <rtl/rtl.h> // Reflection access interface.
-```
 Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
@@ -61,7 +58,7 @@ auto cxx_mirror = rtl::CxxMirror({
 	rtl::type().function("complexToStr").build(complexToStr),
 	// Register class 'Person' ('record' is general term used for 'struct/class') -
 	rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
-	// Register user-defined ctor -
+	// Register user defined ctor -
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
     // Register methods -
 	rtl::type().member<Person>().method("setAge").build(&Person::setAge),
@@ -70,12 +67,15 @@ auto cxx_mirror = rtl::CxxMirror({
 ```
 The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
-And what better way to do that than a **Singleton**:
+And what better way to do that than a **Singleton**: *`(MyReflection.h)`*
 ```c++
-struct cxx { static rtl::CxxMirror& mirror(); };
+namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
+struct cxx { static rtl::CxxMirror& mirror(); };	// The Singleton.
 ```
-define and register everything in an isolated translation unit.
+define and register everything in an isolated translation unit. *`(MyReflection.cpp)`*
 ```c++
+#include <rtl/builder.h> 	// Reflection builder interface.
+
 rtl::CxxMirror& cxx::mirror() {
     static auto cxx_mirror = rtl::CxxMirror({
         /* ...register all types here... */
@@ -96,36 +96,44 @@ std::cout << p.getName();
 **With reflection:**
 
 ```c++
-// Look up the class by name
-std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
-if (classPerson)  // Check has_value() before use.
+#include <rtl/access.h>    // Reflection access interface.
+#include "MyReflection.h"
+
+main()	// THESE API'S WORKS BUT DEPRECATED.
 {
-    // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
-    auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
-    if (err == rtl::error::None)  //Construction successful.
-    {
-        // Call setAge(43) on the reflected object
-        std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
-        if (setAge) {
-			// Binds rtl::RObject & rtl::Method, calls with args.
-            auto [err, ret] = setAge->bind(robj).call(43);  //'setAge' is void ('ret' empty).
-			if (err == rtl::error::None) { /* Operation succeeded. */ }
-        }
+    // Look up the class by name
+    std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
-        // Call getName(), which returns std::string
-        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
-        if (getName) {
-			//Returns- std::pair<rtl::error, rtl::RObject>
-            auto [err, ret] = getName->bind(robj).call();
-            if (err == rtl::error::None && ret.canViewAs<std::string>())
-            {
-                std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                std::cout << viewStr->get();  // safe. validated above.
+    if (classPerson)  // Check has_value() before use.
+    {
+        // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
+        auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
+        if (err == rtl::error::None)  //Construction successful.
+        {
+            // Call setAge(43) on the reflected object
+            std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
+            if (setAge) {
+                // Binds rtl::RObject & rtl::Method, calls with args.
+                auto [err, ret] = setAge->bind(robj).call(43);  //'setAge' is void ('ret' empty).
+                if (err == rtl::error::None) { /* Operation succeeded. */ }
+            }
+
+            // Call getName(), which returns std::string
+            std::optional<rtl::Method> getName = classPerson->getMethod("getName");
+            if (getName) {
+                //Returns- std::pair<rtl::error, rtl::RObject>
+                auto [err, ret] = getName->bind(robj).call();
+                if (err == rtl::error::None && ret.canViewAs<std::string>())
+                {
+                    std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
+                    std::cout << viewStr->get();  // safe. validated above.
+                }
             }
         }
     }
 }
+
 ```
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
