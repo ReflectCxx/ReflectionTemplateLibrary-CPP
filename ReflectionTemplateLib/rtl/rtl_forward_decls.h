@@ -19,6 +19,8 @@ namespace rtl
 
     class Function;
 
+    class Record;
+
     class Method;
 
     class CxxMirror;

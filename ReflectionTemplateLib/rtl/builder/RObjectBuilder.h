@@ -35,12 +35,6 @@ namespace rtl::detail
 
 namespace rtl
 {
-    inline const std::size_t getRtlManagedHeapInstanceCount()
-    {
-        return RObject::getInstanceCounter();
-    }
-
-
     template<class T, std::size_t N>
     inline RObject reflect(T(&pArr)[N]) noexcept
     {

@@ -15,10 +15,13 @@
 #include "RObject.h"
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
-#include "erasure_base.h"
 
+#include "lambda_method.h"
 
 #include "erasure_base.hpp"
+
+#include "rtl_method.h"
+#include "rtl_method_const.h"
 #include "rtl_method_erased.h"
 #include "rtl_method_erased_target.h"
 #include "rtl_method_erased_return.h"

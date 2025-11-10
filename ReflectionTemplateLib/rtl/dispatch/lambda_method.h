@@ -14,6 +14,7 @@
 #include "lambda_base.h"
 
 #include "method_ptr.h"
+#include "method_ptr_const.h"
 
 #include "rtl_method.h"
 #include "rtl_method_const.h"
@@ -52,7 +53,7 @@ namespace rtl::dispatch
         {
             if (p_returnId == 0 || p_returnId == m_functor.m_return_id) [[likely]]
             {
-                auto fptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(m_functor).f_ptr();
+                auto fptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(m_functor).f_ptr();
                 return hopper_ct<return_t>(fptr);
             }
             return hopper_ct<return_t>();

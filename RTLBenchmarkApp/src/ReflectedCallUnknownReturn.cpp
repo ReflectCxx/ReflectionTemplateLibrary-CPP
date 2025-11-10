@@ -1,6 +1,7 @@
 
+#include <iostream>
 #include <benchmark/benchmark.h>
-#include <rtl/rtl.h>
+#include <rtl/access.h>
 
 #include "BenchMark.h"
 #include "ReflectedCallUnknownReturn.h"
@@ -237,7 +238,7 @@ namespace
 
     static auto _test7 = []()
     {
-        auto [err, returnOpt] = ErasedTargetAwareReturn_SendMessage(nodeObj)(bm::g_longStr);
+        auto [err, returnOpt] = ErasedTargetAwareReturn_GetMessage(nodeObj)(bm::g_longStr);
         if (err != rtl::error::None) {
             std::cerr << "[07] error: " << rtl::to_string(err) << "\n";
         }
@@ -299,7 +300,7 @@ namespace bm_rtl
 
     void method____ErasedTargetType::set_string(benchmark::State& state)
     {
-        static auto _ = _test2();
+        static auto _ = _test6();
         static bm::Node node;
         for (auto _ : state)
         {
@@ -309,7 +310,7 @@ namespace bm_rtl
 
     void method____ErasedTargetType::get_string(benchmark::State& state)
     {
-        static auto _ = _test3();
+        static auto _ = _test7();
         static bm::Node node;
         for (auto _ : state)
         {
@@ -319,7 +320,7 @@ namespace bm_rtl
 
     void method____ErasedTargetAndReturnType::set_string(benchmark::State& state)
     {
-        static auto _ = _test2();
+        static auto _ = _test4();
         static bm::Node node;
         for (auto _ : state)
         {
@@ -329,7 +330,7 @@ namespace bm_rtl
 
     void method____ErasedTargetAndReturnType::get_string(benchmark::State& state)
     {
-        static auto _ = _test3();
+        static auto _ = _test5();
         static bm::Node node;
         for (auto _ : state)
         {

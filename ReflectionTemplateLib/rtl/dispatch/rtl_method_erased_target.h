@@ -33,6 +33,10 @@ namespace rtl
                     return { fn.m_init_err, std::nullopt };
                 }
 
+                if (target.isEmpty()) {
+                    return { error::EmptyRObject, std::nullopt };
+                }
+
                 if (fn.must_bind_refs()) [[unlikely]] {
                     return { error::ExplicitRefBindingRequired, std::nullopt };
                 }

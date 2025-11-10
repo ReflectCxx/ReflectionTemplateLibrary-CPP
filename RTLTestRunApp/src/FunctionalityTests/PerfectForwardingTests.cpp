@@ -17,7 +17,7 @@
  */
 
 
-#include <rtl/rtl.h>
+#include <rtl/access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"

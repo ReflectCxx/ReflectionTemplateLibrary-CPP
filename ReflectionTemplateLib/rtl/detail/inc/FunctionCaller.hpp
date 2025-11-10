@@ -16,7 +16,11 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
-#include "erasure_base.h"
+
+#include "lambda_method.h"
+#include "lambda_function.h"
+
+#include "erase_return.h"
 #include "rtl_function_erased_return.h"
 
 namespace rtl::detail

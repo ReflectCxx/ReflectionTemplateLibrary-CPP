@@ -9,10 +9,11 @@
  *************************************************************************/
 
 #include <atomic>
-#include "RObject.h"
+
+#include "Record.h"
 #include "CxxMirror.h"
 
-namespace rtl 
+namespace rtl
 {
     namespace detail
     {
@@ -22,6 +23,19 @@ namespace rtl
             static std::atomic<std::size_t> counter{ TypeId<>::None + 1 };
             return counter.fetch_add(1, std::memory_order_relaxed);
         }
+    }
+
+    /*  @Constructor: CxxMirror
+    @params: 'const std::vector<Function>&'
+    * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
+    * the only constructor to construct 'CxxMirror' object.
+    * Syntax for constructing - CxxMirror({ type().function("func_name").build(), ..., ... })
+    * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
+    * the vector is simply forwarded to the base class constructor.
+*/
+    CxxMirror::CxxMirror(const std::vector<Function>& pFunctions) : detail::CxxReflection(pFunctions)
+    {
+        rtl::detail::ReflectedConversions::init();
     }
 
     error CxxMirror::setupCloning(const RObject& pTarget) const

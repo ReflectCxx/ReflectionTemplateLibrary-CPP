@@ -15,25 +15,25 @@ namespace test_mirror
         static auto cxx_mirror = rtl::CxxMirror(
             []() {
 
-                std::vector<rtl::Function> meta_fns;
+                std::vector<rtl::Function> metaFns;
 
-                registerPodStdTypes(meta_fns);
+                registerPodStdTypes(metaFns);
 
-                registerTypeBook(meta_fns);
-                registerTypeDate(meta_fns);
-                registerTypeEvent(meta_fns);
-                registerTypePerson(meta_fns);
-                registerTypeAnimal(meta_fns);
-                registerTypeLibrary(meta_fns);
-                registerTypeComplex(meta_fns);
-                registerTypeCalender(meta_fns);
+                registerTypeBook(metaFns);
+                registerTypeDate(metaFns);
+                registerTypeEvent(metaFns);
+                registerTypePerson(metaFns);
+                registerTypeAnimal(metaFns);
+                registerTypeLibrary(metaFns);
+                registerTypeComplex(metaFns);
+                registerTypeCalender(metaFns);
 
-                registerTypeStringMute(meta_fns);
-                registerTypeStringConst(meta_fns);
-                registerTypeStringFuncs(meta_fns);
-                registerTypeStringStatic(meta_fns);
+                registerTypeStringMute(metaFns);
+                registerTypeStringConst(metaFns);
+                registerTypeStringFuncs(metaFns);
+                registerTypeStringStatic(metaFns);
 
-                return meta_fns;
+                return metaFns;
             }()
         );
 

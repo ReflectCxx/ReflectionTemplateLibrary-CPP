@@ -11,28 +11,6 @@
 
 #pragma once
 
-
-/*
-* Provides the interface to register types and functions with RTL.
-*
-* Example usage:
-*   rtl::type().ns("ns").function<int(std::string)>("func").build(&func);
-*   rtl::type().ns("ns").record<MyClass>("MyClass").build();
-*   rtl::type().member<MyClass>().constructor<std::string, int>().build();
-*   rtl::type().member<MyClass>().method<void(const std::string&)>("setName").build(&MyClass::setName);
-*
-* Template parameters are required only for overload resolution:
-*   - If the function/method is unique, template parameters are optional.
-*   - If overloads exist and one of them has zero parameters, that overload
-*     must be registered with <void>.
-*   - Constructor overloads never require <void>, even if a zero-argument
-*     constructor exists.
-*
-* Declared in namespace rtl::builder.
-*/
-#include "Reflect.hpp"
-
-
 /*
 * Interface for accessing user-defined classes/structs and their members
 * (constructors, methods, and fields).
@@ -45,7 +23,7 @@
 *
 * Declared in namespace rtl.
 */
-#include "Record.h"
+#include <Record.h>
 
 
 /*
@@ -60,7 +38,7 @@
 *
 * Declared in namespace rtl.
 */
-#include "Function.hpp"
+#include <Function.hpp>
 
 
 /*
@@ -82,12 +60,13 @@
 *
 * Declared in namespace rtl.
 */
-#include "Method.hpp"
+#include <Method.hpp>
 
 
 /*
 * The root reflection container that aggregates all registrations.
-*
+* example pattern-
+* 
 *   namespace cxx {
 *       const rtl::CxxMirror& mirror() {
 *           static rtl::CxxMirror m = rtl::CxxMirror({
@@ -99,4 +78,22 @@
 *
 * Declared in namespace rtl.
 */
-#include "CxxMirror.hpp"
+#include <CxxMirror.hpp>
+
+#include <RObject.hpp>
+
+#include <dispatch/rtl_function.h>
+
+#include <dispatch/rtl_method.h>
+
+#include <dispatch/rtl_method_const.h>
+
+#include <builder/RObjectBuilder.hpp>
+
+namespace rtl 
+{
+    static inline std::size_t getRtlManagedHeapInstanceCount()
+    {
+        return RObject::getInstanceCounter();
+    }
+}

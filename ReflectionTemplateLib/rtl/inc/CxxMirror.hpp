@@ -16,23 +16,7 @@
 
 
 namespace rtl
-{    
-
-/*  @Constructor: CxxMirror
-    @params: 'const std::vector<Function>&'
-    * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
-    * the only constructor to construct 'CxxMirror' object.
-    * Syntax for constructing - CxxMirror({ type().function("func_name").build(), ..., ... })
-    * '.build()' function will return a 'Function' object, and passed to std::vector initializer list.
-    * the vector is simply forwarded to the base class constructor.
-*/  
-    inline CxxMirror::CxxMirror(const std::vector<Function>& pFunctions)
-        : detail::CxxReflection(pFunctions)
-    {
-        rtl::detail::ReflectedConversions::init();
-    }
-
-
+{
 /*  @method: getRecord
     @param: const std::string& (name of the class/struct)
     @return: std::optional<Record>

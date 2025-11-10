@@ -14,12 +14,7 @@
 #include "CxxReflection.h"
 
 namespace rtl 
-{
-    // Forward declarations
-    class Record;
-    class RObject;
-    class Function;
-    
+{   
 /*  @class CxxMirror
     * Provides the primary interface to access registered functions and methods by name.
     * This is the single point of access to the entire reflection system.
@@ -46,6 +41,9 @@ namespace rtl
     class CxxMirror : public detail::CxxReflection
     {
     public:
+
+        CxxMirror(CxxMirror&&) = default;
+        CxxMirror(const CxxMirror&) = default;
 
         // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
         explicit CxxMirror(const std::vector<Function>& pFunctions);

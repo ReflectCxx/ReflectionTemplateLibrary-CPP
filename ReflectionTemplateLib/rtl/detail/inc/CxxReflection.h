@@ -17,62 +17,59 @@
 
 #include "Record.h"
 
-namespace rtl {
+namespace rtl::detail {
 
-    namespace detail
+/*  @class: CxxReflection
+    * base class for main 'CxxMirror' interface.
+    * accepts 'Function' objects for construction, frowared from 'CxxMirror' constructor
+    * organizes the 'Function' objects by namespace, class/structs.
+*/  class CxxReflection
     {
-    /*  @class: CxxReflection
-        * base class for main 'CxxMirror' interface.
-        * accepts 'Function' objects for construction, frowared from 'CxxMirror' constructor
-        * organizes the 'Function' objects by namespace, class/structs.
-    */  class CxxReflection
-        {
-            using RecordRef = std::reference_wrapper<Record>; 
-            using RecordMap = std::unordered_map <std::string, RecordRef>;
-            using MethodMap = std::unordered_map <std::string, Method>;
-            using FunctionMap = std::unordered_map <std::string, Function>;
+        using RecordRef = std::reference_wrapper<Record>; 
+        using RecordMap = std::unordered_map <std::string, RecordRef>;
+        using MethodMap = std::unordered_map <std::string, Method>;
+        using FunctionMap = std::unordered_map <std::string, Function>;
 
-            std::unordered_map<std::size_t, Record> m_recordIdMap;
-            //contains 'Record' (class/struct) objects, mapped with given namespace name.
-            std::unordered_map<std::string, RecordMap> m_recordNamespaceMap;
-            //contains 'Function' (non-member-function) objects, mapped with given namespace name.
-            std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
+        std::unordered_map<std::size_t, Record> m_recordIdMap;
+        //contains 'Record' (class/struct) objects, mapped with given namespace name.
+        std::unordered_map<std::string, RecordMap> m_recordNamespaceMap;
+        //contains 'Function' (non-member-function) objects, mapped with given namespace name.
+        std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
 
-            void addInNamespaceMap(Record& pRecord);
-            void buildRecordIdMap(const std::vector<Function>& pFunctions);
-            void insertFunctionToNamespaceMap(const Function& pFunction);
-            bool insertFunctionToRecordIdMap(const Function& pFunction);
+        void addInNamespaceMap(Record& pRecord);
+        void buildRecordIdMap(const std::vector<Function>& pFunctions);
+        void insertFunctionToNamespaceMap(const Function& pFunction);
+        bool insertFunctionToRecordIdMap(const Function& pFunction);
 
-            static void addMethod(MethodMap& pMethodMap, const Function& pFunction);
-            static void addFunction(FunctionMap& pFunctionMap, const Function& pFunction);
-            static const bool validateFunctionByRecordId(const Function& pFunction);
+        static void addMethod(MethodMap& pMethodMap, const Function& pFunction);
+        static void addFunction(FunctionMap& pFunctionMap, const Function& pFunction);
+        static const bool validateFunctionByRecordId(const Function& pFunction);
 
-        protected:
+    protected:
 
-            CxxReflection(const std::vector<Function>& pFunctions);
+        CxxReflection(const std::vector<Function>& pFunctions);
 
-        public:
+    public:
 
-            CxxReflection() = delete;
-            CxxReflection(CxxReflection&&) = default;
-            CxxReflection(const CxxReflection&) = default;
-            CxxReflection& operator=(CxxReflection&&) = delete;
-            CxxReflection& operator=(const CxxReflection&) = delete;
+        CxxReflection() = delete;
+        CxxReflection(CxxReflection&&) = default;
+        CxxReflection(const CxxReflection&) = default;
+        CxxReflection& operator=(CxxReflection&&) = delete;
+        CxxReflection& operator=(const CxxReflection&) = delete;
 
-            //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
-            constexpr const std::unordered_map<std::size_t, Record>& getRecordIdMap() const {
-                return m_recordIdMap;
-            }
+        //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
+        constexpr const std::unordered_map<std::size_t, Record>& getRecordIdMap() const {
+            return m_recordIdMap;
+        }
 
-            //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
-            constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() const {
-                return m_recordNamespaceMap;
-            }
+        //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
+        constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() const {
+            return m_recordNamespaceMap;
+        }
 
-            //returns the complete map of registered functions ('Function' objects) under a namespace.
-            constexpr const std::unordered_map<std::string, FunctionMap>& getNamespaceFunctionsMap() const {
-                return m_functionNamespaceMap;
-            }
-        };
-    }
+        //returns the complete map of registered functions ('Function' objects) under a namespace.
+        constexpr const std::unordered_map<std::string, FunctionMap>& getNamespaceFunctionsMap() const {
+            return m_functionNamespaceMap;
+        }
+    };
 }

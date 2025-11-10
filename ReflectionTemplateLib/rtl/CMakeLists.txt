@@ -2,7 +2,7 @@
 
 # Top-level headers in rtl/ (absolute paths)
 set(LOCAL_HEADERS
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/access.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_forward_decls.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_constants.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_errors.h"

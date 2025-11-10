@@ -1,7 +1,9 @@
 
 #include <gtest/gtest.h>
 #include <cstring>
-#include <rtl/rtl.h>
+
+#include <rtl/builder.h>
+#include <rtl/access.h>
 
 #include "CxxMirrorToJson.h"
 

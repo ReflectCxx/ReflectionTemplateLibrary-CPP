@@ -55,7 +55,7 @@ namespace rtl
             return invoker{ m_functor, p_target };
         }
 
-        method(fptr_t p_functor) 
+        explicit method(fptr_t p_functor) 
             : m_init_err(error::None)
             , m_functor(p_functor)
         { }
