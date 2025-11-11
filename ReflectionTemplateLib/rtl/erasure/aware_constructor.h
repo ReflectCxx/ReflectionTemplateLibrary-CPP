@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "RObject.h"
 #include "rtl_errors.h"
 #include "erase_constructor.h"
 
@@ -30,7 +31,7 @@ namespace rtl::dispatch
 		template<class ...args_t>
 		static Return get_allocator()
 		{
-            return [](const detail::FunctorId& pFunctorId, alloc pAllocType, const detail::FunctorId& pClonerId, args_t...params)
+            return [](const detail::FunctorId& pFunctorId, alloc pAllocType, const detail::FunctorId& pClonerId, args_t...params)-> Return
             {
                 if constexpr (sizeof...(args_t) == 0 && !std::is_default_constructible_v<record_t>)
                 {   //default constructor, private or deleted.
