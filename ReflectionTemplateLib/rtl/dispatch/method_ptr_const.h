@@ -30,7 +30,7 @@ namespace rtl::dispatch
 			return (fptr == m_functor);
 		}
 
-		method_ptr(functor_t fptr) :m_functor(fptr)
+		method_ptr(functor_t fptr): m_functor(fptr)
 		{
 			m_member_kind = detail::member::Const;
 

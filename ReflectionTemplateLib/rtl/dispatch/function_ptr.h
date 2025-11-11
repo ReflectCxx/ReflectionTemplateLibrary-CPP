@@ -28,7 +28,8 @@ namespace rtl::dispatch
 			return (fptr == m_functor);
 		}
 
-		function_ptr(functor_t fptr, traits::uid_t p_record_uid, detail::member member_kind) :m_functor(fptr)
+		function_ptr(functor_t fptr, traits::uid_t p_record_uid, detail::member member_kind) 
+			: m_functor(fptr)
 		{
 			m_record_id = p_record_uid;
 			m_is_void = std::is_void_v<return_t>;
@@ -45,6 +46,6 @@ namespace rtl::dispatch
 
 	private:
 
-		functor_t m_functor;
+		const functor_t m_functor;
 	};
 }

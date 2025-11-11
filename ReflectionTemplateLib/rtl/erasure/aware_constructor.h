@@ -12,51 +12,60 @@
 #pragma once
 
 #include "rtl_errors.h"
+#include "erase_constructor.h"
+
 #include "RObjectBuilder.hpp"
 
 namespace rtl::dispatch
 {
-	template<class record_t>
-	struct aware_constructor
+	template<class record_t, class ...signature_t>
+	struct aware_constructor : public erase_constructor<traits::normal_sign_t<signature_t>...>
 	{
-		template<class ...args_t>
-		static Return allocator(const detail::FunctorId& pFunctorId, alloc pAllocType, const detail::FunctorId& pClonerId, args_t...params)
-		{
-            if constexpr (sizeof...(args_t) == 0 && !std::is_default_constructible_v<record_t>)
-            {   //default constructor, private or deleted.
-                return { error::TypeNotDefaultConstructible, RObject{} };
-            }
-            else
-            {
-                if (pAllocType == alloc::Stack) {
+        using this_t = aware_constructor;
+        using base_t = erase_constructor<traits::normal_sign_t<signature_t>...>;
 
-                    if constexpr (!std::is_copy_constructible_v<record_t>)
-                    {
-                        return {
-                            error::TypeNotCopyConstructible, RObject{}
-                        };
+        aware_constructor(): base_t(this_t::get_allocator())
+        { }
+
+		template<class ...args_t>
+		static Return get_allocator()
+		{
+            return [](const detail::FunctorId& pFunctorId, alloc pAllocType, const detail::FunctorId& pClonerId, args_t...params)
+            {
+                if constexpr (sizeof...(args_t) == 0 && !std::is_default_constructible_v<record_t>)
+                {   //default constructor, private or deleted.
+                    return { error::TypeNotDefaultConstructible, RObject{} };
+                }
+                else
+                {
+                    if (pAllocType == alloc::Stack) {
+
+                        if constexpr (!std::is_copy_constructible_v<record_t>)
+                        {
+                            return { error::TypeNotCopyConstructible, RObject{} };
+                        }
+                        else
+                        {
+                            return {
+                                error::None,
+                                detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
+                                    record_t(std::forward<args_t>(params)...), pClonerId, true
+                                )
+                            };
+                        }
                     }
-                    else
+                    else if (pAllocType == alloc::Heap)
                     {
                         return {
                             error::None,
-                            detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
-                                record_t(std::forward<args_t>(params)...), pClonerId, true
+                            detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
+                                new record_t(std::forward<args_t>(params)...), pClonerId, true
                             )
                         };
                     }
                 }
-                else if (pAllocType == alloc::Heap)
-                {
-                    return {
-                        error::None,
-                        detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                            new record_t(std::forward<args_t>(params)...), pClonerId, true
-                        )
-                    };
-                }
-            }
-            return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
+                return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
+            };
 		}
 
 
@@ -64,42 +73,30 @@ namespace rtl::dispatch
         {
             if constexpr (std::is_copy_constructible_v<record_t>)
             {
-                return [](const detail::FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
+                const auto& srcObj = pOther.view<record_t>()->get();
+                switch (pAllocOn)
                 {
-                    const auto& srcObj = pOther.view<record_t>()->get();
-                    switch (pAllocOn)
-                    {
-                    case alloc::Stack:
-                        return {
-                            error::None,
-                            detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
-                                record_t(srcObj), pFunctorId, true
-                            )
-                        };
-                    case alloc::Heap:
-                        return {
-                            error::None,
-                            detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                                new record_t(srcObj), pFunctorId, true
-                            )
-                        };
-                    default:
-                        return {
-                            error::EmptyRObject,
-                            RObject{}
-                        };
-                    }
-                };
+                case alloc::Stack:
+                    return {
+                        error::None,
+                        detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
+                            record_t(srcObj), pFunctorId, true
+                        )
+                    };
+                case alloc::Heap:
+                    return {
+                        error::None,
+                        detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
+                            new record_t(srcObj), pFunctorId, true
+                        )
+                    };
+                default:
+                    return { error::EmptyRObject, RObject{} };
+                }
             }
             else
             {
-                return [](const detail::FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
-                {
-                    return {
-                        error::TypeNotCopyConstructible,
-                        RObject{}
-                    };
-                };
+                return { error::TypeNotCopyConstructible, RObject{} };
             }
         }
 	};

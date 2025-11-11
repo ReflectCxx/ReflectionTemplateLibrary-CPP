@@ -25,7 +25,7 @@ namespace rtl
         }
     }
 
-    /*  @Constructor: CxxMirror
+/*  @Constructor: CxxMirror
     @params: 'const std::vector<Function>&'
     * accepts vector of 'Function' objects, which are hash-key to lookup a functor.
     * the only constructor to construct 'CxxMirror' object.

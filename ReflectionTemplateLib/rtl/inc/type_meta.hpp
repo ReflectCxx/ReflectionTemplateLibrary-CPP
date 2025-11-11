@@ -23,6 +23,8 @@
 #include "cache_lambda_method.h"
 #include "cache_lambda_function.h"
 
+#include "aware_constructor.h"
+
 namespace rtl
 {
 	template<class ...args_t>
@@ -80,5 +82,30 @@ namespace rtl
 		functor.set_erasure(elambda);
 
 		return type_meta(functor);
+	}
+
+
+	template<class record_t, class ...signature_t>
+	inline type_meta type_meta::add_ctor()
+	{
+		//auto& fc = cache::function_ptr<Return, signature_t...>::instance();
+		//auto& lc = cache::lambda_function<Return, signature_t...>::instance();
+
+		//auto fptr = &(dispatch::aware_constructor<record_t>::allocator<signature_t...>);
+
+		//auto& functor = fc.push(fptr, p_record_uid, p_member_kind, p_index);
+		//auto [lambda, elambda] = lc.push(functor);
+
+		//functor.set_lambda(lambda);
+		//functor.set_erasure(elambda);
+
+		return type_meta();
+	}
+
+
+	template<class record_t, class ...signature_t>
+	inline type_meta type_meta::add_copy_ctor()
+	{
+		return type_meta();
 	}
 }

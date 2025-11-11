@@ -57,6 +57,12 @@ namespace rtl
 		template<class record_t, class return_t, class ...signature_t>
 		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index);
 
+		template<class record_t, class ...signature_t>
+		static type_meta add_ctor();
+
+		template<class record_t, class ...signature_t>
+		static type_meta add_copy_ctor();
+
 		template<class ..._signature>
 		using lambda_fn_t = dispatch::lambda_function<_signature...>;
 
