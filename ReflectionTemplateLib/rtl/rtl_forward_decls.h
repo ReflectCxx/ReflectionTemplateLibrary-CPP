@@ -113,5 +113,8 @@ namespace rtl
 
         template<class record_t, class return_t, class ...signature_t>
         struct aware_return_n_target;
+
+        template<class record_t, class ...signature_t>
+        struct aware_constructor;
     }
 }

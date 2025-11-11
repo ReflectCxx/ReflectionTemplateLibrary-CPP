@@ -29,6 +29,12 @@ namespace rtl::detail
 
         template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
         static RObject build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept;
+
+        template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
+        static RObject build(T&& pVal, traits::cloner_t pClonerFn, bool pIsConstCastSafe) noexcept;
+
+        template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
+        static RObject build(T&& pVal, traits::cloner_t pClonerFn, bool pIsConstCastSafe) noexcept;
     };
 }
 

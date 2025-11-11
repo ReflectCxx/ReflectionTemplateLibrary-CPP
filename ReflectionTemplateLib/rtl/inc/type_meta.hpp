@@ -88,24 +88,20 @@ namespace rtl
 	template<class record_t, class ...signature_t>
 	inline type_meta type_meta::add_ctor()
 	{
-		//auto& fc = cache::function_ptr<Return, signature_t...>::instance();
-		//auto& lc = cache::lambda_function<Return, signature_t...>::instance();
+		if constexpr (sizeof...(signature_t) == 0)
+		{
+			auto& fc = cache::function_ptr<Return, signature_t...>::instance();
+			auto& lc = cache::lambda_function<Return, signature_t...>::instance();
 
-		//auto fptr = &(dispatch::aware_constructor<record_t>::allocator<signature_t...>);
+			auto fptr = &(dispatch::aware_constructor<record_t>::allocator);
 
-		//auto& functor = fc.push(fptr, p_record_uid, p_member_kind, p_index);
-		//auto [lambda, elambda] = lc.push(functor);
+			//auto& functor = fc.push(fptr, p_record_uid, p_member_kind, p_index);
+			//auto [lambda, elambda] = lc.push(functor);
 
-		//functor.set_lambda(lambda);
-		//functor.set_erasure(elambda);
+			//functor.set_lambda(lambda);
+			//functor.set_erasure(elambda);
+		}
 
-		return type_meta();
-	}
-
-
-	template<class record_t, class ...signature_t>
-	inline type_meta type_meta::add_copy_ctor()
-	{
 		return type_meta();
 	}
 }

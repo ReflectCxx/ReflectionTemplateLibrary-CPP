@@ -31,6 +31,8 @@ namespace rtl::detail
         Wrapper m_wrapperType;
         EntityKind m_containsAs;
 
+        traits::cloner_t m_clonerFn;
+
         std::optional<FunctorId> m_clonerId;
 
         GETTER(std::size_t, TypeId, m_typeId)
@@ -78,7 +80,36 @@ namespace rtl::detail
                 _allocOn, 
                 _W::type,
                 entityKind,
-                pClonerId 
+                nullptr,
+                pClonerId
+            };
+        }
+
+
+        template<class T, rtl::alloc _allocOn>
+        ForceInline static RObjectId create(bool pIsConstCastSafe, traits::cloner_t pClonerFn) noexcept
+        {
+            // extract wrapper info.
+            using _W = traits::std_wrapper<traits::raw_t<T>>;
+            // extract Un-Qualified raw type.
+            using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
+            constexpr EntityKind entityKind = getEntityKind<T>();
+            
+            const std::size_t wrapperId = _W::id();
+            const std::size_t typeId = rtl::detail::TypeId<_T>::get();
+
+            constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
+            return RObjectId {
+
+                isWrappingConst,
+                pIsConstCastSafe,
+                typeId,
+                wrapperId,
+                _allocOn, 
+                _W::type,
+                entityKind,
+                pClonerFn,
+                std::nullopt
             };
         }
     };

@@ -77,6 +77,7 @@ define and register everything in an isolated translation unit, *`(MyReflection.
 #include <rtl/builder.h> 	// Reflection builder interface.
 
 rtl::CxxMirror& cxx::mirror() {
+    // Inherently thread safe.
     static auto cxx_mirror = rtl::CxxMirror({
         /* ...register all types here... */
     });
