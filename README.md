@@ -67,12 +67,12 @@ auto cxx_mirror = rtl::CxxMirror({
 ```
 The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
-And what better way to do that than a **Singleton**, *`(MyReflection.h)`*
+And what better way to do that than a **Singleton**, *`MyReflection.h`*
 ```c++
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
 struct cxx { static rtl::CxxMirror& mirror(); };	// The Singleton.
 ```
-define and register everything in an isolated translation unit, *`(MyReflection.cpp)`*
+define and register everything in an isolated translation unit, *`MyReflection.cpp`*
 ```c++
 #include <rtl/builder.h> 	// Reflection builder interface.
 
@@ -97,12 +97,11 @@ std::cout << p.getName();
 **With reflection:**
 
 ```c++
-
 #include <rtl/access.h>    // Reflection access interface.
 #include "MyReflection.h"
 
-main()	// THESE APIs WORKS BUT DEPRECATED.
-{
+main() {
+    // THESE API WORKS BUT DEPRECATED.
     // Look up the class by name
     std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
@@ -134,7 +133,6 @@ main()	// THESE APIs WORKS BUT DEPRECATED.
         }
     }
 }
-
 ```
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
