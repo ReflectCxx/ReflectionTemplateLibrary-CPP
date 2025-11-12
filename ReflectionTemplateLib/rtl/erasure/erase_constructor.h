@@ -20,7 +20,7 @@ namespace rtl::dispatch
     template<class ...normal_sign_t>
     struct erase_constructor : public erasure_base
     {
-        using lambda_t = std::function<Return(const detail::FunctorId& pFunctorId, alloc pAllocType, const detail::FunctorId& pClonerId, normal_sign_t...)>;
+        using lambda_t = std::function<Return(alloc, normal_sign_t...)>;
 
         GETTER_CREF(lambda_t, _hopper, m_hopper)
 

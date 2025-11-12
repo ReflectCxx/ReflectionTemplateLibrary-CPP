@@ -54,6 +54,7 @@ namespace rtl
 		return type_meta(functor);
 	}
 
+
 	template<class record_t, class return_t, class ...signature_t>
 	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index)
 	{
@@ -68,6 +69,7 @@ namespace rtl
 
 		return type_meta(functor);
 	}
+
 
 	template<class record_t, class return_t, class ...signature_t>
 	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index)
@@ -86,22 +88,22 @@ namespace rtl
 
 
 	template<class record_t, class ...signature_t>
-	inline type_meta type_meta::add_ctor()
+	inline type_meta type_meta::add_constructor(std::size_t p_index)
 	{
 		if constexpr (sizeof...(signature_t) == 0)
 		{
-			auto& fc = cache::function_ptr<Return, signature_t...>::instance();
-			auto& lc = cache::lambda_function<Return, signature_t...>::instance();
+			auto& fc = cache::function_ptr<Return, alloc>::instance();
+			auto& lc = cache::lambda_function<Return, alloc>::instance();
 
-			auto fptr = &(dispatch::aware_constructor<record_t>::allocator);
+			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
 
-			//auto& functor = fc.push(fptr, p_record_uid, p_member_kind, p_index);
+			auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::Ctor, p_index);
 			//auto [lambda, elambda] = lc.push(functor);
 
 			//functor.set_lambda(lambda);
 			//functor.set_erasure(elambda);
+			return type_meta(functor);
 		}
-
 		return type_meta();
 	}
 }

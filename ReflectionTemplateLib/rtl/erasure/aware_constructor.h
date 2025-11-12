@@ -61,33 +61,36 @@ namespace rtl::dispatch
 
         static Return allocator(alloc p_alloc_on)
         {
-            if(!std::is_default_constructible_v<record_t>) {
-                //default constructor, private or deleted.
-                return { error::TypeNotDefaultConstructible, RObject{} };
-            }
-
-            if (p_alloc_on == alloc::Stack)
+            if constexpr (std::is_default_constructible_v<record_t>)
             {
-                if constexpr (std::is_copy_constructible_v<record_t>)
+                switch (p_alloc_on)
                 {
+                case alloc::Stack:
+                    if constexpr (std::is_copy_constructible_v<record_t>)
+                    {
+                        return {
+                            error::None,
+                            detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
+                                record_t(), &aware_constructor<record_t>::cloner, true
+                            )
+                        };
+                    }
+                    else return { error::TypeNotCopyConstructible, RObject{} };
+                case alloc::Heap:
                     return {
                         error::None,
-                        detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
-                            record_t(), &aware_constructor<record_t>::cloner, true
+                        detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
+                            new record_t(), &aware_constructor<record_t>::cloner, true
                         )
                     };
+                default:
+                    return { error::EmptyRObject, RObject{} };
                 }
             }
-            else if (p_alloc_on == alloc::Heap)
+            else 
             {
-                return {
-                    error::None,
-                    detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                        new record_t(), &aware_constructor<record_t>::cloner, true
-                    )
-                };
+                return { error::TypeNotDefaultConstructible, RObject{} };
             }
-            return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
         }
 
 

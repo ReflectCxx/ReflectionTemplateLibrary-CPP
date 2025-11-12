@@ -116,7 +116,7 @@ namespace rtl::detail
     * adds constructor with any combination of arguments except, copy & const-ref copy constructors.
 */  template<class _derivedType>
     template<class _recordType, class ..._signature>
-    inline const detail::FunctorId SetupConstructor<_derivedType>::addConstructor()
+    inline std::pair<type_meta, detail::FunctorId> SetupConstructor<_derivedType>::addConstructor()
     {
         std::size_t recordId = TypeId<_recordType>::get();
         std::size_t returnId = recordId;
@@ -124,30 +124,41 @@ namespace rtl::detail
         std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
 
         //maintaining a set of already registered constructors.
-        static std::map<std::size_t, std::size_t> ctorSet;
+        static std::map<std::size_t, std::pair<type_meta, std::size_t>> ctorSet;
+
+        rtl::type_meta typeMeta;
 
         //will be called from '_derivedType' if the constructor not already registered.
         const auto& updateIndex = [&](std::size_t pIndex)->void {
-            ctorSet.insert(std::make_pair(hashKey, pIndex));
+            typeMeta = rtl::type_meta::add_constructor<_recordType, _signature...>(pIndex);
+            ctorSet.insert(std::make_pair(hashKey, std::make_pair(typeMeta, pIndex)));
         };
 
         //will be called from '_derivedType' to check if the constructor already registered.
         const auto& getIndex = [&]()-> std::size_t {
             const auto& itr = ctorSet.find(hashKey);
-            return (itr != ctorSet.end() ? itr->second : index_none);
+            if (itr != ctorSet.end())
+            {
+                typeMeta = itr->second.first;
+                return itr->second.second;
+            }
+            return index_none;
         };
 
         //add the lambda in 'FunctorContainer'.
         auto lambdaIndex = _derivedType::pushBack(getConstructorCaller<_recordType, _signature...>(), getIndex, updateIndex);
 
-        return detail::FunctorId {
+        return { 
+            typeMeta,            
+            detail::FunctorId {
 
-            lambdaIndex,
-            returnId,
-            recordId,
-            containerId,
-            _derivedType::template getSignatureStr<_recordType>(true),
-            nullptr//&lambdaCache
+                lambdaIndex,
+                returnId,
+                recordId,
+                containerId,
+                _derivedType::template getSignatureStr<_recordType>(true),
+                nullptr
+            }
         };
     }
 

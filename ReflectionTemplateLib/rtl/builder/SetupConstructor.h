@@ -42,7 +42,7 @@ namespace rtl {
 
             //adds the lambda, wrapping constructor call, recordType(_signature...), to '_derivedType' (FunctorContainer)
             template<class _recordType, class ..._signature>
-            static const detail::FunctorId addConstructor();
+            static std::pair<type_meta, detail::FunctorId> addConstructor();
 
             template<class _recordType, class ..._signature>
             static const detail::FunctorId addCopyConstructor();
