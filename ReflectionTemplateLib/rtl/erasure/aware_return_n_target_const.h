@@ -34,7 +34,7 @@ namespace rtl::dispatch
 
         constexpr static bool is_void = (std::is_void_v<return_t>);
 
-        void init_base()
+        void init_lambdas()
         {
             constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
             base_t::m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);

@@ -33,7 +33,7 @@ namespace rtl::cache
             m_erasure_cache.emplace_back(dispatch::aware_return_n_target<record_t, return_t, signature_t...>());
             
             auto& eb = m_erasure_cache.back();
-            eb.init_base();
+            eb.init_lambdas();
             m_cache.push_back(dispatch::lambda_method<record_t, signature_t...>(p_functor, eb));
 
             return { &m_cache.back(), &eb };

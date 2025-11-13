@@ -19,7 +19,7 @@ namespace rtl::dispatch
 	template<class record_t, class ...signature_t>
 	struct aware_constructor
 	{
-		static Return get_allocator()
+		static auto get_allocator()
 		{
             return [](alloc p_alloc_on, traits::normal_sign_t<signature_t>&&...params)-> Return
             {
@@ -38,10 +38,10 @@ namespace rtl::dispatch
                 else if (p_alloc_on == alloc::Heap)
                 {
                     return {
-                        error::None,
-                        detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                            new record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
-                        )
+                        error::None, RObject{}
+                        //detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
+                        //    new record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
+                        //)
                     };
                 }
                 return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.

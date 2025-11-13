@@ -46,7 +46,7 @@ namespace rtl
 		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
 
 		auto& functor = fc.push(p_fptr, p_record_uid, p_member_kind, p_index);
-		auto [lambda, elambda] = lc.push(functor);
+		auto [lambda, elambda] = lc.push<detail::member::None>(functor);
 		
 		functor.set_lambda(lambda);
 		functor.set_erasure(elambda);
@@ -93,17 +93,22 @@ namespace rtl
 		if constexpr (sizeof...(signature_t) == 0)
 		{
 			auto& fc = cache::function_ptr<Return, alloc>::instance();
-			auto& lc = cache::lambda_function<Return, alloc>::instance();
-
 			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
-
-			//auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::Ctor, p_index);
-			//auto [lambda, elambda] = lc.push(functor);
-
-			//functor.set_lambda(lambda);
-			//functor.set_erasure(elambda);
-			//return type_meta(functor);
+			auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::DefaultCtor, p_index);
+			return type_meta(functor);
 		}
-		return type_meta();
+		else
+		{
+			auto& fc = cache::function_ptr<Return, alloc, signature_t...>::instance();
+			auto& lc = cache::lambda_function<Return, alloc, signature_t...>::instance();
+
+			auto& functor = fc.push(nullptr, traits::uid<record_t>::value, detail::member::UserCtor, p_index);
+			auto [lambda, elambda] = lc.push<detail::member::UserCtor>(functor);
+
+			functor.set_lambda(lambda);
+			functor.set_erasure(elambda);
+
+			return type_meta(functor);
+		}
 	}
 }

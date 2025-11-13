@@ -39,10 +39,10 @@ namespace rtl::dispatch
 
         lambda_ctor_t m_ctor_hopper = nullptr;
 
-        template<bool is_ctor, class return_t, class...signature_t>
-        void init_base()
+        template<detail::member mem_kind, class return_t, class...signature_t>
+        void init_lambdas()
         {
-            if constexpr (is_ctor)
+            if constexpr (mem_kind == detail::member::UserCtor)
             {
                 using record_t = return_t;
                 m_ctor_hopper = aware_constructor<record_t, signature_t...>::get_allocator();

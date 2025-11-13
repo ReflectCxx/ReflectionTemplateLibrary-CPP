@@ -133,8 +133,8 @@ namespace rtl::detail
         Const,      // Const-qualified instance method
         NonConst,   // Non-const instance method
         Static,     // Static methods
-        Ctor,
-        CopyCtor
+        UserCtor,
+        DefaultCtor
     };
 
     constexpr const std::string_view NAMESPACE_GLOBAL = "global";
