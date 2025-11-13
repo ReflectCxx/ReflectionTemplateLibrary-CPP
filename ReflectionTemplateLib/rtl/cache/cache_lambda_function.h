@@ -42,7 +42,7 @@ namespace rtl::cache
             else {
                 eb.m_rhopper = aware_ret_t::get_lambda_any_return();
             }
-            eb.init_base<return_t>();
+            eb.template init_base<return_t>();
 
             m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
             return { &m_cache.back(), &eb };
