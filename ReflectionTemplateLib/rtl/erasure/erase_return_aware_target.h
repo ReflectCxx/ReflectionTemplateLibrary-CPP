@@ -31,16 +31,9 @@ namespace rtl::dispatch
 
     private:
 
-        lambda_vt m_vhopper;
+        lambda_vt m_vhopper = nullptr;
 
-        lambda_rt m_rhopper;
-
-        erase_return_aware_target( const lambda_vt& p_void_hop,
-                                   const lambda_rt& p_any_ret_hop ) noexcept
-
-            : m_vhopper(p_void_hop)
-            , m_rhopper(p_any_ret_hop)
-        { }
+        lambda_rt m_rhopper = nullptr;
 
         template<class, class, class ...>
         friend struct aware_return_n_target;

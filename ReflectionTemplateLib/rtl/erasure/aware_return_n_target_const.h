@@ -29,31 +29,29 @@ namespace rtl::dispatch
         using e_return_t = erase_return_aware_target<record_t, traits::normal_sign_t<signature_t>...>;
         using e_target_t = erase_target_aware_return<return_t, traits::normal_sign_t<signature_t>...>;
 
-        constexpr static bool is_void = (std::is_void_v<return_t>);
-
         e_return_t e_return;
         e_target_t e_target;
 
-        aware_return_n_target(const aware_return_n_target&) = delete;
-
-        aware_return_n_target()
-            : base_t( is_void ? this_t::e_return_e_target_fnv() : decltype(this_t::e_return_e_target_fnv()) {},
-                     !is_void ? this_t::e_return_e_target_fnr() : decltype(this_t::e_return_e_target_fnr()) {})
-
-            , e_return( is_void ? this_t::e_return_a_target_fnv() : decltype(this_t::e_return_a_target_fnv()) {},
-                       !is_void ? this_t::e_return_a_target_fnr() : decltype(this_t::e_return_a_target_fnr()) {})
-
-            , e_target( is_void ? this_t::e_target_a_return_fnv() : decltype(this_t::e_target_a_return_fnv()) {},
-                       !is_void ? this_t::e_target_a_return_fnr() : decltype(this_t::e_target_a_return_fnr()) {})
-        {
-            constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
-            base_t::m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
-        }
+        constexpr static bool is_void = (std::is_void_v<return_t>);
 
         void init_base()
         {
+            constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
+            base_t::m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
+
             e_return.m_return_id = base_t::m_return_id;
             e_target.m_return_id = base_t::m_return_id;
+
+            if constexpr (is_void) {
+                base_t::m_vhopper = e_return_e_target_fnv();
+                e_return.m_vhopper = e_return_a_target_fnv();
+                e_target.m_vhopper = e_target_a_return_fnv();
+            }
+            else {
+                base_t::m_rhopper = e_return_e_target_fnr();
+                e_return.m_rhopper = e_return_a_target_fnr();
+                e_target.m_rhopper = e_target_a_return_fnr();
+            }
 
             base_t::m_erased_return = &e_return;
             base_t::m_erased_target = &e_target;
@@ -150,7 +148,7 @@ namespace rtl::dispatch
                     else
                     {
                         using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        // TODO: enable it for move-constructible objects, NRVO.
+                        // TODO: enable it for move-constructible objects.
                         static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
                         return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
                     }
@@ -186,7 +184,7 @@ namespace rtl::dispatch
                     else
                     {
                         using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        // TODO: enable it for move-constructible objects, NRVO.
+                        // TODO: enable it for move-constructible objects.
                         static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
                         return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
                     }

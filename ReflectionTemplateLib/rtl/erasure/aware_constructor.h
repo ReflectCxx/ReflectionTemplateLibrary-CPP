@@ -11,27 +11,17 @@
 
 #pragma once
 
-#include "RObject.h"
 #include "rtl_errors.h"
-#include "erase_constructor.h"
-
 #include "RObjectBuilder.hpp"
 
 namespace rtl::dispatch
 {
 	template<class record_t, class ...signature_t>
-	struct aware_constructor : public erase_constructor<traits::normal_sign_t<signature_t>...>
+	struct aware_constructor
 	{
-        using this_t = aware_constructor;
-        using base_t = erase_constructor<traits::normal_sign_t<signature_t>...>;
-
-        aware_constructor(): base_t(this_t::get_allocator())
-        { }
-
-        template<class ...args_t>
 		static Return get_allocator()
 		{
-            return [](alloc p_alloc_on, args_t...params)-> Return
+            return [](alloc p_alloc_on, traits::normal_sign_t<signature_t>&&...params)-> Return
             {
                 if (p_alloc_on == alloc::Stack)
                 {
@@ -40,7 +30,7 @@ namespace rtl::dispatch
                         return {
                             error::None,
                             detail::RObjectBuilder<record_t>::template build<alloc::Stack>(
-                                record_t(std::forward<args_t>(params)...), &aware_constructor<record_t>::cloner, true
+                                record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
                             )
                         };
                     }
@@ -50,7 +40,7 @@ namespace rtl::dispatch
                     return {
                         error::None,
                         detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                            new record_t(std::forward<args_t>(params)...), &aware_constructor<record_t>::cloner, true
+                            new record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
                         )
                     };
                 }

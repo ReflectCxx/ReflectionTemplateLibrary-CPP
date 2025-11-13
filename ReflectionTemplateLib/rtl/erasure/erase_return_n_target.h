@@ -41,17 +41,10 @@ namespace rtl::dispatch
 
     protected:
 
-        lambda_vt m_vhopper;
-        lambda_rt m_rhopper;
+        lambda_vt m_vhopper = nullptr;
+        lambda_rt m_rhopper = nullptr;
 
-        const erasure_base* m_erased_return;
-        const erasure_base* m_erased_target;
-
-        erase_return_n_target( const lambda_vt& p_void_hop,
-                               const lambda_rt& p_any_ret_hop ) noexcept
-
-            : m_vhopper(p_void_hop)
-            , m_rhopper(p_any_ret_hop)
-        { }
+        const erasure_base* m_erased_return = nullptr;
+        const erasure_base* m_erased_target = nullptr;
     };
 }

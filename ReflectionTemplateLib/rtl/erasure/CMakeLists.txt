@@ -6,7 +6,6 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/erasure_base.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/erasure_base.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/erase_return.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/erase_constructor.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/erase_return_n_target.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/erase_return_aware_target.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/erase_target_aware_return.h"

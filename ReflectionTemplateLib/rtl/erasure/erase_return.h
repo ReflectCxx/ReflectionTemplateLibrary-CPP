@@ -14,6 +14,8 @@
 #include <functional>
 
 #include "erasure_base.h"
+#include "aware_return.h"
+#include "aware_constructor.h"
 
 namespace rtl::dispatch
 {
@@ -37,11 +39,25 @@ namespace rtl::dispatch
 
         lambda_ctor_t m_ctor_hopper = nullptr;
 
-        template<class return_t>
+        template<bool is_ctor, class return_t, class...signature_t>
         void init_base()
         {
-            constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
-            m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
+            if constexpr (is_ctor)
+            {
+                using record_t = return_t;
+                m_ctor_hopper = aware_constructor<record_t, signature_t...>::get_allocator();
+            }
+            else
+            {
+                if constexpr (std::is_void_v<return_t>) {
+                    m_vhopper = aware_return<return_t, signature_t...>::get_lambda_void();
+                }
+                else {
+                    m_rhopper = aware_return<return_t, signature_t...>::get_lambda_any_return();
+                }
+                constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
+                m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
+            }
         }
 
         template<class, class...>

@@ -57,7 +57,7 @@ namespace rtl::dispatch
                     else
                     {
                         using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        // TODO: enable it for move-constructible objects, NRVO.
+                        // TODO: enable it for move-constructible objects.
                         static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
                         return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
                     }
