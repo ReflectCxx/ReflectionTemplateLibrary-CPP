@@ -15,6 +15,7 @@
 
 #include "lambda_function.h"
 #include "aware_return.h"
+#include "erase_return.h"
 
 namespace rtl::cache
 {
@@ -29,12 +30,21 @@ namespace rtl::cache
 
         std::pair<const dispatch::lambda_base*, const dispatch::erasure_base*> push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.emplace_back(dispatch::aware_return<return_t, signature_t...>());
+            using aware_ret_t = dispatch::aware_return<return_t, signature_t...>;
+            using erase_ret_t = dispatch::erase_return<traits::normal_sign_t<signature_t>...>;
 
-            const dispatch::erasure_base& eb = m_erasure_cache.back();
+            m_erasure_cache.emplace_back(erase_ret_t());
+            erase_ret_t& eb = m_erasure_cache.back();
+
+            if constexpr (std::is_void_v<return_t>) {
+                eb.m_vhopper = aware_ret_t::get_lambda_void();
+            }
+            else {
+                eb.m_rhopper = aware_ret_t::get_lambda_any_return();
+            }
+            eb.init_base<return_t>();
 
             m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
-
             return { &m_cache.back(), &eb };
         }
 
@@ -47,7 +57,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_function<signature_t...>> m_cache;
-        mutable std::list<dispatch::aware_return<return_t, signature_t...>> m_erasure_cache;
+        mutable std::list<dispatch::erase_return<traits::normal_sign_t<signature_t>...>> m_erasure_cache;
 
         lambda_function() = default;
     };

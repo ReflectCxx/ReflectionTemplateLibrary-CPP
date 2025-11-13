@@ -97,12 +97,12 @@ namespace rtl
 
 			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
 
-			auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::Ctor, p_index);
+			//auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::Ctor, p_index);
 			//auto [lambda, elambda] = lc.push(functor);
 
 			//functor.set_lambda(lambda);
 			//functor.set_erasure(elambda);
-			return type_meta(functor);
+			//return type_meta(functor);
 		}
 		return type_meta();
 	}

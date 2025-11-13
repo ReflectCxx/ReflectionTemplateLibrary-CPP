@@ -63,7 +63,7 @@ namespace rtl
         RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) noexcept;
         
-        GETTER_BOOL(Empty, (m_object == std::nullopt))
+        GETTER_BOOL(Empty, (m_object == std::nullopt || !m_object->has_value()))
         GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)

@@ -12,31 +12,18 @@
 #pragma once
 
 #include <any>
-#include "erase_return.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl::dispatch
 {
     template<class return_t, class ...signature_t>
-    struct aware_return : public erase_return<traits::normal_sign_t<signature_t>...>
+    struct aware_return
     {
-        using this_t = aware_return;
-        using base_t = erase_return<traits::normal_sign_t<signature_t>...>;
-
-        constexpr static bool is_void = (std::is_void_v<return_t>);
-
-        aware_return()
-            : base_t( is_void ? this_t::get_lambda_void() : decltype(this_t::get_lambda_void()) {},
-                     !is_void ? this_t::get_lambda_any_return() : decltype(this_t::get_lambda_any_return()) {})
-        {
-            constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
-            base_t::m_return_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
-        }
-
         constexpr static auto get_lambda_void() noexcept
         {
             return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                if constexpr (is_void)
+                if constexpr (std::is_void_v<return_t>)
                 {
                     auto fptr = lambda.template to_function<signature_t...>()
                                       .template get_functor<void>();
@@ -50,7 +37,7 @@ namespace rtl::dispatch
         {
             return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
-                if constexpr (!is_void)
+                if constexpr (!std::is_void_v<return_t>)
                 {
                     auto fptr = lambda.template to_function<signature_t...>()
                                       .template get_functor<return_t>();
@@ -70,6 +57,8 @@ namespace rtl::dispatch
                     else
                     {
                         using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                        // TODO: enable it for move-constructible objects, NRVO.
+                        static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
                         return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
                     }
                 }
