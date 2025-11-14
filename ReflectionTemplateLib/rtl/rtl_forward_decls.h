@@ -104,11 +104,16 @@ namespace rtl
         //--- These should be enough for replacement.
         struct fn_meta;
 
+        struct fn_lambda {};
+
         template<class...args_t>
         struct fn_signature;
 
         template<class record_t, class...args_t>
-        struct fn_signature_rec;
+        struct fn_signature_target;
+
+        template<class return_t, class...args_t>
+        struct fn_signature_return;
 
         template<class return_t, class ...signature_t>
         struct function_ptr;

@@ -15,6 +15,8 @@
 
 #include "functor.h"
 
+#include "fn_signature_rec.h"
+
 namespace rtl::dispatch
 {
 	template<class record_t, class return_t, class ...signature_t>
@@ -50,5 +52,9 @@ namespace rtl::dispatch
 	private:
 
 		const functor_t m_functor;
+
+		fn_signature_target<record_t, signature_t...> m_erased_target;
+
+		fn_signature_return<return_t, signature_t...> m_erased_return;
 	};
 }
