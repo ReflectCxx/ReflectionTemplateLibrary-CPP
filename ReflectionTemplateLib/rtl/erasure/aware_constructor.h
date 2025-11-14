@@ -38,10 +38,10 @@ namespace rtl::dispatch
                 else if (p_alloc_on == alloc::Heap)
                 {
                     return {
-                        error::None, RObject{}
-                        //detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
-                        //    new record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
-                        //)
+                        error::None,
+                        detail::RObjectBuilder<record_t*>::template build<alloc::Heap>(
+                            new record_t(std::forward<signature_t>(params)...), &aware_constructor<record_t>::cloner, true
+                        )
                     };
                 }
                 return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
