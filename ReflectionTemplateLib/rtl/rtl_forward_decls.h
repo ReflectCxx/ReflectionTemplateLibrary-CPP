@@ -106,14 +106,17 @@ namespace rtl
 
         struct fn_lambda {};
 
-        template<class...args_t>
-        struct fn_signature;
-
         template<class record_t, class...args_t>
-        struct fn_signature_target;
+        struct method_er_return;
 
         template<class return_t, class...args_t>
-        struct fn_signature_return;
+        struct method_er_target;
+
+        template<class...args_t>
+        struct function_er_return;
+
+        template<class...args_t>
+        struct function_er_ctor;
 
         template<class return_t, class ...signature_t>
         struct function_ptr;

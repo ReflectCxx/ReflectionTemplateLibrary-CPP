@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "rtl_traits.h"
 
 namespace rtl::dispatch
@@ -38,5 +40,14 @@ namespace rtl::dispatch
         std::vector<std::size_t> m_args_type_ids = {};
 
         detail::member m_member_kind = detail::member::None;
+
+        enum index {
+            ctor = 0,       // constructor
+            fn_eret = 0,    // function-erased-return
+            mth_eret = 0,   // method-erased-return
+            mth_etar = 1    // method-erased-target
+        };
+
+        std::vector<fn_lambda*> m_lambda;
 	};
 }

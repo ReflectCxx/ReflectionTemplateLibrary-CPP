@@ -12,11 +12,12 @@
 #pragma once
 
 #include "functor.h"
+#include "fn_signature.h"
 
 namespace rtl::dispatch
 {
 	template<class return_t, class ...signature_t>
-	struct function_ptr: public functor
+	struct function_ptr: functor//, fn_meta
 	{
 		using functor_t = return_t(*)(signature_t...);
 
@@ -47,5 +48,10 @@ namespace rtl::dispatch
 	private:
 
 		const functor_t m_functor;
+
+		using ctor_et = function_er_ctor<signature_t...>;
+		using func_et = function_er_return<signature_t...>;
+
+		std::variant<func_et, ctor_et> erased_return;
 	};
 }

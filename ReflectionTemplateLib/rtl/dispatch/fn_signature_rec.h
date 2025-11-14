@@ -11,35 +11,36 @@
 
 #pragma once
 
+#include <variant>
+
 #include "fn_meta.h"
 
 namespace rtl::dispatch
 {
 	template<class record_t, class...args_t>
-	struct fn_signature_target : fn_lambda
+	struct method_er_return : fn_lambda
 	{
 		using lambda_vt = std::function<void(const fn_meta&, const record_t&, traits::normal_sign_t<args_t>...)>;
 		using lambda_rt = std::function<std::any(const fn_meta&, const record_t&, traits::normal_sign_t<args_t>...)>;
 
-		constexpr lambda_vt get_method_vhop() const {
-			return vhop;
+		const lambda_vt& get_method_vhop() const {
+			return std::get<lambda_vt>(m_lambda);
 		}
 
-		constexpr lambda_rt get_method_rhop() const {
-			return rhop;
+		const lambda_rt& get_method_rhop() const {
+			return std::get<lambda_rt>(m_lambda);
 		}
 
 	private:
 
-		lambda_vt vhop = nullptr;
-		lambda_rt rhop = nullptr;
+		std::variant<lambda_vt, lambda_rt> m_lambda;
 
-		constexpr void set_method_vhop(const lambda_vt& lambda) const {
-			vhop = lambda;
+		void set_method_vhop(const lambda_vt& lambda) {
+			m_lambda = lambda;
 		}
 
-		constexpr void set_method_rhop(const lambda_rt& lambda) const {
-			rhop = lambda;
+		void set_method_rhop(const lambda_rt& lambda) {
+			m_lambda = lambda;
 		}
 	};
 }
@@ -48,30 +49,29 @@ namespace rtl::dispatch
 namespace rtl::dispatch
 {
 	template<class return_t, class...args_t>
-	struct fn_signature_return : fn_lambda
+	struct method_er_target : fn_lambda
 	{
 		using lambda_vt = std::function<void(const fn_meta&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
 		using lambda_rt = std::function<return_t(const fn_meta&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
 
-		constexpr lambda_vt get_method_vhop() const {
-			return vhop;
+		const lambda_vt& get_method_vhop() const {
+			return std::get<lambda_vt>(m_lambda);
 		}
 
-		constexpr lambda_rt get_method_rhop() const {
-			return rhop;
+		const lambda_rt& get_method_rhop() const {
+			return std::get<lambda_rt>(m_lambda);
 		}
 
 	private:
 
-		lambda_vt vhop = nullptr;
-		lambda_rt rhop = nullptr;
+		std::variant<lambda_vt, lambda_rt> m_lambda;
 
-		constexpr void set_method_vhop(const lambda_vt& lambda) const {
-			vhop = lambda;
+		void set_method_vhop(const lambda_vt& lambda) {
+			m_lambda = lambda;
 		}
 
-		constexpr void set_method_rhop(const lambda_rt& lambda) const {
-			rhop = lambda;
+		void set_method_rhop(const lambda_rt& lambda) {
+			m_lambda = lambda;
 		}
 	};
 }

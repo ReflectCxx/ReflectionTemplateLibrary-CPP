@@ -14,11 +14,12 @@
 #include <tuple>
 
 #include "functor.h"
+#include "fn_signature_rec.h"
 
 namespace rtl::dispatch
 {
 	template<class record_t, class return_t, class ...signature_t>
-	struct method_ptr<const record_t, return_t, signature_t...> : public functor
+	struct method_ptr<const record_t, return_t, signature_t...> : functor//, fn_meta
 	{
 		using functor_t = return_t(record_t::*)(signature_t...) const;
 
@@ -50,5 +51,8 @@ namespace rtl::dispatch
 	private:
 
 		const functor_t m_functor;
+
+		method_er_return<record_t, signature_t...> m_erased_target;
+		method_er_target<return_t, signature_t...> m_erased_return;
 	};
 }
