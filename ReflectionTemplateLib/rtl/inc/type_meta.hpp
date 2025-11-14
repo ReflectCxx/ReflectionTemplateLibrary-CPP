@@ -46,7 +46,7 @@ namespace rtl
 		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
 
 		auto& functor = fc.push(p_fptr, p_record_uid, p_member_kind, p_index);
-		auto [lambda, elambda] = lc.push<detail::member::None>(functor);
+		auto [lambda, elambda] = lc.template push<detail::member::None>(functor);
 		
 		functor.set_lambda(lambda);
 		functor.set_erasure(elambda);
@@ -103,7 +103,7 @@ namespace rtl
 			auto& lc = cache::lambda_function<Return, alloc, signature_t...>::instance();
 
 			auto& functor = fc.push(nullptr, traits::uid<record_t>::value, detail::member::UserCtor, p_index);
-			auto [lambda, elambda] = lc.push<detail::member::UserCtor>(functor);
+			auto [lambda, elambda] = lc.template push<detail::member::UserCtor>(functor);
 
 			functor.set_lambda(lambda);
 			functor.set_erasure(elambda);
