@@ -15,8 +15,8 @@
 
 namespace rtl::dispatch
 {
-    struct functor
-    {
+	struct fn_meta 
+	{
         constexpr bool is_void() const {
             return m_is_void;
         }
@@ -38,35 +38,5 @@ namespace rtl::dispatch
         std::vector<std::size_t> m_args_type_ids = {};
 
         detail::member m_member_kind = detail::member::None;
-
-    private:
-
-        constexpr void set_lambda(const dispatch::lambda_base* p_lambda) const {
-            m_lambda = p_lambda;
-        }
-
-        constexpr void set_erasure(const dispatch::erasure_base* p_elambda) const {
-            m_erasure = p_elambda;
-        }
-
-        mutable const dispatch::lambda_base* m_lambda = nullptr;
-
-        mutable const dispatch::erasure_base* m_erasure = nullptr;
-        
-        friend rtl::type_meta;
-
-        friend dispatch::lambda_base;
-
-        template<class ...>
-        friend struct dispatch::lambda_function;
-
-        template<class, class ...>
-        friend struct dispatch::lambda_method;
-
-        template<class, class ...>
-        friend struct cache::lambda_function;
-
-        template<class, class, class ...>
-        friend struct cache::lambda_method;
-    };
+	};
 }

@@ -75,6 +75,13 @@ namespace rtl
 
     namespace dispatch
     {
+        //--- These can be removed.
+        template<class ...signature_t>
+        struct lambda_function;
+
+        template<class record_t, class ...signature_t>
+        struct lambda_method;
+
         struct functor;
 
         struct lambda_base;
@@ -82,25 +89,7 @@ namespace rtl
         struct erasure_base;
 
         template<class ...signature_t>
-        struct lambda_function;
-
-        template<class record_t, class ...signature_t>
-        struct lambda_method;
-
-        template<class return_t, class ...signature_t>
-        struct function_ptr;
-
-        template<class record_t, class return_t, class ...signature_t>
-        struct method_ptr;
-
-        template<class record_t, class return_t, class ...signature_t>
-        struct const_method_ptr;
-
-        template<class ...signature_t>
         struct erase_return;
-
-        template<class return_t, class ...signature_t>
-        struct aware_return;
 
         template<class ...signature_t>
         struct erase_return_n_target;
@@ -110,6 +99,25 @@ namespace rtl
 
         template<class return_t, class ...signature_t>
         struct erase_target_aware_return;
+
+
+        //--- These should be enough for replacement.
+        struct fn_meta;
+
+        template<class...args_t>
+        struct fn_signature;
+
+        template<class record_t, class...args_t>
+        struct fn_signature_rec;
+
+        template<class return_t, class ...signature_t>
+        struct function_ptr;
+
+        template<class record_t, class return_t, class ...signature_t>
+        struct method_ptr;
+
+        template<class return_t, class ...signature_t>
+        struct aware_return;
 
         template<class record_t, class return_t, class ...signature_t>
         struct aware_return_n_target;
