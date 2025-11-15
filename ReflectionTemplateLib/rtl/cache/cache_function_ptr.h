@@ -28,15 +28,10 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::functor& push(return_t(*fptr)(signature_t...), traits::uid_t p_record_uid, detail::member member_kind, std::size_t lambda_index) const
+        const dispatch::functor& push_ctor(return_t(*fptr)(signature_t...), traits::uid_t p_record_uid, std::size_t lambda_index) const
         {
-            m_cache.emplace_back(std::make_pair(function_t(fptr, p_record_uid, member_kind), lambda_index));
-            
-            function_t& fn = m_cache.back().first;
-            if (member_kind == detail::member::None || member_kind == detail::member::Static) {
-                fn.init_lambda();
-            }
-            return fn;
+            m_cache.emplace_back(std::make_pair(function_t(fptr, p_record_uid, detail::member::DefaultCtor), lambda_index));
+            return m_cache.back().first;
         }
 
         template<class record_t>
@@ -45,6 +40,17 @@ namespace rtl::cache
             m_cache.emplace_back(std::make_pair(function_t(nullptr, p_record_uid, detail::member::UserCtor), lambda_index));
             function_t& fn = m_cache.back().first;
             fn.template init_lambda_ctor<record_t>();
+            return fn;
+        }
+
+        const dispatch::functor& push(return_t(*fptr)(signature_t...), traits::uid_t p_record_uid, detail::member member_kind, std::size_t lambda_index) const
+        {
+            m_cache.emplace_back(std::make_pair(function_t(fptr, p_record_uid, member_kind), lambda_index));
+            
+            function_t& fn = m_cache.back().first;
+            if (member_kind == detail::member::None || member_kind == detail::member::Static) {
+                fn.init_lambda();
+            }
             return fn;
         }
 

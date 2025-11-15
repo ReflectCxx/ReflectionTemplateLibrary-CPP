@@ -54,5 +54,10 @@ namespace rtl::dispatch
 
 		method_lambda<erase::t_return, record_t, signature_t...> m_erased_return;
 		method_lambda<erase::t_target, return_t, signature_t...> m_erased_target;
+
+		void init_lambda();
+
+		template<class, class, class ...>
+		friend struct cache::method_ptr;
 	};
 }

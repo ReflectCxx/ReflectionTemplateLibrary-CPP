@@ -93,7 +93,7 @@ namespace rtl
 		if constexpr (sizeof...(signature_t) == 0) {
 			auto& fc = cache::function_ptr<Return, alloc>::instance();
 			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
-			auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::DefaultCtor, p_index);
+			auto& functor = fc.push_ctor(fptr, traits::uid<record_t>::value, p_index);
 			return type_meta(functor);
 		}
 		else {

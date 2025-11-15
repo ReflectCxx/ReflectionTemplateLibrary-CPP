@@ -110,16 +110,22 @@ namespace rtl
         //--- These should be enough for replacement.
         struct lambda {};
 
-        enum erase {
-            t_ctor,
-            t_target,
-            t_return
+        enum class fn_void {
+            no,
+            yes
         };
 
-        template<erase, class...args_t>
+        enum class erase {
+            t_ctor,
+            t_target,
+            t_return,
+            t_method
+        };
+
+        template<fn_void, erase, class...args_t>
         struct function_lambda;
 
-        template<erase, class place_t, class...args_t>
+        template<erase, class known_t, class...args_t>
         struct method_lambda;
 
         template<class return_t, class ...signature_t>

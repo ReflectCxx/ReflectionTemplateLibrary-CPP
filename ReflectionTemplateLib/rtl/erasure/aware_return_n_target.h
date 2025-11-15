@@ -75,7 +75,7 @@ namespace rtl::dispatch
         // erased-target-aware-return-function-void
         constexpr static auto e_target_a_return_fnv() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> void
+            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (is_void)
                 {

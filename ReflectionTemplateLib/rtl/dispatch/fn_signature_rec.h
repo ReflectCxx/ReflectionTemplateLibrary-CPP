@@ -20,14 +20,14 @@ namespace rtl::dispatch
 	struct method_lambda<erase::t_return, place_t, args_t...> : lambda
 	{
 		using record_t = place_t;
-		using lambda_vt = std::function<void(const functor&, const record_t&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<std::any(const functor&, const record_t&, traits::normal_sign_t<args_t>...)>;
+		using lambda_vt = std::function<void(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
+		using lambda_rt = std::function<std::any(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_vt& get_method_vhop() const {
+		const lambda_vt& get_vhop() const {
 			return std::get<lambda_vt>(m_lambda);
 		}
 
-		const lambda_rt& get_method_rhop() const {
+		const lambda_rt& get_rhop() const {
 			return std::get<lambda_rt>(m_lambda);
 		}
 
@@ -35,13 +35,16 @@ namespace rtl::dispatch
 
 		std::variant<lambda_vt, lambda_rt> m_lambda;
 
-		void set_method_vhop(const lambda_vt& lambda) {
+		void set_vhop(const lambda_vt& lambda) {
 			m_lambda = lambda;
 		}
 
-		void set_method_rhop(const lambda_rt& lambda) {
+		void set_rhop(const lambda_rt& lambda) {
 			m_lambda = lambda;
 		}
+
+		template<class, class , class...>
+		friend struct method_ptr;
 	};
 }
 
@@ -52,14 +55,14 @@ namespace rtl::dispatch
 	struct method_lambda<erase::t_target, place_t, args_t...> : lambda
 	{
 		using return_t = place_t;
-		using lambda_vt = std::function<void(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<return_t(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+		using lambda_vt = std::function<void(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+		using lambda_rt = std::function<return_t(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_vt& get_method_vhop() const {
+		const lambda_vt& get_vhop() const {
 			return std::get<lambda_vt>(m_lambda);
 		}
 
-		const lambda_rt& get_method_rhop() const {
+		const lambda_rt& get_rhop() const {
 			return std::get<lambda_rt>(m_lambda);
 		}
 
@@ -67,12 +70,15 @@ namespace rtl::dispatch
 
 		std::variant<lambda_vt, lambda_rt> m_lambda;
 
-		void set_method_vhop(const lambda_vt& lambda) {
+		void set_vhop(const lambda_vt& lambda) {
 			m_lambda = lambda;
 		}
 
-		void set_method_rhop(const lambda_rt& lambda) {
+		void set_rhop(const lambda_rt& lambda) {
 			m_lambda = lambda;
 		}
+
+		template<class, class, class...>
+		friend struct method_ptr;
 	};
 }

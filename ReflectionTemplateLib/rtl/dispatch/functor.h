@@ -23,6 +23,13 @@ namespace rtl::dispatch
 
     protected:
 
+        enum index {
+            erased_ctor = 0,
+            erased_return = 0,
+            erased_target = 1,
+            erased_method = 2
+        };
+
         std::string m_record_str;
         std::string m_return_str;
         std::string m_signature_str;
@@ -38,12 +45,6 @@ namespace rtl::dispatch
         std::vector<std::size_t> m_args_type_ids = {};
 
         detail::member m_member_kind = detail::member::None;
-
-        enum index {
-            erased_ctor = 0,
-            erased_return = 0,
-            erased_target = 1
-        };
 
         std::vector<lambda*> m_lambdas;
 

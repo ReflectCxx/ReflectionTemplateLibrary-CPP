@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "method_ptr_const.h"
+#include "method_ptr_const.hpp"
 
 namespace rtl::cache
 {
@@ -33,7 +33,9 @@ namespace rtl::cache
         const dispatch::functor& push(functor_t fptr, std::size_t lambda_index) const
         {
             m_cache.emplace_back(std::make_pair(method_t(fptr), lambda_index));
-            return m_cache.back().first;
+            method_t& fn = m_cache.back().first;
+            //fn.init_lambda();
+            return fn;
         }
 
         std::pair<const dispatch::functor*, std::size_t> find(functor_t fptr) const

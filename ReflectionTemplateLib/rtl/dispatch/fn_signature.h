@@ -17,21 +17,21 @@
 namespace rtl::dispatch
 {
 	template<class...args_t>
-	struct function_lambda<erase::t_ctor, args_t...> : lambda
+	struct function_lambda<fn_void::no, erase::t_ctor, args_t...> : lambda
 	{
 		using lambda_t = std::function<Return(alloc, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_t& get_ctor_hop() const {
+		const lambda_t& get_hop() const {
 			return m_lambda;
 		}
 
 	private:
 
-		lambda_t m_lambda;
-
-		void set_ctor_hop(const lambda_t& lambda) {
+		void set_hop(const lambda_t& lambda) {
 			m_lambda = lambda;
 		}
+
+		lambda_t m_lambda;
 
 		template<class, class ...>
 		friend struct dispatch::function_ptr;
@@ -42,30 +42,46 @@ namespace rtl::dispatch
 namespace rtl::dispatch
 {
 	template<class...args_t>
-	struct function_lambda<erase::t_return, args_t...> : lambda
+	struct function_lambda<fn_void::yes, erase::t_return, args_t...> : lambda
 	{
-		using lambda_vt = std::function<void(const functor&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<std::any(const functor&, traits::normal_sign_t<args_t>...)>;
+		using lambda_t = std::function<void(const lambda_base&, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_vt& get_method_vhop() const {
-			return std::get<lambda_vt>(m_lambda);
-		}
-
-		const lambda_rt& get_method_rhop() const {
-			return std::get<lambda_rt>(m_lambda);
+		const lambda_t& get_hop() const {
+			return m_lambda;
 		}
 
 	private:
 
-		std::variant<lambda_vt, lambda_rt> m_lambda;
-
-		void set_method_vhop(const lambda_vt& lambda) {
+		void set_hop(const lambda_t& lambda) {
 			m_lambda = lambda;
 		}
 
-		void set_method_rhop(const lambda_rt& lambda) {
+		lambda_t m_lambda;
+
+		template<class, class ...>
+		friend struct dispatch::function_ptr;
+	};
+}
+
+
+namespace rtl::dispatch
+{
+	template<class...args_t>
+	struct function_lambda<fn_void::no, erase::t_return, args_t...> : lambda
+	{
+		using lambda_t = std::function<std::any(const lambda_base&, traits::normal_sign_t<args_t>...)>;
+
+		const lambda_t& get_hop() const {
+			return m_lambda;
+		}
+
+	private:
+
+		void set_hop(const lambda_t& lambda) {
 			m_lambda = lambda;
 		}
+
+		lambda_t m_lambda;
 
 		template<class, class ...>
 		friend struct dispatch::function_ptr;
