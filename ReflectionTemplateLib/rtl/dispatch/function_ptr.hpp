@@ -23,7 +23,7 @@ namespace rtl::dispatch
 	void function_ptr<return_t, signature_t...>::init_lambda_ctor()
 	{
 		m_lambda = ctor_t();
-		ctor_t& fn = m_lambda.emplace<ctor_t>();
+		ctor_t& fn = m_lambda.template emplace<ctor_t>();
 
 		fn.set_hop(aware_constructor<record_t, signature_t...>::get_allocator());
 
@@ -36,7 +36,7 @@ namespace rtl::dispatch
 	void rtl::dispatch::function_ptr<return_t, signature_t...>::init_lambda()
 	{
 		m_lambda = func_t();
-		func_t& fn = m_lambda.emplace<func_t>();
+		func_t& fn = m_lambda.template emplace<func_t>();
 
 		if constexpr (fn_void_v == fn_void::yes) {
 			fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_void());
