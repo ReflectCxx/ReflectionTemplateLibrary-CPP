@@ -58,7 +58,7 @@ namespace rtl::dispatch
 
 		void init_erased_ctor();
 
-		template<class return_t, class ...signature_t>
+		template<class, class ...>
 		friend struct cache::function_ptr;
 	};
 }
