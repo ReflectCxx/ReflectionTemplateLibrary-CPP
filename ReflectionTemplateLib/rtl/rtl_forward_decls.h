@@ -67,7 +67,13 @@ namespace rtl
     namespace cache
     {
         template<class return_t, class ...signature_t>
+        struct function_ptr;
+
+        template<class return_t, class ...signature_t>
         struct lambda_function;
+
+        template<class record_t, class return_t, class ...signature_t>
+        struct method_ptr;
 
         template<class record_t, class return_t, class ...signature_t>
         struct lambda_method;

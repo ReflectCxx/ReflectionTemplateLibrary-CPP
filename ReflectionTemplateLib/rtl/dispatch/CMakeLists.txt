@@ -9,8 +9,11 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/fn_signature_rec.h"
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/method_ptr_const.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr_const.hpp"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_base.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.h"

@@ -33,6 +33,9 @@ namespace rtl::dispatch
 		void set_ctor_hop(const lambda_t& lambda) {
 			m_lambda = lambda;
 		}
+
+		template<class return_t, class ...signature_t>
+		friend struct function_ptr;
 	};
 }
 
@@ -64,5 +67,8 @@ namespace rtl::dispatch
 		void set_method_rhop(const lambda_rt& lambda) {
 			m_lambda = lambda;
 		}
+
+		template<class return_t, class ...signature_t>
+		friend struct function_ptr;
 	};
 }

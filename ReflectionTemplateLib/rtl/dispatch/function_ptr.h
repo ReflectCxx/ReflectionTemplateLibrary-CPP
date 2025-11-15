@@ -17,7 +17,7 @@
 namespace rtl::dispatch
 {
 	template<class return_t, class ...signature_t>
-	struct function_ptr: functor//, fn_meta
+	struct function_ptr: functor
 	{
 		using functor_t = return_t(*)(signature_t...);
 
@@ -52,6 +52,13 @@ namespace rtl::dispatch
 		using ctor_et = function_er_ctor<signature_t...>;
 		using func_et = function_er_return<signature_t...>;
 
-		std::variant<func_et, ctor_et> erased_return;
+		std::variant<func_et, ctor_et> erased_fn;
+
+		void init_erased_fn();
+
+		void init_erased_ctor();
+
+		template<class return_t, class ...signature_t>
+		friend struct cache::function_ptr;
 	};
 }

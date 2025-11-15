@@ -19,7 +19,7 @@
 namespace rtl::dispatch
 {
 	template<class record_t, class return_t, class ...signature_t>
-	struct method_ptr : functor//, fn_meta
+	struct method_ptr : functor
 	{
 		using functor_t = return_t(record_t::*)(signature_t...);
 

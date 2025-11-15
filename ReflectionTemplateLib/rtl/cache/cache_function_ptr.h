@@ -13,7 +13,7 @@
 
 #include <list>
 
-#include "function_ptr.h"
+#include "function_ptr.hpp"
 
 namespace rtl::cache
 {
@@ -31,7 +31,15 @@ namespace rtl::cache
         const dispatch::functor& push(return_t(*fptr)(signature_t...), traits::uid_t p_record_uid, detail::member member_kind, std::size_t lambda_index) const
         {
             m_cache.emplace_back(std::make_pair(function_t(fptr, p_record_uid, member_kind), lambda_index));
-            return m_cache.back().first;
+
+            function_t& fn = m_cache.back().first;
+            if (member_kind == detail::member::UserCtor) {
+                fn.init_erased_ctor();
+            }
+            else {
+                fn.init_erased_fn();
+            }
+            return fn;
         }
 
         std::pair<dispatch::functor*, std::size_t> find(return_t(*fptr)(signature_t...)) const

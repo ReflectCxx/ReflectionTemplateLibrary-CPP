@@ -39,6 +39,15 @@ namespace rtl::dispatch
 
         detail::member m_member_kind = detail::member::None;
 
+        enum index {
+            ctor = 0,       // constructor
+            fn_eret = 0,    // function-erased-return
+            mth_eret = 0,   // method-erased-return
+            mth_etar = 1    // method-erased-target
+        };
+
+        std::vector<fn_lambda*> m_lambdas;
+
     private:
 
         constexpr void set_lambda(const dispatch::lambda_base* p_lambda) const {
