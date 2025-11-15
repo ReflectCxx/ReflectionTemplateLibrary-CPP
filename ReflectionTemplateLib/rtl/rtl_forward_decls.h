@@ -108,21 +108,19 @@ namespace rtl
 
 
         //--- These should be enough for replacement.
-        struct fn_meta;
+        struct lambda {};
 
-        struct fn_lambda {};
+        enum erase {
+            t_ctor,
+            t_target,
+            t_return
+        };
 
-        template<class record_t, class...args_t>
-        struct method_er_return;
+        template<erase, class...args_t>
+        struct function_lambda;
 
-        template<class return_t, class...args_t>
-        struct method_er_target;
-
-        template<class...args_t>
-        struct function_er_return;
-
-        template<class...args_t>
-        struct function_er_ctor;
+        template<erase, class place_t, class...args_t>
+        struct method_lambda;
 
         template<class return_t, class ...signature_t>
         struct function_ptr;

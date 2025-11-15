@@ -52,7 +52,7 @@ namespace rtl::dispatch
 
 		const functor_t m_functor;
 
-		method_er_return<record_t, signature_t...> m_erased_target;
-		method_er_target<return_t, signature_t...> m_erased_return;
+		method_lambda<erase::t_return, record_t, signature_t...> m_erased_return;
+		method_lambda<erase::t_target, return_t, signature_t...> m_erased_target;
 	};
 }

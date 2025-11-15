@@ -12,16 +12,16 @@
 #pragma once
 
 #include <variant>
-
-#include "fn_meta.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl::dispatch
 {
-	template<class record_t, class...args_t>
-	struct method_er_return : fn_lambda
+	template<class place_t, class...args_t>
+	struct method_lambda<erase::t_return, place_t, args_t...> : lambda
 	{
-		using lambda_vt = std::function<void(const fn_meta&, const record_t&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<std::any(const fn_meta&, const record_t&, traits::normal_sign_t<args_t>...)>;
+		using record_t = place_t;
+		using lambda_vt = std::function<void(const functor&, const record_t&, traits::normal_sign_t<args_t>...)>;
+		using lambda_rt = std::function<std::any(const functor&, const record_t&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_vt& get_method_vhop() const {
 			return std::get<lambda_vt>(m_lambda);
@@ -48,11 +48,12 @@ namespace rtl::dispatch
 
 namespace rtl::dispatch
 {
-	template<class return_t, class...args_t>
-	struct method_er_target : fn_lambda
+	template<class place_t, class...args_t>
+	struct method_lambda<erase::t_target, place_t, args_t...> : lambda
 	{
-		using lambda_vt = std::function<void(const fn_meta&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<return_t(const fn_meta&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+		using return_t = place_t;
+		using lambda_vt = std::function<void(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+		using lambda_rt = std::function<return_t(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_vt& get_method_vhop() const {
 			return std::get<lambda_vt>(m_lambda);

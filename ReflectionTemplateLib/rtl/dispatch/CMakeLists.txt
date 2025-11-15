@@ -4,7 +4,6 @@
 set(LOCAL_HEADERS
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/fn_meta.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/fn_signature.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/fn_signature_rec.h"
 	

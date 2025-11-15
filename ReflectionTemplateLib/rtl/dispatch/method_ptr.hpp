@@ -11,21 +11,24 @@
 
 #pragma once
 
-#include "function_ptr.h"
+#include "method_ptr.h"
+#include "fn_signature_rec.h"
+#include "aware_return_n_target.h"
 
 namespace rtl::dispatch
 {
-	template<class return_t, class ...signature_t>
-	void rtl::dispatch::function_ptr<return_t, signature_t...>::init_erased_fn()
+	template<class record_t, class return_t, class ...signature_t>
+	void method_ptr<record_t, return_t, signature_t...>::init_lambda()
 	{
-		erased_fn = func_et();
-		m_lambdas.push_back(&std::get<func_et>(erased_fn));
-	}
+		//if constexpr (std::is_void_v<return_t>) {
+		//	m_erased_return.
+		//}
+		//else {
+		//	//	fn.set_method_rhop(aware_return<return_t, signature_t..>::get_lambda_any_return())
+		//}
 
-	template<class return_t, class ...signature_t>
-	void function_ptr<return_t, signature_t...>::init_erased_ctor()
-	{
-		erased_fn = ctor_et();
-		m_lambdas.push_back(&std::get<ctor_et>(erased_fn));
+		functor::m_lambdas = std::vector<lambda*>(2);
+		functor::m_lambdas[index::erased_return] = (&m_erased_return);
+		functor::m_lambdas[index::erased_target] = (&m_erased_target);
 	}
 }

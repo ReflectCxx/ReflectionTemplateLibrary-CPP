@@ -90,24 +90,15 @@ namespace rtl
 	template<class record_t, class ...signature_t>
 	inline type_meta type_meta::add_constructor(std::size_t p_index)
 	{
-		if constexpr (sizeof...(signature_t) == 0)
-		{
+		if constexpr (sizeof...(signature_t) == 0) {
 			auto& fc = cache::function_ptr<Return, alloc>::instance();
 			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
 			auto& functor = fc.push(fptr, traits::uid<record_t>::value, detail::member::DefaultCtor, p_index);
 			return type_meta(functor);
 		}
-		else
-		{
+		else {
 			auto& fc = cache::function_ptr<Return, signature_t...>::instance();
-			auto& lc = cache::lambda_function<Return, signature_t...>::instance();
-
-			auto& functor = fc.push(nullptr, traits::uid<record_t>::value, detail::member::UserCtor, p_index);
-			auto [lambda, elambda] = lc.template push<record_t>(functor);
-
-			functor.set_lambda(lambda);
-			functor.set_erasure(elambda);
-
+			auto& functor = fc.template push_ctor<record_t>(traits::uid<record_t>::value, p_index);
 			return type_meta(functor);
 		}
 	}

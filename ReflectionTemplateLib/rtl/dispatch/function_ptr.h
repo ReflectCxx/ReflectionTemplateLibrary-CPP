@@ -49,14 +49,15 @@ namespace rtl::dispatch
 
 		const functor_t m_functor;
 
-		using ctor_et = function_er_ctor<signature_t...>;
-		using func_et = function_er_return<signature_t...>;
+		using ctor_t = function_lambda<erase::t_ctor, signature_t...>;
+		using func_t = function_lambda<erase::t_return, signature_t...>;
 
-		std::variant<func_et, ctor_et> erased_fn;
+		std::variant<func_t, ctor_t> erased_fn;
 
-		void init_erased_fn();
+		void init_lambda();
 
-		void init_erased_ctor();
+		template<class record_t>
+		void init_lambda_ctor();
 
 		template<class, class ...>
 		friend struct cache::function_ptr;

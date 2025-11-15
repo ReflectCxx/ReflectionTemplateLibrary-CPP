@@ -12,13 +12,12 @@
 #pragma once
 
 #include <variant>
-
-#include "fn_meta.h"
+#include "rtl_forward_decls.h"
 
 namespace rtl::dispatch
 {
 	template<class...args_t>
-	struct function_er_ctor : fn_lambda
+	struct function_lambda<erase::t_ctor, args_t...> : lambda
 	{
 		using lambda_t = std::function<Return(alloc, traits::normal_sign_t<args_t>...)>;
 
@@ -34,8 +33,8 @@ namespace rtl::dispatch
 			m_lambda = lambda;
 		}
 
-		template<class return_t, class ...signature_t>
-		friend struct function_ptr;
+		template<class, class ...>
+		friend struct dispatch::function_ptr;
 	};
 }
 
@@ -43,10 +42,10 @@ namespace rtl::dispatch
 namespace rtl::dispatch
 {
 	template<class...args_t>
-	struct function_er_return : fn_lambda
+	struct function_lambda<erase::t_return, args_t...> : lambda
 	{
-		using lambda_vt = std::function<void(const fn_meta&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<std::any(const fn_meta&, traits::normal_sign_t<args_t>...)>;
+		using lambda_vt = std::function<void(const functor&, traits::normal_sign_t<args_t>...)>;
+		using lambda_rt = std::function<std::any(const functor&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_vt& get_method_vhop() const {
 			return std::get<lambda_vt>(m_lambda);
@@ -68,7 +67,7 @@ namespace rtl::dispatch
 			m_lambda = lambda;
 		}
 
-		template<class return_t, class ...signature_t>
-		friend struct function_ptr;
+		template<class, class ...>
+		friend struct dispatch::function_ptr;
 	};
 }
