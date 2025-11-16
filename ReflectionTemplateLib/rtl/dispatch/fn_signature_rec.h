@@ -16,69 +16,103 @@
 
 namespace rtl::dispatch
 {
-	template<class place_t, class...args_t>
-	struct method_lambda<erase::t_return, place_t, args_t...> : lambda
-	{
-		using record_t = place_t;
-		using lambda_vt = std::function<void(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<std::any(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
+    template<class place_t, class...args_t>
+    struct method_lambda<fn_void::yes, erase::t_return, place_t, args_t...> : lambda
+    {
+        using record_t = place_t;
+        using lambda_t = std::function<void(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_vt& get_vhop() const {
-			return std::get<lambda_vt>(m_lambda);
-		}
+        const lambda_t& get_hop() const {
+            return m_lambda;
+        }
 
-		const lambda_rt& get_rhop() const {
-			return std::get<lambda_rt>(m_lambda);
-		}
+    private:
+		
+        void set_hop(const lambda_t& lambda) {
+            m_lambda = lambda;
+        }
 
-	private:
+        lambda_t m_lambda;
 
-		std::variant<lambda_vt, lambda_rt> m_lambda;
-
-		void set_vhop(const lambda_vt& lambda) {
-			m_lambda = lambda;
-		}
-
-		void set_rhop(const lambda_rt& lambda) {
-			m_lambda = lambda;
-		}
-
-		template<class, class , class...>
-		friend struct method_ptr;
-	};
+        template<class, class , class...>
+        friend struct method_ptr;
+    };
 }
 
 
 namespace rtl::dispatch
 {
-	template<class place_t, class...args_t>
-	struct method_lambda<erase::t_target, place_t, args_t...> : lambda
-	{
-		using return_t = place_t;
-		using lambda_vt = std::function<void(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
-		using lambda_rt = std::function<return_t(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+    template<class place_t, class...args_t>
+    struct method_lambda<fn_void::no, erase::t_return, place_t, args_t...> : lambda
+    {
+        using record_t = place_t;
+        using lambda_t = std::function<std::any(const lambda_base&, const record_t&, traits::normal_sign_t<args_t>...)>;
 
-		const lambda_vt& get_vhop() const {
-			return std::get<lambda_vt>(m_lambda);
-		}
+        const lambda_t& get_hop() const {
+            return m_lambda;
+        }
 
-		const lambda_rt& get_rhop() const {
-			return std::get<lambda_rt>(m_lambda);
-		}
+    private:
 
-	private:
+        void set_hop(const lambda_t& lambda) {
+            m_lambda = lambda;
+        }
 
-		std::variant<lambda_vt, lambda_rt> m_lambda;
+        lambda_t m_lambda;
 
-		void set_vhop(const lambda_vt& lambda) {
-			m_lambda = lambda;
-		}
+        template<class, class, class...>
+        friend struct method_ptr;
+    };
+}
 
-		void set_rhop(const lambda_rt& lambda) {
-			m_lambda = lambda;
-		}
 
-		template<class, class, class...>
-		friend struct method_ptr;
-	};
+namespace rtl::dispatch
+{
+    template<class place_t, class...args_t>
+    struct method_lambda<fn_void::yes, erase::t_target, place_t, args_t...> : lambda
+    {
+        using return_t = place_t;
+        using lambda_t = std::function<void(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+
+        const lambda_t& get_hop() const {
+            return m_lambda;
+        }
+
+    private:
+
+        void set_hop(const lambda_t& lambda) {
+            m_lambda = lambda;
+        }
+
+        lambda_t m_lambda;
+
+        template<class, class, class...>
+        friend struct method_ptr;
+    };
+}
+
+
+namespace rtl::dispatch
+{
+    template<class place_t, class...args_t>
+    struct method_lambda<fn_void::no, erase::t_target, place_t, args_t...> : lambda
+    {
+        using return_t = place_t;
+        using lambda_t = std::function<return_t(const lambda_base&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+
+        const lambda_t& get_hop() const {
+            return m_lambda;
+        }
+
+    private:
+
+        void set_hop(const lambda_t& lambda) {
+            m_lambda = lambda;
+        }
+
+        lambda_t m_lambda;
+
+        template<class, class, class...>
+        friend struct method_ptr;
+    };
 }

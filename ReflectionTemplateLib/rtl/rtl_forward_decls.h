@@ -125,7 +125,7 @@ namespace rtl
         template<fn_void, erase, class...args_t>
         struct function_lambda;
 
-        template<erase, class known_t, class...args_t>
+        template<fn_void, erase, class known_t, class...args_t>
         struct method_lambda;
 
         template<class return_t, class ...signature_t>
