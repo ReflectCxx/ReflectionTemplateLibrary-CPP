@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <tuple>
-
 #include "functor.h"
 #include "method_lambda.h"
 
@@ -54,6 +52,7 @@ namespace rtl::dispatch
 
         static constexpr auto fn_void_v = (std::is_void_v<return_t> ? fn_void::yes : fn_void::no);
 
+        function_lambda<fn_void_v, erase::t_method, signature_t...> m_erased_method;
         method_lambda<fn_void_v, erase::t_return, record_t, signature_t...> m_erased_return;
         method_lambda<fn_void_v, erase::t_target, return_t, signature_t...> m_erased_target;
 

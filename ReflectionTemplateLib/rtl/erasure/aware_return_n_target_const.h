@@ -64,7 +64,7 @@ namespace rtl::dispatch
             {
                 if constexpr (is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<void>();
 
                     (p_target.*mptr)(std::forward<signature_t>(params)...);
@@ -75,11 +75,11 @@ namespace rtl::dispatch
         // erased-target-aware-return-function-void
         constexpr static auto e_target_a_return_fnv() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> void
+            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<void>();
 
                     const auto& target = p_target.view<record_t>()->get();
@@ -96,7 +96,7 @@ namespace rtl::dispatch
             {
                 if constexpr (is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<void>();
 
                     const auto& target = p_target.view<record_t>()->get();
@@ -113,7 +113,7 @@ namespace rtl::dispatch
             {
                 if constexpr (!is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<return_t>();
 
                     const auto& target = p_target.view<record_t>()->get();
@@ -130,7 +130,7 @@ namespace rtl::dispatch
             {
                 if constexpr (!is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<return_t>();
 
                     auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
@@ -164,7 +164,7 @@ namespace rtl::dispatch
             {
                 if constexpr (!is_void)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
+                    auto mptr = lambda.template to_method<const record_t, signature_t...>()
                                       .template get_functor<return_t>();
 
                     const auto& target = p_target.view<record_t>()->get();

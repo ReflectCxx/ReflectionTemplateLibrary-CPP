@@ -23,26 +23,39 @@ namespace rtl::dispatch
         if constexpr (fn_void_v == fn_void::yes)
         {
             {
-                //const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_a_target_fnv();
-                //m_erased_return.set_hop(fn);
+                // erased-return-aware-target (e_return_a_target)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_a_target_fnv();
+                m_erased_return.set_hop(fn);
             } {
-                //const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_target_a_return_fnv();
-                //m_erased_target.set_hop(fn);
+                // erased-target-aware-return (e_target_a_return)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_target_a_return_fnv();
+                m_erased_target.set_hop(fn);
+            } {
+                // erased-return-erased-target (e_return_e_target)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_e_target_fnv();
+                m_erased_method.set_hop(fn);
             }
         }
         else
         {
             {
-                //const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_a_target_fnr();
-                //m_erased_return.set_hop(fn);
+                // erased-return-aware-target (e_return_a_target)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_a_target_fnr();
+                m_erased_return.set_hop(fn);
             } {
-                //const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_target_a_return_fnr();
-                //m_erased_target.set_hop(fn);
+                // erased-target-aware-return (e_target_a_return)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_target_a_return_fnr();
+                m_erased_target.set_hop(fn);
+            } {
+                // erased-return-erased-target (e_return_e_target)
+                const auto& fn = aware_return_n_target<const record_t, return_t, signature_t...>::e_return_e_target_fnr();
+                m_erased_method.set_hop(fn);
             }
         }
 
-        functor::m_lambdas = std::vector<lambda*>(2);
+        functor::m_lambdas = std::vector<lambda*>(3);
         functor::m_lambdas[index::erased_return] = (&m_erased_return);
         functor::m_lambdas[index::erased_target] = (&m_erased_target);
+        functor::m_lambdas[index::erased_method] = (&m_erased_method);
 	}
 }
