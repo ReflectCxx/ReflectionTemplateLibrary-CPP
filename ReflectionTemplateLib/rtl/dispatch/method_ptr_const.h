@@ -14,7 +14,7 @@
 #include <tuple>
 
 #include "functor.h"
-#include "fn_signature_rec.h"
+#include "method_lambda.h"
 
 namespace rtl::dispatch
 {

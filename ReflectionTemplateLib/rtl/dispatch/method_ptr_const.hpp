@@ -11,8 +11,8 @@
 
 #pragma once
 
+#include "method_lambda.h"
 #include "method_ptr_const.h"
-#include "fn_signature_rec.h"
 #include "aware_return_n_target_const.h"
 
 namespace rtl::dispatch

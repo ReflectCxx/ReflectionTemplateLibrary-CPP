@@ -88,8 +88,6 @@ namespace rtl
         template<class record_t, class ...signature_t>
         struct lambda_method;
 
-        struct functor;
-
         struct lambda_base;
 
         struct erasure_base;
@@ -108,6 +106,8 @@ namespace rtl
 
 
         //--- These should be enough for replacement.
+        struct functor;
+
         struct lambda {};
 
         enum class fn_void {
