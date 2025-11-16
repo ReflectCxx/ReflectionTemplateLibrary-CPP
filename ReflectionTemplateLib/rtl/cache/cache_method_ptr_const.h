@@ -34,7 +34,7 @@ namespace rtl::cache
         {
             m_cache.emplace_back(std::make_pair(method_t(fptr), lambda_index));
             method_t& fn = m_cache.back().first;
-            //fn.init_lambda();
+            fn.init_lambda();
             return fn;
         }
 

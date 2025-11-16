@@ -20,7 +20,7 @@ namespace rtl::dispatch
     template<class record_t, class return_t, class ...signature_t>
     void method_ptr<record_t, return_t, signature_t...>::init_lambda()
     {
-        if constexpr (std::is_void_v<return_t>) 
+        if constexpr (fn_void_v == fn_void::yes) 
         {
             {
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_return_a_target_fnv();

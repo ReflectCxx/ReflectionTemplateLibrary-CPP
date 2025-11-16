@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <tuple>
+#include <variant>
 
 #include "functor.h"
 #include "fn_signature_rec.h"

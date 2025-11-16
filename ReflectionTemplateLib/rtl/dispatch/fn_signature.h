@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include <variant>
 #include "rtl_forward_decls.h"
 
 namespace rtl::dispatch

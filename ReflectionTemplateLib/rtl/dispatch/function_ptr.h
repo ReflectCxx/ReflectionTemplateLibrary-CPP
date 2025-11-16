@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <variant>
+
 #include "functor.h"
 #include "fn_signature.h"
 
