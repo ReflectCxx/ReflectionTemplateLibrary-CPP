@@ -45,7 +45,7 @@ namespace rtl::dispatch
             if constexpr (mem_kind == detail::member::UserCtor)
             {
                 using record_t = return_t;
-                m_ctor_hopper = aware_constructor<record_t, signature_t...>::get_allocator();
+                m_ctor_hopper = &aware_constructor<record_t, signature_t...>::overloaded_ctor;
             }
             else
             {

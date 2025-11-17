@@ -23,8 +23,6 @@
 #include "cache_lambda_method.h"
 #include "cache_lambda_function.h"
 
-#include "aware_constructor.h"
-
 namespace rtl
 {
 	template<class ...args_t>
@@ -92,13 +90,12 @@ namespace rtl
 	{
 		if constexpr (sizeof...(signature_t) == 0) {
 			auto& fc = cache::function_ptr<Return, alloc>::instance();
-			auto fptr = &dispatch::aware_constructor<record_t>::allocator;
-			auto& functor = fc.push_ctor(fptr, traits::uid<record_t>::value, p_index);
+			auto& functor = fc.template push_ctor<detail::member::DefaultCtor, record_t>(traits::uid<record_t>::value, p_index);
 			return type_meta(functor);
 		}
 		else {
 			auto& fc = cache::function_ptr<Return, signature_t...>::instance();
-			auto& functor = fc.template push_ctor<record_t>(traits::uid<record_t>::value, p_index);
+			auto& functor = fc.template push_ctor<detail::member::UserCtor, record_t>(traits::uid<record_t>::value, p_index);
 			return type_meta(functor);
 		}
 	}

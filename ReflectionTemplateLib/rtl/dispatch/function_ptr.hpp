@@ -17,34 +17,38 @@
 
 namespace rtl::dispatch
 {
-	template<class return_t, class ...signature_t>
-	template<class record_t>
-	void function_ptr<return_t, signature_t...>::init_lambda_ctor()
-	{
-		m_lambda = ctor_t();
-		ctor_t& fn = m_lambda.template emplace<ctor_t>();
-
-		fn.set_hop(aware_constructor<record_t, signature_t...>::get_allocator());
-
-		functor::m_lambdas = std::vector<lambda*>(1);
-		functor::m_lambdas[index::erased_ctor] = (&fn);
-	}
-
-
-	template<class return_t, class ...signature_t>
-	void rtl::dispatch::function_ptr<return_t, signature_t...>::init_lambda()
-	{
-		m_lambda = func_t();
-		func_t& fn = m_lambda.template emplace<func_t>();
-
-		if constexpr (fn_void_v == fn_void::yes) {
-			fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_void());
+    template<class return_t, class ...signature_t>
+    template<detail::member mem_kind, class record_t>
+    void function_ptr<return_t, signature_t...>::init_lambda()
+    {
+        m_lambda = ctor_t();
+        ctor_t& fn = m_lambda.template emplace<ctor_t>();
+        if constexpr (mem_kind == detail::member::DefaultCtor) {
+            m_functor = &aware_constructor<record_t>::default_ctor;
 		}
-		else {
-			fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_any_return());
+        else {
+            fn.set_hop(&aware_constructor<record_t, signature_t...>::overloaded_ctor);
 		}
 
-		functor::m_lambdas = std::vector<lambda*>(1);
-		functor::m_lambdas[index::erased_return] = (&fn);
-	}
+        functor::m_lambdas = std::vector<lambda*>(1);
+        functor::m_lambdas[index::erased_ctor] = (&fn);
+    }
+
+
+    template<class return_t, class ...signature_t>
+    void rtl::dispatch::function_ptr<return_t, signature_t...>::init_lambda()
+    {
+        m_lambda = func_t();
+        func_t& fn = m_lambda.template emplace<func_t>();
+
+        if constexpr (fn_void_v == fn_void::yes) {
+            fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_void());
+        }
+        else {
+            fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_any_return());
+        }
+
+        functor::m_lambdas = std::vector<lambda*>(1);
+        functor::m_lambdas[index::erased_return] = (&fn);
+    }
 }

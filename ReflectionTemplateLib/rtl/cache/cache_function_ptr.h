@@ -28,18 +28,12 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::functor& push_ctor(return_t(*fptr)(signature_t...), traits::uid_t p_record_uid, std::size_t lambda_index) const
-        {
-            m_cache.emplace_back(std::make_pair(function_t(fptr, p_record_uid, detail::member::DefaultCtor), lambda_index));
-            return m_cache.back().first;
-        }
-
-        template<class record_t>
+        template<detail::member mem_kind, class record_t>
         const dispatch::functor& push_ctor(traits::uid_t p_record_uid, std::size_t lambda_index) const
         {
-            m_cache.emplace_back(std::make_pair(function_t(nullptr, p_record_uid, detail::member::UserCtor), lambda_index));
+            m_cache.emplace_back(std::make_pair(function_t(nullptr, p_record_uid, mem_kind), lambda_index));
             function_t& fn = m_cache.back().first;
-            fn.template init_lambda_ctor<record_t>();
+            fn.template init_lambda<mem_kind, record_t>();
             return fn;
         }
 

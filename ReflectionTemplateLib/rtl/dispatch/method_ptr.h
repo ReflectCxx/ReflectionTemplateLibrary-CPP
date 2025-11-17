@@ -49,7 +49,7 @@ namespace rtl::dispatch
 
     private:
         
-        const functor_t m_functor;
+        const functor_t m_functor = nullptr;
 
         static constexpr auto fn_void_v = (std::is_void_v<return_t> ? fn_void::yes : fn_void::no);
 

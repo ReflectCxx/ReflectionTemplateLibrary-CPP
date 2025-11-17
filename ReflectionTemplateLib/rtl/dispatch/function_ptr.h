@@ -49,7 +49,7 @@ namespace rtl::dispatch
 
 	private:
 
-		const functor_t m_functor;
+		functor_t m_functor = nullptr;
 
 		static constexpr auto fn_void_v = (std::is_void_v<return_t> ? fn_void::yes : fn_void::no);
 
@@ -60,8 +60,8 @@ namespace rtl::dispatch
 
 		void init_lambda();
 
-		template<class record_t>
-		void init_lambda_ctor();
+		template<detail::member, class record_t>
+		void init_lambda();
 
 		template<class, class ...>
 		friend struct cache::function_ptr;
