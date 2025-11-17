@@ -10,6 +10,8 @@
 using namespace test_utils;
 using namespace test_mirror;
 
+// TODO: test cases for functions with return type 'void'.
+
 namespace rtl_tests
 {
 	TEST(ReturnTypeErased_rtl_function, invalid_erased_return_rtl_function)

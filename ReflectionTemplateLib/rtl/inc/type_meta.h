@@ -45,6 +45,7 @@ namespace rtl
 		
 		GETTER(detail::member, _member_kind, m_functor->get().m_member_kind)
 		
+		GETTER_CREF(dispatch::functor, _functor, m_functor->get())
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
 		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))
 

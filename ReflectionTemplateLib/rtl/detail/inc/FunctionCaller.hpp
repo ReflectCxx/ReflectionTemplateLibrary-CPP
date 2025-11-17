@@ -16,6 +16,7 @@
 #include "FunctionCaller.h"
 #include "FunctorContainer.h"
 
+#include "functor_cast.h"
 
 #include "lambda_method.h"
 #include "lambda_function.h"
@@ -109,49 +110,52 @@ namespace rtl::detail
 
 
     template<member member_kind, class ...args_t>
-    inline void HopFunction<member_kind, args_t...>::initHopper(function<rtl::Return(args_t...)>& pHopFn) const
+    inline void HopFunction<member_kind, args_t...>::initHopper(function<rtl::Return(args_t...)>& pHopper) const
     {
         bool isReturnTvoid = false;
-        for (auto& fnMeta : m_overloadsFnMeta)
+        for (auto& ty_meta : m_overloadsFnMeta)
         {
-            if (fnMeta.is_empty())
-            {
-                pHopFn.get_vhop().push_back(nullptr);
-                pHopFn.get_rhop().push_back(nullptr);
-                pHopFn.get_overloads().push_back(nullptr);
+            if (ty_meta.is_empty()) {
+                pHopper.get_vhop().push_back(nullptr);
+                pHopper.get_rhop().push_back(nullptr);
+                pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
 
             if constexpr (member_kind == member::Static) {
-                if (fnMeta.get_member_kind() != member::Static) {
-                    pHopFn.set_init_error(error::InvalidNonStaticMethodCaller);
+                if (ty_meta.get_member_kind() != member::Static) {
+                    pHopper.set_init_error(error::InvalidNonStaticMethodCaller);
                     return;
                 }
             }
             else if constexpr (member_kind == member::None) {
-                if (fnMeta.get_member_kind() == member::Static) {
-                    pHopFn.set_init_error(error::InvalidStaticMethodCaller);
+                if (ty_meta.get_member_kind() == member::Static) {
+                    pHopper.set_init_error(error::InvalidStaticMethodCaller);
                     return;
                 }
             }
 
-            auto& erasedRetFn = fnMeta.get_erasure_base()
-                                      .template to_erased_return<traits::normal_sign_t<args_t>...>();
-            if (fnMeta.is_void()) {
-                isReturnTvoid = true;
-                pHopFn.get_vhop().push_back(erasedRetFn.get_void_hopper());
+            if (isReturnTvoid = ty_meta.is_void()) 
+            {
+                using fn_cast = dispatch::functor_cast<dispatch::fn_void::yes, traits::normal_sign_t<args_t>...>;
+                auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
+                pHopper.get_vhop().push_back(fn.get_hop());
             }
-            else {
-                pHopFn.get_rhop().push_back(erasedRetFn.get_return_hopper());
+            else 
+            {
+                using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
+                auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
+                pHopper.get_rhop().push_back(fn.get_hop());
             }
-            pHopFn.get_overloads().push_back(&fnMeta.get_lambda());
-            pHopFn.set_init_error(error::None);
+
+            pHopper.get_overloads().push_back(&ty_meta.get_lambda());
+            pHopper.set_init_error(error::None);
         }
         if (isReturnTvoid) {
-            pHopFn.get_rhop().clear();
+            pHopper.get_rhop().clear();
         }
         else {
-            pHopFn.get_vhop().clear();
+            pHopper.get_vhop().clear();
         }
     }
 
