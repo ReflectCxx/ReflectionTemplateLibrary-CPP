@@ -115,6 +115,9 @@ namespace rtl
             yes
         };
 
+        template<fn_void, class...signature_t>
+        struct functor_cast;
+
         enum class erase {
             t_ctor,
             t_target,
@@ -122,10 +125,10 @@ namespace rtl
             t_method
         };
 
-        template<fn_void, erase, class...args_t>
+        template<fn_void, erase, class...signature_t>
         struct function_lambda;
 
-        template<fn_void, erase, class known_t, class...args_t>
+        template<fn_void, erase, class known_t, class...signature_t>
         struct method_lambda;
 
         template<class return_t, class ...signature_t>

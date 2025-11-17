@@ -66,6 +66,9 @@ namespace rtl::dispatch
 
         friend dispatch::lambda_base;
 
+        template<fn_void, class...>
+        friend struct functor_cast;
+
         template<class ...>
         friend struct dispatch::lambda_function;
 
