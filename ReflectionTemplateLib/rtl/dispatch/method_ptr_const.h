@@ -13,6 +13,7 @@
 
 #include "functor.h"
 #include "method_lambda.h"
+#include "function_lambda.h"
 
 namespace rtl::dispatch
 {

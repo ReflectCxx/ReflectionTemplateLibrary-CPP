@@ -12,8 +12,6 @@
 #pragma once
 
 #include "method_ptr.h"
-#include "method_lambda.h"
-#include "function_lambda.h"
 #include "aware_return_n_target.h"
 
 namespace rtl::dispatch
@@ -21,34 +19,28 @@ namespace rtl::dispatch
     template<class record_t, class return_t, class ...signature_t>
     void method_ptr<record_t, return_t, signature_t...>::init_lambda()
     {
-        if constexpr (fn_void_v == fn_void::yes) 
+        if constexpr (fn_void_v == fn_void::yes)
         {
-            {
-                // erased-return-aware-target (e_return_a_target)
+            {                                                                            // erased-return-aware-target
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_return_a_target_fnv();
                 m_erased_return.set_hop(fn);
-            } {
-                // erased-target-aware-return (e_target_a_return)
+            } {                                                                          // erased-target-aware-return
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_target_a_return_fnv();
                 m_erased_target.set_hop(fn);
-            } {
-                // erased-return-erased-target (e_return_e_target)
+            } {                                                                          // erased-return-erased-target
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_return_e_target_fnv();
                 m_erased_method.set_hop(fn);
             }
         }
         else
         {
-            {
-                // erased-return-aware-target (e_return_a_target)
+            {                                                                            // erased-return-aware-target
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_return_a_target_fnr();
                 m_erased_return.set_hop(fn);
-            } {
-                // erased-target-aware-return (e_target_a_return)
+            } {                                                                          // erased-target-aware-return
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_target_a_return_fnr();
                 m_erased_target.set_hop(fn);
-            } {
-                // erased-return-erased-target (e_return_e_target)
+            } {                                                                          // erased-return-erased-target
                 const auto& fn = aware_return_n_target<record_t, return_t, signature_t...>::e_return_e_target_fnr();
                 m_erased_method.set_hop(fn);
             }
