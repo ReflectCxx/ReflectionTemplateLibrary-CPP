@@ -20,6 +20,11 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.h"
 
+	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/aware_constructor.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/aware_return_n_target.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return_n_target_const.h"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_function.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.h"
 	

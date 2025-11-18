@@ -28,15 +28,10 @@ namespace rtl::cache
             return instance_;
         }
 
-        std::pair<const dispatch::lambda_base*, const dispatch::erasure_base*> push(const dispatch::functor& p_functor) const
+        const dispatch::lambda_base* push(const dispatch::functor& p_functor) const
         {
-            m_erasure_cache.emplace_back(dispatch::aware_return_n_target<record_t, return_t, signature_t...>());
-            
-            auto& eb = m_erasure_cache.back();
-            eb.init_lambdas();
-            m_cache.push_back(dispatch::lambda_method<record_t, signature_t...>(p_functor, eb));
-
-            return { &m_cache.back(), &eb };
+            m_cache.push_back(dispatch::lambda_method<record_t, signature_t...>(p_functor));
+            return &m_cache.back();
         }
 
         lambda_method(lambda_method&&) = delete;
@@ -48,8 +43,7 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_method<record_t, signature_t...>> m_cache;
-        mutable std::list<dispatch::aware_return_n_target<record_t, return_t, signature_t...>> m_erasure_cache;
-
+        
         lambda_method() = default;
     };
 }

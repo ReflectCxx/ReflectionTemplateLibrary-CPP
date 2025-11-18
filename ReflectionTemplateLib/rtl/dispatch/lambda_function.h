@@ -40,8 +40,8 @@ namespace rtl::dispatch
             return hopper_t<return_t>();
         }
 
-        lambda_function(const functor& p_functor, const erasure_base& p_erasure) noexcept
-            : lambda_base(p_functor, p_erasure)
+        lambda_function(const functor& p_functor) noexcept
+            : lambda_base(p_functor)
         { }
     };
 }

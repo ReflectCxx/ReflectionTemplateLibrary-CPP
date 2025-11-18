@@ -14,7 +14,6 @@
 #include <any>
 #include <optional>
 
-#include "ReflectCast.h"
 #include "FunctorId.h"
 
 namespace rtl::detail

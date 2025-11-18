@@ -90,21 +90,6 @@ namespace rtl
 
         struct lambda_base;
 
-        struct erasure_base;
-
-        template<class ...signature_t>
-        struct erase_return;
-
-        template<class ...signature_t>
-        struct erase_return_n_target;
-
-        template<class record_t, class ...signature_t>
-        struct erase_return_aware_target;
-
-        template<class return_t, class ...signature_t>
-        struct erase_target_aware_return;
-
-
         //--- These should be enough for replacement.
         struct functor;
 

@@ -14,7 +14,6 @@
 #include <list>
 
 #include "lambda_function.h"
-#include "erase_return.h"
 
 namespace rtl::cache
 {
@@ -27,29 +26,17 @@ namespace rtl::cache
             return instance_;
         }
 
-        std::pair<const dispatch::lambda_base*, const dispatch::erasure_base*> push(const dispatch::functor& p_functor) const
+        const dispatch::lambda_base* push(const dispatch::functor& p_functor) const
         {
-            using erase_ret_t = dispatch::erase_return<traits::normal_sign_t<signature_t>...>;
-            m_erasure_cache.emplace_back(erase_ret_t());
-
-            erase_ret_t& eb = m_erasure_cache.back();
-            eb.template init_lambdas<detail::member::None, return_t, signature_t...>();
-
-            m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
-            return { &m_cache.back(), &eb };
+            m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor));
+            return &m_cache.back();
         }
 
         template<class record_t>
-        std::pair<const dispatch::lambda_base*, const dispatch::erasure_base*> push(const dispatch::functor& p_functor) const
+        const dispatch::lambda_base* push(const dispatch::functor& p_functor) const
         {
-            using erase_ret_t = dispatch::erase_return<traits::normal_sign_t<signature_t>...>;
-            m_erasure_cache.emplace_back(erase_ret_t());
-
-            erase_ret_t& eb = m_erasure_cache.back();
-            eb.template init_lambdas<detail::member::UserCtor, record_t, signature_t...>();
-
-            m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor, eb));
-            return { &m_cache.back(), &eb };
+            m_cache.push_back(dispatch::lambda_function<signature_t...>(p_functor));
+            return &m_cache.back();
         }
 
         lambda_function(lambda_function&&) = delete;
@@ -61,7 +48,6 @@ namespace rtl::cache
 
         // No reallocation occurs; original objects stay intact
         mutable std::list<dispatch::lambda_function<signature_t...>> m_cache;
-        mutable std::list<dispatch::erase_return<traits::normal_sign_t<signature_t>...>> m_erasure_cache;
 
         lambda_function() = default;
     };

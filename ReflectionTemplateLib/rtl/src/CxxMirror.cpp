@@ -12,6 +12,7 @@
 
 #include "Record.h"
 #include "CxxMirror.h"
+#include "ReflectCast.h"
 
 namespace rtl
 {

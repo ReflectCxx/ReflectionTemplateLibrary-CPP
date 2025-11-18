@@ -42,11 +42,12 @@ namespace rtl::dispatch
 
         bool m_is_void = false;
         bool m_is_any_arg_ncref = false;
-        std::vector<std::size_t> m_args_type_ids = {};
 
+        detail::RObjectId m_robject_id = {};
         detail::member m_member_kind = detail::member::None;
-
+        
         std::vector<lambda*> m_lambdas;
+        std::vector<std::size_t> m_args_type_ids = {};
 
     private:
 
@@ -54,13 +55,7 @@ namespace rtl::dispatch
             m_lambda = p_lambda;
         }
 
-        constexpr void set_erasure(const dispatch::erasure_base* p_elambda) const {
-            m_erasure = p_elambda;
-        }
-
         mutable const dispatch::lambda_base* m_lambda = nullptr;
-
-        mutable const dispatch::erasure_base* m_erasure = nullptr;
         
         friend rtl::type_meta;
 

@@ -14,7 +14,6 @@
 #include "type_meta.h"
 
 #include "lambda_base.h"
-#include "erasure_base.h"
 
 #include "cache_method_ptr.h"
 #include "cache_function_ptr.h"
@@ -44,10 +43,9 @@ namespace rtl
 		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
 
 		auto& functor = fc.push(p_fptr, p_record_uid, p_member_kind, p_index);
-		auto [lambda, elambda] = lc.push(functor);
+		auto lambda = lc.push(functor);
 		
 		functor.set_lambda(lambda);
-		functor.set_erasure(elambda);
 
 		return type_meta(functor);
 	}
@@ -60,11 +58,10 @@ namespace rtl
 		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
 
 		auto& functor = fc.push(p_fptr, p_index);
-		auto [lambda, elambda] = lc.push(functor);
+		auto lambda = lc.push(functor);
 
 		functor.set_lambda(lambda);
-		functor.set_erasure(elambda);
-
+		
 		return type_meta(functor);
 	}
 
@@ -76,10 +73,9 @@ namespace rtl
 		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
 
 		auto& functor = fc.push(p_fptr, p_index);
-		auto [lambda, elambda] = lc.push(functor);
+		auto lambda = lc.push(functor);
 		
 		functor.set_lambda(lambda);
-		functor.set_erasure(elambda);
 
 		return type_meta(functor);
 	}

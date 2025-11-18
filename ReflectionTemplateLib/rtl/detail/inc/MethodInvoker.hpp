@@ -18,13 +18,12 @@
 
 #include "lambda_method.h"
 
-#include "erasure_base.hpp"
-
 #include "rtl_method.h"
 #include "rtl_method_const.h"
 #include "rtl_method_erased.h"
 #include "rtl_method_erased_target.h"
 #include "rtl_method_erased_return.h"
+
 
 namespace rtl::detail
 {
@@ -163,7 +162,7 @@ namespace rtl::detail
 {
     template<class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(traits::normal_sign_t<args_t>...)> erasedMth;
         initHopper<return_t>(erasedMth);
@@ -173,7 +172,7 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-        inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(args_t...)> mth;
         if (!m_argsTfnMeta.is_empty())
@@ -185,8 +184,8 @@ namespace rtl::detail
 
                 const auto retId = traits::uid<return_t>::value;
                 return m_argsTfnMeta.get_lambda()
-                    .template to_method<record_t, args_t...>()
-                    .template get_hopper<return_t>(retId);
+                                    .template to_method<record_t, args_t...>()
+                                    .template get_hopper<return_t>(retId);
             }
         }
         return mth;

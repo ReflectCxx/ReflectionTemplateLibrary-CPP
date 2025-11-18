@@ -15,7 +15,6 @@
 #include <vector>
 
 #include "functor.h"
-#include "erasure_base.h"
 
 namespace rtl
 {
@@ -47,7 +46,6 @@ namespace rtl
 		
 		GETTER_CREF(dispatch::functor, _functor, m_functor->get())
 		GETTER_CREF(dispatch::lambda_base, _lambda, *(m_functor->get().m_lambda))
-		GETTER_CREF(dispatch::erasure_base, _erasure_base, *(m_functor->get().m_erasure))
 
 		template<class return_t, class ...signature_t>
 		static type_meta add_function(return_t(*p_fptr)(signature_t...), traits::uid_t p_record_uid, detail::member p_member_kind, std::size_t p_index);
