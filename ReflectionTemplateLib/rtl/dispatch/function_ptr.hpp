@@ -37,7 +37,7 @@ namespace rtl::dispatch
 
 
     template<class return_t, class ...signature_t>
-    void rtl::dispatch::function_ptr<return_t, signature_t...>::init_lambda()
+    void function_ptr<return_t, signature_t...>::init_lambda()
     {
         m_lambda = func_t();
         func_t& fn = m_lambda.template emplace<func_t>();

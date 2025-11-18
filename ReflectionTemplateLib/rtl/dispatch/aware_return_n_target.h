@@ -12,7 +12,8 @@
 #pragma once
 
 #include <any>
-#include "rtl_forward_decls.h"
+
+#include "method_ptr.h"
 
 namespace rtl::dispatch
 {
@@ -22,12 +23,11 @@ namespace rtl::dispatch
         // erased-return-aware-target-function-void
         constexpr static auto e_return_a_target_fnv() noexcept
         {
-            return [](const lambda_base& lambda, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<void>();
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
                 }
@@ -37,14 +37,13 @@ namespace rtl::dispatch
         // erased-target-aware-return-function-void
         constexpr static auto e_target_a_return_fnv() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<void>();
-
                     const auto& target = p_target.view<record_t>()->get();
+
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
                 }
@@ -54,14 +53,13 @@ namespace rtl::dispatch
         // erased-return-erased-target-function-void
         constexpr static auto e_return_e_target_fnv() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<void>();
-
                     const auto& target = p_target.view<record_t>()->get();
+
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
                 }
@@ -71,14 +69,13 @@ namespace rtl::dispatch
         // erased-target-aware-return-function-returns(return_t)
         constexpr static auto e_target_a_return_fnr() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> return_t
+            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> return_t
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<return_t>();
-
                     const auto& target = p_target.view<record_t>()->get();
+
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     return (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
                 }
@@ -88,12 +85,11 @@ namespace rtl::dispatch
         // erased-return-aware-target-function-returns(std::any)
         constexpr static auto e_return_a_target_fnr() noexcept
         {
-            return [](const lambda_base& lambda, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
+            return [](const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<return_t>();
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     auto&& ret_v = (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
 
@@ -122,14 +118,13 @@ namespace rtl::dispatch
         // erased-return-erased-target-function-returns(std::any)
         constexpr static auto e_return_e_target_fnr() noexcept
         {
-            return [](const lambda_base& lambda, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto mptr = lambda.template to_method<record_t, signature_t...>()
-                                      .template get_functor<return_t>();
-
                     const auto& target = p_target.view<record_t>()->get();
+
+                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
                     auto&& ret_v = (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
 

@@ -41,15 +41,15 @@ namespace rtl
                     return { error::ExplicitRefBindingRequired, std::nullopt };
                 }
 
-                auto index = (fn.m_lambdas[call_by::value] != nullptr ? call_by::value : call_by::cref);
-                if (fn.m_lambdas[index]->is_void())
+                auto index = (fn.m_functors[call_by::value] != nullptr ? call_by::value : call_by::cref);
+                if (fn.m_functors[index]->is_void())
                 {
-                    fn.m_vhop[index] (*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...);
+                    fn.m_vhop[index] (*(fn.m_functors[index]), target, std::forward<args_t>(params)...);
                     return { error::None, std::nullopt };
                 }
                 else
                 {
-                    auto&& ret_v = fn.m_rhop[index](*(fn.m_lambdas[index]), target, std::forward<args_t>(params)...);
+                    auto&& ret_v = fn.m_rhop[index](*(fn.m_functors[index]), target, std::forward<args_t>(params)...);
                     return { error::None, std::optional<return_t>(std::move(ret_v)) };
                 }
             }
@@ -70,20 +70,20 @@ namespace rtl
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
-                for (int index = 0; index < fn.m_lambdas.size(); index++)
+                for (int index = 0; index < fn.m_functors.size(); index++)
                 {
-                    if (fn.m_lambdas[index] != nullptr)
+                    if (fn.m_functors[index] != nullptr)
                     {
-                        if (signature_id == fn.m_lambdas[index]->get_strict_sign_id())
+                        if (signature_id == fn.m_functors[index]->get_strict_sign_id())
                         {
-                            if (fn.m_lambdas[index]->is_void())
+                            if (fn.m_functors[index]->is_void())
                             {
-                                fn.m_vhop[index] (*fn.m_lambdas[index], target, std::forward<args_t>(params)...);
+                                fn.m_vhop[index] (*fn.m_functors[index], target, std::forward<args_t>(params)...);
                                 return { error::None, std::nullopt };
                             }
                             else
                             {
-                                auto&& ret_v = fn.m_rhop[index](*fn.m_lambdas[index], target, std::forward<args_t>(params)...);
+                                auto&& ret_v = fn.m_rhop[index](*fn.m_functors[index], target, std::forward<args_t>(params)...);
                                 return { error::None, std::optional<return_t>(std::move(ret_v)) };
                             }
                         }
@@ -104,14 +104,14 @@ namespace rtl
         }
 
         constexpr operator bool() const noexcept {
-            return !(m_init_err != error::None || m_lambdas.empty() ||
-                     (m_lambdas.size() == 1 && m_lambdas[0] == nullptr));
+            return !(m_init_err != error::None || m_functors.empty() ||
+                     (m_functors.size() == 1 && m_functors[0] == nullptr));
 
         }
 
         constexpr bool must_bind_refs() const noexcept {
-            return (m_lambdas[call_by::value] == nullptr &&
-                   (m_lambdas.size() > call_by::ncref || m_lambdas[call_by::cref]->is_any_arg_ncref()));
+            return (m_functors[call_by::value] == nullptr &&
+                   (m_functors.size() > call_by::ncref || m_functors[call_by::cref]->is_any_arg_ncref()));
         }
 
         enum call_by
@@ -125,15 +125,15 @@ namespace rtl
 
     private:
 
-        using lambda_vt = std::function<void(const dispatch::lambda_base&, const RObject&, signature_t...)>;
+        using lambda_vt = std::function<void(const dispatch::functor&, const RObject&, signature_t...)>;
 
-        using lambda_rt = std::function<return_t(const dispatch::lambda_base&, const RObject&, signature_t...)>;
+        using lambda_rt = std::function<return_t(const dispatch::functor&, const RObject&, signature_t...)>;
 
         std::vector<lambda_rt> m_rhop = {};
 
         std::vector<lambda_vt> m_vhop = {};
 
-        std::vector<const dispatch::lambda_base*> m_lambdas = {};
+        std::vector<const dispatch::functor*> m_functors = {};
 
         error m_init_err = error::InvalidCaller;
 
@@ -143,7 +143,7 @@ namespace rtl
 
         GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
-        GETTER_REF(std::vector<const dispatch::lambda_base*>, _overloads, m_lambdas)
+        GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
 
         template<class, class ...>
         friend struct detail::HopMethod;

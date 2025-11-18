@@ -290,7 +290,7 @@ namespace rtl::detail
                 pHopper.get_rhop().push_back(fn.get_hop());
             }
 
-            pHopper.get_overloads().push_back(&ty_meta.get_lambda());
+            pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
         if (isReturnTvoid) {

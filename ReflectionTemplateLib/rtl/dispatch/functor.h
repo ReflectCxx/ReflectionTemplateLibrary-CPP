@@ -17,9 +17,11 @@ namespace rtl::dispatch
 {
     struct functor
     {
-        constexpr bool is_void() const {
-            return m_is_void;
-        }
+        GETTER_BOOL(_void, m_is_void)
+        GETTER_BOOL(_any_arg_ncref, m_is_any_arg_ncref)
+        GETTER(traits::uid_t, _strict_sign_id, m_strict_args_id)
+        GETTER(traits::uid_t, _normal_sign_id, m_normal_args_id)
+        GETTER_CREF(detail::RObjectId, _robject_id, m_robject_id)
 
     protected:
 

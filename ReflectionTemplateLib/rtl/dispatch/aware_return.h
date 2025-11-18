@@ -12,7 +12,8 @@
 #pragma once
 
 #include <any>
-#include "rtl_forward_decls.h"
+
+#include "function_ptr.h"
 
 namespace rtl::dispatch
 {
@@ -21,13 +22,11 @@ namespace rtl::dispatch
     {
         constexpr static auto get_lambda_void() noexcept
         {
-            return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (std::is_void_v<return_t>)
                 {
-                    auto fptr = lambda.template to_function<signature_t...>()
-                                      .template get_functor<void>();
-
+                    auto fptr = static_cast<const function_ptr<return_t, signature_t...>&>(fn).f_ptr();
                     (*fptr)(std::forward<signature_t>(params)...);
                 }
             };
@@ -35,13 +34,11 @@ namespace rtl::dispatch
 
         constexpr static auto get_lambda_any_return() noexcept
         {
-            return [](const lambda_base& lambda, traits::normal_sign_t<signature_t>&&... params)-> auto
+            return [](const functor& fn, traits::normal_sign_t<signature_t>&&... params)-> auto
             {
                 if constexpr (!std::is_void_v<return_t>)
                 {
-                    auto fptr = lambda.template to_function<signature_t...>()
-                                      .template get_functor<return_t>();
-
+                    auto fptr = static_cast<const function_ptr<return_t, signature_t...>&>(fn).f_ptr();
                     auto&& ret_v = (*fptr)(std::forward<signature_t>(params)...);
 
                     if constexpr (std::is_pointer_v<return_t>)

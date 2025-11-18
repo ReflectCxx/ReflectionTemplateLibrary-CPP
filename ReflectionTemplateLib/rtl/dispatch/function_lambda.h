@@ -44,7 +44,7 @@ namespace rtl::dispatch
 	template<class...args_t>
 	struct function_lambda<fn_void::yes, erase::t_return, args_t...> : lambda
 	{
-		using lambda_t = std::function<void(const lambda_base&, traits::normal_sign_t<args_t>...)>;
+		using lambda_t = std::function<void(const functor&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_t& get_hop() const {
 			return m_lambda;
@@ -69,7 +69,7 @@ namespace rtl::dispatch
 	template<class...args_t>
 	struct function_lambda<fn_void::no, erase::t_return, args_t...> : lambda
 	{
-		using lambda_t = std::function<std::any(const lambda_base&, traits::normal_sign_t<args_t>...)>;
+		using lambda_t = std::function<std::any(const functor&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_t& get_hop() const {
 			return m_lambda;
@@ -94,7 +94,7 @@ namespace rtl::dispatch
 	template<class...args_t>
 	struct function_lambda<fn_void::yes, erase::t_method, args_t...> : lambda
 	{
-		using lambda_t = std::function<void(const lambda_base&, const RObject&, traits::normal_sign_t<args_t>...)>;
+		using lambda_t = std::function<void(const functor&, const RObject&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_t& get_hop() const {
 			return m_lambda;
@@ -119,7 +119,7 @@ namespace rtl::dispatch
 	template<class...args_t>
 	struct function_lambda<fn_void::no, erase::t_method, args_t...> : lambda
 	{
-		using lambda_t = std::function<std::any(const lambda_base&, const RObject&, traits::normal_sign_t<args_t>...)>;
+		using lambda_t = std::function<std::any(const functor&, const RObject&, traits::normal_sign_t<args_t>...)>;
 
 		const lambda_t& get_hop() const {
 			return m_lambda;
