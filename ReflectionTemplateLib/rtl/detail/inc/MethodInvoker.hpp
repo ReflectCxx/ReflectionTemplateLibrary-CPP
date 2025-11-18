@@ -28,11 +28,11 @@
 
 namespace rtl::detail
 {
-/*  @method: call()
-    @params: params... (corresponding to functor associated with 'm_method')
-    @return: RObject, indicating success of the reflected call.
-    * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-*/  template<class ..._signature>
+    /*  @lambda: call()
+        @params: params... (corresponding to functor associated with 'm_method')
+        @return: RObject, indicating success of the reflected call.
+        * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
+    */  template<class ..._signature>
     template<class ..._args>
     ForceInline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
@@ -61,14 +61,14 @@ namespace rtl::detail
     }
 
 
-    // Invoker struct's static method definition
+    // Invoker struct's static lambda definition
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
     ForceInline Return
-    DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
-                                                                       const RObject& pTarget,
-                                                                       _args&&... params)
+        DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
+            const RObject& pTarget,
+            _args&&... params)
     {
         using containerConst = detail::MethodContainer<detail::member::Const, _invokSignature...>;
         const FunctorId* constFunctorId = pMethod.hasFunctorId(containerConst::getContainerId());
@@ -97,11 +97,11 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-/*  @method: call()
-    @params: params... (corresponding to functor associated with 'm_method')
-    @return: RObject, indicating success of the reflected call.
-    * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-*/  template<class ..._signature>
+    /*  @lambda: call()
+        @params: params... (corresponding to functor associated with 'm_method')
+        @return: RObject, indicating success of the reflected call.
+        * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
+    */  template<class ..._signature>
     template<class ..._args>
     ForceInline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
@@ -128,14 +128,14 @@ namespace rtl::detail
     }
 
 
-    // Invoker struct's static method definition
+    // Invoker struct's static lambda definition
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
     ForceInline Return
-    NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
-                                                                        const RObject& pTarget,
-                                                                        _args&&... params)
+        NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
+            const RObject& pTarget,
+            _args&&... params)
     {
         using container0 = detail::MethodContainer<detail::member::NonConst, _invokSignature...>;
         const FunctorId* functorId = pMethod.hasFunctorId(container0::getContainerId());
@@ -143,9 +143,9 @@ namespace rtl::detail
         if (functorId != nullptr) [[likely]] {
             return container0::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
         }
-        else 
+        else
         {
-            // check if the const-overload method is present.
+            // check if the const-overload lambda is present.
             using container2 = detail::MethodContainer<detail::member::Const, _invokSignature...>;
             std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
             if (index != rtl::index_none) {
@@ -163,7 +163,7 @@ namespace rtl::detail
 {
     template<class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+        inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(traits::normal_sign_t<args_t>...)> erasedMth;
         initHopper<return_t>(erasedMth);
@@ -173,7 +173,7 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+        inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(args_t...)> mth;
         if (!m_argsTfnMeta.is_empty())
@@ -185,8 +185,8 @@ namespace rtl::detail
 
                 const auto retId = traits::uid<return_t>::value;
                 return m_argsTfnMeta.get_lambda()
-                                    .template to_method<record_t, args_t...>()
-                                    .template get_hopper<return_t>(retId);
+                    .template to_method<record_t, args_t...>()
+                    .template get_hopper<return_t>(retId);
             }
         }
         return mth;
@@ -244,54 +244,61 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pMth) const
+        inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
     {
         bool isReturnTvoid = false;
-        for (auto& fnMeta : m_overloadsFnMeta)
+        for (auto& ty_meta : m_overloadsFnMeta)
         {
-            if (fnMeta.is_empty())
+            if (ty_meta.is_empty())
             {
-                pMth.get_vhop().push_back(nullptr);
-                pMth.get_rhop().push_back(nullptr);
-                pMth.get_overloads().push_back(nullptr);
+                pHopper.get_vhop().push_back(nullptr);
+                pHopper.get_rhop().push_back(nullptr);
+                pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
 
-            if (fnMeta.get_member_kind() == member::Static) {
-                pMth.set_init_error(error::InvalidStaticMethodCaller);
+            if (ty_meta.get_member_kind() == member::Static) {
+                pHopper.set_init_error(error::InvalidStaticMethodCaller);
                 return;
             }
 
-            auto& erasedFn = [&]() -> decltype(auto) {
-                if constexpr (traits::type_erased_v<record_t, return_t>) {
-                    return fnMeta.get_erasure_base()
-                                 .template to_erased_record<traits::normal_sign_t<args_t>...>();
+            auto lambda = [&]<dispatch::fn_void void_v>() -> decltype(auto)
+            {
+                if constexpr (traits::type_erased_v<record_t, return_t>)
+                {
+                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    return fn_cast(ty_meta.get_functor()).to_method();
                 }
-                else if constexpr (traits::target_erased_v<record_t, return_t>) {
-                    return fnMeta.get_erasure_base()
-                                 .template to_erased_target_aware_return<return_t, traits::normal_sign_t<args_t>...>();
+                else if constexpr (traits::target_erased_v<record_t, return_t>)
+                {
+                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_target, return_t>();
                 }
-                else if constexpr (traits::return_erased_v<record_t, return_t>) {
-                    return fnMeta.get_erasure_base()
-                                 .template to_erased_return_aware_target<record_t, traits::normal_sign_t<args_t>...>();
+                else if constexpr (traits::return_erased_v<record_t, return_t>)
+                {
+                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_return, record_t>();
                 }
-            }();
+            };
 
-            if (fnMeta.is_void()) {
-                isReturnTvoid = true;
-                pMth.get_vhop().push_back(erasedFn.get_void_hopper());
+            if (isReturnTvoid = ty_meta.is_void())
+            {
+                auto fn = lambda.operator() < dispatch::fn_void::yes > ();
+                pHopper.get_vhop().push_back(fn.get_hop());
             }
             else {
-                pMth.get_rhop().push_back(erasedFn.get_return_hopper());
+                auto fn = lambda.operator() < dispatch::fn_void::no > ();
+                pHopper.get_rhop().push_back(fn.get_hop());
             }
-            pMth.get_overloads().push_back(&fnMeta.get_lambda());
-            pMth.set_init_error(error::None);
+
+            pHopper.get_overloads().push_back(&ty_meta.get_lambda());
+            pHopper.set_init_error(error::None);
         }
         if (isReturnTvoid) {
-            pMth.get_rhop().clear();
+            pHopper.get_rhop().clear();
         }
         else {
-            pMth.get_vhop().clear();
+            pHopper.get_vhop().clear();
         }
     }
 }
