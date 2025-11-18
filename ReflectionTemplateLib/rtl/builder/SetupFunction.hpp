@@ -18,8 +18,6 @@
 #include "SetupFunction.h"
 #include "RObjectBuilder.hpp"
 
-#include "FunctorId.hpp"
-
 namespace rtl
 {
     namespace detail
@@ -31,9 +29,9 @@ namespace rtl
         {
             return [](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                auto fptr = pFunctorId.get_lambda_function<_signature...>()
-                                      ->template get_hopper<void>()
-                                      .f_ptr();
+                using function_t = dispatch::function_ptr<void, _signature...>;
+
+                auto fptr = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
                 
                 fptr(std::forward<_signature>(params)...);
                 return { error::None, RObject{} };
@@ -50,9 +48,9 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                auto fptr = pFunctorId.get_lambda_function<_signature...>()
-                                      ->template get_hopper<_returnType>()
-                                      .f_ptr();
+                using function_t = dispatch::function_ptr<_returnType, _signature...>;
+
+                auto fptr = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
 
                 constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
 
@@ -122,7 +120,7 @@ namespace rtl
                     pRecordId,
                     _derivedType::getContainerId(),
                     _derivedType::template getSignatureStr<_returnType>(),
-                    &(typeMeta.get_lambda())
+                    &(typeMeta.get_functor())
                 }
             };
         }

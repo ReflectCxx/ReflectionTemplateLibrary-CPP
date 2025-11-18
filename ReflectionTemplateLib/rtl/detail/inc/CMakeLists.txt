@@ -5,7 +5,6 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/ConversionUtils.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/CxxReflection.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/FunctorId.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/FunctorId.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ReflectCast.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/ReflectCast.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ReflectCastUtil.h"

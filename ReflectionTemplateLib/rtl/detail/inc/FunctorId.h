@@ -40,14 +40,14 @@ namespace rtl::detail
         //signature of functor as string. platform dependent, may not be very much readable format.
         std::string m_signature;
 
-        const dispatch::lambda_base* m_lambda = nullptr;
+        const dispatch::functor* m_functor = nullptr;
 
         GETTER(std::size_t, LambdaIndex, m_lambdaIndex)
         GETTER(std::size_t, ReturnId, m_returnId);
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER_CREF(std::string, SignatureStr, m_signature)
-        GETTER_CREF(dispatch::lambda_base, _lambda, (*m_lambda))
+        GETTER_CREF(dispatch::functor, _functor, (*m_functor))
 
     /*  @method: getHashCode()
         @return: std::size_t (a unique hash-code for a functor)
@@ -75,17 +75,5 @@ namespace rtl::detail
                     m_lambdaIndex == pOther.m_lambdaIndex &&
                     m_signature == pOther.m_signature);
         }
-
-        template<class ..._signature>
-        using lambda_ft = dispatch::lambda_function<_signature...>;
-
-        template<class rec_t, class ..._signature>
-        using lambda_mt = dispatch::lambda_method<rec_t, _signature...>;
-
-        template<class ...args_t>
-        constexpr const lambda_ft<args_t...>* get_lambda_function(std::size_t p_argsId = 0) const;
-        
-        template<class record_t, class ...args_t>
-        constexpr const lambda_mt<record_t, args_t...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_argsId = 0) const;
     };
 }
