@@ -38,6 +38,7 @@ namespace rtl
 		GETTER(std::string, _return_str, m_functor->get().m_return_str)
 		GETTER_CREF(std::vector<std::size_t>, _args_id_arr, m_functor->get().m_args_type_ids)
 		
+		GETTER(traits::uid_t, _return_id, m_functor->get().m_return_id)
 		GETTER(traits::uid_t, _record_id, m_functor->get().m_record_id)
 		GETTER(traits::uid_t, _normal_args_id, m_functor->get().m_normal_args_id)
 		GETTER(traits::uid_t, _strict_args_id, m_functor->get().m_strict_args_id)
@@ -58,18 +59,6 @@ namespace rtl
 
 		template<class record_t, class ...signature_t>
 		static type_meta add_constructor(std::size_t p_index);
-
-		template<class ..._signature>
-		using lambda_fn_t = dispatch::lambda_function<_signature...>;
-
-		template<class rec_t, class ..._signature>
-		using lambda_mth_t = dispatch::lambda_method<rec_t, _signature...>;
-
-		template<class ...args_t>
-		constexpr const lambda_fn_t<args_t...>* get_lambda_function(std::size_t p_args_id = 0) const;
-
-		template<class record_t, class ...args_t>
-		constexpr const lambda_mth_t<record_t, args_t...>* get_lambda_method(std::size_t p_recordId = 0, std::size_t p_args_id = 0) const;
 
 	private:
 

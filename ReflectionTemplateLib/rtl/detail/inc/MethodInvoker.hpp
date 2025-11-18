@@ -164,9 +164,9 @@ namespace rtl::detail
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
     inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
-        method<record_t, return_t(traits::normal_sign_t<args_t>...)> erasedMth;
-        initHopper<return_t>(erasedMth);
-        return erasedMth;
+        method<record_t, return_t(traits::normal_sign_t<args_t>...)> mth;
+        initHopper<return_t>(mth);
+        return mth;
     }
 
 
@@ -180,12 +180,11 @@ namespace rtl::detail
             if (m_argsTfnMeta.get_member_kind() == member::Static) {
                 mth.set_init_error(error::InvalidStaticMethodCaller);
             }
-            else {
+            else if(traits::uid<return_t>::value == m_argsTfnMeta.get_return_id()) {
 
-                const auto retId = traits::uid<return_t>::value;
-                return m_argsTfnMeta.get_lambda()
-                                    .template to_method<record_t, args_t...>()
-                                    .template get_hopper<return_t>(retId);
+                using method_t = dispatch::method_ptr<record_t, return_t, args_t...>;
+                auto fptr = static_cast<const method_t&>(m_argsTfnMeta.get_functor()).f_ptr();
+                return method<record_t, return_t(args_t...)>(fptr);
             }
         }
         return mth;
@@ -204,37 +203,37 @@ namespace rtl::detail
         //initializing pos '0' with empty 'type_meta'.
         std::vector<type_meta> overloadsFnMeta = { type_meta() };
 
-        for (auto& fnMeta : m_functorsMeta)
+        for (auto& ty_meta : m_functorsMeta)
         {
             if constexpr (!std::is_same_v<record_t, RObject>)
             {
-                if (recordId != fnMeta.get_record_id()) {
+                if (recordId != ty_meta.get_record_id()) {
                     return { argsTfnMeta, overloadsFnMeta };
                 }
             }
 
-            if (argsTfnMeta.is_empty() && strictArgsId == fnMeta.get_strict_args_id()) {
-                argsTfnMeta = fnMeta;
+            if (argsTfnMeta.is_empty() && strictArgsId == ty_meta.get_strict_args_id()) {
+                argsTfnMeta = ty_meta;
             }
-            if (normalArgsId == fnMeta.get_normal_args_id())
+            if (normalArgsId == ty_meta.get_normal_args_id())
             {
-                if (normalArgsId == fnMeta.get_strict_args_id()) {
+                if (normalArgsId == ty_meta.get_strict_args_id()) {
                     // same normal & strict ids, means no refs exists in target function's signature
                     // target's function signature is call by value, always at pos '0'.
                     // if doesn't exists, this pos is occupied by an empty 'type_meta'.
-                    overloadsFnMeta[0] = fnMeta;
+                    overloadsFnMeta[0] = ty_meta;
                 }
-                else if (!fnMeta.is_any_arg_ncref()) {
+                else if (!ty_meta.is_any_arg_ncref()) {
                     // its a const-ref-overload with no non-const-ref in signature, added from pos '1' onwards.
-                    overloadsFnMeta.push_back(fnMeta);
+                    overloadsFnMeta.push_back(ty_meta);
                 }
             }
         }
 
-        for (auto& fnMeta : m_functorsMeta) {
-            if (recordId == fnMeta.get_record_id() &&
-                normalArgsId == fnMeta.get_normal_args_id() && fnMeta.is_any_arg_ncref()) {
-                overloadsFnMeta.push_back(fnMeta);
+        for (auto& ty_meta : m_functorsMeta) {
+            if (recordId == ty_meta.get_record_id() &&
+                normalArgsId == ty_meta.get_normal_args_id() && ty_meta.is_any_arg_ncref()) {
+                overloadsFnMeta.push_back(ty_meta);
             }
         }
         return { argsTfnMeta, overloadsFnMeta };

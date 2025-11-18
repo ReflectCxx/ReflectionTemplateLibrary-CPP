@@ -48,9 +48,9 @@ namespace rtl::detail
     template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
     inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        function<Return(traits::normal_sign_t<args_t>...)> erasedFn;
-        initHopper(erasedFn);
-        return erasedFn;
+        function<Return(traits::normal_sign_t<args_t>...)> fn;
+        initHopper(fn);
+        return fn;
     }
 
 
@@ -58,31 +58,31 @@ namespace rtl::detail
     template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
     inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        static_method<Return(traits::normal_sign_t<args_t>...)> erasedFn;
-        initHopper(erasedFn);
-        return erasedFn;
+        static_method<Return(traits::normal_sign_t<args_t>...)> mth;
+        initHopper(mth);
+        return mth;
     }
+
 
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::Static && !std::is_same_v<return_t, rtl::Return>)
     inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
-        static_method<return_t(args_t...)> fn;
+        static_method<return_t(args_t...)> mth;
         if (!m_argsTfnMeta.is_empty()) 
         {
             if (m_argsTfnMeta.get_member_kind() != member::Static) {
-                fn.set_init_error(error::InvalidNonStaticMethodCaller);
+                mth.set_init_error(error::InvalidNonStaticMethodCaller);
             }
-            else if (m_argsTfnMeta.get_member_kind() == member::Static) {
-                
-                const auto retId = traits::uid<return_t>::value;
-                return m_argsTfnMeta.get_lambda()
-                                    .template to_function<args_t...>()
-                                    .template get_hopper<return_t>(retId)
-                                    .f_ptr();
+            else if (m_argsTfnMeta.get_member_kind() == member::Static &&
+                     traits::uid<return_t>::value == m_argsTfnMeta.get_return_id()) 
+            {                
+                using function_t = dispatch::function_ptr<return_t, args_t...>;
+                auto fptr = static_cast<const function_t&>(m_argsTfnMeta.get_functor()).f_ptr();
+                return static_method<return_t(args_t...)>(fptr);
             }
         }
-        return fn;
+        return mth;
     }
 
 
@@ -93,15 +93,16 @@ namespace rtl::detail
         function<return_t(args_t...)> fn;
         if (!m_argsTfnMeta.is_empty()) 
         {
-            if (m_argsTfnMeta.get_member_kind() == member::Static) {
+            if (m_argsTfnMeta.get_member_kind() == member::Static) 
+            {
                 fn.set_init_error(error::InvalidStaticMethodCaller);
             }
-            else if (m_argsTfnMeta.get_member_kind() == member::None) {
-
-                const auto retId = traits::uid<return_t>::value;
-                return m_argsTfnMeta.get_lambda()
-                                    .template to_function<args_t...>()
-                                    .template get_hopper<return_t>(retId);
+            else if (m_argsTfnMeta.get_member_kind() == member::None && 
+                     traits::uid<return_t>::value == m_argsTfnMeta.get_return_id()) 
+            {
+                using function_t = dispatch::function_ptr<return_t, args_t...>;
+                auto fptr = static_cast<const function_t&>(m_argsTfnMeta.get_functor()).f_ptr();
+                return function<return_t(args_t...)>(fptr);
             }
         }
         return fn;
@@ -170,30 +171,30 @@ namespace rtl::detail
         //initializing pos '0' with empty 'type_meta'.
         std::vector<rtl::type_meta> overloadsFnMeta = { rtl::type_meta() };
 
-        for (auto& fnMeta : m_functorsMeta)
+        for (auto& ty_meta : m_functorsMeta)
         {
-            if (argsTfnMeta.is_empty() && strictArgsId == fnMeta.get_strict_args_id()) {
-                argsTfnMeta = fnMeta;
+            if (argsTfnMeta.is_empty() && strictArgsId == ty_meta.get_strict_args_id()) {
+                argsTfnMeta = ty_meta;
             }
-            if (normalArgsId == fnMeta.get_normal_args_id())
+            if (normalArgsId == ty_meta.get_normal_args_id())
             {
-                if (normalArgsId == fnMeta.get_strict_args_id()) {
+                if (normalArgsId == ty_meta.get_strict_args_id()) {
                     // same normal & strict ids, means no refs exists in target function's signature
                     // target's function signature is call by value, always at pos '0'.
                     // if doesn't exists, this pos is occupied by an empty 'type_meta'.
-                    overloadsFnMeta[0] = fnMeta;
+                    overloadsFnMeta[0] = ty_meta;
                 }
-                else if (!fnMeta.is_any_arg_ncref()) {
+                else if (!ty_meta.is_any_arg_ncref()) {
                     // its a const-ref-overload with no non-const-ref in signature, added from pos '1' onwards.
-                    overloadsFnMeta.push_back(fnMeta);
+                    overloadsFnMeta.push_back(ty_meta);
                 }
             }
         }
 
-        for (auto& fnMeta : m_functorsMeta) {
-            if (normalArgsId == fnMeta.get_normal_args_id() && fnMeta.is_any_arg_ncref()) {
+        for (auto& ty_meta : m_functorsMeta) {
+            if (normalArgsId == ty_meta.get_normal_args_id() && ty_meta.is_any_arg_ncref()) {
                 // any remaining overload, const/non-const ref added from pos '1' onwards.
-                overloadsFnMeta.push_back(fnMeta);
+                overloadsFnMeta.push_back(ty_meta);
             }
         }
         return { argsTfnMeta, overloadsFnMeta };
