@@ -43,10 +43,10 @@ namespace rtl::dispatch
         func_t& fn = m_lambda.template emplace<func_t>();
 
         if constexpr (fn_void_v == fn_void::yes) {
-            fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_void());
+            fn.set_hop(&aware_return<return_t, signature_t...>::get_lambda_void);
         }
         else {
-            fn.set_hop(aware_return<return_t, signature_t...>::get_lambda_any_return());
+            fn.set_hop(&aware_return<return_t, signature_t...>::get_lambda_any_return);
         }
 
         functor::m_lambdas = std::vector<lambda*>(1);

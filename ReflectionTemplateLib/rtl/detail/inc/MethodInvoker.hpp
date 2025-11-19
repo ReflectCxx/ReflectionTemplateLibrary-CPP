@@ -215,6 +215,7 @@ namespace rtl::detail
             if (argsTfnMeta.is_empty() && strictArgsId == ty_meta.get_strict_args_id()) {
                 argsTfnMeta = ty_meta;
             }
+
             if (normalArgsId == ty_meta.get_normal_args_id())
             {
                 if (normalArgsId == ty_meta.get_strict_args_id()) {
@@ -279,8 +280,7 @@ namespace rtl::detail
                 }
             };
 
-            if (isReturnTvoid = ty_meta.is_void())
-            {
+            if (isReturnTvoid = ty_meta.is_void()){
                 auto fn = lambda.template operator() < dispatch::fn_void::yes > ();
                 pHopper.get_vhop().push_back(fn.get_hop());
             }
@@ -292,6 +292,7 @@ namespace rtl::detail
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
+
         if (isReturnTvoid) {
             pHopper.get_rhop().clear();
         }
