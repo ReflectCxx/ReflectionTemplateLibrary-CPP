@@ -20,7 +20,7 @@ namespace rtl::dispatch
     template<class return_t, class ...signature_t>
     struct aware_return
     {
-        constexpr static void get_lambda_void(const functor& fn, traits::normal_sign_t<signature_t>&&... params) noexcept
+        constexpr static auto get_lambda_void(const functor& fn, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
             if constexpr (std::is_void_v<return_t>)
             {
@@ -29,7 +29,7 @@ namespace rtl::dispatch
             }
         }
 
-        constexpr static std::any get_lambda_any_return(const functor& fn, traits::normal_sign_t<signature_t>&&... params) noexcept
+        constexpr static auto get_lambda_any_return(const functor& fn, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
             if constexpr (!std::is_void_v<return_t>)
             {
