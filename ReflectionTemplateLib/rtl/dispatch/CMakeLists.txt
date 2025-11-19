@@ -6,6 +6,10 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor_cast.h"
 	
+	"${CMAKE_CURRENT_SOURCE_DIR}/cache_method_ptr.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/cache_function_ptr.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/cache_method_ptr_const.h"
+	
 	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/method_ptr.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/method_lambda.h"
@@ -15,10 +19,6 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/function_ptr.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/function_lambda.h"
-
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_base.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/lambda_method.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/lambda_function.h"
 
 	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/aware_constructor.h"

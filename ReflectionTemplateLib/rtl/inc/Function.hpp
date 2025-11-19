@@ -15,7 +15,6 @@
 #include "FunctionCaller.hpp"
 #include "RObject.h"
 #include "rtl_constants.h"
-#include "lambda_base.h"
 
 
 namespace rtl 

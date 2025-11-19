@@ -30,11 +30,11 @@ namespace rtl
     template<class return_t, class ...signature_t>
     struct function;
 
-    template<class record_t, class return_t, class ...signature_t>
-    struct method;
-
     template<class return_t, class ...signature_t>
     struct static_method;
+
+    template<class record_t, class return_t, class ...signature_t>
+    struct method;
 
     namespace detail
     {
@@ -69,28 +69,12 @@ namespace rtl
         template<class return_t, class ...signature_t>
         struct function_ptr;
 
-        template<class return_t, class ...signature_t>
-        struct lambda_function;
-
         template<class record_t, class return_t, class ...signature_t>
         struct method_ptr;
-
-        template<class record_t, class return_t, class ...signature_t>
-        struct lambda_method;
     }
 
     namespace dispatch
     {
-        //--- These can be removed.
-        template<class ...signature_t>
-        struct lambda_function;
-
-        template<class record_t, class ...signature_t>
-        struct lambda_method;
-
-        struct lambda_base;
-
-        //--- These should be enough for replacement.
         struct functor;
 
         struct lambda {};
@@ -125,10 +109,10 @@ namespace rtl
         template<class return_t, class ...signature_t>
         struct aware_return;
 
-        template<class record_t, class return_t, class ...signature_t>
-        struct aware_return_n_target;
-
         template<class record_t, class ...signature_t>
         struct aware_constructor;
+
+        template<class record_t, class return_t, class ...signature_t>
+        struct aware_return_n_target;
     }
 }

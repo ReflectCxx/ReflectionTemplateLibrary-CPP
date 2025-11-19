@@ -12,15 +12,9 @@
 #pragma once
 
 #include "type_meta.h"
-
-#include "lambda_base.h"
-
 #include "cache_method_ptr.h"
 #include "cache_function_ptr.h"
 #include "cache_method_ptr_const.h"
-
-#include "cache_lambda_method.h"
-#include "cache_lambda_function.h"
 
 namespace rtl
 {
@@ -28,13 +22,7 @@ namespace rtl
 	inline type_meta type_meta::add_function(return_t(*p_fptr)(signature_t...), traits::uid_t p_record_uid, detail::member p_member_kind, std::size_t p_index)
 	{
 		auto& fc = cache::function_ptr<return_t, signature_t...>::instance();
-		auto& lc = cache::lambda_function<return_t, signature_t...>::instance();
-
 		auto& functor = fc.push(p_fptr, p_record_uid, p_member_kind, p_index);
-		auto lambda = lc.push(functor);
-		
-		functor.set_lambda(lambda);
-
 		return type_meta(functor);
 	}
 
@@ -43,13 +31,7 @@ namespace rtl
 	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index)
 	{
 		auto& fc = cache::method_ptr<record_t, return_t, signature_t...>::instance();
-		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
-
 		auto& functor = fc.push(p_fptr, p_index);
-		auto lambda = lc.push(functor);
-
-		functor.set_lambda(lambda);
-		
 		return type_meta(functor);
 	}
 
@@ -57,14 +39,8 @@ namespace rtl
 	template<class record_t, class return_t, class ...signature_t>
 	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index)
 	{
-		auto& fc = cache::method_ptr<const record_t, return_t, signature_t...>::instance();
-		auto& lc = cache::lambda_method<record_t, return_t, signature_t...>::instance();
-
+		auto& fc = cache::method_ptr<const record_t, return_t, signature_t...>::instance();		
 		auto& functor = fc.push(p_fptr, p_index);
-		auto lambda = lc.push(functor);
-		
-		functor.set_lambda(lambda);
-
 		return type_meta(functor);
 	}
 

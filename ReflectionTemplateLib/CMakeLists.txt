@@ -15,7 +15,6 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/builder
-        ${CMAKE_CURRENT_SOURCE_DIR}/rtl/cache
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/detail
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/dispatch
         ${CMAKE_CURRENT_SOURCE_DIR}/rtl/inc

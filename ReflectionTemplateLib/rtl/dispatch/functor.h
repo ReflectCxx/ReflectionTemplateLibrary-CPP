@@ -50,32 +50,10 @@ namespace rtl::dispatch
         
         std::vector<lambda*> m_lambdas;
         std::vector<std::size_t> m_args_type_ids = {};
-
-    private:
-
-        constexpr void set_lambda(const dispatch::lambda_base* p_lambda) const {
-            m_lambda = p_lambda;
-        }
-
-        mutable const dispatch::lambda_base* m_lambda = nullptr;
         
         friend rtl::type_meta;
 
-        friend dispatch::lambda_base;
-
         template<fn_void, class...>
         friend struct functor_cast;
-
-        template<class ...>
-        friend struct dispatch::lambda_function;
-
-        template<class, class ...>
-        friend struct dispatch::lambda_method;
-
-        template<class, class ...>
-        friend struct cache::lambda_function;
-
-        template<class, class, class ...>
-        friend struct cache::lambda_method;
     };
 }

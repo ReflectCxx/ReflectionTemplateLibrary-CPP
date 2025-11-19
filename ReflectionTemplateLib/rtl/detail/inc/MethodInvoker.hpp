@@ -16,14 +16,14 @@
 #include "MethodInvoker.h"
 #include "MethodContainer.h"
 
-#include "lambda_method.h"
+#include "method_ptr.h"
+#include "method_ptr_const.h"
 
 #include "rtl_method.h"
 #include "rtl_method_const.h"
 #include "rtl_method_erased.h"
 #include "rtl_method_erased_target.h"
 #include "rtl_method_erased_return.h"
-
 
 namespace rtl::detail
 {
@@ -242,7 +242,7 @@ namespace rtl::detail
 
     template<class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
+    inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
     {
         bool isReturnTvoid = false;
         for (auto& ty_meta : m_overloadsFnMeta)

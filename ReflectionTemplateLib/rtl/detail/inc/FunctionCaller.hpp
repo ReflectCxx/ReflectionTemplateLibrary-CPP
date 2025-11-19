@@ -17,11 +17,9 @@
 #include "FunctorContainer.h"
 
 #include "functor_cast.h"
+#include "function_ptr.h"
+#include "rtl_function.h"
 #include "rtl_function_erased_return.h"
-
-#include "lambda_method.h"
-#include "lambda_function.h"
-
 
 namespace rtl::detail
 {

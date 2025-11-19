@@ -12,8 +12,6 @@
 #pragma once
 
 #include "rtl_traits.h"
-#include "rtl_forward_decls.h"
-#include "lambda_base.h"
 
 namespace rtl
 {

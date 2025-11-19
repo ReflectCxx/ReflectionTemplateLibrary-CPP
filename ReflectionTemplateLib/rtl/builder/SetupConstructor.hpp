@@ -186,12 +186,6 @@ namespace rtl::detail
             return (itr != ctorSet.end() ? itr->second : index_none);
         };
 
-        //auto& lambdaCache = lambda_function<member::None>::get<_signature...>();
-        //const auto& pushLambdaHopper = [&]()-> std::size_t
-        //{
-        //    return lambdaCache.push_cloner<_recordType>();
-        //};
-
         //add the lambda in 'FunctorContainer'.
         auto lambdaIndex = _derivedType::pushBack(getCopyConstructorCaller<_recordType>(), getIndex, updateIndex);
         return detail::FunctorId {
@@ -201,7 +195,7 @@ namespace rtl::detail
             recordId,
             containerId,
             _derivedType::template getSignatureStr<_recordType>(true),
-            nullptr//&lambdaCache
+            nullptr
         };
     }
 }
