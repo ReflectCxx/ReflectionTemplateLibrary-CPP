@@ -282,7 +282,7 @@ namespace rtl::detail
 
             if (isReturnTvoid = ty_meta.is_void()){
                 auto fn = lambda.template operator() < dispatch::fn_void::yes > ();
-                pHopper.get_vhop().push_back(fn.get_hop());
+                pHopper.get_vhop().push_back(fn.f_ptr());
             }
             else {
                 auto fn = lambda.template operator() < dispatch::fn_void::no > ();

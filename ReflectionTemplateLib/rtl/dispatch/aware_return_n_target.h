@@ -21,49 +21,40 @@ namespace rtl::dispatch
     struct aware_return_n_target
     {
         // erased-return-aware-target-function-void
-        constexpr static auto e_return_a_target_fnv() noexcept
+        static void e_return_a_target_fnv(const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
-            return [](const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            if constexpr (std::is_void_v<return_t>)
             {
-                if constexpr (std::is_void_v<return_t>)
-                {
-                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
+                auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
-                    (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
-                }
-            };
+                (const_cast<record_t&>(p_target).*mptr)(std::forward<signature_t>(params)...);
+            }
         }
 
         // erased-target-aware-return-function-void
-        constexpr static auto e_target_a_return_fnv() noexcept
+        static void e_target_a_return_fnv(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
-            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            if constexpr (std::is_void_v<return_t>)
             {
-                if constexpr (std::is_void_v<return_t>)
-                {
-                    const auto& target = p_target.view<record_t>()->get();
+                const auto& target = p_target.view<record_t>()->get();
 
-                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
+                auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
-                    (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
-                }
-            };
+                (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
+            }
         }
 
         // erased-return-erased-target-function-void
-        constexpr static auto e_return_e_target_fnv() noexcept
+        static void e_return_e_target_fnv(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
-            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            if constexpr (std::is_void_v<return_t>)
             {
-                if constexpr (std::is_void_v<return_t>)
-                {
-                    const auto& target = p_target.view<record_t>()->get();
+                const auto& target = p_target.view<record_t>()->get();
 
-                    auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
+                auto mptr = static_cast<const method_ptr<record_t, return_t, signature_t...>&>(fn).f_ptr();
 
-                    (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
-                }
-            };
+                (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
+            }
         }
 
         // erased-target-aware-return-function-returns(return_t)

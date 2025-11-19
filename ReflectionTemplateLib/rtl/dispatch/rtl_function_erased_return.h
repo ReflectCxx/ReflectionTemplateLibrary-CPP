@@ -94,8 +94,7 @@ namespace rtl
 
         constexpr operator bool() const noexcept {
             return !(m_init_err != error::None || m_functors.empty() ||
-                     (m_functors.size() == 1 && m_functors[0] == nullptr));
-
+                    (m_functors.size() == 1 && m_functors[0] == nullptr));
         }
 
         constexpr bool must_bind_refs() const noexcept {
