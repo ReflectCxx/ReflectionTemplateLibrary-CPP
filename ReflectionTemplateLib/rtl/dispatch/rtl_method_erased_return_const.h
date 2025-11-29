@@ -11,7 +11,8 @@
 
 #pragma once
 
-#include "rtl_traits.h"
+#include "functor.h"
+#include "RObject.hpp"
 
 namespace rtl
 {
