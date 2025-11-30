@@ -45,19 +45,19 @@ namespace rtl::dispatch
     struct method_lambda<fn_void::no, erase::t_return, known_t, args_t...> : lambda
     {
         using record_t = known_t;
-        using lambda_t = std::function<std::any(const functor&, const record_t&, traits::normal_sign_t<args_t>...)>;
+        using fptr_t = std::any(*)(const functor&, const record_t&, traits::normal_sign_t<args_t>&&...);
 
-        const lambda_t& get_hop() const {
-            return m_lambda;
+        const fptr_t& get_hop() const {
+            return m_fptr;
         }
 
     private:
 
-        void set_hop(const lambda_t& lambda) {
-            m_lambda = lambda;
+        void set_hop(const fptr_t& fptr) {
+            m_fptr = fptr;
         }
 
-        lambda_t m_lambda;
+        fptr_t m_fptr;
 
         template<class, class, class...>
         friend struct method_ptr;
@@ -97,19 +97,19 @@ namespace rtl::dispatch
     struct method_lambda<fn_void::no, erase::t_target, known_t, args_t...> : lambda
     {
         using return_t = known_t;
-        using lambda_t = std::function<return_t(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>...)>;
+        using fptr_t = return_t(*)(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>&&...);
 
-        const lambda_t& get_hop() const {
-            return m_lambda;
+        const fptr_t& get_hop() const {
+            return m_fptr;
         }
 
     private:
 
-        void set_hop(const lambda_t& lambda) {
-            m_lambda = lambda;
+        void set_hop(const fptr_t& fptr) {
+            m_fptr = fptr;
         }
 
-        lambda_t m_lambda;
+        fptr_t m_fptr;
 
         template<class, class, class...>
         friend struct method_ptr;
