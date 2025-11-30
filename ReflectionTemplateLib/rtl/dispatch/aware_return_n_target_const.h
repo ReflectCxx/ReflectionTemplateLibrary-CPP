@@ -74,71 +74,65 @@ namespace rtl::dispatch
         }
 
         // erased-return-aware-target-function-returns(std::any)
-        constexpr static auto e_return_a_target_fnr() noexcept
+        constexpr static auto e_return_a_target_fnr(const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params) noexcept
         {
-            return [](const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params)-> auto
+            if constexpr (!std::is_void_v<return_t>)
             {
-                if constexpr (!std::is_void_v<return_t>)
+                auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
+
+                auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
+
+                if constexpr (std::is_pointer_v<return_t>)
                 {
-                    auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
-
-                    auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
-
-                    if constexpr (std::is_pointer_v<return_t>)
-                    {
-                        using raw_t = std::remove_pointer_t<return_t>;
-                        return std::any(static_cast<const raw_t*>(ret_v));
-                    }
-                    else if constexpr (std::is_reference_v<return_t>)
-                    {
-                        using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
-                        return std::any(static_cast<const raw_t*>(&ret_v));
-                    }
-                    else
-                    {
-                        using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        // TODO: enable it for move-constructible objects.
-                        static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
-                        return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
-                    }
+                    using raw_t = std::remove_pointer_t<return_t>;
+                    return std::any(static_cast<const raw_t*>(ret_v));
                 }
-                else return std::any();
-            };
+                else if constexpr (std::is_reference_v<return_t>)
+                {
+                    using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
+                    return std::any(static_cast<const raw_t*>(&ret_v));
+                }
+                else
+                {
+                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                    // TODO: enable it for move-constructible objects.
+                    static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
+                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
+                }
+            }
+            else return std::any();
         }
 
         // erased-return-erased-target-function-returns(std::any)
-        constexpr static auto e_return_e_target_fnr() noexcept
+        constexpr static auto e_return_e_target_fnr(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
-            return [](const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params)-> auto
+            if constexpr (!std::is_void_v<return_t>)
             {
-                if constexpr (!std::is_void_v<return_t>)
+                auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
+
+                const auto& target = p_target.view<record_t>()->get();
+
+                auto&& ret_v = (target.*mptr)(std::forward<signature_t>(params)...);
+
+                if constexpr (std::is_pointer_v<return_t>)
                 {
-                    auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
-
-                    const auto& target = p_target.view<record_t>()->get();
-
-                    auto&& ret_v = (target.*mptr)(std::forward<signature_t>(params)...);
-
-                    if constexpr (std::is_pointer_v<return_t>)
-                    {
-                        using raw_t = std::remove_pointer_t<return_t>;
-                        return std::any(static_cast<const raw_t*>(ret_v));
-                    }
-                    else if constexpr (std::is_reference_v<return_t>)
-                    {
-                        using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
-                        return std::any(static_cast<const raw_t*>(&ret_v));
-                    }
-                    else
-                    {
-                        using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                        // TODO: enable it for move-constructible objects.
-                        static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
-                        return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
-                    }
+                    using raw_t = std::remove_pointer_t<return_t>;
+                    return std::any(static_cast<const raw_t*>(ret_v));
                 }
-                else return std::any();
-            };
+                else if constexpr (std::is_reference_v<return_t>)
+                {
+                    using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
+                    return std::any(static_cast<const raw_t*>(&ret_v));
+                }
+                else
+                {
+                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
+                    // TODO: enable it for move-constructible objects.
+                    static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
+                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
+                }
+            }
+            else return std::any();
         }
     };
 }
