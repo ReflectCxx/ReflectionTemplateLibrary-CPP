@@ -47,13 +47,13 @@ namespace rtl::dispatch
         using record_t = known_t;
         using fptr_t = std::any(*)(const functor&, const record_t&, traits::normal_sign_t<args_t>&&...);
 
-        const fptr_t& get_hop() const {
+        const fptr_t& f_ptr() const {
             return m_fptr;
         }
 
     private:
 
-        void set_hop(const fptr_t& fptr) {
+        void init(const fptr_t& fptr) {
             m_fptr = fptr;
         }
 
@@ -99,13 +99,13 @@ namespace rtl::dispatch
         using return_t = known_t;
         using fptr_t = return_t(*)(const functor&, const rtl::RObject&, traits::normal_sign_t<args_t>&&...);
 
-        const fptr_t& get_hop() const {
+        const fptr_t& f_ptr() const {
             return m_fptr;
         }
 
     private:
 
-        void set_hop(const fptr_t& fptr) {
+        void init(const fptr_t& fptr) {
             m_fptr = fptr;
         }
 

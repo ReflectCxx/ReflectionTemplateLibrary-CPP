@@ -286,7 +286,7 @@ namespace rtl::detail
             }
             else {
                 auto fn = lambda.template operator() < dispatch::fn_void::no > ();
-                pHopper.get_rhop().push_back(fn.get_hop());
+                pHopper.get_rhop().push_back(fn.f_ptr());
             }
 
             pHopper.get_overloads().push_back(&ty_meta.get_functor());

@@ -28,7 +28,7 @@ namespace rtl::dispatch
             m_functor = &aware_constructor<record_t>::default_ctor;
 		}
         else {
-            fn.set_hop(&aware_constructor<record_t, signature_t...>::overloaded_ctor);
+            fn.init(&aware_constructor<record_t, signature_t...>::overloaded_ctor);
 		}
 
         functor::m_lambdas = std::vector<lambda*>(1);
@@ -46,7 +46,7 @@ namespace rtl::dispatch
             fn.init(&aware_return<return_t, signature_t...>::get_lambda_void);
         }
         else {
-            fn.set_hop(&aware_return<return_t, signature_t...>::get_lambda_any_return);
+            fn.init(&aware_return<return_t, signature_t...>::get_lambda_any_return);
         }
 
         functor::m_lambdas = std::vector<lambda*>(1);

@@ -28,9 +28,9 @@ namespace rtl::dispatch
         }
         else
         {
-            m_erased_return.set_hop(&lambda_t::e_return_a_target_fnr); // erased-return-aware-target
-            m_erased_target.set_hop(lambda_t::e_target_a_return_fnr()); // erased-target-aware-return
-            m_erased_method.set_hop(&lambda_t::e_return_e_target_fnr); // erased-return-erased-target
+            m_erased_return.init(&lambda_t::e_return_a_target_fnr); // erased-return-aware-target
+            m_erased_target.init(lambda_t::e_target_a_return_fnr()); // erased-target-aware-return
+            m_erased_method.init(&lambda_t::e_return_e_target_fnr); // erased-return-erased-target
         }
 
         functor::m_lambdas = std::vector<lambda*>(3);
