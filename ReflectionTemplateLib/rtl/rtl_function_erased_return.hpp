@@ -34,6 +34,7 @@ namespace rtl
     }
 
 
+#if defined(__GNUC__) || defined(__clang__)
     template<class ...signature_t>
     template<class ...args_t> 
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
@@ -41,6 +42,15 @@ namespace rtl
                     function<Return(signature_t...)>::bind() const noexcept {
         return perfect_fwd<args_t...>{ *this };
     }
+#else
+    template<class ...signature_t>
+    template<class ...args_t>
+        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+    inline constexpr const function<Return(signature_t...)>::perfect_fwd<args_t...>
+        function<Return(signature_t...)>::bind() const noexcept {
+        return perfect_fwd<args_t...>{ *this };
+    }
+#endif
 
 
 	template<class ...signature_t>
