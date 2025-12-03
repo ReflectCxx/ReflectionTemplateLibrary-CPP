@@ -37,7 +37,7 @@ namespace rtl
     template<class ...signature_t>
     template<class ...args_t> 
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-    inline constexpr const function<Return(signature_t...)>::perfect_fwd<args_t...>
+    inline constexpr const typename function<Return(signature_t...)>::template perfect_fwd<args_t...>
                     function<Return(signature_t...)>::bind() const noexcept {
         return perfect_fwd<args_t...>{ *this };
     }
