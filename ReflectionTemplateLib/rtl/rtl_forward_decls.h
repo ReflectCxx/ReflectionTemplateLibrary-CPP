@@ -28,7 +28,7 @@ namespace rtl
     struct type_meta;
 
     template<class return_t, class ...signature_t>
-    struct function;
+    class function;
 
     template<class return_t, class ...signature_t>
     struct static_method;

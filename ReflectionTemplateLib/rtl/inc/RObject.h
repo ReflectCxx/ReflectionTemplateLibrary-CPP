@@ -11,9 +11,6 @@
 
 #pragma once
 
-//#include <atomic>
-#include <cstddef>
-
 #include "view.h"
 #include "RObjectId.h"
 
@@ -121,6 +118,6 @@ namespace rtl
 
     struct [[nodiscard]] Return {
         error err;
-        RObject rObject;
+        RObject robject;
     };
 }

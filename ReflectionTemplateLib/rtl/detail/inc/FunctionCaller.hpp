@@ -19,7 +19,7 @@
 #include "functor_cast.h"
 #include "function_ptr.h"
 #include "rtl_function.h"
-#include "rtl_function_erased_return.h"
+#include "rtl_function_erased_return.hpp"
 
 namespace rtl::detail
 {

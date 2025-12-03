@@ -24,19 +24,6 @@ set(LOCAL_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/aware_constructor.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/aware_return_n_target.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/aware_return_n_target_const.h"
-
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_function.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.h"
-	
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_return.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target.h"
-
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_const.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_return_const.h"
-	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target_const.h"
 )
 
 target_sources(ReflectionTemplateLib PRIVATE ${LOCAL_HEADERS})

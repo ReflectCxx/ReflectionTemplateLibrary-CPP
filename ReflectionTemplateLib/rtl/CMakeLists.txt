@@ -4,11 +4,26 @@
 set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/access.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/builder.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_forward_decls.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_constants.h"
+	
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_errors.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_traits.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_typeid.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_constants.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_forward_decls.h"
+	
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.hpp"
+	
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_return.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target.h"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_const.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_const.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_return_const.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_method_erased_target_const.h"
 )
 
 target_sources(ReflectionTemplateLib PRIVATE ${LOCAL_HEADERS})

@@ -17,35 +17,43 @@
 namespace rtl
 {
     template<class ...signature_t>
-    struct function<Return(signature_t...)>
+    class function<Return(signature_t...)>
     {
-        template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
-        [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-        constexpr Return operator()(args_t&&...params) const noexcept
-        {
-            if (!(*this)) [[unlikely]] {
-                return { m_init_err, RObject{} };
-            }
+        using lambda_vt = std::function<void(const dispatch::functor&, signature_t...)>;
 
-            if (must_bind_refs()) [[unlikely]] {
-                return { error::ExplicitRefBindingRequired, RObject{} };
-            }
+        using lambda_rt = std::function<std::any(const dispatch::functor&, signature_t...)>;
 
-            auto index = (m_functors[call_by::value] != nullptr ? call_by::value : call_by::cref);
-            if (m_functors[index]->is_void())
-            {
-                m_vhop[index](*m_functors[index], std::forward<args_t>(params)...);
-                return { error::None, RObject{} };
-            }
-            else
-            {
-                return { error::None,
-                         RObject{ m_rhop[index](*m_functors[index], std::forward<args_t>(params)...),
-                                  m_functors.back()->get_robject_id(), nullptr
-                         }
-                };
-            }
-        }
+        std::vector<lambda_rt> m_rhop = {};
+
+        std::vector<lambda_vt> m_vhop = {};
+
+        std::vector<const dispatch::functor*> m_functors = {};
+
+        error m_init_err = error::InvalidCaller;
+
+        void set_init_error(error p_err);
+
+        GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
+        GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
+        GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
+
+    public:
+
+        enum call_by {
+            value = 0,
+            cref = 1,   //const ref.
+            ncref = 2   //non-const ref.
+        };
+
+        GETTER(rtl::error, _init_error, m_init_err)
+
+        constexpr operator bool() const noexcept;
+
+        constexpr bool must_bind_refs() const noexcept;
+
+        template<class ...args_t>
+            requires (sizeof...(args_t) == sizeof...(signature_t))
+        constexpr Return operator()(args_t&&...params) const noexcept;
 
         template<class ...fwd_args_t>
         struct perfect_fwd
@@ -88,57 +96,14 @@ namespace rtl
         };
 
         template<class ...args_t>
-        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind() const noexcept {
-            return perfect_fwd<args_t...>{ *this };
-        }
-
-        constexpr operator bool() const noexcept {
-            return !(m_init_err != error::None || m_functors.empty() ||
-                    (m_functors.size() == 1 && m_functors[0] == nullptr));
-        }
-
-        constexpr bool must_bind_refs() const noexcept {
-            return (m_functors[call_by::value] == nullptr && 
-                   (m_functors.size() > call_by::ncref || m_functors[call_by::cref]->is_any_arg_ncref()));
-        }
-
-        enum call_by
-        {
-            value = 0,
-            cref = 1,   //const ref.
-            ncref = 2   //non-const ref.
-        };
-
-        GETTER(rtl::error, _init_error, m_init_err)
-
-    private:
-
-        using lambda_vt = std::function<void(const dispatch::functor&, signature_t...)>;
-
-        using lambda_rt = std::function<std::any(const dispatch::functor&, signature_t...)>;
-
-        std::vector<lambda_rt> m_rhop = {};
-
-        std::vector<lambda_vt> m_vhop = {};
-
-        std::vector<const dispatch::functor*> m_functors = {};
-
-        error m_init_err = error::InvalidCaller;
-
-        void set_init_error(error p_err) {
-            m_init_err = p_err;
-        }
-
-        GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
-        GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
-        GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
+            requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind() const noexcept;
 
         template<detail::member, class ...>
         friend struct detail::HopFunction;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
-                       "rtl::function<...>: any type cannot be specified as reference here");
+            "rtl::function<...>: any type cannot be specified as reference here");
     };
 }
 
