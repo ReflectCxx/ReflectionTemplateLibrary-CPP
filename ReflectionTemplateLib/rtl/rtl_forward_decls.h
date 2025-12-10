@@ -30,6 +30,9 @@ namespace rtl
     template<class return_t, class ...signature_t>
     class function;
 
+    template<class ...signature_t>
+    class constructor;
+
     template<class return_t, class ...signature_t>
     struct static_method;
 

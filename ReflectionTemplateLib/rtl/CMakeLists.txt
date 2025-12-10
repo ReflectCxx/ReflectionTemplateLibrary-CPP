@@ -11,6 +11,8 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_constants.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/rtl_forward_decls.h"
 	
+	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_constructor.h"
+	
 	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/rtl_function_erased_return.hpp"

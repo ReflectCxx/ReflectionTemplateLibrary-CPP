@@ -23,13 +23,13 @@ namespace rtl
 
         using lambda_rt = std::function<std::any(const dispatch::functor&, signature_t...)>;
 
+        error m_init_err = error::InvalidCaller;
+
         std::vector<lambda_rt> m_rhop = {};
 
         std::vector<lambda_vt> m_vhop = {};
 
         std::vector<const dispatch::functor*> m_functors = {};
-
-        error m_init_err = error::InvalidCaller;
 
         void set_init_error(error p_err);
 
