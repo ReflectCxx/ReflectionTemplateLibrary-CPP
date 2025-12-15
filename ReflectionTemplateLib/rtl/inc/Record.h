@@ -111,14 +111,11 @@ namespace rtl
     template<class ...args_t>
     inline constructor<args_t...> Record::ctor() const
     {
-        constructor<args_t...> fnCtor;
-        const auto& method = m_methods.at(detail::ctor_name(m_recordName));
-        const auto& functorsMeta = method.getFunctorsMeta();
-
         std::vector<rtl::type_meta> fnTyMetas(detail::call_by::ncref);
-
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
-        for (auto& ty_meta : functorsMeta)
+        const auto& method = m_methods.at(detail::ctor_name(m_recordName));
+
+        for (auto& ty_meta : method.getFunctorsMeta())
         {
             if (normalId == ty_meta.get_normal_args_id())
             {
@@ -132,17 +129,26 @@ namespace rtl
             }
         }
 
-        std::size_t index = rtl::index_none;
-        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
-        for (int i = 0; i < fnTyMetas.size(); i++)
+        constructor<args_t...> fnCtor;
+        for (auto& ty_meta : fnTyMetas)
         {
-            auto& ty_meta = fnTyMetas[i];
-            if (!ty_meta.is_empty() && ty_meta.get_strict_args_id() == strictId) {
-                index = i;
-                break;
+            if (ty_meta.is_empty()) {
+                fnCtor.get_hop().push_back(nullptr);
+                fnCtor.get_overloads().push_back(nullptr);
+                continue;
             }
+
+            using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
+            auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_ctor>();
+
+            fnCtor.get_hop().push_back(fn.f_ptr());
+            fnCtor.get_overloads().push_back(&ty_meta.get_functor());
+            fnCtor.set_init_error(error::None);
         }
 
+        if (fnCtor.get_init_error() != error::None) {
+            fnCtor.set_init_error(error::SignatureMismatch);
+        }
         return fnCtor;
     }
 }

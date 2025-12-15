@@ -121,8 +121,7 @@ namespace rtl
         }
 
         constexpr bool must_bind_refs() const noexcept {
-            return (m_functors[detail::call_by::value] == nullptr &&
-                   (m_functors.size() > detail::call_by::ncref || m_functors[detail::call_by::cref]->is_any_arg_ncref()));
+            return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
         }
 
         GETTER(rtl::error, _init_error, m_init_err)

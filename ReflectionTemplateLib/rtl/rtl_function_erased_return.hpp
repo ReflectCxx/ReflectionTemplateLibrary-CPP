@@ -23,14 +23,13 @@ namespace rtl
     template<class ...signature_t>
     inline constexpr function<Return(signature_t...)>::operator bool() const noexcept {
         return !(m_init_err != error::None || m_functors.empty() ||
-            (m_functors.size() == 1 && m_functors[0] == nullptr));
+                 (m_functors.size() == 1 && m_functors[0] == nullptr));
     }
 
 
     template<class ...signature_t>
     inline constexpr bool function<Return(signature_t...)>::must_bind_refs() const noexcept {
-        return (m_functors[detail::call_by::value] == nullptr &&
-            (m_functors.size() > detail::call_by::ncref || m_functors[detail::call_by::cref]->is_any_arg_ncref()));
+        return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
     }
 
 
