@@ -175,15 +175,16 @@ namespace rtl::detail
     inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(args_t...)> mth;
-        if (!m_argsTfnMeta.is_empty())
+        if (m_fnIndex != rtl::index_none)
         {
-            if (m_argsTfnMeta.get_member_kind() == member::Static) {
+            auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+            if (ty_meta.get_member_kind() == member::Static) {
                 mth.set_init_error(error::InvalidStaticMethodCaller);
             }
-            else if(traits::uid<return_t>::value == m_argsTfnMeta.get_return_id()) {
+            else if(traits::uid<return_t>::value == ty_meta.get_return_id()) {
 
                 using method_t = dispatch::method_ptr<record_t, return_t, args_t...>;
-                auto fptr = static_cast<const method_t&>(m_argsTfnMeta.get_functor()).f_ptr();
+                auto fptr = static_cast<const method_t&>(ty_meta.get_functor()).f_ptr();
                 return method<record_t, return_t(args_t...)>(fptr);
             }
         }
@@ -196,48 +197,40 @@ namespace rtl::detail
     inline constexpr HopMethod<record_t, args_t...> Hopper<member_kind, record_t>::argsT() const
     {
         auto recordId = traits::uid<record_t>::value;
-        auto strictArgsId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
-        auto normalArgsId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
 
-        type_meta argsTfnMeta;
-        //initializing pos '0' with empty 'type_meta'.
-        std::vector<type_meta> overloadsFnMeta = { type_meta() };
-
+        auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
         for (auto& ty_meta : m_functorsMeta)
         {
             if constexpr (!std::is_same_v<record_t, RObject>)
             {
                 if (recordId != ty_meta.get_record_id()) {
-                    return { argsTfnMeta, overloadsFnMeta };
+                    return { rtl::index_none, fnTyMetas };
                 }
             }
-
-            if (argsTfnMeta.is_empty() && strictArgsId == ty_meta.get_strict_args_id()) {
-                argsTfnMeta = ty_meta;
-            }
-
-            if (normalArgsId == ty_meta.get_normal_args_id())
+            if (normalId == ty_meta.get_normal_args_id())
             {
-                if (normalArgsId == ty_meta.get_strict_args_id()) {
-                    // same normal & strict ids, means no refs exists in target function's signature
-                    // target's function signature is call by value, always at pos '0'.
-                    // if doesn't exists, this pos is occupied by an empty 'type_meta'.
-                    overloadsFnMeta[0] = ty_meta;
+                if (normalId == ty_meta.get_strict_args_id()) {
+                    fnTyMetas[call_by::value] = ty_meta;
                 }
                 else if (!ty_meta.is_any_arg_ncref()) {
-                    // its a const-ref-overload with no non-const-ref in signature, added from pos '1' onwards.
-                    overloadsFnMeta.push_back(ty_meta);
+                    fnTyMetas[call_by::cref] = ty_meta;
                 }
+                else fnTyMetas.push_back(ty_meta);
             }
         }
 
-        for (auto& ty_meta : m_functorsMeta) {
-            if (recordId == ty_meta.get_record_id() &&
-                normalArgsId == ty_meta.get_normal_args_id() && ty_meta.is_any_arg_ncref()) {
-                overloadsFnMeta.push_back(ty_meta);
+        std::size_t index = rtl::index_none;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+        for (int i = 0; i < fnTyMetas.size(); i++)
+        {
+            auto& ty_meta = fnTyMetas[i];
+            if (!ty_meta.is_empty() && ty_meta.get_strict_args_id() == strictId) {
+                index = i;
+                break;
             }
         }
-        return { argsTfnMeta, overloadsFnMeta };
+        return { index, fnTyMetas };
     }
 
 
@@ -288,7 +281,6 @@ namespace rtl::detail
                 auto fn = lambda.template operator() < dispatch::fn_void::no > ();
                 pHopper.get_rhop().push_back(fn.f_ptr());
             }
-
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }

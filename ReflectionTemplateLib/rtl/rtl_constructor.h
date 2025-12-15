@@ -34,12 +34,6 @@ namespace rtl
 
     public:
 
-        enum call_by {
-            value = 0,
-            cref = 1,   //const ref.
-            ncref = 2   //non-const ref.
-        };
-
         GETTER(rtl::error, _init_error, m_init_err)
 
         constexpr operator bool() const noexcept {
@@ -48,8 +42,8 @@ namespace rtl
         }
 
         constexpr bool must_bind_refs() const noexcept {
-            return (m_functors[call_by::value] == nullptr &&
-                    (m_functors.size() > call_by::ncref || m_functors[call_by::cref]->is_any_arg_ncref()));
+            return (m_functors[detail::call_by::value] == nullptr &&
+                    (m_functors.size() > detail::call_by::ncref || m_functors[detail::call_by::cref]->is_any_arg_ncref()));
         }
 
         template<class ...args_t>
@@ -64,7 +58,7 @@ namespace rtl
                 return { error::ExplicitRefBindingRequired, RObject{} };
             }
 
-            auto index = (m_functors[call_by::value] != nullptr ? call_by::value : call_by::cref);
+            auto index = (m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
             return m_hop[index](p_alloc_on, std::forward<args_t>(params)...);
         }
 
@@ -98,6 +92,8 @@ namespace rtl
         constexpr const perfect_fwd<args_t...> bind() const noexcept {
             return perfect_fwd<args_t...>{ *this };
         }
+
+        friend Record;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
             "rtl::function<...>: any type cannot be specified as reference here");

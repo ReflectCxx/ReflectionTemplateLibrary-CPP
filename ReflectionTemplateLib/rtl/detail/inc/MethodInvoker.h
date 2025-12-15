@@ -99,7 +99,7 @@ namespace rtl::detail
     template<class record_t, class ...signature_t>
     struct HopMethod
     {
-        rtl::type_meta m_argsTfnMeta;
+        std::size_t m_fnIndex;
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 

@@ -47,16 +47,16 @@ namespace rtl {
     enum class copy
     {
         /*
-        * An rtl::RObject may internally hold values wrapped in std::optional,
+        * An rtl::RObject may internally hold value wrapped in std::optional,
         * std::reference_wrapper, or smart pointers. The copy policy gives users
         * control over whether cloning should duplicate the wrapper itself or
         * perform a deep copy of the underlying object.
         *
         * Auto (default):
         *   - RTL first attempts a wrapper-level copy if the wrapper is copyable.
-        *   - If the wrapper is an internal detail (e.g., heap objects stored in
-        *     std::unique_ptr), RTL transparently performs a deep copy of the
-        *     underlying object instead of copying the wrapper.
+        *   - If the wrapper is an internal detail (e.g., heap objects created via
+        *     RTL, stored in std::unique_ptr), RTL transparently performs a deep
+        *     copy of the underlying object instead of copying the wrapper.
         *   - This ensures correct semantics even when the user is unaware of
         *     wrapper details (typical in reflection use cases).
         *   - When explicitly requested, users can still attempt Value or Wrapper

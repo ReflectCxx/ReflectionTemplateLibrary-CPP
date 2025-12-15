@@ -41,6 +41,12 @@ namespace rtl
 
     namespace detail
     {
+        enum call_by {
+            value = 0,
+            cref = 1,   //const ref.
+            ncref = 2   //non-const ref.
+        };
+
         struct FunctorId;
 
         struct RObjectId;

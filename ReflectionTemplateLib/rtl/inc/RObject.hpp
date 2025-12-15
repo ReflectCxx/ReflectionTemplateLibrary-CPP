@@ -26,7 +26,7 @@
 namespace rtl
 {
     ForceInline RObject::RObject(std::any&& pObject, const detail::RObjectId& pRObjId,
-                                  const std::vector<traits::ConverterPair>* pConverters) noexcept
+                                 const std::vector<traits::ConverterPair>* pConverters) noexcept
         : m_object(std::in_place, std::move(pObject))
         , m_objectId(pRObjId)
         , m_converters(pConverters)

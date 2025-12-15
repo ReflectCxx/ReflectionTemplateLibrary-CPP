@@ -44,7 +44,7 @@ namespace rtl::detail
     template<member member_kind, class ..._signature>
     struct HopFunction
     {
-        rtl::type_meta m_argsTfnMeta;
+        std::size_t m_fnIndex;
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 

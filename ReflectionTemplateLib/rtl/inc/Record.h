@@ -16,7 +16,7 @@
 #include <unordered_map>
 
 #include "Method.h"
-#include "rtl_constants.h"
+#include "rtl_constructor.h"
 
 namespace rtl::detail 
 {
@@ -65,6 +65,9 @@ namespace rtl {
         GETTER_CREF(MethodMap, MethodMap, m_methods)
         GETTER_CREF(std::string, RecordName, m_recordName)
         
+        template<class ...args_t>
+        constructor<args_t...> ctor() const;
+
 /*      @method: getMethod
         @param: const std::string& (name of the method)
         @return: std::optional<Method>
@@ -100,4 +103,46 @@ namespace rtl {
         //only class which can create objects of this class & manipulates 'm_methods'.
         friend class detail::CxxReflection;
     };
+}
+
+
+namespace rtl
+{
+    template<class ...args_t>
+    inline constructor<args_t...> Record::ctor() const
+    {
+        constructor<args_t...> fnCtor;
+        const auto& method = m_methods.at(detail::ctor_name(m_recordName));
+        const auto& functorsMeta = method.getFunctorsMeta();
+
+        std::vector<rtl::type_meta> fnTyMetas(detail::call_by::ncref);
+
+        auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        for (auto& ty_meta : functorsMeta)
+        {
+            if (normalId == ty_meta.get_normal_args_id())
+            {
+                if (normalId == ty_meta.get_strict_args_id()) {
+                    fnTyMetas[detail::call_by::value] = ty_meta;
+                }
+                else if (!ty_meta.is_any_arg_ncref()) {
+                    fnTyMetas[detail::call_by::cref] = ty_meta;
+                }
+                else fnTyMetas.push_back(ty_meta);
+            }
+        }
+
+        std::size_t index = rtl::index_none;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+        for (int i = 0; i < fnTyMetas.size(); i++)
+        {
+            auto& ty_meta = fnTyMetas[i];
+            if (!ty_meta.is_empty() && ty_meta.get_strict_args_id() == strictId) {
+                index = i;
+                break;
+            }
+        }
+
+        return fnCtor;
+    }
 }

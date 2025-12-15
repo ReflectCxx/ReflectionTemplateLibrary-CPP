@@ -29,8 +29,8 @@ namespace rtl
 
     template<class ...signature_t>
     inline constexpr bool function<Return(signature_t...)>::must_bind_refs() const noexcept {
-        return (m_functors[call_by::value] == nullptr &&
-            (m_functors.size() > call_by::ncref || m_functors[call_by::cref]->is_any_arg_ncref()));
+        return (m_functors[detail::call_by::value] == nullptr &&
+            (m_functors.size() > detail::call_by::ncref || m_functors[detail::call_by::cref]->is_any_arg_ncref()));
     }
 
 
@@ -67,7 +67,7 @@ namespace rtl
             return { error::ExplicitRefBindingRequired, RObject{} };
         }
 
-        auto index = (m_functors[call_by::value] != nullptr ? call_by::value : call_by::cref);
+        auto index = (m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
         if (m_functors[index]->is_void())
         {
             m_vhop[index](*m_functors[index], std::forward<args_t>(params)...);
@@ -77,7 +77,7 @@ namespace rtl
         {
             return { error::None,
                      RObject{ m_rhop[index](*m_functors[index], std::forward<args_t>(params)...),
-                              m_functors.back()->get_robject_id(), nullptr
+                              m_functors[index]->get_robject_id(), nullptr
                      }
             };
         }

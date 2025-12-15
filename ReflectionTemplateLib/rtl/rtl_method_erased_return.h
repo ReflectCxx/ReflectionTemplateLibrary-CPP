@@ -36,7 +36,7 @@ namespace rtl
                     return { error::ExplicitRefBindingRequired, RObject{} };
                 }
 
-                auto index = (fn.m_functors[call_by::value] != nullptr ? call_by::value : call_by::cref);
+                auto index = (fn.m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
                 if (fn.m_functors[index]->is_void())
                 {
                     fn.m_vhop[index] (*(fn.m_functors[index]), target, std::forward<args_t>(params)...);
@@ -46,7 +46,7 @@ namespace rtl
                 {
                     return { error::None,
                              RObject{ fn.m_rhop[index] (*(fn.m_functors[index]), target, std::forward<args_t>(params)...),
-                                      fn.m_functors.back()->get_robject_id(), nullptr
+                                      fn.m_functors[index]->get_robject_id(), nullptr
                              }
                     };
                 }
@@ -83,7 +83,7 @@ namespace rtl
                             {
                                 return { error::None,
                                          RObject{ fn.m_rhop[index] (*fn.m_functors[index], target, std::forward<args_t>(params)...),
-                                                  fn.m_functors.back()->get_robject_id(), nullptr
+                                                  fn.m_functors[index]->get_robject_id(), nullptr
                                          }
                                 };
                             }
@@ -121,16 +121,9 @@ namespace rtl
         }
 
         constexpr bool must_bind_refs() const noexcept {
-            return (m_functors[call_by::value] == nullptr &&
-                   (m_functors.size() > call_by::ncref || m_functors[call_by::cref]->is_any_arg_ncref()));
+            return (m_functors[detail::call_by::value] == nullptr &&
+                   (m_functors.size() > detail::call_by::ncref || m_functors[detail::call_by::cref]->is_any_arg_ncref()));
         }
-
-        enum call_by
-        {
-            value = 0,
-            cref = 1,   //const ref.
-            ncref = 2   //non-const ref.
-        };
 
         GETTER(rtl::error, _init_error, m_init_err)
 
