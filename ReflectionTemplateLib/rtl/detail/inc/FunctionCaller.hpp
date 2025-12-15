@@ -67,19 +67,23 @@ namespace rtl::detail
     inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
         static_method<return_t(args_t...)> mth;
-        if (m_fnIndex != rtl::index_none)
-        {
-            auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
-            if (ty_meta.get_member_kind() != member::Static) {
-                mth.set_init_error(error::InvalidNonStaticMethodCaller);
-            }
-            else if (ty_meta.get_member_kind() == member::Static &&
-                     traits::uid<return_t>::value == ty_meta.get_return_id()) 
-            {                
+        if (m_fnIndex == rtl::index_none) {
+            mth.set_init_error(error::SignatureMismatch);
+            return mth;
+        }
+
+        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        if (ty_meta.get_member_kind() != member::Static) {
+            mth.set_init_error(error::InvalidNonStaticMethodCaller);
+        }
+        else if (ty_meta.get_member_kind() == member::Static){
+            if (traits::uid<return_t>::value == ty_meta.get_return_id())
+            {
                 using function_t = dispatch::function_ptr<return_t, args_t...>;
                 auto fptr = static_cast<const function_t&>(ty_meta.get_functor()).f_ptr();
                 return static_method<return_t(args_t...)>(fptr);
             }
+            mth.set_init_error(error::ReturnTypeMismatch);
         }
         return mth;
     }
@@ -90,20 +94,23 @@ namespace rtl::detail
     inline constexpr const function<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
     {
         function<return_t(args_t...)> fn;
-        if (m_fnIndex != rtl::index_none) 
-        {
-            auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
-            if (ty_meta.get_member_kind() == member::Static) 
-            {
-                fn.set_init_error(error::InvalidStaticMethodCaller);
-            }
-            else if (ty_meta.get_member_kind() == member::None &&
-                     traits::uid<return_t>::value == ty_meta.get_return_id())
+        if (m_fnIndex == rtl::index_none) {
+            fn.set_init_error(error::SignatureMismatch);
+            return fn;
+        }
+        
+        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        if (ty_meta.get_member_kind() == member::Static) {
+            fn.set_init_error(error::InvalidStaticMethodCaller);
+        }
+        else if (ty_meta.get_member_kind() == member::None) {
+            if (traits::uid<return_t>::value == ty_meta.get_return_id())
             {
                 using function_t = dispatch::function_ptr<return_t, args_t...>;
                 auto fptr = static_cast<const function_t&>(ty_meta.get_functor()).f_ptr();
                 return function<return_t(args_t...)>(fptr);
             }
+            fn.set_init_error(error::ReturnTypeMismatch);
         }
         return fn;
     }
@@ -113,9 +120,11 @@ namespace rtl::detail
     template<class ...args_t>
     inline constexpr const HopFunction<member_kind, args_t...> Hopper<member_kind>::argsT() const
     {
+        std::size_t index = rtl::index_none;
         std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
-
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+        
         for (auto& ty_meta : m_functorsMeta)
         {
             if (normalId == ty_meta.get_normal_args_id())
@@ -129,9 +138,6 @@ namespace rtl::detail
                 else fnTyMetas.push_back(ty_meta);
             }
         }
-
-        std::size_t index = rtl::index_none;
-        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         for (int i = 0; i < fnTyMetas.size(); i++)
         {
             auto& ty_meta = fnTyMetas[i];
@@ -140,7 +146,6 @@ namespace rtl::detail
                 break;
             }
         }
-
         return { index, fnTyMetas };
     }
 
@@ -171,14 +176,12 @@ namespace rtl::detail
                 }
             }
 
-            if ((isReturnTvoid = ty_meta.is_void())) 
-            {
+            if ((isReturnTvoid = ty_meta.is_void())) {
                 using fn_cast = dispatch::functor_cast<dispatch::fn_void::yes, traits::normal_sign_t<args_t>...>;
                 auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
                 pHopper.get_vhop().push_back(fn.f_ptr());
             }
-            else 
-            {
+            else {
                 using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
                 auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
                 pHopper.get_rhop().push_back(fn.f_ptr());

@@ -11,6 +11,32 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
+    TEST(StrictStaticTypeRtl_static_method, init_errors_validation)
+    {
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);
+        ASSERT_TRUE(optStringUtil);
+
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::static_method<std::string(char*)> reverse_string = reverseString->argsT<char*>()
+                                                                                  .returnT<std::string>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
+        }{
+            rtl::static_method<const char*(std::string)> reverse_string = reverseString->argsT<std::string>()
+                                                                                        .returnT<const char*>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::ReturnTypeMismatch);
+        } {
+            rtl::static_method<std::string(std::string)> reverse_string = reverseString->argsT<std::string>()
+                                                                                        .returnT<std::string>();
+            EXPECT_TRUE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::None);
+        }
+    }
+
+
     TEST(StrictStaticTypeRtl_static_method, using_wrong_class_n_callable_apis_for_static_method)
     {
         {

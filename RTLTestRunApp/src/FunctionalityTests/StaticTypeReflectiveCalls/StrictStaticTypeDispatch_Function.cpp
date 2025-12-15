@@ -12,7 +12,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StrictStaticTypeRtl_function, namespace_fn_validation_with_known_signature)
+    TEST(StrictStaticTypeRtl_function, init_errors_validation)
     {
         std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
@@ -22,9 +22,11 @@ namespace rtl_tests
             {
                 rtl::function<void(double)> functor = setReal->argsT<double>().returnT<void>();
                 EXPECT_TRUE(functor);
+                EXPECT_EQ(functor.get_init_error(), rtl::error::None);
             } {
                 rtl::function<void(float)> functor = setReal->argsT<float>().returnT<void>();
                 EXPECT_FALSE(functor);
+                EXPECT_EQ(functor.get_init_error(), rtl::error::SignatureMismatch);
             }
         }
 
@@ -36,9 +38,11 @@ namespace rtl_tests
             {
                 rtl::function<void(double)> functor = setImaginary->argsT<double>().returnT<void>();
                 EXPECT_TRUE(functor);
+                EXPECT_EQ(functor.get_init_error(), rtl::error::None);
             } {
                 rtl::function<char(double)> functor = setImaginary->argsT<double>().returnT<char>();
                 EXPECT_FALSE(functor);
+                EXPECT_EQ(functor.get_init_error(), rtl::error::ReturnTypeMismatch);
             }
         }
     }

@@ -44,6 +44,35 @@ namespace rtl_tests
     }
 
 
+    TEST(StrictStaticTypeRtl_const_method, init_errors_validation)
+    {
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
+        ASSERT_TRUE(optStringUtil);
+
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::method<const StrConst, std::string(char*)> reverse_string = reverseString->targetT<const StrConst>()
+                                                                                          .argsT<char*>()
+                                                                                          .returnT<std::string>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
+        }{
+            rtl::method<const StrConst, const char*(std::string)> reverse_string = reverseString->targetT<const StrConst>()
+                                                                                                .argsT<std::string>()
+                                                                                                .returnT<const char*>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::ReturnTypeMismatch);
+        } {
+            rtl::method<const StrConst, std::string(std::string)> reverse_string = reverseString->targetT<const StrConst>()
+                                                                                                .argsT<std::string>()
+                                                                                                .returnT<std::string>();
+            EXPECT_TRUE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::None);
+        }
+    }
+
+
     TEST(StrictStaticTypeRtl_const_method, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);

@@ -175,18 +175,23 @@ namespace rtl::detail
     inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
     {
         method<record_t, return_t(args_t...)> mth;
-        if (m_fnIndex != rtl::index_none)
-        {
-            auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
-            if (ty_meta.get_member_kind() == member::Static) {
-                mth.set_init_error(error::InvalidStaticMethodCaller);
-            }
-            else if(traits::uid<return_t>::value == ty_meta.get_return_id()) {
+        if (m_fnIndex == rtl::index_none) {
+            mth.set_init_error(error::SignatureMismatch);
+            return mth;
+        }
 
+        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        if (ty_meta.get_member_kind() == member::Static) {
+            mth.set_init_error(error::InvalidStaticMethodCaller);
+        }
+        else {
+            if (traits::uid<return_t>::value == ty_meta.get_return_id())
+            {
                 using method_t = dispatch::method_ptr<record_t, return_t, args_t...>;
                 auto fptr = static_cast<const method_t&>(ty_meta.get_functor()).f_ptr();
                 return method<record_t, return_t(args_t...)>(fptr);
             }
+            mth.set_init_error(error::ReturnTypeMismatch);
         }
         return mth;
     }
@@ -196,10 +201,13 @@ namespace rtl::detail
     template<class ...args_t>
     inline constexpr HopMethod<record_t, args_t...> Hopper<member_kind, record_t>::argsT() const
     {
-        auto recordId = traits::uid<record_t>::value;
+        std::size_t index = rtl::index_none; 
         std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
 
+        auto recordId = traits::uid<record_t>::value;
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+
         for (auto& ty_meta : m_functorsMeta)
         {
             if constexpr (!std::is_same_v<record_t, RObject>)
@@ -219,9 +227,6 @@ namespace rtl::detail
                 else fnTyMetas.push_back(ty_meta);
             }
         }
-
-        std::size_t index = rtl::index_none;
-        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
         for (int i = 0; i < fnTyMetas.size(); i++)
         {
             auto& ty_meta = fnTyMetas[i];

@@ -24,6 +24,7 @@ namespace rtl
 
         TargetMismatch,
         SignatureMismatch,
+        ReturnTypeMismatch,
         RefBindingMismatch,
         ExplicitRefBindingRequired,
         InvalidStaticMethodCaller,

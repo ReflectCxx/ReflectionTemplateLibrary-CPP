@@ -13,6 +13,35 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
+    TEST(StrictStaticTypeRtl_method, init_errors_validation)
+    {
+        std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
+        ASSERT_TRUE(optStringUtil);
+
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        ASSERT_TRUE(reverseString);
+        {
+            rtl::method<StrMute, std::string(char*)> reverse_string = reverseString->targetT<StrMute>()
+                                                                                   .argsT<char*>()
+                                                                                   .returnT<std::string>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
+        }{
+            rtl::method<StrMute, const char*(std::string)> reverse_string = reverseString->targetT<StrMute>()
+                                                                                         .argsT<std::string>()
+                                                                                         .returnT<const char*>();
+            EXPECT_FALSE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::ReturnTypeMismatch);
+        } {
+            rtl::method<StrMute, std::string(std::string)> reverse_string = reverseString->targetT<StrMute>()
+                                                                                         .argsT<std::string>()
+                                                                                         .returnT<std::string>();
+            EXPECT_TRUE(reverse_string);
+            EXPECT_EQ(reverse_string.get_init_error(), rtl::error::None);
+        }
+    }
+
+
     TEST(StrictStaticTypeRtl_method, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
