@@ -53,6 +53,10 @@ namespace test_mirror
                                  .record<std::string>("string")
                                  .build());
 
+        fns.push_back(rtl::type().member<std::string>()
+                                 .constructor<const char*>()
+                                 .build());
+
     /*  Attempting to register std::string_view, but the provided member function pointer belongs to std::string.
     *   RTL will ignore this registration. Emits a warning on the console:
     *   "[WARNING] Member function pointer does not belong to the class being registered!"

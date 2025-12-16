@@ -16,6 +16,7 @@
 #include <unordered_map>
 
 #include "Method.h"
+#include "function_ptr.h"
 #include "rtl_constructor.h"
 
 namespace rtl::detail 
@@ -108,6 +109,29 @@ namespace rtl {
 
 namespace rtl
 {
+    template<>
+    inline constructor<> Record::ctor() const
+    {
+        constructor<> fnCtor;
+        auto strictId = traits::uid<traits::strict_sign_id_t<alloc>>::value;
+        const auto& method = m_methods.at(detail::ctor_name(m_recordName));
+
+        for (auto& ty_meta : method.getFunctorsMeta())
+        {
+            if (strictId == ty_meta.get_strict_args_id()) 
+            {
+                using ctor_t = dispatch::function_ptr<Return, alloc>;
+                auto fptr = static_cast<const ctor_t&>(ty_meta.get_functor()).f_ptr();
+                fnCtor.get_hop().push_back(fptr);
+                fnCtor.get_overloads().push_back(&ty_meta.get_functor());
+                fnCtor.set_init_error(error::None);
+                break;
+            }
+        }
+        return fnCtor;
+    }
+
+
     template<class ...args_t>
     inline constructor<args_t...> Record::ctor() const
     {

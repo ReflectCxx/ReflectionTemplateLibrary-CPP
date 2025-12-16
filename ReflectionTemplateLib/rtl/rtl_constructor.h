@@ -27,10 +27,12 @@ namespace rtl
 
         std::vector<const dispatch::functor*> m_functors = {};
 
-        void set_init_error(error p_err);
-
         GETTER_REF(std::vector<lambda_t>, _hop, m_hop)
         GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
+
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
+        }
 
     public:
 

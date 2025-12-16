@@ -90,7 +90,7 @@ namespace rtl::detail
         using Container = FunctorContainer < rtl::alloc, FunctorId, traits::remove_const_if_not_reference<_ctorSignature>... > ;
         auto [typeMeta, functorId] = Container::template addConstructor<_recordType, _ctorSignature...>();
         const FunctorId& copyCtorId = traits::Cloner::template addCopyConstructor<_recordType, RObject, alloc>();
-        const Function& ctorFunction = Function(m_namespace, m_record, m_function, rtl::type_meta(), functorId, m_recordId, member::None);
+        const Function& ctorFunction = Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::None);
 
         ctorFunction.getFunctorIds().push_back(copyCtorId);
         return ctorFunction;
