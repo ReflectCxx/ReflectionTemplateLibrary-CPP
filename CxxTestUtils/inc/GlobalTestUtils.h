@@ -10,25 +10,6 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 */
 namespace test_utils {
 
-	extern const char* SUFFIX_void;
-	extern const char* SUFFIX_const;
-	extern const char* SUFFIX_static;
-	extern const char* SUFFIX_const_char_ptr;
-
-	extern const char* SUFFIX_std_string;
-	extern const char* SUFFIX_std_string_ptr;
-	extern const char* SUFFIX_std_string_cptr;
-	extern const char* SUFFIX_std_string_lvref;
-	extern const char* SUFFIX_std_string_rvref;
-	extern const char* SUFFIX_std_string_clvref;
-
-	extern const char* SUFFIX_std_string_view;
-	extern const char* SUFFIX_std_string_view_lvref;
-	extern const char* SUFFIX_std_string_view_rvref;
-	extern const char* SUFFIX_std_string_view_clvref;
-
-	extern const char* REV_STR_VOID_RET;
-
 	static constexpr double g_real = 3.92;
 	static constexpr double g_imaginary = 9.27;
 
@@ -55,6 +36,7 @@ namespace test_utils {
 	static constexpr const char* str_getMagnitude = "getMagnitude";
 
 	static const char* SUFFIX_void = "_void";
+	static const char* SUFFIX_ctor = "_ctor";
 	static const char* SUFFIX_const = "_const";
 	static const char* SUFFIX_static = "_static";
 	static const char* SUFFIX_const_char_ptr = "_const_char_*";
@@ -75,4 +57,6 @@ namespace test_utils {
 	static const char* SUFFIX_std_string_view_lvref = "_std::string_view&";
 	static const char* SUFFIX_std_string_view_rvref = "_std::string_view&&";
 	static const char* SUFFIX_std_string_view_clvref = "_const_std::string_view&";
+
+	static const char* DEFAULT_str = "default_string";
 }

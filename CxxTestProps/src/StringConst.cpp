@@ -1,4 +1,5 @@
 
+#include <algorithm>
 
 #include "StringConst.h"
 #include "../../CxxTestUtils/inc/GlobalTestUtils.h"

@@ -1,4 +1,6 @@
 
+#include <algorithm>
+
 #include "StringMute.h"
 #include "../../CxxTestUtils/inc/GlobalTestUtils.h"
 

@@ -1,4 +1,6 @@
 
+#include <algorithm>
+
 #include "StringStatic.h"
 #include "../../CxxTestUtils/inc/GlobalTestUtils.h"
 
