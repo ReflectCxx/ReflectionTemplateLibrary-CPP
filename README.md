@@ -88,15 +88,7 @@ rtl::CxxMirror& cxx::mirror() {
 ```
 > Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
 
-**Without reflection:**
-
-```c++
-Person p("John", 42);
-p.setAge(43);
-std::cout << p.getName();
-```
-
-**With reflection:**
+**RTL in action:**
 
 ```c++
 #include <rtl/access.h>    // Reflection access interface.
@@ -174,6 +166,16 @@ int main()
     return 0;
 }
 ```
+### Performance Model (Benchmarking Results)
+
+* Non-erased RTL calls are equivalent to direct calls (≤ ~1 ns overhead).
+
+* Erased calls incur a bounded overhead (worst case ~15–16 ns on trivial functions).
+
+* For real workloads, erased calls typically add 3–10%, often less.
+
+> RTL exposes performance tradeoffs directly in its API, delivering near-zero-overhead calls with full type information and a small, bounded cost with erased dispatch.
+
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
 RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:

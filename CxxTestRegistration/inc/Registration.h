@@ -28,8 +28,10 @@ namespace test_mirror
 
 	extern void registerTypeStringFuncs(std::vector<rtl::Function>&);
 
-	extern void registerTypeStringMute(std::vector<rtl::Function>&);
+	extern void registerTypeStringWrap(std::vector<rtl::Function>&);
 	
+	extern void registerTypeStringMute(std::vector<rtl::Function>&);
+
 	extern void registerTypeStringConst(std::vector<rtl::Function>&);
 	
 	extern void registerTypeStringStatic(std::vector<rtl::Function>&);
@@ -51,6 +53,8 @@ namespace test_mirror
 
 	extern void addTypeIdAnimal(std::unordered_map<std::string, std::size_t>&);
 
+	extern void addTypeIdStringWrap(std::unordered_map<std::string, std::size_t>&); 
+	
 	extern void addTypeIdStringMute(std::unordered_map<std::string, std::size_t>&);
 
 	extern void addTypeIdStringConst(std::unordered_map<std::string, std::size_t>&);

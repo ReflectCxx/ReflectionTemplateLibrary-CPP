@@ -5,13 +5,13 @@
 // 'StrWrap' - String-Wrapper, only constructors for testing.
 struct StrWrap
 {
+	const std::string m_str;
+
 	constexpr static const char* struct_ = "StrWrap";
 
 	StrWrap();
 
-	StrWrap(const char* pStr);
-
-	StrWrap(std::string pStr);              // (1) by value
+	StrWrap(std::string_view pStr);              // (1) by value
 
 	StrWrap(std::string& pStr);             // (2) lvalue ref
 
@@ -19,25 +19,7 @@ struct StrWrap
 
 	StrWrap(std::string&& pStr);            // (4) rvalue ref
 
-	StrWrap(std::string* pStr);			  // (5) pointer
+	StrWrap(const char* pStr);			  // (5) pointer
 
-	StrWrap(const std::string* pStr);		  // (6) pointer to const
-
-	StrWrap(const std::string_view& pStr);
-
-	StrWrap(std::string_view& pStr);
-
-	StrWrap(std::string_view&& pStr);
-
-	StrWrap(std::string_view pStr);
-
-	//StrWrap(std::string_view& pStr);
-
-	//StrWrap(std::string_view pStr);
-
-	//StrWrap(const std::string_view& pStr);
-
-	//StrWrap(std::string_view& pStr);
-
-	//StrWrap(const std::string_view& pStr);
+	const std::string& sstr() const;
 };

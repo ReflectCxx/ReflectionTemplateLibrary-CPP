@@ -28,6 +28,7 @@ namespace test_mirror
                 registerTypeComplex(metaFns);
                 registerTypeCalender(metaFns);
 
+                registerTypeStringWrap(metaFns);
                 registerTypeStringMute(metaFns);
                 registerTypeStringConst(metaFns);
                 registerTypeStringFuncs(metaFns);
@@ -63,6 +64,7 @@ namespace test_mirror
             addTypeIdAnimal(idMap);
             addTypeIdLibrary(idMap);
             addTypeIdCalender(idMap);
+            addTypeIdStringWrap(idMap);
             addTypeIdStringMute(idMap);
             addTypeIdStringConst(idMap);
             addTypeIdStringStatic(idMap);
