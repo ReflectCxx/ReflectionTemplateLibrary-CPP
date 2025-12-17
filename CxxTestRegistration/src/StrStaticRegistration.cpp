@@ -1,6 +1,6 @@
 #include <Reflect.hpp>
 
-#include "StringOps.h"
+#include "StringStatic.h"
 #include "Registration.h"
 #include "GlobalTestUtils.h"
 

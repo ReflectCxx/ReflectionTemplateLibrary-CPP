@@ -4,7 +4,7 @@
 
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
-#include "../CxxTestProps/inc/StringOps.h"
+#include "../CxxTestProps/inc/StringConst.h"
 
 using namespace test_utils;
 using namespace test_mirror;

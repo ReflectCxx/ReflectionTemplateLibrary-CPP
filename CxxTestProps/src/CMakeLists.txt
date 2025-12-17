@@ -7,6 +7,10 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/Library.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/Complex.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StringOps.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringWrap.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringMute.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringConst.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringStatic.cpp"
 )
 
 SET(LOCAL_HEADERS
@@ -17,6 +21,10 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/Library.h"
 	"${PROJECT_SOURCE_DIR}/inc/Complex.h"
 	"${PROJECT_SOURCE_DIR}/inc/StringOps.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringWrap.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringMute.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringConst.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringStatic.h"
 )
 
 # Add any additional source files if needed

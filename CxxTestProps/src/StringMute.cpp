@@ -1,16 +1,18 @@
 
-#include "StringOps.h"
+#include "StringMute.h"
 #include "../../CxxTestUtils/inc/GlobalTestUtils.h"
 
 using namespace test_utils;
 
-std::string reverseString()
+//---------------------------StrMute--------------------------------
+
+std::string StrMute::reverseString()
 {
 	return std::string(REV_STR_VOID_RET) + SUFFIX_void;
 }
 
 
-std::string reverseString(const char* pStr)
+std::string StrMute::reverseString(const char* pStr)
 {
 	std::string retStr = pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -18,7 +20,7 @@ std::string reverseString(const char* pStr)
 }
 
 
-std::string reverseString(std::string pStr)
+std::string StrMute::reverseString(std::string pStr)
 {
 	std::string retStr = pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -26,7 +28,7 @@ std::string reverseString(std::string pStr)
 }
 
 
-std::string reverseString(std::string& pStr)
+std::string StrMute::reverseString(std::string& pStr)
 {
 	std::string retStr = pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -34,7 +36,7 @@ std::string reverseString(std::string& pStr)
 }
 
 
-std::string reverseString(std::string&& pStr)
+std::string StrMute::reverseString(std::string&& pStr)
 {
 	std::string retStr = pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -42,7 +44,7 @@ std::string reverseString(std::string&& pStr)
 }
 
 
-std::string reverseString(const std::string& pStr)
+std::string StrMute::reverseString(const std::string& pStr)
 {
 	std::string retStr = pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -50,7 +52,7 @@ std::string reverseString(const std::string& pStr)
 }
 
 
-std::string reverseString(std::string* pStr)
+std::string StrMute::reverseString(std::string* pStr)
 {
 	std::string retStr = *pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -58,7 +60,7 @@ std::string reverseString(std::string* pStr)
 }
 
 
-std::string reverseString(const std::string* pStr)
+std::string StrMute::reverseString(const std::string* pStr)
 {
 	std::string retStr = *pStr;
 	std::reverse(retStr.begin(), retStr.end());
@@ -66,7 +68,7 @@ std::string reverseString(const std::string* pStr)
 }
 
 
-std::string revStrConstRefArg(const std::string_view& pStr)
+std::string StrMute::revStrConstRefArg(const std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -74,7 +76,7 @@ std::string revStrConstRefArg(const std::string_view& pStr)
 }
 
 
-std::string revStrRValueRefArg(std::string_view&& pStr)
+std::string StrMute::revStrRValueRefArg(std::string_view&& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -82,7 +84,7 @@ std::string revStrRValueRefArg(std::string_view&& pStr)
 }
 
 
-std::string revStrNonConstRefArg(std::string_view& pStr)
+std::string StrMute::revStrNonConstRefArg(std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -90,7 +92,7 @@ std::string revStrNonConstRefArg(std::string_view& pStr)
 }
 
 
-std::string revStrOverloadValCRef(std::string_view pStr)
+std::string StrMute::revStrOverloadValCRef(std::string_view pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -98,7 +100,7 @@ std::string revStrOverloadValCRef(std::string_view pStr)
 }
 
 
-std::string revStrOverloadValCRef(const std::string_view& pStr)
+std::string StrMute::revStrOverloadValCRef(const std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -106,7 +108,7 @@ std::string revStrOverloadValCRef(const std::string_view& pStr)
 }
 
 
-std::string revStrOverloadValRef(std::string_view pStr)
+std::string StrMute::revStrOverloadValRef(std::string_view pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -114,7 +116,7 @@ std::string revStrOverloadValRef(std::string_view pStr)
 }
 
 
-std::string revStrOverloadValRef(std::string_view& pStr)
+std::string StrMute::revStrOverloadValRef(std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -122,7 +124,7 @@ std::string revStrOverloadValRef(std::string_view& pStr)
 }
 
 
-std::string revStrOverloadRefAndCRef(std::string_view& pStr)
+std::string StrMute::revStrOverloadRefAndCRef(std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
@@ -130,7 +132,7 @@ std::string revStrOverloadRefAndCRef(std::string_view& pStr)
 }
 
 
-std::string revStrOverloadRefAndCRef(const std::string_view& pStr)
+std::string StrMute::revStrOverloadRefAndCRef(const std::string_view& pStr)
 {
 	std::string retStr(pStr);
 	std::reverse(retStr.begin(), retStr.end());
