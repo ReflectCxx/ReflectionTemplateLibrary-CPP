@@ -102,38 +102,76 @@ std::cout << p.getName();
 #include <rtl/access.h>    // Reflection access interface.
 #include "MyReflection.h"
 
-main() {
-    // THESE API WORKS BUT DEPRECATED.
-    // Look up the class by name
+int main()
+{
+    // Query reflected record for class `Person` (dynamic lookup).
     std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+    if (!classPerson) {
+        return 0; // Class not registered.
+    }
 
-    if (classPerson)  // Check has_value() before use.
+    // Get constructor overload: Person(const char*, int).
+    rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
+    if (!personCtor) {
+        return 0; // Constructor signature not found.
+    }
+
+    // Construct a stack-allocated instance; returns {error, RObject}.
+    auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
+    if (err != rtl::error::None) {
+        return 0; // Construction failed.
+    }
+
+    // Lookup reflected method `setAge`.
+    std::optional<rtl::Method> optnlStAge = classPerson->getMethod("setAge");
+    if (!optnlStAge) {
+        return 0; // Method not found.
+    }
+
+    // When target/return types are known (fastest path).
     {
-        // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
-        auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
-        if (err == rtl::error::None)  //Construction successful.
-        {
-            // Call setAge(43) on the reflected object
-            std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
-            if (setAge) {
-                // Binds rtl::RObject & rtl::Method, calls with args.
-                auto [err, ret] = setAge->bind(robj).call(43);  //'setAge' is void ('ret' empty).
-                if (err == rtl::error::None) { /* Operation succeeded. */ }
-            }
+        // Materialize typed method: Person::setAge(int) -> void.
+        rtl::method<Person, void(int)> setAge = optnlStAge->targetT<Person>()
+                                                          .argsT<int>().returnT<void>();
+        if (setAge) {
+            // View the underlying Person instance.
+            const Person& person = robj.view<Person>()->get();
 
-            // Call getName(), which returns std::string
-            std::optional<rtl::Method> getName = classPerson->getMethod("getName");
-            if (getName) {
-                //Returns- std::pair<rtl::error, rtl::RObject>
-                auto [err, ret] = getName->bind(robj).call();
-                if (err == rtl::error::None && ret.canViewAs<std::string>())
-                {
-                    std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                    std::cout << viewStr->get();  // safe. validated above.
-                }
-            }
+            // Near-zero-overhead dispatch (pointer-level cost).
+            setAge(person)(47);
         }
     }
+
+    // When target/return types are erased (more flexible).
+    {
+        // Materialize erased method: RObject target, erased return.
+        rtl::method<rtl::RObject, rtl::Return(int)> setAge = optnlStAge->targetT<>()
+                                                                       .argsT<int>().returnT<>();
+        if (setAge) {
+            // Slightly slower than typed path; comparable to std::function.
+            auto [err, ret] = setAge(robj)(47);
+            if (err == rtl::error::None) { /* call succeeded; return is void ('ret' empty)*/ }
+        }
+    }
+
+    // Lookup reflected method `getName`.
+    std::optional<rtl::Method> optnlGtName = classPerson->getMethod("getName");
+    if (!optnlGtName) {
+        return 0; // Method not found.
+    }
+
+    // Materialize erased method: getName() -> std::string.
+    rtl::method<rtl::RObject, rtl::Return()> getName = optnlGtName->targetT<>()
+	                                                              .argsT<>().returnT<>();
+    if (getName)
+	{
+        auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
+        if (err == rtl::error::None && ret.canViewAs<std::string>()) {
+            auto viewStr = ret.view<std::string>();
+            std::cout << viewStr->get();	// Safely view the returned std::string.
+        }
+    }
+    return 0;
 }
 ```
 ### `Heap` vs `Stack` Allocation and Lifetime Management
