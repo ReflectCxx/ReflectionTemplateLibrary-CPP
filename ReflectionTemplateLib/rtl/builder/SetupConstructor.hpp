@@ -13,6 +13,7 @@
 #include <map>
 #include <cassert>
 
+#include "functor_cast.h"
 #include "RObjectBuilder.hpp"
 #include "SetupConstructor.h"
 
@@ -25,39 +26,18 @@ namespace rtl::detail
     {
         return [](const FunctorId& pFunctorId, alloc pAllocType, const FunctorId& pClonerId, _signature&&...params)-> Return
         {
-            if constexpr (sizeof...(_signature) == 0 && !std::is_default_constructible_v<_recordType>)
+            if constexpr (sizeof...(_signature) == 0)
             {   //default constructor, private or deleted.
-                return { error::TypeNotDefaultConstructible, RObject{} };
+                using function_t = dispatch::function_ptr<Return, alloc>;
+                auto ctor = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
+                return ctor(pAllocType);
             }
             else
             {
-                if (pAllocType == alloc::Stack) {
-
-                    if constexpr (!std::is_copy_constructible_v<_recordType>) 
-                    {
-                        return { 
-                            error::TypeNotCopyConstructible, RObject{}
-                        };
-                    }
-                    else 
-                    {
-                        return { 
-                            error::None,
-                            RObjectBuilder<_recordType>::template
-                            build<alloc::Stack>(_recordType(std::forward<_signature>(params)...), pClonerId, true)
-                        };
-                    }
-                }
-                else if (pAllocType == alloc::Heap) 
-                {
-                    return { 
-                        error::None,
-                        RObjectBuilder<_recordType*>::template 
-                        build<alloc::Heap>(new _recordType(std::forward<_signature>(params)...), pClonerId, true)
-                    };
-                }
+                using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<_signature>...>;
+                std::function<Return(alloc, traits::normal_sign_t<_signature>...)> ctor = fn_cast(pFunctorId.get_functor()).template to_function<dispatch::erase::t_ctor>().f_ptr();
+                return ctor(pAllocType, std::forward<_signature>(params)...);
             }
-            return { error::EmptyRObject, RObject{} };   //dead code. compiler warning omitted.
         };
     }
 
@@ -157,7 +137,7 @@ namespace rtl::detail
                 recordId,
                 containerId,
                 _derivedType::template getSignatureStr<_recordType>(true),
-                nullptr
+                &typeMeta.get_functor()
             }
         };
     }
