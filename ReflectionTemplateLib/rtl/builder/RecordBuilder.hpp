@@ -41,7 +41,7 @@ namespace rtl::builder
     * template params <...> - any combination of parameters.
 */  template<class _recordType>
     template<class ..._signature>
-    inline constexpr const ConstructorBuilder<_recordType, traits::remove_cref_t<_signature>...> MethodBuilder<_recordType>::constructor() const
+    inline constexpr const ConstructorBuilder<_recordType, _signature...> MethodBuilder<_recordType>::constructor() const
     {
         constexpr bool isDefaultCtor = (sizeof...(_signature) == 0);
         constexpr bool isCopyOrMoveCtor = (sizeof...(_signature) == 1 && traits::is_first_type_same_v<_recordType, _signature...>);
@@ -51,7 +51,7 @@ namespace rtl::builder
         static_assert(!isCopyOrMoveCtor, "Copy/Move-constructor registration detected! It is implicitly registered with the Type.");
         static_assert(isDeclearedCtor, "Constructor with given signature is not valid or declearation not found.");
 
-        return ConstructorBuilder<_recordType, traits::remove_cref_t<_signature>...>();
+        return ConstructorBuilder<_recordType, _signature...>();
     }
 
 

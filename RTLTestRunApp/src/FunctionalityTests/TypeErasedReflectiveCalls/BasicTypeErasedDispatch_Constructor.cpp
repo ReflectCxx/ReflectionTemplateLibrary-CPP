@@ -127,4 +127,61 @@ namespace rtl_tests
             createAndTestOn(rtl::alloc::Stack);
         }
     }
+
+
+    TEST(TargetTypeErased_rtl_constructor, typed_ref_overloads_constructor_call)
+    {
+        const char* SPARTA = "This is Spaartaaa!!";
+        std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrap::struct_);
+        ASSERT_TRUE(classStrWrap);
+
+        auto ctor = classStrWrap->ctor<std::string>();
+        EXPECT_TRUE(ctor);
+        {
+            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor.bind<std::string&>()(alloc_on, SPARTA);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_FALSE(robj.isEmpty());
+
+                const auto viewStr = robj.view<StrWrap>();
+                ASSERT_TRUE(viewStr);
+
+                const auto& stdStr = viewStr->get();
+                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_lvref + SUFFIX_ctor));
+            };
+            createAndTestOn(rtl::alloc::Heap);
+            createAndTestOn(rtl::alloc::Stack);
+        } {
+            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor.bind<std::string&&>()(alloc_on, SPARTA);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_FALSE(robj.isEmpty());
+
+                const auto viewStr = robj.view<StrWrap>();
+                ASSERT_TRUE(viewStr);
+
+                const auto& stdStr = viewStr->get();
+                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_rvref + SUFFIX_ctor));
+            };
+            createAndTestOn(rtl::alloc::Heap);
+            createAndTestOn(rtl::alloc::Stack);
+        } {
+            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor.bind<const std::string&>()(alloc_on, SPARTA);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_FALSE(robj.isEmpty());
+
+                const auto viewStr = robj.view<StrWrap>();
+                ASSERT_TRUE(viewStr);
+
+                const auto& stdStr = viewStr->get();
+                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_clvref + SUFFIX_ctor));
+            };
+            createAndTestOn(rtl::alloc::Heap);
+            createAndTestOn(rtl::alloc::Stack);
+        }
+    }
 }
