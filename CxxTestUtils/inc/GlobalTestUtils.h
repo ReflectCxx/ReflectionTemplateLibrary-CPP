@@ -57,6 +57,4 @@ namespace test_utils {
 	static const char* SUFFIX_std_string_view_lvref = "_std::string_view&";
 	static const char* SUFFIX_std_string_view_rvref = "_std::string_view&&";
 	static const char* SUFFIX_std_string_view_clvref = "_const_std::string_view&";
-
-	static const char* DEFAULT_str = "default_string";
 }

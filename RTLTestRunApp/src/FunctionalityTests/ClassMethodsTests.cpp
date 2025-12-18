@@ -7,6 +7,8 @@
 #include "TestUtilsDate.h"
 #include "GlobalTestUtils.h"
 
+#include "../CxxTestProps/inc/StringWrap.h"
+
 using namespace std;
 using namespace rtl;
 
@@ -58,6 +60,11 @@ namespace rtl_tests
 					//no constructor of class std::string is registered in RTL, but the calss is registered.
 					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 					ASSERT_TRUE(robj.isEmpty());
+				}
+				else if (recordName == StrWrapB::struct_ ||
+                         recordName == StrWrapC::struct_ ||
+                         recordName == StrWrapD::struct_) {
+					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 				}
 				else {
 					EXPECT_TRUE(err == rtl::error::None);

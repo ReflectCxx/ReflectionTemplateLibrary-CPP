@@ -24,7 +24,7 @@ namespace rtl_tests
         std::optional<rtl::Record> classStdString = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(classStdString);
         {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto ctor = classStdString->ctor<>();
                 EXPECT_TRUE(ctor);
@@ -39,12 +39,12 @@ namespace rtl_tests
                 const auto& spartaStr = viewStr->get();
                 EXPECT_EQ(spartaStr.length(), 0);
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         } 
         const char* SPARTA = "This is Spaartaaa!!";
         {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto ctor = classStdString->ctor<const char*>();
                 EXPECT_TRUE(ctor);
@@ -59,18 +59,18 @@ namespace rtl_tests
                 const auto& spartaStr = viewStr->get();
                 EXPECT_EQ(spartaStr, std::string(SPARTA));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         }
     }
 
 
     TEST(TargetTypeErased_rtl_constructor, typed_constructor_call)
     {
-        std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrap::struct_);
+        std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
         ASSERT_TRUE(classStrWrap);
         {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto ctor = classStrWrap->ctor<>();
                 EXPECT_TRUE(ctor);
@@ -79,18 +79,19 @@ namespace rtl_tests
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(DEFAULT_str) + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(), 
+                    (std::string(StrWrapA::struct_) + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         }
         const char* SPARTA = "This is Spaartaaa!!";
         {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto ctor = classStrWrap->ctor<std::string_view>();
                 EXPECT_TRUE(ctor);
@@ -99,16 +100,18 @@ namespace rtl_tests
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_view + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(), 
+                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
+                        SUFFIX_std_string_view + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         } {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto ctor = classStrWrap->ctor<const char*>();
                 EXPECT_TRUE(ctor);
@@ -117,14 +120,16 @@ namespace rtl_tests
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_const_char_ptr + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(),
+                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
+                        SUFFIX_const_char_ptr + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         }
     }
 
@@ -132,56 +137,143 @@ namespace rtl_tests
     TEST(TargetTypeErased_rtl_constructor, typed_ref_overloads_constructor_call)
     {
         const char* SPARTA = "This is Spaartaaa!!";
-        std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrap::struct_);
+        std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
         ASSERT_TRUE(classStrWrap);
 
         auto ctor = classStrWrap->ctor<std::string>();
         EXPECT_TRUE(ctor);
         {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto [err, robj] = ctor.bind<std::string&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_lvref + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(),
+                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
+                        SUFFIX_std_string_lvref + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         } {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto [err, robj] = ctor.bind<std::string&&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_rvref + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(),
+                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
+                        SUFFIX_std_string_rvref + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         } {
-            auto createAndTestOn = [&](rtl::alloc alloc_on)
+            auto testCreateOn = [&](rtl::alloc alloc_on)
             {
                 auto [err, robj] = ctor.bind<const std::string&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
-                const auto viewStr = robj.view<StrWrap>();
+                const auto viewStr = robj.view<StrWrapA>();
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), (std::string(SPARTA) + SUFFIX_std_string_clvref + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(),
+                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
+                        SUFFIX_std_string_clvref + SUFFIX_ctor));
             };
-            createAndTestOn(rtl::alloc::Heap);
-            createAndTestOn(rtl::alloc::Stack);
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
+        }
+    }
+
+    
+    TEST(TargetTypeErased_rtl_constructor, auto_overload_resolution)
+    {
+        const char* SPARTA = "This is Spaartaaa!!";
+        {
+            std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
+            ASSERT_TRUE(classStrWrap);
+
+            auto ctor = classStrWrap->ctor<std::string>();
+            EXPECT_TRUE(ctor);
+
+            auto testCreateOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor(alloc_on, SPARTA);
+                // More than one reference-based overloads exists.
+                EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
+                EXPECT_TRUE(robj.isEmpty());
+            };
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
+        } {
+            std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapB::struct_);
+            ASSERT_TRUE(classStrWrap);
+
+            auto ctor = classStrWrap->ctor<std::string>();
+            EXPECT_TRUE(ctor);
+
+            auto testCreateOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor(alloc_on, SPARTA);
+                // More than one reference-based overloads exists.
+                EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
+                EXPECT_TRUE(robj.isEmpty());
+            };
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
+        } {
+            std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapC::struct_);
+            ASSERT_TRUE(classStrWrap);
+
+            auto ctor = classStrWrap->ctor<std::string>();
+            EXPECT_TRUE(ctor);
+
+            auto testCreateOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor(alloc_on, SPARTA);
+                // only non-const-reference-based ctor exists.
+                // mutating call should be explicit.
+                EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
+                EXPECT_TRUE(robj.isEmpty());
+            };
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
+        } {
+            std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapD::struct_);
+            ASSERT_TRUE(classStrWrap);
+
+            auto ctor = classStrWrap->ctor<std::string>();
+            EXPECT_TRUE(ctor);
+
+            auto testCreateOn = [&](rtl::alloc alloc_on)
+            {
+                auto [err, robj] = ctor(alloc_on, SPARTA);
+                // only const-reference-based ctor exists.
+                // non-mutating call chosen by default.
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_FALSE(robj.isEmpty());
+
+                const auto viewStr = robj.view<StrWrapD>();
+                ASSERT_TRUE(viewStr);
+
+                const auto& stdStr = viewStr->get();
+                EXPECT_EQ(stdStr.sstr(),
+                    (std::string(StrWrapD::struct_) + std::string(SPARTA) +
+                        SUFFIX_std_string_clvref + SUFFIX_ctor));
+            };
+            testCreateOn(rtl::alloc::Heap);
+            testCreateOn(rtl::alloc::Stack);
         }
     }
 }
