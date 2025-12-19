@@ -39,28 +39,21 @@ namespace rtl_tests
             auto getEvent = classCalender->getMethod(calender::str_getTheEvent);
             ASSERT_TRUE(getEvent);
 
+            auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
+
             // get the Event's object from the 'Calender' object.
-            auto [err2, event] = getEvent->bind(calender).call();
+            auto [err2, event] = get_event(calender)();
+
             EXPECT_TRUE(err2 == rtl::error::None);
             ASSERT_FALSE(event.isEmpty());
             EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(event::struct_));
             {
-                {
-                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
-                    EXPECT_TRUE(err == rtl::error::CloningDisabled);
-                }
-                
-                rtl::error reterr = cxx::mirror().setupCloning(event);
-                ASSERT_TRUE(reterr == rtl::error::None);
-                
-                {
-                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
-                    //Event's copy-constructor private or deleted.
-                    EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-                    ASSERT_TRUE(robj.isEmpty());
-                    // Two 'Event' instances, owned by 'Calender'
-                    EXPECT_TRUE(event::get_instance_count() == 2);
-                }
+                auto [err, robj] = event.clone<rtl::alloc::Heap>();
+                //Event's copy-constructor private or deleted.
+                EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+                ASSERT_TRUE(robj.isEmpty());
+                // Two 'Event' instances, owned by 'Calender'
+                EXPECT_TRUE(event::get_instance_count() == 2);
             } {
                 auto [err, robj] = event.clone<rtl::alloc::Stack>();
                 //Event's copy-constructor private or deleted.

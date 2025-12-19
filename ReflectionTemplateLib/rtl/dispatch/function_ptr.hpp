@@ -52,7 +52,8 @@ namespace rtl::dispatch
         functor::m_lambdas = std::vector<lambda*>(1);
         functor::m_lambdas[index::erased_return] = (&fn);
 
-        constexpr static bool isConstCastSafe = (!traits::is_const_v<return_t>);
-        m_robject_id = detail::RObjectId::create<return_t, alloc::Stack>(isConstCastSafe);
+        constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
+        auto cloner = &aware_constructor<traits::raw_t<return_t>>::copy_ctor;
+        m_robject_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe, cloner);
     }
 }

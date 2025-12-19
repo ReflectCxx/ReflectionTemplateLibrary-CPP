@@ -75,10 +75,6 @@ namespace rtl_tests
     {
         char ch = 'R';
         RObject rCh = rtl::reflect(ch);
-
-        error reterr = cxx::mirror().setupCloning(rCh);
-        ASSERT_TRUE(reterr == error::None);
-
         EXPECT_FALSE(rCh.isAllocatedByRtl());
         {
             auto [err, rch] = rCh.clone<alloc::Stack, copy::Value>();
@@ -195,19 +191,12 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender.isEmpty());
 
+            auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
+
             // Get the Event's instance.
-            auto [err1, event] = getEvent->bind(calender).call();
+            auto [err1, event] = get_event(calender)();
             EXPECT_TRUE(err1 == error::None);
             ASSERT_FALSE(event.isEmpty());
-
-            // Try to call copy-constructor of class Event.
-            auto [err2, eventCp0] = event.clone<alloc::Heap>();
-            
-            EXPECT_TRUE(err2 == error::CloningDisabled);
-            ASSERT_TRUE(eventCp0.isEmpty());
-
-            error reterr = cxx::mirror().setupCloning(event);
-            ASSERT_TRUE(reterr == error::None);
 
             // Try to call copy-constructor of class Event.
             auto [err3, eventCp1] = event.clone<alloc::Heap>();

@@ -48,8 +48,6 @@ namespace rtl
         // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
         explicit CxxMirror(const std::vector<Function>& pFunctions);
 
-        error setupCloning(const RObject& pTarget) const;
-
         // Returns a Record containing function hash-keys for the given record ID.
         std::optional<Record> getRecord(const std::size_t pRecordId) const;
 

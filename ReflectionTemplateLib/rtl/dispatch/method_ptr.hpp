@@ -39,6 +39,7 @@ namespace rtl::dispatch
         functor::m_lambdas[index::erased_method] = (&m_erased_method);
 
         constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
-        m_robject_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe);
+        auto cloner = &aware_constructor<traits::raw_t<return_t>>::copy_ctor;
+        m_robject_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe, cloner);
     }
 }

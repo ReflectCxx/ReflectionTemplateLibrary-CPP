@@ -38,17 +38,4 @@ namespace rtl
     {
         rtl::detail::ReflectedConversions::init();
     }
-
-    error CxxMirror::setupCloning(const RObject& pTarget) const
-    {
-        const auto& itr = getRecordIdMap().find(pTarget.getTypeId());
-        if (itr != getRecordIdMap().end()) 
-        {
-            const Record& record = itr->second;
-            Method ctors = record.getMethod(detail::ctor_name(record.getRecordName())).value();
-            const_cast<RObject&>(pTarget).m_objectId.m_clonerId = ctors.getFunctors()[detail::Index::CopyCtor];
-            return error::None;
-        }
-        return error::CloningDisabled;
-    }
 }
