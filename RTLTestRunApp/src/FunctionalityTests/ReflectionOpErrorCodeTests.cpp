@@ -120,8 +120,8 @@ namespace rtl_tests
             EXPECT_FALSE(rChptr.isAllocatedByRtl());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
 
-            error reterr = cxx::mirror().setupCloning(rChptr);
-            ASSERT_TRUE(reterr == error::None);
+            //error reterr = cxx::mirror().setupCloning(rChptr);
+            //ASSERT_TRUE(reterr == error::None);
 
             EXPECT_TRUE(rChptr.canViewAs<char>());
             {

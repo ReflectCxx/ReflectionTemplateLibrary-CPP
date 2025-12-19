@@ -48,41 +48,13 @@ namespace rtl::detail
     inline SetupConstructor<_derivedType>::CopyCtorLambda
            SetupConstructor<_derivedType>::getCopyConstructorCaller()
     {
-        if constexpr (std::is_copy_constructible_v<_recordType>)
+        return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
         {
-            return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
-            {
-                const auto& srcObj = pOther.view<_recordType>()->get();
-                switch (pAllocOn)
-                {
-                case alloc::Stack:
-                    return {
-                        error::None,
-                        RObjectBuilder<_recordType>::template build<alloc::Stack>(_recordType(srcObj), pFunctorId, true)
-                    };
-                case alloc::Heap:
-                    return {
-                        error::None,
-                        RObjectBuilder<_recordType*>::template build<alloc::Heap>(new _recordType(srcObj), pFunctorId, true)
-                    };
-                default:
-                    return {
-                        error::EmptyRObject,
-                        RObject{}
-                    };
-                }
+            return {
+                error::TypeNotCopyConstructible,
+                RObject{}
             };
-        }
-        else
-        {
-            return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
-            {
-                return {
-                    error::TypeNotCopyConstructible,
-                    RObject{}
-                };
-            };
-        }
+        };
     }
 
 

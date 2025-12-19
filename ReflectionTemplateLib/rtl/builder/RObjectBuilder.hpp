@@ -84,6 +84,41 @@ namespace rtl::detail
 }
 
 
+namespace rtl::detail {
+
+    template<class T>
+    struct Cloner
+    {
+        //TODO: Test this path.
+        static Return copyCtor(alloc p_alloc_on, const RObject& p_other)
+        {
+            if constexpr (std::is_copy_constructible_v<T>)
+            {
+                const auto& srcObj = p_other.view<T>()->get();
+                switch (p_alloc_on)
+                {
+                case alloc::Stack:
+                    return {
+                        error::None,
+                        RObjectBuilder<T>::template build<alloc::Stack>(T(srcObj), &copyCtor, true)
+                    };
+                case alloc::Heap:
+                    return {
+                        error::None,
+                        RObjectBuilder<T*>::template build<alloc::Heap>(new T(srcObj), &copyCtor, true)
+                    };
+                default:
+                    return { error::EmptyRObject, RObject{} };
+                }
+            }
+            else
+            {
+                return { error::TypeNotCopyConstructible, RObject{} };
+            }
+        }
+    };
+}
+
 
 namespace rtl::detail 
 {
@@ -98,6 +133,26 @@ namespace rtl::detail
                         },
                         RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pIsConstCastSafe, pClonerFn),
                         &getConverters<std::unique_ptr<_T>>());
+    }
+
+
+    template<class T>
+    template <rtl::alloc _allocOn>
+    inline RObject rtl::detail::RObjectBuilder<T>::build(T&& pVal, bool pIsConstCastSafe) noexcept
+    {
+        using _T = traits::raw_t<T>;
+        if constexpr (traits::std_wrapper<_T>::type == Wrapper::None)
+        {
+            return RObjectBuilder<T>::template build<_allocOn>(
+                std::forward<T>(pVal), &Cloner<_T>::copyCtor, pIsConstCastSafe
+            );
+        }
+        else
+        {
+            return RObjectBuilder<T>::template build<_allocOn>(
+                std::forward<T>(pVal), &Cloner<typename traits::std_wrapper<_T>::value_type>::copyCtor, pIsConstCastSafe
+            );
+        }
     }
 
 
