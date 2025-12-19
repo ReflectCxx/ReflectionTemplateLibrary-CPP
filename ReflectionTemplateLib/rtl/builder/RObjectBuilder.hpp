@@ -20,7 +20,7 @@
 namespace rtl::detail 
 {    
     template<class T>
-    ForceInline const std::vector<traits::ConverterPair>& getConverters() noexcept
+    inline const std::vector<traits::ConverterPair>& getConverters() noexcept
     {
         // extract wrapper info.
         using _W = traits::std_wrapper<traits::raw_t<T>>;
@@ -29,67 +29,9 @@ namespace rtl::detail
         return rtl::detail::ReflectCast<_T>::getConversions();
     }
 
-
-    template<class T>
-    template <rtl::alloc _allocOn> requires (_allocOn == alloc::Heap)
-    ForceInline RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
-    {
-        using _T = traits::raw_t<T>;
-        return RObject( std::any{
-                            std::in_place_type<RObjectUPtr<_T>>,
-                            RObjectUPtr<_T>(std::unique_ptr<_T>(static_cast<_T*>(pVal)))
-                        },
-                        RObjectId::create<std::unique_ptr<_T>, alloc::Heap>(pIsConstCastSafe, pClonerId),
-                        &getConverters<std::unique_ptr<_T>>());
-    }
-
-
-    template<class T>
-    template <rtl::alloc _allocOn> requires (_allocOn == alloc::Stack)
-    ForceInline RObject RObjectBuilder<T>::build(T&& pVal, std::optional<FunctorId> pClonerId, bool pIsConstCastSafe) noexcept
-    {
-        using _T = traits::raw_t<T>;
-        constexpr bool isRawPointer = std::is_pointer_v<traits::remove_cref_t<T>>;
-
-        if constexpr (isRawPointer)
-        {
-            return RObject( std::any { static_cast<const _T*>(pVal) },
-                            RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
-                            &getConverters<T>() );
-        }
-        else
-        {
-            if constexpr (traits::std_wrapper<_T>::type == Wrapper::Unique)
-            {
-                using U = traits::std_wrapper<_T>::value_type;
-                return RObject( std::any {
-                                    std::in_place_type<RObjectUPtr<U>>,
-                                    RObjectUPtr<U>(std::move(pVal))
-                                },
-                                RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
-                                &getConverters<T>() );
-            }
-            else
-            {
-                static_assert(std::is_copy_constructible_v<_T>, "T must be copy-constructible (std::any requires this).");
-                return RObject( std::any {
-                                    std::in_place_type<T>,
-                                    std::forward<T>(pVal)
-                                },
-                                RObjectId::create<T, alloc::Stack>(pIsConstCastSafe, pClonerId),
-                                &getConverters<T>() );
-            }
-        }
-    }
-}
-
-
-namespace rtl::detail {
-
     template<class T>
     struct Cloner
     {
-        //TODO: Test this path.
         static Return copyCtor(alloc p_alloc_on, const RObject& p_other)
         {
             if constexpr (std::is_copy_constructible_v<T>)

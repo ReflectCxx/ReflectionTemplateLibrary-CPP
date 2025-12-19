@@ -61,7 +61,7 @@ namespace rtl
                     const _rawRetType& retObj = fptr(std::forward<_signature>(params)...);
                     return { error::None,
                              RObjectBuilder<const _rawRetType*>::template
-                             build<rtl::alloc::Stack>(&retObj, std::nullopt, isConstCastSafe)
+                             build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
                     };
                 }
                 else {
@@ -71,7 +71,7 @@ namespace rtl
 
                     return { error::None,
                              RObjectBuilder<const T>::template
-                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), std::nullopt, isConstCastSafe)
+                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
                     };
                 }
             };

@@ -190,22 +190,14 @@ namespace rtl
     template<>
     inline Return RObject::createCopy<alloc::Heap, detail::EntityKind::Value>() const
     {
-        if (m_objectId.m_clonerFn)
-        {
-           return m_objectId.m_clonerFn(alloc::Heap, *this);
-        }
-        return { error::CloningDisabled, RObject{} };
+        return m_objectId.m_clonerFn(alloc::Heap, *this);
     }
 
 
     template<>
     inline Return RObject::createCopy<alloc::Stack, detail::EntityKind::Value>() const
     {
-        if (m_objectId.m_clonerFn)
-        {
-           return m_objectId.m_clonerFn(alloc::Stack, *this);
-        }
-        return { error::CloningDisabled, RObject{} };
+        return m_objectId.m_clonerFn(alloc::Stack, *this);
     }
 
 
