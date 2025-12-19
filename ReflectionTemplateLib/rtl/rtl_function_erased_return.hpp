@@ -76,7 +76,7 @@ namespace rtl
         {
             return { error::None,
                      RObject{ m_rhop[index](*m_functors[index], std::forward<args_t>(params)...),
-                              m_functors[index]->get_robject_id(), nullptr
+                              m_functors[index]->get_robject_id()
                      }
             };
         }

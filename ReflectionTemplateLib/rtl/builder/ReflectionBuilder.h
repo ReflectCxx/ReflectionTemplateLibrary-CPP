@@ -12,7 +12,6 @@
 #pragma once
 
 #include "Function.h"
-#include "rtl_constants.h"
 
 namespace rtl {
 

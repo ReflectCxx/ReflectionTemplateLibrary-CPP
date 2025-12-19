@@ -46,7 +46,7 @@ namespace rtl
                 {
                     return { error::None,
                              RObject{ fn.m_rhop[index] (*(fn.m_functors[index]), target, std::forward<args_t>(params)...),
-                                      fn.m_functors[index]->get_robject_id(), nullptr
+                                      fn.m_functors[index]->get_robject_id()
                              }
                     };
                 }
@@ -83,7 +83,7 @@ namespace rtl
                             {
                                 return { error::None,
                                          RObject{ fn.m_rhop[index] (*fn.m_functors[index], target, std::forward<args_t>(params)...),
-                                                  fn.m_functors[index]->get_robject_id(), nullptr
+                                                  fn.m_functors[index]->get_robject_id()
                                          }
                                 };
                             }

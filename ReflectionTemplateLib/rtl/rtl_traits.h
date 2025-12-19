@@ -18,6 +18,7 @@
 #include <type_traits>
 
 #include "rtl_typeid.h"
+#include "rtl_errors.h"
 #include "rtl_constants.h"
 #include "rtl_forward_decls.h"
 

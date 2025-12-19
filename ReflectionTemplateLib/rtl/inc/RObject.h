@@ -14,10 +14,6 @@
 #include "view.h"
 #include "RObjectId.h"
 
-#include "rtl_traits.h"
-#include "rtl_errors.h"
-#include "rtl_forward_decls.h"
-
 namespace rtl::detail
 {
     template<class  T>
@@ -37,11 +33,9 @@ namespace rtl
     {
         std::optional<std::any> m_object = std::nullopt;
         detail::RObjectId m_objectId = {};
-        const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         RObject(const RObject&) = default;
-        RObject(std::any&& pObject, const detail::RObjectId& pRObjId,
-                const std::vector<traits::ConverterPair>* pConverters) noexcept;
+        RObject(std::any&& pObject, const detail::RObjectId& pRObjId) noexcept;
 
         std::size_t getConverterIndex(const std::size_t pToTypeId) const;
 

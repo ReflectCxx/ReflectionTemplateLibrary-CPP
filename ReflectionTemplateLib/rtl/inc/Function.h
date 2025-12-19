@@ -17,7 +17,6 @@
 
 #include "RObject.h"
 #include "FunctionCaller.h"
-#include "rtl_constants.h"
 
 namespace rtl {
 

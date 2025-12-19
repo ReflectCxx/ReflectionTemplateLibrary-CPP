@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include "rtl_errors.h"
 #include "RObjectBuilder.hpp"
 
 namespace rtl::dispatch

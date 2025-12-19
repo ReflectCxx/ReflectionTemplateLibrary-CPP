@@ -13,7 +13,6 @@
 
 #include <optional>
 
-#include "rtl_traits.h"
 #include "RObject.h"
 
 namespace rtl::detail

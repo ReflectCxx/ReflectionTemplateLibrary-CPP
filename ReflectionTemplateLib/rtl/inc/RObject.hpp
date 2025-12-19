@@ -25,22 +25,18 @@
 
 namespace rtl
 {
-    ForceInline RObject::RObject(std::any&& pObject, const detail::RObjectId& pRObjId,
-                                 const std::vector<traits::ConverterPair>* pConverters) noexcept
+    ForceInline RObject::RObject(std::any&& pObject, const detail::RObjectId& pRObjId) noexcept
         : m_object(std::in_place, std::move(pObject))
         , m_objectId(pRObjId)
-        , m_converters(pConverters)
     { }
 
     inline RObject::RObject(RObject&& pOther) noexcept
         : m_object(std::move(pOther.m_object))
         , m_objectId(pOther.m_objectId)
-        , m_converters(pOther.m_converters)
     {
         // Explicitly clear moved-from source
         pOther.m_object = std::nullopt;
         pOther.m_objectId = {};
-        pOther.m_converters = nullptr;
     }
 
     inline RObject& RObject::operator=(RObject&& pOther) noexcept
@@ -51,12 +47,10 @@ namespace rtl
 
         m_object = std::move(pOther.m_object);
         m_objectId = pOther.m_objectId;
-        m_converters = pOther.m_converters;
 
         // Explicitly clear moved-from source
         pOther.m_object = std::nullopt;
         pOther.m_objectId = {};
-        pOther.m_converters = nullptr;
         return *this;
     }
     
@@ -64,8 +58,8 @@ namespace rtl
     inline std::size_t RObject::getConverterIndex(const std::size_t pToTypeId) const
     {
         if (m_objectId.m_containsAs != detail::EntityKind::None) {
-            for (std::size_t index = 0; index < m_converters->size(); index++) {
-                if ((*m_converters)[index].first == pToTypeId) {
+            for (std::size_t index = 0; index < m_objectId.m_converters->size(); index++) {
+                if ((*m_objectId.m_converters)[index].first == pToTypeId) {
                     return index;
                 }
             }
@@ -97,7 +91,7 @@ namespace rtl
     inline std::optional<rtl::view<T>> RObject::performConversion(const std::size_t pIndex) const
     {
         detail::EntityKind newKind = detail::EntityKind::None;
-        const traits::Converter& convert = (*m_converters)[pIndex].second;
+        const traits::Converter& convert = (*m_objectId.m_converters)[pIndex].second;
         const std::any& viewObj = convert(m_object.value(), m_objectId.m_containsAs, newKind);
         const T* viewRef = detail::RObjExtractor::getPointer<T>(viewObj, newKind);
 
@@ -239,8 +233,7 @@ namespace rtl
         else if constexpr (_copyTarget == copy::Auto) {
             // RTL wraps the objects allocated on heap in 'std::unique_ptr'. Which by default is transparent to RTL itself.
             // 'std::unique_ptr' acquired via any other source, (e.g. return value) are not transparent. hence the second condition.
-            if (m_objectId.m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) 
-            {
+            if (m_objectId.m_wrapperType != detail::Wrapper::None && !isAllocatedByRtl()) {
                 return createCopy<_allocOn, detail::EntityKind::Wrapper>();
             }
             else {

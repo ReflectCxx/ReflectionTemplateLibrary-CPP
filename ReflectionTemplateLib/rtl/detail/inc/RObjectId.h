@@ -11,11 +11,7 @@
 
 #pragma once
 
-#include <any>
-#include <optional>
-
-#include "FunctorId.h"
-//#include "aware_constructor.h"
+#include "ReflectCast.h"
 
 namespace rtl::detail
 {
@@ -33,13 +29,23 @@ namespace rtl::detail
 
         traits::cloner_t m_clonerFn;
 
-        std::optional<FunctorId> m_clonerId;
+        const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
         GETTER(std::size_t, TypeId, m_typeId)
         GETTER(EntityKind, ContainedAs, m_containsAs)
 
         template<class T>
-        ForceInline static constexpr EntityKind getEntityKind() noexcept
+        static constexpr const std::vector<traits::ConverterPair>& getConverters() noexcept
+        {
+            // extract wrapper info.
+            using _W = traits::std_wrapper<traits::raw_t<T>>;
+            // extract Un-Qualified raw type.
+            using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
+            return ReflectCast<_T>::getConversions();
+        }
+
+        template<class T>
+        static constexpr EntityKind getEntityKind() noexcept
         {
             using W = traits::std_wrapper<traits::raw_t<T>>;
             using _T = traits::raw_t<std::conditional_t<(W::type == Wrapper::None), T, typename W::value_type>>;
@@ -56,35 +62,6 @@ namespace rtl::detail
                 return EntityKind::Value;
             }
         }
-
-
-        template<class T, rtl::alloc _allocOn>
-        ForceInline static RObjectId create(bool pIsConstCastSafe, std::optional<FunctorId> pClonerId = std::nullopt) noexcept
-        {
-            // extract wrapper info.
-            using _W = traits::std_wrapper<traits::raw_t<T>>;
-            // extract Un-Qualified raw type.
-            using _T = traits::raw_t<std::conditional_t<(_W::type == Wrapper::None), T, typename _W::value_type>>;
-            constexpr EntityKind entityKind = getEntityKind<T>();
-            
-            const std::size_t wrapperId = _W::id();
-            const std::size_t typeId = rtl::detail::TypeId<_T>::get();
-
-            constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
-            return RObjectId {
-
-                isWrappingConst,
-                pIsConstCastSafe,
-                typeId,
-                wrapperId,
-                _allocOn, 
-                _W::type,
-                entityKind,
-                nullptr,
-                pClonerId
-            };
-        }
-
 
         template<class T, rtl::alloc _allocOn>
         ForceInline static RObjectId create(bool pIsConstCastSafe, traits::cloner_t pClonerFn) noexcept
@@ -109,7 +86,7 @@ namespace rtl::detail
                 _W::type,
                 entityKind,
                 pClonerFn,
-                std::nullopt
+                &getConverters<T>()
             };
         }
     };

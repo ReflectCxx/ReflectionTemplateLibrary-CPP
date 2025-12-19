@@ -16,7 +16,6 @@
 #include <functional>
 
 #include "rtl_traits.h"
-#include "rtl_forward_decls.h"
 
 namespace rtl::detail
 {
