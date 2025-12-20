@@ -131,11 +131,12 @@ namespace rtl_tests
                       This registration is ignored.     */
         });
 
-        std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
-        ASSERT_TRUE(cstrLen);
+        std::optional<rtl::Function> optCstrLen = cxxMirror.getFunction("strlen");
+        ASSERT_TRUE(optCstrLen);
 
-        rtl::function<rtl::Return(const char*)> cstrlen_fn = cstrLen->argsT<const char*>().returnT<>();
+        rtl::function<rtl::Return(const char*)> cstrlen_fn = optCstrLen->argsT<const char*>().returnT<>();
         EXPECT_TRUE(cstrlen_fn);
+        EXPECT_EQ(cstrlen_fn.get_init_error(), rtl::error::None);
         {
             // Case 1: normal pointer (deduces as 'const char*')
             const char* cstr = "Reflection Template Library C++";
@@ -207,15 +208,16 @@ namespace rtl_tests
         });
 
         // Retrieve the reflected function "strlen" from the mirror.
-        std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
-        ASSERT_TRUE(cstrLen);
+        std::optional<rtl::Function> optCstrLen = cxxMirror.getFunction("strlen");
+        ASSERT_TRUE(optCstrLen);
 
-        // Prepare a C-style string for testing.
-        const char* cstr = "Modern C++ Reflection Framework";
+        auto strlen_fn = optCstrLen->argsT<const char*>().returnT<>();
+        ASSERT_TRUE(strlen_fn);
+        EXPECT_EQ(strlen_fn.get_init_error(), rtl::error::None);
 
-        // Bind the reflected strlen and call it with cstr.
         // RTL returns error code + result object instead of exceptions.
-        auto [err, ret] = cstrLen->bind().call(cstr);
+        const char* cstr = "Modern C++ Reflection Framework";
+        auto [err, ret] = strlen_fn(cstr);
 
         ASSERT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(ret.isEmpty());
@@ -233,7 +235,6 @@ namespace rtl_tests
     }
 
 
-
     TEST(CxxMirrorObjectTest, redundant_regis_with_namespace__std_cstring_func_with_global_cstring)
     {
         auto cxxMirror = rtl::CxxMirror({
@@ -246,13 +247,16 @@ namespace rtl_tests
         });
 
         // Lookup global function "strlen".
-        std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("strlen");
-        ASSERT_TRUE(cstrLen);
+        std::optional<rtl::Function> optCstrLen = cxxMirror.getFunction("strlen");
+        ASSERT_TRUE(optCstrLen);
         {
-            const char* cstr = "Modern C++ Reflection Framework";
+            auto strlen_fn = optCstrLen->argsT<const char*>().returnT<>();
+            ASSERT_TRUE(strlen_fn);
+            EXPECT_EQ(strlen_fn.get_init_error(), rtl::error::None);
 
+            const char* cstr = "Modern C++ Reflection Framework";
             // Call the reflected global strlen.
-            auto [err, ret] = cstrLen->bind().call(cstr);
+            auto [err, ret] = strlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -270,10 +274,13 @@ namespace rtl_tests
         std::optional<rtl::Function> stdStrLen = cxxMirror.getFunction("std", "strlen");
         ASSERT_TRUE(stdStrLen);
         {
-            const char* cstr = "Modern C++ Reflection Framework";
+            auto strlen_fn = stdStrLen->argsT<const char*>().returnT<>();
+            ASSERT_TRUE(strlen_fn);
+            EXPECT_EQ(strlen_fn.get_init_error(), rtl::error::None);
 
+            const char* cstr = "Modern C++ Reflection Framework";
             // Call the reflected std::strlen.
-            auto [err, ret] = stdStrLen->bind().call(cstr);
+            auto [err, ret] = strlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -289,7 +296,7 @@ namespace rtl_tests
 
         // Even though the functions are registered in different namespaces,
         // the underlying FunctorIds (which identify function-pointers) must be equal.
-        const std::vector<rtl::detail::FunctorId>& cfunctorIds = cstrLen->getFunctors();
+        const std::vector<rtl::detail::FunctorId>& cfunctorIds = optCstrLen->getFunctors();
         const std::vector<rtl::detail::FunctorId>& stdfunctorIds = stdStrLen->getFunctors();
 
         EXPECT_EQ(cfunctorIds, stdfunctorIds);
@@ -308,13 +315,16 @@ namespace rtl_tests
         });
 
         // Lookup function registered as "cStrlen".
-        std::optional<rtl::Function> cstrLen = cxxMirror.getFunction("cStrlen");
-        ASSERT_TRUE(cstrLen);
+        std::optional<rtl::Function> optCstrLen = cxxMirror.getFunction("cStrlen");
+        ASSERT_TRUE(optCstrLen);
         {
-            const char* cstr = "Modern C++ Reflection Framework";
+            auto strlen_fn = optCstrLen->argsT<const char*>().returnT<>();
+            ASSERT_TRUE(strlen_fn);
+            EXPECT_EQ(strlen_fn.get_init_error(), rtl::error::None);
 
+            const char* cstr = "Modern C++ Reflection Framework";
             // Call reflected cStrlen.
-            auto [err, ret] = cstrLen->bind().call(cstr);
+            auto [err, ret] = strlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -332,10 +342,13 @@ namespace rtl_tests
         std::optional<rtl::Function> stdStrLen = cxxMirror.getFunction("stdStrlen");
         ASSERT_TRUE(stdStrLen);
         {
-            const char* cstr = "Modern C++ Reflection Framework";
+            auto strlen_fn = stdStrLen->argsT<const char*>().returnT<>();
+            ASSERT_TRUE(strlen_fn);
+            EXPECT_EQ(strlen_fn.get_init_error(), rtl::error::None);
 
+            const char* cstr = "Modern C++ Reflection Framework";
             // Call reflected stdStrlen.
-            auto [err, ret] = stdStrLen->bind().call(cstr);
+            auto [err, ret] = strlen_fn(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -351,7 +364,7 @@ namespace rtl_tests
 
         // Despite different symbolic names, both reflect the same function-pointer.
         // Hence, their FunctorIds must be identical.
-        const std::vector<rtl::detail::FunctorId>& cfunctorIds = cstrLen->getFunctors();
+        const std::vector<rtl::detail::FunctorId>& cfunctorIds = optCstrLen->getFunctors();
         const std::vector<rtl::detail::FunctorId>& stdfunctorIds = stdStrLen->getFunctors();
 
         EXPECT_EQ(cfunctorIds, stdfunctorIds);

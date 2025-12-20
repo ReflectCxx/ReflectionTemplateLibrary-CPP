@@ -14,14 +14,18 @@ namespace
     {
         {
             // Attempt to retrieve the C-style function without specifying a namespace.
-            std::optional<rtl::Function> sendString = MyReflection().getFunction("sendString");
+            std::optional<rtl::Function> optSendString = MyReflection().getFunction("sendString");
             // Not found, since it was registered under the 'ext' namespace.
-            EXPECT_FALSE(sendString);
+            EXPECT_FALSE(optSendString);
         } {
             // Retrieve the function with its correct namespace.
-            std::optional<rtl::Function> sendString = MyReflection().getFunction("ext", "sendString");
+            std::optional<rtl::Function> optSendString = MyReflection().getFunction("ext", "sendString");
             // Found successfully.
-            ASSERT_TRUE(sendString);
+            ASSERT_TRUE(optSendString);
+
+            auto sendStringFn = optSendString->argsT<std::string>().returnT<>();
+            ASSERT_TRUE(sendStringFn);
+            EXPECT_EQ(sendStringFn.get_init_error(), rtl::error::None);
 
             auto theStr = std::string("Initiating reflection tests.");
             auto expectReturnStr = ("sent_string_" + theStr);
@@ -30,7 +34,7 @@ namespace
             // However, if the function takes reference parameters that require perfect forwarding,  
             // the binding can be specified explicitly using `bind<T&>()`, `bind<T&&>()`, or `bind<const T&>()`.  
             // In essence, `bind()` enables correct forwarding semantics for function calls.  
-            auto [err, ret] = sendString->bind().call(theStr);
+            auto [err, ret] = sendStringFn(theStr);
 
             // Reflected call executes successfully.
             EXPECT_TRUE(err == rtl::error::None);
@@ -53,19 +57,23 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_const_char_ptr)
     {
         // Retrieve the function with its correct namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
         // Found successfully.
-        ASSERT_TRUE(sendAsString);
+        ASSERT_TRUE(optSendAsString);
 
         auto theStr = std::string("const_char_ptr.");
         auto expectReturnStr = ("sent_string_literal_" + theStr);
+
+        auto sendAsStringFn = optSendAsString->argsT<const char*>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
 
         // Nothing to bind here, since this is a non-member (C-style) function and it does not  
         // require arguments to be perfectly forwarded.  
         // The argument passed is `const char*`, and the corresponding overload has been registered.  
         // The reflective call succeeds. If a mismatched argument is passed,  
         // `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind().call(theStr.c_str());
+        auto [err, ret] = sendAsStringFn(theStr.c_str());
 
         // Reflected call executes successfully.
         EXPECT_TRUE(err == rtl::error::None);
@@ -87,18 +95,22 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_lvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
-        ASSERT_TRUE(sendAsString); // Function found successfully.
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Eric");
         auto person = Person(nameStr);
         auto expectReturnStr = ("sent_string_lvalue_" + nameStr);
 
+        auto sendAsStringFn = optSendAsString->argsT<Person>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
+
         // Nothing to bind here: the call is with a regular lvalue.
         // This resolves to the overload `sendAsString(Person)`.
         // The overload was registered, so the reflective call will succeed.
         // If the argument type mismatches, `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind().call(person);
+        auto [err, ret] = sendAsStringFn(person);
 
         // Validate reflective call succeeded.
         EXPECT_TRUE(err == rtl::error::None);
@@ -118,54 +130,41 @@ namespace
     TEST(MyReflectionTests, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
-        ASSERT_TRUE(sendAsString); // Function found successfully.
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Logan");
-        auto expectReturnStr = ("sent_string_rvalue_" + nameStr);
-
-        // Now invoke the rvalue-ref overload: `sendAsString(Person&&)`.
-        // To ensure this overload is selected, we must explicitly bind
-        // with `Person&&`. This is achieved through perfect forwarding,
-        // since overload resolution cannot deduce rvalue-ref automatically.
-        //
-        // The overload was registered, so the reflective call will succeed.
-        // If the argument type mismatches, `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind<Person&&>().call(Person(nameStr));
-
-        // Validate reflective call succeeded.
-        EXPECT_TRUE(err == rtl::error::None);
-        EXPECT_FALSE(ret.isEmpty());
-
-        // Verify return type and extract result.
-        EXPECT_TRUE(ret.canViewAs<std::string>());
-        std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-        ASSERT_TRUE(strView);
-
-        const std::string& retStr = strView->get();
-        // Confirms the correct overload was invoked.
-        EXPECT_EQ(retStr, expectReturnStr);
-    }
-
-
-    TEST(MyReflectionTests, invoking_static_member_function_semantics)
-    {
-        // Retrieve the reflected class metadata.
-        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
-        ASSERT_TRUE(classPerson);
-
-        // Retrieve the static method from the class.
-        std::optional<rtl::Method> getDefaults = classPerson->getMethod("getDefaults");
-        ASSERT_TRUE(getDefaults);
-
-        auto expectReturnStr = std::string("Person_defaults_returned");
-
+        
+        auto sendAsStringFn = optSendAsString->argsT<Person>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
         {
-            // Call the static member function directly.
-            // Semantics are the same as a free function:
-            // nothing to bind unless perfect-forwarding arguments are involved.
-            // Since it's static, no instance of the class is required.
-            auto [err, ret] = getDefaults->bind().call();
+            // Although the argument is an rvalue (Person&&),
+            // overload resolution prefers the by-value overload (Person)
+            // over the rvalue-reference overload when both are viable.
+            // As a result, the call resolves to the by-value function.
+            auto [err, ret] = sendAsStringFn(Person(nameStr));
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            auto expectReturnStr = ("sent_string_lvalue_" + nameStr);
+            // Confirms the correct overload was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        } {
+            // Now invoke the rvalue-ref overload: `sendAsString(Person&&)`.
+            // To ensure this overload is selected, we must explicitly bind
+            // with `Person&&`. This is achieved through perfect forwarding,
+            // since overload resolution cannot deduce rvalue-ref automatically.
+            //
+            // The overload was registered, so the reflective call will succeed.
+            // If the argument type mismatches, `error::SignatureMismatch` will be returned.
+            auto [err, ret] = sendAsStringFn.bind<Person&&>()(Person(nameStr));
 
             // Validate reflective call succeeded.
             EXPECT_TRUE(err == rtl::error::None);
@@ -177,6 +176,44 @@ namespace
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
+            auto expectReturnStr = ("sent_string_rvalue_" + nameStr);
+            // Confirms the correct overload was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        }
+    }
+
+
+    TEST(MyReflectionTests, invoking_static_member_function_semantics)
+    {
+        // Retrieve the reflected class metadata.
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        // Retrieve the static method from the class.
+        std::optional<rtl::Method> optGetDefaults = classPerson->getMethod("getDefaults");
+        ASSERT_TRUE(optGetDefaults);
+        {
+            auto getDefaultsFn = optGetDefaults->argsT<>().returnT<>();
+            ASSERT_TRUE(getDefaultsFn);
+            EXPECT_EQ(getDefaultsFn.get_init_error(), rtl::error::None);
+
+            // Call the static member function directly.
+            // Semantics are the same as a free function:
+            // nothing to bind unless perfect-forwarding arguments are involved.
+            // Since it's static, no instance of the class is required.
+            auto [err, ret] = getDefaultsFn();
+
+            // Validate reflective call succeeded.
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
+
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            auto expectReturnStr = std::string("Person_defaults_returned");
             // Confirms the expected static function was invoked.
             EXPECT_EQ(retStr, expectReturnStr);
         }

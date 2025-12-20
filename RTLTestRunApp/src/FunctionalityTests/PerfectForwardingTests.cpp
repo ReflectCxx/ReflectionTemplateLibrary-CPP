@@ -290,20 +290,27 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(updateZooKeeper);
+            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(optUpdateZooKeeper);
 
-            const auto& isValid = updateZooKeeper->hasSignature<std::string&&>();
+            const auto& isValid = optUpdateZooKeeper->hasSignature<std::string&&>();
             EXPECT_TRUE(isValid);
 
-            auto [err, ret] = updateZooKeeper->bind<std::string&&>().call(animal::ZOO_KEEPER);
+            auto updateZooKeeperFn = optUpdateZooKeeper->argsT<std::string>().returnT<>();
+            {
+                auto [err, ret] = updateZooKeeperFn(animal::ZOO_KEEPER);
+                EXPECT_TRUE(err == error::ExplicitRefBindingRequired);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                auto [err, ret] = updateZooKeeperFn.bind<std::string&&>()(animal::ZOO_KEEPER);
 
-            EXPECT_TRUE(err == error::None);
-            ASSERT_FALSE(ret.isEmpty());
-            EXPECT_TRUE(ret.canViewAs<string>());
+                EXPECT_TRUE(err == error::None);
+                ASSERT_FALSE(ret.isEmpty());
+                EXPECT_TRUE(ret.canViewAs<string>());
 
-            const string& retStr = ret.view<string>()->get();
-            EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&&>(retStr));
+                const string& retStr = ret.view<string>()->get();
+                EXPECT_TRUE(animal::test_method_updateZooKeeper<std::string&&>(retStr));
+            }
         }
 
         EXPECT_TRUE(animal::assert_zero_instance_count());
@@ -317,13 +324,13 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(updateZooKeeper);
+            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(optUpdateZooKeeper);
 
-            const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
+            const auto& isValid = optUpdateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = updateZooKeeper.value()
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = optUpdateZooKeeper.value()
                                                                                              .argsT<std::string>()
                                                                                              .returnT<>();
 
@@ -348,13 +355,13 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> updateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(updateZooKeeper);
+            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(optUpdateZooKeeper);
 
-            const auto& isValid = updateZooKeeper->hasSignature<const std::string&>();
+            const auto& isValid = optUpdateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = updateZooKeeper.value()
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = optUpdateZooKeeper.value()
                                                                                              .argsT<std::string>()
                                                                                              .returnT<>();
             auto [err, ret] = updateZooKeeperMth.bind<std::string&>()(animal::ZOO_KEEPER);

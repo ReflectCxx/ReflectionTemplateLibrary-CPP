@@ -224,12 +224,16 @@ namespace rtl_tests
             optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> createCalender = classCalender->getMethod(calender::str_create);
-            ASSERT_TRUE(createCalender);
+            optional<Method> optCreateCalender = classCalender->getMethod(calender::str_create);
+            ASSERT_TRUE(optCreateCalender);
+
+            auto createCalenderFn = optCreateCalender->argsT<>().returnT<>();
+            ASSERT_TRUE(createCalenderFn);
+            EXPECT_EQ(createCalenderFn.get_init_error(), rtl::error::None);
 
             // Calender::create is a static method that returns stack-allocated Calender object.
             // Calling this via reflection, moves the return value from Calender::create to here.
-            auto [err0, calender0] = createCalender->bind().call();
+            auto [err0, calender0] = createCalenderFn();
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());

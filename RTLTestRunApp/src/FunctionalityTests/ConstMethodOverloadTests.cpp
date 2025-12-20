@@ -476,7 +476,11 @@ namespace rtl_tests
             optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
             ASSERT_TRUE(createConstPerson);
 
-            auto [err0, constPerson] = createConstPerson->bind().call();
+            auto createPerson = createConstPerson->argsT<>().returnT<>();
+            ASSERT_TRUE(createPerson);
+            EXPECT_EQ(createPerson.get_init_error(), rtl::error::None);
+
+            auto [err0, constPerson] = createPerson();
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPerson.isEmpty());
             // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.
@@ -515,8 +519,12 @@ namespace rtl_tests
             optional<Method> createConstPtrPerson = classPerson->getMethod(person::str_createPtr);
             ASSERT_TRUE(createConstPtrPerson);
 
+            auto createPerson = createConstPtrPerson->argsT<>().returnT<>();
+            ASSERT_TRUE(createPerson);
+            EXPECT_EQ(createPerson.get_init_error(), rtl::error::None);
+
             // Returns 'const Person*', unmanaged, need explicit call to 'delete'.
-            auto [err0, constPersonPtr] = createConstPtrPerson->bind().call();
+            auto [err0, constPersonPtr] = createPerson();
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPersonPtr.isEmpty());
             // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.

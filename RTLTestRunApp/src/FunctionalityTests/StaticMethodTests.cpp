@@ -18,11 +18,15 @@ namespace rtl_tests
 		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
-		ASSERT_TRUE(getDefaults);
-		EXPECT_TRUE(getDefaults->hasSignature<>());	//empty template params checks for zero arguments.
+		optional<Method> optGetDefaults = classPerson->getMethod(person::str_getDefaults);
+		ASSERT_TRUE(optGetDefaults);
+		EXPECT_TRUE(optGetDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [err, ret] = getDefaults->bind().call();
+		auto getDefaultsFn = optGetDefaults->argsT<>().returnT<>();
+		ASSERT_TRUE(getDefaultsFn);
+		EXPECT_EQ(getDefaultsFn.get_init_error(), rtl::error::None);
+
+		auto [err, ret] = getDefaultsFn();
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
 		EXPECT_TRUE(ret.canViewAs<string>());
@@ -37,11 +41,15 @@ namespace rtl_tests
 		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-		ASSERT_TRUE(getProfile);
-		EXPECT_TRUE(getProfile->hasSignature<>());	//empty template params checks for zero arguments.
+		optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+		ASSERT_TRUE(optGetProfile);
+		EXPECT_TRUE(optGetProfile->hasSignature<>());	//empty template params checks for zero arguments.
 
-		auto [err, ret] = getProfile->bind().call();
+		auto getProfileFn = optGetProfile->argsT<>().returnT<>();
+		ASSERT_TRUE(getProfileFn);
+		EXPECT_EQ(getProfileFn.get_init_error(), rtl::error::None);
+
+		auto [err, ret] = getProfileFn();
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
 		EXPECT_TRUE(ret.canViewAs<string>());
@@ -56,11 +64,15 @@ namespace rtl_tests
 		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-		ASSERT_TRUE(getProfile);
-		EXPECT_TRUE(getProfile->hasSignature<bool>());
+		optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+		ASSERT_TRUE(optGetProfile);
+		EXPECT_TRUE(optGetProfile->hasSignature<bool>());
+
+		auto getProfileFn = optGetProfile->argsT<bool>().returnT<>();
+		ASSERT_TRUE(getProfileFn);
+		EXPECT_EQ(getProfileFn.get_init_error(), rtl::error::None);
 		{
-			auto [err, ret] = getProfile->bind().call(true);
+			auto [err, ret] = getProfileFn(true);
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(ret.isEmpty());
 			EXPECT_TRUE(ret.canViewAs<string>());
@@ -69,7 +81,7 @@ namespace rtl_tests
 			EXPECT_EQ(retStr, person::get_str_returned_on_call_getProfile<bool>(true));
 		} {
 			//use the bind-call syntax.
-			auto [err, ret] = getProfile->bind().call(false);
+			auto [err, ret] = getProfileFn.bind<bool>()(false);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(ret.isEmpty());
@@ -90,12 +102,14 @@ namespace rtl_tests
 		optional<Method> methOpt = classPerson.getMethod(person::str_getProfile);
 		ASSERT_TRUE(methOpt.has_value());
 
-		const Method& getProfile = methOpt.value();
-		EXPECT_TRUE((getProfile.hasSignature<string, size_t>()));
+		const Method& optGetProfile = methOpt.value();
+		EXPECT_TRUE((optGetProfile.hasSignature<string, size_t>()));
 
-		size_t age = person::AGE;
-		string occupation = person::OCCUPATION;
-		auto [err, ret] = getProfile.bind().call(occupation, age);
+		auto getProfileFn = optGetProfile.argsT<string, size_t>().returnT<>();
+		ASSERT_TRUE(getProfileFn);
+		EXPECT_EQ(getProfileFn.get_init_error(), rtl::error::None);
+
+		auto [err, ret] = getProfileFn(person::OCCUPATION, person::AGE);
 
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
@@ -117,24 +131,24 @@ namespace rtl_tests
 		ASSERT_TRUE(getDefaultsOpt);
 		EXPECT_TRUE(getDefaultsOpt->hasSignature<>());	//empty template params checks for zero arguments.
 		{
-			rtl::method<rtl::RObject, rtl::Return()> getDefaults = getDefaultsOpt.value().targetT().argsT().returnT();
+			rtl::method<rtl::RObject, rtl::Return()> getDefaultsFn = getDefaultsOpt.value().targetT().argsT().returnT();
 
-			EXPECT_FALSE(getDefaults);
-			EXPECT_EQ(getDefaults.get_init_error(), error::InvalidStaticMethodCaller);
+			EXPECT_FALSE(getDefaultsFn);
+			EXPECT_EQ(getDefaultsFn.get_init_error(), error::InvalidStaticMethodCaller);
 
 			auto [err0, person] = classPerson->create<alloc::Heap>();
 
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());
 
-			auto [err, ret] = getDefaults(person)();
+			auto [err, ret] = getDefaultsFn(person)();
 
 			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
 			EXPECT_TRUE(ret.isEmpty());
 		} {
-			rtl::static_method<rtl::Return()> getDefaults = getDefaultsOpt.value().argsT().returnT();
+			rtl::static_method<rtl::Return()> getDefaultsFn = getDefaultsOpt.value().argsT().returnT();
 
-			auto [err, ret] = getDefaults();
+			auto [err, ret] = getDefaultsFn();
 
 			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());
@@ -156,27 +170,27 @@ namespace rtl_tests
 		EXPECT_TRUE((getProfileOpt->hasSignature<string, size_t>()));
 
 		{
-			rtl::method<rtl::RObject, rtl::Return(std::string, std::size_t)> getProfile = getProfileOpt.value()
+			rtl::method<rtl::RObject, rtl::Return(std::string, std::size_t)> optGetProfile = getProfileOpt.value()
 																									   .targetT()
 																									   .argsT<std::string, std::size_t>()
 																									   .returnT();
-			EXPECT_FALSE(getProfile);
-			EXPECT_EQ(getProfile.get_init_error(), error::InvalidStaticMethodCaller);
+			EXPECT_FALSE(optGetProfile);
+			EXPECT_EQ(optGetProfile.get_init_error(), error::InvalidStaticMethodCaller);
 
 			auto [err0, person] = classPerson->create<alloc::Heap>();
 
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());
 
-			auto [err, ret] = getProfile(person)(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person)(person::OCCUPATION, person::AGE);
 
 			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
 			ASSERT_TRUE(ret.isEmpty());
 		} {
-			rtl::static_method<rtl::Return(std::string, std::size_t)> getProfile = getProfileOpt.value()
+			rtl::static_method<rtl::Return(std::string, std::size_t)> optGetProfile = getProfileOpt.value()
 																							    .argsT<std::string, std::size_t>()
 																							    .returnT();
-			auto [err, ret] = getProfile(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person::OCCUPATION, person::AGE);
 
 			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());

@@ -129,42 +129,48 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
-        optional<Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
-        ASSERT_TRUE(getMagnitude);
+        {
+            optional<Function> optSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+            ASSERT_TRUE(optSetReal);
+            EXPECT_TRUE(optSetReal->hasSignature<double>());
 
-        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
-        ASSERT_TRUE(setReal);
+            rtl::function<rtl::Return(double)> setRealFn = optSetReal->argsT<double>().returnT<>();
+            EXPECT_TRUE(setRealFn);
+            EXPECT_EQ(setRealFn.get_init_error(), rtl::error::None);
 
-        optional<Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
-        ASSERT_TRUE(setImaginary);
+            auto [err, ret] = setRealFn(g_real);
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_TRUE(ret.isEmpty());
+        } {
+            optional<Function> optSetImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+            ASSERT_TRUE(optSetImaginary);
+            EXPECT_TRUE(optSetImaginary->hasSignature<double>());
 
-        EXPECT_TRUE(setReal->hasSignature<double>());
+            rtl::function<rtl::Return(double)> setImginaryFn = optSetImaginary->argsT<double>().returnT<>();
+            EXPECT_TRUE(setImginaryFn);
+            EXPECT_EQ(setImginaryFn.get_init_error(), rtl::error::None);
 
-        double real = g_real;    //g_real's type is "const double", so can't be passed directly to setReal else,
-                                 //its type will be inferred 'const double' instead of 'double'.
-        auto [err0, ret0] = setReal->bind().call(real);
-        EXPECT_TRUE(err0 == rtl::error::None);
-        ASSERT_TRUE(ret0.isEmpty());
+            auto [err, ret] = setImginaryFn(g_imaginary);
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_TRUE(ret.isEmpty());
+        } {
+            optional<Function> optGetMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
+            ASSERT_TRUE(optGetMagnitude);
+            EXPECT_TRUE(optGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-        EXPECT_TRUE(setImaginary->hasSignature<double>());
+            rtl::function<rtl::Return()> getMagnitudeFn = optGetMagnitude->argsT<>().returnT<>();
+            EXPECT_TRUE(getMagnitudeFn);
+            EXPECT_EQ(getMagnitudeFn.get_init_error(), rtl::error::None);
 
-        double imaginary = g_imaginary;    //g_imaginary's type is "const double", so can't be passed directly to setImaginary else,
-                                           //its type will be inferred 'const double' instead of 'double'.
-        auto [err1, ret1] = setImaginary->bind().call(imaginary);
-        EXPECT_TRUE(err1 == rtl::error::None);
-        ASSERT_TRUE(ret1.isEmpty());
+            auto [err, ret] = getMagnitudeFn();
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<double>());
 
-        EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
-
-        auto [err2, ret2] = getMagnitude->bind().call();
-
-        EXPECT_TRUE(err2 == rtl::error::None);
-        ASSERT_FALSE(ret2.isEmpty());
-        EXPECT_TRUE(ret2.canViewAs<double>());
-
-        double retVal = ret2.view<double>()->get();
-        double magnitude = abs(complex(g_real, g_imaginary));
-        EXPECT_DOUBLE_EQ(magnitude, retVal);
+            double retVal = ret.view<double>()->get();
+            double magnitude = abs(complex(g_real, g_imaginary));
+            EXPECT_DOUBLE_EQ(magnitude, retVal);
+        }
     }
 
 
@@ -178,6 +184,7 @@ namespace rtl_tests
 
         rtl::function<rtl::Return(float)> setReal_bad_fn = setRealOpt->argsT<float>().returnT<>();
         EXPECT_FALSE(setReal_bad_fn);
+        EXPECT_EQ(setReal_bad_fn.get_init_error(), rtl::error::InvalidCaller);
 
         auto [err, robj] = setReal_bad_fn(g_real);
         EXPECT_EQ(err, rtl::error::InvalidCaller);
@@ -187,11 +194,14 @@ namespace rtl_tests
 
     TEST(GlobalFunction, get_function_execute_return)
     {
-        optional<Function> getComplexNumAsString = cxx::mirror().getFunction(str_getComplexNumAsString);
-        ASSERT_TRUE(getComplexNumAsString);
+        optional<Function> optGetComplexAsStr = cxx::mirror().getFunction(str_getComplexNumAsString);
+        ASSERT_TRUE(optGetComplexAsStr);
 
-        auto [err, ret] = getComplexNumAsString->bind().call();
+        rtl::function<rtl::Return()> getComplexNumAsStrFn = optGetComplexAsStr->argsT<>().returnT<>();
+        EXPECT_TRUE(getComplexNumAsStrFn);
+        EXPECT_EQ(getComplexNumAsStrFn.get_init_error(), rtl::error::None);
 
+        auto [err, ret] = getComplexNumAsStrFn();
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(ret.isEmpty());
         EXPECT_TRUE(ret.canViewAs<string>());
