@@ -120,13 +120,6 @@ namespace rtl::detail
         Reference   //Planned.
     };
 
-    enum Index 
-    {
-        Ctor = 0,
-        CopyCtor
-    };
-
-
     enum class member
     {
         None,       // non-member functions.

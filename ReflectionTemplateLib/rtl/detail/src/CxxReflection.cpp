@@ -128,8 +128,8 @@ namespace rtl {
 
                 const auto& recordName = function.getRecordName();
                 const std::size_t recordId = function.getRecordTypeId();
-                const bool isCtorOverload = (function.getFunctionName() == ctor_name());
-                if (recordId != TypeId<>::None && (isCtorOverload || !recordName.empty()))
+                const bool isConstructor = (function.getFunctionName() == ctor_name());
+                if (recordId != TypeId<>::None && (isConstructor || !recordName.empty()))
                 {
                     const auto& itr = m_recordIdMap.find(recordId);
                     if (itr == m_recordIdMap.end()) {
@@ -138,7 +138,7 @@ namespace rtl {
                         addMethod(record.getFunctionsMap(), function);
                         addInNamespaceMap(record);
                     }
-                    else if (isCtorOverload) {
+                    else if (isConstructor) {
 
                         const Record& record = itr->second;
                         Function constructor = function;

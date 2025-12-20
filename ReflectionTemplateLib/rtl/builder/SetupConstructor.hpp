@@ -26,37 +26,12 @@ namespace rtl::detail
     {
         return [](const FunctorId& pFunctorId, alloc pAllocType, const FunctorId& pClonerId, _signature&&...params)-> Return
         {
-            if constexpr (sizeof...(_signature) == 0)
-            {   //default constructor, private or deleted.
-                using function_t = dispatch::function_ptr<Return, alloc>;
-                auto ctor = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
-                return ctor(pAllocType);
-            }
-            else
-            {
-                using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<_signature>...>;
-                std::function<Return(alloc, traits::normal_sign_t<_signature>...)> ctor = fn_cast(pFunctorId.get_functor()).template to_function<dispatch::erase::t_ctor>().f_ptr();
-                return ctor(pAllocType, std::forward<_signature>(params)...);
-            }
-        };
-    }
-
-
-
-    template<class _derivedType>
-    template<class _recordType>
-    inline SetupConstructor<_derivedType>::CopyCtorLambda
-           SetupConstructor<_derivedType>::getCopyConstructorCaller()
-    {
-        return [](const FunctorId& pFunctorId, const RObject& pOther, alloc pAllocOn) -> Return
-        {
             return {
                 error::TypeNotCopyConstructible,
                 RObject{}
             };
         };
     }
-
 
 
 /*  @method: addConstructor()
@@ -111,43 +86,6 @@ namespace rtl::detail
                 _derivedType::template getSignatureStr<_recordType>(true),
                 &typeMeta.get_functor()
             }
-        };
-    }
-
-
-    template<class _derivedType>
-    template<class _recordType, class ..._signature>
-    inline const detail::FunctorId SetupConstructor<_derivedType>::addCopyConstructor()
-    {
-        std::size_t recordId = TypeId<_recordType>::get();
-        std::size_t returnId = recordId;
-        std::size_t containerId = _derivedType::getContainerId();
-        std::size_t hashKey = std::stoull(std::to_string(containerId) + std::to_string(recordId));
-
-        //maintaining a set of already registered constructors.
-        static std::map<std::size_t, std::size_t> ctorSet;
-
-        //will be called from '_derivedType' if the constructor not already registered.
-        const auto& updateIndex = [&](std::size_t pIndex)->void {
-            ctorSet.insert(std::make_pair(hashKey, pIndex));
-        };
-
-        //will be called from '_derivedType' to check if the constructor already registered.
-        const auto& getIndex = [&]()-> std::size_t {
-            const auto& itr = ctorSet.find(hashKey);
-            return (itr != ctorSet.end() ? itr->second : index_none);
-        };
-
-        //add the lambda in 'FunctorContainer'.
-        auto lambdaIndex = _derivedType::pushBack(getCopyConstructorCaller<_recordType>(), getIndex, updateIndex);
-        return detail::FunctorId {
-
-            lambdaIndex,
-            returnId,
-            recordId,
-            containerId,
-            _derivedType::template getSignatureStr<_recordType>(true),
-            nullptr
         };
     }
 }
