@@ -21,7 +21,7 @@ namespace rtl_tests
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = classCalender->create<alloc::Stack>();
+            auto [err0, calender0] = classCalender->ctor()(alloc::Stack);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
@@ -143,7 +143,7 @@ namespace rtl_tests
             ASSERT_TRUE(getTheEvent);
 
             // Create a stack-allocated object via reflection
-            auto [err, calender] = classCalender->create<alloc::Stack>();
+            auto [err, calender] = classCalender->ctor()(alloc::Stack);
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(calender.isEmpty());
 

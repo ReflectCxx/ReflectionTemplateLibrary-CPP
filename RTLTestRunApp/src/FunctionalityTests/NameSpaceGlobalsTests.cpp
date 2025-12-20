@@ -48,7 +48,7 @@ namespace rtl_tests
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         {
-            auto [err, rchar] = charType->create<rtl::alloc::Heap>();
+            auto [err, rchar] = charType->ctor()(rtl::alloc::Heap);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(rchar.isEmpty());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);

@@ -43,7 +43,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, book0] = classBook->create<alloc::Stack>();
+            auto [err0, book0] = classBook->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book0.isEmpty());
 
@@ -66,7 +66,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, book0] = classBook->create<alloc::Stack>();
+            auto [err0, book0] = classBook->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book0.isEmpty());
 
@@ -124,7 +124,8 @@ namespace rtl_tests
             string author = book::AUTHOR;
             string description = book::DESCRIPTION;
 
-            auto [err0, book] = classBook->create<alloc::Heap>(price, title);
+            rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+            auto [err0, book] = ctor(alloc::Heap, price, title);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
@@ -161,12 +162,11 @@ namespace rtl_tests
             optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
             ASSERT_TRUE(setDecription);
 
-            double price = book::PRICE;
-            string title = book::TITLE;
             string author = book::AUTHOR;
             string description = book::DESCRIPTION;
 
-            auto [err0, book] = classBook->create<alloc::Stack>(price, title);
+            rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+            auto [err0, book] = ctor(alloc::Stack, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
@@ -203,12 +203,11 @@ namespace rtl_tests
             optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
             ASSERT_TRUE(setDecription);
             
-            double price = book::PRICE;
-            string title = book::TITLE;
             string author = book::AUTHOR;
             string description = book::DESCRIPTION;
             
-            auto [err0, book] = classBook->create<alloc::Stack>(price, title);
+            rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+            auto [err0, book] = ctor(alloc::Stack, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             
@@ -250,7 +249,9 @@ namespace rtl_tests
             string author = book::AUTHOR;
             string description = book::DESCRIPTION;
             
-            auto [err0, book] = classBook->create<alloc::Heap>(price, title);
+            rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+            auto [err0, book] = ctor(alloc::Heap, price, title);
+
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             
@@ -283,7 +284,7 @@ namespace rtl_tests
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = typeCalender->create<alloc::Stack>();
+            auto [err0, calender0] = typeCalender->ctor()(alloc::Stack);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
@@ -358,7 +359,7 @@ namespace rtl_tests
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = typeCalender->create<alloc::Stack>();
+            auto [err0, calender0] = typeCalender->ctor()(alloc::Stack);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());

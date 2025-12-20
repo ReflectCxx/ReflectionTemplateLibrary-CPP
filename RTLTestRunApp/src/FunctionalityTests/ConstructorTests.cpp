@@ -30,7 +30,8 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Heap>("wrong", "args0", 10);
+			rtl::constructor<std::string, int> ctor = classDate->ctor<std::string, int>();
+			auto [err, date] = ctor(alloc::Heap, "wrong", 10);
 
 			EXPECT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(date.isEmpty());
@@ -46,7 +47,8 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Stack>("wrong", "args0", 10);
+			rtl::constructor<std::string, int> ctor = classDate->ctor<std::string, int>();
+			auto [err, date] = ctor(alloc::Stack, "wrong", 10);
 
 			EXPECT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(date.isEmpty());
@@ -79,7 +81,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Stack>();
+			auto [err, date] = classDate->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -96,8 +98,8 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			string dateStr = date::DATE_STR0;
-			auto [err, date] = classDate->create<alloc::Heap>(dateStr);
+			rtl::constructor<std::string> ctor = classDate->ctor<std::string>();
+			auto [err, date] = ctor(alloc::Heap, date::DATE_STR0);
 			
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -114,8 +116,8 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			string dateStr = date::DATE_STR0;
-			auto [err, date] = classDate->create<alloc::Stack>(dateStr);
+			rtl::constructor<std::string> ctor = classDate->ctor<std::string>();
+			auto [err, date] = ctor(alloc::Stack, date::DATE_STR0);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -132,11 +134,8 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			unsigned day = date::DAY;
-			unsigned month = date::MONTH;
-			unsigned year = date::YEAR;
-
-			auto [err, date] = classDate->create<alloc::Heap>(day, month, year);
+			auto ctor = classDate->ctor<unsigned, unsigned, unsigned>();
+			auto [err, date] = ctor(alloc::Heap, date::DAY, date::MONTH, date::YEAR);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -159,7 +158,8 @@ namespace rtl_tests
 			unsigned month = date::MONTH;
 			unsigned year = date::YEAR;
 
-			auto [err, date] = classDate->create<alloc::Stack>(day, month, year);
+			auto ctor = classDate->ctor<unsigned, unsigned, unsigned>();
+			auto [err, date] = ctor(alloc::Stack, day, month, year);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -195,7 +195,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Stack>();
+			auto [err, date] = classDate->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -212,7 +212,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Heap>(19.0, 87.5);
+			auto [err, book] = classBook->ctor<float, int>()(alloc::Heap, 19.0, 87.5);
 
 			EXPECT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(book.isEmpty());
@@ -228,7 +228,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Stack>(19.0, 87.5);
+			auto [err, book] = classBook->ctor<float, int>()(alloc::Stack, 19.0, 87.5);
 
 			EXPECT_TRUE(err == error::SignatureMismatch);
 			ASSERT_TRUE(book.isEmpty());
@@ -261,7 +261,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Stack>();
+			auto [err, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -278,9 +278,8 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			double price = book::PRICE;
-			string title = book::TITLE;
-			auto [err, book] = classBook->create<alloc::Heap>(price, title);
+			rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+			auto [err, book] = ctor(alloc::Heap, book::PRICE, book::TITLE);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -299,9 +298,8 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			double price = book::PRICE;
-			string title = book::TITLE;
-			auto [err, book] = classBook->create<alloc::Stack>(price, title);
+			rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+			auto [err, book] = ctor(alloc::Stack, book::PRICE, book::TITLE);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -337,7 +335,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Stack>();
+			auto [err, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());

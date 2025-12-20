@@ -38,7 +38,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, book] = classBook->create<alloc::Stack>();
+            auto [err0, book] = classBook->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             EXPECT_TRUE(book.isConstCastSafe());
             ASSERT_FALSE(book.isEmpty());
@@ -101,9 +101,7 @@ namespace rtl_tests
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
 
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Heap, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -115,6 +113,7 @@ namespace rtl_tests
             // this will by default bind to the const-method.
             // Since the reflected object is bieng treated as 'const', so the 
             // 'const' method will be preffered with no-need of explicit resolution, since it exists.
+            string lastName = person::LAST_NAME;
             auto [err, ret] = updateLastName->bind(person).call(lastName);
             EXPECT_TRUE(err == error::None);
             ASSERT_TRUE(ret.isEmpty());
@@ -135,9 +134,7 @@ namespace rtl_tests
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
 
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Stack, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -146,6 +143,7 @@ namespace rtl_tests
             EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
 
+            string lastName = person::LAST_NAME;
             // this will by default bind to the const-method.
             // Since the reflected object is bieng treated as 'const', so the 
             // 'const' method will be preffered with no-need of explicit resolution, since it exists.
@@ -169,8 +167,7 @@ namespace rtl_tests
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Heap, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -206,8 +203,7 @@ namespace rtl_tests
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Stack, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -243,8 +239,7 @@ namespace rtl_tests
             optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
             ASSERT_TRUE(updateAddress);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Heap, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -286,8 +281,7 @@ namespace rtl_tests
             optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
             ASSERT_TRUE(updateAddress);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Stack, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -328,11 +322,8 @@ namespace rtl_tests
             
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
-            
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
+
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Heap, person::FIRST_NAME);
             
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -340,6 +331,7 @@ namespace rtl_tests
             EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
+                string lastName = person::LAST_NAME;
                 auto [err, ret] = updateLastName->bind(constCast(person)).call(lastName);
                 
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
@@ -364,10 +356,8 @@ namespace rtl_tests
             
             optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(updateLastName);
-            
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Stack, person::FIRST_NAME);
             
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -375,6 +365,7 @@ namespace rtl_tests
             EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(updateLastName->hasSignature<string>());
             {
+                string lastName = person::LAST_NAME;
                 auto [err, ret] = updateLastName->bind(constCast(person)).call(lastName);
                 
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
@@ -400,8 +391,7 @@ namespace rtl_tests
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
             
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Heap, person::FIRST_NAME);
             
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -421,7 +411,7 @@ namespace rtl_tests
                 EXPECT_TRUE(ret.canViewAs<std::string>());
                 
                 auto& fname = ret.view<std::string>()->get();
-                EXPECT_EQ(fname, firstName);
+                EXPECT_EQ(fname, std::string(person::FIRST_NAME));
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -438,8 +428,7 @@ namespace rtl_tests
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc::Stack, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -459,7 +448,7 @@ namespace rtl_tests
                 EXPECT_TRUE(ret.canViewAs<std::string>());
 
                 auto& fname = ret.view<std::string>()->get();
-                EXPECT_EQ(fname, firstName);
+                EXPECT_EQ(fname, std::string(person::FIRST_NAME));
             }
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -489,7 +478,6 @@ namespace rtl_tests
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
 
-            string firstName = person::FIRST_NAME;
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind(constPerson).call();
@@ -533,7 +521,6 @@ namespace rtl_tests
             optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
             ASSERT_TRUE(getFirstName);
 
-            string firstName = person::FIRST_NAME;
             EXPECT_TRUE(getFirstName->hasSignature<>());
             {
                 auto [err, ret] = getFirstName->bind(constPersonPtr).call();

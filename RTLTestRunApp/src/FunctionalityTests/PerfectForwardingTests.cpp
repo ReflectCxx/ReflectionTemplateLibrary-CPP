@@ -176,7 +176,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->create<alloc::Stack>();
+            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -217,7 +217,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->create<alloc::Stack>();
+            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -259,7 +259,7 @@ namespace rtl_tests
             ASSERT_TRUE(setAnimalName);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->create<alloc::Stack>();
+            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 

@@ -111,7 +111,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -137,7 +137,7 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -166,7 +166,7 @@ namespace rtl_tests
 			optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
 			ASSERT_TRUE(getPublishedOn);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -222,7 +222,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -275,7 +275,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -335,7 +335,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -403,7 +403,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -437,7 +437,7 @@ namespace rtl_tests
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
 			ASSERT_TRUE(addCopyrightTag);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -501,7 +501,7 @@ namespace rtl_tests
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
 			ASSERT_TRUE(addPreface);
 
-			auto [err0, book] = classBook->create<alloc::Stack>();
+			auto [err0, book] = classBook->ctor()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
