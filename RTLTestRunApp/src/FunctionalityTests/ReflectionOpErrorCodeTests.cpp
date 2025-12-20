@@ -64,7 +64,7 @@ namespace rtl_tests
         EXPECT_TRUE(err0 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
 
-        auto [err1, robj1] = classEvent->create<alloc::Heap>();
+        auto [err1, robj1] = classEvent->ctor()(alloc::Heap);
 
         EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj1.isEmpty());
@@ -218,7 +218,7 @@ namespace rtl_tests
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
-                auto [err, robj] = classLibrary->create<alloc::Heap>();
+                auto [err, robj] = classLibrary->ctor()(alloc::Heap);
             /*  Heap allocation succeeds:
             *   Even though Library's copy constructor is deleted, RObject internally stores
             *   the pointer directly inside std::any (type-erased), without requiring the type T
@@ -287,7 +287,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, person] = classPerson->create<alloc::Heap>();
+            auto [err0, person] = classPerson->ctor()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 

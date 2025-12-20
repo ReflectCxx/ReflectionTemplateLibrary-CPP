@@ -86,7 +86,7 @@ namespace rtl_tests
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = classCalender->create<alloc::Heap>();
+            auto [err0, calender0] = classCalender->ctor()(alloc::Heap);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());

@@ -225,25 +225,23 @@ namespace
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::string name = "Charlie";
-        {
-            //  Invokes the overloaded constructor that takes 'const std::string&'.
-            //  It will not match the overload with 'std::string&', because arguments
-            //  are forwarded as universal references (&&), which bind only to 
-            //  'const std::string&'. This resolution is handled by the compiler,
-            //  not by RTL.
-            auto [err, robj] = classPerson->create<rtl::alloc::Stack>(name);
+        const char* name = "Charlie";
+        //  Invokes the overloaded constructor that takes 'const std::string&'.
+        //  It will not match the overload with 'std::string&', because arguments
+        //  are forwarded as universal references (&&), which bind only to 
+        //  'const std::string&'. This resolution is handled by the compiler,
+        //  not by RTL.
+        auto [err, robj] = classPerson->ctor<std::string>()(rtl::alloc::Stack, name);
 
-            EXPECT_TRUE(err == rtl::error::None);
-            ASSERT_TRUE(!robj.isEmpty());
-            ASSERT_TRUE(robj.canViewAs<Person>());
+        EXPECT_TRUE(err == rtl::error::None);
+        ASSERT_TRUE(!robj.isEmpty());
+        ASSERT_TRUE(robj.canViewAs<Person>());
 
-            auto view = robj.view<Person>();
-            EXPECT_TRUE(view);
+        auto view = robj.view<Person>();
+        EXPECT_TRUE(view);
 
-            const Person& person = view->get();
-            EXPECT_EQ(name, person.name);
-        }
+        const Person& person = view->get();
+        EXPECT_EQ(name, person.name);
     }
 
 

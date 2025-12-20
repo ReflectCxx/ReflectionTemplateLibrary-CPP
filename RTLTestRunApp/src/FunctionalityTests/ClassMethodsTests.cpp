@@ -44,7 +44,7 @@ namespace rtl_tests
 
 				const rtl::Record& reflectedClass = itr->second;
 
-				auto [err, robj] = reflectedClass.create<rtl::alloc::Stack>();
+				auto [err, robj] = reflectedClass.ctor()(rtl::alloc::Stack);
 
 				if (recordName == event::struct_) {
 					//Event's default constructor is private or deleted.
@@ -85,7 +85,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -195,7 +195,7 @@ namespace rtl_tests
 			optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
 			ASSERT_TRUE(setAuthor);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -249,7 +249,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -301,7 +301,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -369,7 +369,7 @@ namespace rtl_tests
 			optional<Method> updateBookInfo = classBook->getMethod(book::str_updateBookInfo);
 			ASSERT_TRUE(updateBookInfo);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -469,7 +469,7 @@ namespace rtl_tests
 			optional<Method> addCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
 			ASSERT_TRUE(addCopyrightTag);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -546,7 +546,7 @@ namespace rtl_tests
 			optional<Method> addPreface = classBook->getMethod(book::str_addPreface);
 			ASSERT_TRUE(addPreface);
 
-			auto [err0, book] = classBook->create<alloc::Heap>();
+			auto [err0, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());

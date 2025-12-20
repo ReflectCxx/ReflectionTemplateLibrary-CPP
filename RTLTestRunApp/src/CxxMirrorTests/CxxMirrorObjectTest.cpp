@@ -63,7 +63,7 @@ namespace rtl_tests
 
         // Create an instance of std::vector<int> on the stack via RTL.
         // Uses RObject with stack lifetime.
-        auto [err, robj] = classVectorInt->create<rtl::alloc::Stack>();
+        auto [err, robj] = classVectorInt->ctor()(rtl::alloc::Stack);
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(robj.isEmpty());
 

@@ -62,7 +62,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Heap>();
+			auto [err, date] = classDate->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -178,7 +178,7 @@ namespace rtl_tests
 			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
 			ASSERT_TRUE(classDate);
 
-			auto [err, date] = classDate->create<alloc::Heap>();
+			auto [err, date] = classDate->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -244,7 +244,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Heap>();
+			auto [err, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -320,7 +320,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err, book] = classBook->create<alloc::Heap>();
+			auto [err, book] = classBook->ctor()(alloc::Heap);
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
