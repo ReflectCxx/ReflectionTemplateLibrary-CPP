@@ -51,15 +51,15 @@ namespace rtl_tests
 		{
 			rtl::function<rtl::Return(char*)> reverseString = reverseStrOpt->argsT<char*>().returnT<>();
 			EXPECT_FALSE(reverseString);
+			EXPECT_EQ(reverseString.get_init_error(), rtl::error::SignatureMismatch);
 			{
 				auto [err, robj] = reverseString(const_cast<char*>(STRA));
-
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
 				auto [err, robj] = reverseString.bind<char*>()(const_cast<char*>(STRA));
 
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			}
 		}

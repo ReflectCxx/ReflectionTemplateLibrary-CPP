@@ -184,11 +184,11 @@ namespace rtl_tests
 
         rtl::function<rtl::Return(float)> setReal_bad_fn = setRealOpt->argsT<float>().returnT<>();
         EXPECT_FALSE(setReal_bad_fn);
-        EXPECT_EQ(setReal_bad_fn.get_init_error(), rtl::error::InvalidCaller);
+        EXPECT_EQ(setReal_bad_fn.get_init_error(), rtl::error::SignatureMismatch);
 
         auto [err, robj] = setReal_bad_fn(g_real);
-        EXPECT_EQ(err, rtl::error::InvalidCaller);
-        ASSERT_TRUE(robj.isEmpty());
+        EXPECT_EQ(err, rtl::error::SignatureMismatch);
+        EXPECT_TRUE(robj.isEmpty());
     }
 
 

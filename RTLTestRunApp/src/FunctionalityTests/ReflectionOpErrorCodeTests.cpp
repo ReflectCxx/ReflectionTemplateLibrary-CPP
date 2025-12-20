@@ -247,14 +247,17 @@ namespace rtl_tests
         optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
 
-        optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-        ASSERT_TRUE(getProfile);
-        EXPECT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
+        optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+        ASSERT_TRUE(optGetProfile);
+        EXPECT_TRUE(optGetProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
-        auto [err, robj] = getProfile->bind().call(std::string());
+        rtl::static_method<rtl::Return(std::string)> getProfileFn = optGetProfile->argsT<std::string>().returnT<>();
+        EXPECT_FALSE(getProfileFn);
+        EXPECT_EQ(getProfileFn.get_init_error(), error::SignatureMismatch);
 
-        EXPECT_TRUE(err == error::SignatureMismatch);
-        ASSERT_TRUE(robj.isEmpty());
+        auto [err, robj] = getProfileFn(std::string());
+        EXPECT_EQ(err, error::SignatureMismatch);
+        EXPECT_TRUE(robj.isEmpty());
     }
 
 

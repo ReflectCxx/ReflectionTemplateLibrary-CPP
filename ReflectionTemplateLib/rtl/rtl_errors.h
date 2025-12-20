@@ -30,7 +30,6 @@ namespace rtl
         InvalidStaticMethodCaller,
         InvalidNonStaticMethodCaller,
 
-        CloningDisabled,       //Used only in case of cloning is disabled e.g, unregistered type returnd from a function.
         FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.
 
         IllegalConstCast,
@@ -63,8 +62,6 @@ namespace rtl
             return "Invalid callable: rtl::method being used to call a static method; use rtl::static_method instead.";
         case error::InvalidNonStaticMethodCaller:
             return "Invalid callable: rtl::static_method being used to call a non-static method; use rtl::method instead.";
-        case error::CloningDisabled:
-            return "Type not registered: The requested type is not explicitly registered in the Reflection system";
         case error::FunctionNotRegistered:
             return "Function not registered: The requested erase_function/method is not registered in the Reflection system";
         case error::TargetMismatch:
