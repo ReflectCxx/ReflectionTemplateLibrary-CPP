@@ -29,12 +29,7 @@ namespace rtl
         {
             return [](const FunctorId& pFunctorId, _signature&&... params) -> Return
             {
-                using function_t = dispatch::function_ptr<void, _signature...>;
-
-                auto fptr = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
-                
-                fptr(std::forward<_signature>(params)...);
-                return { error::None, RObject{} };
+                return { error::InvalidCaller, RObject{} };
             };
         }
 
@@ -48,32 +43,7 @@ namespace rtl
             this is stored in _derivedType's (FunctorContainer) vector holding lambda's.
         */  return [](const FunctorId& pFunctorId, _signature&&...params)-> Return
             {
-                using function_t = dispatch::function_ptr<_returnType, _signature...>;
-
-                auto fptr = static_cast<const function_t&>(pFunctorId.get_functor()).f_ptr();
-
-                constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
-
-                if constexpr (std::is_reference_v<_returnType>) {
-                /*  if the function returns reference, this block will be retained by compiler.
-                    Note: reference to temporary or dangling is not checked here.
-                */  using _rawRetType = traits::raw_t<_returnType>;
-                    const _rawRetType& retObj = fptr(std::forward<_signature>(params)...);
-                    return { error::None,
-                             RObjectBuilder<const _rawRetType*>::template
-                             build<rtl::alloc::Stack>(&retObj, isConstCastSafe)
-                    };
-                }
-                else {
-                    //if the function returns anything (not refrence), this block will be retained by compiler.
-                    auto&& retObj = fptr(std::forward<_signature>(params)...);
-                    using T = std::remove_cvref_t<decltype(retObj)>;
-
-                    return { error::None,
-                             RObjectBuilder<const T>::template
-                             build<rtl::alloc::Stack>(std::forward<decltype(retObj)>(retObj), isConstCastSafe)
-                    };
-                }
+                return { error::InvalidCaller, RObject{} };
             };
         }
 

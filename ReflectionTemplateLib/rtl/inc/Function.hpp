@@ -16,12 +16,6 @@
 
 namespace rtl 
 {
-    template<class ..._signature>
-    inline constexpr const detail::ErasedCaller<true, _signature...> Function::bind() const noexcept
-    {
-        return detail::ErasedCaller<true, _signature...>{ (*this) };
-    }
-
     template<class ...signatureT>
     inline constexpr const detail::HopFunction<detail::member::None, signatureT...> Function::argsT() const
     {
@@ -69,44 +63,5 @@ namespace rtl
             }
         }
         return nullptr;
-    }
-
-
-    inline constexpr std::optional<type_meta> Function::getLambdaByStrictId(const std::size_t pSignatureId) const
-    {
-        //simple linear-search, efficient for small set of elements.
-        for (const auto& functorMeta : m_functorsMeta) {
-            if (pSignatureId == functorMeta.get_strict_args_id()) [[likely]] {
-                return { functorMeta };
-            }
-        }
-        return std::nullopt;
-    }
-
-
-    ForceInline std::pair<std::optional<type_meta>, bool> Function::getLambdaByNormalId(const std::size_t pSignatureId) const
-    {
-        std::optional<type_meta> functorMeta = getLambdaByStrictId(pSignatureId);
-        if (functorMeta) {
-            return { functorMeta, false };
-        }
-
-        std::size_t index = rtl::index_none;
-        for (int i = 0; i < m_functorsMeta.size(); i++)
-        {
-            if (pSignatureId == m_functorsMeta[i].get_normal_args_id()) [[likely]] {
-                if (index == rtl::index_none) {
-                    index = i;
-                }
-                else return { std::nullopt, true };
-            }
-        }
-
-        if (index != rtl::index_none)
-        {
-            auto isAnyNonConstRefInArgsT = (m_functorsMeta[index].is_any_arg_ncref());
-            return { (isAnyNonConstRefInArgsT ? std::nullopt : std::make_optional(m_functorsMeta[index])), isAnyNonConstRefInArgsT };
-        }
-        return { std::nullopt, false };
     }
 }

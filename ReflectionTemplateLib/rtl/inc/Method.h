@@ -52,11 +52,6 @@ namespace rtl {
 
         GETTER_BOOL(Const, (getQualifier() == detail::member::Const));
 
-        using Function::bind;
-
-        template<class ..._args>
-        constexpr const detail::ErasedCaller<false, _args...> operator()(_args&&...params) const noexcept = delete;
-
         template<class ...signatureT>
         constexpr const detail::HopFunction<detail::member::Static, signatureT...> argsT() const;
 

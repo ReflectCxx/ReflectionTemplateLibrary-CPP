@@ -23,25 +23,6 @@
 
 namespace rtl::detail
 {
-    template<bool is_binding_v, class ..._signature>
-    template<class ..._args>
-    ForceInline Return ErasedCaller<is_binding_v, _signature...>::call(_args&&...params) const noexcept
-    {
-        using Container = std::conditional_t<sizeof...(_signature) == 0,
-            FunctorContainer<std::remove_reference_t<_args>...>,
-            FunctorContainer<_signature...>>;
-
-        const detail::FunctorId* functorId = m_function.hasFunctorId(Container::getContainerId());
-        if (functorId != nullptr) [[likely]] {
-            return Container::template forwardCall<_args...>(*functorId, std::forward<_args>(params)...);
-        }
-        return { error::SignatureMismatch, RObject{} };
-    }
-}
-
-
-namespace rtl::detail
-{
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
     inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const

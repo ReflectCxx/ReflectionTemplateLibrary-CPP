@@ -15,31 +15,6 @@
 #include "rtl_forward_decls.h"
 
 namespace rtl::detail
-{		
-    template<bool is_binding_v, class ..._signature>
-    struct ErasedCaller
-    {
-        const Function& m_function;
-
-        template<class ..._args>
-        rtl::Return call(_args&&...) const noexcept;
-
-        template<class ..._args> requires (is_binding_v == false)
-        constexpr rtl::Return operator()(_args&&...params) const noexcept
-        {
-            return { error::InvalidCaller, RObject{} };
-        }
-
-        template<class ..._args> requires (is_binding_v == true)
-        constexpr rtl::Return operator()(_args&&...params) const noexcept
-        {
-            return { error::SignatureMismatch, RObject{} };
-        }
-    };
-}
-
-
-namespace rtl::detail
 {
     template<member member_kind, class ..._signature>
     struct HopFunction

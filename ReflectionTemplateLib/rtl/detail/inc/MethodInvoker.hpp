@@ -35,11 +35,7 @@ namespace rtl::detail
     template<class ..._args>
     ForceInline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
-        //Only static-member-functions have Qualifier- 'member::None'
-        if (m_method->getQualifier() == member::None) [[unlikely]] {
-            return static_cast<Function>(*m_method).bind().call(std::forward<_args>(params)...);
-        }
-        else if (m_target->isEmpty()) [[unlikely]] {
+        if (m_target->isEmpty()) [[unlikely]] {
             //if the target is empty.
             return { error::EmptyRObject, RObject{} };
         }
@@ -104,10 +100,7 @@ namespace rtl::detail
     template<class ..._args>
     ForceInline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
-        if (m_method->getQualifier() == member::None) [[unlikely]] {
-            return static_cast<Function>(*m_method).bind().call(std::forward<_args>(params)...);
-        }
-        else if (m_target->isEmpty()) [[unlikely]] {
+        if (m_target->isEmpty()) [[unlikely]] {
             //if the target is empty.
             return { error::EmptyRObject, RObject{} };
         }

@@ -71,10 +71,6 @@ namespace rtl {
 
         const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
 
-        std::pair<std::optional<type_meta>, bool> getLambdaByNormalId(const std::size_t pSignatureId) const;
-
-        constexpr std::optional<type_meta> getLambdaByStrictId(const std::size_t pSignatureId) const;
-
         GETTER(detail::member, Qualifier, m_member_kind);
 
         GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
@@ -102,15 +98,6 @@ namespace rtl {
 
         template<class ..._args>
         bool hasSignature() const;
-
-        template<class ..._signature>
-        constexpr const detail::ErasedCaller<true, _signature...> bind() const noexcept;
-
-        template<class ..._args>
-        constexpr rtl::Return operator()(_args&&...params) const noexcept
-        {
-            return detail::ErasedCaller<false, _args...>{ (*this) }(std::forward<_args>(params)...);
-        }
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;
