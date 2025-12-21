@@ -11,37 +11,53 @@
 
 #pragma once
 
-#include "rtl_forward_decls.h"
+#include "FunctorId.h"
+#include "FunctorContainer.h"
+#include "rtl_traits.h"
 
 namespace rtl::detail 
 {
-/*  @struct: SetupFunction
-    @param: _derivedType (type which inherits this class)
-    * creates a functor-wrapped-lambda to perform call on the registered functor.
-    * adds it to the functor-container, maintains the already added functor set as well.
-    * deriving classes is FunctorContainer<...>, which must implement -
-        - std::size_t& _derived::getContainerId();
-        - std::string _derivedType::getSignatureStr();
-        - std::size_t& _derived::pushBack(std::function<RObject(error&, _signature...)>,
-                                            std::function<const std::size_t()>,
-                                            std::function<void(const std::size_t&)>);
-    * sets up only non-member or static-member-function functors in table.
-    * called from 'ReflectionBuilder', as _derivedType member.
-*/  template<class _derivedType>
-    class SetupFunction
+    struct SetupFunction
     {
-        template<class ..._signature>
-        using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
-
-        template<class... _signature>
-        static FunctionLambda<_signature...> getCaller(void(*pFunctor)(_signature...));
-
         template<class _returnType, class ..._signature>
-        static FunctionLambda<_signature...> getCaller(_returnType(*pFunctor)(_signature...));
+        static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(_returnType(*pFunctor)(_signature...), traits::uid_t pRecordUid,
+                                                                       std::size_t pRecordId, member pMemberType)
+        {
+            rtl::type_meta typeMeta;
+            const auto& updateIndex = [&](std::size_t pIndex)-> void {
+                typeMeta = rtl::type_meta::add_function(pFunctor, pRecordUid, pMemberType);
+            };
 
-    protected:
+            const auto& getIndex = [&]()-> std::size_t
+            {
+                auto& functorCache = cache::function_ptr<_returnType, _signature...>::instance();
+                auto functor = functorCache.find(pFunctor);
+                if (functor != nullptr) {
+                    typeMeta = rtl::type_meta(*functor);
+                }
+                else { 
+                    return rtl::index_none; 
+                }
+                return 0;
+            };
 
-        template<class _returnType, class ..._signature>
-        static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(_returnType(*pFunctor)(_signature...), traits::uid_t pRecordUid, std::size_t pRecordId, member pMemberType);
-    };    
+            using lambda_t = std::function<Return(const FunctorId&, _signature...)>;
+            FunctorContainer<_signature...>::pushBack(lambda_t(), getIndex, updateIndex);
+            const auto& signatureStr = (TypeId<_returnType>::toString() + " (" + TypeId<_signature...>::toString() + ")");
+            const std::size_t returnId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
+
+            //construct the hash-key 'FunctorId' and return.
+            return {
+                typeMeta,
+                FunctorId {
+                    0,
+                    returnId,
+                    pRecordId,
+                    FunctorContainer<_signature...>::getContainerId(),
+                    signatureStr,
+                    &(typeMeta.get_functor())
+                }
+            };
+        }
+    };
 }

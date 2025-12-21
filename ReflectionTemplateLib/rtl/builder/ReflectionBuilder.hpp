@@ -12,10 +12,9 @@
 #pragma once
 
 #include "ReflectionBuilder.h"
-#include "FunctorContainer.h"
 #include "MethodContainer.h"
 #include "SetupMethod.hpp"
-#include "SetupFunction.hpp"
+#include "SetupFunction.h"
 #include "SetupConstructor.h"
 
 namespace rtl::detail 
@@ -41,8 +40,7 @@ namespace rtl::detail
 */  template<class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const
     {
-        using Container = FunctorContainer< traits::remove_const_if_not_reference<_signature>...>;
-        auto [typeMeta, functorId] = Container::template addFunctor<_returnType, _signature...>(pFunctor, pRecordUid, m_recordId, pMemberType);
+        auto [typeMeta, functorId] = SetupFunction::addFunctor<_returnType, _signature...>(pFunctor, pRecordUid, m_recordId, pMemberType);
         return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, pMemberType);
     }
 

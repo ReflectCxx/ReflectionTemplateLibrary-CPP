@@ -42,7 +42,7 @@ namespace rtl {
                 //will be called from '_derivedType' if the constructor not already registered.
                 const auto& updateIndex = [&](std::size_t pIndex)->void
                 {
-                    typeMeta = type_meta::add_constructor<_recordType, _signature...>(pIndex);
+                    typeMeta = type_meta::add_constructor<_recordType, _signature...>();
                     ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
                 };
 

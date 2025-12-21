@@ -16,8 +16,6 @@
 #include <functional>
 
 #include "rtl_traits.h"
-#include "CallReflector.h"
-#include "SetupFunction.h"
 
 namespace rtl {
 
@@ -31,7 +29,7 @@ namespace rtl {
         * container class for holding std::function, wrapping functor, constructor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>
+        class FunctorContainer
         {
             using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
         public:
@@ -40,20 +38,6 @@ namespace rtl {
             ForceInline static std::size_t getContainerId() {
                 static const std::size_t containerId = generate_unique_id();
                 return containerId;
-            }
-
-            //get the vector holding lambdas as 'const-ref'
-            ForceInline const static std::vector<FunctionLambda>& getOverloads() {
-                static std::vector<FunctionLambda>& functorTable = getFunctorTable();
-                return functorTable;
-            }
-
-            //get functor container type(_signature...) as string with given 'returnType'.
-            template<class _returnType>
-            static std::string getSignatureStr(const bool pIsMember = false) 
-            {
-                return (TypeId<_returnType>::toString() + (pIsMember ? "::" : " ") +
-                       "(" + TypeId<_signature...>::toString() + ")");
             }
 
         private:
@@ -89,7 +73,7 @@ namespace rtl {
             
             //friends :)
             friend ReflectionBuilder;
-            friend SetupFunction<FunctorContainer<_signature...>>;
+            friend SetupFunction;
             friend SetupConstructor;
         };
     }

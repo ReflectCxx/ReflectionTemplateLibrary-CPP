@@ -48,8 +48,8 @@ namespace rtl
 		GETTER_CREF(dispatch::functor, _functor, m_functor->get())
 
 		template<class return_t, class ...signature_t>
-		static type_meta add_function(return_t(*p_fptr)(signature_t...), traits::uid_t p_record_uid,
-									  detail::member p_member_kind, std::size_t p_index);
+		static type_meta add_function(return_t(*p_fptr)(signature_t...),
+									  traits::uid_t p_record_uid, detail::member p_member_kind);
 
 		template<class record_t, class return_t, class ...signature_t>
 		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index);
@@ -58,7 +58,7 @@ namespace rtl
 		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index);
 
 		template<class record_t, class ...signature_t>
-		static type_meta add_constructor(std::size_t p_index);
+		static type_meta add_constructor();
 
 	private:
 

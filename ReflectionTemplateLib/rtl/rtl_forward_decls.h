@@ -51,6 +51,8 @@ namespace rtl
 
         struct RObjectId;
 
+        struct SetupFunction;
+
         struct SetupConstructor;
 
         template<class ...signature_t>
