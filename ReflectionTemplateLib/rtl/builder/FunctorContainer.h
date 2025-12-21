@@ -31,8 +31,7 @@ namespace rtl {
         * container class for holding std::function, wrapping functor, constructor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
-                                 public CallReflector<FunctorContainer<_signature...>>
+        class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>
         {
             using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
         public:
