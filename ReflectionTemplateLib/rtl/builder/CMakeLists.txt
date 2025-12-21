@@ -16,7 +16,6 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupConstructor.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/SetupConstructor.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupFunction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupFunction.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupMethod.h"

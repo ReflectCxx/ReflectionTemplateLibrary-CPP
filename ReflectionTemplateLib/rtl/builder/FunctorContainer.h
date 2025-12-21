@@ -15,11 +15,9 @@
 #include <vector>
 #include <functional>
 
-#include "rtl_constants.h"
+#include "rtl_traits.h"
 #include "CallReflector.h"
 #include "SetupFunction.h"
-#include "SetupConstructor.h"
-
 
 namespace rtl {
 
@@ -34,7 +32,6 @@ namespace rtl {
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
         class FunctorContainer : public SetupFunction<FunctorContainer<_signature...>>,
-                                 public SetupConstructor<FunctorContainer<_signature...>>,
                                  public CallReflector<FunctorContainer<_signature...>>
         {
             using FunctionLambda = std::function < Return(const FunctorId&, _signature...) >;
@@ -94,7 +91,7 @@ namespace rtl {
             //friends :)
             friend ReflectionBuilder;
             friend SetupFunction<FunctorContainer<_signature...>>;
-            friend SetupConstructor<FunctorContainer<_signature...>>;
+            friend SetupConstructor;
         };
     }
 }

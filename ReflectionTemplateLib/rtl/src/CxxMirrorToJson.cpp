@@ -25,8 +25,7 @@ using namespace rtl::detail;
 static const std::string toJson(const FunctorId& pFunctorId)
 {
 	std::stringstream sout;
-	sout << "{\"containerId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
-	sout << "\"lambdaIndex\": \"" << std::to_string(pFunctorId.getLambdaIndex()) << "\",";
+	sout << "{\"signatureId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
 	if (pFunctorId.getRecordId() != TypeId<>::None) {
 		sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
 	}

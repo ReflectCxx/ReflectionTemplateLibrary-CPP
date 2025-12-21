@@ -16,7 +16,7 @@
 #include "MethodContainer.h"
 #include "SetupMethod.hpp"
 #include "SetupFunction.hpp"
-#include "SetupConstructor.hpp"
+#include "SetupConstructor.h"
 
 namespace rtl::detail 
 {	
@@ -87,8 +87,7 @@ namespace rtl::detail
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const
     {
-        using Container = FunctorContainer < rtl::alloc, FunctorId, traits::remove_const_if_not_reference<_ctorSignature>... > ;
-        auto [typeMeta, functorId] = Container::template addConstructor<_recordType, _ctorSignature...>();
+        auto [typeMeta, functorId] = SetupConstructor::addConstructor<_recordType, _ctorSignature...>();
         const Function& ctorFunction = Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::None);
         return ctorFunction;
     }
