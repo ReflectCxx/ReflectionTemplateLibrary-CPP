@@ -13,13 +13,14 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/Reflect.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ReflectionBuilder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/ReflectionBuilder.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/RegisterCtor.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/RegisterFunction.h"  
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/SetupConstructor.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/SetupFunction.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/SetupFunction.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SetupDispatch.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupMethod.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/SetupMethod.hpp"
+	
 )
 
 target_sources(ReflectionTemplateLib PRIVATE ${LOCAL_HEADERS})

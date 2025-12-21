@@ -14,8 +14,10 @@
 #include "ReflectionBuilder.h"
 #include "MethodContainer.h"
 #include "SetupMethod.hpp"
-#include "SetupFunction.h"
-#include "SetupConstructor.h"
+
+#include "RegisterCtor.h"
+#include "RegisterFunction.h"
+
 
 namespace rtl::detail 
 {	
@@ -40,7 +42,7 @@ namespace rtl::detail
 */  template<class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const
     {
-        auto [typeMeta, functorId] = SetupFunction::addFunctor<_returnType, _signature...>(pFunctor, pRecordUid, m_recordId, pMemberType);
+        auto [typeMeta, functorId] = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, pRecordUid, m_recordId, pMemberType);
         return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, pMemberType);
     }
 
@@ -85,7 +87,7 @@ namespace rtl::detail
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const
     {
-        auto [typeMeta, functorId] = SetupConstructor::addConstructor<_recordType, _ctorSignature...>();
+        auto [typeMeta, functorId] = RegisterCtor::template addConstructor<_recordType, _ctorSignature...>();
         const Function& ctorFunction = Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::None);
         return ctorFunction;
     }

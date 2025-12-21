@@ -53,6 +53,8 @@ namespace rtl
 
         struct SetupFunction;
 
+        class ReflectionBuilder;
+
         struct SetupConstructor;
 
         template<class ...signature_t>
