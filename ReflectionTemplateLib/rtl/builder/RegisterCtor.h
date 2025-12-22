@@ -31,9 +31,16 @@ namespace rtl::detail
 
             const auto& doRegister = [&]()->type_meta {
 
-                auto typeMeta = type_meta::add_constructor<record_t, signature_t...>();
-                ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
-                return typeMeta;
+                if constexpr (sizeof...(signature_t) == 0) {
+                    auto typeMeta = type_meta::add_constructor<member::DefaultCtor, record_t, Return, alloc>();
+                    ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
+                    return typeMeta;
+                }
+                else {
+                    auto typeMeta = type_meta::add_constructor<member::UserCtor, record_t, Return, signature_t...>();
+                    ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
+                    return typeMeta;
+                }
             };
 
             const auto& isRegistered = [&]()->type_meta {

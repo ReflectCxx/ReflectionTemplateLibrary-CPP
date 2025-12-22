@@ -57,7 +57,7 @@ namespace rtl
 		template<class record_t, class return_t, class ...signature_t>
 		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index);
 
-		template<class record_t, class ...signature_t>
+		template<detail::member mem_kind, class record_t, class return_t, class ...signature_t>
 		static type_meta add_constructor();
 
 	private:

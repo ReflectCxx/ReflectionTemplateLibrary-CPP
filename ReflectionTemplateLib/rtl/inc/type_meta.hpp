@@ -46,18 +46,11 @@ namespace rtl
 	}
 
 
-	template<class record_t, class ...signature_t>
+	template<detail::member mem_kind, class record_t, class return_t, class ...signature_t>
 	inline type_meta type_meta::add_constructor()
 	{
-		if constexpr (sizeof...(signature_t) == 0) {
-			auto& fc = cache::function_ptr<Return, alloc>::instance();
-			auto& functor = fc.template push_ctor<detail::member::DefaultCtor, record_t>(traits::uid<record_t>::value);
-			return type_meta(functor);
-		}
-		else {
-			auto& fc = cache::function_ptr<Return, signature_t...>::instance();
-			auto& functor = fc.template push_ctor<detail::member::UserCtor, record_t>(traits::uid<record_t>::value);
-			return type_meta(functor);
-		}
+		auto& fc = cache::function_ptr<return_t, signature_t...>::instance();
+		auto& functor = fc.template push_ctor<mem_kind, record_t>(traits::uid<record_t>::value);
+		return type_meta(functor);
 	}
 }
