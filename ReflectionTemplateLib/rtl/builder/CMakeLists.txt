@@ -5,7 +5,6 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/Builder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Builder.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ConstructorBuilder.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/FunctorContainer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/MethodContainer.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RecordBuilder.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RecordBuilder.hpp"

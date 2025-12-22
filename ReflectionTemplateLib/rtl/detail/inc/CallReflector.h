@@ -22,7 +22,6 @@ namespace rtl::detail {
 /*  @struct: CallReflector
     @param: _derivedType (type which inherits this class)
     * retrieves the lambda at given index and calls it with the arguments supplied.
-    * deriving classes are, MethodContainer & FunctorContainer.
 */  template<class _derivedType>
     struct CallReflector
     {

@@ -30,8 +30,6 @@ namespace rtl
         
         using ConverterPair = std::pair< std::size_t, Converter >;
 
-        using Cloner = detail::FunctorContainer<const RObject&, alloc>;
-
         using cloner_t = Return(*)(alloc, const RObject&);
     }
 

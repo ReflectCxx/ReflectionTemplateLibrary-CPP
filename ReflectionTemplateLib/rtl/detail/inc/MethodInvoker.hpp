@@ -139,7 +139,7 @@ namespace rtl::detail
         {
             // check if the const-overload lambda is present.
             using container2 = detail::MethodContainer<detail::member::Const, _invokSignature...>;
-            std::size_t index = pMethod.hasSignatureId(container2::getContainerId());
+            std::size_t index = pMethod.hasSignId(container2::getContainerId());
             if (index != rtl::index_none) {
                 // So, const-overload is present and non-const overload is not registered or doesn't exists.
                 return { error::NonConstOverloadMissing, RObject{} };

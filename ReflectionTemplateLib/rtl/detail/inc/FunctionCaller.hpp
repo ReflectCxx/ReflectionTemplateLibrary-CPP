@@ -14,7 +14,6 @@
 #include "RObject.h"
 #include "Function.h"
 #include "FunctionCaller.h"
-#include "FunctorContainer.h"
 
 #include "functor_cast.h"
 #include "function_ptr.h"

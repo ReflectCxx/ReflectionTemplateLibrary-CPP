@@ -51,10 +51,10 @@ namespace rtl::detail
             return {
                 typeMeta,
                 FunctorId {
-                    0,
+                    rtl::index_none,
                     TypeId<record_t>::get(),
                     TypeId<record_t>::get(),
-                    FunctorContainer<signature_t...>::getContainerId(),
+                    typeMeta.get_strict_args_id(),
                     signatureStr,
                     &typeMeta.get_functor()
                 }

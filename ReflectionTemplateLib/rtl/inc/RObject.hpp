@@ -21,7 +21,6 @@
 #include "ReflectCast.h"
 #include "RObjExtracter.h"
 #include "RObjectBuilder.h"
-#include "FunctorContainer.h"
 
 namespace rtl
 {

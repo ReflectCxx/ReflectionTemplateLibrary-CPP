@@ -57,9 +57,6 @@ namespace rtl
 
         struct SetupConstructor;
 
-        template<class ...signature_t>
-        class FunctorContainer;
-
         template<bool is_bind_v, class ...signature_t>
         struct ErasedCaller;
 

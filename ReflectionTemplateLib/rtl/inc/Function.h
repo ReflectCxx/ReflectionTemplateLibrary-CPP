@@ -67,7 +67,9 @@ namespace rtl {
         Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                  const std::string_view pFunctorName);
 
-        const std::size_t hasSignatureId(const std::size_t pSignatureId) const;
+        const std::size_t hasSignId(const std::size_t pSignatureId) const;
+
+        bool hasSignatureId(const traits::uid_t pSignatureId) const;
 
         const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
 
@@ -95,7 +97,7 @@ namespace rtl {
         constexpr const detail::HopFunction<detail::member::None, signatureT...> argsT() const;
 
         template<class ..._args>
-        bool hasSignature() const;
+        constexpr bool hasSignature() const;
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;

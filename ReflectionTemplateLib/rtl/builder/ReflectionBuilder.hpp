@@ -36,7 +36,6 @@ namespace rtl::detail
     @return: 'Function', object associated with the given functor.
     @param: 'pFunctor', function pointer with,
     *       '_returnType' & '_signature...'(auto deduced).
-    * adds the function pointer in 'FunctorContainer'
     * accepts only a non-member or static-member function pointer.
     * builds the 'Function' object containing hash-key & meta-data for the given functor.
 */  template<class _returnType, class ..._signature>
@@ -82,7 +81,6 @@ namespace rtl::detail
 /*  @method: buildConstructor()
     @return: 'Function', object associated with the (specified parametrized) constructor.
     @param: '_recordType'(class/struct type) & '_ctorSignature...' (explicitly specified),
-    * adds the lambda invoking constructor (type-erased) in 'FunctorContainer'
     * builds the 'Function' object containing hash-key & meta-data for the constructor.
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const

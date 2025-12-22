@@ -42,10 +42,10 @@ namespace rtl::detail
             return {
                 typeMeta,
                 FunctorId {
-                    0,
+                    rtl::index_none,
                     TypeId<traits::remove_const_n_ref_n_ptr<return_t>>::get(),
                     pRecordId,
-                    FunctorContainer<signature_t...>::getContainerId(),
+                    typeMeta.get_strict_args_id(),
                     signatureStr,
                     &(typeMeta.get_functor())
                 }

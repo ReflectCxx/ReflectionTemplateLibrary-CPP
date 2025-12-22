@@ -30,7 +30,6 @@ static const std::string toJson(const FunctorId& pFunctorId)
 		sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
 	}
 	sout << "\"returnId\": \"" << std::to_string(pFunctorId.getReturnId()) << "\",";
-	sout << "\"hash_code\": \"" << std::to_string(pFunctorId.getHashCode()) << "\",";
 	sout << "\"signature\": \"" << pFunctorId.getSignatureStr() << "\"}";
 	return sout.str();
 }

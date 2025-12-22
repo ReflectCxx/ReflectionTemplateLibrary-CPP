@@ -56,11 +56,11 @@ namespace rtl
             }
             case detail::member::NonConst: {
                 using Container = detail::MethodContainer<detail::member::NonConst, _args...>;
-                return (hasSignatureId(Container::getContainerId()) != -1);
+                return (hasSignId(Container::getContainerId()) != -1);
             }
             case detail::member::Const: {
                 using Container = detail::MethodContainer<detail::member::Const, _args...>;
-                return (hasSignatureId(Container::getContainerId()) != -1);
+                return (hasSignId(Container::getContainerId()) != -1);
             }
         }
         return false;

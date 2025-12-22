@@ -42,30 +42,11 @@ namespace rtl::detail
 
         const dispatch::functor* m_functor = nullptr;
 
-        GETTER(std::size_t, LambdaIndex, m_lambdaIndex)
         GETTER(std::size_t, ReturnId, m_returnId);
         GETTER(std::size_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER_CREF(std::string, SignatureStr, m_signature)
         GETTER_CREF(dispatch::functor, _functor, (*m_functor))
-
-    /*  @method: getHashCode()
-        @return: std::size_t (a unique hash-code for a functor)
-        * 'm_containerId' will be same for functors(non-member) with same signatures.
-        * for member functions, a functor will have three atrributes
-            - signature
-            - whether it is const or non-const
-            - class/struct type
-            'm_containerId' will be same for functors with same above attributes.
-        * every functor will have a distinct index in the functor-wrapped-lambda-table.
-        * so, combination of m_containerId & m_index is unique for every functor.
-    */  std::size_t getHashCode() const
-        {
-            return std::stoull(std::to_string(m_containerId) +
-                               std::to_string(m_lambdaIndex) +
-                               std::to_string(m_recordId) +
-                               std::to_string(m_returnId));
-        }
 
         const bool operator==(const FunctorId& pOther) const
         {

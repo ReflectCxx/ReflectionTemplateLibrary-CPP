@@ -34,11 +34,9 @@ namespace rtl {
                               const std::string_view pNamespace = "",
                               const std::string_view pRecord = "");
 
-            //adds constructor (any overload) to the 'FunctorContainer'.
             template<class _recordType, class ..._ctorSignature>
             const Function buildConstructor() const;
 
-            //adds 'pFunctor' to the 'FunctorContainer'.
             template<class _returnType, class ..._signature>
             const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const;
 
