@@ -98,12 +98,12 @@ namespace rtl_tests
 			{
 				auto [err, robj] = reverseString(StrStatic())(const_cast<char*>(STRA));
 
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
 				auto [err, robj] = reverseString.bind<char*>(StrStatic())(const_cast<char*>(STRA));
 
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			}
 		}

@@ -51,7 +51,7 @@ Yes — `rtl::function`’s dispatch is faster than `std::function`.
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re done!
+Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re ready!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	// Register free(C-Style) function -

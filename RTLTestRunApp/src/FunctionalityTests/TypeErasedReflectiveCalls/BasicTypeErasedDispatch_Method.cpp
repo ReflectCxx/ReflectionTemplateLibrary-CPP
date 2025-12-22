@@ -58,12 +58,12 @@ namespace rtl_tests
 			{
 				auto [err, robj] = reverseString(StrMute())(const_cast<char*>(STRA));
 
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
 				auto [err, robj] = reverseString.bind<char*>(StrMute())(const_cast<char*>(STRA));
 
-				EXPECT_EQ(err, rtl::error::InvalidCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			}
 		}

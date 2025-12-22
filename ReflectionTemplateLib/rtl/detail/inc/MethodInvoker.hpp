@@ -282,7 +282,9 @@ namespace rtl::detail
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
-
+        if (pHopper.get_init_error() != error::None) {
+            pHopper.set_init_error(error::SignatureMismatch);
+        }
         if (isReturnTvoid) {
             pHopper.get_rhop().clear();
         }
