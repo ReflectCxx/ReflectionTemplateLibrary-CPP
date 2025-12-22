@@ -33,7 +33,7 @@ namespace rtl::detail
         * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
     */  template<class ..._signature>
     template<class ..._args>
-    ForceInline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_target->isEmpty()) [[unlikely]] {
             //if the target is empty.
@@ -60,7 +60,7 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    ForceInline Return
+    inline Return
         DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
             const RObject& pTarget,
             _args&&... params)
@@ -98,7 +98,7 @@ namespace rtl::detail
         * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
     */  template<class ..._signature>
     template<class ..._args>
-    ForceInline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
+    inline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
     {
         if (m_target->isEmpty()) [[unlikely]] {
             //if the target is empty.
@@ -124,7 +124,7 @@ namespace rtl::detail
     template<class ..._signature>
     template<class ..._invokSignature>
     template<class ..._args>
-    ForceInline Return
+    inline Return
         NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
             const RObject& pTarget,
             _args&&... params)

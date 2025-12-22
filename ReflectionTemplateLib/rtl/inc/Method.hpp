@@ -16,14 +16,14 @@
 namespace rtl
 {
     template<class ..._signature>
-    ForceInline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
+    inline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
     {
         return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
 
     template<class ..._signature>
-    ForceInline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
+    inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
         return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
@@ -39,22 +39,6 @@ namespace rtl
     constexpr const detail::HopFunction<detail::member::Static, signatureT...> Method::argsT() const
     {
         return detail::Hopper<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
-    }
-
-/*  @method: invokeCtor()
-    @params: variable arguments.
-    @return: RStatus
-    * calls the constructor with given arguments.
-*/  template<class ..._args>
-    inline Return Method::invokeCtor(alloc pAllocType, const detail::FunctorId& pClonerId, _args&& ...params) const
-    {
-        using Container = detail::FunctorContainer<alloc, detail::FunctorId, std::remove_reference_t<_args>...>;
-
-        const detail::FunctorId* functorId = hasFunctorId(Container::getContainerId());
-        if (functorId != nullptr) [[likely]] {
-            return Container::template forwardCall<_args...>(*functorId, pAllocType, pClonerId, std::forward<_args>(params)...);
-        }
-        return { error::SignatureMismatch, RObject{} };
     }
 
 

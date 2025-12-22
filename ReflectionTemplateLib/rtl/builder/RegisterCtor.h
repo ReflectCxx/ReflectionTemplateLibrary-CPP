@@ -45,7 +45,7 @@ namespace rtl::detail
                 return type_meta();
             };
 
-            type_meta typeMeta = init<signature_t...>(isRegistered, doRegister);
+            type_meta typeMeta = init<Return, signature_t...>(isRegistered, doRegister);
             const auto& signatureStr = (TypeId<record_t>::toString() + "::(" + TypeId<signature_t...>::toString() + ")");
 
             return {

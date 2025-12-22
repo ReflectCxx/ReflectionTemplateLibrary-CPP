@@ -94,8 +94,6 @@ namespace rtl {
         template<class ...signatureT>
         constexpr const detail::HopFunction<detail::member::None, signatureT...> argsT() const;
 
-        bool hasSignature() const;
-
         template<class ..._args>
         bool hasSignature() const;
 

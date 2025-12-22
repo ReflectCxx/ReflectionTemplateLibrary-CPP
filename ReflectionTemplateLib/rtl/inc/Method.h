@@ -38,10 +38,6 @@ namespace rtl {
             : Function(pFunction, pFunctorMeta, pFunctorId, pFunctorName)
         { }
 
-        //invokes the constructor associated with this 'Method'
-        template<class ..._args>
-        Return invokeCtor(alloc pAllocType, const detail::FunctorId& pClonerId, _args&&...params) const;
-
     public:
 
         Method() = default;

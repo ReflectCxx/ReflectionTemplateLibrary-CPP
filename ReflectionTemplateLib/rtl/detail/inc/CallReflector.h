@@ -31,7 +31,7 @@ namespace rtl::detail {
         * gets the lambda vector from '_derivedType' and calls the lambda at given index with '_args'.
         * this 'forwardCall' is for calling lambda containing member-function functors.
     */  template<class ..._params>
-        ForceInline static Return forwardCall(const detail::FunctorId& pFunctorId, const rtl::RObject& pTarget, _params&&..._args)
+        inline static Return forwardCall(const detail::FunctorId& pFunctorId, const rtl::RObject& pTarget, _params&&..._args)
         {
             //'getMethodFunctors()' is implemented by _derivedType (MethodContainer)
             return _derivedType::getMethodFunctors()[pFunctorId.m_lambdaIndex](pFunctorId, pTarget, std::forward<_params>(_args)...);
