@@ -32,7 +32,7 @@ namespace rtl
     template<class recordT, class ...signatureT>
     inline constexpr detail::Hopper<detail::member::None, recordT> Method::targetT() const
     {
-        return detail::Hopper<detail::member::None, recordT>{ getFunctorsMeta() };
+        return detail::Hopper<detail::member::None, recordT>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
     template<class ...signatureT>

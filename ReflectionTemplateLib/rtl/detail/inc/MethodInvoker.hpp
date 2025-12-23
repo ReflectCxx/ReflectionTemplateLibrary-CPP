@@ -41,7 +41,7 @@ namespace rtl::detail
         }
         else if (m_target->getTypeId() != m_method->getRecordTypeId()) [[unlikely]] {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, RObject{} };
+            return { error::TargetTypeMismatch, RObject{} };
         }
         else [[likely]]
         {
@@ -106,7 +106,7 @@ namespace rtl::detail
         }
         else if (m_target->getTypeId() != m_method->getRecordTypeId()) [[unlikely]] {
             //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetMismatch, RObject{} };
+            return { error::TargetTypeMismatch, RObject{} };
         }
         else [[likely]]
         {
@@ -206,7 +206,7 @@ namespace rtl::detail
             if constexpr (!std::is_same_v<record_t, RObject>)
             {
                 if (recordId != ty_meta.get_record_id()) {
-                    return { rtl::index_none, fnTyMetas };
+                    return { rtl::index_none, m_recordId, fnTyMetas };
                 }
             }
             if (normalId == ty_meta.get_normal_args_id())
@@ -228,7 +228,7 @@ namespace rtl::detail
                 break;
             }
         }
-        return { index, fnTyMetas };
+        return { index, m_recordId, fnTyMetas };
     }
 
 
@@ -282,9 +282,14 @@ namespace rtl::detail
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
+
         if (pHopper.get_init_error() != error::None) {
             pHopper.set_init_error(error::SignatureMismatch);
         }
+        else {
+            pHopper.set_record_id(m_recordId);
+        }
+
         if (isReturnTvoid) {
             pHopper.get_rhop().clear();
         }

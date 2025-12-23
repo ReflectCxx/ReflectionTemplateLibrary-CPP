@@ -69,35 +69,55 @@ namespace rtl_tests
 
         {
             // Lookup the const method empty() in std::vector<int>.
-            std::optional<rtl::Method> isEmpty = classVectorInt->getMethod("empty");
-            ASSERT_TRUE(isEmpty);
+            std::optional<rtl::Method> mthIsEmpty = classVectorInt->getMethod("empty");
+            ASSERT_TRUE(mthIsEmpty);
+            {
+                // materialize the caller.
+                rtl::method<rtl::RObject, rtl::Return()> isEmpty = mthIsEmpty->targetT().argsT().returnT();
+                EXPECT_TRUE(isEmpty);
 
-            // Bind the reflected method to the object and call it.
-            // Exception-free API: returns error code + result object.
-            auto [err, ret] = isEmpty->bind(robj).call();
-            EXPECT_TRUE(err == rtl::error::None);
-            ASSERT_FALSE(ret.isEmpty());
+                // Exception-free API: returns error code + result object.
+                auto [err, ret] = isEmpty(robj)();
+                EXPECT_TRUE(err == rtl::error::None);
+                ASSERT_FALSE(ret.isEmpty());
 
-            // Safe typed access to return value via rtl::view<bool>.
-            std::optional<rtl::view<bool>> rview = ret.view<bool>();
-            ASSERT_TRUE(rview);
-            EXPECT_TRUE(rview->get()); // Newly created vector should be empty.
+                // Safe typed access to return value via rtl::view<bool>.
+                std::optional<rtl::view<bool>> rview = ret.view<bool>();
+                ASSERT_TRUE(rview);
+                EXPECT_TRUE(rview->get()); // Newly created vector should be empty.
+            } {
+                // materialize the caller with known return type and erased target.
+                rtl::method<rtl::RObject, bool()> isEmpty = mthIsEmpty->targetT().argsT().returnT<bool>();
+                EXPECT_TRUE(isEmpty);
+
+                auto [err, ret] = isEmpty(robj)();
+                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_TRUE(ret.has_value());
+                EXPECT_EQ(ret.value(), true);
+            }
         }
 
         // Prepare a native vector with values to push.
         std::vector<int> intArr0 = { 1565, 7271, 4357 };
         {
             // Lookup push_back method and call it multiple times with different values.
-            std::optional<rtl::Method> push = classVectorInt->getMethod("push_back");
-            ASSERT_TRUE(push);
+            std::optional<rtl::Method> mthPushBack = classVectorInt->getMethod("push_back");
+            ASSERT_TRUE(mthPushBack);
+
+            // TODO: specialize caller for known 'void' return type.
+            // due to std::optional<void>, compiler error for now -
+            // rtl::method<rtl::RObject, void(int)> pushBack = mthPushBack->targetT().argsT<int>().returnT<void>();
+            
+            rtl::method<rtl::RObject, rtl::Return(int)> pushBack = mthPushBack->targetT().argsT<int>().returnT();
+            EXPECT_TRUE(pushBack);
             {
-                auto [err, ret] = push->bind<const int&>(robj).call(intArr0[0]);
+                auto [err, ret] = pushBack(robj)(intArr0[0]);
                 EXPECT_TRUE(err == rtl::error::None);
             } {
-                auto [err, ret] = push->bind<const int&>(robj).call(intArr0[1]);
+                auto [err, ret] = pushBack(robj)(intArr0[1]);
                 EXPECT_TRUE(err == rtl::error::None);
             } {
-                auto [err, ret] = push->bind<const int&>(robj).call(intArr0[2]);
+                auto [err, ret] = pushBack(robj)(intArr0[2]);
                 EXPECT_TRUE(err == rtl::error::None);
             }
         }
@@ -131,17 +151,17 @@ namespace rtl_tests
                       This registration is ignored.     */
         });
 
-        std::optional<rtl::Function> optCstrLen = cxxMirror.getFunction("strlen");
-        ASSERT_TRUE(optCstrLen);
+        std::optional<rtl::Function> fnCStrLen = cxxMirror.getFunction("strlen");
+        ASSERT_TRUE(fnCStrLen);
 
-        rtl::function<rtl::Return(const char*)> cstrlen_fn = optCstrLen->argsT<const char*>().returnT<>();
-        EXPECT_TRUE(cstrlen_fn);
-        EXPECT_EQ(cstrlen_fn.get_init_error(), rtl::error::None);
+        rtl::function<rtl::Return(const char*)> cstrlen = fnCStrLen->argsT<const char*>().returnT<>();
+        EXPECT_TRUE(cstrlen);
+        EXPECT_EQ(cstrlen.get_init_error(), rtl::error::None);
         {
             // Case 1: normal pointer (deduces as 'const char*')
             const char* cstr = "Reflection Template Library C++";
 
-            auto [err, ret] = cstrlen_fn(cstr);
+            auto [err, ret] = cstrlen(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -157,7 +177,7 @@ namespace rtl_tests
             // Case 2: constexpr top-level const (deduces as 'const char* const&')
             constexpr const char* cstr = "Reflection Template Library C++";
 
-            auto [err, ret] = cstrlen_fn(cstr);
+            auto [err, ret] = cstrlen(cstr);
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());
@@ -171,7 +191,7 @@ namespace rtl_tests
             EXPECT_EQ(rlen, clen);
         } {
             // Case 3: string literal (deduces as const char[N], here const char[32])
-            auto [err, ret] = cstrlen_fn("Reflection Template Library C++");
+            auto [err, ret] = cstrlen("Reflection Template Library C++");
             ASSERT_TRUE(err == rtl::error::None);
 
             ASSERT_FALSE(ret.isEmpty());

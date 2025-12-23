@@ -101,6 +101,8 @@ namespace rtl::detail
     {
         std::size_t m_fnIndex;
 
+        traits::uid_t m_recordId;
+
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
         template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
@@ -116,6 +118,8 @@ namespace rtl::detail
     template<member member_kind, class record_t>
     struct Hopper
     {
+        const traits::uid_t m_recordId;
+
         const std::vector<rtl::type_meta>& m_functorsMeta;
 
         template<class ...signature_t>

@@ -22,8 +22,8 @@ namespace rtl
         InvalidCaller,
         NotWrapperType,
 
-        TargetMismatch,
         SignatureMismatch,
+        TargetTypeMismatch,
         ReturnTypeMismatch,
         RefBindingMismatch,
         ExplicitRefBindingRequired,
@@ -64,7 +64,7 @@ namespace rtl
             return "Invalid callable: rtl::static_method being used to call a non-static method; use rtl::method instead.";
         case error::FunctionNotRegistered:
             return "Function not registered: The requested erase_function/method is not registered in the Reflection system";
-        case error::TargetMismatch:
+        case error::TargetTypeMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
         case error::NonConstOverloadMissing:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";

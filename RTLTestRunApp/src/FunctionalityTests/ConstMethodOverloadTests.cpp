@@ -54,12 +54,12 @@ namespace rtl_tests
             {
                 auto [err, ret] = updateLastName->bind(constCast(book)).call(lastName);
 
-                EXPECT_TRUE(err == error::TargetMismatch);
+                EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 auto [err, ret] = updateLastName->bind(constCast(book)).call(lastName);
 
-                EXPECT_TRUE(err == error::TargetMismatch);
+                EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
             }
         }

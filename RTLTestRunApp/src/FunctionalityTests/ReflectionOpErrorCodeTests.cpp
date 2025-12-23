@@ -270,7 +270,9 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
+            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)
+                                       ->targetT().argsT().returnT()(emptyObj)();
+
             EXPECT_TRUE(err == error::EmptyRObject);
             ASSERT_TRUE(ret.isEmpty());
         }
@@ -291,11 +293,14 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(getPublishedOn);
+            optional<Method> mthGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(mthGetPublishedOn);
+            
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = mthGetPublishedOn->targetT().argsT().returnT();
+            EXPECT_TRUE(getPublishedOn);
 
-            auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::TargetMismatch);
+            auto [err1, ret] = getPublishedOn(person)();
+            EXPECT_TRUE(err1 == error::TargetTypeMismatch);
             ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -316,11 +321,14 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(getPublishedOn);
+            optional<Method> mthGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(mthGetPublishedOn);
 
-            auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::TargetMismatch);
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = mthGetPublishedOn->targetT().argsT().returnT();
+            EXPECT_TRUE(getPublishedOn);
+
+            auto [err1, ret] = getPublishedOn(person)();
+            EXPECT_TRUE(err1 == error::TargetTypeMismatch);
             ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());

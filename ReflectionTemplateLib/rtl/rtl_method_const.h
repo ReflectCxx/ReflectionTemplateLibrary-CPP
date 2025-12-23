@@ -69,6 +69,8 @@ namespace rtl
         fptr_t m_functor = nullptr;
         error m_init_err = error::InvalidCaller;
 
+        void set_record_id(const traits::uid_t) {}
+
         void set_init_error(error p_err) {
             m_init_err = p_err;
         }
