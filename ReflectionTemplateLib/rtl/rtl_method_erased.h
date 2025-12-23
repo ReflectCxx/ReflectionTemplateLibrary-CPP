@@ -32,6 +32,10 @@ namespace rtl
                     return { fn.m_last_err, RObject{} };
                 }
 
+                if (fn.must_bind_refs()) [[unlikely]] {
+                    return { error::ExplicitRefBindingRequired, RObject{} };
+                }
+
                 auto index = (fn.m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
                 if (fn.m_functors[index]->is_void())
                 {
@@ -163,10 +167,6 @@ namespace rtl
                 }
                 if (m_record_id != p_target.getTypeId()) {
                     m_last_err = error::TargetTypeMismatch;
-                    return;
-                }
-                if (must_bind_refs()) {
-                    m_last_err = error::ExplicitRefBindingRequired;
                     return;
                 }
             }

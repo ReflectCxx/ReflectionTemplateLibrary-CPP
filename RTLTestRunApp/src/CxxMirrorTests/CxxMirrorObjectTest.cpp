@@ -69,11 +69,11 @@ namespace rtl_tests
 
         {
             // Lookup the const method empty() in std::vector<int>.
-            std::optional<rtl::Method> mthIsEmpty = classVectorInt->getMethod("empty");
-            ASSERT_TRUE(mthIsEmpty);
+            std::optional<rtl::Method> oIsEmpty = classVectorInt->getMethod("empty");
+            ASSERT_TRUE(oIsEmpty);
             {
                 // materialize the caller.
-                rtl::method<rtl::RObject, rtl::Return()> isEmpty = mthIsEmpty->targetT().argsT().returnT();
+                rtl::method<rtl::RObject, rtl::Return()> isEmpty = oIsEmpty->targetT().argsT().returnT();
                 EXPECT_TRUE(isEmpty);
 
                 // Exception-free API: returns error code + result object.
@@ -87,7 +87,7 @@ namespace rtl_tests
                 EXPECT_TRUE(rview->get()); // Newly created vector should be empty.
             } {
                 // materialize the caller with known return type and erased target.
-                rtl::method<rtl::RObject, bool()> isEmpty = mthIsEmpty->targetT().argsT().returnT<bool>();
+                rtl::method<rtl::RObject, bool()> isEmpty = oIsEmpty->targetT().argsT().returnT<bool>();
                 EXPECT_TRUE(isEmpty);
 
                 auto [err, ret] = isEmpty(robj)();
@@ -101,14 +101,14 @@ namespace rtl_tests
         std::vector<int> intArr0 = { 1565, 7271, 4357 };
         {
             // Lookup push_back method and call it multiple times with different values.
-            std::optional<rtl::Method> mthPushBack = classVectorInt->getMethod("push_back");
-            ASSERT_TRUE(mthPushBack);
+            std::optional<rtl::Method> oPushBack = classVectorInt->getMethod("push_back");
+            ASSERT_TRUE(oPushBack);
 
             // TODO: specialize caller for known 'void' return type.
             // due to std::optional<void>, compiler error for now -
-            // rtl::method<rtl::RObject, void(int)> pushBack = mthPushBack->targetT().argsT<int>().returnT<void>();
+            // rtl::method<rtl::RObject, void(int)> pushBack = oPushBack->targetT().argsT<int>().returnT<void>();
             
-            rtl::method<rtl::RObject, rtl::Return(int)> pushBack = mthPushBack->targetT().argsT<int>().returnT();
+            rtl::method<rtl::RObject, rtl::Return(int)> pushBack = oPushBack->targetT().argsT<int>().returnT();
             EXPECT_TRUE(pushBack);
             {
                 auto [err, ret] = pushBack(robj)(intArr0[0]);

@@ -293,10 +293,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> mthGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(mthGetPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(oGetPublishedOn);
             
-            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = mthGetPublishedOn->targetT().argsT().returnT();
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
             EXPECT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn(person)();
@@ -321,10 +321,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> mthGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(mthGetPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(oGetPublishedOn);
 
-            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = mthGetPublishedOn->targetT().argsT().returnT();
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
             EXPECT_TRUE(getPublishedOn);
 
             auto [err1, ret] = getPublishedOn(person)();

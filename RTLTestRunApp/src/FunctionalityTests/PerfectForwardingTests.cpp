@@ -44,21 +44,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for an R-value reference.
-            const auto& isValid = setAnimalName->hasSignature<std::string&&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with an R-value reference.
-            auto [err1, ret1] = setAnimalName->bind<std::string&&>(animal).call(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -85,22 +86,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a non-const L-value reference.
-            const auto& isValid = setAnimalName->hasSignature<std::string&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a non-const L-value reference.
-            auto nameStr = std::string(animal::NAME);
-            auto [err1, ret1] = setAnimalName->bind<std::string&>(animal).call(nameStr);
+            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -127,22 +128,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
-            const auto& isValid = setAnimalName->hasSignature<const std::string&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            const auto nameStr = std::string(animal::NAME);
-            auto [err1, ret1] = setAnimalName->bind<const std::string&>(animal).call(nameStr);
+            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             EXPECT_TRUE(ret1.isEmpty());
@@ -171,21 +172,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for an R-value reference.
-            const auto& isValid = setAnimalName->hasSignature<std::string&&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with an R-value reference.
-            auto [err1, ret1] = setAnimalName->bind<std::string&&>(animal).call(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -212,22 +214,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a non-const L-value reference.
-            const auto& isValid = setAnimalName->hasSignature<std::string&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a non-const L-value reference.
-            auto nameStr = std::string(animal::NAME);
-            auto [err1, ret1] = setAnimalName->bind<std::string&>(animal).call(nameStr);
+            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -254,22 +256,22 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            // Retrieve the "setAnimalName" method.
-            optional<Method> setAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
-            ASSERT_TRUE(setAnimalName);
-
             // Create an instance of the "Animal" class.
             auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
-            const auto& isValid = setAnimalName->hasSignature<const std::string&>();
-            EXPECT_TRUE(isValid);
+            EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
+            EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            const auto nameStr = std::string(animal::NAME);
-            auto [err1, ret1] = setAnimalName->bind<const std::string&>(animal).call(nameStr);
+            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME);
 
             EXPECT_TRUE(err1 == error::None);
             EXPECT_TRUE(ret1.isEmpty());
@@ -290,19 +292,19 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(optUpdateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(oUpdateZooKeeper);
 
-            const auto& isValid = optUpdateZooKeeper->hasSignature<std::string&&>();
+            const auto& isValid = oUpdateZooKeeper->hasSignature<std::string&&>();
             EXPECT_TRUE(isValid);
 
-            auto updateZooKeeperFn = optUpdateZooKeeper->argsT<std::string>().returnT<>();
+            auto updateZooKeeper = oUpdateZooKeeper->argsT<std::string>().returnT<>();
             {
-                auto [err, ret] = updateZooKeeperFn(animal::ZOO_KEEPER);
+                auto [err, ret] = updateZooKeeper(animal::ZOO_KEEPER);
                 EXPECT_TRUE(err == error::ExplicitRefBindingRequired);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateZooKeeperFn.bind<std::string&&>()(animal::ZOO_KEEPER);
+                auto [err, ret] = updateZooKeeper.bind<std::string&&>()(animal::ZOO_KEEPER);
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_FALSE(ret.isEmpty());
@@ -324,17 +326,16 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(optUpdateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(oUpdateZooKeeper);
 
-            const auto& isValid = optUpdateZooKeeper->hasSignature<const std::string&>();
+            const auto& isValid = oUpdateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = optUpdateZooKeeper.value()
-                                                                                             .argsT<std::string>()
-                                                                                             .returnT<>();
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeper = oUpdateZooKeeper->argsT<std::string>()
+                                                                                            .returnT<>();
 
-            auto [err, ret] = updateZooKeeperMth.bind<const std::string&>()(animal::ZOO_KEEPER);
+            auto [err, ret] = updateZooKeeper.bind<const std::string&>()(animal::ZOO_KEEPER);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -355,16 +356,15 @@ namespace rtl_tests
             optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> optUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
-            ASSERT_TRUE(optUpdateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            ASSERT_TRUE(oUpdateZooKeeper);
 
-            const auto& isValid = optUpdateZooKeeper->hasSignature<const std::string&>();
+            const auto& isValid = oUpdateZooKeeper->hasSignature<const std::string&>();
             EXPECT_TRUE(isValid);
 
-            rtl::static_method<rtl::Return(std::string)> updateZooKeeperMth = optUpdateZooKeeper.value()
-                                                                                             .argsT<std::string>()
-                                                                                             .returnT<>();
-            auto [err, ret] = updateZooKeeperMth.bind<std::string&>()(animal::ZOO_KEEPER);
+            rtl::static_method<rtl::Return(std::string)> updateZooKeeper = oUpdateZooKeeper->argsT<std::string>()
+                                                                                            .returnT<>();
+            auto [err, ret] = updateZooKeeper.bind<std::string&>()(animal::ZOO_KEEPER);
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
