@@ -17,10 +17,8 @@
 
 namespace rtl::detail 
 {
-    class SetupDispatch
+    struct SetupDispatch
     {
-    protected:
-
         template<class ...>
         static type_meta init( std::function<type_meta()> isRegistered,
                                std::function<type_meta()> doRegister ) {

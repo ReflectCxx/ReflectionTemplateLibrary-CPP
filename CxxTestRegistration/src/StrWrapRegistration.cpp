@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringWrap(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(StrWrapA::struct_, rtl::detail::TypeId<StrWrapA>::get()));
-        id.insert(std::make_pair(StrWrapB::struct_, rtl::detail::TypeId<StrWrapB>::get()));
-        id.insert(std::make_pair(StrWrapC::struct_, rtl::detail::TypeId<StrWrapC>::get()));
-        id.insert(std::make_pair(StrWrapD::struct_, rtl::detail::TypeId<StrWrapD>::get()));
+        id.insert(std::make_pair(StrWrapA::struct_, rtl::traits::uid<StrWrapA>::value));
+        id.insert(std::make_pair(StrWrapB::struct_, rtl::traits::uid<StrWrapB>::value));
+        id.insert(std::make_pair(StrWrapC::struct_, rtl::traits::uid<StrWrapC>::value));
+        id.insert(std::make_pair(StrWrapD::struct_, rtl::traits::uid<StrWrapD>::value));
     }
 
 	void registerTypeStringWrap(std::vector<rtl::Function>& fns)

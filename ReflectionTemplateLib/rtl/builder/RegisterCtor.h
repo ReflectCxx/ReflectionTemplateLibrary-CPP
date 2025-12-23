@@ -51,16 +51,22 @@ namespace rtl::detail
                 }
                 return type_meta();
             };
-
-            type_meta typeMeta = init<Return, signature_t...>(isRegistered, doRegister);
+            
+            type_meta typeMeta;
+            if constexpr (sizeof...(signature_t) == 0) {
+                typeMeta = init<Return, alloc>(isRegistered, doRegister);
+            }
+            else {
+                typeMeta = init<Return, signature_t...>(isRegistered, doRegister);
+            }
             const auto& signatureStr = (TypeId<record_t>::toString() + "::(" + TypeId<signature_t...>::toString() + ")");
 
             return {
                 typeMeta,
                 FunctorId {
                     rtl::index_none,
-                    TypeId<record_t>::get(),
-                    TypeId<record_t>::get(),
+                    typeMeta.get_return_id(),
+                    typeMeta.get_record_id(),
                     typeMeta.get_strict_args_id(),
                     signatureStr,
                     &typeMeta.get_functor()

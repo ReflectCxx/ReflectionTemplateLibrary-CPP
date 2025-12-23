@@ -27,7 +27,7 @@ namespace rtl::detail
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
             return std::any(srcObj.c_str());
         };
-        conversions().emplace_back(std::pair(TypeId<char>::get(), conversion));
+        conversions().emplace_back(std::pair(traits::uid<char>::value, conversion));
     }
 
 
@@ -42,7 +42,7 @@ namespace rtl::detail
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(srcObj.data());
         };
-        conversions().emplace_back(std::pair(TypeId<char>::get(), conversion));
+        conversions().emplace_back(std::pair(traits::uid<char>::value, conversion));
     }
 
 
@@ -58,6 +58,6 @@ namespace rtl::detail
             const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
             return std::any(_toType(srcObj));
         };
-        conversions().emplace_back(std::pair(TypeId<_toType>::get(), conversion));
+        conversions().emplace_back(std::pair(traits::uid<_toType>::value, conversion));
     }
 }

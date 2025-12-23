@@ -10,9 +10,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdCalender(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdCalender(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(calender::struct_, rtl::detail::TypeId<nsdate::Calender>::get()));
+        id.insert(std::make_pair(calender::struct_, rtl::traits::uid<nsdate::Calender>::value));
     }
 
 	void registerTypeCalender(std::vector<rtl::Function>& fns)

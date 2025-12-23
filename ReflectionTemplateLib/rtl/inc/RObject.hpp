@@ -80,7 +80,7 @@ namespace rtl
                     return true;
                 }
             }
-            const auto& typeId = detail::TypeId<T>::get();
+            const auto& typeId = traits::uid<T>::value;
             return (m_objectId.m_typeId == typeId || getConverterIndex(typeId) != index_none);
         }
     }
@@ -115,7 +115,7 @@ namespace rtl
 
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
+            if (traits::uid<T>::value == m_objectId.m_wrapperTypeId) [[likely]]
             {
                 using U = detail::RObjectUPtr<typename traits::std_wrapper<T>::value_type>;
                 const U& uptrRef = *(detail::RObjExtractor{ this }.getWrapper<T>());
@@ -135,7 +135,7 @@ namespace rtl
 
         if constexpr (traits::is_bare_type<T>())
         {
-            if (detail::TypeId<T>::get() == m_objectId.m_wrapperTypeId) [[likely]]
+            if (traits::uid<T>::value == m_objectId.m_wrapperTypeId) [[likely]]
             {
                 const T* sptrRef = detail::RObjExtractor{ this }.getWrapper<T>();
                 if (sptrRef != nullptr) {
@@ -156,7 +156,7 @@ namespace rtl
 
         if constexpr (traits::is_bare_type<T>())
         {
-            const std::size_t asTypeId = detail::TypeId<T>::get();
+            const std::size_t asTypeId = traits::uid<T>::value;
             if (asTypeId == m_objectId.m_typeId) [[likely]]
             {
                 const T* valRef = detail::RObjExtractor{ this }.getPointer<T>();

@@ -47,7 +47,7 @@ namespace rtl
 */  template<>
     inline const builder::Builder<detail::member::None> type_ns::function(const std::string_view pFunction)
     {
-        return builder::Builder<detail::member::None>(detail::TypeId<>::None, pFunction, m_namespace);
+        return builder::Builder<detail::member::None>(traits::uid<>::none, pFunction, m_namespace);
     }
 
 		
@@ -60,7 +60,7 @@ namespace rtl
 */  template<class _recordType>
     inline constexpr const builder::RecordBuilder<_recordType> type_ns::record(const std::string_view pClass)
     {
-        return builder::RecordBuilder<_recordType>(m_namespace, pClass, detail::TypeId<_recordType>::get());
+        return builder::RecordBuilder<_recordType>(m_namespace, pClass, traits::uid<_recordType>::value);
     }
 
 		
@@ -75,6 +75,6 @@ namespace rtl
 */  template<class ..._signature>
     inline constexpr const builder::Builder<detail::member::None, _signature...> type_ns::function(const std::string_view pFunction)
     {
-        return builder::Builder<detail::member::None, _signature...>(detail::TypeId<>::None, pFunction, m_namespace);
+        return builder::Builder<detail::member::None, _signature...>(traits::uid<>::none, pFunction, m_namespace);
     }
 }

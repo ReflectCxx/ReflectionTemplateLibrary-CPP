@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <rtl_traits.h>
 
 namespace rtl {
 	class Function;
@@ -37,27 +38,27 @@ namespace test_mirror
 	extern void registerTypeStringStatic(std::vector<rtl::Function>&);
 
 //---------------------------------------------------------------------------------
-	extern void addTypeIdPodStd(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdPodStd(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdDate(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdEvent(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdCalender(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdCalender(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdPerson(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdPerson(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdBook(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdLibrary(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdAnimal(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringWrap(std::unordered_map<std::string, std::size_t>&); 
+	extern void addTypeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>&); 
 	
-	extern void addTypeIdStringMute(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringConst(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdStringConst(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringStatic(std::unordered_map<std::string, std::size_t>&);
+	extern void addTypeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>&);
 }

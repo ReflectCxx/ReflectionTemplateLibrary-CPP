@@ -32,7 +32,7 @@ namespace rtl::detail
         std::size_t m_returnId;
 
         //if functor is a member-function, type id of class/struct it belongs to.
-        std::size_t m_recordId;
+        traits::uid_t m_recordId;
 
         //containerId of the functor-table.
         std::size_t m_containerId;
@@ -43,7 +43,7 @@ namespace rtl::detail
         const dispatch::functor* m_functor = nullptr;
 
         GETTER(std::size_t, ReturnId, m_returnId);
-        GETTER(std::size_t, RecordId, m_recordId);
+        GETTER(traits::uid_t, RecordId, m_recordId);
         GETTER(std::size_t, SignatureId, m_containerId)
         GETTER_CREF(std::string, SignatureStr, m_signature)
         GETTER_CREF(dispatch::functor, _functor, (*m_functor))

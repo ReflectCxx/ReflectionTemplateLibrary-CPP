@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringMute(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(StrMute::struct_, rtl::detail::TypeId<StrMute>::get()));
+        id.insert(std::make_pair(StrMute::struct_, rtl::traits::uid<StrMute>::value));
     }
 
 	void registerTypeStringMute(std::vector<rtl::Function>& fns)

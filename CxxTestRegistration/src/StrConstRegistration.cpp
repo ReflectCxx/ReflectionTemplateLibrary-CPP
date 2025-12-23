@@ -8,9 +8,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringConst(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdStringConst(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(StrConst::struct_, rtl::detail::TypeId<StrConst>::get()));
+        id.insert(std::make_pair(StrConst::struct_, rtl::traits::uid<StrConst>::value));
     }
 
     void registerTypeStringConst(std::vector<rtl::Function>& fns)

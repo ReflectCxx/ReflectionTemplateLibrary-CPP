@@ -38,7 +38,7 @@ namespace rtl {
         detail::member m_member_kind;
 
         //type id of class/struct (if it represents a member-function, else always '0')
-        std::size_t m_recordTypeId;
+        traits::uid_t m_recordTypeId;
 
         //name of the class/struct it belongs to, empty for non-member function.
         std::string m_record;
@@ -58,7 +58,7 @@ namespace rtl {
 
         Function(const std::string_view pNamespace, const std::string_view pClassName,
                  const std::string_view pFuncName, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                 const std::size_t pRecordTypeId, const detail::member pQualifier);
+                 traits::uid_t pRecordTypeId, const detail::member pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
@@ -80,7 +80,7 @@ namespace rtl {
     public:
 
         //simple inlined getters.
-        GETTER(std::size_t, RecordTypeId, m_recordTypeId);
+        GETTER(traits::uid_t, RecordTypeId, m_recordTypeId);
         GETTER_CREF(std::string, RecordName, m_record);
         GETTER_CREF(std::string, Namespace, m_namespace);
         GETTER_CREF(std::string, FunctionName, m_function);

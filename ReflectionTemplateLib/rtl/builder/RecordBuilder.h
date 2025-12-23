@@ -30,11 +30,11 @@ namespace rtl {
         {
             const std::string_view m_record;
             const std::string_view m_namespace;
-            const std::size_t m_recordId;
+            const traits::uid_t m_recordId;
 
         public:
 
-            RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, std::size_t pRecordId);
+            RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, traits::uid_t pRecordId);
 
             const Function build() const;
         };

@@ -87,9 +87,9 @@ namespace rtl {
         {
             const std::string& nameSpace = pFunction.getNamespace();
             const std::string& recordName = pFunction.getRecordName();
-            const std::size_t recordId = pFunction.getRecordTypeId();
+            const traits::uid_t recordId = pFunction.getRecordTypeId();
             //if the recordId(class/struct's type-id) is TypeId<>::None, 'Function' object is considered as non-member function.
-            if (recordId == TypeId<>::None)
+            if (recordId == traits::uid<>::none)
             {
                 const auto& itr = m_functionNamespaceMap.find(nameSpace);
                 if (itr == m_functionNamespaceMap.end()) {
@@ -127,9 +127,9 @@ namespace rtl {
             for (auto& function : pFunctions) {
 
                 const auto& recordName = function.getRecordName();
-                const std::size_t recordId = function.getRecordTypeId();
+                const traits::uid_t recordId = function.getRecordTypeId();
                 const bool isConstructor = (function.getFunctionName() == ctor_name());
-                if (recordId != TypeId<>::None && (isConstructor || !recordName.empty()))
+                if (recordId != traits::uid<>::none && (isConstructor || !recordName.empty()))
                 {
                     const auto& itr = m_recordIdMap.find(recordId);
                     if (itr == m_recordIdMap.end()) {
@@ -174,8 +174,8 @@ namespace rtl {
     *   Here, the record is being created for `std::string_view`, but the method pointer belongs to `std::string`.
     */  const bool CxxReflection::validateFunctionByRecordId(const Function& pFunction)
         {
-            const std::size_t givenRecordId = pFunction.getRecordTypeId();
-            const std::size_t actualRecordId = pFunction.getFunctorIds()[0].getRecordId(); //Index 0 is always guaranteed to reference a valid functor.
+            const traits::uid_t givenRecordId = pFunction.getRecordTypeId();
+            const traits::uid_t actualRecordId = pFunction.getFunctorIds()[0].getRecordId(); //Index 0 is always guaranteed to reference a valid functor.
             if (givenRecordId != actualRecordId) {
                 std::cout << "\n[WARNING] Member function pointer does not belong to the class being registered."
                           << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
@@ -188,8 +188,8 @@ namespace rtl {
 
         bool CxxReflection::insertFunctionToRecordIdMap(const Function& pFunction)
         {
-            const std::size_t recordId = pFunction.getRecordTypeId();
-            if (recordId != TypeId<>::None && pFunction.m_record.empty() && pFunction.m_function != ctor_name())
+            const traits::uid_t recordId = pFunction.getRecordTypeId();
+            if (recordId != traits::uid<>::none && pFunction.m_record.empty() && pFunction.m_function != ctor_name())
             {
                 const auto& itr = m_recordIdMap.find(recordId);
                 if (itr != m_recordIdMap.end()) {

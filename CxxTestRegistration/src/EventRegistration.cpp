@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-	void addTypeIdEvent(std::unordered_map<std::string, std::size_t>& id)
+	void addTypeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>& id)
 	{
-		id.insert(std::make_pair(event::struct_, rtl::detail::TypeId<nsdate::Event>::get()));
+		id.insert(std::make_pair(event::struct_, rtl::traits::uid<nsdate::Event>::value));
 	}
 
 	void registerTypeEvent(std::vector<rtl::Function>& fns)

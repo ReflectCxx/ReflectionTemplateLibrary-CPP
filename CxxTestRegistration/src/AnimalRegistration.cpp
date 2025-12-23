@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdAnimal(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(animal::class_, rtl::detail::TypeId<Animal>::get()));
+        id.insert(std::make_pair(animal::class_, rtl::traits::uid<Animal>::value));
     }
 
 	void registerTypeAnimal(std::vector<rtl::Function>& fns)

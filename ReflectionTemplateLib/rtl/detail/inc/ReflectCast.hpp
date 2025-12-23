@@ -54,7 +54,7 @@ namespace rtl::detail
                     return std::any();
                 }
             };
-            conversions().emplace_back(std::pair(TypeId<_toType>::get(), conversion));
+            conversions().emplace_back(std::pair(traits::uid<_toType>::value, conversion));
         }
     }
 }

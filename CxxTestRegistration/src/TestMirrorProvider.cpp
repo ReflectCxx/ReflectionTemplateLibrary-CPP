@@ -1,12 +1,11 @@
 
 #include <iostream>
 #include <filesystem>
-
 #include <CxxMirror.hpp>
 
-#include "TestMirrorProvider.h"
 #include "Registration.h"
 #include "CxxMirrorToJson.h"
+#include "TestMirrorProvider.h"
 
 namespace test_mirror
 {
@@ -50,11 +49,11 @@ namespace test_mirror
         return cxx_mirror;
     }
 
-    const std::size_t cxx::reflected_id(const std::string& pRecordName)
+    const rtl::traits::uid_t cxx::reflected_id(const std::string& pRecordName)
     {
-        static std::unordered_map<std::string, std::size_t> nameIdMap = []()
+        static std::unordered_map<std::string, rtl::traits::uid_t> nameIdMap = []()
         {
-            std::unordered_map<std::string, std::size_t> idMap;
+            std::unordered_map<std::string, rtl::traits::uid_t> idMap;
             
             addTypeIdBook(idMap);
             addTypeIdDate(idMap);

@@ -10,9 +10,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdLibrary(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(library::class_, rtl::detail::TypeId<Library>::get()));
+        id.insert(std::make_pair(library::class_, rtl::traits::uid<Library>::value));
     }
 
 	void registerTypeLibrary(std::vector<rtl::Function>& fns)

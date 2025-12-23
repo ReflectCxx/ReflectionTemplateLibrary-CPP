@@ -181,18 +181,14 @@ namespace rtl::detail
             return lambdaIndex;
         };
 
-        //generate a type-id of '_returnType'.
-        const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
-        //finally add the lambda 'functor' in 'MethodContainer<detail::member::NonConst, _signature...>' lambda vector and get the index.
-
         auto lambdaIndex = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
         //construct the hash-key 'FunctorId' and return.
         return {
             typeMeta,
             FunctorId {
                 lambdaIndex,
-                retTypeId,
-                TypeId<_recordType>::get(),
+                typeMeta.get_return_id(),
+                traits::uid<_recordType>::value,
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(),
                 &(typeMeta.get_functor())
@@ -230,10 +226,6 @@ namespace rtl::detail
             return lambdaIndex;
         };
 
-        //generate a type-id of '_returnType'.
-        const std::size_t retTypeId = TypeId<traits::remove_const_n_ref_n_ptr<_returnType>>::get();
-        //finally add the lambda 'functor' in 'MethodContainer<detail::member::Const, _signature...>' lambda vector and get the index.
-
         auto lambdaIndex = _derivedType::pushBack(getMethodCaller(pFunctor), getIndex, updateIndex);
 
         //construct the hash-key 'FunctorId' and return.
@@ -241,8 +233,8 @@ namespace rtl::detail
             typeMeta,
             FunctorId {
                 lambdaIndex,
-                retTypeId,
-                TypeId<_recordType>::get(),
+                typeMeta.get_return_id(),
+                traits::uid<_recordType>::value,
                 _derivedType::getContainerId(),
                 _derivedType::template getSignatureStr<_recordType, _returnType>(),
                 &(typeMeta.get_functor())

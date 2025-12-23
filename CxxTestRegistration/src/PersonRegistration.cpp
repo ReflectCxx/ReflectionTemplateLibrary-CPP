@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdPerson(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdPerson(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(person::class_, rtl::detail::TypeId<Person>::get()));
+        id.insert(std::make_pair(person::class_, rtl::traits::uid<Person>::value));
     }
 
 	void registerTypePerson(std::vector<rtl::Function>& fns)

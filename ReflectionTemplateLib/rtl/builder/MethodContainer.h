@@ -32,6 +32,8 @@ namespace rtl {
         template<detail::member, class ..._signature>
         class MethodContainer;
 
+        extern std::size_t generate_unique_id();
+
     /*  @class: MethodContainer<detail::member::NonConst, _signature...>
         @param: '_signature...' (combination of any types)
         * container class for holding lambda's wrapping non-const-member-function functor calls of same signatures.

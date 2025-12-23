@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdDate(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(date::struct_, rtl::detail::TypeId<nsdate::Date>::get()));
+        id.insert(std::make_pair(date::struct_, rtl::traits::uid<nsdate::Date>::value));
     }
 
 	void registerTypeDate(std::vector<rtl::Function>& fns)

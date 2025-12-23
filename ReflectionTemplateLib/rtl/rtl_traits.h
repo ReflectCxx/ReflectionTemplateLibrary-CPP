@@ -31,10 +31,7 @@ namespace rtl
         using ConverterPair = std::pair< std::size_t, Converter >;
 
         using cloner_t = Return(*)(alloc, const RObject&);
-    }
 
-    namespace traits
-    {
         template<typename T>
         struct raw_type {
             using type = std::remove_cv_t<std::remove_pointer_t<std::remove_reference_t<std::remove_all_extents_t<T>>>>;
@@ -65,7 +62,37 @@ namespace rtl
         inline constexpr bool is_first_type_same_v = std::is_same_v<raw_t<typename detail::TypeId<_typeList...>::HEAD>, raw_t<_checkType>>;
     }
     
-    
+
+    namespace traits
+    {
+        using uid_t = std::uintptr_t;
+
+        // Returns an opaque, unique identifier per type T.
+        // Must only be compared or hashed - never interpreted numerically.
+        template<class T = std::nullptr_t>
+        class uid
+        {
+            static
+            #if __cpp_static_local_constexpr >= 202306L
+            constexpr
+            #endif
+            uid_t get() noexcept
+            {
+                if constexpr (!std::is_same_v<T, std::nullptr_t>) {
+                    static const int unique_tag = 0;
+                    return reinterpret_cast<uid_t>(&unique_tag);
+                }
+                return 0;
+            }
+
+        public:
+
+            static constexpr uid_t none = 0;
+            static inline const uid_t value = get();
+        };
+    }
+
+
     namespace traits
     {
         template<typename T>
@@ -73,7 +100,7 @@ namespace rtl
         {
             using value_type = std::nullptr_t;
             static constexpr const auto type = detail::Wrapper::None;
-            static constexpr std::size_t id() { return detail::TypeId<>::None; }
+            static constexpr uid_t id() { return uid<>::none; }
         };
 
 
@@ -82,7 +109,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Shared;
-            static constexpr std::size_t id() { return detail::TypeId<std::shared_ptr<T>>::get(); }
+            static constexpr uid_t id() { return uid<std::shared_ptr<T>>::value; }
         };
 
 
@@ -91,7 +118,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Unique;
-            static constexpr std::size_t id() { return detail::TypeId<std::unique_ptr<T>>::get(); }
+            static constexpr uid_t id() { return uid<std::unique_ptr<T>>::value; }
         };
 
 
@@ -100,7 +127,7 @@ namespace rtl
         {
             using value_type = T;
             static constexpr const auto type = detail::Wrapper::Weak;
-            static constexpr std::size_t id() { return detail::TypeId<std::weak_ptr<T>>::get(); }
+            static constexpr uid_t id() { return uid<std::weak_ptr<T>>::value; }
         };
 
         template<typename T>
@@ -142,61 +169,30 @@ namespace rtl
 
             return !(std::is_const_v<T> || std::is_pointer_v<T> || std::is_reference_v<T>);
         }
+
+        template<class T>
+        using normal_sign_t = std::remove_const_t<std::remove_reference_t<T>>;
+
+        template<class ...signatureT>
+        using normal_sign_id_t = std::tuple<normal_sign_t<signatureT>...>;
+
+        template<class ...signatureT>
+        using strict_sign_id_t = std::tuple<signatureT...>;
+
+        template<class T>
+        inline constexpr bool is_nonconst_ref_v = ((std::is_lvalue_reference_v<T> || std::is_rvalue_reference_v<T>) &&
+                                                   !std::is_const_v<std::remove_reference_t<T>>);
+
+        template<class recordT, class returnT>
+        constexpr static const bool type_aware_v = (!std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+
+        template<class recordT, class returnT>
+        constexpr static const bool return_erased_v = (!std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
+
+        template<class recordT, class returnT>
+        constexpr static const bool target_erased_v = (std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+
+        template<class recordT, class returnT>
+        constexpr static const bool type_erased_v = (std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
     }
-}
-
-
-namespace rtl::traits
-{
-    using uid_t = std::uintptr_t;
-
-    // Returns an opaque, unique identifier per type T.
-    // Must only be compared or hashed - never interpreted numerically.
-    template<class T = std::nullptr_t>
-    class uid
-    {
-        static
-        #if __cpp_static_local_constexpr >= 202306L
-        constexpr
-        #endif
-        uid_t get() noexcept
-        {
-            if constexpr (!std::is_same_v<T, std::nullptr_t>) {
-                static const int unique_tag = 0;
-                return reinterpret_cast<uid_t>(&unique_tag);
-            }
-            return 0;
-        }
-
-    public:
-
-        static constexpr uid_t none = 0;
-        static inline const uid_t value = get();
-    };
-
-    template<class T>
-    using normal_sign_t = std::remove_const_t<std::remove_reference_t<T>>;
-
-    template<class ...signatureT>
-    using normal_sign_id_t = std::tuple<normal_sign_t<signatureT>...>;
-
-    template<class ...signatureT>
-    using strict_sign_id_t = std::tuple<signatureT...>;
-
-    template<class T>
-    inline constexpr bool is_nonconst_ref_v = ((std::is_lvalue_reference_v<T> || std::is_rvalue_reference_v<T>) &&
-                                               !std::is_const_v<std::remove_reference_t<T>>);
-    
-    template<class recordT, class returnT>
-    constexpr static const bool type_aware_v = (!std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
-
-    template<class recordT, class returnT>
-    constexpr static const bool return_erased_v = (!std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
-
-    template<class recordT, class returnT>
-    constexpr static const bool target_erased_v = (std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
-
-    template<class recordT, class returnT>
-    constexpr static const bool type_erased_v = (std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
-
 }

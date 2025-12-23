@@ -19,7 +19,7 @@ namespace rtl::detail
     {
         template<class return_t, class ...signature_t>
         static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(return_t(*pFunctor)(signature_t...), traits::uid_t pRecordUid,
-                                                                       std::size_t pRecordId, member pMemberType)
+                                                                       traits::uid_t pRecordId, member pMemberType)
         {
             const auto& doRegister = [=]()->type_meta {
 
@@ -43,7 +43,7 @@ namespace rtl::detail
                 typeMeta,
                 FunctorId {
                     rtl::index_none,
-                    TypeId<traits::remove_const_n_ref_n_ptr<return_t>>::get(),
+                    typeMeta.get_return_id(),
                     pRecordId,
                     typeMeta.get_strict_args_id(),
                     signatureStr,

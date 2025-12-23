@@ -30,7 +30,7 @@ namespace rtl::detail {
         using MethodMap = std::unordered_map <std::string, Method>;
         using FunctionMap = std::unordered_map <std::string, Function>;
 
-        std::unordered_map<std::size_t, Record> m_recordIdMap;
+        std::unordered_map<traits::uid_t, Record> m_recordIdMap;
         //contains 'Record' (class/struct) objects, mapped with given namespace name.
         std::unordered_map<std::string, RecordMap> m_recordNamespaceMap;
         //contains 'Function' (non-member-function) objects, mapped with given namespace name.
@@ -58,7 +58,7 @@ namespace rtl::detail {
         CxxReflection& operator=(const CxxReflection&) = delete;
 
         //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
-        constexpr const std::unordered_map<std::size_t, Record>& getRecordIdMap() const {
+        constexpr const std::unordered_map<traits::uid_t, Record>& getRecordIdMap() const {
             return m_recordIdMap;
         }
 

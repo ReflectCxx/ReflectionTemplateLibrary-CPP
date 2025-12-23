@@ -20,9 +20,6 @@ namespace rtl {
 
     namespace detail
     {
-        extern std::size_t generate_unique_id();
-
-
         //class to generate unique type-id for a type or combination of types.
         template<class _type = std::nullptr_t, class ..._rest>
         struct TypeId;
@@ -35,25 +32,6 @@ namespace rtl {
             using HEAD = _type;
 
             using TAIL = std::nullptr_t;
-
-            //'0' represents no type. [Never change, critical.]
-            static constexpr const std::size_t None = 0;
-
-            inline static std::size_t get()
-            {
-                if constexpr (!std::is_same_v<_type, std::nullptr_t>)
-                {
-                    //statically initialize a unique-id.
-                    static const std::size_t TypeId = detail::generate_unique_id();
-                    return TypeId;
-                }
-                return None;
-            }
-
-            static void get(std::vector<std::size_t>& pIds)
-            {
-                pIds.push_back(get());
-            }
 
             //returns the type-list as string.
             static std::string toString()
@@ -117,19 +95,6 @@ namespace rtl {
 
             //represents a new list created excluding '_first'.
             using TAIL = TypeId<_rest...>;
-
-            static void get(std::vector<std::size_t>& pIds)
-            {
-                if constexpr (std::is_same_v<typename TAIL::HEAD, std::nullptr_t>)
-                {
-                    pIds.push_back(TypeId<HEAD>::get());
-                }
-                else {
-                    pIds.push_back(TypeId<HEAD>::get());
-                    TAIL::get(pIds);
-                }
-            }
-
 
             //returns the type-list as string.
             static std::string toString()

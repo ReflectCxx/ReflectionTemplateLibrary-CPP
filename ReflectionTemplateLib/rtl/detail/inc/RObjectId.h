@@ -20,7 +20,7 @@ namespace rtl::detail
         bool m_isWrappingConst;
         bool m_isConstCastSafe;
 
-        std::size_t m_typeId;
+        traits::uid_t m_typeId;
         std::size_t m_wrapperTypeId;
 
         alloc m_allocatedOn;
@@ -31,7 +31,7 @@ namespace rtl::detail
 
         const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
-        GETTER(std::size_t, TypeId, m_typeId)
+        GETTER(traits::uid_t, TypeId, m_typeId)
         GETTER(EntityKind, ContainedAs, m_containsAs)
 
         template<class T>
@@ -73,7 +73,7 @@ namespace rtl::detail
             constexpr EntityKind entityKind = getEntityKind<T>();
             
             const std::size_t wrapperId = _W::id();
-            const std::size_t typeId = rtl::detail::TypeId<_T>::get();
+            const traits::uid_t typeId = traits::uid<_T>::value;
 
             constexpr bool isWrappingConst = (_W::type != Wrapper::None && traits::is_const_v<typename _W::value_type>);
             return RObjectId {

@@ -21,7 +21,7 @@ namespace rtl
         std::size_t generate_unique_id()
         {
             // Starts with ONE, ZERO denotes TypeId<>::None. [Never change, critical.]
-            static std::atomic<std::size_t> counter{ TypeId<>::None + 1 };
+            static std::atomic<std::size_t> counter{ 1 };
             return counter.fetch_add(1, std::memory_order_relaxed);
         }
     }

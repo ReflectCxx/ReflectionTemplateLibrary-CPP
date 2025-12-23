@@ -57,8 +57,9 @@ namespace rtl {
                 const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);
                 static_assert(isAccessible, "The specified constructor is either deleted or not publicly accessible.");
 
-                return CtorBuilder(m_namespace, m_record, std::string_view(detail::ctor_name(m_record)),
-                                   detail::TypeId<_recordType>::get()).build<_recordType, _ctorSignature...>();
+                return CtorBuilder( m_namespace, m_record,
+                                    std::string_view(detail::ctor_name(m_record)),
+                                    traits::uid<_recordType>::value ).build<_recordType, _ctorSignature...>();
             }
         };
     }

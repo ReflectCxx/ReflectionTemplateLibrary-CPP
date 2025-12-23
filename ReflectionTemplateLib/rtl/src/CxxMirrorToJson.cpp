@@ -26,7 +26,7 @@ static const std::string toJson(const FunctorId& pFunctorId)
 {
 	std::stringstream sout;
 	sout << "{\"signatureId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
-	if (pFunctorId.getRecordId() != TypeId<>::None) {
+	if (pFunctorId.getRecordId() != traits::uid<>::none) {
 		sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
 	}
 	sout << "\"returnId\": \"" << std::to_string(pFunctorId.getReturnId()) << "\",";

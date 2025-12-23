@@ -27,7 +27,7 @@ namespace rtl
     * 'Function' object is created for every functor (member/non-member) being registered.
 */  Function::Function(const std::string_view pNamespace, const std::string_view pRecord,
                        const std::string_view pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                       const std::size_t pRecordTypeId, const detail::member pQualifier)
+                       const traits::uid_t pRecordTypeId, const detail::member pQualifier)
         : m_member_kind(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_record(pRecord)

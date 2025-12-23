@@ -9,9 +9,9 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdBook(std::unordered_map<std::string, std::size_t>& id)
+    void addTypeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
-        id.insert(std::make_pair(book::class_, rtl::detail::TypeId<Book>::get()));
+        id.insert(std::make_pair(book::class_, rtl::traits::uid<Book>::value));
     }
 
 	void registerTypeBook(std::vector<rtl::Function>& fns)
