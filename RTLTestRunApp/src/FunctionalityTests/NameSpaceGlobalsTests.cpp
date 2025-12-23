@@ -130,39 +130,39 @@ namespace rtl_tests
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
         {
-            optional<Function> optSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
-            ASSERT_TRUE(optSetReal);
-            EXPECT_TRUE(optSetReal->hasSignature<double>());
+            optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+            ASSERT_TRUE(fnSetReal);
+            EXPECT_TRUE(fnSetReal->hasSignature<double>());
 
-            rtl::function<rtl::Return(double)> setRealFn = optSetReal->argsT<double>().returnT<>();
-            EXPECT_TRUE(setRealFn);
-            EXPECT_EQ(setRealFn.get_init_error(), rtl::error::None);
+            rtl::function<rtl::Return(double)> setReal = fnSetReal->argsT<double>().returnT<>();
+            EXPECT_TRUE(setReal);
+            EXPECT_EQ(setReal.get_init_error(), rtl::error::None);
 
-            auto [err, ret] = setRealFn(g_real);
+            auto [err, ret] = setReal(g_real);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> optSetImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
-            ASSERT_TRUE(optSetImaginary);
-            EXPECT_TRUE(optSetImaginary->hasSignature<double>());
+            optional<Function> fnSetImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+            ASSERT_TRUE(fnSetImaginary);
+            EXPECT_TRUE(fnSetImaginary->hasSignature<double>());
 
-            rtl::function<rtl::Return(double)> setImginaryFn = optSetImaginary->argsT<double>().returnT<>();
-            EXPECT_TRUE(setImginaryFn);
-            EXPECT_EQ(setImginaryFn.get_init_error(), rtl::error::None);
+            rtl::function<rtl::Return(double)> setImginary = fnSetImaginary->argsT<double>().returnT<>();
+            EXPECT_TRUE(setImginary);
+            EXPECT_EQ(setImginary.get_init_error(), rtl::error::None);
 
-            auto [err, ret] = setImginaryFn(g_imaginary);
+            auto [err, ret] = setImginary(g_imaginary);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> optGetMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
-            ASSERT_TRUE(optGetMagnitude);
-            EXPECT_TRUE(optGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
+            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
+            ASSERT_TRUE(fnGetMagnitude);
+            EXPECT_TRUE(fnGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-            rtl::function<rtl::Return()> getMagnitudeFn = optGetMagnitude->argsT<>().returnT<>();
-            EXPECT_TRUE(getMagnitudeFn);
-            EXPECT_EQ(getMagnitudeFn.get_init_error(), rtl::error::None);
+            rtl::function<rtl::Return()> getMagnitude = fnGetMagnitude->argsT<>().returnT<>();
+            EXPECT_TRUE(getMagnitude);
+            EXPECT_EQ(getMagnitude.get_init_error(), rtl::error::None);
 
-            auto [err, ret] = getMagnitudeFn();
+            auto [err, ret] = getMagnitude();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<double>());
@@ -176,17 +176,17 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        optional<Function> setRealOpt = cxx::mirror().getFunction(str_complex, str_setReal);
-        ASSERT_TRUE(setRealOpt);
+        optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        ASSERT_TRUE(fnSetReal);
 
-        EXPECT_TRUE(setRealOpt->hasSignature<double>());
-        EXPECT_FALSE(setRealOpt->hasSignature<float>());
+        EXPECT_TRUE(fnSetReal->hasSignature<double>());
+        EXPECT_FALSE(fnSetReal->hasSignature<float>());
 
-        rtl::function<rtl::Return(float)> setReal_bad_fn = setRealOpt->argsT<float>().returnT<>();
-        EXPECT_FALSE(setReal_bad_fn);
-        EXPECT_EQ(setReal_bad_fn.get_init_error(), rtl::error::SignatureMismatch);
+        rtl::function<rtl::Return(float)> setReal = fnSetReal->argsT<float>().returnT<>();
+        EXPECT_FALSE(setReal);
+        EXPECT_EQ(setReal.get_init_error(), rtl::error::SignatureMismatch);
 
-        auto [err, robj] = setReal_bad_fn(g_real);
+        auto [err, robj] = setReal(g_real);
         EXPECT_EQ(err, rtl::error::SignatureMismatch);
         EXPECT_TRUE(robj.isEmpty());
     }
@@ -194,14 +194,14 @@ namespace rtl_tests
 
     TEST(GlobalFunction, get_function_execute_return)
     {
-        optional<Function> optGetComplexAsStr = cxx::mirror().getFunction(str_getComplexNumAsString);
-        ASSERT_TRUE(optGetComplexAsStr);
+        optional<Function> fnGetComplexAsStr = cxx::mirror().getFunction(str_getComplexNumAsString);
+        ASSERT_TRUE(fnGetComplexAsStr);
 
-        rtl::function<rtl::Return()> getComplexNumAsStrFn = optGetComplexAsStr->argsT<>().returnT<>();
-        EXPECT_TRUE(getComplexNumAsStrFn);
-        EXPECT_EQ(getComplexNumAsStrFn.get_init_error(), rtl::error::None);
+        rtl::function<rtl::Return()> getComplexNumAsStr = fnGetComplexAsStr->argsT<>().returnT<>();
+        EXPECT_TRUE(getComplexNumAsStr);
+        EXPECT_EQ(getComplexNumAsStr.get_init_error(), rtl::error::None);
 
-        auto [err, ret] = getComplexNumAsStrFn();
+        auto [err, ret] = getComplexNumAsStr();
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(ret.isEmpty());
         EXPECT_TRUE(ret.canViewAs<string>());
@@ -214,10 +214,10 @@ namespace rtl_tests
 
     TEST(GlobalFunction, overloaded_function_execute_return)
     {
-        optional<Function> reverseStringOpt = cxx::mirror().getFunction(str_reverseString);
-        ASSERT_TRUE(reverseStringOpt);
+        optional<Function> fnReverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(fnReverseString);
 
-        rtl::function<rtl::Return(std::string)> reverseString = reverseStringOpt->argsT<std::string>().returnT<>();
+        rtl::function<rtl::Return(std::string)> reverseString = fnReverseString->argsT<std::string>().returnT<>();
         ASSERT_TRUE(reverseString);
         {
             //STRA's type is 'const char*', function accepts 'string',
@@ -243,9 +243,9 @@ namespace rtl_tests
             auto expStr = std::string(STRB_REVERSE) + SUFFIX_std_string;
             EXPECT_EQ(retStr, expStr);
         } {
-            rtl::function<rtl::Return()> reverseStr = reverseStringOpt->argsT<>().returnT<>();
+            rtl::function<rtl::Return()> reverseString = fnReverseString->argsT<>().returnT<>();
 
-            auto [err, ret] = reverseStr();
+            auto [err, ret] = reverseString();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
@@ -262,12 +262,15 @@ namespace rtl_tests
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
 
-        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
+        optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(fnIsStringEmpty);
 
         RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(reflected_str0)();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -275,7 +278,10 @@ namespace rtl_tests
         }
         RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(reflected_str1)();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -289,12 +295,15 @@ namespace rtl_tests
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
         ASSERT_TRUE(stdStringClass);
 
-        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
+        optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(fnIsStringEmpty);
 
         RObject reflected_str0 = rtl::reflect("");	//empty string.
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(reflected_str0)();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -302,7 +311,10 @@ namespace rtl_tests
         }
         RObject reflected_str1 = rtl::reflect("not_empty");
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(reflected_str1)();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());

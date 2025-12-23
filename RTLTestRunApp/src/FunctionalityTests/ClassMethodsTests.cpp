@@ -327,9 +327,7 @@ namespace rtl_tests
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
-
-			const bool signatureValid = mthUpdateBookInfo->hasSignature<string, double, const char*>();
-			EXPECT_TRUE(signatureValid);
+			EXPECT_TRUE((mthUpdateBookInfo->hasSignature<string, double, const char*>()));
 
 			auto updateBookInfo = mthUpdateBookInfo->targetT().argsT<std::string, double, const char*>().returnT();
 			EXPECT_TRUE(updateBookInfo);
@@ -360,9 +358,7 @@ namespace rtl_tests
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
-
-			const bool signatureValid = mthUpdateBookInfo->hasSignature<string, double, const char*>();
-			EXPECT_TRUE(signatureValid);
+			EXPECT_TRUE((mthUpdateBookInfo->hasSignature<string, double, const char*>()));
 
 			auto updateBookInfo = mthUpdateBookInfo->targetT().argsT<std::string, double, const char*>().returnT();
 			EXPECT_TRUE(updateBookInfo);
@@ -393,9 +389,7 @@ namespace rtl_tests
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
-
-			const bool signatureValid = mthUpdateBookInfo->hasSignature<const char*, double, string>();
-			EXPECT_TRUE(signatureValid);
+			EXPECT_TRUE((mthUpdateBookInfo->hasSignature<const char*, double, string>()));
 
 			auto updateBookInfo = mthUpdateBookInfo->targetT().argsT<const char*, double, string>().returnT();
 			EXPECT_TRUE(updateBookInfo);
@@ -426,9 +420,7 @@ namespace rtl_tests
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
-
-			const bool signatureValid = mthUpdateBookInfo->hasSignature<const char*, double, string>();
-			EXPECT_TRUE(signatureValid);
+			EXPECT_TRUE((mthUpdateBookInfo->hasSignature<const char*, double, string>()));
 
 			auto updateBookInfo = mthUpdateBookInfo->targetT().argsT<const char*, double, std::string>().returnT();
 			EXPECT_TRUE(updateBookInfo);
@@ -461,9 +453,11 @@ namespace rtl_tests
 			ASSERT_FALSE(book.isEmpty());
 			EXPECT_TRUE(mthAddCopyrightTag->hasSignature<string>());
 
+			auto addCopyrightTag = mthAddCopyrightTag->targetT().argsT<std::string>().returnT();
+			EXPECT_TRUE(addCopyrightTag);
+
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto addCopyrightTag = mthAddCopyrightTag->targetT().argsT<std::string>().returnT();
 			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG);
 
 			EXPECT_TRUE(err1 == error::None);
@@ -490,13 +484,13 @@ namespace rtl_tests
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
+			EXPECT_TRUE((mthAddCopyrightTag->hasSignature<string>()));
 
-			const bool signatureValid = mthAddCopyrightTag->hasSignature<string>();
-			EXPECT_TRUE(signatureValid);
+			auto addCopyrightTag = mthAddCopyrightTag->targetT().argsT<std::string>().returnT();
+			EXPECT_TRUE(addCopyrightTag);
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto addCopyrightTag = mthAddCopyrightTag->targetT().argsT<std::string>().returnT();
 			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG);
 
 			EXPECT_TRUE(err1 == error::None);
@@ -530,13 +524,12 @@ namespace rtl_tests
 			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
 			EXPECT_TRUE((mthAddPreface->hasSignature<string, const string&>()));
 
-			const auto& preface = std::string(book::PREFACE);
-			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
+			auto addPreface = mthAddPreface->targetT().argsT<string, string>().returnT();
+			EXPECT_TRUE(addPreface);
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			auto addPreface = mthAddPreface->targetT().argsT<string, string>().returnT();
-			auto [err1, ret] = addPreface.bind<string, const string&>(book)(acknowledgements, preface);
+			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS, book::PREFACE);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -563,25 +556,18 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			bool invalidSignature = mthAddPreface->hasSignature<string, string&>();
-			EXPECT_FALSE(invalidSignature);
-
-			invalidSignature = mthAddPreface->hasSignature<string, const string>();
-			EXPECT_FALSE(invalidSignature);
-
-			invalidSignature = mthAddPreface->hasSignature<string, string>();
-			EXPECT_FALSE(invalidSignature);
-
+			EXPECT_FALSE((mthAddPreface->hasSignature<string, string>()));
+			EXPECT_FALSE((mthAddPreface->hasSignature<string, string&>()));
+			EXPECT_FALSE((mthAddPreface->hasSignature<string, const string>()));
 			//if reference is involved, then const-qualifier must be exactly same as in signature reference type.
-			const bool signatureValid = mthAddPreface->hasSignature<string, const string&>();
-			EXPECT_TRUE(signatureValid);
+			EXPECT_TRUE((mthAddPreface->hasSignature<string, const string&>()));
 
-			const auto& preface = std::string(book::PREFACE);
-			const auto& acknowledgements = std::string(book::ACKNOWLEDGEMENTS);
+			auto addPreface = mthAddPreface->targetT().argsT<string, string>().returnT();
+			EXPECT_TRUE(addPreface);
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			auto [err1, ret] = mthAddPreface->bind<string, const string&>(book).call(acknowledgements, preface);
+			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS, book::PREFACE);
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
