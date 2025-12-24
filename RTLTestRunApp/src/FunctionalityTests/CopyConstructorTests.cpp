@@ -83,7 +83,6 @@ namespace rtl_tests
     }
 
 
-
     TEST(CopyConstructor, clone_default_instance_on_stack_source_on_heap)
     {
         {
@@ -113,30 +112,32 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-            ASSERT_TRUE(setAuthor);
-
-            optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-            ASSERT_TRUE(setDecription);
-
-            double price = book::PRICE;
-            string title = book::TITLE;
-            string author = book::AUTHOR;
-            string description = book::DESCRIPTION;
-
             rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
-            auto [err0, book] = ctor(alloc::Heap, price, title);
+
+            auto [err0, book] = ctor(alloc::Heap, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
+            {
+                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                ASSERT_TRUE(oSetAuthor);
 
-            auto [err1, ret1] = setAuthor->bind(book).call(author);
+                auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                ASSERT_TRUE(oSetDescription);
+
+                auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+            auto [err1, bookCopy] = book.clone<alloc::Heap>();
             EXPECT_TRUE(err1 == error::None);
-
-            auto [err2, ret2] = setDecription->bind(book).call(description);
-            EXPECT_TRUE(err1 == error::None);
-
-            auto [err3, bookCopy] = book.clone<alloc::Heap>();
-            EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(bookCopy.isEmpty());
 
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
@@ -156,28 +157,32 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-            ASSERT_TRUE(setAuthor);
-
-            optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-            ASSERT_TRUE(setDecription);
-
-            string author = book::AUTHOR;
-            string description = book::DESCRIPTION;
-
             rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+            
             auto [err0, book] = ctor(alloc::Stack, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
+            {
+                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                ASSERT_TRUE(oSetAuthor);
 
-            auto [err1, ret1] = setAuthor->bind(book).call(author);
+                auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                ASSERT_TRUE(oSetDescription);
+
+                auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+            auto [err1, bookCopy] = book.clone<alloc::Stack>();
             EXPECT_TRUE(err1 == error::None);
-
-            auto [err2, ret2] = setDecription->bind(book).call(description);
-            EXPECT_TRUE(err1 == error::None);
-
-            auto [err3, bookCopy] = book.clone<alloc::Stack>();
-            EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(bookCopy.isEmpty());
 
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
@@ -197,28 +202,32 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
             
-            optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-            ASSERT_TRUE(setAuthor);
-            
-            optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-            ASSERT_TRUE(setDecription);
-            
-            string author = book::AUTHOR;
-            string description = book::DESCRIPTION;
-            
             rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
+
             auto [err0, book] = ctor(alloc::Stack, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
-            
-            auto [err1, ret1] = setAuthor->bind(book).call(author);
+            {
+                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                ASSERT_TRUE(oSetAuthor);
+
+                auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                ASSERT_TRUE(oSetDescription);
+
+                auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+            auto [err1, bookCopy] = book.clone<alloc::Heap>();
             EXPECT_TRUE(err1 == error::None);
-            
-            auto [err2, ret2] = setDecription->bind(book).call(description);
-            EXPECT_TRUE(err1 == error::None);
-            
-            auto [err3, bookCopy] = book.clone<alloc::Heap>();
-            EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(bookCopy.isEmpty());
             
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
@@ -238,31 +247,32 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
             
-            optional<Method> setAuthor = classBook->getMethod(book::str_setAuthor);
-            ASSERT_TRUE(setAuthor);
-            
-            optional<Method> setDecription = classBook->getMethod(book::str_setDescription);
-            ASSERT_TRUE(setDecription);
-            
-            double price = book::PRICE;
-            string title = book::TITLE;
-            string author = book::AUTHOR;
-            string description = book::DESCRIPTION;
-            
             rtl::constructor<double, std::string> ctor = classBook->ctor<double, std::string>();
-            auto [err0, book] = ctor(alloc::Heap, price, title);
 
+            auto [err0, book] = ctor(alloc::Heap, book::PRICE, book::TITLE);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
-            
-            auto [err1, ret1] = setAuthor->bind(book).call(author);
+            {
+                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                ASSERT_TRUE(oSetAuthor);
+
+                auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            } {
+                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                ASSERT_TRUE(oSetDescription);
+
+                auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
+
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                EXPECT_TRUE(err == error::None);
+                EXPECT_TRUE(ret.isEmpty());
+            }
+            auto [err1, bookCopy] = book.clone<alloc::Stack>();
             EXPECT_TRUE(err1 == error::None);
-            
-            auto [err2, ret2] = setDecription->bind(book).call(description);
-            EXPECT_TRUE(err1 == error::None);
-            
-            auto [err3, bookCopy] = book.clone<alloc::Stack>();
-            EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(bookCopy.isEmpty());
             
             const bool isPassed = book::test_copy_ctor_with_mutated_object(bookCopy);
@@ -312,16 +322,23 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and 3 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 3);
 
-            optional<Method> getTheDate = typeCalender->getMethod(calender::str_getTheDate);
-            ASSERT_TRUE(getTheDate);
+            optional<Method> oGetTheDate = typeCalender->getMethod(calender::str_getTheDate);
+            ASSERT_TRUE(oGetTheDate);
+
+            rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
+            EXPECT_TRUE(getTheDate);
             {
-                auto [err_0, date0] = getTheDate->bind(calender0).call();
+                //auto [err_0, date0] = getTheDate(calender0)();
+                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
                 EXPECT_TRUE(date0.isConstCastSafe());
 
-                auto [err_1, date1] = getTheDate->bind(calender1).call();
+                //auto [err_1, date1] = getTheDate(calender1)();
+                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
+
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
@@ -331,12 +348,12 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-                ASSERT_TRUE(updateDate);
-                EXPECT_FALSE(updateDate->isConst());
+                optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
+                ASSERT_TRUE(oUpdateDate);
+                EXPECT_FALSE(oUpdateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -387,15 +404,22 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and 3 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 3);
 
-            optional<Method> getTheDate = typeCalender->getMethod(calender::str_getTheDate);
-            ASSERT_TRUE(getTheDate);
+            optional<Method> oGetTheDate = typeCalender->getMethod(calender::str_getTheDate);
+            ASSERT_TRUE(oGetTheDate);
+
+            rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
+            EXPECT_TRUE(getTheDate);
             {
-                auto [err_0, date0] = getTheDate->bind(calender0).call();
+                //auto [err_0, date0] = getTheDate(calender0)();
+                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                auto [err_1, date1] = getTheDate->bind(calender1).call();
+                //auto [err_1, date1] = getTheDate(calender1)();
+                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
+
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
@@ -405,13 +429,13 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-                ASSERT_TRUE(updateDate);
+                optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
+                ASSERT_TRUE(oUpdateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(updateDate->isConst());
+                EXPECT_FALSE(oUpdateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -462,15 +486,22 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and 3 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 3);
 
-            optional<Method> getTheDate = typeCalender->getMethod(calender::str_getTheDate);
-            ASSERT_TRUE(getTheDate);
+            optional<Method> oGetTheDate = typeCalender->getMethod(calender::str_getTheDate);
+            ASSERT_TRUE(oGetTheDate);
+
+            //rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
+            //EXPECT_TRUE(getTheDate);
             {
-                auto [err_0, date0] = getTheDate->bind(calender0).call();
+                //auto [err_0, date0] = getTheDate(calender0)();
+                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                auto [err_1, date1] = getTheDate->bind(calender1).call();
+                //auto [err_1, date1] = getTheDate(calender1)();
+                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
+
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
@@ -480,13 +511,13 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-                ASSERT_TRUE(updateDate);
+                optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
+                ASSERT_TRUE(oUpdateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(updateDate->isConst());
+                EXPECT_FALSE(oUpdateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -537,15 +568,21 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and 3 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 3);
 
-            optional<Method> getSavedDate = typeCalender->getMethod(calender::str_getSavedDate);
-            ASSERT_TRUE(getSavedDate);
+            optional<Method> oGetSavedDate = typeCalender->getMethod(calender::str_getSavedDate);
+            ASSERT_TRUE(oGetSavedDate);
+
+            //rtl::method<rtl::RObject, rtl::Return()> getSavedDate = oGetSavedDate->targetT().argsT().returnT();
+            //EXPECT_TRUE(getSavedDate);
             {
-                auto [err_0, date0] = getSavedDate->bind(calender0).call();
+                //auto [err_0, date0] = getSavedDate(calender0)();
+                auto [err_0, date0] = oGetSavedDate->bind(calender0).call();
+
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                auto [err_1, date1] = getSavedDate->bind(calender1).call();
+                //auto [err_1, date1] = getSavedDate(calender1)();
+                auto [err_1, date1] = oGetSavedDate->bind(calender1).call();
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
@@ -555,13 +592,13 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
-                optional<Method> updateDate = structDate->getMethod(date::str_updateDate);
-                ASSERT_TRUE(updateDate);
+                optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
+                ASSERT_TRUE(oUpdateDate);
                 // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(updateDate->isConst());
+                EXPECT_FALSE(oUpdateDate->isConst());
                 string dateStr = date::DATE_STR1;
                 {
-                    auto [err, ret] = updateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
                     EXPECT_FALSE(date::test_if_obejcts_are_equal(date0, date1));
