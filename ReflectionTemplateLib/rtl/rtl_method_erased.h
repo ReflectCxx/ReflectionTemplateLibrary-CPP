@@ -21,6 +21,7 @@ namespace rtl
     {
         struct invoker
         {
+            const error init_err;
             const RObject& target;
             const method<RObject, Return(signature_t...)>& fn;
 
@@ -28,8 +29,8 @@ namespace rtl
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr Return operator()(args_t&&...params) const noexcept
             {
-                if (fn.m_last_err != error::None) [[unlikely]] {
-                    return { fn.m_last_err, RObject{} };
+                if (init_err != error::None) [[unlikely]] {
+                    return { init_err, RObject{} };
                 }
 
                 if (fn.must_bind_refs()) [[unlikely]] {
@@ -56,6 +57,7 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
+            const error init_err;
             const RObject& target;
             const method<RObject, Return(signature_t...)>& fn;
 
@@ -63,8 +65,8 @@ namespace rtl
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr Return operator()(args_t&&...params) const noexcept
             {
-                if (fn.m_last_err != error::None) [[unlikely]] {
-                    return { fn.m_last_err, RObject{} };
+                if (init_err != error::None) [[unlikely]] {
+                    return { init_err, RObject{} };
                 }
 
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
@@ -95,31 +97,27 @@ namespace rtl
         };
 
         constexpr invoker operator()(RObject& p_target) const noexcept {
-            validate(p_target);
-            return invoker{ p_target, *this };
+            return invoker{ validate(p_target),  p_target, *this };
         }
 
         constexpr invoker operator()(RObject&& p_target) const noexcept {
-            validate(p_target);
-            return invoker{ p_target, *this };
+            return invoker{ validate(p_target), p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
-            validate(p_target);
-            return perfect_fwd<args_t...>{ p_target, *this };
+            return perfect_fwd<args_t...>{ validate(p_target), p_target, *this };
         }
 
         template<class ...args_t>
         requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
-            validate(p_target);
-            return perfect_fwd<args_t...>{ p_target, *this };
+            return perfect_fwd<args_t...>{ validate(p_target), p_target, *this };
         }
 
         constexpr operator bool() const noexcept {
-            return !(m_last_err != error::None || m_functors.empty() ||
+            return !(m_init_err != error::None || m_functors.empty() ||
                      (m_functors.size() == 1 && m_functors[0] == nullptr));
         }
 
@@ -127,7 +125,7 @@ namespace rtl
             return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
         }
 
-        GETTER(rtl::error, _init_error, m_last_err)
+        GETTER(rtl::error, _init_error, m_init_err)
 
     private:
 
@@ -141,35 +139,34 @@ namespace rtl
 
         std::vector<const dispatch::functor*> m_functors = {};
         
-        mutable traits::uid_t m_record_id = traits::uid<>::none;
+        traits::uid_t m_record_id = traits::uid<>::none;
 
-        mutable error m_last_err = error::InvalidCaller;
+        error m_init_err = error::InvalidCaller;
 
         GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
         GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
         GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
             
-        constexpr void set_record_id(const traits::uid_t p_recid) const {
+        constexpr void set_record_id(const traits::uid_t p_recid) {
             m_record_id = p_recid;
         }
         
-        constexpr void set_init_error(const error p_err) const {
-            m_last_err = p_err;
+        constexpr void set_init_error(const error p_err) {
+            m_init_err = p_err;
         }
 
-        constexpr void validate(const RObject& p_target) const
+        constexpr const error validate(const RObject& p_target) const
         {
-            if (m_last_err == error::None) [[unlikely]]
-            {
-                if (p_target.isEmpty()) {
-                    m_last_err = error::EmptyRObject;
-                    return;
-                }
-                if (m_record_id != p_target.getTypeId()) {
-                    m_last_err = error::TargetTypeMismatch;
-                    return;
-                }
+            if (m_init_err != error::None) {
+                return m_init_err;
             }
+            else if (p_target.isEmpty()) {
+                return error::EmptyRObject;
+            }
+            else if (m_record_id != p_target.getTypeId()) {
+                return error::TargetTypeMismatch;
+            }
+            else return error::None;
         }
 
         template<class, class ...>
