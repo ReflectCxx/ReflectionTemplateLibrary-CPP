@@ -67,18 +67,6 @@ namespace rtl
         }
 
         auto index = (m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
-        if (m_functors[index]->is_void())
-        {
-            m_vhop[index](*m_functors[index], std::forward<args_t>(params)...);
-            return { error::None, RObject{} };
-        }
-        else
-        {
-            return { error::None,
-                     RObject{ m_rhop[index](*m_functors[index], std::forward<args_t>(params)...),
-                              m_functors[index]->get_robject_id()
-                     }
-            };
-        }
-	}
+        return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
+    }
 }

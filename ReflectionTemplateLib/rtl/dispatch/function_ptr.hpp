@@ -42,12 +42,7 @@ namespace rtl::dispatch
         m_lambda = func_t();
         func_t& fn = m_lambda.template emplace<func_t>();
 
-        if constexpr (fn_void_v == fn_void::yes) {
-            fn.init(&aware_return<return_t, signature_t...>::get_lambda_void);
-        }
-        else {
-            fn.init(&aware_return<return_t, signature_t...>::get_lambda_any_return);
-        }
+        fn.init(&aware_return<return_t, signature_t...>::get_lambda_any_return);
 
         functor::m_lambdas = std::vector<lambda*>(1);
         functor::m_lambdas[index::erased_return] = (&fn);

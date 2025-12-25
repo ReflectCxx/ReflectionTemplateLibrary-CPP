@@ -12,29 +12,22 @@
 #pragma once
 
 #include "functor.h"
-#include "RObject.hpp"
 
 namespace rtl
 {
     template<class ...signature_t>
     class function<Return(signature_t...)>
     {
-        using lambda_vt = std::function<void(const dispatch::functor&, signature_t...)>;
-
-        using lambda_rt = std::function<std::any(const dispatch::functor&, signature_t...)>;
+        using lambda_t = std::function<rtl::Return(const dispatch::functor&, signature_t...)>;
 
         error m_init_err = error::InvalidCaller;
 
-        std::vector<lambda_rt> m_rhop = {};
-
-        std::vector<lambda_vt> m_vhop = {};
-
+        std::vector<lambda_t> m_hopper = {};
         std::vector<const dispatch::functor*> m_functors = {};
 
         void set_init_error(error p_err);
 
-        GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
-        GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
+        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
         GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
 
     public:
@@ -65,24 +58,10 @@ namespace rtl
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
                 for (int index = 0; index < fn.m_functors.size(); index++)
                 {
-                    if (fn.m_functors[index] != nullptr)
-                    {
-                        if (signature_id == fn.m_functors[index]->get_strict_sign_id())
-                        {
-                            if (fn.m_functors[index]->is_void())
-                            {
-                                fn.m_vhop[index](*fn.m_functors[index], std::forward<args_t>(params)...);
-                                return { error::None, RObject{} };
-                            }
-                            else
-                            {
-                                return { error::None,
-                                         RObject{ fn.m_rhop[index](*fn.m_functors[index], std::forward<args_t>(params)...),
-                                                  fn.m_functors[index]->get_robject_id()
-                                         }
-                                };
-                            }
-                        }
+                    if (fn.m_functors[index] != nullptr &&
+                        fn.m_functors[index]->get_strict_sign_id() == signature_id) {
+
+                        return fn.m_hopper[index](*fn.m_functors[index], std::forward<args_t>(params)...);
                     }
                 }
                 return { error::RefBindingMismatch, RObject{} };

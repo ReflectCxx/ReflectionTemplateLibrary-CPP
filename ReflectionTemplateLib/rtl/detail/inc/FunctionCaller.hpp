@@ -137,8 +137,8 @@ namespace rtl::detail
         for (auto& ty_meta : m_overloadsFnMeta)
         {
             if (ty_meta.is_empty()) {
-                pHopper.get_vhop().push_back(nullptr);
-                pHopper.get_rhop().push_back(nullptr);
+                pHopper.get_hopper().push_back(nullptr);
+                //pHopper.get_rhop().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
@@ -159,24 +159,18 @@ namespace rtl::detail
             if ((isReturnTvoid = ty_meta.is_void())) {
                 using fn_cast = dispatch::functor_cast<dispatch::fn_void::yes, traits::normal_sign_t<args_t>...>;
                 auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
-                pHopper.get_vhop().push_back(fn.f_ptr());
+                pHopper.get_hopper().push_back(fn.f_ptr());
             }
             else {
                 using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
                 auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
-                pHopper.get_rhop().push_back(fn.f_ptr());
+                pHopper.get_hopper().push_back(fn.f_ptr());
             }
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
         if (pHopper.get_init_error() != error::None) {
             pHopper.set_init_error(error::SignatureMismatch);
-        }
-        if (isReturnTvoid) {
-            pHopper.get_rhop().clear();
-        }
-        else {
-            pHopper.get_vhop().clear();
         }
     }
 }
