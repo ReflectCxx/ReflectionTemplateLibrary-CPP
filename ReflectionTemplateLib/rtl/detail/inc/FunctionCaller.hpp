@@ -18,7 +18,7 @@
 #include "functor_cast.h"
 #include "function_ptr.h"
 #include "rtl_function.h"
-#include "rtl_function_erased_return.hpp"
+#include "rtl_function_erased_return.h"
 
 namespace rtl::detail
 {

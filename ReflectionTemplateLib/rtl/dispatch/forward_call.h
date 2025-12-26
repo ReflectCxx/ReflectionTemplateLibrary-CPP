@@ -15,9 +15,11 @@
 
 namespace rtl::dispatch
 {
-    template<class lambda_t>
-    struct forward_call
+    template<class ...signature_t>
+    class forward_call
     {
+        using lambda_t = std::function<Return(const functor&, signature_t...)>;
+
         error m_init_err = error::InvalidCaller;
 
         std::vector<lambda_t> m_hopper = {};
@@ -29,6 +31,8 @@ namespace rtl::dispatch
         void set_init_error(error p_err) {
             m_init_err = p_err;
         }
+
+    public:
 
         GETTER(error, _init_error, m_init_err)
 
@@ -47,34 +51,37 @@ namespace rtl::dispatch
         }
 
         template<class ...args_t>
-        constexpr Return operator()(args_t&&...params) const noexcept 
+        [[gnu::hot]] [[gnu::flatten]]
+        constexpr Return operator()(args_t&&...params) const noexcept
         {
             if (must_bind_refs()) [[unlikely]] {
                 return { error::ExplicitRefBindingRequired, RObject{} };
             }
-
             auto index = ( m_functors[detail::call_by::value] != nullptr ? 
                            detail::call_by::value : detail::call_by::cref );
 
             return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
         }
 
+        template<class ...args_t>
+        [[gnu::hot]] [[gnu::flatten]]
+        constexpr Return perfect_forward(const traits::uid_t p_sign_id, args_t&&...params) const noexcept
+        {
+            for (int index = 0; index < m_functors.size(); index++)
+            {
+                if (m_functors[index] != nullptr &&
+                    m_functors[index]->get_strict_sign_id() == p_sign_id) {
+
+                    return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
+                }
+            }
+            return { error::RefBindingMismatch, RObject{} };
+        }
+
         template<detail::member, class ...>
         friend struct detail::HopFunction;
 
-        template<class , class ...>
+        template<class, class ...>
         friend struct detail::HopMethod;
 	};
-
-    template<class ...args_t>
-    using stdfn_t = std::function < rtl::Return(const dispatch::functor&, args_t...) >;
-
-    template<class ...args_t>
-    using stdfn_mt = std::function < rtl::Return(const dispatch::functor&, const RObject&, args_t...) >;
-
-    template<class ...args_t>
-    using reflect_fn = forward_call<stdfn_t<args_t...>>;
-
-    template<class ...args_t>
-    using reflect_mth = forward_call<stdfn_mt<args_t...>>;
 }

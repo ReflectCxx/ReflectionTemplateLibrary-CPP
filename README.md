@@ -9,7 +9,7 @@ Reflection lets you interact with code by `name` instead of by `type`. Imagine y
 ```c++
 std::string complexToStr(float real, float img);
 ```
-**RTL** lets you call it dynamically:
+**RTL** lets you discover it by name and call dynamically:
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")  // cxx::mirror?? see quick preview!
                                                                ->argsT<float, float>()
@@ -51,7 +51,7 @@ Yes — `rtl::function`’s dispatch is faster than `std::function`.
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re ready!
+First, Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re ready!
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	// Register free(C-Style) function -
@@ -105,7 +105,7 @@ int main()
     // Get constructor overload: Person(const char*, int).
     rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
     if (!personCtor) {
-        return 0; // Constructor expected signature not found.
+        return 0; // Constructor with expected signature not found.
     }
 
     // Construct a stack-allocated instance; returns {error, RObject}.
@@ -115,16 +115,16 @@ int main()
     }
 
     // Lookup reflected method `setAge`.
-    std::optional<rtl::Method> optnlStAge = classPerson->getMethod("setAge");
-    if (!optnlStAge) {
+    std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
+    if (!oSetAge) {
         return 0; // Method not found.
     }
 
     // When target/return types are known (fastest path).
     {
         // Materialize typed method: Person::setAge(int) -> void.
-        rtl::method<Person, void(int)> setAge = optnlStAge->targetT<Person>()
-                                                          .argsT<int>().returnT<void>();
+        rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
+                                                       .argsT<int>().returnT<void>();
         if (setAge) {
             // View the underlying Person instance.
             const Person& person = robj.view<Person>()->get();
@@ -137,8 +137,8 @@ int main()
     // When target/return types are erased (more flexible).
     {
         // Materialize erased method: RObject target, erased return.
-        rtl::method<rtl::RObject, rtl::Return(int)> setAge = optnlStAge->targetT<>()
-                                                                       .argsT<int>().returnT<>();
+        rtl::method<rtl::RObject, rtl::Return(int)> setAge = oSetAge->targetT()
+                                                                    .argsT<int>().returnT();
         if (setAge) {
             // Slightly slower than typed path; comparable to std::function.
             auto [err, ret] = setAge(robj)(47);
@@ -147,14 +147,14 @@ int main()
     }
 
     // Lookup reflected method `getName`.
-    std::optional<rtl::Method> optnlGtName = classPerson->getMethod("getName");
-    if (!optnlGtName) {
+    std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+    if (!oGetName) {
         return 0; // Method not found.
     }
 
     // Materialize erased method: getName() -> std::string.
-    rtl::method<rtl::RObject, rtl::Return()> getName = optnlGtName->targetT<>()
-	                                                              .argsT<>().returnT<>();
+    rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
+                                                               .argsT().returnT();
     if (getName)
 	{
         auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
