@@ -36,8 +36,8 @@ namespace rtl::dispatch
 
         GETTER(error, _init_error, m_init_err)
 
-        constexpr operator bool() const noexcept
-        {
+        constexpr operator bool() const noexcept {
+
             return !( m_init_err != error::None || m_functors.empty() ||
                      (m_functors.size() == 1 && m_functors[0] == nullptr) );
         }

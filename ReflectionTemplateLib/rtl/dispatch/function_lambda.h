@@ -41,31 +41,6 @@ namespace rtl::dispatch
 namespace rtl::dispatch
 {
     template<class...args_t>
-    struct function_lambda<fn_void::yes, erase::t_return, args_t...> : lambda
-    {
-        using fptr_t = Return(*)(const functor&, traits::normal_sign_t<args_t>&&...);
-
-        fptr_t f_ptr() const {
-            return m_fptr;
-        }
-
-    private:
-
-        void init(fptr_t fptr) {
-            m_fptr = fptr;
-        }
-
-        fptr_t m_fptr;
-
-        template<class, class ...>
-        friend struct dispatch::function_ptr;
-    };
-}
-
-
-namespace rtl::dispatch
-{
-    template<class...args_t>
     struct function_lambda<fn_void::no, erase::t_return, args_t...> : lambda
     {
         using fptr_t = Return(*)(const functor&, traits::normal_sign_t<args_t>&&...);

@@ -1,10 +1,8 @@
-# Reflection Template Library (RTL) — A Run-Time Reflection System for C++.
+# Reflection Template Library (RTL) – A Run-Time Reflection System for C++.
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-**RTL** provides type-safe run-time reflection for modern C++ — combining compile-time guarantees with controlled run-time flexibility.
-
-It enables name-based discovery and invocation of functions, constructors, and objects without macros, code generation, or unsafe casts, while remaining as close as possible to native execution.
+**RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility. It enables name-based discovery and invocation of functions, constructors, and objects through a non-intrusive, type-safe reflection system that remains close to native execution.
 
 For example, imagine you’ve written a simple function,
 ```c++
@@ -39,7 +37,7 @@ if(cToStr) {   // Function materialized?
 
 * ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
-* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge — suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
+* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
@@ -47,7 +45,7 @@ if(cToStr) {   // Function materialized?
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-First, Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you’re ready!
+First, Create an instance of `CxxMirror`, passing all type information directly to its constructor –
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
 	// Register free(C-Style) function -
@@ -82,7 +80,7 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-> Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
+Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
 
 **RTL in action:**
 

@@ -133,12 +133,10 @@ namespace rtl::detail
     template<member member_kind, class ...args_t>
     inline void HopFunction<member_kind, args_t...>::initHopper(function<rtl::Return(args_t...)>& pHopper) const
     {
-        bool isReturnTvoid = false;
         for (auto& ty_meta : m_overloadsFnMeta)
         {
             if (ty_meta.is_empty()) {
                 pHopper.get_hopper().push_back(nullptr);
-                //pHopper.get_rhop().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
@@ -156,19 +154,14 @@ namespace rtl::detail
                 }
             }
 
-            if ((isReturnTvoid = ty_meta.is_void())) {
-                using fn_cast = dispatch::functor_cast<dispatch::fn_void::yes, traits::normal_sign_t<args_t>...>;
-                auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
-                pHopper.get_hopper().push_back(fn.f_ptr());
-            }
-            else {
-                using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
-                auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
-                pHopper.get_hopper().push_back(fn.f_ptr());
-            }
+            using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
+            auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_return>();
+
+            pHopper.get_hopper().push_back(fn.f_ptr());
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
+
         if (pHopper.get_init_error() != error::None) {
             pHopper.set_init_error(error::SignatureMismatch);
         }
