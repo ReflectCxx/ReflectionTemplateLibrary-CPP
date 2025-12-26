@@ -1,49 +1,45 @@
-# Reflection Template Library (RTL) — A Modern C++ Run-Time Reflection Framework
-
-**RTL** brings rich, type-safe run-time reflection to modern C++ — combining compile-time safety with run-time flexibility.
+# Reflection Template Library (RTL) — A Run-Time Reflection System for C++.
 
 [![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-### 🪞 What’s “Reflection”?
-Reflection lets you interact with code by `name` instead of by `type`. Imagine you’ve written a simple function,
+**RTL** provides type-safe run-time reflection for modern C++ — combining compile-time guarantees with controlled run-time flexibility.
+
+It enables name-based discovery and invocation of functions, constructors, and objects without macros, code generation, or unsafe casts, while remaining as close as possible to native execution.
+
+For example, imagine you’ve written a simple function,
 ```c++
 std::string complexToStr(float real, float img);
 ```
-**RTL** lets you discover it by name and call dynamically:
+Using **RTL**, discover it by name and call dynamically:
 ```c++
-rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")  // cxx::mirror?? see quick preview!
+rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
                                                                .returnT<std::string>();
 if(cToStr) {   // Function materialized?
-    std::string result = cToStr(61, 35);  // Works! (int → float? No problem.)
+    std::string result = cToStr(61, 35);  // Works!
 }
 ```
 > *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
+
+`cxx::mirror()` returns an instance of `rtl::CxxMirror`, the primary reflection entry point, providing access to functions, records, and constructors registered with RTL.
+
 ### ⚡ Performance
 
-Overhead? Practically none. **RTL**’s reflective calls — when return and argument types are known — are just a native function-pointer hop, often faster than `std::function`.
+**RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead when argument and return types are known.
 
-Yes — `rtl::function`’s dispatch is faster than `std::function`.
+## Design Highlights
 
-> *Microbenchmarks show reflective invocations through `rtl::function` have lower call overhead — a single, native pointer jump with no extra indirection. Once the functions start doing real work, both perform identically.*
+* ***Single Source of Truth*** – All reflection metadata is centralized in a single immutable `rtl::CxxMirror`, providing a consistent, thread-safe, duplication-free, and deterministic view of reflected state.
 
-### 💡 In One Line
+* ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
 
-*"RTL is a lightweight, static library that enables a robust, type-safe run-time reflection system for C++ — as flexible as in managed languages, yet as close as possible to native performance."*
+* ***Zero-Overhead by Design*** – Metadata is registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
 
-## What’s more?
+* ***Exception-Free Surface*** – All predictable failure modes are reported via explicit error codes; no exceptions are thrown from the public reflection API.
 
-* ***Single Source of Truth*** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
+* ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
-* ***Non-Intrusive & Macro-Free*** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
-
-* ***Zero-Overhead by Design*** – Metadata is registered and resolved only when used. Reflection introduces no cost beyond the features you explicitly employ.
-
-* ***Exception-Free Surface*** – All predictable failures return error codes; no hidden throws.
-
-* ***Cross-Compiler Consistency*** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
-
-* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
+* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge — suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
