@@ -15,22 +15,22 @@
 
 namespace rtl
 {
-    template<class ...signature_t>
-    inline void function<Return(signature_t...)>::set_init_error(error p_err) {
-        m_init_err = p_err;
-    }
+    //template<class ...signature_t>
+    //inline void function<Return(signature_t...)>::set_init_error(error p_err) {
+    //    m_init_err = p_err;
+    //}
 
-    template<class ...signature_t>
-    inline constexpr function<Return(signature_t...)>::operator bool() const noexcept {
-        return !(m_init_err != error::None || m_functors.empty() ||
-                 (m_functors.size() == 1 && m_functors[0] == nullptr));
-    }
+    //template<class ...signature_t>
+    //inline constexpr function<Return(signature_t...)>::operator bool() const noexcept {
+    //    return !(m_init_err != error::None || m_functors.empty() ||
+    //             (m_functors.size() == 1 && m_functors[0] == nullptr));
+    //}
 
 
-    template<class ...signature_t>
-    inline constexpr bool function<Return(signature_t...)>::must_bind_refs() const noexcept {
-        return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
-    }
+    //template<class ...signature_t>
+    //inline constexpr bool function<Return(signature_t...)>::must_bind_refs() const noexcept {
+    //    return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
+    //}
 
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -52,21 +52,21 @@ namespace rtl
 #endif
 
 
-	template<class ...signature_t>
-	template<class ...args_t>
-        requires (sizeof...(args_t) == sizeof...(signature_t))
-	[[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-	inline constexpr Return function<Return(signature_t...)>::operator()(args_t&&...params) const noexcept
-	{
-        if (!(*this)) [[unlikely]] {
-            return { m_init_err, RObject{} };
-        }
+	//template<class ...signature_t>
+	//template<class ...args_t>
+ //       requires (sizeof...(args_t) == sizeof...(signature_t))
+	//[[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
+	//inline constexpr Return function<Return(signature_t...)>::operator()(args_t&&...params) const noexcept
+	//{
+ //       if (!(*this)) [[unlikely]] {
+ //           return { m_init_err, RObject{} };
+ //       }
 
-        if (must_bind_refs()) [[unlikely]] {
-            return { error::ExplicitRefBindingRequired, RObject{} };
-        }
+ //       if (must_bind_refs()) [[unlikely]] {
+ //           return { error::ExplicitRefBindingRequired, RObject{} };
+ //       }
 
-        auto index = (m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
-        return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
-    }
+ //       auto index = (m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
+ //       return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
+ //   }
 }

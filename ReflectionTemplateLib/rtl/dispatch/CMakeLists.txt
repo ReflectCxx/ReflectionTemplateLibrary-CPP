@@ -5,6 +5,7 @@ set(LOCAL_HEADERS
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor.h"	
 	"${CMAKE_CURRENT_SOURCE_DIR}/functor_cast.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/forward_call.h"
 	
 	"${CMAKE_CURRENT_SOURCE_DIR}/cache_method_ptr.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/cache_function_ptr.h"

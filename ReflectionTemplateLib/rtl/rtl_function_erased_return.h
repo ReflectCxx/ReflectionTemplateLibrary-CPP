@@ -11,36 +11,24 @@
 
 #pragma once
 
-#include "functor.h"
+#include "forward_call.h"
 
 namespace rtl
 {
     template<class ...signature_t>
-    class function<Return(signature_t...)>
+    struct function<Return(signature_t...)> : public dispatch::reflect_fn<signature_t...>
     {
-        using lambda_t = std::function<rtl::Return(const dispatch::functor&, signature_t...)>;
-
-        error m_init_err = error::InvalidCaller;
-
-        std::vector<lambda_t> m_hopper = {};
-        std::vector<const dispatch::functor*> m_functors = {};
-
-        void set_init_error(error p_err);
-
-        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
-        GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
-
-    public:
-
-        GETTER(rtl::error, _init_error, m_init_err)
-
-        constexpr operator bool() const noexcept;
-
-        constexpr bool must_bind_refs() const noexcept;
+        using base_t = dispatch::reflect_fn<signature_t...>;
 
         template<class ...args_t>
             requires (sizeof...(args_t) == sizeof...(signature_t))
-        constexpr Return operator()(args_t&&...params) const noexcept;
+        constexpr Return operator()(args_t&&...params) const noexcept
+        {
+            if (!(*this)) [[unlikely]] {
+                return { base_t::get_init_error(), RObject{}};
+            }
+            return base_t::operator()(std::forward<args_t>(params)...);
+        }
 
         template<class ...fwd_args_t>
         struct perfect_fwd

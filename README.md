@@ -105,7 +105,7 @@ int main()
     // Get constructor overload: Person(const char*, int).
     rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
     if (!personCtor) {
-        return 0; // Constructor signature not found.
+        return 0; // Constructor expected signature not found.
     }
 
     // Construct a stack-allocated instance; returns {error, RObject}.
