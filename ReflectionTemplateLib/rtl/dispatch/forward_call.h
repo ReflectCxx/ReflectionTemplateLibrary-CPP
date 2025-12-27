@@ -16,33 +16,13 @@
 namespace rtl::dispatch
 {
     template<class ...signature_t>
-    class forward_call
+    struct forward_call
     {
-        using lambda_t = std::function<Return(const functor&, signature_t...)>;
-
-        error m_init_err = error::InvalidCaller;
-
-        std::vector<lambda_t> m_hopper = {};
-        std::vector<const functor*> m_functors = {};
-
-        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
-        GETTER_REF(std::vector<const functor*>, _overloads, m_functors)
-
-        void set_init_error(error p_err) {
-            m_init_err = p_err;
-        }
-
-    public:
-
-        GETTER(error, _init_error, m_init_err)
-
         constexpr operator bool() const noexcept {
 
             return !( m_init_err != error::None || m_functors.empty() ||
                      (m_functors.size() == 1 && m_functors[0] == nullptr) );
         }
-
-	protected:
 
         constexpr bool must_bind_refs() const noexcept {
 
@@ -76,6 +56,24 @@ namespace rtl::dispatch
                 }
             }
             return { error::RefBindingMismatch, RObject{} };
+        }
+
+        GETTER(error, _init_error, m_init_err)
+
+    private:
+
+        using lambda_t = std::function<Return(const functor&, signature_t...)>;
+
+        error m_init_err = error::InvalidCaller;
+
+        std::vector<lambda_t> m_hopper = {};
+        std::vector<const functor*> m_functors = {};
+
+        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
+        GETTER_REF(std::vector<const functor*>, _overloads, m_functors)
+
+        void set_init_error(error p_err) {
+            m_init_err = p_err;
         }
 
         template<detail::member, class ...>

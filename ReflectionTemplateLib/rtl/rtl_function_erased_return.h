@@ -34,7 +34,7 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const function<Return(signature_t...)>& fn;
+            const base_t& fn;
             
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]

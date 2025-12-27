@@ -243,8 +243,11 @@ namespace rtl::detail
             {
                 if constexpr (!std::is_same_v<return_t, Return>) {
                     pHopper.get_vhop().push_back(nullptr);
+                    pHopper.get_rhop().push_back(nullptr);
                 }
-                pHopper.get_rhop().push_back(nullptr);
+                else {
+                    pHopper.get_hopper().push_back(nullptr);
+                }
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
@@ -286,7 +289,7 @@ namespace rtl::detail
             }
             else {
                 auto fn = lambda.template operator() < dispatch::fn_void::no > ();
-                pHopper.get_rhop().push_back(fn.f_ptr());
+                pHopper.get_hopper().push_back(fn.f_ptr());
             }
 
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
