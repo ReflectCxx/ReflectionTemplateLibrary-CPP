@@ -241,7 +241,9 @@ namespace rtl::detail
         {
             if (ty_meta.is_empty())
             {
-                pHopper.get_vhop().push_back(nullptr);
+                if constexpr (!std::is_same_v<return_t, Return>) {
+                    pHopper.get_vhop().push_back(nullptr);
+                }
                 pHopper.get_rhop().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
@@ -271,14 +273,22 @@ namespace rtl::detail
                 }
             };
 
-            if ((isReturnTvoid = ty_meta.is_void())){
-                auto fn = lambda.template operator() < dispatch::fn_void::yes > ();
-                pHopper.get_vhop().push_back(fn.f_ptr());
+            if constexpr (!std::is_same_v<return_t, Return>) 
+            {
+                if ((isReturnTvoid = ty_meta.is_void())) {
+                    auto fn = lambda.template operator() < dispatch::fn_void::yes > ();
+                    pHopper.get_vhop().push_back(fn.f_ptr());
+                }
+                else {
+                    auto fn = lambda.template operator() < dispatch::fn_void::no > ();
+                    pHopper.get_rhop().push_back(fn.f_ptr());
+                }
             }
             else {
                 auto fn = lambda.template operator() < dispatch::fn_void::no > ();
                 pHopper.get_rhop().push_back(fn.f_ptr());
             }
+
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
@@ -290,11 +300,14 @@ namespace rtl::detail
             pHopper.set_record_id(m_recordId);
         }
 
-        if (isReturnTvoid) {
-            pHopper.get_rhop().clear();
-        }
-        else {
-            pHopper.get_vhop().clear();
+        if constexpr (!std::is_same_v<return_t, Return>)
+        {
+            if (isReturnTvoid) {
+                pHopper.get_rhop().clear();
+            }
+            else {
+                pHopper.get_vhop().clear();
+            }
         }
     }
 }

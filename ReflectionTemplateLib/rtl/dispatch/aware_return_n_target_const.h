@@ -44,19 +44,6 @@ namespace rtl::dispatch
             }
         }
 
-        // erased-return-erased-target-function-void
-        static void e_return_e_target_fnv(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
-        {
-            if constexpr (std::is_void_v<return_t>)
-            {
-                auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
-
-                const auto& target = p_target.view<record_t>()->get();
-
-                (target.*mptr)(std::forward<signature_t>(params)...);
-            }
-        }
-
         // erased-target-aware-return-function-returns(return_t)
         constexpr static auto e_target_a_return_fnr() noexcept
         {
@@ -74,65 +61,65 @@ namespace rtl::dispatch
         }
 
         // erased-return-aware-target-function-returns(std::any)
-        constexpr static auto e_return_a_target_fnr(const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params) noexcept
+        constexpr static Return e_return_a_target_fnr(const functor& fn, const record_t& p_target, traits::normal_sign_t<signature_t>&&...params) noexcept
         {
-            if constexpr (!std::is_void_v<return_t>)
-            {
-                auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
+            auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
 
+            if constexpr (std::is_void_v<return_t>)
+            {
+                (p_target.*mptr)(std::forward<signature_t>(params)...);
+                return { error::None, RObject{} };
+            }
+            else
+            {
+                constexpr bool isConstCastSafe = (!traits::is_const_v<return_t>);
                 auto&& ret_v = (p_target.*mptr)(std::forward<signature_t>(params)...);
 
-                if constexpr (std::is_pointer_v<return_t>)
-                {
-                    using raw_t = std::remove_pointer_t<return_t>;
-                    return std::any(static_cast<const raw_t*>(ret_v));
+                if constexpr (std::is_reference_v<return_t>) {
+                    return { error::None,
+                             detail::RObjectBuilder<const traits::raw_t<return_t>*>::template
+                             build<alloc::Stack>(&ret_v, isConstCastSafe)
+                    };
                 }
-                else if constexpr (std::is_reference_v<return_t>)
-                {
-                    using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
-                    return std::any(static_cast<const raw_t*>(&ret_v));
-                }
-                else
-                {
-                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                    // TODO: enable it for move-constructible objects.
-                    static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
-                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
+                else {
+                    return { error::None,
+                             detail::RObjectBuilder<decltype(ret_v)>::template
+                             build<alloc::Stack>(std::forward<decltype(ret_v)>(ret_v), isConstCastSafe)
+                    };
                 }
             }
-            else return std::any();
         }
 
+
         // erased-return-erased-target-function-returns(std::any)
-        constexpr static auto e_return_e_target_fnr(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
+        constexpr static Return e_return_e_target_fnr(const functor& fn, const RObject& p_target, traits::normal_sign_t<signature_t>&&... params) noexcept
         {
-            if constexpr (!std::is_void_v<return_t>)
+            const auto& target = p_target.view<record_t>()->get();
+            auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
+
+            if constexpr (std::is_void_v<return_t>)
             {
-                auto mptr = static_cast<const method_ptr<const record_t, return_t, signature_t...>&>(fn).f_ptr();
-
-                const auto& target = p_target.view<record_t>()->get();
-
+                (target.*mptr)(std::forward<signature_t>(params)...);
+                return { error::None, RObject{} };
+            }
+            else
+            {
+                constexpr bool isConstCastSafe = (!traits::is_const_v<return_t>);
                 auto&& ret_v = (target.*mptr)(std::forward<signature_t>(params)...);
 
-                if constexpr (std::is_pointer_v<return_t>)
-                {
-                    using raw_t = std::remove_pointer_t<return_t>;
-                    return std::any(static_cast<const raw_t*>(ret_v));
+                if constexpr (std::is_reference_v<return_t>) {
+                    return { error::None,
+                             detail::RObjectBuilder<const traits::raw_t<return_t>*>::template
+                             build<alloc::Stack>(&ret_v, isConstCastSafe)
+                    };
                 }
-                else if constexpr (std::is_reference_v<return_t>)
-                {
-                    using raw_t = std::remove_cv_t<std::remove_reference_t<return_t>>;
-                    return std::any(static_cast<const raw_t*>(&ret_v));
-                }
-                else
-                {
-                    using raw_ct = std::add_const_t<std::remove_reference_t<decltype(ret_v)>>;
-                    // TODO: enable it for move-constructible objects.
-                    static_assert(std::is_copy_constructible_v<return_t>, "return-type must be copy-constructible, required by std::any");
-                    return std::any(raw_ct(std::forward<decltype(ret_v)>(ret_v)));
+                else {
+                    return { error::None,
+                             detail::RObjectBuilder<decltype(ret_v)>::template
+                             build<alloc::Stack>(std::forward<decltype(ret_v)>(ret_v), isConstCastSafe)
+                    };
                 }
             }
-            else return std::any();
         }
     };
 }
