@@ -22,7 +22,7 @@ namespace rtl::dispatch
 
         constexpr auto to_method()
         {
-            using lambda_t = function_lambda<fn_void::no, erase::t_method, signature_t...>;
+            using lambda_t = function_lambda<erase::t_method, signature_t...>;
             return static_cast<lambda_t&>(*m_functor.m_lambdas[functor::index::erased_method]);
         }
 
@@ -43,7 +43,7 @@ namespace rtl::dispatch
         template<erase erase_v>
         constexpr auto to_function()
         {
-            using lambda_t = function_lambda<fn_void::no, erase_v, signature_t...>;
+            using lambda_t = function_lambda<erase_v, signature_t...>;
             if constexpr (erase_v == erase::t_ctor)
             {
                 return static_cast<lambda_t&>(*m_functor.m_lambdas[functor::index::erased_ctor]);

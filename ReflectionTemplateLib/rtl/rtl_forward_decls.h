@@ -106,7 +106,7 @@ namespace rtl
             t_method
         };
 
-        template<fn_void, erase, class...signature_t>
+        template<erase, class...signature_t>
         struct function_lambda;
 
         template<fn_void, erase, class known_t, class...signature_t>
