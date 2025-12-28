@@ -16,9 +16,9 @@
 namespace rtl
 {
     template<class ...signature_t>
-    struct method<RObject, Return(signature_t...)>: public dispatch::forward_call<const RObject&, signature_t...>
+    struct method<RObject, Return(signature_t...)>: public dispatch::forward_call<Return, const RObject&, signature_t...>
     {
-        using base_t = dispatch::forward_call<const RObject&, signature_t...>;
+        using base_t = dispatch::forward_call<Return, const RObject&, signature_t...>;
 
         struct invoker
         {

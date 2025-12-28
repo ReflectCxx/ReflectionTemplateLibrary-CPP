@@ -11,21 +11,25 @@
 
 #pragma once
 
-#include "functor.h"
-#include "RObject.hpp"
+#include "forward_call.h"
 
 namespace rtl
 {
+    // TODO: Needs to be well tested, special case return-type 'void' (which does not returns std::nullopt for now)
     template<class return_t, class ...signature_t> requires (!std::is_same_v<return_t, Return>)
-    struct method<RObject, return_t(signature_t...)>
+    struct method<RObject, return_t(signature_t...)> 
+        : public dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>
     {
+        using base_t = dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>;
+
         struct invoker
         {
+            const base_t& fn;
             const error init_err;
             const RObject& target;
-            const method<RObject, return_t(signature_t...)>& fn;
 
-            template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
+            template<class ...args_t> 
+                requires (sizeof...(args_t) == sizeof...(signature_t))
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
             {
@@ -33,24 +37,21 @@ namespace rtl
                     return { init_err, std::nullopt };
                 }
 
-                if (fn.must_bind_refs()) [[unlikely]] {
-                    return { error::ExplicitRefBindingRequired, std::nullopt };
+                auto&& ret_v = fn(target, std::forward<args_t>(params)...);
+                if constexpr (std::is_void_v<return_t>) {
+                    ret_v.second = std::nullopt;
                 }
-
-                auto index = (fn.m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
-                return { error::None,
-                         fn.m_hopper[index](*fn.m_functors[index], target, std::forward<args_t>(params)...)
-                };
+                return ret_v;
             }
         };
 
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
+            const base_t& fn;
             const error init_err;
             const RObject& target;
-            const method<RObject, return_t(signature_t...)>& fn;
-
+            
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
             constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
@@ -59,68 +60,19 @@ namespace rtl
                     return { init_err, std::nullopt };
                 }
 
-                auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
-                for (int index = 0; index < fn.m_functors.size(); index++)
-                {
-                    if (fn.m_functors[index] != nullptr &&
-                        fn.m_functors[index]->get_strict_sign_id() == signature_id){
-                        return { error::None,
-                                 fn.m_hopper[index](*fn.m_functors[index], target, std::forward<args_t>(params)...)
-                        };
-                    }
+                auto sign_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
+                auto&& ret_v = fn.perfect_forward(sign_id, target, std::forward<args_t>(params)...);
+                if constexpr (std::is_void_v<return_t>) {
+                    ret_v.second = std::nullopt;
                 }
-                return { error::RefBindingMismatch, std::nullopt };
+                return ret_v;
             }
         };
 
-        constexpr invoker operator()(const RObject& p_target) const noexcept {
-            return invoker{ validate(p_target), p_target, *this };
-        }
-
-        template<class ...args_t>
-        requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ validate(p_target), p_target, *this };
-        }
-
-        constexpr operator bool() const noexcept {
-            return !(m_init_err != error::None || m_functors.empty() ||
-                     (m_functors.size() == 1 && m_functors[0] == nullptr));
-
-        }
-
-        constexpr bool must_bind_refs() const noexcept {
-            return (m_functors[detail::call_by::value] == nullptr && m_functors.size() > detail::call_by::ncref);
-        }
-
-        GETTER(rtl::error, _init_error, m_init_err)
-
-    private:
-
-        using lambda_t = std::function<std::optional<return_t>(const dispatch::functor&, const RObject&, signature_t...)>;
-
-        std::vector<lambda_t> m_hopper = {};
-        std::vector<const dispatch::functor*> m_functors = {};
-
-        error m_init_err = error::InvalidCaller;
-
-        traits::uid_t m_record_id = traits::uid<>::none;
-
-        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
-        GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
-
-        constexpr void set_record_id(const traits::uid_t p_recid) {
-            m_record_id = p_recid;
-        }
-
-        constexpr void set_init_error(const error p_err) {
-            m_init_err = p_err;
-        }
-
         constexpr const error validate(const RObject& p_target) const
         {
-            if (m_init_err != error::None) {
-                return m_init_err;
+            if (base_t::get_init_error() != error::None) {
+                return base_t::get_init_error();
             }
             else if (p_target.isEmpty()) {
                 return error::EmptyRObject;
@@ -131,10 +83,28 @@ namespace rtl
             else return error::None;
         }
 
+        constexpr invoker operator()(const RObject& p_target) const noexcept {
+            return invoker{ *this, validate(p_target), p_target };
+        }
+
+        template<class ...args_t>
+            requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ *this, validate(p_target), p_target};
+        }
+
+    private:
+
+        traits::uid_t m_record_id = traits::uid<>::none;
+
+        constexpr void set_record_id(const traits::uid_t p_recid) {
+            m_record_id = p_recid;
+        }
+
         template<class, class ...>
         friend struct detail::HopMethod;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
-                      "rtl::method<...>: any type cannot be specified as reference here.");
+            "rtl::method<...>: any type cannot be specified as reference here.");
     };
 }

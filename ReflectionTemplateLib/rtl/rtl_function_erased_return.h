@@ -16,9 +16,9 @@
 namespace rtl
 {
     template<class ...signature_t>
-    struct function<Return(signature_t...)> : public dispatch::forward_call<signature_t...>
+    struct function<Return(signature_t...)> : public dispatch::forward_call<Return, signature_t...>
     {
-        using base_t = dispatch::forward_call<signature_t...>;
+        using base_t = dispatch::forward_call<Return, signature_t...>;
 
         template<class ...args_t>
             requires (sizeof...(args_t) == sizeof...(signature_t))

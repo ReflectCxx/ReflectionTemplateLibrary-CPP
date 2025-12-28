@@ -238,8 +238,7 @@ namespace rtl::detail
     {
         for (auto& ty_meta : m_overloadsFnMeta)
         {
-            if (ty_meta.is_empty())
-            {
+            if (ty_meta.is_empty()) {
                 pHopper.get_hopper().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
@@ -250,20 +249,20 @@ namespace rtl::detail
                 return;
             }
 
-            auto fn = [&]()-> decltype(auto) {
+            auto fn = [&]()-> decltype(auto) 
+            {
+                if constexpr (traits::type_erased_v<record_t, return_t>) {
 
-                if constexpr (traits::type_erased_v<record_t, return_t>)
-                {
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).to_method();
                 }
-                else if constexpr (traits::target_erased_v<record_t, return_t>)
-                {
+                else if constexpr (traits::target_erased_v<record_t, return_t>) {
+
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_target, return_t>();
                 }
-                else if constexpr (traits::return_erased_v<record_t, return_t>)
-                {
+                else if constexpr (traits::return_erased_v<record_t, return_t>) {
+
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_return, record_t>();
                 }

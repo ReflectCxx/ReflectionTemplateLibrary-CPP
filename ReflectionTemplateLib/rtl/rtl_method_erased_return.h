@@ -16,9 +16,9 @@
 namespace rtl
 {
     template<class record_t, class ...signature_t> requires (!std::is_same_v<record_t, RObject>)
-    struct method<record_t, Return(signature_t...)> : public dispatch::forward_call<const record_t&, signature_t...>
+    struct method<record_t, Return(signature_t...)> : public dispatch::forward_call<Return, const record_t&, signature_t...>
     {
-        using base_t = dispatch::forward_call<const record_t&, signature_t...>;
+        using base_t = dispatch::forward_call<Return, const record_t&, signature_t...>;
 
         struct invoker
         {

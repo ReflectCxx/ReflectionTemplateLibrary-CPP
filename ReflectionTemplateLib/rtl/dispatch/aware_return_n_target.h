@@ -30,16 +30,16 @@ namespace rtl::dispatch
             if constexpr (std::is_void_v<return_t>) 
             {
                 (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
-                return std::optional<void*>();
+                return std::make_pair(error::None, std::optional<void*>());
             }
             else
             {
                 auto&& ret_v = (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
                 if constexpr (std::is_reference_v<return_t>) {
-                    return std::optional<std::remove_reference_t<return_t>*>(&ret_v);
+                    return std::make_pair(error::None, std::optional<std::remove_reference_t<return_t>*>(&ret_v));
                 }
                 else {
-                    return std::optional<return_t>(std::in_place, std::move(ret_v));
+                    return std::make_pair(error::None, std::optional<return_t>(std::in_place, std::move(ret_v)));
                 }
             }
         }

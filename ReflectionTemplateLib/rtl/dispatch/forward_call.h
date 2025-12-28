@@ -15,7 +15,7 @@
 
 namespace rtl::dispatch
 {
-    template<class ...signature_t>
+    template<class return_t, class ...signature_t>
     struct forward_call
     {
         constexpr operator bool() const noexcept {
@@ -32,10 +32,15 @@ namespace rtl::dispatch
 
         template<class ...args_t>
         [[gnu::hot]] [[gnu::flatten]]
-        constexpr Return operator()(args_t&&...params) const noexcept
+        constexpr return_t operator()(args_t&&...params) const noexcept
         {
             if (must_bind_refs()) [[unlikely]] {
-                return { error::ExplicitRefBindingRequired, RObject{} };
+                if constexpr (std::is_same_v<return_t, Return>) {
+                    return { error::ExplicitRefBindingRequired, RObject{} };
+                }
+                else {
+                    return { error::ExplicitRefBindingRequired, std::nullopt };
+                }
             }
             auto index = ( m_functors[detail::call_by::value] != nullptr ? 
                            detail::call_by::value : detail::call_by::cref );
@@ -45,7 +50,7 @@ namespace rtl::dispatch
 
         template<class ...args_t>
         [[gnu::hot]] [[gnu::flatten]]
-        constexpr Return perfect_forward(const traits::uid_t p_sign_id, args_t&&...params) const noexcept
+        constexpr return_t perfect_forward(const traits::uid_t p_sign_id, args_t&&...params) const noexcept
         {
             for (int index = 0; index < m_functors.size(); index++)
             {
@@ -55,14 +60,19 @@ namespace rtl::dispatch
                     return m_hopper[index](*m_functors[index], std::forward<args_t>(params)...);
                 }
             }
-            return { error::RefBindingMismatch, RObject{} };
+            if constexpr (std::is_same_v<return_t, Return>) {
+                return { error::RefBindingMismatch, RObject{} };
+            }
+            else {
+                return { error::RefBindingMismatch, std::nullopt };
+            }
         }
 
         GETTER(error, _init_error, m_init_err)
 
     private:
 
-        using lambda_t = std::function<Return(const functor&, signature_t...)>;
+        using lambda_t = std::function<return_t(const functor&, signature_t...)>;
 
         error m_init_err = error::InvalidCaller;
 
