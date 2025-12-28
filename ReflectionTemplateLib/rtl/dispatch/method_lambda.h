@@ -17,7 +17,7 @@
 namespace rtl::dispatch
 {
     template<class known_t, class...args_t>
-    struct method_lambda<fn_void::no, erase::t_return, known_t, args_t...> : lambda
+    struct method_lambda<erase::t_return, known_t, args_t...> : lambda
     {
         using record_t = known_t;
         using fptr_t = Return(*)(const functor&, const record_t&, traits::normal_sign_t<args_t>&&...);
@@ -43,7 +43,7 @@ namespace rtl::dispatch
 namespace rtl::dispatch
 {
     template<class known_t, class...args_t>
-    struct method_lambda<fn_void::no, erase::t_target, known_t, args_t...> : lambda
+    struct method_lambda<erase::t_target, known_t, args_t...> : lambda
     {
         using ret_rf_t = std::conditional_t<std::is_reference_v<known_t>, std::remove_reference_t<known_t>*, known_t>;
 

@@ -91,12 +91,7 @@ namespace rtl
 
         struct lambda {};
 
-        enum class fn_void {
-            no,
-            yes
-        };
-
-        template<fn_void, class...signature_t>
+        template<class...signature_t>
         struct functor_cast;
 
         enum class erase {
@@ -109,7 +104,7 @@ namespace rtl
         template<erase, class...signature_t>
         struct function_lambda;
 
-        template<fn_void, erase, class known_t, class...signature_t>
+        template<erase, class known_t, class...signature_t>
         struct method_lambda;
 
         template<class return_t, class ...signature_t>

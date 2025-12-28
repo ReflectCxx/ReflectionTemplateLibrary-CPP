@@ -250,26 +250,25 @@ namespace rtl::detail
                 return;
             }
 
-            auto lambda = [&]<dispatch::fn_void void_v>() -> decltype(auto)
-            {
+            auto fn = [&]()-> decltype(auto) {
+
                 if constexpr (traits::type_erased_v<record_t, return_t>)
                 {
-                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).to_method();
                 }
                 else if constexpr (traits::target_erased_v<record_t, return_t>)
                 {
-                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_target, return_t>();
                 }
                 else if constexpr (traits::return_erased_v<record_t, return_t>)
                 {
-                    using fn_cast = dispatch::functor_cast<void_v, traits::normal_sign_t<args_t>...>;
+                    using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
                     return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_return, record_t>();
                 }
-            };
+            }();
 
-            auto fn = lambda.template operator() < dispatch::fn_void::no > ();
             pHopper.get_hopper().push_back(fn.f_ptr());
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);

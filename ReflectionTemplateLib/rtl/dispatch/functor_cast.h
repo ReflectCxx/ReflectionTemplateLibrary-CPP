@@ -15,7 +15,7 @@
 
 namespace rtl::dispatch
 {
-    template<fn_void fn_void_v, class...signature_t>
+    template<class...signature_t>
     struct functor_cast
     {
         const functor& m_functor;
@@ -29,7 +29,7 @@ namespace rtl::dispatch
         template<erase erase_v, class known_t>
         constexpr auto to_method()
         {
-            using lambda_t = method_lambda<fn_void_v, erase_v, known_t, signature_t...>;
+            using lambda_t = method_lambda<erase_v, known_t, signature_t...>;
             if constexpr (erase_v == erase::t_return)
             {
                 return static_cast<lambda_t&>(*m_functor.m_lambdas[functor::index::erased_return]);

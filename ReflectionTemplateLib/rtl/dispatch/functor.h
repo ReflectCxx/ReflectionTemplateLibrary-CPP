@@ -54,7 +54,7 @@ namespace rtl::dispatch
         
         friend rtl::type_meta;
 
-        template<fn_void, class...>
+        template<class...>
         friend struct functor_cast;
     };
 }

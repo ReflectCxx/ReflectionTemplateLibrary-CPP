@@ -143,7 +143,7 @@ namespace rtl
                 continue;
             }
 
-            using fn_cast = dispatch::functor_cast<dispatch::fn_void::no, traits::normal_sign_t<args_t>...>;
+            using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
             auto fn = fn_cast(ty_meta.get_functor()).template to_function<dispatch::erase::t_ctor>();
 
             fnCtor.get_hop().push_back(fn.f_ptr());

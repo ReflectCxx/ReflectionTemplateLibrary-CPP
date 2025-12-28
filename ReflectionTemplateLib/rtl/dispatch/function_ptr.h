@@ -49,13 +49,10 @@ namespace rtl::dispatch
 
 	private:
 
-		functor_t m_functor = nullptr;
-
-		static constexpr auto fn_void_v = (std::is_void_v<return_t> ? fn_void::yes : fn_void::no);
-
 		using ctor_t = function_lambda<erase::t_ctor, signature_t...>;
 		using func_t = function_lambda<erase::t_return, signature_t...>;
 
+		functor_t m_functor = nullptr;
 		std::variant<ctor_t, func_t> m_lambda;
 
 		void init_lambda();
