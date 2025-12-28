@@ -20,23 +20,18 @@ namespace rtl::dispatch
     void method_ptr<record_t, return_t, signature_t...>::init_lambda()
     {
         using lambda_t = aware_return_n_target<record_t, return_t, signature_t...>;
-        if constexpr (fn_void_v == fn_void::yes) {               
-            m_erased_target.init(&lambda_t::e_target_a_return_fnv); // erased-target-aware-return
-        }
-        else {
-            m_erased_target.init(lambda_t::e_target_a_return_fnr()); // erased-target-aware-return
-        }
 
-        m_erased_return.init(&lambda_t::e_return_a_target_fnr); // erased-return-aware-target
-        m_erased_method.init(&lambda_t::e_return_e_target_fnr); // erased-return-erased-target
+        m_erased_method.init(&lambda_t::erased_return_and_target);
+        m_erased_target.init(&lambda_t::erased_target_aware_return);
+        m_erased_return.init(&lambda_t::erased_return_aware_target);
 
         functor::m_lambdas = std::vector<lambda*>(3);
         functor::m_lambdas[index::erased_return] = (&m_erased_return);
         functor::m_lambdas[index::erased_target] = (&m_erased_target);
         functor::m_lambdas[index::erased_method] = (&m_erased_method);
 
-        constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
         auto cloner = &detail::Cloner<traits::raw_t<return_t>>::copyCtor;
+        constexpr static bool is_const_cast_safe = (!traits::is_const_v<return_t>);
         m_robject_id = detail::RObjectId::create<return_t, alloc::Stack>(is_const_cast_safe, cloner);
     }
 }

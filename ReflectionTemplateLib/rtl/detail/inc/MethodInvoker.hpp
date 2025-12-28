@@ -236,18 +236,11 @@ namespace rtl::detail
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
     inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
     {
-        bool isReturnTvoid = false;
         for (auto& ty_meta : m_overloadsFnMeta)
         {
             if (ty_meta.is_empty())
             {
-                if constexpr (!std::is_same_v<return_t, Return>) {
-                    pHopper.get_vhop().push_back(nullptr);
-                    pHopper.get_rhop().push_back(nullptr);
-                }
-                else {
-                    pHopper.get_hopper().push_back(nullptr);
-                }
+                pHopper.get_hopper().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
@@ -276,22 +269,8 @@ namespace rtl::detail
                 }
             };
 
-            if constexpr (!std::is_same_v<return_t, Return>) 
-            {
-                if ((isReturnTvoid = ty_meta.is_void())) {
-                    auto fn = lambda.template operator() < dispatch::fn_void::yes > ();
-                    pHopper.get_vhop().push_back(fn.f_ptr());
-                }
-                else {
-                    auto fn = lambda.template operator() < dispatch::fn_void::no > ();
-                    pHopper.get_rhop().push_back(fn.f_ptr());
-                }
-            }
-            else {
-                auto fn = lambda.template operator() < dispatch::fn_void::no > ();
-                pHopper.get_hopper().push_back(fn.f_ptr());
-            }
-
+            auto fn = lambda.template operator() < dispatch::fn_void::no > ();
+            pHopper.get_hopper().push_back(fn.f_ptr());
             pHopper.get_overloads().push_back(&ty_meta.get_functor());
             pHopper.set_init_error(error::None);
         }
@@ -301,16 +280,6 @@ namespace rtl::detail
         }
         else {
             pHopper.set_record_id(m_recordId);
-        }
-
-        if constexpr (!std::is_same_v<return_t, Return>)
-        {
-            if (isReturnTvoid) {
-                pHopper.get_rhop().clear();
-            }
-            else {
-                pHopper.get_vhop().clear();
-            }
         }
     }
 }

@@ -38,16 +38,9 @@ namespace rtl
                 }
 
                 auto index = (fn.m_functors[detail::call_by::value] != nullptr ? detail::call_by::value : detail::call_by::cref);
-                if (fn.m_functors[index]->is_void())
-                {
-                    fn.m_vhop[index] (*(fn.m_functors[index]), target, std::forward<args_t>(params)...);
-                    return { error::None, std::nullopt };
-                }
-                else
-                {
-                    auto&& ret_v = fn.m_rhop[index](*(fn.m_functors[index]), target, std::forward<args_t>(params)...);
-                    return { error::None, std::optional<return_t>(std::move(ret_v)) };
-                }
+                return { error::None,
+                         fn.m_hopper[index](*fn.m_functors[index], target, std::forward<args_t>(params)...)
+                };
             }
         };
 
@@ -69,21 +62,11 @@ namespace rtl
                 auto signature_id = traits::uid<traits::strict_sign_id_t<fwd_args_t...>>::value;
                 for (int index = 0; index < fn.m_functors.size(); index++)
                 {
-                    if (fn.m_functors[index] != nullptr)
-                    {
-                        if (signature_id == fn.m_functors[index]->get_strict_sign_id())
-                        {
-                            if (fn.m_functors[index]->is_void())
-                            {
-                                fn.m_vhop[index] (*fn.m_functors[index], target, std::forward<args_t>(params)...);
-                                return { error::None, std::nullopt };
-                            }
-                            else
-                            {
-                                auto&& ret_v = fn.m_rhop[index](*fn.m_functors[index], target, std::forward<args_t>(params)...);
-                                return { error::None, std::optional<return_t>(std::move(ret_v)) };
-                            }
-                        }
+                    if (fn.m_functors[index] != nullptr &&
+                        fn.m_functors[index]->get_strict_sign_id() == signature_id){
+                        return { error::None,
+                                 fn.m_hopper[index](*fn.m_functors[index], target, std::forward<args_t>(params)...)
+                        };
                     }
                 }
                 return { error::RefBindingMismatch, std::nullopt };
@@ -114,24 +97,17 @@ namespace rtl
 
     private:
 
-        using lambda_vt = std::function<void(const dispatch::functor&, const RObject&, signature_t...)>;
+        using lambda_t = std::function<std::optional<return_t>(const dispatch::functor&, const RObject&, signature_t...)>;
 
-        using lambda_rt = std::function<return_t(const dispatch::functor&, const RObject&, signature_t...)>;
-
-        std::vector<lambda_rt> m_rhop = {};
-
-        std::vector<lambda_vt> m_vhop = {};
-
+        std::vector<lambda_t> m_hopper = {};
         std::vector<const dispatch::functor*> m_functors = {};
 
         error m_init_err = error::InvalidCaller;
 
         traits::uid_t m_record_id = traits::uid<>::none;
 
-        GETTER_REF(std::vector<lambda_rt>, _rhop, m_rhop)
-        GETTER_REF(std::vector<lambda_vt>, _vhop, m_vhop)
+        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
         GETTER_REF(std::vector<const dispatch::functor*>, _overloads, m_functors)
-
 
         constexpr void set_record_id(const traits::uid_t p_recid) {
             m_record_id = p_recid;

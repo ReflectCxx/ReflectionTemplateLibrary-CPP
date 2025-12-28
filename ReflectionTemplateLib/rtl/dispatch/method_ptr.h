@@ -51,11 +51,9 @@ namespace rtl::dispatch
         
         const functor_t m_functor = nullptr;
 
-        static constexpr auto fn_void_v = (std::is_void_v<return_t> ? fn_void::yes : fn_void::no);
-
         function_lambda<erase::t_method, signature_t...> m_erased_method;
         method_lambda<fn_void::no, erase::t_return, record_t, signature_t...> m_erased_return;
-        method_lambda<fn_void_v, erase::t_target, return_t, signature_t...> m_erased_target;
+        method_lambda<fn_void::no, erase::t_target, return_t, signature_t...> m_erased_target;
 
         void init_lambda();
 
