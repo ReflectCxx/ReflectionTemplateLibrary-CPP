@@ -327,18 +327,16 @@ namespace rtl_tests
 
             rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
             EXPECT_TRUE(getTheDate);
-            {
-                //auto [err_0, date0] = getTheDate(calender0)();
-                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+            {                
+                auto [err_0, date0] = getTheDate(calender0)();
 
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
                 EXPECT_TRUE(date0.isConstCastSafe());
 
-                //auto [err_1, date1] = getTheDate(calender1)();
-                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
-
+                auto [err_1, date1] = getTheDate(calender1)();
+                
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());
@@ -410,15 +408,13 @@ namespace rtl_tests
             rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
             EXPECT_TRUE(getTheDate);
             {
-                //auto [err_0, date0] = getTheDate(calender0)();
-                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+                auto [err_0, date0] = getTheDate(calender0)();
 
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                //auto [err_1, date1] = getTheDate(calender1)();
-                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
+                auto [err_1, date1] = getTheDate(calender1)();
 
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
@@ -489,18 +485,16 @@ namespace rtl_tests
             optional<Method> oGetTheDate = typeCalender->getMethod(calender::str_getTheDate);
             ASSERT_TRUE(oGetTheDate);
 
-            //rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
-            //EXPECT_TRUE(getTheDate);
+            rtl::method<rtl::RObject, rtl::Return()> getTheDate = oGetTheDate->targetT().argsT().returnT();
+            EXPECT_TRUE(getTheDate);
             {
-                //auto [err_0, date0] = getTheDate(calender0)();
-                auto [err_0, date0] = oGetTheDate->bind(calender0).call();
+                auto [err_0, date0] = getTheDate(calender0)();
 
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                //auto [err_1, date1] = getTheDate(calender1)();
-                auto [err_1, date1] = oGetTheDate->bind(calender1).call();
+                auto [err_1, date1] = getTheDate(calender1)();
 
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
@@ -571,18 +565,17 @@ namespace rtl_tests
             optional<Method> oGetSavedDate = typeCalender->getMethod(calender::str_getSavedDate);
             ASSERT_TRUE(oGetSavedDate);
 
-            //rtl::method<rtl::RObject, rtl::Return()> getSavedDate = oGetSavedDate->targetT().argsT().returnT();
-            //EXPECT_TRUE(getSavedDate);
+            rtl::method<rtl::RObject, rtl::Return()> getSavedDate = oGetSavedDate->targetT().argsT().returnT();
+            EXPECT_TRUE(getSavedDate);
             {
-                //auto [err_0, date0] = getSavedDate(calender0)();
-                auto [err_0, date0] = oGetSavedDate->bind(calender0).call();
+                auto [err_0, date0] = getSavedDate(calender0)();
 
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
 
-                //auto [err_1, date1] = getSavedDate(calender1)();
-                auto [err_1, date1] = oGetSavedDate->bind(calender1).call();
+                auto [err_1, date1] = getSavedDate(calender1)();
+
                 EXPECT_TRUE(err_1 == error::None);
                 EXPECT_FALSE(date1.isOnHeap());
                 ASSERT_FALSE(date1.isEmpty());

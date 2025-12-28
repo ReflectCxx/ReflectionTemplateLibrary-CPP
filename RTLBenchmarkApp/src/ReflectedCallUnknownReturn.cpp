@@ -91,6 +91,8 @@ namespace
         return method;
     }();
 
+    //TODO: make return-type 'void' work here, fix compile error.
+    //     rtl::method<rtl::RObject, void(bm::argStr_t)>
     static rtl::method<rtl::RObject, bm::retStr_t(bm::argStr_t)> ErasedTargetAwareReturn_SendMessage = []()
     {
         std::optional<rtl::Method> optMethod = class_Node.getMethod("sendMessage");
