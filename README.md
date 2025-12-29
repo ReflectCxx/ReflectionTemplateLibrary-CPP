@@ -94,27 +94,19 @@ int main()
 {
     // Query reflected record for class `Person` (dynamic lookup).
     std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-    if (!classPerson) {
-        return 0; // Class not registered.
-    }
+    if (!classPerson) { return 0; } // Class not registered.
 
     // Get constructor overload: Person(const char*, int).
     rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
-    if (!personCtor) {
-        return 0; // Constructor with expected signature not found.
-    }
+    if (!personCtor) { return 0; } // Constructor with expected signature not found.
 
     // Construct a stack-allocated instance; returns {error, RObject}.
     auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
-    if (err != rtl::error::None) {
-        return 0; // Construction failed.
-    }
+    if (err != rtl::error::None) { return 0; } // Construction failed.
 
     // Lookup reflected method `setAge`.
     std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
-    if (!oSetAge) {
-        return 0; // Method not found.
-    }
+    if (!oSetAge) { return 0; } // Method not found.
 
     // When target/return types are known (fastest path).
     {
