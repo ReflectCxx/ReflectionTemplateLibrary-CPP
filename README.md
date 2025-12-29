@@ -136,9 +136,7 @@ int main()
 
     // Lookup reflected method `getName`.
     std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
-    if (!oGetName) {
-        return 0; // Method not found.
-    }
+    if (!oGetName) { return 0; } // Method not found.
 
     // Materialize erased method: getName() -> std::string.
     rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
@@ -147,8 +145,8 @@ int main()
 	{
         auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
         if (err == rtl::error::None && ret.canViewAs<std::string>()) {
-            auto viewStr = ret.view<std::string>();
-            std::cout << viewStr->get();	// Safely view the returned std::string.
+            const std::string& name = ret.view<std::string>()->get();
+            std::cout << name;	// Safely view the returned std::string.
         }
     }
     return 0;
