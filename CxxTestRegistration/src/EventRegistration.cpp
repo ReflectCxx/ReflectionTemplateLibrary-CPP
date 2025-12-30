@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-	void addTypeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+	void Register::typeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>& id)
 	{
 		id.insert(std::make_pair(event::struct_, rtl::traits::uid<nsdate::Event>::value));
 	}
 
-	void registerTypeEvent(std::vector<rtl::Function>& fns)
+	void Register::typeEvent(std::vector<rtl::Function>& fns)
 	{
 		//  Registering 'Event' for reflection; instance creation via reflection fails since its default constructor is private or deleted.
 		//  At least one member must be registered for RTL to recognize the type. be it property, member-function or constructor.

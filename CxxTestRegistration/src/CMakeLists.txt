@@ -14,12 +14,14 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/LibraryRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/PersonRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/PodStdRegistration.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/StrConstRegistration.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/StrDerivedRegistration.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/StrFuncsRegistration.cpp"
+	
 	"${CMAKE_CURRENT_LIST_DIR}/StrWrapRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StrMuteRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrConstRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrFuncsRegistration.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StrStaticRegistration.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StrConstOverloadRegistration.cpp"
+	
 	"${CMAKE_CURRENT_LIST_DIR}/TestMirrorProvider.cpp"
 )
 

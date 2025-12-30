@@ -9,7 +9,7 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(StrWrapA::struct_, rtl::traits::uid<StrWrapA>::value));
         id.insert(std::make_pair(StrWrapB::struct_, rtl::traits::uid<StrWrapB>::value));
@@ -17,7 +17,7 @@ namespace test_mirror
         id.insert(std::make_pair(StrWrapD::struct_, rtl::traits::uid<StrWrapD>::value));
     }
 
-	void registerTypeStringWrap(std::vector<rtl::Function>& fns)
+	void Register::typeStringWrap(std::vector<rtl::Function>& fns)
 	{
         //------------------StrWrapA--------------------------------
         fns.push_back(rtl::type().record<StrWrapA>(StrWrapA::struct_)   // Registers default constructor as well.

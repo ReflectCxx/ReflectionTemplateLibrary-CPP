@@ -5,7 +5,7 @@
 
 namespace test_mirror
 {
-    void addTypeIdPodStd(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdPodStd(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair("int", rtl::traits::uid<int>::value));
         id.insert(std::make_pair("char", rtl::traits::uid<char>::value));
@@ -13,7 +13,7 @@ namespace test_mirror
         id.insert(std::make_pair("string_view", rtl::traits::uid<std::string_view>::value));
     }
 
-	void registerPodStdTypes(std::vector<rtl::Function>& fns)
+	void Register::stdTypes(std::vector<rtl::Function>& fns)
 	{
         //  Registering int.
         fns.push_back(rtl::type().record<int>("int")

@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(date::struct_, rtl::traits::uid<nsdate::Date>::value));
     }
 
-	void registerTypeDate(std::vector<rtl::Function>& fns)
+	void Register::typeDate(std::vector<rtl::Function>& fns)
 	{
         //  Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         //  Registers default constructor with implicit registration of destructor & copy-constructor.

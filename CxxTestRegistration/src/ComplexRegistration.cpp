@@ -9,7 +9,7 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-	void registerTypeComplex(std::vector<rtl::Function>& fns)
+	void Register::typeComplex(std::vector<rtl::Function>& fns)
 	{
 		//  Unique function, no overloads, no need to specify signature as template parameters.
 		fns.push_back(rtl::type().function(str_getComplexNumAsString)

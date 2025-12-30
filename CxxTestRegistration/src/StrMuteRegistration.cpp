@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(StrMute::struct_, rtl::traits::uid<StrMute>::value));
     }
 
-	void registerTypeStringMute(std::vector<rtl::Function>& fns)
+	void Register::typeStringMute(std::vector<rtl::Function>& fns)
 	{
         fns.push_back(rtl::type().record<StrMute>(StrMute::struct_)
                                  .build());

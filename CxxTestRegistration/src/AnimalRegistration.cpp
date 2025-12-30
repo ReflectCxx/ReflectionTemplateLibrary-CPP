@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(animal::class_, rtl::traits::uid<Animal>::value));
     }
 
-	void registerTypeAnimal(std::vector<rtl::Function>& fns)
+	void Register::typeAnimal(std::vector<rtl::Function>& fns)
 	{
 		//  class 'Animal', methods & constructors.
         fns.push_back(rtl::type().record<Animal>(animal::class_)

@@ -10,12 +10,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(library::class_, rtl::traits::uid<Library>::value));
     }
 
-	void registerTypeLibrary(std::vector<rtl::Function>& fns)
+	void Register::typeLibrary(std::vector<rtl::Function>& fns)
 	{
 		//  Registering Library's constructor. Stack allocation (rtl::alloc::Stack) will fail since its copy constructor is deleted 
         //  and its required by 'std::any' to store its object via copy-construction. But instance on heap (rtl::alloc::HEAP) can be

@@ -16,22 +16,21 @@ namespace test_mirror
 
                 std::vector<rtl::Function> metaFns;
 
-                registerPodStdTypes(metaFns);
+                Register::stdTypes(metaFns);
+                Register::typeBook(metaFns);
+                Register::typeDate(metaFns);
+                Register::typeEvent(metaFns);
+                Register::typePerson(metaFns);
+                Register::typeAnimal(metaFns);
+                Register::typeLibrary(metaFns);
+                Register::typeComplex(metaFns);
+                Register::typeCalender(metaFns);
 
-                registerTypeBook(metaFns);
-                registerTypeDate(metaFns);
-                registerTypeEvent(metaFns);
-                registerTypePerson(metaFns);
-                registerTypeAnimal(metaFns);
-                registerTypeLibrary(metaFns);
-                registerTypeComplex(metaFns);
-                registerTypeCalender(metaFns);
-
-                registerTypeStringWrap(metaFns);
-                registerTypeStringMute(metaFns);
-                registerTypeStringConst(metaFns);
-                registerTypeStringFuncs(metaFns);
-                registerTypeStringStatic(metaFns);
+                Register::typeStringWrap(metaFns);
+                Register::typeStringMute(metaFns);
+                Register::typeStringConst(metaFns);
+                Register::typeStringFuncs(metaFns);
+                Register::typeStringStatic(metaFns);
 
                 return metaFns;
             }()
@@ -55,18 +54,18 @@ namespace test_mirror
         {
             std::unordered_map<std::string, rtl::traits::uid_t> idMap;
             
-            addTypeIdBook(idMap);
-            addTypeIdDate(idMap);
-            addTypeIdEvent(idMap);
-            addTypeIdPerson(idMap);
-            addTypeIdPodStd(idMap);
-            addTypeIdAnimal(idMap);
-            addTypeIdLibrary(idMap);
-            addTypeIdCalender(idMap);
-            addTypeIdStringWrap(idMap);
-            addTypeIdStringMute(idMap);
-            addTypeIdStringConst(idMap);
-            addTypeIdStringStatic(idMap);
+            Register::typeIdBook(idMap);
+            Register::typeIdDate(idMap);
+            Register::typeIdEvent(idMap);
+            Register::typeIdPerson(idMap);
+            Register::typeIdPodStd(idMap);
+            Register::typeIdAnimal(idMap);
+            Register::typeIdLibrary(idMap);
+            Register::typeIdCalender(idMap);
+            Register::typeIdStringWrap(idMap);
+            Register::typeIdStringMute(idMap);
+            Register::typeIdStringConst(idMap);
+            Register::typeIdStringStatic(idMap);
 
             return idMap;
         }();

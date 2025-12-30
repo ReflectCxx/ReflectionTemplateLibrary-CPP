@@ -8,12 +8,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(StrStatic::struct_, rtl::traits::uid<StrStatic>::value));
     }
 
-    void registerTypeStringStatic(std::vector<rtl::Function>& fns)
+    void Register::typeStringStatic(std::vector<rtl::Function>& fns)
 	{
         fns.push_back(rtl::type().record<StrStatic>(StrStatic::struct_)
                                  .build());

@@ -9,19 +9,19 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void registerTypeStringFuncs(std::vector<rtl::Function>& fns)
+    void Register::typeStringFuncs(std::vector<rtl::Function>& fns)
     {
         //  Function taking no arguments. '<void>' must be specified if other overload exists else not needed. compiler error otherwise.
         fns.push_back(rtl::type().function<void>(str_reverseString)
-                                        .build(reverseString));
+                                 .build(reverseString));
 
         //  Overloaded function, takes 'string' arguments. '<string>' must be specified as template parameter.
         fns.push_back(rtl::type().function<std::string>(str_reverseString)
-                                        .build(reverseString));
+                                 .build(reverseString));
 
         //  Overloaded function, takes 'const char*' arguments.
         fns.push_back(rtl::type().function<const char*>(str_reverseString)
-                                        .build(reverseString));
+                                 .build(reverseString));
         //  numereous other overloads.
  #if defined(__GNUC__) && !defined(__clang__)
 /*

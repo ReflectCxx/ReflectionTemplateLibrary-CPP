@@ -9,12 +9,12 @@ using namespace test_utils;
 
 namespace test_mirror
 {
-    void addTypeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>& id)
+    void Register::typeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
         id.insert(std::make_pair(book::class_, rtl::traits::uid<Book>::value));
     }
 
-	void registerTypeBook(std::vector<rtl::Function>& fns)
+	void Register::typeBook(std::vector<rtl::Function>& fns)
 	{
 		//  class 'Book', methods & constructors.
         //  Registering default constructor.

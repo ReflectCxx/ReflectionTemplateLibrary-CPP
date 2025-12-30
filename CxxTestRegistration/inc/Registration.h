@@ -9,56 +9,61 @@ namespace rtl {
 
 namespace test_mirror
 {
-	extern void registerPodStdTypes(std::vector<rtl::Function>&);
+    struct Register 
+    {
+        static void stdTypes(std::vector<rtl::Function>&);
 
-	extern void registerTypeComplex(std::vector<rtl::Function>&);
+        static void typeComplex(std::vector<rtl::Function>&);
 
-	extern void registerTypeDate(std::vector<rtl::Function>&);
+        static void typeDate(std::vector<rtl::Function>&);
 
-	extern void registerTypeEvent(std::vector<rtl::Function>&);
+        static void typeEvent(std::vector<rtl::Function>&);
 
-	extern void registerTypeCalender(std::vector<rtl::Function>&);
+        static void typeCalender(std::vector<rtl::Function>&);
 
-	extern void registerTypePerson(std::vector<rtl::Function>&);
+        static void typePerson(std::vector<rtl::Function>&);
 
-	extern void registerTypeBook(std::vector<rtl::Function>&);
+        static void typeBook(std::vector<rtl::Function>&);
 
-	extern void registerTypeLibrary(std::vector<rtl::Function>&);
+        static void typeLibrary(std::vector<rtl::Function>&);
 
-	extern void registerTypeAnimal(std::vector<rtl::Function>&);
+        static void typeAnimal(std::vector<rtl::Function>&);
 
-	extern void registerTypeStringFuncs(std::vector<rtl::Function>&);
+        static void typeStringFuncs(std::vector<rtl::Function>&);
 
-	extern void registerTypeStringWrap(std::vector<rtl::Function>&);
+        static void typeStringWrap(std::vector<rtl::Function>&);
 	
-	extern void registerTypeStringMute(std::vector<rtl::Function>&);
+        static void typeStringMute(std::vector<rtl::Function>&);
 
-	extern void registerTypeStringConst(std::vector<rtl::Function>&);
+        static void typeStringConst(std::vector<rtl::Function>&);
 	
-	extern void registerTypeStringStatic(std::vector<rtl::Function>&);
+        static void typeStringStatic(std::vector<rtl::Function>&);
 
-//---------------------------------------------------------------------------------
-	extern void addTypeIdPodStd(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeStringConstOverload(std::vector<rtl::Function>&);
 
-	extern void addTypeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        //---------------------------------------------------------------------------------
+        static void typeIdPodStd(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdDate(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdCalender(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdEvent(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdPerson(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdCalender(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdPerson(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdBook(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdLibrary(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>&); 
-	
-	extern void addTypeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdAnimal(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringConst(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdStringWrap(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
-	extern void addTypeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>&);
+        static void typeIdStringMute(std::unordered_map<std::string, rtl::traits::uid_t>&);
+
+        static void typeIdStringConst(std::unordered_map<std::string, rtl::traits::uid_t>&);
+
+        static void typeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>&);
+    };
 }
