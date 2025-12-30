@@ -11,6 +11,7 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/StringMute.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StringConst.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/StringStatic.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/StringConstOverload.cpp"
 )
 
 SET(LOCAL_HEADERS
@@ -25,6 +26,7 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/StringMute.h"
 	"${PROJECT_SOURCE_DIR}/inc/StringConst.h"
 	"${PROJECT_SOURCE_DIR}/inc/StringStatic.h"
+	"${PROJECT_SOURCE_DIR}/inc/StringConstOverload.h"	
 )
 
 # Add any additional source files if needed

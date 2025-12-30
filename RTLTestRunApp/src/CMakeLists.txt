@@ -16,15 +16,17 @@ set(LOCAL_SOURCES_0
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/PerfectForwardingTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/MoveConstructorTests.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/ReturnValueReflectionTest.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Constructor.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Function.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Function.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_Method.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_ConstMethod.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedReflectiveCalls/BasicTypeErasedDispatch_StaticMethod.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_Method.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_ConstMethod.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/StaticTypeReflectiveCalls/StrictStaticTypeDispatch_StaticMethod.cpp"
+	
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedInvocationTests/ReturnErased_Constructor.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedInvocationTests/ReturnErased_Function.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedInvocationTests/ReturnErased_Method.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedInvocationTests/ReturnErased_ConstMethod.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeErasedInvocationTests/ReturnErased_StaticMethod.cpp"
+	
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeAwareInvocationTests/TypeAware_Function.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeAwareInvocationTests/TypeAware_Method.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeAwareInvocationTests/TypeAware_ConstMethod.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/FunctionalityTests/TypeAwareInvocationTests/TypeAware_StaticMethod.cpp"
 )
 
 # Create a variable containing the source files for your target
