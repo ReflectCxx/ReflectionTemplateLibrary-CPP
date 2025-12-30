@@ -19,7 +19,7 @@ if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
 /* cxx::mirror() returns an instance of 'rtl::CxxMirror', the reflection access interface
-   for querying types and invoking functions and constructors registered with RTL. */
+   for querying types and invoking function, method and constructors registered with RTL. */
 ```
 > *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
