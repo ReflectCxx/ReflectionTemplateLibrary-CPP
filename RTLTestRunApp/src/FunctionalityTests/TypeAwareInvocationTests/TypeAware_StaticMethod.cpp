@@ -53,7 +53,7 @@ namespace rtl_tests
                                                                                                 .argsT<std::string&>()
                                                                                                 .returnT<std::string>();
                 EXPECT_FALSE(reverse_string);
-                EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidStaticMethodCaller);
+                EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
             } {
                 rtl::function<std::string(std::string&)> reverse_string = static_cast<rtl::Function>(reverseString.value())
                                                                                                                   .argsT<std::string&>()

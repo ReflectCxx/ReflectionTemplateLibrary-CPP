@@ -134,7 +134,7 @@ namespace rtl_tests
 			rtl::method<rtl::RObject, rtl::Return()> getDefaultsFn = getDefaultsOpt.value().targetT().argsT().returnT();
 
 			EXPECT_FALSE(getDefaultsFn);
-			EXPECT_EQ(getDefaultsFn.get_init_error(), error::InvalidStaticMethodCaller);
+			EXPECT_EQ(getDefaultsFn.get_init_error(), error::SignatureMismatch);
 
 			auto [err0, person] = classPerson->ctor()(alloc::Heap);
 
@@ -143,7 +143,7 @@ namespace rtl_tests
 
 			auto [err, ret] = getDefaultsFn(person)();
 
-			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
+			EXPECT_EQ(err, error::SignatureMismatch);
 			EXPECT_TRUE(ret.isEmpty());
 		} {
 			rtl::static_method<rtl::Return()> getDefaultsFn = getDefaultsOpt.value().argsT().returnT();
@@ -175,7 +175,7 @@ namespace rtl_tests
 																									   .argsT<std::string, std::size_t>()
 																									   .returnT();
 			EXPECT_FALSE(optGetProfile);
-			EXPECT_EQ(optGetProfile.get_init_error(), error::InvalidStaticMethodCaller);
+			EXPECT_EQ(optGetProfile.get_init_error(), error::SignatureMismatch);
 
 			auto [err0, person] = classPerson->ctor()(alloc::Heap);
 
@@ -184,7 +184,7 @@ namespace rtl_tests
 
 			auto [err, ret] = optGetProfile(person)(person::OCCUPATION, person::AGE);
 
-			EXPECT_EQ(err, error::InvalidStaticMethodCaller);
+			EXPECT_EQ(err, error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
 		} {
 			rtl::static_method<rtl::Return(std::string, std::size_t)> optGetProfile = getProfileOpt.value()

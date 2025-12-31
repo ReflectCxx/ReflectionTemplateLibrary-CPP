@@ -268,6 +268,7 @@ namespace rtl_tests
         RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
         {
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            //TODO: Fails here. full-type-erased const-method support needed.
             EXPECT_TRUE(isStringEmpty);
 
             auto [err, ret] = isStringEmpty(reflected_str0)();
@@ -301,6 +302,7 @@ namespace rtl_tests
         RObject reflected_str0 = rtl::reflect("");	//empty string.
         {
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            //TODO: Fails here. full-type-erased const-method support needed.
             EXPECT_TRUE(isStringEmpty);
 
             auto [err, ret] = isStringEmpty(reflected_str0)();

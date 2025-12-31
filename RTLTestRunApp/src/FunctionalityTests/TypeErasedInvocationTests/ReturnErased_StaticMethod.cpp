@@ -28,10 +28,10 @@ namespace rtl_tests
                                                                                                .argsT<std::string>()
                                                                                                .returnT<>();
                 EXPECT_FALSE(reverse_string);
-                EXPECT_EQ(reverse_string.get_init_error(), rtl::error::InvalidStaticMethodCaller);
+                EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
 
 				auto [err, robj] = reverse_string(StrStatic())(std::string());
-				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
             } {
                 rtl::function<rtl::Return(std::string)> reverse_string = static_cast<rtl::Function>(reverseString.value())
@@ -116,7 +116,7 @@ namespace rtl_tests
 			EXPECT_FALSE(reverseString);
 			{
 				auto [err, robj] = reverseString(StrStatic())(STRA);
-				EXPECT_EQ(err, rtl::error::InvalidStaticMethodCaller);
+				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 			} 
 		} {
 			rtl::static_method<rtl::Return(const char*)> reverseString = reverseStrOpt.value()

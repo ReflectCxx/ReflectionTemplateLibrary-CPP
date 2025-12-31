@@ -229,9 +229,9 @@ namespace rtl::detail
                 if (recordId != ty_meta.get_record_id()) {
                     return { rtl::index_none, m_recordId, fnTyMetas };
                 }
-                if (member_kind != ty_meta.get_member_kind()) {
-                    continue;
-                }
+            }
+            if (member_kind != ty_meta.get_member_kind()) {
+                continue;
             }
             if (normalId == ty_meta.get_normal_args_id())
             {
@@ -266,11 +266,6 @@ namespace rtl::detail
                 pHopper.get_hopper().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
-            }
-
-            if (ty_meta.get_member_kind() == member::Static) {
-                pHopper.set_init_error(error::InvalidStaticMethodCaller);
-                return;
             }
 
             auto fn = [&]()-> decltype(auto) 

@@ -74,6 +74,7 @@ namespace rtl_tests
             {
                 // materialize the caller.
                 rtl::method<rtl::RObject, rtl::Return()> isEmpty = oIsEmpty->targetT().argsT().returnT();
+                //TODO: Fails here. full-type-erased const-method support needed.
                 EXPECT_TRUE(isEmpty);
 
                 // Exception-free API: returns error code + result object.
