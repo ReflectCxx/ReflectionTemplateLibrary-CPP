@@ -19,7 +19,7 @@ namespace rtl
 {
     template<class record_t, class return_t, class... signature_t>
     requires (!std::is_same_v<record_t, RObject> && !std::is_same_v<return_t, Return>)
-    struct method<const record_t, return_t(signature_t...)>
+    struct const_method<record_t, return_t(signature_t...)>
     {
         using fptr_t = return_t(record_t::*)(signature_t...) const;
 
@@ -50,17 +50,17 @@ namespace rtl
             return invoker{ m_functor, p_target };
         }
 
-        explicit method(fptr_t p_functor) 
+        explicit const_method(fptr_t p_functor)
             : m_init_err(error::None)
             , m_functor(p_functor)
         { }
 
-        method() = default;
-        method(method&&) = default;
-        method(const method&) = default;
+        const_method() = default;
+        const_method(const_method&&) = default;
+        const_method(const const_method&) = default;
 
-        method& operator=(method&&) = default;
-        method& operator=(const method&) = default;
+        const_method& operator=(const_method&&) = default;
+        const_method& operator=(const const_method&) = default;
 
         GETTER(rtl::error, _init_error, m_init_err)
 
@@ -75,7 +75,9 @@ namespace rtl
             m_init_err = p_err;
         }
 
-        template<class, class ...>
+        template<detail::member, class, class ...>
         friend struct detail::HopMethod;
+
+        static_assert(!std::is_const_v<record_t>, "rtl::const_method<...>: 'record_t' must not be specified as 'const'.");
     };
 }

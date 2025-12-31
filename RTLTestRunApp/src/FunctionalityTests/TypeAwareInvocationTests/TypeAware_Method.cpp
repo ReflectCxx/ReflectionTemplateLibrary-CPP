@@ -60,12 +60,12 @@ namespace rtl_tests
                                                                                     .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<const StrMute, std::string(const char*)> reverse_string = reverseString->targetT<const StrMute>()
+            rtl::const_method<StrMute, std::string(const char*)> reverse_string = reverseString->targetT<const StrMute>()
                                                                                                 .argsT<const char*>()
                                                                                                 .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<const StrMute, std::string(std::string)> reverse_string = reverseString->targetT<const StrMute>()
+            rtl::const_method<StrMute, std::string(std::string)> reverse_string = reverseString->targetT<const StrMute>()
                                                                                                 .argsT<std::string>()
                                                                                                 .returnT<std::string>();
             EXPECT_FALSE(reverse_string);

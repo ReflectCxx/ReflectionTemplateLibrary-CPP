@@ -25,7 +25,7 @@ namespace rtl_tests
                                                                                   .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
             EXPECT_EQ(reverse_string.get_init_error(), rtl::error::SignatureMismatch);
-        }{
+        } {
             rtl::static_method<const char*(std::string)> reverse_string = reverseString->argsT<std::string>()
                                                                                         .returnT<const char*>();
             EXPECT_FALSE(reverse_string);
@@ -116,7 +116,7 @@ namespace rtl_tests
                                                                                            .returnT<std::string>();
             EXPECT_FALSE(reverse_string);
         } {
-            rtl::method<const StrStatic, std::string(std::string)> reverse_string = reverseString.value()
+            rtl::const_method<StrStatic, std::string(std::string)> reverse_string = reverseString.value()
                                                                                                  .targetT<const StrStatic>()
                                                                                                  .argsT<std::string>()
                                                                                                  .returnT<std::string>();

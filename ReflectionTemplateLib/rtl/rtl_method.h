@@ -80,7 +80,7 @@ namespace rtl
             m_init_err = p_err;
         }
 
-        template<class, class ...>
+        template<detail::member, class, class ...>
         friend struct detail::HopMethod;
     };
 }

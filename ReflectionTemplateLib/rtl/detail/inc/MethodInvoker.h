@@ -96,7 +96,7 @@ namespace rtl::detail {
 
 namespace rtl::detail
 {
-    template<class record_t, class ...signature_t>
+    template<member member_kind, class record_t, class ...signature_t>
     struct HopMethod
     {
         std::size_t m_fnIndex;
@@ -105,14 +105,19 @@ namespace rtl::detail
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
+        template<class return_t>
+        using method_t = std::conditional_t< member_kind == member::Const,
+                                             const_method<record_t, return_t(signature_t...)>,
+                                             method<record_t, return_t(signature_t...)> >;
+
         template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        void initHopper(method<record_t, return_t(signature_t...)>& pMth) const;
+        void initHopper(method_t<return_t>& pMth) const;
 
         template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-        constexpr const method<record_t, return_t(signature_t...)> returnT() const;   
+        constexpr const method_t<return_t> returnT() const;
 
         template<class return_t = rtl::Return> requires (!traits::type_aware_v<record_t, return_t>)
-        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+        constexpr const method_t<return_t> returnT() const;
     };
 
     template<member member_kind, class record_t>
@@ -123,6 +128,6 @@ namespace rtl::detail
         const std::vector<rtl::type_meta>& m_functorsMeta;
 
         template<class ...signature_t>
-        constexpr HopMethod<record_t, signature_t...> argsT() const;
+        constexpr HopMethod<member_kind, record_t, signature_t...> argsT() const;
     };
 }

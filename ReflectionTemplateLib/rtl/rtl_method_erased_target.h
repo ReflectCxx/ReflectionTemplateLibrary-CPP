@@ -101,7 +101,7 @@ namespace rtl
             m_record_id = p_recid;
         }
 
-        template<class, class ...>
+        template<detail::member, class, class ...>
         friend struct detail::HopMethod;
 
         static_assert((!std::is_reference_v<signature_t> && ...),

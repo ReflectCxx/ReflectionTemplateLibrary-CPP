@@ -153,21 +153,41 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class record_t, class ...args_t>
+    template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const HopMethod<member_kind, record_t, args_t...>::method_t<return_t> 
+    HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
-        method<record_t, return_t(traits::normal_sign_t<args_t>...)> mth;
+        auto mth = []()->decltype(auto) 
+        {
+            if constexpr (member_kind == member::Const) {
+                return const_method<record_t, return_t(args_t...)>();
+            }
+            else {
+                return method<record_t, return_t(args_t...)>();
+            }
+        }();
+
         initHopper<return_t>(mth);
         return mth;
     }
 
 
-    template<class record_t, class ...args_t>
+    template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<record_t, args_t...>::returnT() const
+    inline constexpr const HopMethod<member_kind, record_t, args_t...>::method_t<return_t> 
+    HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
-        method<record_t, return_t(args_t...)> mth;
+        auto mth = []()->decltype(auto) 
+        {
+            if constexpr (member_kind == member::Const) {
+                return const_method<record_t, return_t(args_t...)>();
+            }
+            else {
+                return method<record_t, return_t(args_t...)>();
+            }
+        }();
+
         if (m_fnIndex == rtl::index_none) {
             mth.set_init_error(error::SignatureMismatch);
             return mth;
@@ -180,9 +200,10 @@ namespace rtl::detail
         else {
             if (traits::uid<return_t>::value == ty_meta.get_return_id())
             {
-                using method_t = dispatch::method_ptr<record_t, return_t, args_t...>;
-                auto fptr = static_cast<const method_t&>(ty_meta.get_functor()).f_ptr();
-                return method<record_t, return_t(args_t...)>(fptr);
+                using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
+                using method_ptr_t = dispatch::method_ptr<rec_t, return_t, args_t...>;
+                auto fptr = static_cast<const method_ptr_t&>(ty_meta.get_functor()).f_ptr();
+                return method_t<return_t>(fptr);
             }
             mth.set_init_error(error::ReturnTypeMismatch);
         }
@@ -192,7 +213,7 @@ namespace rtl::detail
 
     template<member member_kind, class record_t>
     template<class ...args_t>
-    inline constexpr HopMethod<record_t, args_t...> Hopper<member_kind, record_t>::argsT() const
+    inline constexpr HopMethod<member_kind, record_t, args_t...> Hopper<member_kind, record_t>::argsT() const
     {
         std::size_t index = rtl::index_none; 
         std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
@@ -207,6 +228,9 @@ namespace rtl::detail
             {
                 if (recordId != ty_meta.get_record_id()) {
                     return { rtl::index_none, m_recordId, fnTyMetas };
+                }
+                if (member_kind != ty_meta.get_member_kind()) {
+                    continue;
                 }
             }
             if (normalId == ty_meta.get_normal_args_id())
@@ -232,9 +256,9 @@ namespace rtl::detail
     }
 
 
-    template<class record_t, class ...args_t>
+    template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline void HopMethod<record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
+    inline void HopMethod<member_kind, record_t, args_t...>::initHopper(method_t<return_t>& pHopper) const
     {
         for (auto& ty_meta : m_overloadsFnMeta)
         {

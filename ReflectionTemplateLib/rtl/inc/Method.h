@@ -51,8 +51,11 @@ namespace rtl {
         template<class ...signatureT>
         constexpr const detail::HopFunction<detail::member::Static, signatureT...> argsT() const;
 
-        template<class recordT = RObject, class ...signatureT>
-        constexpr detail::Hopper<detail::member::None, recordT> targetT() const;
+        template<class recordT = RObject, class ...signatureT> requires (!std::is_const_v<recordT>)
+        constexpr detail::Hopper<detail::member::NonConst, recordT> targetT() const;
+
+        template<class recordT = RObject, class ...signatureT> requires (std::is_const_v<recordT>)
+        constexpr detail::Hopper<detail::member::Const, std::remove_const_t<recordT>> targetT() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.
         template<class ..._args>

@@ -33,11 +33,14 @@ namespace rtl
     template<class ...signature_t>
     class constructor;
 
-    template<class return_t, class ...signature_t>
-    struct static_method;
-
     template<class record_t, class return_t, class ...signature_t>
     struct method;
+
+    template<class record_t, class return_t, class ...signature_t>
+    struct const_method;
+
+    template<class return_t, class ...signature_t>
+    struct static_method;
 
     namespace detail
     {
@@ -72,7 +75,7 @@ namespace rtl
         template<member, class ...signature_t>
         struct HopFunction;
 
-        template<class record_t, class ...signature_t>
+        template<member, class record_t, class ...signature_t>
         struct HopMethod;
     }
 

@@ -89,7 +89,7 @@ namespace rtl::dispatch
         template<detail::member, class ...>
         friend struct detail::HopFunction;
 
-        template<class, class ...>
+        template<detail::member, class, class ...>
         friend struct detail::HopMethod;
 	};
 }

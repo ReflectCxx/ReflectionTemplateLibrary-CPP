@@ -29,14 +29,22 @@ namespace rtl
     }
 
 
-    template<class recordT, class ...signatureT>
-    inline constexpr detail::Hopper<detail::member::None, recordT> Method::targetT() const
+    template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT>)
+    inline constexpr detail::Hopper<detail::member::NonConst, recordT> Method::targetT() const
     {
-        return detail::Hopper<detail::member::None, recordT>{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::Hopper<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
+
+    template<class recordT, class ...signatureT> requires (std::is_const_v<recordT>)
+    inline constexpr detail::Hopper<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
+    {
+        return detail::Hopper<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };
+    }
+
+
     template<class ...signatureT>
-    constexpr const detail::HopFunction<detail::member::Static, signatureT...> Method::argsT() const
+    inline constexpr const detail::HopFunction<detail::member::Static, signatureT...> Method::argsT() const
     {
         return detail::Hopper<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
     }
