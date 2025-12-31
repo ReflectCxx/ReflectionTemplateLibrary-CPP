@@ -155,7 +155,7 @@ namespace rtl::detail
 {
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::method_t<return_t> 
+    inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::template method_t<return_t> 
     HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
         auto mth = []()->decltype(auto) 
@@ -175,7 +175,7 @@ namespace rtl::detail
 
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::method_t<return_t> 
+    inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::template method_t<return_t> 
     HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
         auto mth = []()->decltype(auto) 
