@@ -105,10 +105,10 @@ namespace rtl {
 
         void CxxReflection::addInNamespaceMap(Record& pRecord)
         {
-            const auto& itr = m_recordNamespaceMap.find(pRecord.m_namespace);
+            const auto& itr = m_recordNamespaceMap.find(pRecord.m_namespaceStr);
             if (itr == m_recordNamespaceMap.end())
             {
-                RecordMap& recordStrMap = m_recordNamespaceMap.emplace(pRecord.m_namespace, RecordMap()).first->second;
+                RecordMap& recordStrMap = m_recordNamespaceMap.emplace(pRecord.m_namespaceStr, RecordMap()).first->second;
                 recordStrMap.emplace(pRecord.m_recordName, std::ref(pRecord));
             }
             else
@@ -134,7 +134,7 @@ namespace rtl {
                     const auto& itr = m_recordIdMap.find(recordId);
                     if (itr == m_recordIdMap.end()) {
 
-                        auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespace)).first->second;
+                        auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespaceStr)).first->second;
                         addMethod(record.getFunctionsMap(), function);
                         addInNamespaceMap(record);
                     }
@@ -143,8 +143,8 @@ namespace rtl {
                         const Record& record = itr->second;
                         Function constructor = function;
 
-                        constructor.m_record = record.m_recordName;
-                        constructor.m_namespace = record.m_namespace;
+                        constructor.m_recordStr = record.m_recordName;
+                        constructor.m_namespaceStr = record.m_namespaceStr;
                         constructor.m_function = ctor_name(record.m_recordName);
                         addMethod(record.getFunctionsMap(), constructor);
                     }
@@ -189,7 +189,7 @@ namespace rtl {
         bool CxxReflection::insertFunctionToRecordIdMap(const Function& pFunction)
         {
             const traits::uid_t recordId = pFunction.getRecordTypeId();
-            if (recordId != traits::uid<>::none && pFunction.m_record.empty() && pFunction.m_function != ctor_name())
+            if (recordId != traits::uid<>::none && pFunction.m_recordStr.empty() && pFunction.m_function != ctor_name())
             {
                 const auto& itr = m_recordIdMap.find(recordId);
                 if (itr != m_recordIdMap.end()) {
@@ -197,8 +197,8 @@ namespace rtl {
                     const auto& record = itr->second;
                     Function memberFunc = pFunction;
 
-                    memberFunc.m_record = record.m_recordName;
-                    memberFunc.m_namespace = record.m_namespace;
+                    memberFunc.m_recordStr = record.m_recordName;
+                    memberFunc.m_namespaceStr = record.m_namespaceStr;
                     addMethod(record.getFunctionsMap(), memberFunc);
                 }
                 else {

@@ -41,7 +41,7 @@ namespace rtl {
         using MethodMap = std::unordered_map< std::string, Method >;
 
         mutable std::size_t m_recordId;
-        mutable std::string m_namespace;
+        mutable std::string m_namespaceStr;
         mutable std::string m_recordName;
         mutable MethodMap m_methods;
 
@@ -49,7 +49,7 @@ namespace rtl {
 
         Record(const std::string& pRecordName, const std::size_t pRecordId, const std::string& pNamespace)
             : m_recordId(pRecordId)
-            , m_namespace(pNamespace)
+            , m_namespaceStr(pNamespace)
             , m_recordName(pRecordName)
         { }
 

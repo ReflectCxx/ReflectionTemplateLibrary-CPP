@@ -18,8 +18,8 @@ namespace rtl::builder
 {
     struct CtorBuilder : protected detail::ReflectionBuilder
     {
-        CtorBuilder(const std::string_view pNamespace, const std::string_view pRecord, 
-                    const std::string_view pFunction, std::size_t pRecordId);
+        CtorBuilder(const std::string& pNamespace, const std::string& pRecordStr,
+                    const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class ..._signature>
         const Function build() const;
@@ -52,8 +52,8 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::None, void> : protected detail::ReflectionBuilder
     {
-        Builder(std::size_t pRecordId, const std::string_view pFunction,
-                const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pNamespace);
 
         template<class _returnType>
         const Function build(_returnType(*pFunctor)()) const;
@@ -68,8 +68,8 @@ namespace rtl::builder
 */  template<class ..._signature>
     struct Builder<detail::member::None, _signature...> : protected detail::ReflectionBuilder
     {
-        Builder(std::size_t pRecordId, const std::string_view pFunction,
-                const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pNamespace);
 
         template<class _returnType>
         const Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -84,8 +84,8 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::None> : protected detail::ReflectionBuilder
     {
-        Builder(std::size_t pRecordId, const std::string_view pFunction,
-                const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pNamespace);
 
         template<class _returnType, class ..._signature>
         const Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -103,10 +103,8 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::Static, void> : protected detail::ReflectionBuilder
     {
-        traits::uid_t m_recordUid;
-
-        Builder(traits::uid_t pRecordUid, const std::string_view pFunction,
-                std::size_t pRecordId, const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pRecordStr, const std::string& pNamespace);
 
         template<class _returnType>
         const Function build(_returnType(*pFunctor)()) const;
@@ -121,10 +119,8 @@ namespace rtl::builder
 */  template<class ..._signature>
     struct Builder<detail::member::Static, _signature...> : protected detail::ReflectionBuilder
     {
-        traits::uid_t m_recordUid;
-
-        Builder(traits::uid_t pRecordUid, const std::string_view pFunction,
-                std::size_t pRecordId, const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pRecordStr, const std::string& pNamespace);
 
         template<class _returnType>
         const Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -139,10 +135,8 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::Static> : protected detail::ReflectionBuilder
     {
-        traits::uid_t m_recordUid;
-
-        Builder(traits::uid_t pRecordUid, const std::string_view pFunction,
-                std::size_t pRecordId, const std::string_view pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
+                const std::string& pRecordStr, const std::string& pNamespace);
 
         template<class _returnType, class ..._signature>
         const Function build(_returnType(*pFunctor)(_signature...)) const;
@@ -160,7 +154,7 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::Const, void> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType>
         const Function build(_returnType(_recordType::* pFunctor)() const) const;
@@ -175,7 +169,7 @@ namespace rtl::builder
 */  template<class ..._signature>
     struct Builder<detail::member::Const, _signature...> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType>
         const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
@@ -190,7 +184,7 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::Const> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType, class ..._signature>
         const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
@@ -208,7 +202,7 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::NonConst, void> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType>
         const Function build(_returnType(_recordType::* pFunctor)()) const;
@@ -223,7 +217,7 @@ namespace rtl::builder
 */  template<class ..._signature>
     struct Builder<detail::member::NonConst, _signature...> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType>
         const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
@@ -238,7 +232,7 @@ namespace rtl::builder
 */  template<>
     struct Builder<detail::member::NonConst> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string_view pFunction, std::size_t pRecordId);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
 
         template<class _recordType, class _returnType, class ..._signature>
         const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;

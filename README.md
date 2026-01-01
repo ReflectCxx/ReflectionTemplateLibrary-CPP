@@ -29,13 +29,11 @@ if(cToStr) {   // Function materialized?
 
 ## Design Highlights
 
-* ***Single Source of Truth*** – All reflection metadata is centralized in a single immutable `rtl::CxxMirror`, providing a consistent, thread-safe, duplication-free, and deterministic view of reflected state.
+* ***Single Source of Truth*** – All reflection metadata can be centralized in a single immutable `rtl::CxxMirror`, providing a consistent, thread-safe, duplication-free, and deterministic view of reflected state.
 
 * ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
 
 * ***Zero-Overhead by Design*** – Metadata is registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
-
-* ***Exception-Free Surface*** – All predictable failure modes are reported via explicit error codes; no exceptions are thrown from the public reflection API.
 
 * ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
@@ -61,7 +59,7 @@ auto cxx_mirror = rtl::CxxMirror({
 	rtl::type().member<Person>().method("getName").build(&Person::getName)
 });
 ```
-The `cxx_mirror` object is your gateway to runtime reflection — it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere — in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
+The `cxx_mirror` object is your gateway to runtime reflection – it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere – in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
 And what better way to do that than a **Singleton**,
 *`(MyReflection.h)`*

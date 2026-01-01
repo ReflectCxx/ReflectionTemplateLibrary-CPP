@@ -25,14 +25,14 @@ namespace rtl
     *        pRecordTypeId - type id of class/struct if the functor is member-function, '0' for non-member-functions.
     *        pQualifier - whether the member-function is const or non-const. member::None for non-member & static-member functions.
     * 'Function' object is created for every functor (member/non-member) being registered.
-*/  Function::Function(const std::string_view pNamespace, const std::string_view pRecord,
-                       const std::string_view pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
+*/  Function::Function(const std::string& pNamespace, const std::string& pRecord,
+                       const std::string& pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                        const traits::uid_t pRecordTypeId, const detail::member pQualifier)
         : m_member_kind(pQualifier)
         , m_recordTypeId(pRecordTypeId)
-        , m_record(pRecord)
+        , m_recordStr(pRecord)
         , m_function(pFunction)
-        , m_namespace(pNamespace)
+        , m_namespaceStr(pNamespace)
         , m_functorsMeta({ pFunctorsMeta })
         , m_functorIds({ pFunctorId }) {
     }
@@ -47,12 +47,12 @@ namespace rtl
     * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
         'FunctorId' with the 'Function' object associated with a constructor.
 */  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                       const std::string_view pFunctorName)
+                       const std::string& pFunctorName)
         : m_member_kind(pOther.m_member_kind)
         , m_recordTypeId(pOther.m_recordTypeId)
-        , m_record(pOther.m_record)
+        , m_recordStr(pOther.m_recordStr)
         , m_function(pFunctorName)
-        , m_namespace(pOther.m_namespace)
+        , m_namespaceStr(pOther.m_namespaceStr)
         , m_functorsMeta({ pFunctorsMeta })
         , m_functorIds({ pFunctorId }) {
     }

@@ -158,8 +158,7 @@ namespace rtl::detail
     inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::template method_t<return_t> 
     HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
-        auto mth = []()->decltype(auto) 
-        {
+        auto mth = []()->decltype(auto) {
             if constexpr (member_kind == member::Const) {
                 return const_method<record_t, return_t(args_t...)>();
             }
@@ -178,8 +177,7 @@ namespace rtl::detail
     inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::template method_t<return_t> 
     HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
-        auto mth = []()->decltype(auto) 
-        {
+        auto mth = []()->decltype(auto) {
             if constexpr (member_kind == member::Const) {
                 return const_method<record_t, return_t(args_t...)>();
             }
@@ -194,19 +192,14 @@ namespace rtl::detail
         }
 
         auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
-        if (ty_meta.get_member_kind() == member::Static) {
-            mth.set_init_error(error::InvalidStaticMethodCaller);
+        if (traits::uid<return_t>::value == ty_meta.get_return_id()) {
+
+            using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
+            using method_ptr_t = dispatch::method_ptr<rec_t, return_t, args_t...>;
+            auto fptr = static_cast<const method_ptr_t&>(ty_meta.get_functor()).f_ptr();
+            return method_t<return_t>(fptr);
         }
-        else {
-            if (traits::uid<return_t>::value == ty_meta.get_return_id())
-            {
-                using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
-                using method_ptr_t = dispatch::method_ptr<rec_t, return_t, args_t...>;
-                auto fptr = static_cast<const method_ptr_t&>(ty_meta.get_functor()).f_ptr();
-                return method_t<return_t>(fptr);
-            }
-            mth.set_init_error(error::ReturnTypeMismatch);
-        }
+        mth.set_init_error(error::ReturnTypeMismatch);
         return mth;
     }
 
@@ -268,8 +261,7 @@ namespace rtl::detail
                 continue;
             }
 
-            auto fn = [&]()-> decltype(auto) 
-            {
+            auto fn = [&]()-> decltype(auto) {
                 if constexpr (traits::type_erased_v<record_t, return_t>) {
 
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;

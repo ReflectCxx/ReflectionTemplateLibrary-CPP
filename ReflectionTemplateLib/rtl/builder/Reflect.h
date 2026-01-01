@@ -35,21 +35,21 @@ namespace rtl
         type_ns& operator=(type_ns&&) = delete;
         type_ns& operator=(const type_ns&) = delete;
 
-        type_ns(const std::string_view pNamespace);
+        type_ns(const std::string& pNamespace);
 
         template<class _recordType>
-        constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass);
+        constexpr const builder::RecordBuilder<_recordType> record(const std::string& pClass);
 
         template<class ..._signature>
-        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string_view pFunction);
+        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string& pFunction);
 
     private:
 
         //name of the class, struct being registered.
-        std::string_view m_record;
+        std::string m_recordStr;
 
         //name of the namespace being registered.
-        std::string_view m_namespace;
+        std::string m_namespaceStr;
     };
 
 
@@ -64,7 +64,7 @@ namespace rtl
         type& operator=(type&&) = delete;
         type& operator=(const type&) = delete;
 
-        type_ns ns(const std::string_view pNamespace = detail::NAMESPACE_GLOBAL);
+        type_ns ns(const std::string& pNamespace);
 
         template<class _recordType>
         constexpr const builder::MethodBuilder<_recordType> member() {
@@ -72,17 +72,17 @@ namespace rtl
         }
 
         template<class _recordType>
-        constexpr const builder::RecordBuilder<_recordType> record(const std::string_view pClass) {
-            return ns().record<_recordType>(pClass);
+        constexpr const builder::RecordBuilder<_recordType> record(const std::string& pClass) {
+            return ns(detail::NAMESPACE_GLOBAL).record<_recordType>(pClass);
         }
 
         template<class ..._signature>
-        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string_view pFunction) 
+        constexpr const builder::Builder<detail::member::None, _signature...> function(const std::string& pFunction) 
         {
             constexpr bool hasConstRValueRef = ((std::is_const_v<std::remove_reference_t<_signature>> && std::is_rvalue_reference_v<_signature>) || ...);
             static_assert(!hasConstRValueRef, "Registration of functions with 'const T&&' parameters is not allowed.");
 
-            return ns().function<_signature...>(pFunction);
+            return ns(detail::NAMESPACE_GLOBAL).function<_signature...>(pFunction);
         }
     };
 }

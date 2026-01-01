@@ -26,19 +26,18 @@ namespace rtl {
         protected:
 
             const traits::uid_t m_recordId;
-            const std::string_view m_record;
-            const std::string_view m_function;
-            const std::string_view m_namespace;
+            const std::string m_recordStr;
+            const std::string m_function;
+            const std::string m_namespaceStr;
 
-            ReflectionBuilder(const std::string_view pFunction, std::size_t pRecordId,
-                              const std::string_view pNamespace = "",
-                              const std::string_view pRecord = "");
+            ReflectionBuilder(const std::string& pFunction, std::size_t pRecordId,
+                              const std::string& pRecordStr, const std::string& pNamespace);
 
             template<class _recordType, class ..._ctorSignature>
             const Function buildConstructor() const;
 
             template<class _returnType, class ..._signature>
-            const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const;
+            const Function buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const;
 
             //adds 'pFunctor' to the 'MethodContainer'.
             template<class _recordType, class _returnType, class ..._signature>

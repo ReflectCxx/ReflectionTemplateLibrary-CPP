@@ -22,13 +22,12 @@
 namespace rtl::detail 
 {	
 
-    inline ReflectionBuilder::ReflectionBuilder(const std::string_view pFunction, traits::uid_t pRecordId,
-                                                const std::string_view pNamespace /* = ""*/, 
-                                                const std::string_view pRecord /* = ""*/)
+    inline ReflectionBuilder::ReflectionBuilder(const std::string& pFunction, std::size_t pRecordId,
+                                                const std::string& pRecordStr, const std::string& pNamespace)
         : m_recordId(pRecordId)
-        , m_record(pRecord)
+        , m_recordStr(pRecordStr)
         , m_function(pFunction)
-        , m_namespace(pNamespace)
+        , m_namespaceStr(pNamespace)
     { }
 
 
@@ -39,10 +38,10 @@ namespace rtl::detail
     * accepts only a non-member or static-member function pointer.
     * builds the 'Function' object containing hash-key & meta-data for the given functor.
 */  template<class _returnType, class ..._signature>
-    inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType, traits::uid_t pRecordUid) const
+    inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const
     {
-        auto [typeMeta, functorId] = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, pRecordUid, m_recordId, pMemberType);
-        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, pMemberType);
+        auto [typeMeta, functorId] = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId, pMemberType);
+        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, pMemberType);
     }
 
 
@@ -58,7 +57,7 @@ namespace rtl::detail
     {
         using Container = MethodContainer<detail::member::NonConst, traits::remove_const_if_not_reference<_signature>...>;
         auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::NonConst);
+        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::NonConst);
     }
 
 
@@ -74,7 +73,7 @@ namespace rtl::detail
     {
         using Container = MethodContainer<detail::member::Const, traits::remove_const_if_not_reference<_signature>...>;
         auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::Const);
+        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::Const);
     }
 
 
@@ -86,7 +85,7 @@ namespace rtl::detail
     inline const Function ReflectionBuilder::buildConstructor() const
     {
         auto [typeMeta, functorId] = RegisterCtor::template addConstructor<_recordType, _ctorSignature...>();
-        const Function& ctorFunction = Function(m_namespace, m_record, m_function, typeMeta, functorId, m_recordId, member::None);
+        const Function& ctorFunction = Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, typeMeta.get_member_kind());
         return ctorFunction;
     }
 }

@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include <string_view>
-
 #include "Function.h"
 
 namespace rtl {
@@ -28,13 +26,13 @@ namespace rtl {
     */  template<class _recordType>
         class RecordBuilder
         {
-            const std::string_view m_record;
-            const std::string_view m_namespace;
+            const std::string m_recordStr;
+            const std::string m_namespaceStr;
             const traits::uid_t m_recordId;
 
         public:
 
-            RecordBuilder(const std::string_view pNamespace, const std::string_view pRecord, traits::uid_t pRecordId);
+            RecordBuilder(const std::string& pNamespace, const std::string& pRecord, traits::uid_t pRecordId);
 
             const Function build() const;
         };
@@ -46,20 +44,20 @@ namespace rtl {
     */  template<class _recordType>
         struct MethodBuilder
         {
-            const Builder<detail::member::NonConst> method(const std::string_view pFunction) const;
+            const Builder<detail::member::NonConst> method(const std::string& pFunction) const;
 
-            const Builder<detail::member::Const> methodConst(const std::string_view pFunction) const;
+            const Builder<detail::member::Const> methodConst(const std::string& pFunction) const;
 
-            const Builder<detail::member::Static> methodStatic(const std::string_view pFunction) const;
-
-            template<class ..._signature>
-            const Builder<detail::member::NonConst, _signature...> method(const std::string_view pFunction) const;
+            const Builder<detail::member::Static> methodStatic(const std::string& pFunction) const;
 
             template<class ..._signature>
-            const Builder<detail::member::Const, _signature...> methodConst(const std::string_view pFunction) const;
+            const Builder<detail::member::NonConst, _signature...> method(const std::string& pFunction) const;
 
             template<class ..._signature>
-            const Builder<detail::member::Static, _signature...> methodStatic(const std::string_view pFunction) const;
+            const Builder<detail::member::Const, _signature...> methodConst(const std::string& pFunction) const;
+
+            template<class ..._signature>
+            const Builder<detail::member::Static, _signature...> methodStatic(const std::string& pFunction) const;
 
             template<class ..._signature>
             constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;

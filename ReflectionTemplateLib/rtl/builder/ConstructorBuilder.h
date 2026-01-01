@@ -29,21 +29,21 @@ namespace rtl {
         struct ConstructorBuilder
         {
             //given name of the class/struct.
-            const std::string_view m_record;
+            const std::string m_recordStr;
 
             //given name of the namespace.
-            const std::string_view m_namespace;
+            const std::string m_namespaceStr;
 
         public:
 
             ConstructorBuilder()
-                : m_record("")
-                , m_namespace("")
+                : m_recordStr("")
+                , m_namespaceStr("")
             { }
 
-            ConstructorBuilder(const std::string_view pNamespace, const std::string_view pRecord)
-                : m_record(pRecord)
-                , m_namespace(pNamespace)
+            ConstructorBuilder(const std::string& pNamespace, const std::string& pRecord)
+                : m_recordStr(pRecord)
+                , m_namespaceStr(pNamespace)
             { }
 
         /*  @method: build()
@@ -57,8 +57,8 @@ namespace rtl {
                 const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);
                 static_assert(isAccessible, "The specified constructor is either deleted or not publicly accessible.");
 
-                return CtorBuilder( m_namespace, m_record,
-                                    std::string_view(detail::ctor_name(m_record)),
+                return CtorBuilder( m_namespaceStr, m_recordStr,
+                                    std::string(detail::ctor_name(m_recordStr)),
                                     traits::uid<_recordType>::value ).build<_recordType, _ctorSignature...>();
             }
         };

@@ -130,7 +130,9 @@ namespace rtl::detail
         DefaultCtor
     };
 
-    constexpr const std::string_view NAMESPACE_GLOBAL = "global";
+    constexpr const char* INIT_LATER = "";
+    constexpr const char* RECORD_NONE = "";
+    constexpr const char* NAMESPACE_GLOBAL = "rtl::global";
 
     inline static const std::string ctor_name(const std::string_view pRecordName = "") {
     //  [critical] Must not change. Constructors are identified using this format.
