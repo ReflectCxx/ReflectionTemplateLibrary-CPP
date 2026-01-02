@@ -57,7 +57,7 @@ namespace rtl
 */  template<class ..._args>
     inline bool Method::hasSignature() const
     {
-        switch (getQualifier())
+        switch (getMemberKind())
         {
             case detail::member::Static: {
                 return Function::hasSignature<_args...>();

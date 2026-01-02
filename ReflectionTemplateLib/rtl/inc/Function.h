@@ -73,14 +73,14 @@ namespace rtl {
 
         const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
 
-        GETTER(detail::member, Qualifier, m_member_kind);
-
         GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 
     public:
 
         //simple inlined getters.
+        GETTER(detail::member, MemberKind, m_member_kind);
         GETTER(traits::uid_t, RecordTypeId, m_recordTypeId);
+
         GETTER_CREF(std::string, RecordName, m_recordStr);
         GETTER_CREF(std::string, Namespace, m_namespaceStr);
         GETTER_CREF(std::string, FunctionName, m_function);

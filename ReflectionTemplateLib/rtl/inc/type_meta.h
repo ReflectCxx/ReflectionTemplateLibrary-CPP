@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "functor.h"
 
@@ -65,5 +66,15 @@ namespace rtl
 		using functor_t = std::optional<std::reference_wrapper<const dispatch::functor>>;
 
 		functor_t m_functor = std::nullopt;
+
+		constexpr void set_record_str(const std::string& p_record_str) {
+			m_functor->get().m_record_str = p_record_str;
+		}
+
+		constexpr void set_namespace_str(const std::string& p_ns_str) {
+			m_functor->get().m_namespace_str = p_ns_str;
+		}
+
+		friend detail::CxxReflection;
 	};
 }

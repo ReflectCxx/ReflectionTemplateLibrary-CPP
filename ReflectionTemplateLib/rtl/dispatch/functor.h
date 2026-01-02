@@ -33,9 +33,11 @@ namespace rtl::dispatch
             erased_method = 2
         };
 
-        std::string m_record_str;
         std::string m_return_str;
         std::string m_signature_str;
+
+        mutable std::string m_record_str;
+        mutable std::string m_namespace_str;
 
         traits::uid_t m_record_id = traits::uid<>::none;
         traits::uid_t m_return_id = traits::uid<>::none;

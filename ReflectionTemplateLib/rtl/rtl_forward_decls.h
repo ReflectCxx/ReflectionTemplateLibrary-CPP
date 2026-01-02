@@ -56,9 +56,11 @@ namespace rtl
 
         struct SetupFunction;
 
-        class ReflectionBuilder;
-
         struct SetupConstructor;
+
+        class CxxReflection;
+
+        class ReflectionBuilder;
 
         template<bool is_bind_v, class ...signature_t>
         struct ErasedCaller;

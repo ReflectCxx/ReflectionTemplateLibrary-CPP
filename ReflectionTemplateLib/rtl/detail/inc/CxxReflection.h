@@ -39,7 +39,7 @@ namespace rtl::detail {
         void addInNamespaceMap(Record& pRecord);
         void buildRecordIdMap(const std::vector<Function>& pFunctions);
         void insertFunctionToNamespaceMap(const Function& pFunction);
-        bool insertFunctionToRecordIdMap(const Function& pFunction);
+        bool insertMethodsToRecordIdMap(const Function& pFunction);
 
         static void addMethod(MethodMap& pMethodMap, const Function& pFunction);
         static void addFunction(FunctionMap& pFunctionMap, const Function& pFunction);

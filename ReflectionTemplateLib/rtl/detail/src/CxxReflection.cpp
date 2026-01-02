@@ -13,6 +13,8 @@
 #include <cassert>
 
 #include "rtl_typeid.h"
+#include "RObjectId.h"
+#include "type_meta.h"
 #include "Record.h"
 #include "Method.h"
 #include "CxxReflection.h"
@@ -30,7 +32,7 @@ namespace rtl {
             buildRecordIdMap(pFunctions);
             for (const auto& function : pFunctions) 
             {
-                if (validateFunctionByRecordId(function) && !insertFunctionToRecordIdMap(function)) 
+                if (validateFunctionByRecordId(function) && !insertMethodsToRecordIdMap(function)) 
                 {
                     insertFunctionToNamespaceMap(function);
                 }
@@ -128,31 +130,40 @@ namespace rtl {
 
                 const auto& recordName = function.getRecordName();
                 const traits::uid_t recordId = function.getRecordTypeId();
-                const bool isConstructor = (function.getFunctionName() == ctor_name());
-                if (recordId != traits::uid<>::none && (isConstructor || !recordName.empty()))
+                const member memberKind = function.getMemberKind();
+                if (memberKind == member::UserCtor || memberKind == member::DefaultCtor)
                 {
-                    const auto& itr = m_recordIdMap.find(recordId);
-                    if (itr == m_recordIdMap.end()) {
+                    bool isRegistrationIgnored = false;
+                    auto& record = [&]()->const Record& {
+                        const auto& itr = m_recordIdMap.find(recordId);
+                        if (itr == m_recordIdMap.end()) {
+                            auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespaceStr)).first->second;
+                            addInNamespaceMap(record);
+                            return record;
+                        }
+                        else {
+                            auto& record = itr->second;
+                            if (memberKind == member::DefaultCtor) {
+                                isRegistrationIgnored = true;
+                                std::cout << "\n[WARNING] Multiple registrations of the same type detected."
+                                          << "\n          Type already registered as \"" << record.m_recordName << "\""
+                                          << "\n          Attempted re-registration as \"" << recordName << "\""
+                                          << "\n          This registration is ignored.\n";
+                            }
+                            return record;
+                        }
+                    }();
 
-                        auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespaceStr)).first->second;
-                        addMethod(record.getFunctionsMap(), function);
-                        addInNamespaceMap(record);
-                    }
-                    else if (isConstructor) {
-
-                        const Record& record = itr->second;
+                    if (!isRegistrationIgnored)
+                    {
                         Function constructor = function;
-
                         constructor.m_recordStr = record.m_recordName;
                         constructor.m_namespaceStr = record.m_namespaceStr;
                         constructor.m_function = ctor_name(record.m_recordName);
+                        //add metadata to type_meta
+                        constructor.m_functorsMeta.back().set_namespace_str(record.m_namespaceStr);
+                        constructor.m_functorsMeta.back().set_record_str(ctor_name(record.m_recordName));
                         addMethod(record.getFunctionsMap(), constructor);
-                    }
-                    else {
-                        std::cout << "\n[WARNING] Multiple registrations of the same type detected."
-                                  << "\n          Type already registered as \"" << itr->second.m_recordName << "\""
-                                  << "\n          Attempted re-registration as \"" << function.getRecordName() << "\""
-                                  << "\n          This registration is ignored.\n";
                     }
                 }
             }
@@ -175,7 +186,7 @@ namespace rtl {
     */  const bool CxxReflection::validateFunctionByRecordId(const Function& pFunction)
         {
             const traits::uid_t givenRecordId = pFunction.getRecordTypeId();
-            const traits::uid_t actualRecordId = pFunction.getFunctorIds()[0].getRecordId(); //Index 0 is always guaranteed to reference a valid functor.
+            const traits::uid_t actualRecordId = pFunction.getFunctorIds().back().getRecordId(); //Index 0 is always guaranteed to reference a valid functor.
             if (givenRecordId != actualRecordId) {
                 std::cout << "\n[WARNING] Member function pointer does not belong to the class being registered."
                           << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
@@ -186,12 +197,12 @@ namespace rtl {
         }
 
 
-        bool CxxReflection::insertFunctionToRecordIdMap(const Function& pFunction)
+        bool CxxReflection::insertMethodsToRecordIdMap(const Function& pFunction)
         {
-            const traits::uid_t recordId = pFunction.getRecordTypeId();
-            if (recordId != traits::uid<>::none && pFunction.m_recordStr.empty() && pFunction.m_function != ctor_name())
+            const member memberKind = pFunction.getMemberKind();
+            if (memberKind == member::Const || memberKind == member::NonConst || memberKind == member::Static)
             {
-                const auto& itr = m_recordIdMap.find(recordId);
+                const auto& itr = m_recordIdMap.find(pFunction.getRecordTypeId());
                 if (itr != m_recordIdMap.end()) {
 
                     const auto& record = itr->second;
@@ -199,6 +210,9 @@ namespace rtl {
 
                     memberFunc.m_recordStr = record.m_recordName;
                     memberFunc.m_namespaceStr = record.m_namespaceStr;
+                    //add metadata to type_meta.
+                    memberFunc.m_functorsMeta.back().set_record_str(record.m_recordName);
+                    memberFunc.m_functorsMeta.back().set_namespace_str(record.m_namespaceStr);
                     addMethod(record.getFunctionsMap(), memberFunc);
                 }
                 else {

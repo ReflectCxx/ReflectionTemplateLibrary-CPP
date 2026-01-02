@@ -35,6 +35,8 @@ if(cToStr) {   // Function materialized?
 
 * ***Zero-Overhead by Design*** – Metadata is registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
 
+* ***Deterministic Lifetimes*** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
+
 * ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
 * ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
