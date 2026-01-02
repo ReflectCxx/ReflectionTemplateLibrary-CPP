@@ -8,12 +8,6 @@
  *                                                                       *
  *************************************************************************/
 
-
-#include <iostream>
-#include <cassert>
-
-#include "rtl_typeid.h"
-#include "RObjectId.h"
 #include "type_meta.h"
 #include "Record.h"
 #include "Method.h"

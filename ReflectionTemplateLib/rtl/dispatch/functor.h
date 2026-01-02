@@ -22,7 +22,6 @@ namespace rtl::dispatch
         GETTER(traits::uid_t, _record_id, m_record_id)
         GETTER(traits::uid_t, _strict_sign_id, m_strict_args_id)
         GETTER(traits::uid_t, _normal_sign_id, m_normal_args_id)
-        GETTER_CREF(detail::RObjectId, _robject_id, m_robject_id)
 
     protected:
 
@@ -48,7 +47,6 @@ namespace rtl::dispatch
         bool m_is_void = false;
         bool m_is_any_arg_ncref = false;
 
-        detail::RObjectId m_robject_id = {};
         detail::member m_member_kind = detail::member::None;
         
         std::vector<lambda*> m_lambdas;
