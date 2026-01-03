@@ -14,25 +14,26 @@ namespace test_mirror
         static auto cxx_mirror = rtl::CxxMirror(
             []() {
 
-                std::vector<rtl::Function> metaFns;
+                std::vector<rtl::Function> fns;
 
-                Register::stdTypes(metaFns);
-                Register::typeBook(metaFns);
-                Register::typeDate(metaFns);
-                Register::typeEvent(metaFns);
-                Register::typePerson(metaFns);
-                Register::typeAnimal(metaFns);
-                Register::typeLibrary(metaFns);
-                Register::typeComplex(metaFns);
-                Register::typeCalender(metaFns);
+                Register::stdTypes(fns);
+                Register::typeBook(fns);
+                Register::typeDate(fns);
+                Register::typeEvent(fns);
+                Register::typePerson(fns);
+                Register::typeAnimal(fns);
+                Register::typeLibrary(fns);
+                Register::typeComplex(fns);
+                Register::typeCalender(fns);
+                
+                Register::typeStringWrap(fns);
+                Register::typeStringMute(fns);
+                Register::typeStringConst(fns);
+                Register::typeStringFuncs(fns);
+                Register::typeStringStatic(fns);
+                Register::typeStringConstOverload(fns);
 
-                Register::typeStringWrap(metaFns);
-                Register::typeStringMute(metaFns);
-                Register::typeStringConst(metaFns);
-                Register::typeStringFuncs(metaFns);
-                Register::typeStringStatic(metaFns);
-
-                return metaFns;
+                return fns;
             }()
         );
 
@@ -52,22 +53,23 @@ namespace test_mirror
     {
         static std::unordered_map<std::string, rtl::traits::uid_t> nameIdMap = []()
         {
-            std::unordered_map<std::string, rtl::traits::uid_t> idMap;
+            std::unordered_map<std::string, rtl::traits::uid_t> ids;
             
-            Register::typeIdBook(idMap);
-            Register::typeIdDate(idMap);
-            Register::typeIdEvent(idMap);
-            Register::typeIdPerson(idMap);
-            Register::typeIdPodStd(idMap);
-            Register::typeIdAnimal(idMap);
-            Register::typeIdLibrary(idMap);
-            Register::typeIdCalender(idMap);
-            Register::typeIdStringWrap(idMap);
-            Register::typeIdStringMute(idMap);
-            Register::typeIdStringConst(idMap);
-            Register::typeIdStringStatic(idMap);
+            Register::typeIdBook(ids);
+            Register::typeIdDate(ids);
+            Register::typeIdEvent(ids);
+            Register::typeIdPerson(ids);
+            Register::typeIdPodStd(ids);
+            Register::typeIdAnimal(ids);
+            Register::typeIdLibrary(ids);
+            Register::typeIdCalender(ids);
+            Register::typeIdStringWrap(ids);
+            Register::typeIdStringMute(ids);
+            Register::typeIdStringConst(ids);
+            Register::typeIdStringStatic(ids);
+            Register::typeIdStringConstOverload(ids);
 
-            return idMap;
+            return ids;
         }();
 
         const auto& itr = nameIdMap.find(pRecordName);

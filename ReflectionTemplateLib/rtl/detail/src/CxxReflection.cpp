@@ -159,8 +159,7 @@ namespace rtl {
                         }
                     }();
 
-                    if (!isRegistrationIgnored)
-                    {
+                    if (!isRegistrationIgnored) {
                         Function constructor = function;
                         constructor.m_recordStr = record.m_recordName;
                         constructor.m_namespaceStr = record.m_namespaceStr;

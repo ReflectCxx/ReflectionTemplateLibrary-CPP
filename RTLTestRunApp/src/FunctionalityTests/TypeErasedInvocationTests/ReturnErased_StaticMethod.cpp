@@ -130,7 +130,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_const_char_ptr + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
@@ -148,7 +148,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				auto [err, robj] = reverseString.bind<std::string>()(STRA);
@@ -158,7 +158,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
@@ -177,7 +177,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string_ptr + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				std::string str = STRA;
@@ -188,7 +188,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string_ptr + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
@@ -207,7 +207,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string_cptr + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				const std::string str = STRA;
@@ -218,7 +218,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + STRA_REVERSE + SUFFIX_std_string_cptr + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}
@@ -236,7 +236,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + REV_STR_VOID_RET + SUFFIX_void + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			} {
 				auto [err, robj] = reverseString.bind()();
@@ -246,7 +246,7 @@ namespace rtl_tests
 				ASSERT_TRUE(robj.canViewAs<std::string>());
 
 				const std::string& retStr = robj.view<std::string>()->get();
-				std::string expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void + SUFFIX_static;
+				std::string expStr = std::string(StrStatic::struct_) + REV_STR_VOID_RET + SUFFIX_void + SUFFIX_static;
 				EXPECT_EQ(retStr, expStr);
 			}
 		}

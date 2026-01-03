@@ -65,5 +65,7 @@ namespace test_mirror
         static void typeIdStringConst(std::unordered_map<std::string, rtl::traits::uid_t>&);
 
         static void typeIdStringStatic(std::unordered_map<std::string, rtl::traits::uid_t>&);
+
+        static void typeIdStringConstOverload(std::unordered_map<std::string, rtl::traits::uid_t>& id);
     };
 }
