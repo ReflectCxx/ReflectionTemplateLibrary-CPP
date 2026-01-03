@@ -24,7 +24,7 @@ namespace test_mirror
         fns.push_back(rtl::type().record<int>("int")
                                  .build());
 
-        //  Registering type 'void' again, but with different name. ignored & emits-
+        //  Registering type 'int' again, but with different name. ignored & emits-
         //  [WARNING] Multiple registrations of the same type detected.
         fns.push_back(rtl::type().record<int>("ccint")
                                  .build());

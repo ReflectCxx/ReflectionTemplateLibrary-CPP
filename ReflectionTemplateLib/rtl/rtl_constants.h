@@ -134,7 +134,7 @@ namespace rtl::detail
     constexpr const char* RECORD_NONE = "";
     constexpr const char* NAMESPACE_GLOBAL = "rtl::global";
 
-    inline static const std::string ctor_name(const std::string_view pRecordName = "") {
+    inline static const std::string ctor_name(const std::string_view pRecordName) {
     //  [critical] Must not change. Constructors are identified using this format.
         return (std::string(pRecordName) + "::" + std::string(pRecordName) + "()");
     }

@@ -43,7 +43,7 @@ namespace rtl::detail {
 
         static void addMethod(MethodMap& pMethodMap, const Function& pFunction);
         static void addFunction(FunctionMap& pFunctionMap, const Function& pFunction);
-        static const bool validateFunctionByRecordId(const Function& pFunction);
+        static const bool validateMethodByRecordId(const Function& pFunction);
 
     protected:
 
