@@ -11,7 +11,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(TargetTypeErased_rtl_constructor, std_string_constructor_call)
+    TEST(ReturnErased_Constructor, std_string_constructor_call)
     {
         {
             rtl::constructor<int> ctor;
@@ -65,7 +65,7 @@ namespace rtl_tests
     }
 
 
-    TEST(TargetTypeErased_rtl_constructor, typed_constructor_call)
+    TEST(ReturnErased_Constructor, by_value_overloaded_ctor_call)
     {
         std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
         ASSERT_TRUE(classStrWrap);
@@ -134,7 +134,7 @@ namespace rtl_tests
     }
 
 
-    TEST(TargetTypeErased_rtl_constructor, typed_ref_overloads_constructor_call)
+    TEST(ReturnErased_Constructor, by_ref_overloaded_ctor_call)
     {
         const char* SPARTA = "This is Spaartaaa!!";
         std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
@@ -197,7 +197,7 @@ namespace rtl_tests
     }
 
     
-    TEST(TargetTypeErased_rtl_constructor, auto_overload_resolution)
+    TEST(ReturnErased_Constructor, auto_overload_resolution)
     {
         const char* SPARTA = "This is Spaartaaa!!";
         {

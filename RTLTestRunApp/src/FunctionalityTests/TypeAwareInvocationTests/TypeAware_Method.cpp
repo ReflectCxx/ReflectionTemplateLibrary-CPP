@@ -13,7 +13,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StrictStaticTypeRtl_method, init_errors_validation)
+    TEST(TypeAware_Method, init_errors_validation)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -42,7 +42,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, overload_resolution_with_known_signatures)
+    TEST(TypeAware_Method, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -100,7 +100,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, lvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Method, lvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -167,7 +167,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, rvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Method, rvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -193,7 +193,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, ptr_and_const_ptr_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Method, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -224,7 +224,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, distinct_functions_with_ref_args_call_with_known_signature)
+    TEST(TypeAware_Method, distinct_functions_with_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -272,7 +272,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, overloads_with_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_Method, overloads_with_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -303,7 +303,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, overloads_with_const_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_Method, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -333,7 +333,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_method, overloads_with_ref_and_const_ref_args_call_with_known_signature)
+    TEST(TypeAware_Method, overloads_with_ref_and_const_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);

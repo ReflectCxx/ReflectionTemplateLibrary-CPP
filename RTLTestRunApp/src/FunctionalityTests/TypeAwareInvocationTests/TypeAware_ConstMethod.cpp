@@ -11,7 +11,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StrictStaticTypeRtl_const_method, std_string_view_method_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, std_string_view_method_call_with_known_signature)
     {
         std::optional<rtl::Record> stdStringViewClass = cxx::mirror().getRecord("std", "string_view");
         ASSERT_TRUE(stdStringViewClass);
@@ -44,7 +44,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, init_errors_validation)
+    TEST(TypeAware_ConstMethod, init_errors_validation)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -73,7 +73,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, overload_resolution_with_known_signatures)
+    TEST(TypeAware_ConstMethod, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -131,7 +131,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, lvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_ConstMethod, lvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -194,7 +194,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, rvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_ConstMethod, rvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -231,7 +231,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, ptr_and_const_ptr_overload_resolution_with_known_signatures)
+    TEST(TypeAware_ConstMethod, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -262,7 +262,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, std_string_method_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, std_string_method_call_with_known_signature)
     {
         std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
@@ -291,7 +291,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, distinct_functions_with_ref_args_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, distinct_functions_with_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -343,7 +343,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, overloads_with_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, overloads_with_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -375,7 +375,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, overloads_with_const_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);
@@ -405,7 +405,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_const_method, overloads_with_ref_and_const_ref_args_call_with_known_signature)
+    TEST(TypeAware_ConstMethod, overloads_with_ref_and_const_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);
         ASSERT_TRUE(optStringUtil);

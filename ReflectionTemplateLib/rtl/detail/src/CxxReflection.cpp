@@ -17,7 +17,7 @@ namespace rtl {
 
     namespace detail
     {
-    /*  @Constructor: CxxMirror
+    /*  @Constructor: CxxReflection
         @params: 'const std::vector<Function>&'
         * recieves vector of 'Function' objects, forwarded from 'CxxMirror' constructor.
         * initiates grouping of each 'Function' object under namespace, class/struct.
@@ -33,12 +33,12 @@ namespace rtl {
             {
                 if (// Validate, if the member-function-pointer belongs to the 'TYPE' given using interface-
                     // rtl::type().member<TYPE>("...")', if not ignore this registration.
-                     validateMethodByRecordId(function) &&
-                    // Then, insert 'function' as member to its Record (i.e, to its class/struct metadata descriptor)
-                    // returns 'false' the 'function' represents a non-member function (C-Style function).
+                     validateMethodByRecordId(function) &&  // Returns false if this 'function' is ignored.
+                    // Once validated, try inserting 'function' as a member to its Record (i.e, to its class/struct metadata descriptor)
+                    // returns 'false' if the 'function' represents a non-member function (C-Style function).
                     !insertMethodsToRecordIdMap(function) )
                 {
-                    // Finally, register the 'function' in non-member function.
+                    // Finally, register the 'function' as a non-member function under the given or global namespace.
                     insertFunctionToNamespaceMap(function);
                 }
             }
@@ -191,7 +191,7 @@ namespace rtl {
             const traits::uid_t givenRecordId = pFunction.getRecordTypeId();
             const traits::uid_t actualRecordId = pFunction.getFunctorIds().back().getRecordId();
             if (givenRecordId != actualRecordId) {
-                std::cout << "\n[WARNING] Member function pointer does not belong to the class being registered."
+                std::cout << "\n[WARNING] Member function pointer does not belong to the class/struct being registered."
                           << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
                           << "\n          This function is ignored and not registered.\n";
                 return false;

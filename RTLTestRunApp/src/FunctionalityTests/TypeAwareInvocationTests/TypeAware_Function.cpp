@@ -12,7 +12,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(StrictStaticTypeRtl_function, init_errors_validation)
+    TEST(TypeAware_Function, init_errors_validation)
     {
         std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
         ASSERT_TRUE(setReal);
@@ -48,7 +48,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, namespace_fn_call_with_known_signature)
+    TEST(TypeAware_Function, namespace_fn_call_with_known_signature)
     {
         std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
         ASSERT_TRUE(getMagnitude);
@@ -79,7 +79,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, global_fn_call_with_known_signature)
+    TEST(TypeAware_Function, global_fn_call_with_known_signature)
     {
         std::optional<rtl::Function> getComplexNumStr = cxx::mirror().getFunction(str_getComplexNumAsString);
         ASSERT_TRUE(getComplexNumStr);
@@ -102,7 +102,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, overload_resolution_with_known_signatures)
+    TEST(TypeAware_Function, overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -137,7 +137,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, lvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Function, lvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -161,7 +161,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, rvalue_ref_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Function, rvalue_ref_overload_resolution_with_known_signatures)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
         ASSERT_TRUE(reverseString);
@@ -179,7 +179,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, ptr_and_const_ptr_overload_resolution_with_known_signatures)
+    TEST(TypeAware_Function, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
         std::string str = STRA;
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
@@ -202,7 +202,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, distinct_functions_with_ref_args_call_with_known_signature)
+    TEST(TypeAware_Function, distinct_functions_with_ref_args_call_with_known_signature)
     {
         std::string str = STRA;
         {
@@ -240,7 +240,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, overloads_with_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_Function, overloads_with_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRef);
         ASSERT_TRUE(reverseString);
@@ -263,7 +263,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, overloads_with_const_ref_and_value_args_call_with_known_signature)
+    TEST(TypeAware_Function, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValCRef);
         ASSERT_TRUE(reverseString);
@@ -285,7 +285,7 @@ namespace rtl_tests
     }
 
 
-    TEST(StrictStaticTypeRtl_function, overloads_with_ref_and_const_ref_args_call_with_known_signature)
+    TEST(TypeAware_Function, overloads_with_ref_and_const_ref_args_call_with_known_signature)
     {
         std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
         ASSERT_TRUE(reverseString);

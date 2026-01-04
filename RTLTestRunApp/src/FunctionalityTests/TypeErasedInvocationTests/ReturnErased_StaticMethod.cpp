@@ -14,7 +14,7 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-	TEST(ReturnTypeErased_rtl_static_method, using_wrong_class_n_callable_apis_for_static_method)
+	TEST(ReturnErased_StaticMethod, using_wrong_class_n_callable_apis_for_static_method)
     {
         {
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);   // has only static-methods.
@@ -81,7 +81,7 @@ namespace rtl_tests
     }
 
 
-	TEST(ReturnTypeErased_rtl_static_method, implicit_resolutions_to_call_by_value_overloads)
+	TEST(ReturnErased_StaticMethod, implicit_resolutions_to_call_by_value_overloads)
 	{
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);
 		ASSERT_TRUE(optStringUtil);
