@@ -83,16 +83,25 @@ namespace rtl
             else return error::None;
         }
 
-        constexpr invoker operator()(const RObject& p_target) const noexcept {
+        constexpr invoker operator()(RObject& p_target) const noexcept {
+            return invoker{ *this, validate(p_target), p_target };
+        }
+
+        constexpr invoker operator()(RObject&& p_target) const noexcept {
             return invoker{ *this, validate(p_target), p_target };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
-        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
+        constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
             return perfect_fwd<args_t...>{ *this, validate(p_target), p_target};
         }
 
+        template<class ...args_t>
+            requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ *this, validate(p_target), p_target};
+        }
     private:
 
         traits::uid_t m_record_id = traits::uid<>::none;

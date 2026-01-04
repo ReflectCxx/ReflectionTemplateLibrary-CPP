@@ -155,18 +155,9 @@ namespace rtl::detail
 {
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline constexpr const typename HopMethod<member_kind, record_t, args_t...>::template method_t<return_t> 
-    HopMethod<member_kind, record_t, args_t...>::returnT() const
+    inline constexpr const method<record_t, return_t(args_t...)> HopMethod<member_kind, record_t, args_t...>::returnT() const
     {
-        auto mth = []()->decltype(auto) {
-            if constexpr (member_kind == member::Const) {
-                return const_method<record_t, return_t(args_t...)>();
-            }
-            else {
-                return method<record_t, return_t(args_t...)>();
-            }
-        }();
-
+        auto mth = method<record_t, return_t(args_t...)>();
         initHopper<return_t>(mth);
         return mth;
     }
@@ -251,7 +242,7 @@ namespace rtl::detail
 
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline void HopMethod<member_kind, record_t, args_t...>::initHopper(method_t<return_t>& pHopper) const
+    inline void HopMethod<member_kind, record_t, args_t...>::initHopper(method<record_t, return_t(args_t...)>& pHopper) const
     {
         for (auto& ty_meta : m_overloadsFnMeta)
         {

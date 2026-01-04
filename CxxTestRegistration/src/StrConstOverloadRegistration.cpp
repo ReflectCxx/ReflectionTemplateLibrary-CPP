@@ -10,6 +10,9 @@ namespace test_mirror
 {
     void Register::typeIdStringConstOverload(std::unordered_map<std::string, rtl::traits::uid_t>& id)
     {
+        const StrConstOverload obj;
+        obj.reverseString();
+
         id.insert(std::make_pair(StrConstOverload::struct_, rtl::traits::uid<StrConstOverload>::value));
     }
 
@@ -22,8 +25,8 @@ namespace test_mirror
                                  .method(str_reverseString)
                                  .build(&StrConstOverload::reverseString));
 
-        fns.push_back(rtl::type().member<StrConstOverload>()
-                                 .methodConst(str_reverseString)
-                                 .build(&StrConstOverload::reverseString));
+        //fns.push_back(rtl::type().member<StrConstOverload>()
+        //                         .methodConst(str_reverseString)
+        //                         .build(&StrConstOverload::reverseString));
     }
 }

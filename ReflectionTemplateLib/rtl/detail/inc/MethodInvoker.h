@@ -110,14 +110,14 @@ namespace rtl::detail
                                              const_method<record_t, return_t(signature_t...)>,
                                              method<record_t, return_t(signature_t...)> >;
 
-        template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        void initHopper(method_t<return_t>& pMth) const;
-
         template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
         constexpr const method_t<return_t> returnT() const;
 
         template<class return_t = rtl::Return> requires (!traits::type_aware_v<record_t, return_t>)
-        constexpr const method_t<return_t> returnT() const;
+        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+
+        template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
+        void initHopper(method<record_t, return_t(signature_t...)>& pMth) const;
     };
 
     template<member member_kind, class record_t>
