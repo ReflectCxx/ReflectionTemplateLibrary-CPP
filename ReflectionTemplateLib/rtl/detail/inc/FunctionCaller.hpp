@@ -24,27 +24,27 @@ namespace rtl::detail
 {
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::None && std::is_same_v<return_t, rtl::Return>)
-    inline constexpr function<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    inline constexpr function<Return(args_t...)> InitFunctionHop<member_kind, args_t...>::returnT() const
     {
         function<Return(traits::normal_sign_t<args_t>...)> fn;
-        initHopper(fn);
+        init(fn);
         return fn;
     }
 
 
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::Static && std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const static_method<Return(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    inline constexpr const static_method<Return(args_t...)> InitFunctionHop<member_kind, args_t...>::returnT() const
     {
         static_method<Return(traits::normal_sign_t<args_t>...)> mth;
-        initHopper(mth);
+        init(mth);
         return mth;
     }
 
 
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::Static && !std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const static_method<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    inline constexpr const static_method<return_t(args_t...)> InitFunctionHop<member_kind, args_t...>::returnT() const
     {
         static_method<return_t(args_t...)> mth;
         if (m_fnIndex == rtl::index_none) {
@@ -71,7 +71,7 @@ namespace rtl::detail
 
     template<member member_kind, class ...args_t>
     template<class return_t> requires (member_kind == member::None && !std::is_same_v<return_t, rtl::Return>)
-    inline constexpr const function<return_t(args_t...)> HopFunction<member_kind, args_t...>::returnT() const
+    inline constexpr const function<return_t(args_t...)> InitFunctionHop<member_kind, args_t...>::returnT() const
     {
         function<return_t(args_t...)> fn;
         if (m_fnIndex == rtl::index_none) {
@@ -98,7 +98,7 @@ namespace rtl::detail
 
     template<detail::member member_kind>
     template<class ...args_t>
-    inline constexpr const HopFunction<member_kind, args_t...> Hopper<member_kind>::argsT() const
+    inline constexpr const InitFunctionHop<member_kind, args_t...> HopBuilder<member_kind>::argsT() const
     {
         std::size_t index = rtl::index_none;
         std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
@@ -131,7 +131,7 @@ namespace rtl::detail
 
 
     template<member member_kind, class ...args_t>
-    inline void HopFunction<member_kind, args_t...>::initHopper(function<rtl::Return(args_t...)>& pHopper) const
+    inline void InitFunctionHop<member_kind, args_t...>::init(function<rtl::Return(args_t...)>& pHopper) const
     {
         for (auto& ty_meta : m_overloadsFnMeta)
         {

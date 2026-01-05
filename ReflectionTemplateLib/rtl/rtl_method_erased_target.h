@@ -20,11 +20,11 @@ namespace rtl
     struct method<RObject, return_t(signature_t...)> 
         : public dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>
     {
-        using base_t = dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>;
+        using hopper_t = dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>;
 
         struct invoker
         {
-            const base_t& fn;
+            const hopper_t& fn;
             const error init_err;
             const RObject& target;
 
@@ -48,7 +48,7 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const base_t& fn;
+            const hopper_t& fn;
             const error init_err;
             const RObject& target;
             
@@ -71,8 +71,8 @@ namespace rtl
 
         constexpr const error validate(const RObject& p_target) const
         {
-            if (base_t::get_init_error() != error::None) {
-                return base_t::get_init_error();
+            if (hopper_t::get_init_error() != error::None) {
+                return hopper_t::get_init_error();
             }
             else if (p_target.isEmpty()) {
                 return error::EmptyRObject;
@@ -111,7 +111,7 @@ namespace rtl
         }
 
         template<detail::member, class, class ...>
-        friend struct detail::HopMethod;
+        friend struct detail::InitMethodHop;
 
         static_assert((!std::is_reference_v<signature_t> && ...),
             "rtl::method<...>: any type cannot be specified as reference here.");

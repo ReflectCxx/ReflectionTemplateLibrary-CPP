@@ -18,11 +18,11 @@ namespace rtl
     template<class record_t, class ...signature_t> requires (!std::is_same_v<record_t, RObject>)
     struct method<record_t, Return(signature_t...)> : public dispatch::forward_call<Return, const record_t&, signature_t...>
     {
-        using base_t = dispatch::forward_call<Return, const record_t&, signature_t...>;
+        using hopper_t = dispatch::forward_call<Return, const record_t&, signature_t...>;
 
         struct invoker
         {
-            const base_t& fn;
+            const hopper_t& fn;
             const record_t& target;
 
             template<class ...args_t> requires (sizeof...(args_t) == sizeof...(signature_t))
@@ -39,7 +39,7 @@ namespace rtl
         template<class ...fwd_args_t>
         struct perfect_fwd
         {
-            const base_t& fn;
+            const hopper_t& fn;
             const record_t& target;
 
             template<class ...args_t>

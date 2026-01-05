@@ -60,7 +60,7 @@ namespace rtl
         }
 
         template<detail::member, class ...>
-        friend struct detail::HopFunction;
+        friend struct detail::InitFunctionHop;
     };
 }
 
@@ -83,6 +83,6 @@ namespace rtl
         static_method& operator=(const static_method&) = default;
 
         template<detail::member, class ...>
-        friend struct detail::HopFunction;
+        friend struct detail::InitFunctionHop;
     };
 }

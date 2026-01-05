@@ -81,6 +81,6 @@ namespace rtl
         }
 
         template<detail::member, class, class ...>
-        friend struct detail::HopMethod;
+        friend struct detail::InitMethodHop;
     };
 }

@@ -72,13 +72,13 @@ namespace rtl
         class SetupMethod;
 
         template<member, class record_t = std::nullptr_t>
-        struct Hopper;
-
-        template<member, class ...signature_t>
-        struct HopFunction;
+        struct HopBuilder;
 
         template<member, class record_t, class ...signature_t>
-        struct HopMethod;
+        struct InitMethodHop;
+
+        template<member, class ...signature_t>
+        struct InitFunctionHop;
     }
 
     namespace cache

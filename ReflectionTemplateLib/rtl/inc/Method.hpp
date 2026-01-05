@@ -29,30 +29,30 @@ namespace rtl
     }
 
     template<class recordT, class ...signatureT> requires (std::is_same_v<recordT, RObject>)
-    inline constexpr detail::Hopper<detail::member::None, RObject> Method::targetT() const
+    inline constexpr detail::HopBuilder<detail::member::None, RObject> Method::targetT() const
     {
-        return detail::Hopper<detail::member::None, RObject>{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::HopBuilder<detail::member::None, RObject>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
     template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
-    inline constexpr detail::Hopper<detail::member::NonConst, recordT> Method::targetT() const
+    inline constexpr detail::HopBuilder<detail::member::NonConst, recordT> Method::targetT() const
     {
-        return detail::Hopper<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::HopBuilder<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
     template<class recordT, class ...signatureT> requires (std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
-    inline constexpr detail::Hopper<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
+    inline constexpr detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
     {
-        return detail::Hopper<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
     template<class ...signatureT>
-    inline constexpr const detail::HopFunction<detail::member::Static, signatureT...> Method::argsT() const
+    inline constexpr const detail::InitFunctionHop<detail::member::Static, signatureT...> Method::argsT() const
     {
-        return detail::Hopper<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
+        return detail::HopBuilder<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
     }
 
 

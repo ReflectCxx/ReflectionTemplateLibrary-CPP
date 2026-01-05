@@ -17,13 +17,13 @@
 namespace rtl::detail
 {
     template<member member_kind, class ..._signature>
-    struct HopFunction
+    struct InitFunctionHop
     {
         std::size_t m_fnIndex;
 
         std::vector<rtl::type_meta> m_overloadsFnMeta = {};
 
-        void initHopper(function<rtl::Return(_signature...)>& pFn) const;
+        void init(function<rtl::Return(_signature...)>& pFn) const;
 
         template<class _returnType = rtl::Return> requires (member_kind == member::None && std::is_same_v<_returnType, rtl::Return>)
         constexpr function<rtl::Return(_signature...)> returnT() const;
@@ -40,11 +40,11 @@ namespace rtl::detail
 
 
     template<detail::member member_kind>
-    struct Hopper<member_kind>
+    struct HopBuilder<member_kind>
     {
         const std::vector<rtl::type_meta>& m_functorsMeta;
 
         template<class ..._signature>
-        constexpr const HopFunction<member_kind, _signature...> argsT() const;
+        constexpr const InitFunctionHop<member_kind, _signature...> argsT() const;
     };
 }

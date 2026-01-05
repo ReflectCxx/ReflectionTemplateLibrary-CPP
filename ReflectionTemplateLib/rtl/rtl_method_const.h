@@ -76,7 +76,7 @@ namespace rtl
         }
 
         template<detail::member, class, class ...>
-        friend struct detail::HopMethod;
+        friend struct detail::InitMethodHop;
 
         static_assert(!std::is_const_v<record_t>, "rtl::const_method<...>: 'record_t' must not be specified as 'const'.");
     };

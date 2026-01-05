@@ -17,9 +17,9 @@
 namespace rtl 
 {
     template<class ...signatureT>
-    inline constexpr const detail::HopFunction<detail::member::None, signatureT...> Function::argsT() const
+    inline constexpr const detail::InitFunctionHop<detail::member::None, signatureT...> Function::argsT() const
     {
-        return detail::Hopper<detail::member::None>{ m_functorsMeta }.argsT<signatureT...>();
+        return detail::HopBuilder<detail::member::None>{ m_functorsMeta }.argsT<signatureT...>();
     }
 
 
