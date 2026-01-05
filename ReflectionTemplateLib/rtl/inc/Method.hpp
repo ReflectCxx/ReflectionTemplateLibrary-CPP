@@ -28,15 +28,21 @@ namespace rtl
         return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
 
+    template<class recordT, class ...signatureT> requires (std::is_same_v<recordT, RObject>)
+    inline constexpr detail::Hopper<detail::member::None, RObject> Method::targetT() const
+    {
+        return detail::Hopper<detail::member::None, RObject>{ getRecordTypeId(), getFunctorsMeta() };
+    }
 
-    template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT>)
+
+    template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
     inline constexpr detail::Hopper<detail::member::NonConst, recordT> Method::targetT() const
     {
         return detail::Hopper<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
-    template<class recordT, class ...signatureT> requires (std::is_const_v<recordT>)
+    template<class recordT, class ...signatureT> requires (std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
     inline constexpr detail::Hopper<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
     {
         return detail::Hopper<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };

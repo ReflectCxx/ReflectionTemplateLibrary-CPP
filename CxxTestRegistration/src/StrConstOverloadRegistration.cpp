@@ -25,8 +25,8 @@ namespace test_mirror
                                  .method(str_reverseString)
                                  .build(&StrConstOverload::reverseString));
 
-        //fns.push_back(rtl::type().member<StrConstOverload>()
-        //                         .methodConst(str_reverseString)
-        //                         .build(&StrConstOverload::reverseString));
+        fns.push_back(rtl::type().member<StrConstOverload>()
+                                 .methodConst(str_reverseString)
+                                 .build(&StrConstOverload::reverseString));
     }
 }

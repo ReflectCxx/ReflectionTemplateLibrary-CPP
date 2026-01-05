@@ -140,7 +140,7 @@ namespace rtl::detail
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
             }
-
+            //TODO: simplifiy these errors. confusing!
             if constexpr (member_kind == member::Static) {
                 if (ty_meta.get_member_kind() != member::Static) {
                     pHopper.set_init_error(error::InvalidNonStaticMethodCaller);
