@@ -99,11 +99,11 @@ namespace rtl::detail
     template<class record_t, class ...signature_t>
     struct InitMethodHop<member::None, record_t, signature_t...>
     {
-        InitMethodHop<member::Const, record_t, signature_t...> m_const_hop;
-        InitMethodHop<member::NonConst, record_t, signature_t...> m_non_const_hop;
+        InitMethodHop<member::Const, record_t, signature_t...> m_c_hops;
+        InitMethodHop<member::NonConst, record_t, signature_t...> m_nc_hops;
 
         template<class return_t = rtl::Return>
-        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+        constexpr method<record_t, return_t(signature_t...)> returnT() const;
     };
 
     template<member member_kind, class record_t, class ...signature_t>
@@ -121,15 +121,19 @@ namespace rtl::detail
                                              method<record_t, return_t(signature_t...)> >;
 
         template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-        constexpr const method_t<return_t> returnT() const;
+        constexpr method_t<return_t> returnT() const;
 
         template<class return_t = rtl::Return> requires (!traits::type_aware_v<record_t, return_t>)
-        constexpr const method<record_t, return_t(signature_t...)> returnT() const;
+        constexpr method<record_t, return_t(signature_t...)> returnT() const;
 
         template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        void init(method<record_t, return_t(signature_t...)>& pMth) const;
+        void init(typename method<record_t, return_t(signature_t...)>::hopper_t& pMth) const;
     };
+}
 
+
+namespace rtl::detail
+{
     template<member member_kind, class record_t>
     struct HopBuilder
     {

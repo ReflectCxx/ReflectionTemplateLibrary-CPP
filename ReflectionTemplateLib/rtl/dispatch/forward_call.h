@@ -69,12 +69,14 @@ namespace rtl::dispatch
         }
 
         GETTER(error, _init_error, m_init_err)
+        GETTER(traits::uid_t, _record_id, m_record_id)
 
     private:
 
         using lambda_t = std::function<return_t(const functor&, signature_t...)>;
 
         error m_init_err = error::InvalidCaller;
+        traits::uid_t m_record_id = traits::uid<>::none;
 
         std::vector<lambda_t> m_hopper = {};
         std::vector<const functor*> m_functors = {};
@@ -84,6 +86,10 @@ namespace rtl::dispatch
 
         void set_init_error(error p_err) {
             m_init_err = p_err;
+        }
+
+        constexpr void set_record_id(const traits::uid_t p_recid) {
+            m_record_id = p_recid;
         }
 
         template<detail::member, class ...>

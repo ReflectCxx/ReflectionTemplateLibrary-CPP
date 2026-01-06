@@ -151,18 +151,9 @@ namespace rtl::detail
 }
 
 
-namespace rtl::detail
+
+namespace rtl::detail 
 {
-    template<member member_kind, class record_t, class ...args_t>
-    template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline constexpr const method<record_t, return_t(args_t...)> InitMethodHop<member_kind, record_t, args_t...>::returnT() const
-    {
-        auto mth = method<record_t, return_t(args_t...)>();
-        init<return_t>(mth);
-        return mth;
-    }
-
-
     template<member member_kind, class record_t>
     template<class ...args_t> requires (member_kind == member::None)
     inline constexpr InitMethodHop<member::None, record_t, args_t...> HopBuilder<member_kind, record_t>::argsT() const
@@ -170,46 +161,6 @@ namespace rtl::detail
         auto constHops = HopBuilder<member::Const, record_t>{ m_recordId, m_functorsMeta }.template argsT<args_t...>();
         auto nonConstHops = HopBuilder<member::NonConst, record_t>{ m_recordId, m_functorsMeta }.template argsT<args_t...>();
         return InitMethodHop<member::None, record_t, args_t...>{ constHops, nonConstHops };
-    }
-
-
-    template<class record_t, class ...args_t>
-    template<class return_t>
-    inline constexpr const method<record_t, return_t(args_t...)> InitMethodHop<member::None, record_t, args_t...>::returnT() const
-    {
-        return m_non_const_hop.template returnT<return_t>();
-    }
-
-
-    template<member member_kind, class record_t, class ...args_t>
-    template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr const typename InitMethodHop<member_kind, record_t, args_t...>::template method_t<return_t> 
-    InitMethodHop<member_kind, record_t, args_t...>::returnT() const
-    {
-        auto mth = []()->decltype(auto) {
-            if constexpr (member_kind == member::Const) {
-                return const_method<record_t, return_t(args_t...)>();
-            }
-            else {
-                return method<record_t, return_t(args_t...)>();
-            }
-        }();
-
-        if (m_fnIndex == rtl::index_none) {
-            mth.set_init_error(error::SignatureMismatch);
-            return mth;
-        }
-
-        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
-        if (traits::uid<return_t>::value == ty_meta.get_return_id()) {
-
-            using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
-            using method_ptr_t = dispatch::method_ptr<rec_t, return_t, args_t...>;
-            auto fptr = static_cast<const method_ptr_t&>(ty_meta.get_functor()).f_ptr();
-            return method_t<return_t>(fptr);
-        }
-        mth.set_init_error(error::ReturnTypeMismatch);
-        return mth;
     }
 
 
@@ -256,11 +207,77 @@ namespace rtl::detail
         }
         return { index, m_recordId, fnTyMetas };
     }
+}
+
+
+
+namespace rtl::detail
+{
+    template<class record_t, class ...args_t>
+    template<class return_t>
+    inline constexpr method<record_t, return_t(args_t...)> InitMethodHop<member::None, record_t, args_t...>::returnT() const
+    {
+        auto mth = m_nc_hops.template returnT<return_t>();
+        mth.get_c_hops() = (m_c_hops.template returnT<return_t>()).get_c_hops();
+        return mth;
+    }
 
 
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline void InitMethodHop<member_kind, record_t, args_t...>::init(method<record_t, return_t(args_t...)>& pHopper) const
+    inline constexpr method<record_t, return_t(args_t...)> InitMethodHop<member_kind, record_t, args_t...>::returnT() const
+    {
+        auto mth = method<record_t, return_t(args_t...)>();
+        if constexpr (!std::is_same_v<record_t, RObject>) {
+            init<return_t>(mth);
+        }
+        else {
+            if constexpr (member_kind == member::Const) {
+                init<return_t>(mth.get_c_hops());
+            }
+            else if constexpr (member_kind == member::NonConst) {
+                init<return_t>(mth.get_nc_hops());
+            }
+        }
+        return mth;
+    }
+
+
+    template<member member_kind, class record_t, class ...args_t>
+    template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
+    inline constexpr typename InitMethodHop<member_kind, record_t, args_t...>::template method_t<return_t> 
+    InitMethodHop<member_kind, record_t, args_t...>::returnT() const
+    {
+        auto mth = []()->decltype(auto) {
+            if constexpr (member_kind == member::Const) {
+                return const_method<record_t, return_t(args_t...)>();
+            }
+            else {
+                return method<record_t, return_t(args_t...)>();
+            }
+        }();
+
+        if (m_fnIndex == rtl::index_none) {
+            mth.set_init_error(error::SignatureMismatch);
+            return mth;
+        }
+
+        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        if (traits::uid<return_t>::value == ty_meta.get_return_id()) {
+
+            using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
+            using method_ptr_t = dispatch::method_ptr<rec_t, return_t, args_t...>;
+            auto fptr = static_cast<const method_ptr_t&>(ty_meta.get_functor()).f_ptr();
+            return method_t<return_t>(fptr);
+        }
+        mth.set_init_error(error::ReturnTypeMismatch);
+        return mth;
+    }
+
+
+    template<member member_kind, class record_t, class ...args_t>
+    template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
+    inline void InitMethodHop<member_kind, record_t, args_t...>::init(typename method<record_t, return_t(args_t...)>::hopper_t& pHopper) const
     {
         for (auto& ty_meta : m_overloadsFnMeta)
         {

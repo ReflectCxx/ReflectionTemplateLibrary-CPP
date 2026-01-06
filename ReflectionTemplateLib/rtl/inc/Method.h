@@ -51,13 +51,15 @@ namespace rtl {
         template<class ...signatureT>
         constexpr const detail::InitFunctionHop<detail::member::Static, signatureT...> argsT() const;
 
-        template<class recordT = RObject, class ...signatureT> requires (std::is_same_v<recordT, RObject>)
+        template<class recordT = RObject, class ...signatureT>
+            requires (std::is_same_v<std::remove_const_t<recordT>, RObject>)
         constexpr detail::HopBuilder<detail::member::None, RObject> targetT() const;
 
-        template<class recordT = RObject, class ...signatureT> requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
+        template<class recordT = RObject, class ...signatureT>
+            requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
         constexpr detail::HopBuilder<detail::member::NonConst, recordT> targetT() const;
 
-        template<class recordT = RObject, class ...signatureT> requires (std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
+        template<class recordT = RObject, class ...signatureT> requires (std::is_const_v<recordT> && !std::is_same_v<std::remove_const_t<recordT>, RObject>)
         constexpr detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT>> targetT() const;
 
         //indicates if a particular set of arguments accepted by the functor associated with it.

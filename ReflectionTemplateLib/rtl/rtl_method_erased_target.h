@@ -17,8 +17,7 @@ namespace rtl
 {
     // TODO: Needs to be well tested, special case return-type 'void' (which does not returns std::nullopt for now)
     template<class return_t, class ...signature_t> requires (!std::is_same_v<return_t, Return>)
-    struct method<RObject, return_t(signature_t...)> 
-        : public dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>
+    struct method<RObject, return_t(signature_t...)>
     {
         using hopper_t = dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>;
 
@@ -71,44 +70,51 @@ namespace rtl
 
         constexpr const error validate(const RObject& p_target) const
         {
-            if (hopper_t::get_init_error() != error::None) {
-                return hopper_t::get_init_error();
+            if (m_non_const_hops.get_init_error() != error::None) {
+                return m_non_const_hops.get_init_error();
             }
             else if (p_target.isEmpty()) {
                 return error::EmptyRObject;
             }
-            else if (m_record_id != p_target.getTypeId()) {
+            else if (m_non_const_hops.get_record_id() != p_target.getTypeId()) {
                 return error::TargetTypeMismatch;
             }
             else return error::None;
         }
 
         constexpr invoker operator()(RObject& p_target) const noexcept {
-            return invoker{ *this, validate(p_target), p_target };
+            return invoker{ m_non_const_hops, validate(p_target), p_target };
         }
 
         constexpr invoker operator()(RObject&& p_target) const noexcept {
-            return invoker{ *this, validate(p_target), p_target };
+            return invoker{ m_non_const_hops, validate(p_target), p_target };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ *this, validate(p_target), p_target};
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target};
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ *this, validate(p_target), p_target};
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target};
         }
+
+        constexpr operator bool() const noexcept {
+            return m_non_const_hops.operator bool();
+        }
+
+        GETTER(error, _init_error, (m_non_const_hops.get_init_error()))
+
     private:
 
-        traits::uid_t m_record_id = traits::uid<>::none;
+        hopper_t m_const_hops;
+        hopper_t m_non_const_hops;
 
-        constexpr void set_record_id(const traits::uid_t p_recid) {
-            m_record_id = p_recid;
-        }
+        GETTER_REF(hopper_t, _c_hops, m_const_hops)
+        GETTER_REF(hopper_t, _nc_hops, m_non_const_hops)
 
         template<detail::member, class, class ...>
         friend struct detail::InitMethodHop;

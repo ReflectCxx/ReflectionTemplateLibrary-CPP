@@ -28,21 +28,24 @@ namespace rtl
         return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
 
-    template<class recordT, class ...signatureT> requires (std::is_same_v<recordT, RObject>)
+    template<class recordT, class ...signatureT>
+        requires (std::is_same_v<std::remove_const_t<recordT>, RObject>)
     inline constexpr detail::HopBuilder<detail::member::None, RObject> Method::targetT() const
     {
         return detail::HopBuilder<detail::member::None, RObject>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
-    template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
+    template<class recordT, class ...signatureT>
+        requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
     inline constexpr detail::HopBuilder<detail::member::NonConst, recordT> Method::targetT() const
     {
         return detail::HopBuilder<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
     }
 
 
-    template<class recordT, class ...signatureT> requires (std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
+    template<class recordT, class ...signatureT>
+        requires (std::is_const_v<recordT> && !std::is_same_v<std::remove_const_t<recordT>, RObject>)
     inline constexpr detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
     {
         return detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };
