@@ -52,7 +52,7 @@ namespace rtl::detail
             return mth;
         }
 
-        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        auto& ty_meta = m_overloadsMeta[m_fnIndex];
         if (ty_meta.get_member_kind() != member::Static) {
             mth.set_init_error(error::InvalidNonStaticMethodCaller);
         }
@@ -79,7 +79,7 @@ namespace rtl::detail
             return fn;
         }
         
-        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        auto& ty_meta = m_overloadsMeta[m_fnIndex];
         if (ty_meta.get_member_kind() == member::Static) {
             fn.set_init_error(error::InvalidStaticMethodCaller);
         }
@@ -133,7 +133,7 @@ namespace rtl::detail
     template<member member_kind, class ...args_t>
     inline void InitFunctionHop<member_kind, args_t...>::init(function<rtl::Return(args_t...)>& pHopper) const
     {
-        for (auto& ty_meta : m_overloadsFnMeta)
+        for (auto& ty_meta : m_overloadsMeta)
         {
             if (ty_meta.is_empty()) {
                 pHopper.get_hopper().push_back(nullptr);
