@@ -96,24 +96,18 @@ namespace rtl::detail {
 
 namespace rtl::detail
 {
-    template<class record_t, class ...signature_t>
-    struct InitMethodHop<member::None, record_t, signature_t...>
-    {
-        InitMethodHop<member::Const, record_t, signature_t...> m_c_hops;
-        InitMethodHop<member::NonConst, record_t, signature_t...> m_nc_hops;
-
-        template<class return_t = rtl::Return>
-        constexpr method<record_t, return_t(signature_t...)> returnT() const;
-    };
-
     template<member member_kind, class record_t, class ...signature_t>
     struct InitMethodHop
     {
+        const Method& m_method;
+
         std::size_t m_fnIndex;
+        std::vector<rtl::type_meta> m_overloadsMeta;
 
-        traits::uid_t m_recordId;
-
-        std::vector<rtl::type_meta> m_overloadsFnMeta = {};
+        template<class return_t>
+        static void init(const traits::uid_t pRecordId,
+                         const std::vector<rtl::type_meta>& pRefOverloads,
+                         typename method<record_t, return_t(signature_t...)>::hopper_t& pMth);
 
         template<class return_t>
         using method_t = std::conditional_t< member_kind == member::Const,
@@ -125,9 +119,6 @@ namespace rtl::detail
 
         template<class return_t = rtl::Return> requires (!traits::type_aware_v<record_t, return_t>)
         constexpr method<record_t, return_t(signature_t...)> returnT() const;
-
-        template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-        void init(typename method<record_t, return_t(signature_t...)>::hopper_t& pMth) const;
     };
 }
 
@@ -137,13 +128,11 @@ namespace rtl::detail
     template<member member_kind, class record_t>
     struct HopBuilder
     {
-        const traits::uid_t m_recordId;
+        const Method& m_method;
 
-        const std::vector<rtl::type_meta>& m_functorsMeta;
-
-        template<class ...signature_t> requires (member_kind == member::None)
-        constexpr InitMethodHop<member::None, record_t, signature_t...> argsT() const;
-
+        static std::pair<std::size_t, std::vector<type_meta>> getRefOverloads(const Method& m_method,
+                                                                              const traits::uid_t pStrictId,
+                                                                              const traits::uid_t pNormalId);
         template<class ...signature_t> requires (member_kind != member::None)
         constexpr InitMethodHop<member_kind, record_t, signature_t...> argsT() const;
     };

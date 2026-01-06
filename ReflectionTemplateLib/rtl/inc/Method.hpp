@@ -21,43 +21,29 @@ namespace rtl
         return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
-
     template<class ..._signature>
     inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
     {
         return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
     }
 
-    template<class recordT, class ...signatureT>
-        requires (std::is_same_v<std::remove_const_t<recordT>, RObject>)
-    inline constexpr detail::HopBuilder<detail::member::None, RObject> Method::targetT() const
-    {
-        return detail::HopBuilder<detail::member::None, RObject>{ getRecordTypeId(), getFunctorsMeta() };
-    }
-
-
-    template<class recordT, class ...signatureT>
-        requires (!std::is_const_v<recordT> && !std::is_same_v<recordT, RObject>)
+    template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT>)
     inline constexpr detail::HopBuilder<detail::member::NonConst, recordT> Method::targetT() const
     {
-        return detail::HopBuilder<detail::member::NonConst, recordT>{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::HopBuilder<detail::member::NonConst, recordT>{ *this };
     }
 
-
-    template<class recordT, class ...signatureT>
-        requires (std::is_const_v<recordT> && !std::is_same_v<std::remove_const_t<recordT>, RObject>)
+    template<class recordT, class ...signatureT> requires (std::is_const_v<recordT>)
     inline constexpr detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT>> Method::targetT() const
     {
-        return detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT> >{ getRecordTypeId(), getFunctorsMeta() };
+        return detail::HopBuilder<detail::member::Const, std::remove_const_t<recordT> >{ *this };
     }
-
 
     template<class ...signatureT>
     inline constexpr const detail::InitFunctionHop<detail::member::Static, signatureT...> Method::argsT() const
     {
         return detail::HopBuilder<detail::member::Static>{ getFunctorsMeta() }.argsT<signatureT...>();
     }
-
 
     /*  @method: hasSignature<...>()
     @params: template params, <_arg0, ..._args> (expects at least one args- _args0)

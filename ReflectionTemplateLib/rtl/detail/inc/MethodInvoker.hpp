@@ -155,57 +155,56 @@ namespace rtl::detail
 namespace rtl::detail 
 {
     template<member member_kind, class record_t>
-    template<class ...args_t> requires (member_kind == member::None)
-    inline constexpr InitMethodHop<member::None, record_t, args_t...> HopBuilder<member_kind, record_t>::argsT() const
+    template<class ...args_t> requires (member_kind != member::None)
+    inline constexpr InitMethodHop<member_kind, record_t, args_t...> HopBuilder<member_kind, record_t>::argsT() const
     {
-        auto constHops = HopBuilder<member::Const, record_t>{ m_recordId, m_functorsMeta }.template argsT<args_t...>();
-        auto nonConstHops = HopBuilder<member::NonConst, record_t>{ m_recordId, m_functorsMeta }.template argsT<args_t...>();
-        return InitMethodHop<member::None, record_t, args_t...>{ constHops, nonConstHops };
+        auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+        auto [index, fnTypeMetas] = getRefOverloads(m_method, strictId, normalId);
+        return { m_method, index, fnTypeMetas };
     }
 
 
     template<member member_kind, class record_t>
-    template<class ...args_t> requires (member_kind != member::None)
-    inline constexpr InitMethodHop<member_kind, record_t, args_t...> HopBuilder<member_kind, record_t>::argsT() const
+    inline std::pair<std::size_t, std::vector<type_meta>>
+    HopBuilder<member_kind, record_t>::getRefOverloads(const Method& pMethod,
+                                                       const traits::uid_t pStrictId,
+                                                       const traits::uid_t pNormalId)
     {
-        std::size_t index = rtl::index_none; 
-        std::vector<rtl::type_meta> fnTyMetas(call_by::ncref);
+        std::size_t index = rtl::index_none;
+        std::vector<rtl::type_meta> fnTypeMetas(call_by::ncref);
 
-        auto recordId = traits::uid<record_t>::value;
-        auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
-        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
-
-        for (auto& ty_meta : m_functorsMeta)
+        for (auto& typeMeta : pMethod.getFunctorsMeta())
         {
             if constexpr (!std::is_same_v<record_t, RObject>)
             {
-                if (recordId != ty_meta.get_record_id()) {
-                    return { rtl::index_none, m_recordId, fnTyMetas };
+                if (traits::uid<record_t>::value != typeMeta.get_record_id()) {
+                    return { rtl::index_none, fnTypeMetas };
                 }
             }
-            if (member_kind != ty_meta.get_member_kind()) {
+            if (member_kind != typeMeta.get_member_kind()) {
                 continue;
             }
-            if (normalId == ty_meta.get_normal_args_id())
+            if (pNormalId == typeMeta.get_normal_args_id())
             {
-                if (normalId == ty_meta.get_strict_args_id()) {
-                    fnTyMetas[call_by::value] = ty_meta;
+                if (pNormalId == typeMeta.get_strict_args_id()) {
+                    fnTypeMetas[call_by::value] = typeMeta;
                 }
-                else if (!ty_meta.is_any_arg_ncref()) {
-                    fnTyMetas[call_by::cref] = ty_meta;
+                else if (!typeMeta.is_any_arg_ncref()) {
+                    fnTypeMetas[call_by::cref] = typeMeta;
                 }
-                else fnTyMetas.push_back(ty_meta);
+                else fnTypeMetas.push_back(typeMeta);
             }
         }
-        for (int i = 0; i < fnTyMetas.size(); i++)
+        for (int i = 0; i < fnTypeMetas.size(); i++)
         {
-            auto& ty_meta = fnTyMetas[i];
-            if (!ty_meta.is_empty() && ty_meta.get_strict_args_id() == strictId) {
+            auto& ty_meta = fnTypeMetas[i];
+            if (!ty_meta.is_empty() && ty_meta.get_strict_args_id() == pStrictId) {
                 index = i;
                 break;
             }
         }
-        return { index, m_recordId, fnTyMetas };
+        return { index, fnTypeMetas };
     }
 }
 
@@ -213,31 +212,25 @@ namespace rtl::detail
 
 namespace rtl::detail
 {
-    template<class record_t, class ...args_t>
-    template<class return_t>
-    inline constexpr method<record_t, return_t(args_t...)> InitMethodHop<member::None, record_t, args_t...>::returnT() const
-    {
-        auto mth = m_nc_hops.template returnT<return_t>();
-        mth.get_c_hops() = (m_c_hops.template returnT<return_t>()).get_c_hops();
-        return mth;
-    }
-
-
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
     inline constexpr method<record_t, return_t(args_t...)> InitMethodHop<member_kind, record_t, args_t...>::returnT() const
     {
         auto mth = method<record_t, return_t(args_t...)>();
-        if constexpr (!std::is_same_v<record_t, RObject>) {
-            init<return_t>(mth);
+        auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
+        auto strictId = traits::uid<traits::strict_sign_id_t<args_t...>>::value;
+        auto recordId = m_method.getRecordTypeId();
+
+        if constexpr (member_kind == member::Const) {
+
+            auto overloadsMeta = HopBuilder<member::NonConst, record_t>::getRefOverloads(m_method, strictId, normalId).second;
+            init<return_t>(recordId, overloadsMeta, mth.get_nc_hops());
+            init<return_t>(recordId, m_overloadsMeta, mth.get_c_hops());
         }
-        else {
-            if constexpr (member_kind == member::Const) {
-                init<return_t>(mth.get_c_hops());
-            }
-            else if constexpr (member_kind == member::NonConst) {
-                init<return_t>(mth.get_nc_hops());
-            }
+        else if constexpr (member_kind == member::NonConst) {
+            auto overloadsMeta = HopBuilder<member::Const, record_t>::getRefOverloads(m_method, strictId, normalId).second;
+            init<return_t>(recordId, overloadsMeta, mth.get_c_hops());
+            init<return_t>(recordId, m_overloadsMeta, mth.get_nc_hops());
         }
         return mth;
     }
@@ -262,7 +255,7 @@ namespace rtl::detail
             return mth;
         }
 
-        auto& ty_meta = m_overloadsFnMeta[m_fnIndex];
+        auto& ty_meta = m_overloadsMeta[m_fnIndex];
         if (traits::uid<return_t>::value == ty_meta.get_return_id()) {
 
             using rec_t = std::conditional_t<member_kind == member::Const, const record_t, record_t>;
@@ -276,12 +269,14 @@ namespace rtl::detail
 
 
     template<member member_kind, class record_t, class ...args_t>
-    template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
-    inline void InitMethodHop<member_kind, record_t, args_t...>::init(typename method<record_t, return_t(args_t...)>::hopper_t& pHopper) const
+    template<class return_t>
+    inline void InitMethodHop<member_kind, record_t, args_t...>::init(const traits::uid_t pRecordId, 
+                                                                      const std::vector<rtl::type_meta>& pRefOverloads,
+                                                                      typename method<record_t, return_t(args_t...)>::hopper_t& pHopper)
     {
-        for (auto& ty_meta : m_overloadsFnMeta)
+        for (auto& typeMeta : pRefOverloads)
         {
-            if (ty_meta.is_empty()) {
+            if (typeMeta.is_empty()) {
                 pHopper.get_hopper().push_back(nullptr);
                 pHopper.get_overloads().push_back(nullptr);
                 continue;
@@ -291,22 +286,22 @@ namespace rtl::detail
                 if constexpr (traits::type_erased_v<record_t, return_t>) {
 
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
-                    return fn_cast(ty_meta.get_functor()).to_method();
+                    return fn_cast(typeMeta.get_functor()).to_method();
                 }
                 else if constexpr (traits::target_erased_v<record_t, return_t>) {
 
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
-                    return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_target, return_t>();
+                    return fn_cast(typeMeta.get_functor()).template to_method<dispatch::erase::t_target, return_t>();
                 }
                 else if constexpr (traits::return_erased_v<record_t, return_t>) {
 
                     using fn_cast = dispatch::functor_cast<traits::normal_sign_t<args_t>...>;
-                    return fn_cast(ty_meta.get_functor()).template to_method<dispatch::erase::t_return, record_t>();
+                    return fn_cast(typeMeta.get_functor()).template to_method<dispatch::erase::t_return, record_t>();
                 }
             }();
 
             pHopper.get_hopper().push_back(fn.f_ptr());
-            pHopper.get_overloads().push_back(&ty_meta.get_functor());
+            pHopper.get_overloads().push_back(&typeMeta.get_functor());
             pHopper.set_init_error(error::None);
         }
 
@@ -314,7 +309,7 @@ namespace rtl::detail
             pHopper.set_init_error(error::SignatureMismatch);
         }
         else {
-            pHopper.set_record_id(m_recordId);
+            pHopper.set_record_id(pRecordId);
         }
     }
 }

@@ -20,8 +20,7 @@ namespace rtl::detail
     struct InitFunctionHop
     {
         std::size_t m_fnIndex;
-
-        std::vector<rtl::type_meta> m_overloadsFnMeta = {};
+        std::vector<rtl::type_meta> m_overloadsMeta = {};
 
         void init(function<rtl::Return(_signature...)>& pFn) const;
 

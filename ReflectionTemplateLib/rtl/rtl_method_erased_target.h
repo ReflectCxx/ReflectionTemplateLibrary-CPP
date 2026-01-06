@@ -103,10 +103,23 @@ namespace rtl
         }
 
         constexpr operator bool() const noexcept {
-            return m_non_const_hops.operator bool();
+            return (m_const_hops.operator bool() || m_non_const_hops.operator bool());
         }
 
-        GETTER(error, _init_error, (m_non_const_hops.get_init_error()))
+        constexpr error get_init_error() const noexcept 
+        {
+            if (m_const_hops.get_init_error() == error::None &&
+                m_non_const_hops.get_init_error() != error::None) {
+                return m_non_const_hops.get_init_error();
+            }
+            else if (m_const_hops.get_init_error() != error::None &&
+                     m_non_const_hops.get_init_error() == error::None) {
+                return m_const_hops.get_init_error();
+            }
+            else {
+                return m_non_const_hops.get_init_error();
+            }
+        }
 
     private:
 
