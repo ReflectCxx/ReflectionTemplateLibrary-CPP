@@ -100,8 +100,6 @@ namespace rtl::detail
     struct InitMethodHop
     {
         const Method& m_method;
-
-        std::size_t m_fnIndex;
         std::vector<rtl::type_meta> m_overloadsMeta;
 
         template<class return_t>
@@ -130,9 +128,9 @@ namespace rtl::detail
     {
         const Method& m_method;
 
-        static std::pair<std::size_t, std::vector<type_meta>> getRefOverloads(const Method& m_method,
-                                                                              const traits::uid_t pStrictId,
-                                                                              const traits::uid_t pNormalId);
+        static std::vector<type_meta> getCallByRefAndValueMetas(const Method& m_method,
+                                                                const traits::uid_t pNormalId);
+
         template<class ...signature_t> requires (member_kind != member::None)
         constexpr InitMethodHop<member_kind, record_t, signature_t...> argsT() const;
     };
