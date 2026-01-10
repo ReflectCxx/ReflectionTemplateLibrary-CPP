@@ -68,38 +68,48 @@ namespace rtl
             }
         };
 
-        constexpr const error validate(const RObject& p_target) const
+        constexpr const error validate(const hopper_t& pHopper, const RObject& p_target) const
         {
-            if (m_non_const_hops.get_init_error() != error::None) {
-                return m_non_const_hops.get_init_error();
+            if (pHopper.get_init_error() != error::None) {
+                return pHopper.get_init_error();
             }
             else if (p_target.isEmpty()) {
                 return error::EmptyRObject;
             }
-            else if (m_non_const_hops.get_record_id() != p_target.getTypeId()) {
+            else if (pHopper.get_record_id() != p_target.getTypeId()) {
                 return error::TargetTypeMismatch;
             }
             else return error::None;
         }
 
         constexpr invoker operator()(RObject& p_target) const noexcept {
-            return invoker{ m_non_const_hops, validate(p_target), p_target };
+            return invoker{ m_non_const_hops, validate(m_non_const_hops, p_target), p_target };
         }
 
         constexpr invoker operator()(RObject&& p_target) const noexcept {
-            return invoker{ m_non_const_hops, validate(p_target), p_target };
+            return invoker{ m_non_const_hops, validate(m_non_const_hops, p_target), p_target };
+        }
+
+        constexpr invoker operator()(const RObject& p_target) const noexcept {
+            return invoker{ m_const_hops, validate(m_const_hops, p_target), p_target };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(m_non_const_hops, p_target), p_target };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(m_non_const_hops, p_target), p_target };
+        }
+
+        template<class ...args_t>
+            requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ m_const_hops, validate(m_const_hops, p_target), p_target };
         }
 
         constexpr operator bool() const noexcept {

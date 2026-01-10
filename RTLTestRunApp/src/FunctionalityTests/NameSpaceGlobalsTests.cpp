@@ -268,10 +268,9 @@ namespace rtl_tests
         RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
         {
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
-            //TODO: Fails here. full-type-erased const-method support needed.
             EXPECT_TRUE(isStringEmpty);
 
-            auto [err, ret] = isStringEmpty(reflected_str0)();
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str0))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -282,7 +281,7 @@ namespace rtl_tests
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
             EXPECT_TRUE(isStringEmpty);
 
-            auto [err, ret] = isStringEmpty(reflected_str1)();
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str1))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -302,10 +301,9 @@ namespace rtl_tests
         RObject reflected_str0 = rtl::reflect("");	//empty string.
         {
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
-            //TODO: Fails here. full-type-erased const-method support needed.
             EXPECT_TRUE(isStringEmpty);
 
-            auto [err, ret] = isStringEmpty(reflected_str0)();
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str0))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -316,7 +314,7 @@ namespace rtl_tests
             auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
             EXPECT_TRUE(isStringEmpty);
 
-            auto [err, ret] = isStringEmpty(reflected_str1)();
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str1))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());

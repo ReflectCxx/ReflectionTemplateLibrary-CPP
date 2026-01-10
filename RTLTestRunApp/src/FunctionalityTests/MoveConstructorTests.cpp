@@ -171,14 +171,21 @@ namespace rtl_tests
                     EXPECT_FALSE(oEventReset->isConst());
 
                     method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();
-
-                    auto [e0, r0] = eventReset(event0)();
-                    EXPECT_TRUE(e0 == error::ConstOverloadMissing);
-                    ASSERT_TRUE(r0.isEmpty());
-
-                    auto [e1, r2] = oEventReset->bind(constCast(event0)).call();
-                    EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    ASSERT_TRUE(r2.isEmpty());
+                    {
+                        auto [e0, r0] = eventReset(std::cref(event0))();
+                        EXPECT_TRUE(e0 == error::ConstOverloadMissing);
+                        ASSERT_TRUE(r0.isEmpty());
+                    } {
+                        auto [e0, r0] = eventReset(event0)();
+                        EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
+                        ASSERT_TRUE(r0.isEmpty());
+                    }
+                    //   TODO: provide option to 'const_cast' the underlying object being reflected.
+                    //{  (should it be even allowed?)
+                    //    auto [e0, r0] = eventReset(constCast(event0))();
+                    //    EXPECT_TRUE(e0 == error::IllegalConstCast);
+                    //    ASSERT_TRUE(r0.isEmpty());
+                    //}
                 }
 
                 // RObject reflecting 'const Event&', storing pointer to reflected type internally, So just the

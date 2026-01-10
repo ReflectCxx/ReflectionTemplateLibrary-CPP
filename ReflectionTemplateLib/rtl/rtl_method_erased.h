@@ -23,8 +23,8 @@ namespace rtl
         struct invoker
         {
             const hopper_t& fn;
-            const error init_err;
             const RObject& target;
+            const error init_err;
 
             template<class ...args_t> 
                 requires (sizeof...(args_t) == sizeof...(signature_t))
@@ -42,8 +42,8 @@ namespace rtl
         struct perfect_fwd
         {
             const hopper_t& fn;
-            const error init_err;
             const RObject& target;
+            const error init_err;
 
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
@@ -57,38 +57,61 @@ namespace rtl
             }
         };
 
-        constexpr const error validate(const RObject& p_target) const
+        template<detail::member member_kind> 
+            requires (member_kind == detail::member::Const || member_kind == detail::member::NonConst)
+        constexpr const error validate(const hopper_t& pHopper, const RObject& p_target) const
         {
-            if (m_non_const_hops.get_init_error() != error::None) {
-                return m_non_const_hops.get_init_error();
+            if (pHopper.get_init_error() != error::None) {
+                return pHopper.get_init_error();
             }
             else if (p_target.isEmpty()) {
                 return error::EmptyRObject;
             }
-            else if (m_non_const_hops.get_record_id() != p_target.getTypeId()) {
+            else if (pHopper.get_record_id() != p_target.getTypeId()) {
                 return error::TargetTypeMismatch;
             }
-            else return error::None;
+            if constexpr (member_kind == detail::member::NonConst) {
+                if (!p_target.isConstCastSafe()) {
+                    return error::InvalidCallOnConstTarget;
+                }
+            }
+            return error::None;
         }
 
         constexpr invoker operator()(RObject& p_target) const noexcept {
-            return invoker{ m_non_const_hops, validate(p_target),  p_target };
+            return invoker{ m_non_const_hops, p_target,
+                            validate<detail::member::NonConst>(m_non_const_hops, p_target) };
         }
 
         constexpr invoker operator()(RObject&& p_target) const noexcept {
-            return invoker{ m_non_const_hops, validate(p_target), p_target };
+            return invoker{ m_non_const_hops, p_target,
+                            validate<detail::member::NonConst>(m_non_const_hops, p_target) };
+        }
+
+        constexpr invoker operator()(const RObject& p_target) const noexcept {
+            return invoker{ m_const_hops, p_target,
+                            validate<detail::member::Const>(m_const_hops, p_target) };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
+            return perfect_fwd<args_t...>{ m_non_const_hops, p_target,
+                                           validate<detail::member::NonConst>(m_non_const_hops, p_target) };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
+            return perfect_fwd<args_t...>{ m_non_const_hops, p_target,
+                                           validate<detail::member::NonConst>(m_non_const_hops, p_target) };
+        }
+
+        template<class ...args_t>
+            requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
+        constexpr const perfect_fwd<args_t...> bind(const RObject& p_target) const noexcept {
+            return perfect_fwd<args_t...>{ m_const_hops, p_target,
+                                           validate<detail::member::Const>(m_const_hops, p_target) };
         }
 
         constexpr operator bool() const noexcept {

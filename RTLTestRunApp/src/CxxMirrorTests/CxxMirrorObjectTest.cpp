@@ -74,11 +74,10 @@ namespace rtl_tests
             {
                 // materialize the caller.
                 rtl::method<rtl::RObject, rtl::Return()> isEmpty = oIsEmpty->targetT().argsT().returnT();
-                //TODO: Fails here. full-type-erased const-method support needed.
                 EXPECT_TRUE(isEmpty);
 
                 // Exception-free API: returns error code + result object.
-                auto [err, ret] = isEmpty(robj)();
+                auto [err, ret] = isEmpty(std::cref(robj))();
                 EXPECT_TRUE(err == rtl::error::None);
                 ASSERT_FALSE(ret.isEmpty());
 
@@ -91,7 +90,7 @@ namespace rtl_tests
                 rtl::method<rtl::RObject, bool()> isEmpty = oIsEmpty->targetT().argsT().returnT<bool>();
                 EXPECT_TRUE(isEmpty);
 
-                auto [err, ret] = isEmpty(robj)();
+                auto [err, ret] = isEmpty(std::cref(robj))();
                 EXPECT_TRUE(err == rtl::error::None);
                 EXPECT_TRUE(ret.has_value());
                 EXPECT_EQ(ret.value(), true);

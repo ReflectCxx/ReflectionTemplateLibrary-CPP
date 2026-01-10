@@ -14,24 +14,6 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(ConstMethodOverload, explicitly_making_const_call__on_static_method)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
-            ASSERT_TRUE(getDefaults);
-            EXPECT_TRUE(getDefaults->hasSignature<>());
-            {
-                // enabling this results compiler error.
-                // auto [err, ret] = getDefaults->bind().call();
-                // auto [err, ret] = getDefaults->bind().call();
-            }
-        }
-    }
-
-
     TEST(ConstMethodOverload, explicitly_making_const_call__on_wrong_target)
     {
         {
@@ -50,14 +32,16 @@ namespace rtl_tests
             ASSERT_TRUE(oUpdateLastName);
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
-            string lastName = person::LAST_NAME;
+            rtl::method<rtl::RObject, rtl::Return(string)> updateLastName = oUpdateLastName->targetT()
+                                                                                           .argsT<string>()
+                                                                                           .returnT();
             {
-                auto [err, ret] = oUpdateLastName->bind(constCast(book)).call(lastName);
-
-                EXPECT_TRUE(err == error::TargetTypeMismatch);
+                auto [err, ret] = updateLastName(book)(person::LAST_NAME);
+                // Only const method exits for this function, no non-const overload.
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = oUpdateLastName->bind(constCast(book)).call(lastName);
+                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME);
 
                 EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
@@ -106,23 +90,22 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
-            // RTL treats objects created via reflection as logically immutable (i.e., 'const' by default).
-            // For such objects, applying a logical 'const_cast' is always safe, hence the check below is true.
-            // However, RTL respects the const-ness of objects originating outside RTL (e.g., return values).
-            // If an object is provided to RTL as 'const', a 'const_cast' would not be safe, and the check
-            // would return false. RTL never performs such unsafe casts internally.
-            EXPECT_TRUE(person.isConstCastSafe());
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
             method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT()
                                                                             .argsT<string>().returnT();
-            // this will by default bind to the const-method.
-            // Since the reflected object is bieng treated as 'const', so the 
-            // 'const' method will be preffered with no-need of explicit resolution, since it exists.
-            auto [err, ret] = updateLastName(person)(person::LAST_NAME);
+            {
+                auto [err, ret] = updateLastName(person)(person::LAST_NAME);
+                // only const method exists, no non-const overload found.
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
+                ASSERT_TRUE(ret.isEmpty());
+            } {
+                // explicit call to const method.
+                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME);
 
-            EXPECT_TRUE(err == error::None);
-            ASSERT_TRUE(ret.isEmpty());
+                EXPECT_TRUE(err == error::None);
+                ASSERT_TRUE(ret.isEmpty());
+            }
 
             EXPECT_TRUE(person::test_method_updateLastName_const(person));
         };

@@ -38,6 +38,16 @@ namespace rtl_tests
                 const std::string& expectedStr = std::string(StrConstOverload::struct_) + REV_STR_VOID_RET +
                                                  SUFFIX_void;
                 EXPECT_EQ(retStr, expectedStr);
+            } {
+                auto [err, ret] = reverseString(std::cref(robj))();
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_TRUE(!ret.isEmpty());
+                ASSERT_TRUE(ret.canViewAs<std::string>());
+
+                const std::string& retStr = ret.view<std::string>()->get();
+                const std::string& expectedStr = std::string(StrConstOverload::struct_) + REV_STR_VOID_RET +
+                                                 SUFFIX_void + SUFFIX_const;
+                EXPECT_EQ(retStr, expectedStr);
             }
         };
 

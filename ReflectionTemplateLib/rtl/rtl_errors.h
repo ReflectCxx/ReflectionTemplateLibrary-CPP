@@ -35,6 +35,7 @@ namespace rtl
         IllegalConstCast,
         ConstOverloadMissing,
         NonConstOverloadMissing,
+        InvalidCallOnConstTarget,
 
         TypeNotCopyConstructible,
         TypeNotDefaultConstructible,
@@ -68,6 +69,8 @@ namespace rtl
             return "The object you're trying to bind doesn't match the expected type of the method.";
         case error::NonConstOverloadMissing:
             return "Non-const method not found: The method does not have a non-const overload as explicitly requested.";
+        case error::InvalidCallOnConstTarget:
+            return "Cannot call a non-const method on an RObject that is reflecting a const object.";
         case error::TypeNotCopyConstructible:
             return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
         case error::TypeNotDefaultConstructible:
@@ -75,7 +78,7 @@ namespace rtl
         case error::ConstOverloadMissing:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         case error::IllegalConstCast:
-            return "Illegal const_cast attempt - cannot remove const qualifier from originally-const object";
+            return "Illegal constCast attempt - cannot remove const qualifier from originally-const object";
         case error::StlWrapperHeapAllocForbidden:
             return "Heap allocation forbidden for STL-wrapped objects (smart pointers/optionals/reference_wrappers). use alloc::Stack.";
         default:
