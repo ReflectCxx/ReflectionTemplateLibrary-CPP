@@ -56,7 +56,7 @@ namespace rtl
         }
 
         static_assert((!std::is_reference_v<signature_t> && ...),
-            "rtl::function<...>: any type cannot be specified as reference here");
+            "rtl::function<...>: any type cannot be specified as reference here.");
     };
 }
 

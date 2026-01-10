@@ -93,32 +93,26 @@ namespace rtl
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target};
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
         }
 
         template<class ...args_t>
             requires (std::is_same_v<traits::normal_sign_id_t<args_t...>, std::tuple<signature_t...>>)
         constexpr const perfect_fwd<args_t...> bind(RObject&& p_target) const noexcept {
-            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target};
+            return perfect_fwd<args_t...>{ m_non_const_hops, validate(p_target), p_target };
         }
 
         constexpr operator bool() const noexcept {
             return (m_const_hops.operator bool() || m_non_const_hops.operator bool());
         }
 
-        constexpr error get_init_error() const noexcept 
+        constexpr error get_init_error() const noexcept
         {
-            if (m_const_hops.get_init_error() == error::None &&
-                m_non_const_hops.get_init_error() != error::None) {
-                return m_non_const_hops.get_init_error();
+            if (m_const_hops.get_init_error() == error::None ||
+                m_non_const_hops.get_init_error() == error::None) {
+                return error::None;
             }
-            else if (m_const_hops.get_init_error() != error::None &&
-                     m_non_const_hops.get_init_error() == error::None) {
-                return m_const_hops.get_init_error();
-            }
-            else {
-                return m_non_const_hops.get_init_error();
-            }
+            return m_non_const_hops.get_init_error();
         }
 
     private:

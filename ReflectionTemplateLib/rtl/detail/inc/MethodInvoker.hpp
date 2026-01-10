@@ -159,13 +159,13 @@ namespace rtl::detail
     inline constexpr InitMethodHop<member_kind, record_t, args_t...> HopBuilder<member_kind, record_t>::argsT() const
     {
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
-        return { m_method, getCallByRefAndValueMetas(m_method, normalId) };
+        return { m_method, getRefAndValueOverloads(m_method, normalId) };
     }
 
 
     template<member member_kind, class record_t>
-    inline std::vector<type_meta>HopBuilder <member_kind, record_t>::getCallByRefAndValueMetas(const Method& pMethod, 
-                                                                                               const traits::uid_t pNormalId)
+    inline std::vector<type_meta>HopBuilder <member_kind, record_t>::getRefAndValueOverloads(const Method& pMethod, 
+                                                                                             const traits::uid_t pNormalId)
     {
         std::vector<rtl::type_meta> fnTypeMetas(call_by::ncref);
         for (auto& typeMeta : pMethod.getFunctorsMeta())
@@ -202,21 +202,55 @@ namespace rtl::detail
     template<class return_t> requires (!traits::type_aware_v<record_t, return_t>)
     inline constexpr method<record_t, return_t(args_t...)> InitMethodHop<member_kind, record_t, args_t...>::returnT() const
     {
+        using hopper_t = typename method<record_t, return_t(args_t...)>::hopper_t;
+
+        auto validateReturn = [](const std::vector<type_meta>& overloadsMeta, hopper_t& pHopper)-> bool {
+            if constexpr (!std::is_same_v <return_t, Return>) {
+                for (auto& tyMeta : overloadsMeta) {
+                    if (!tyMeta.is_empty())
+                    {
+                        if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
+                            pHopper.set_init_error(error::ReturnTypeMismatch);
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        };
+
         auto mth = method<record_t, return_t(args_t...)>();
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;
         auto recordId = m_method.getRecordTypeId();
 
         if constexpr (member_kind == member::Const) {
 
-            auto overloadsMeta = HopBuilder<member::NonConst, record_t>::getCallByRefAndValueMetas(m_method, normalId);
-            init<return_t>(recordId, overloadsMeta, mth.get_nc_hops());
-            init<return_t>(recordId, m_overloadsMeta, mth.get_c_hops());
+            if (validateReturn(m_overloadsMeta, mth.get_c_hops())) {
+                init<return_t>(recordId, m_overloadsMeta, mth.get_c_hops());
+            }
+            auto overloadsMeta = HopBuilder<member::NonConst, record_t>::getRefAndValueOverloads(m_method, normalId);
+            if (validateReturn(overloadsMeta, mth.get_nc_hops())) {
+                init<return_t>(recordId, overloadsMeta, mth.get_nc_hops());
+            }
         }
         else if constexpr (member_kind == member::NonConst) {
 
-            auto overloadsMeta = HopBuilder<member::Const, record_t>::getCallByRefAndValueMetas(m_method, normalId);
-            init<return_t>(recordId, overloadsMeta, mth.get_c_hops());
-            init<return_t>(recordId, m_overloadsMeta, mth.get_nc_hops());
+            if (validateReturn(m_overloadsMeta, mth.get_nc_hops())) {
+                init<return_t>(recordId, m_overloadsMeta, mth.get_nc_hops());
+            }
+            auto overloadsMeta = HopBuilder<member::Const, record_t>::getRefAndValueOverloads(m_method, normalId);
+            if (validateReturn(overloadsMeta, mth.get_c_hops())) {
+                init<return_t>(recordId, overloadsMeta, mth.get_c_hops());
+            }
+        }
+
+        if (mth.get_nc_hops().get_init_error() == error::None &&
+            mth.get_c_hops().get_init_error() != error::None) {
+            mth.get_c_hops().set_init_error(error::ConstOverloadMissing);
+        }
+        else if (mth.get_c_hops().get_init_error() == error::None &&
+            mth.get_nc_hops().get_init_error() != error::None) {
+            mth.get_nc_hops().set_init_error(error::NonConstOverloadMissing);
         }
         return mth;
     }
@@ -224,7 +258,7 @@ namespace rtl::detail
 
     template<member member_kind, class record_t, class ...args_t>
     template<class return_t> requires (traits::type_aware_v<record_t, return_t>)
-    inline constexpr typename InitMethodHop<member_kind, record_t, args_t...>::template method_t<return_t> 
+    inline constexpr typename InitMethodHop<member_kind, record_t, args_t...>::template method_t<return_t>
     InitMethodHop<member_kind, record_t, args_t...>::returnT() const
     {
         auto mth = []()->decltype(auto) {

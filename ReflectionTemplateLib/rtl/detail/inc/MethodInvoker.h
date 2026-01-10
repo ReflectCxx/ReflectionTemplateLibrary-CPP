@@ -128,8 +128,8 @@ namespace rtl::detail
     {
         const Method& m_method;
 
-        static std::vector<type_meta> getCallByRefAndValueMetas(const Method& m_method,
-                                                                const traits::uid_t pNormalId);
+        static std::vector<type_meta> getRefAndValueOverloads(const Method& pMethod,
+                                                              const traits::uid_t pNormalId);
 
         template<class ...signature_t> requires (member_kind != member::None)
         constexpr InitMethodHop<member_kind, record_t, signature_t...> argsT() const;

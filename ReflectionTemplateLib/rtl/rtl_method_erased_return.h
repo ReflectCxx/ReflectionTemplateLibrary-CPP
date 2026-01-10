@@ -55,11 +55,11 @@ namespace rtl
         };
 
         constexpr invoker operator()(record_t& p_target) const noexcept {
-            return invoker{ m_non_const_hops, p_target};
+            return invoker{ m_non_const_hops, p_target };
         }
 
         constexpr invoker operator()(record_t&& p_target) const noexcept {
-            return invoker{ m_non_const_hops, p_target};
+            return invoker{ m_non_const_hops, p_target };
         }
 
         template<class ...args_t>
@@ -78,19 +78,13 @@ namespace rtl
             return (m_const_hops.operator bool() || m_non_const_hops.operator bool());
         }
 
-        constexpr error get_init_error() const noexcept 
+        constexpr error get_init_error() const noexcept
         {
-            if (m_const_hops.get_init_error() == error::None &&
-                m_non_const_hops.get_init_error() != error::None) {
-                return m_non_const_hops.get_init_error();
+            if (m_const_hops.get_init_error() == error::None ||
+                m_non_const_hops.get_init_error() == error::None) {
+                return error::None;
             }
-            else if (m_const_hops.get_init_error() != error::None &&
-                     m_non_const_hops.get_init_error() == error::None) {
-                return m_const_hops.get_init_error();
-            }
-            else {
-                return m_non_const_hops.get_init_error();
-            }
+            return m_non_const_hops.get_init_error();
         }
 
     private:
