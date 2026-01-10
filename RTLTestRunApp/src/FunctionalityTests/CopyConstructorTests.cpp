@@ -346,12 +346,14 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
+
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(oUpdateDate);
-                EXPECT_FALSE(oUpdateDate->isConst());
-                string dateStr = date::DATE_STR1;
+                
+                method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
+                EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -425,13 +427,14 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
+
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(oUpdateDate);
-                // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(oUpdateDate->isConst());
-                string dateStr = date::DATE_STR1;
+
+                method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
+                EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -505,13 +508,14 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
+
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(oUpdateDate);
-                // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(oUpdateDate->isConst());
-                string dateStr = date::DATE_STR1;
+
+                method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
+                EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -585,13 +589,14 @@ namespace rtl_tests
 
                 optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
                 ASSERT_TRUE(structDate);
+                
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
                 ASSERT_TRUE(oUpdateDate);
-                // 'updateDate' is non-const member function in 'Date' class.
-                EXPECT_FALSE(oUpdateDate->isConst());
-                string dateStr = date::DATE_STR1;
+
+                method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
+                EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = oUpdateDate->bind(constCast(date0)).call(dateStr);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
                     EXPECT_FALSE(date::test_if_obejcts_are_equal(date0, date1));

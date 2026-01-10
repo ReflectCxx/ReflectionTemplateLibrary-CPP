@@ -164,29 +164,27 @@ namespace rtl_tests
 
                 optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
                 ASSERT_TRUE(classEvent);
-                {
-                    optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
-                    ASSERT_TRUE(oEventReset);
-                    // 'Event::reset()' Method is non-const.
-                    EXPECT_FALSE(oEventReset->isConst());
 
-                    method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();
-                    {
-                        auto [e0, r0] = eventReset(std::cref(event0))();
-                        EXPECT_TRUE(e0 == error::ConstOverloadMissing);
-                        ASSERT_TRUE(r0.isEmpty());
-                    } {
-                        auto [e0, r0] = eventReset(event0)();
-                        EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
-                        ASSERT_TRUE(r0.isEmpty());
-                    }
-                    //   TODO: provide option to 'const_cast' the underlying object being reflected.
-                    //{  (should it be even allowed?)
-                    //    auto [e0, r0] = eventReset(constCast(event0))();
-                    //    EXPECT_TRUE(e0 == error::IllegalConstCast);
-                    //    ASSERT_TRUE(r0.isEmpty());
-                    //}
+                optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
+                ASSERT_TRUE(oEventReset);
+
+                method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();
+                EXPECT_TRUE(eventReset);
+                {
+                    auto [e0, r0] = eventReset(std::cref(event0))();
+                    EXPECT_TRUE(e0 == error::ConstOverloadMissing);
+                    ASSERT_TRUE(r0.isEmpty());
+                } {
+                    auto [e0, r0] = eventReset(event0)();
+                    EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
+                    ASSERT_TRUE(r0.isEmpty());
                 }
+                //   TODO: provide option to 'const_cast' the underlying object being reflected.
+                //{  (should it be even allowed?)
+                //    auto [e0, r0] = eventReset(constCast(event0))();
+                //    EXPECT_TRUE(e0 == error::IllegalConstCast);
+                //    ASSERT_TRUE(r0.isEmpty());
+                //}
 
                 // RObject reflecting 'const Event&', storing pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
@@ -200,18 +198,14 @@ namespace rtl_tests
                 EXPECT_NE(event0.getTypeId(), event1.getTypeId());
                 {
                     // Event::reset() is a non-const method. can't be called on const-object.
-                    optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
-                    ASSERT_TRUE(oEventReset);
-
-                    // So here, call to 'non-const' method on 'const' target fails here.
-                    auto [e0, r0] = oEventReset->bind(event1).call();
+                    auto [e0, r0] = eventReset(std::cref(event1))();
                     EXPECT_TRUE(e0 == error::ConstOverloadMissing);
                     ASSERT_TRUE(r0.isEmpty());
-
-                    // Since the  here, call to 'non-const' method on 'const' target fails here.
-                    auto [e1, r2] = oEventReset->bind(constCast(event1)).call();
-                    EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    ASSERT_TRUE(r2.isEmpty());
+                } {
+                    // call to 'non-const' method on 'const' target fails here.
+                    auto [e0, r0] = eventReset(event1)();
+                    EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
+                    ASSERT_TRUE(r0.isEmpty());
                 }
             }
             // After move, these instance count must remain same.

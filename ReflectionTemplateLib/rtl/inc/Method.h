@@ -46,8 +46,6 @@ namespace rtl {
         Method& operator=(Method&&) = default;
         Method& operator=(const Method&) = default;
 
-        GETTER_BOOL(Const, (getMemberKind() == detail::member::Const));
-
         template<class ...signatureT>
         constexpr const detail::InitFunctionHop<detail::member::Static, signatureT...> argsT() const;
 
