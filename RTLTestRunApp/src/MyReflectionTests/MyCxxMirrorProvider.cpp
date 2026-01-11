@@ -154,6 +154,12 @@ namespace my_type
         */  rtl::type().member<Person>().method<std::string>("setProfile").build(&Person::setProfile),
 
 
+        /*************************************************************************************
+        TODO: by value and by-ref overload should not be allowed (enforce compiler behaviour)
+              RTL should catch and ignore this kind of registration.
+        **************************************************************************************/
+
+
         /*  Example to illustrate overload behavior:
 
             Person person("Tim");
