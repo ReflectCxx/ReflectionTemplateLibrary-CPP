@@ -79,9 +79,9 @@ namespace rtl::detail
 
             if (functorId != nullptr)
             {
-                if (!pTarget.isConstCastSafe()) {
-                    return { error::ConstOverloadMissing, RObject{} };
-                }
+                //if (!pTarget.isConstCastSafe()) {
+                //    return { error::ConstOverloadMissing, RObject{} };
+                //}
                 return containerNonConst::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
             }
         }
@@ -205,16 +205,17 @@ namespace rtl::detail
         using hopper_t = typename method<record_t, return_t(args_t...)>::hopper_t;
 
         auto validateReturn = [](const std::vector<type_meta>& overloadsMeta, hopper_t& pHopper)-> bool {
+            //TODO: needs to be fixed for erased-target-known-return.
             if constexpr (!std::is_same_v <return_t, Return>) {
-                for (auto& tyMeta : overloadsMeta) {
-                    if (!tyMeta.is_empty())
-                    {
-                        if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
-                            pHopper.set_init_error(error::ReturnTypeMismatch);
-                            return false;
-                        }
-                    }
-                }
+                //for (auto& tyMeta : overloadsMeta) {
+                //    if (!tyMeta.is_empty())
+                //    {
+                //        if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
+                //            pHopper.set_init_error(error::ReturnTypeMismatch);
+                //            return false;
+                //        }
+                //    }
+                //}
             }
             return true;
         };
