@@ -32,7 +32,6 @@ namespace rtl
 
         FunctionNotRegistered,   //Not used by RTL at all, for external purpose only.
 
-        IllegalConstCast,
         ConstOverloadMissing,
         NonConstOverloadMissing,
         InvalidCallOnConstTarget,
@@ -77,8 +76,6 @@ namespace rtl
             return "Type cannot be default constructed - std::is_default_constructible<T> validation failed";
         case error::ConstOverloadMissing:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
-        case error::IllegalConstCast:
-            return "Illegal constCast attempt - cannot remove const qualifier from originally-const object";
         case error::StlWrapperHeapAllocForbidden:
             return "Heap allocation forbidden for STL-wrapped objects (smart pointers/optionals/reference_wrappers). use alloc::Stack.";
         default:

@@ -21,12 +21,6 @@ namespace rtl
         return detail::DefaultInvoker<_signature...>{ this, &pTarget };
     }
 
-    template<class ..._signature>
-    inline const detail::NonConstInvoker<_signature...> Method::bind(constCast<RObject>&& pTarget) const
-    {
-        return detail::NonConstInvoker<_signature...>{ this, &pTarget.m_target };
-    }
-
     template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT>)
     inline constexpr detail::HopBuilder<detail::member::NonConst, recordT> Method::targetT() const
     {

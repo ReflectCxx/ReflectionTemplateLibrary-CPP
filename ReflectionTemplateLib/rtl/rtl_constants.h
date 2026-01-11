@@ -73,25 +73,6 @@ namespace rtl {
         Wrapper
     };
 
-
-    // Utility wrapper for const-correctness control in overload resolution.
-    //
-    // Used to explicitly request that RTL treat an rtl::RObject as non-const
-    // when invoking member functions. Mirrors the intent of const_cast in C++,
-    // but with provenance-aware safety: it works only if the object was not
-    // originally declared const.
-    template<class T>
-    struct constCast
-    {
-        const T& m_target;
-
-        constCast() = delete;
-        constCast(constCast&&) = delete;
-        constCast(const constCast&) = delete;
-
-        explicit constCast(const T& target) : m_target(target) {}
-    };
-
     // Invalid number/index.
     static constexpr std::size_t index_none = static_cast<std::size_t>(-1);
 }

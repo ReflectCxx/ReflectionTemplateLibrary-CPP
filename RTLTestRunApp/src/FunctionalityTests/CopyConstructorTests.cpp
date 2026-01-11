@@ -333,7 +333,6 @@ namespace rtl_tests
                 EXPECT_TRUE(err_0 == error::None);
                 EXPECT_FALSE(date0.isOnHeap());
                 ASSERT_FALSE(date0.isEmpty());
-                EXPECT_TRUE(date0.isConstCastSafe());
 
                 auto [err_1, date1] = getTheDate(calender1)();
                 

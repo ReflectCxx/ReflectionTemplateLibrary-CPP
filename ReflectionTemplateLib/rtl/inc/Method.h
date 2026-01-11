@@ -62,9 +62,6 @@ namespace rtl {
         template<class ..._signature>
         const detail::DefaultInvoker<_signature...> bind(const RObject& pTarget) const;
 
-        template<class ..._signature>
-        const detail::NonConstInvoker<_signature...> bind(constCast<RObject>&& pTarget) const;
-
         template<class _recordType>
         constexpr const detail::ErasedInvoker<_recordType> operator()(_recordType&& pTarget) const
         {

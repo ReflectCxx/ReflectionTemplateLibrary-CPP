@@ -35,10 +35,6 @@ namespace rtl::detail
 
             auto fptr = static_cast<const method_t&>(pFunctorId.get_functor()).f_ptr();
 
-            if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
-                return { error::IllegalConstCast, RObject{} };
-            }
-
             _recordType& target = const_cast<_recordType&>(pTargetObj.view<_recordType>()->get());
             (target.*fptr)(std::forward<_signature>(params)...);
             return { error::None, RObject{} };
@@ -58,10 +54,6 @@ namespace rtl::detail
             using method_t = dispatch::method_ptr<_recordType, _returnType, _signature...>;
 
             auto fptr = static_cast<const method_t&>(pFunctorId.get_functor()).f_ptr();
-
-            if (!pTargetObj.isConstCastSafe()) [[unlikely]] {
-                return { error::IllegalConstCast, RObject{} };
-            }
 
             constexpr bool isConstCastSafe = (!traits::is_const_v<_returnType>);
             //'target' needs const_cast, since the functor is non-const-member-function.

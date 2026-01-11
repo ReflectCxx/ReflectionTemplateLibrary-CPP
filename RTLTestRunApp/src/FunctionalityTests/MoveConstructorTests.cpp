@@ -25,7 +25,6 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -45,7 +44,6 @@ namespace rtl_tests
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
@@ -90,7 +88,6 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_TRUE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -110,7 +107,6 @@ namespace rtl_tests
             EXPECT_TRUE(calender::get_move_ops_count() == 0);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_TRUE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
@@ -160,7 +156,6 @@ namespace rtl_tests
                 auto [err0, event0] = getTheEvent(calender)();
                 EXPECT_TRUE(err0 == error::None);
                 ASSERT_FALSE(event0.isEmpty());
-                EXPECT_FALSE(event0.isConstCastSafe()); // Retured as True-Const from reflected call, even RTL will not const_cast it.
 
                 optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
                 ASSERT_TRUE(classEvent);
@@ -191,7 +186,6 @@ namespace rtl_tests
                 RObject event1 = std::move(event0);
 
                 ASSERT_FALSE(event1.isEmpty());
-                EXPECT_FALSE(event1.isConstCastSafe());
 
                 // 'event0' must be empty now.
                 ASSERT_TRUE(event0.isEmpty());
@@ -243,7 +237,6 @@ namespace rtl_tests
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -263,7 +256,6 @@ namespace rtl_tests
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.

@@ -45,6 +45,8 @@ namespace rtl
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
+        GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
+
     public:
 
         RObject() = default;
@@ -59,12 +61,6 @@ namespace rtl
         GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
         GETTER(std::size_t, TypeId, m_objectId.m_typeId)
         GETTER_CREF(std::optional<std::any>, Any, m_object)
-
-    /*  Reflection Const Semantics:
-    *   - All reflected objects default to mutable internally; API enforces logical constness.
-    *   - RTL may 'const_cast' its own objects(allocated via RTL) but preserves logical constness.
-    *   - External objects (e.g. returned via Reflected call) keep original qualifier; if const, then const_cast is unsafe.
-    */  GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
 
         template <class _asType>
         bool canViewAs() const;
