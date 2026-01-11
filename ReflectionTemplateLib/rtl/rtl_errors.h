@@ -47,15 +47,17 @@ namespace rtl
     {
         switch (err) {
         case error::None:
-            return "No error (operation successful)";
+            return "No error (operation successful).";
         case error::EmptyRObject:
-            return "Empty instance: RObject does not hold any reflected object";
+            return "Empty instance: RObject does not hold any reflected object.";
         case error::SignatureMismatch:
-            return "Signature mismatch: Function parameters do not match the expected signature";
+            return "Signature mismatch: Function parameters do not match the expected signature.";
+        case error::ReturnTypeMismatch:
+            return "returnT<TYPE>(): The specified TYPE do not match the expected function's return type.";
         case error::RefBindingMismatch:
-            return "Reference binding mismatch: Argument references do not match the expected parameter bindings";
+            return "Reference binding mismatch: Argument references do not match the expected parameter bindings.";
         case error::ExplicitRefBindingRequired:
-            return "Explicit reference binding required for correct overload resolution";
+            return "Explicit reference binding required for correct overload resolution.";
         case error::InvalidCaller:
             return "Invalid callable: rtl::function/rtl::method object being used is empty.";
         case error::InvalidStaticMethodCaller:
@@ -63,7 +65,7 @@ namespace rtl
         case error::InvalidNonStaticMethodCaller:
             return "Invalid callable: rtl::static_method being used to call a non-static method; use rtl::method instead.";
         case error::FunctionNotRegistered:
-            return "Function not registered: The requested erase_function/method is not registered in the Reflection system";
+            return "Function not registered: The requested erase_function/method is not registered in the Reflection system.";
         case error::TargetTypeMismatch:
             return "The object you're trying to bind doesn't match the expected type of the method.";
         case error::NonConstOverloadMissing:
@@ -71,15 +73,15 @@ namespace rtl
         case error::InvalidCallOnConstTarget:
             return "Cannot call a non-const method on an RObject that is reflecting a const object.";
         case error::TypeNotCopyConstructible:
-            return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance";
+            return "Copy constructor inaccessible: Underlying type has deleted or private copy constructor; cannot copy-construct reflected instance.";
         case error::TypeNotDefaultConstructible:
-            return "Type cannot be default constructed - std::is_default_constructible<T> validation failed";
+            return "Type cannot be default constructed - std::is_default_constructible<T> validation failed.";
         case error::ConstOverloadMissing:
             return "Cannot call non-const method on const target implicitly, bind methodQ::NonConst to override.";
         case error::StlWrapperHeapAllocForbidden:
             return "Heap allocation forbidden for STL-wrapped objects (smart pointers/optionals/reference_wrappers). use alloc::Stack.";
         default:
-            return "Unknown error";
+            return "Unknown error.";
         }
     }
 }

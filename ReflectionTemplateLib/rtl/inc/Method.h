@@ -59,25 +59,7 @@ namespace rtl {
         template<class ..._args>
         bool hasSignature() const;
 
-        template<class ..._signature>
-        const detail::DefaultInvoker<_signature...> bind(const RObject& pTarget) const;
-
-        template<class _recordType>
-        constexpr const detail::ErasedInvoker<_recordType> operator()(_recordType&& pTarget) const
-        {
-            return detail::ErasedInvoker<_recordType>{ (*this), pTarget };
-        }
-
         friend Record;
         friend detail::CxxReflection;
-
-        template<class...>
-        friend struct detail::DefaultInvoker;
-
-        template<class...>
-        friend struct detail::NonConstInvoker;
-
-        template<class>
-        friend struct detail::ErasedInvoker;
     };
 }

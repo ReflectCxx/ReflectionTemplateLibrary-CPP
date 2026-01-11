@@ -11,88 +11,7 @@
 
 #pragma once
 
-#include "rtl_typeid.h"
-#include "rtl_forward_decls.h"
 #include "type_meta.h"
-
-namespace rtl::detail
-{
-    template<class _recordType>
-    struct ErasedInvoker
-    {
-        const Method& m_method;
-
-        const _recordType& m_target;
-
-        template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == false)
-        constexpr Return operator()(_args&&...params) const noexcept
-        {
-            return { error::InvalidCaller, RObject{} };
-        }
-        
-        template<class ..._args> requires (std::is_same_v<traits::raw_t<_recordType>, RObject> == true)
-        constexpr Return operator()(_args&&...params) const noexcept
-        {
-            return { error::InvalidCaller, RObject{} };
-        }
-    };
-}
-
-
-namespace rtl::detail {
-
-    template<class ..._signature>
-    struct DefaultInvoker
-    {
-        //the method to be called.
-        const Method* m_method;
-
-        //the object on which, the method needs to be called.
-        const RObject* m_target;
-
-        template<class ..._invokSignature>
-        struct Invoker {
-
-            template<class ..._args>
-            static Return invoke(const Method& pMethod, const RObject& pTarget, _args&&...);
-        };
-
-        template<class ..._args>
-        Return call(_args&&...) const noexcept;
-
-        template<class ..._args>
-        constexpr Return operator()(_args&&...params) const noexcept {
-            return call(std::forward<_args>(params)...);
-        }
-    };
-
-
-    template<class ..._signature>
-    struct NonConstInvoker
-    {
-        //the method to be called.
-        const Method* m_method;
-
-        //the object on which, the method needs to be called.
-        const RObject* m_target;
-
-        template<class ..._invokSignature>
-        struct Invoker {
-
-            template<class ..._args>
-            static Return invoke(const Method& pMethod, const RObject& pTarget, _args&&...);
-        };
-
-        template<class ..._args>
-        Return call(_args&&...) const noexcept;
-
-        template<class ..._args>
-        constexpr Return operator()(_args&&...params) const noexcept {
-            return call(std::forward<_args>(params)...);
-        }
-    };
-}
-
 
 namespace rtl::detail
 {
@@ -100,7 +19,7 @@ namespace rtl::detail
     struct InitMethodHop
     {
         const Method& m_method;
-        std::vector<rtl::type_meta> m_overloadsMeta;
+        const std::vector<rtl::type_meta> m_overloadsMeta;
 
         template<class return_t>
         static void init(const traits::uid_t pRecordId,

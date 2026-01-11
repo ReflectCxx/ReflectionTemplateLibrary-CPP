@@ -93,12 +93,6 @@ namespace rtl
         template<class>
         friend struct detail::RObjectBuilder;
 
-        template<bool, class ...>
-        friend struct detail::ErasedCaller;
-
-        template<class>
-        friend struct detail::ErasedInvoker;
-
         template<class, class ...>
         friend struct function;
 

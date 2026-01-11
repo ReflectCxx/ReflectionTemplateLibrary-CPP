@@ -101,8 +101,5 @@ namespace rtl {
 
         friend detail::CxxReflection;
         friend detail::ReflectionBuilder;
-
-        template<bool, class ...>
-        friend struct detail::ErasedCaller;
     };
 }

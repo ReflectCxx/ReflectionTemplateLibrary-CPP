@@ -14,7 +14,6 @@
 #include "Method.h"
 #include "RObject.h"
 #include "MethodInvoker.h"
-#include "MethodContainer.h"
 
 #include "method_ptr.h"
 #include "method_ptr_const.h"
@@ -24,132 +23,6 @@
 #include "rtl_method_erased.h"
 #include "rtl_method_erased_target.h"
 #include "rtl_method_erased_return.h"
-
-namespace rtl::detail
-{
-    /*  @lambda: call()
-        @params: params... (corresponding to functor associated with 'm_method')
-        @return: RObject, indicating success of the reflected call.
-        * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-    */  template<class ..._signature>
-    template<class ..._args>
-    inline Return DefaultInvoker<_signature...>::call(_args&& ...params) const noexcept
-    {
-        if (m_target->isEmpty()) [[unlikely]] {
-            //if the target is empty.
-            return { error::EmptyRObject, RObject{} };
-        }
-        else if (m_target->getTypeId() != m_method->getRecordTypeId()) [[unlikely]] {
-            //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetTypeMismatch, RObject{} };
-        }
-        else [[likely]]
-        {
-            if constexpr (sizeof...(_signature) == 0) {
-                // executes when bind doesn't have any explicit signature types specified. (e.g. perfect-forwaring)
-                return Invoker<traits::remove_cref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
-            }
-            else {
-                return Invoker<_signature...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
-            }
-        }
-    }
-
-
-    // Invoker struct's static lambda definition
-    template<class ..._signature>
-    template<class ..._invokSignature>
-    template<class ..._args>
-    inline Return
-        DefaultInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
-            const RObject& pTarget,
-            _args&&... params)
-    {
-        using containerConst = detail::MethodContainer<detail::member::Const, _invokSignature...>;
-        const FunctorId* constFunctorId = pMethod.hasFunctorId(containerConst::getContainerId());
-
-        if (constFunctorId != nullptr) [[likely]]
-        {
-            return containerConst::template forwardCall<_args...>(*constFunctorId, pTarget, std::forward<_args>(params)...);
-        }
-        else [[unlikely]]
-        {
-            using containerNonConst = detail::MethodContainer<detail::member::NonConst, _invokSignature...>;
-            const FunctorId* functorId = pMethod.hasFunctorId(containerNonConst::getContainerId());
-
-            if (functorId != nullptr)
-            {
-                //if (!pTarget.isConstCastSafe()) {
-                //    return { error::ConstOverloadMissing, RObject{} };
-                //}
-                return containerNonConst::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
-            }
-        }
-        return { error::SignatureMismatch, RObject{} };
-    }
-}
-
-
-namespace rtl::detail
-{
-    /*  @lambda: call()
-        @params: params... (corresponding to functor associated with 'm_method')
-        @return: RObject, indicating success of the reflected call.
-        * invokes non-static-member-function functor associated with 'm_method' on object 'm_target'.
-    */  template<class ..._signature>
-    template<class ..._args>
-    inline Return NonConstInvoker<_signature...>::call(_args&& ...params) const noexcept
-    {
-        if (m_target->isEmpty()) [[unlikely]] {
-            //if the target is empty.
-            return { error::EmptyRObject, RObject{} };
-        }
-        else if (m_target->getTypeId() != m_method->getRecordTypeId()) [[unlikely]] {
-            //if the m_target's type-id & type-id of the 'class/struct' owner of the associated functor(m_method's) do not match.
-            return { error::TargetTypeMismatch, RObject{} };
-        }
-        else [[likely]]
-        {
-            if constexpr (sizeof...(_signature) == 0) {
-                return Invoker<traits::remove_cref_t<_args>...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
-            }
-            else {
-                return Invoker<_signature...>::invoke(*m_method, *m_target, std::forward<_args>(params)...);
-            }
-        }
-    }
-
-
-    // Invoker struct's static lambda definition
-    template<class ..._signature>
-    template<class ..._invokSignature>
-    template<class ..._args>
-    inline Return
-        NonConstInvoker<_signature...>::Invoker<_invokSignature...>::invoke(const Method& pMethod,
-            const RObject& pTarget,
-            _args&&... params)
-    {
-        using container0 = detail::MethodContainer<detail::member::NonConst, _invokSignature...>;
-        const FunctorId* functorId = pMethod.hasFunctorId(container0::getContainerId());
-
-        if (functorId != nullptr) [[likely]] {
-            return container0::template forwardCall<_args...>(*functorId, pTarget, std::forward<_args>(params)...);
-        }
-        else
-        {
-            // check if the const-overload lambda is present.
-            using container2 = detail::MethodContainer<detail::member::Const, _invokSignature...>;
-            std::size_t index = pMethod.hasSignId(container2::getContainerId());
-            if (index != rtl::index_none) {
-                // So, const-overload is present and non-const overload is not registered or doesn't exists.
-                return { error::NonConstOverloadMissing, RObject{} };
-            }
-            // else the signature might be wrong.
-            return { error::SignatureMismatch, RObject{} };
-        }
-    }
-}
-
 
 
 namespace rtl::detail 
@@ -205,17 +78,20 @@ namespace rtl::detail
         using hopper_t = typename method<record_t, return_t(args_t...)>::hopper_t;
 
         auto validateReturn = [](const std::vector<type_meta>& overloadsMeta, hopper_t& pHopper)-> bool {
-            //TODO: needs to be fixed for erased-target-known-return.
             if constexpr (!std::is_same_v <return_t, Return>) {
-                //for (auto& tyMeta : overloadsMeta) {
-                //    if (!tyMeta.is_empty())
-                //    {
-                //        if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
-                //            pHopper.set_init_error(error::ReturnTypeMismatch);
-                //            return false;
-                //        }
-                //    }
-                //}
+                for (auto& tyMeta : overloadsMeta) {
+                    if (!tyMeta.is_empty() && tyMeta.is_void()) {    // Temporary Quick Fix.
+                        //TODO: needs to be fixed for erased-target-known-return. specifically for 'void'.
+                        return true;
+                    }
+                    if (!tyMeta.is_empty())
+                    {
+                        if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
+                            pHopper.set_init_error(error::ReturnTypeMismatch);
+                            return false;
+                        }
+                    }
+                }
             }
             return true;
         };

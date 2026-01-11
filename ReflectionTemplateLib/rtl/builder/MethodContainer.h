@@ -17,7 +17,6 @@
 
 #include "rtl_constants.h"
 
-#include "CallReflector.h"
 #include "SetupMethod.h"
 
 namespace rtl {
@@ -39,8 +38,7 @@ namespace rtl {
         * container class for holding lambda's wrapping non-const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<detail::member::NonConst, _signature...> : public SetupMethod<MethodContainer<detail::member::NonConst, _signature...>>,
-                                                                          public CallReflector<MethodContainer<detail::member::NonConst, _signature...>>
+        class MethodContainer<detail::member::NonConst, _signature...> : public SetupMethod<MethodContainer<detail::member::NonConst, _signature...>>
         {
             using MethodLambda = std::function < Return (const FunctorId&, const rtl::RObject&, _signature...) >;
 
@@ -112,8 +110,7 @@ namespace rtl {
         * container class for holding lambda's wrapping const-member-function functor calls of same signatures.
         * maintains a std::vector<std::function> with static lifetime.
     */  template<class ..._signature>
-        class MethodContainer<detail::member::Const, _signature...> : public SetupMethod<MethodContainer<detail::member::Const, _signature...>>,
-                                                                       public CallReflector<MethodContainer<detail::member::Const, _signature...>>
+        class MethodContainer<detail::member::Const, _signature...> : public SetupMethod<MethodContainer<detail::member::Const, _signature...>>
         {
             using MethodLambda = std::function < Return (const FunctorId&, const rtl::RObject&, _signature...) >;
 

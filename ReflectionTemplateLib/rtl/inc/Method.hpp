@@ -11,16 +11,11 @@
 
 #pragma once
 #include "Method.h"
+#include "MethodContainer.h"
 #include "MethodInvoker.hpp"
 
 namespace rtl
 {
-    template<class ..._signature>
-    inline const detail::DefaultInvoker<_signature...> Method::bind(const RObject& pTarget) const
-    {
-        return detail::DefaultInvoker<_signature...>{ this, &pTarget };
-    }
-
     template<class recordT, class ...signatureT> requires (!std::is_const_v<recordT>)
     inline constexpr detail::HopBuilder<detail::member::NonConst, recordT> Method::targetT() const
     {
@@ -59,7 +54,7 @@ namespace rtl
                 using Container = detail::MethodContainer<detail::member::Const, _args...>;
                 return (hasSignId(Container::getContainerId()) != -1);
             }
+            default: return false;
         }
-        return false;
     }
 }

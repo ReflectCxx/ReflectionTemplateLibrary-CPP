@@ -19,8 +19,8 @@ namespace rtl::detail
     template<member member_kind, class ..._signature>
     struct InitFunctionHop
     {
-        std::size_t m_fnIndex;
-        std::vector<rtl::type_meta> m_overloadsMeta = {};
+        const std::size_t m_fnIndex;
+        const std::vector<rtl::type_meta> m_overloadsMeta = {};
 
         void init(function<rtl::Return(_signature...)>& pFn) const;
 

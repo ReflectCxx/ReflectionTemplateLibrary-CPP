@@ -27,11 +27,11 @@ namespace rtl
 
     struct type_meta;
 
-    template<class return_t, class ...signature_t>
-    class function;
-
     template<class ...signature_t>
     class constructor;
+
+    template<class return_t, class ...signature_t>
+    class function;
 
     template<class record_t, class return_t, class ...signature_t>
     struct method;
@@ -61,12 +61,6 @@ namespace rtl
         class CxxReflection;
 
         class ReflectionBuilder;
-
-        template<bool is_bind_v, class ...signature_t>
-        struct ErasedCaller;
-
-        template<class record_t>
-        struct ErasedInvoker;
 
         template<class _derivedType>
         class SetupMethod;
