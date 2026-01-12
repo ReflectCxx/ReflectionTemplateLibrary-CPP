@@ -23,7 +23,7 @@
 *
 * Declared in namespace rtl.
 */
-#include <inc/Record.h>
+#include <inc/Record.hpp>
 
 
 /*

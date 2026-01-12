@@ -13,7 +13,7 @@
 
 #include "Method.h"
 #include "RObject.h"
-#include "MethodInvoker.h"
+#include "HopBuilderMethod.h"
 
 #include "method_ptr.h"
 #include "method_ptr_const.h"

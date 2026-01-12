@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <filesystem>
-#include <CxxMirror.hpp>
+#include <CxxMirror.h>
 
 #include "Registration.h"
 #include "CxxMirrorToJson.h"

@@ -12,8 +12,8 @@
 #pragma once
 
 
-#include "SetupMethod.h"
 #include "RegisterCtor.h"
+#include "RegisterMethod.h"
 #include "RegisterFunction.h"
 #include "ReflectionBuilder.h"
 
@@ -38,8 +38,7 @@ namespace rtl::detail
 */  template<class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const
     {
-        type_meta fnMeta = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId, pMemberType);
-        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, pMemberType);
+
     }
 
 
@@ -53,8 +52,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
-        type_meta fnMeta = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, member::NonConst);
+
     }
 
 
@@ -68,8 +66,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
-        type_meta fnMeta = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, member::Const);
+
     }
 
 
@@ -80,7 +77,6 @@ namespace rtl::detail
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const
     {
-        type_meta fnMeta = RegisterCtor::template addConstructor<_recordType, _ctorSignature...>();
-        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, fnMeta.get_member_kind());
+
     }
 }

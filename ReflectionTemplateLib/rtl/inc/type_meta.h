@@ -11,10 +11,6 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <optional>
-
 #include "functor.h"
 
 namespace rtl

@@ -54,7 +54,7 @@ namespace test_utils
 
 		static const bool test_method_getPublishedOn_return(const std::string& pRetStr);
 
-		template<class ..._signature>
+		template<class ...signature_t>
 		static const bool test_method_updateBookInfo(const rtl::RObject& pInstance);
 
 		template<class ..._ctorArgs>

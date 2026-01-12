@@ -1,9 +1,8 @@
 
 #include <Reflect.hpp>
 
-#include "Registration.h"
-
 #include "Date.h"
+#include "Registration.h"
 #include "TestUtilsDate.h"
 
 using namespace test_utils;

@@ -18,14 +18,14 @@ namespace rtl {
     namespace builder 
     {
     /*  @class: ConstructorBuilder
-        @param: _recordType - struct/class type. 
-        *       _signature...- constructor args type (none/_record&/const _record& or any combination of parameters) 
+        @param: record_t - struct/class type. 
+        *       signature_t...- constructor args type (none/_record&/const _record& or any combination of parameters) 
         * provides interface to register constructors of a class/struct.
         * when the very first constructor(any- default/parametrized) is registered, copy-constructor gets registered implicitly.
         * all the objects are created via reflection are on heap, using 'new'.
         * the constructed objects are returned wrapped in 'Instance' object, with type erased.
         * lifetime of created objects are managed using 'shared_ptr'.
-    */  template<class _recordType, class ..._ctorSignature>
+    */  template<class record_t, class ..._ctorSignature>
         struct ConstructorBuilder
         {
             //given name of the class/struct.
@@ -54,12 +54,12 @@ namespace rtl {
         */  const Function build() const
             {
                 // Check if the constructor is not deleted and publicly accessible (excluding default constructor).
-                const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<_recordType, _ctorSignature...>);
+                const bool isAccessible = (sizeof...(_ctorSignature) == 0 || std::is_constructible_v<record_t, _ctorSignature...>);
                 static_assert(isAccessible, "The specified constructor is either deleted or not publicly accessible.");
 
                 return CtorBuilder( m_namespaceStr, m_recordStr,
                                     std::string(detail::ctor_name(m_recordStr)),
-                                    traits::uid<_recordType>::value ).build<_recordType, _ctorSignature...>();
+                                    traits::uid<record_t>::value ).build<record_t, _ctorSignature...>();
             }
         };
     }

@@ -17,13 +17,13 @@ namespace rtl {
 
     namespace builder 
     {
-        template<class _recordType, class ..._ctorSignature>
+        template<class record_t, class ..._ctorSignature>
         struct ConstructorBuilder;
 
     /*  @class: RecordBuilder
-        @param: <_recordType>, a struct/class type.
+        @param: <record_t>, a struct/class type.
         * provides interface to register member-function & constructors of a class/struct.
-    */  template<class _recordType>
+    */  template<class record_t>
         class RecordBuilder
         {
             const std::string m_recordStr;
@@ -39,9 +39,9 @@ namespace rtl {
 
 
     /*  @class: RecordBuilder
-        @param: <_recordType>, a struct/class type.
+        @param: <record_t>, a struct/class type.
         * provides interface to register member-function & constructors of a class/struct.
-    */  template<class _recordType>
+    */  template<class record_t>
         struct MethodBuilder
         {
             const Builder<detail::member::NonConst> method(const std::string& pFunction) const;
@@ -50,17 +50,17 @@ namespace rtl {
 
             const Builder<detail::member::Static> methodStatic(const std::string& pFunction) const;
 
-            template<class ..._signature>
-            const Builder<detail::member::NonConst, _signature...> method(const std::string& pFunction) const;
+            template<class ...signature_t>
+            const Builder<detail::member::NonConst, signature_t...> method(const std::string& pFunction) const;
 
-            template<class ..._signature>
-            const Builder<detail::member::Const, _signature...> methodConst(const std::string& pFunction) const;
+            template<class ...signature_t>
+            const Builder<detail::member::Const, signature_t...> methodConst(const std::string& pFunction) const;
 
-            template<class ..._signature>
-            const Builder<detail::member::Static, _signature...> methodStatic(const std::string& pFunction) const;
+            template<class ...signature_t>
+            const Builder<detail::member::Static, signature_t...> methodStatic(const std::string& pFunction) const;
 
-            template<class ..._signature>
-            constexpr const ConstructorBuilder<_recordType, _signature...> constructor() const;
+            template<class ...signature_t>
+            constexpr const ConstructorBuilder<record_t, signature_t...> constructor() const;
         };
     }
 }

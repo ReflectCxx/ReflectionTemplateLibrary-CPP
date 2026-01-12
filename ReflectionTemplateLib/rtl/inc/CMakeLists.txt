@@ -10,6 +10,7 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/Method.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Method.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Record.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Record.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObject.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObject.hpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/type_meta.h"

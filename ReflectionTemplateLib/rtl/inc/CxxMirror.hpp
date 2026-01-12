@@ -10,8 +10,6 @@
 
 
 #include "Record.h"
-#include "Function.h"
-#include "Method.h"
 #include "CxxMirror.h"
 
 

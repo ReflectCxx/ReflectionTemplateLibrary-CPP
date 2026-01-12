@@ -60,7 +60,7 @@ namespace rtl
 
         class CxxReflection;
 
-        class ReflectionBuilder;
+        struct ReflectionBuilder;
 
         template<class _derivedType>
         class SetupMethod;

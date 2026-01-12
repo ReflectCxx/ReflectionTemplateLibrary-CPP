@@ -37,15 +37,15 @@ namespace test_utils
 
 		static const bool delete_unmanaged_person_instance_created_via_createPtr(const rtl::RObject& pInstance);
 
-		template<class ..._signature>
+		template<class ...signature_t>
 		static const std::string get_str_returned_on_call_getProfile(const bool pNoAddress = false);
 
 		static const bool test_method_updateLastName_const(const rtl::RObject& pInstance);
 
-		template<class ..._signature>
+		template<class ...signature_t>
 		static const bool test_method_updateAddress(const rtl::RObject& pInstance);
 
-		template<class ..._signature>
+		template<class ...signature_t>
 		static const bool test_method_updateAddress_const(const rtl::RObject& pInstance);
 
 		static const bool test_copy_constructor_overload_src_const_obj(const rtl::RObject& pInstance);

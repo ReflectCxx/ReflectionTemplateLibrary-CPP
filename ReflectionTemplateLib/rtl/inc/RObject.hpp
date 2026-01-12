@@ -11,10 +11,6 @@
 
 #pragma once
 
-#include <optional>
-#include <iostream>
-#include <cassert>
-
 #include "view.hpp"
 #include "RObject.h"
 #include "RObjectUPtr.h"

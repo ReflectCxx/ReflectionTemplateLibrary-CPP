@@ -14,6 +14,7 @@
 #include <any>
 #include <memory>
 #include <utility>
+#include <optional>
 #include <functional>
 #include <type_traits>
 
@@ -155,9 +156,9 @@ namespace rtl
 
     namespace traits 
     {
-        template<typename T, typename... signatureT>
-        concept has_constructor = requires(signatureT&&... args) {
-            T{ std::forward<signatureT>(args)... };
+        template<typename T, typename... signature_t>
+        concept has_constructor = requires(signature_t&&... args) {
+            T{ std::forward<signature_t>(args)... };
         };
 
         template<class T>
@@ -173,26 +174,26 @@ namespace rtl
         template<class T>
         using normal_sign_t = std::remove_const_t<std::remove_reference_t<T>>;
 
-        template<class ...signatureT>
-        using normal_sign_id_t = std::tuple<normal_sign_t<signatureT>...>;
+        template<class ...signature_t>
+        using normal_sign_id_t = std::tuple<normal_sign_t<signature_t>...>;
 
-        template<class ...signatureT>
-        using strict_sign_id_t = std::tuple<signatureT...>;
+        template<class ...signature_t>
+        using strict_sign_id_t = std::tuple<signature_t...>;
 
         template<class T>
         inline constexpr bool is_nonconst_ref_v = ((std::is_lvalue_reference_v<T> || std::is_rvalue_reference_v<T>) &&
                                                    !std::is_const_v<std::remove_reference_t<T>>);
 
-        template<class recordT, class returnT>
-        constexpr static const bool type_aware_v = (!std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+        template<class record_t, class return_t>
+        constexpr static const bool type_aware_v = (!std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>);
 
-        template<class recordT, class returnT>
-        constexpr static const bool return_erased_v = (!std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
+        template<class record_t, class return_t>
+        constexpr static const bool return_erased_v = (!std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>);
 
-        template<class recordT, class returnT>
-        constexpr static const bool target_erased_v = (std::is_same_v<recordT, rtl::RObject> && !std::is_same_v<returnT, rtl::Return>);
+        template<class record_t, class return_t>
+        constexpr static const bool target_erased_v = (std::is_same_v<record_t, rtl::RObject> && !std::is_same_v<return_t, rtl::Return>);
 
-        template<class recordT, class returnT>
-        constexpr static const bool type_erased_v = (std::is_same_v<recordT, rtl::RObject> && std::is_same_v<returnT, rtl::Return>);
+        template<class record_t, class return_t>
+        constexpr static const bool type_erased_v = (std::is_same_v<record_t, rtl::RObject> && std::is_same_v<return_t, rtl::Return>);
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <rtl_traits.h>
 
 namespace rtl {

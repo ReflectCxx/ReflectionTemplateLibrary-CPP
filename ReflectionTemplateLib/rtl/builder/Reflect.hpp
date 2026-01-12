@@ -12,7 +12,7 @@
 #pragma once
 
 #include "Reflect.h"
-#include "Builder.hpp"
+#include "Builder.h"
 #include "RecordBuilder.hpp"
 
 namespace rtl 
@@ -53,28 +53,28 @@ namespace rtl
 		
 /*  @function: record()
     @param: std::string (name of class/struct)
-    @return: RecordBuilder<_recordType>
-    * provides object of 'RecordBuilder', which provides interface to registers member functions of class/struct of '_recordType'.
+    @return: RecordBuilder<record_t>
+    * provides object of 'RecordBuilder', which provides interface to registers member functions of class/struct of 'record_t'.
     * the 'build(..)' called on return object accepts non-member function pointer only.
-    * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- '_recordType'.
-*/  template<class _recordType>
-    inline constexpr const builder::RecordBuilder<_recordType> type_ns::record(const std::string& pClass)
+    * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- 'record_t'.
+*/  template<class record_t>
+    inline constexpr const builder::RecordBuilder<record_t> type_ns::record(const std::string& pClass)
     {
-        return builder::RecordBuilder<_recordType>(m_namespaceStr, pClass, traits::uid<_recordType>::value);
+        return builder::RecordBuilder<record_t>(m_namespaceStr, pClass, traits::uid<record_t>::value);
     }
 
 		
 /*  @method: function<...>()
     @param: std::string (name of function)
-    @return: Builder<detail::member::None, _signature...>
+    @return: Builder<detail::member::None, signature_t...>
     * registers only non-member functions.
     * used for registering overloads, if unique member function, use non-templated version 'function()'.
     * template parameters must be explicitly specified, should be exactly same as the function being registered.
     * the 'build(..)' called on return object accepts non-member function pointer only.
     * compiler error on 'build(..)' if any member function pointer is passed.
-*/  template<class ..._signature>
-    inline constexpr const builder::Builder<detail::member::None, _signature...> type_ns::function(const std::string& pFunction)
+*/  template<class ...signature_t>
+    inline constexpr const builder::Builder<detail::member::None, signature_t...> type_ns::function(const std::string& pFunction)
     {
-        return builder::Builder<detail::member::None, _signature...>(traits::uid<>::none, pFunction, m_namespaceStr);
+        return builder::Builder<detail::member::None, signature_t...>(traits::uid<>::none, pFunction, m_namespaceStr);
     }
 }

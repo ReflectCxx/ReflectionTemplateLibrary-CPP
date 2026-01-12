@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include "type_meta.hpp"
 #include "SetupDispatch.h"
 
 namespace rtl::detail

@@ -11,21 +11,10 @@
 
 #pragma once
 
-#include <any>
-#include <string>
-#include <vector>
+#include "type_meta.h"
 
-#include "RObject.h"
-#include "FunctionCaller.h"
-
-namespace rtl {
-
-    namespace detail {
-        //forward decls
-        class CxxReflection;
-        class ReflectionBuilder;
-    }
-
+namespace rtl 
+{
 /*  @class: Function, (callable object)
     * every functor (function/method pointer), constructor registered will produce a 'Function' object
     * it contains the meta-data of the functor along with 'FunctorId' to lookup for the same in functor-table.

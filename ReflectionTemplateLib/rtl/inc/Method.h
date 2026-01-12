@@ -11,10 +11,7 @@
 
 #pragma once
 
-#include <functional>
-
 #include "Function.h"
-#include "MethodInvoker.h"
 
 namespace rtl {
 

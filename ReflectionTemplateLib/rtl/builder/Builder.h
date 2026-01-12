@@ -19,10 +19,21 @@ namespace rtl::builder
     struct CtorBuilder : protected detail::ReflectionBuilder
     {
         CtorBuilder(const std::string& pNamespace, const std::string& pRecordStr,
-                    const std::string& pFunction, traits::uid_t pRecordUid);
+                    const std::string& pFunction, traits::uid_t pRecordUid)
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
 
-        template<class _recordType, class ..._signature>
-        const Function build() const;
+    /*  @method: build()
+        @param: none
+        @return: 'Function' object.
+        * accepts no arguments, builds copy constructor which takes const object source.
+        * called on object returned by 'RecordBuilder<record_t>::constructor<...>()'
+        * template params <...>, explicitly specified.
+        * calling with zero template params will build the default constructor ie, 'RecordBuilder<record_t>::constructor()'
+    */  template<class record_t, class ...signature_t>
+        const Function build() const
+        {
+            return buildConstructor<record_t, signature_t...>();
+        }   
     };
 
 
@@ -33,208 +44,268 @@ namespace rtl::builder
     *   member::Static - provides interface to register static member funtions.
     *   member::None - provides interface to register non-member funtions.
     @param: 
-    *   _signature: arguments types of functions pointers or constructors (auto-deduced/explicitly-specified).
+    *   signature_t: arguments types of functions pointers or constructors (auto-deduced/explicitly-specified).
     * provides interface to register all sort of functions, methods & constructors.
     * every specialization has a 'build()' function, which accepts a function pointer.
     * function pointer can be non-member or member(static/const/non-const) functions.
-*/  template<detail::member _typeQ, class ..._signature>
+*/  template<detail::member, class ...>
     struct Builder;
 }
 
 
 namespace rtl::builder
 {
-/*  @struct: Builder<detail::member::None, void>
-    * specialized specifically to register overloaded non-member & static member functions with no arguments.
-    * Objects of this class will be created & returned by the function,
-    *   - type::function<void>(..)
-    * with template parameter is only 'void', explicitly specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::None, void> : protected detail::ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) { }
 
-        template<class _returnType>
-        const Function build(_returnType(*pFunctor)()) const;
+    /*  @method: build()
+        @param: return_t(*)()
+        @return: 'Function' object.
+        * accepts a non-member or static-member function pointer with no arguments.
+        * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<record_t>::methodStatic<void>(..)'
+        * template param 'void' is explicitly specified.
+    */  template<class return_t>
+        const Function build(return_t(*pFunctor)()) const
+        {
+            return buildFunctor(pFunctor, detail::member::None);
+        }
     };
 
 
-/*  @struct: Builder<detail::member::None, _signature...>
-    * specialized specifically to register overloaded non-member  & static member functions with any arguments.
-    * Objects of this class will be created & returned by the function,
-    *   - type::function<...>(..)
-    * with template parameters can be anything, explicitly specified.
-*/  template<class ..._signature>
-    struct Builder<detail::member::None, _signature...> : protected detail::ReflectionBuilder
+    template<class ...signature_t>
+    struct Builder<detail::member::None, signature_t...> : protected detail::ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) { }
 
-        template<class _returnType>
-        const Function build(_returnType(*pFunctor)(_signature...)) const;
+    /*  @method: build()
+        @param: return_t(*)(signature_t...)
+        @return: 'Function' object.
+        * it accepts a non-member or static-member function pointer.
+        * called on objects returned by 'type::function<...>(..)' & 'RecordBuilder<record_t>::methodStatic<...>(..)'.
+        * template params are explicitly specified.
+    */  template<class return_t>
+        const Function build(return_t(*pFunctor)(signature_t...)) const
+        {
+            return buildFunctor(pFunctor, detail::member::None);
+        }
     };
 
 
-/*  @struct: Builder<detail::member::None>
-    * specialized specifically to register non-member functions with any signature and with no overloads.
-    * Objects of this class will be created & returned by the function,
-    *   - type::function(..)
-    * with no template parameters specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::None> : protected detail::ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pNamespace);
+        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+            : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) {
+        }
 
-        template<class _returnType, class ..._signature>
-        const Function build(_returnType(*pFunctor)(_signature...)) const;
+    /*  @method: build()
+        @param: return_t(*)(signature_t...)
+        @return: 'Function' object.
+        * accepts all non-member and static-member function pointer.
+        * called on the objects returned by 'type::function()' & 'RecordBuilder<record_t>::methodStatic(..)'.
+        * template params are auto deduced from the function pointer passed.
+    */	template<class return_t, class ...signature_t>
+        const Function build(return_t(*pFunctor)(signature_t...)) const
+        {
+            return buildFunctor(pFunctor, detail::member::None);
+        }
     };
 }
 
 
 namespace rtl::builder
 {
-/*  @struct: Builder<detail::member::None, void>
-    * specialized specifically to register overloaded non-member & static member functions with no arguments.
-    * Objects of this class will be created & returned by the function,
-    *   - RecordBuilder<_recordType>::methodStatic<void>(..)
-    * with template parameter is only 'void', explicitly specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::Static, void> : protected detail::ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace);
+                const std::string& pRecordStr, const std::string& pNamespace) 
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
 
-        template<class _returnType>
-        const Function build(_returnType(*pFunctor)()) const;
+    /*  @method: build()
+        @param: return_t(*)()
+        @return: 'Function' object.
+        * accepts a non-member or static-member function pointer with no arguments.
+        * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<record_t>::methodStatic<void>(..)'
+        * template param 'void' is explicitly specified.
+    */  template<class return_t>
+        const Function build(return_t(*pFunctor)()) const
+        {
+            return buildFunctor(pFunctor, detail::member::Static);
+        }
     };
 
 
-/*  @struct: Builder<detail::member::None, _signature...>
-    * specialized specifically to register overloaded non-member  & static member functions with any arguments.
-    * Objects of this class will be created & returned by the function,
-    *   - RecordBuilder<_recordType>::methodStatic<...>(..)
-    * with template parameters can be anything, explicitly specified.
-*/  template<class ..._signature>
-    struct Builder<detail::member::Static, _signature...> : protected detail::ReflectionBuilder
+    template<class ...signature_t>
+    struct Builder<detail::member::Static, signature_t...> : protected detail::ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace);
+                const std::string& pRecordStr, const std::string& pNamespace) 
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
 
-        template<class _returnType>
-        const Function build(_returnType(*pFunctor)(_signature...)) const;
+    /*  @method: build()
+        @param: return_t(*)(signature_t...)
+        @return: 'Function' object.
+        * it accepts a non-member or static-member function pointer.
+        * called on objects returned by 'type::function<...>(..)' & 'RecordBuilder<record_t>::methodStatic<...>(..)'.
+        * template params are explicitly specified.
+    */  template<class return_t>
+        inline const Function build(return_t(*pFunctor)(signature_t...)) const
+        {
+            return buildFunctor(pFunctor, detail::member::Static);
+        }
     };
 
-
-/*  @struct: Builder<detail::member::None>
-    * specialized specifically to register non-member functions with any signature and with no overloads.
-    * Objects of this class will be created & returned by the function,
-    *   - RecordBuilder<_recordType>::methodStatic(..)
-    * with no template parameters specified.
-*/  template<>
+    
+    template<>
     struct Builder<detail::member::Static> : protected detail::ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace);
+                const std::string& pRecordStr, const std::string& pNamespace)
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
 
-        template<class _returnType, class ..._signature>
-        const Function build(_returnType(*pFunctor)(_signature...)) const;
+    /*  @method: build()
+        @param: return_t(*)(signature_t...)
+        @return: 'Function' object.
+        * accepts all non-member and static-member function pointer.
+        * called on the objects returned by 'type::function()' & 'RecordBuilder<record_t>::methodStatic(..)'.
+        * template params are auto deduced from the function pointer passed.
+    */	template<class return_t, class ...signature_t>
+        const Function build(return_t(*pFunctor)(signature_t...)) const
+        {
+            return buildFunctor(pFunctor, detail::member::Static);
+        }
     };
 }
 
 
 namespace rtl::builder
 {
-/*  @struct: Builder<detail::member::Const, void>
-    * specialized specifically to register overloaded const-member-functions with no arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::methodConst<void>(..)
-    * with template parameters is only 'void' explicitly specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::Const, void> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
 
-        template<class _recordType, class _returnType>
-        const Function build(_returnType(_recordType::* pFunctor)() const) const;
+    /*  @method: build()
+        @param: return_t(record_t::*)() const.
+        @return: 'Function' object.
+        * accepts a const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<record_t>::methodConst<void>()'
+        * template param 'void' is explicitly specified.
+    */  template<class record_t, class return_t>
+        const Function build(return_t(record_t::* pFunctor)() const) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 
-
-/*  @struct: Builder<detail::member::Const, _signature...>
-    * specialized specifically to register overloaded const-member-functions with any arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::methodConst<...>(..)
-    * with template parameters can be anything, explicitly specified.
-*/  template<class ..._signature>
-    struct Builder<detail::member::Const, _signature...> : protected detail::ReflectionBuilder
+    
+    template<class ...signature_t>
+    struct Builder<detail::member::Const, signature_t...> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
 
-        template<class _recordType, class _returnType>
-        const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+    /*  @method: build()
+        @param: return_t(record_t::*)(signature_t...) const.
+        @return: 'Function' object.
+        * accepts a const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<record_t>::methodConst<...>()'
+        * template param are explicitly specified.
+    */  template<class record_t, class return_t>
+        const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 
-
-/*  @struct: Builder<detail::member::Const>
-    * specialized specifically to register non-overloaded const-member-functions with any arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::methodConst()
-    * with no template parameters specified.
-*/  template<>
+    
+    template<>
     struct Builder<detail::member::Const> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
 
-        template<class _recordType, class _returnType, class ..._signature>
-        const Function build(_returnType(_recordType::* pFunctor)(_signature...) const) const;
+    /*  @method: build()
+        @param: return_t(record_t::*)(signature_t...) const.
+        @return: 'Function' object.
+        * accepts function pointer of a const-member-function with any signature.
+        * called on object returned by 'RecordBuilder<record_t>::methodConst()'
+        * template params will be auto deduced from the function pointer passed.
+    */  template<class record_t, class return_t, class ...signature_t>
+        const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 }
 
 
 namespace rtl::builder 
 {
-/*  @struct: Builder<detail::member::NonConst, void>
-    * specialized specifically to register overloaded non-const-member-functions with no arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::method<void>(..)
-    * with template parameters is only 'void' explicitly specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::NonConst, void> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
 
-        template<class _recordType, class _returnType>
-        const Function build(_returnType(_recordType::* pFunctor)()) const;
+    /*  @method: build()
+        @param: return_t(record_t::*)()
+        @return: 'Function' object.
+        * accepts a non-const-member-function pointer with no arguments.
+        * called on object returned by 'RecordBuilder<record_t>::method<void>()'
+        * template param 'void' is explicitly specified.
+    */  template<class record_t, class return_t>
+        const Function build(return_t(record_t::* pFunctor)()) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 
 
-/*  @struct: Builder<detail::member::NonConst, _signature...>
-    * specialized specifically to register overloaded non-const-member-functions with no arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::method<void>(..)
-    * with template parameters is only 'void' explicitly specified.
-*/  template<class ..._signature>
-    struct Builder<detail::member::NonConst, _signature...> : protected detail::ReflectionBuilder
+    template<class ...signature_t>
+    struct Builder<detail::member::NonConst, signature_t...> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
-        template<class _recordType, class _returnType>
-        const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+    /*  @method: build()
+        @param: return_t(record_t::*)(signature_t...)
+        @return: 'Function' object.
+        * accepts a non-const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<record_t>::method<...>()'
+        * template params are explicitly specified.
+    */  template<class record_t, class return_t>
+        const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 
 
-/*  @struct: Builder<detail::member::NonConst>
-    * specialized specifically to register non-overloaded non-const-member-functions and constructors with any arguments.
-    * Objects of this class will be created & returned by function,
-    *   - RecordBuilder<_recordType>::method() - with no template parameters specified.
-    *   - RecordBuilder<_recordType>::constructor<...>() - template parameters can be anything or none, explicitly specified.
-*/  template<>
+    template<>
     struct Builder<detail::member::NonConst> : protected detail::ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid);
+        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
 
-        template<class _recordType, class _returnType, class ..._signature>
-        const Function build(_returnType(_recordType::* pFunctor)(_signature...)) const;
+
+    /*  @method: build()
+        @param: return_t(record_t::*)(signature_t...)
+        @return: 'Function' object.
+        * accepts a non-const-member-function pointer with any arguments.
+        * called on object returned by 'RecordBuilder<record_t>::method()'
+        * template params are auto deduced from the pointer passed.
+    */  template<class record_t, class return_t, class ...signature_t>
+        const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
+        {
+            return buildMethodFunctor(pFunctor);
+        }
     };
 }

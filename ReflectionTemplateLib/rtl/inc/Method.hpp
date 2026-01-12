@@ -11,7 +11,7 @@
 
 #pragma once
 #include "Method.h"
-#include "MethodInvoker.hpp"
+#include "HopBuilderMethod.hpp"
 
 namespace rtl
 {

@@ -12,7 +12,7 @@
 #pragma once
 
 #include "Function.h"
-#include "FunctionCaller.hpp"
+#include "HopBuilderFunction.hpp"
 
 namespace rtl 
 {
@@ -39,7 +39,7 @@ namespace rtl
     {
         //simple linear-search, efficient for small set of elements.
         for (const auto& fnMeta : m_functorsMeta) {
-            if (fnMeta.get_functor().get_strict_sign_id() == pSignatureId) [[likely]] {
+            if (fnMeta.get_strict_args_id() == pSignatureId) [[likely]] {
                 return true;
             }
         }

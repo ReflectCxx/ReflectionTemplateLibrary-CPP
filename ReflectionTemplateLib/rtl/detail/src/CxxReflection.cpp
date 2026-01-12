@@ -8,6 +8,8 @@
  *                                                                       *
  *************************************************************************/
 
+#include <iostream>
+
 #include "type_meta.h"
 #include "Record.h"
 #include "Method.h"

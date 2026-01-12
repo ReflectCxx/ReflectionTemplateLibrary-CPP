@@ -38,7 +38,7 @@ namespace test_utils
 
 		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::RObject& pInstance);
 
-		template<class ..._signature>
+		template<class ...signature_t>
 		static const bool test_method_updateZooKeeper(const std::string& pZooKeeper);
 	};
 }
