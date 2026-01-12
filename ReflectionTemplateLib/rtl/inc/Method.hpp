@@ -11,7 +11,6 @@
 
 #pragma once
 #include "Method.h"
-#include "MethodContainer.h"
 #include "MethodInvoker.hpp"
 
 namespace rtl
@@ -41,20 +40,11 @@ namespace rtl
 */  template<class ..._args>
     inline bool Method::hasSignature() const
     {
-        switch (getMemberKind())
-        {
-            case detail::member::Static: {
-                return Function::hasSignature<_args...>();
-            }
-            case detail::member::NonConst: {
-                using Container = detail::MethodContainer<detail::member::NonConst, _args...>;
-                return (hasSignId(Container::getContainerId()) != -1);
-            }
-            case detail::member::Const: {
-                using Container = detail::MethodContainer<detail::member::Const, _args...>;
-                return (hasSignId(Container::getContainerId()) != -1);
-            }
-            default: return false;
+        if (getMemberKind() == detail::member::Static) {
+            return Function::hasSignature<_args...>();
+        }
+        else {
+            return hasSignatureId(traits::uid<traits::strict_sign_id_t<_args...>>::value);
         }
     }
 }

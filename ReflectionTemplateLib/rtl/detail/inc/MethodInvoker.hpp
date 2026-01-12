@@ -87,6 +87,7 @@ namespace rtl::detail
                     if (!tyMeta.is_empty())
                     {
                         if (tyMeta.get_return_id() != traits::uid<return_t>::value) {
+                            //TODO: Not tested yet.
                             pHopper.set_init_error(error::ReturnTypeMismatch);
                             return false;
                         }

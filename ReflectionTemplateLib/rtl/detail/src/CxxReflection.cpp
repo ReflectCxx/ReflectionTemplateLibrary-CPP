@@ -192,7 +192,7 @@ namespace rtl {
             const traits::uid_t actualRecordId = pFunction.getFunctorIds().back().getRecordId();
             if (givenRecordId != actualRecordId) {
                 std::cout << "\n[WARNING] Member function pointer does not belong to the class/struct being registered."
-                          << "\n          Member function: " << pFunction.getFunctionName() << "(" << pFunction.getFunctorIds()[0].getSignatureStr() << ")"
+                          << "\n          Member function: " << pFunction.getFunctorIds().back().getSignatureStr(pFunction.getFunctionName())
                           << "\n          This function is ignored and not registered.\n";
                 return false;
             }

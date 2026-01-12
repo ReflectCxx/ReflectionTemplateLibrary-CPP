@@ -11,47 +11,73 @@
 
 #pragma once
 
-#include "rtl_forward_decls.h"
+#include "type_meta.hpp"
+#include "SetupDispatch.h"
 
-namespace rtl::detail {
-	
-/*  @struct: SetupMethod
-    @param: _derivedType (type which inherits this class)
-    * creates a lambda to perform call on the registered functor.
-    * adds it to the functor-container, maintains the already added functor set as well.
-    * deriving classes is MethodContainer<detail::member::NonConst, _signature...> &
-        MethodContainer<detail::member::Const, _signature...>, which must implement -
-        - std::size_t& _derived::getContainerId();
-        - std::string _derivedType::getSignatureStr();
-        - std::size_t& _derived::pushBack(std::function < RObject (error&, const rtl::RObject&, _signature...) >,
-                                            std::function<const std::size_t()>,
-                                            std::function<void(const std::size_t&)>);
-    * sets up only non-static-member-function functors in lambda table.
-    * called from 'ReflectionBuilder', as _derivedType member.
-*/  template<class _derivedType>
-    class SetupMethod
+namespace rtl::detail
+{
+    struct RegisterMethod : public SetupDispatch
     {
-        template<class ..._signature>
-        using MethodLambda = std::function < Return(const FunctorId&, const rtl::RObject&, _signature...) >;
+        template<class record_t, class return_t, class ...args_t>
+        static std::pair<rtl::type_meta, detail::FunctorId> addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...))
+        {
+            const auto& doRegister = [=]()->type_meta {
 
-        template<class _recordType, class _returnType, class ..._signature>
-        static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...));
+                return rtl::type_meta::add_method(pMthFunctor);
+            };
 
-        template<class _recordType, class _returnType, class ..._signature>
-        static MethodLambda<_signature...> getMethodCaller(_returnType(_recordType::* pFunctor)(_signature...) const);
+            const auto& isRegistered = [=]()->type_meta {
 
-        template<class _recordType, class ..._signature>
-        static MethodLambda<_signature...> getMethodCaller(void(_recordType::* pFunctor)(_signature...));
+                auto& fnCache = cache::method_ptr<record_t, return_t, args_t...>::instance();
+                auto functor = fnCache.find(pMthFunctor);
+                if (functor != nullptr) {
+                    return rtl::type_meta(*functor);
+                }
+                return type_meta();
+            };
 
-        template<class _recordType, class ..._signature>
-        static MethodLambda<_signature...> getMethodCaller(void(_recordType::* pFunctor)(_signature...) const);
-            
-    protected:
+            type_meta typeMeta = init<record_t, return_t, args_t...>(isRegistered, doRegister);
+            const auto& signatureStr = (TypeId<return_t>::toString() + " " + TypeId<record_t>::toString() + 
+                                        "::(" + TypeId<args_t...>::toString() + ")");
 
-        template<class _recordType, class _returnType, class ..._signature>
-        static std::pair<type_meta, detail::FunctorId> addFunctor(_returnType(_recordType::* pFunctor)(_signature...));
+            return {
+                typeMeta,
+                FunctorId {
+                    typeMeta.get_return_id(),
+                    typeMeta.get_record_id(),
+                    &(typeMeta.get_functor())
+                }
+            };
+        }
 
-        template<class _recordType, class _returnType, class ..._signature>
-        static std::pair<type_meta, detail::FunctorId> addFunctor(_returnType(_recordType::* pFunctor)(_signature...) const);
+        template<class record_t, class return_t, class ...args_t>
+        static std::pair<rtl::type_meta, detail::FunctorId> addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...) const)
+        {
+            const auto& doRegister = [=]()->type_meta {
+
+                return rtl::type_meta::add_method(pMthFunctor);
+            };
+
+            const auto& isRegistered = [=]()->type_meta {
+
+                auto& fnCache = cache::method_ptr<const record_t, return_t, args_t...>::instance();
+                auto functor = fnCache.find(pMthFunctor);
+                if (functor != nullptr) {
+                    return rtl::type_meta(*functor);
+                }
+                return type_meta();
+            };
+
+            type_meta typeMeta = init<record_t, return_t, args_t...>(isRegistered, doRegister);
+
+            return {
+                typeMeta,
+                FunctorId {
+                    typeMeta.get_return_id(),
+                    typeMeta.get_record_id(),
+                    &(typeMeta.get_functor())
+                }
+            };
+        }
     };
 }

@@ -67,11 +67,7 @@ namespace rtl {
         Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
                  const std::string& pFunctorName);
 
-        const std::size_t hasSignId(const std::size_t pSignatureId) const;
-
         bool hasSignatureId(const traits::uid_t pSignatureId) const;
-
-        const detail::FunctorId* hasFunctorId(const std::size_t pSignatureId) const;
 
         GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
 

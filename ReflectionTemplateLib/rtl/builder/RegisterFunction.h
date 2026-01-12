@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "type_meta.hpp"
 #include "SetupDispatch.h"
 
 namespace rtl::detail
@@ -37,16 +38,12 @@ namespace rtl::detail
             };
 
             type_meta typeMeta = init<return_t, signature_t...>(isRegistered, doRegister);
-            const auto& signatureStr = (TypeId<return_t>::toString() + " (" + TypeId<signature_t...>::toString() + ")");
 
             return {
                 typeMeta,
                 FunctorId {
-                    rtl::index_none,
                     typeMeta.get_return_id(),
                     pRecordUid,
-                    typeMeta.get_strict_args_id(),
-                    signatureStr,
                     &(typeMeta.get_functor())
                 }
             };

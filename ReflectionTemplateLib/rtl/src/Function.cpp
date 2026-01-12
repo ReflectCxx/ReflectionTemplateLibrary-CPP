@@ -65,10 +65,12 @@ namespace rtl
     * if the same functor is registered again with the same name, it will be ignored.
 */	void Function::addOverload(const Function& pOtherFunc) const
     {
-        const std::size_t& otherFuncSignId = pOtherFunc.m_functorIds[0].getSignatureId();
+        const auto& otherFunctor = pOtherFunc.m_functorIds.back().get_functor();
         //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (functorId.getSignatureId() == otherFuncSignId) {
+        for (const auto& functorId : m_functorIds) 
+        {
+            if (functorId.get_functor().get_member_kind() == otherFunctor.get_member_kind() && 
+                functorId.get_functor().get_strict_sign_id() == otherFunctor.get_strict_sign_id()) {
 
                 std::cout << "\n[WARNING] Multiple registrations of the same function-pointer detected."
                           << "\n          function-pointer already registered as \"" << m_function << "\""
@@ -78,7 +80,7 @@ namespace rtl
             }
         }
         //add the 'functorId' of the overloaded functor.
-        m_functorIds.push_back(pOtherFunc.m_functorIds[0]);
-        m_functorsMeta.push_back(pOtherFunc.m_functorsMeta[0]);
+        m_functorIds.push_back(pOtherFunc.m_functorIds.back());
+        m_functorsMeta.push_back(pOtherFunc.m_functorsMeta.back());
     }
 }

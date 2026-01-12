@@ -12,7 +12,6 @@
 #pragma once
 
 #include "type_meta.h"
-#include "rtl_forward_decls.h"
 
 namespace rtl::detail
 {

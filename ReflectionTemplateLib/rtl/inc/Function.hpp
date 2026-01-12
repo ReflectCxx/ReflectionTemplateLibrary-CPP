@@ -35,24 +35,6 @@ namespace rtl
     }
 
 
-/*  @method: hasSignId()
-    @param: const std::size_t& (signatureId to be found)
-    @return: the index of the functor in the functor-table.
-    * a 'Function' object may be associated with multiple functors in case of overloads.
-    * every overload will have unique 'FunctorId', contained by one 'Function' object.
-    * given signatureId is compared against the signatureId of all overloads registered.
-*/  inline const std::size_t Function::hasSignId(const std::size_t pSignatureId) const
-    {
-        //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (functorId.getSignatureId() == pSignatureId) [[likely]] {
-                return functorId.m_lambdaIndex;
-            }
-        }
-        return rtl::index_none;
-    }
-
-
     inline bool Function::hasSignatureId(const traits::uid_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
@@ -62,17 +44,5 @@ namespace rtl
             }
         }
         return false;
-    }
-
-
-    inline const detail::FunctorId* Function::hasFunctorId(const std::size_t pSignatureId) const
-    {
-        //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (functorId.getSignatureId() == pSignatureId) [[likely]] {
-                return &functorId;
-            }
-        }
-        return nullptr;
     }
 }

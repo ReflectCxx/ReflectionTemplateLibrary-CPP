@@ -53,10 +53,10 @@ namespace rtl
 									  traits::uid_t p_record_uid, detail::member p_member_kind);
 
 		template<class record_t, class return_t, class ...signature_t>
-		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index);
+		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...));
 
 		template<class record_t, class return_t, class ...signature_t>
-		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index);
+		static type_meta add_method(return_t(record_t::* p_fptr)(signature_t...) const);
 
 		template<detail::member mem_kind, class record_t, class return_t, class ...signature_t>
 		static type_meta add_constructor();

@@ -29,19 +29,19 @@ namespace rtl
 
 
 	template<class record_t, class return_t, class ...signature_t>
-	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...), std::size_t p_index)
+	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...))
 	{
 		auto& fc = cache::method_ptr<record_t, return_t, signature_t...>::instance();
-		auto& functor = fc.push(p_fptr, p_index);
+		auto& functor = fc.push(p_fptr);
 		return type_meta(functor);
 	}
 
 
 	template<class record_t, class return_t, class ...signature_t>
-	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...) const, std::size_t p_index)
+	inline type_meta type_meta::add_method(return_t(record_t::* p_fptr)(signature_t...) const)
 	{
 		auto& fc = cache::method_ptr<const record_t, return_t, signature_t...>::instance();		
-		auto& functor = fc.push(p_fptr, p_index);
+		auto& functor = fc.push(p_fptr);
 		return type_meta(functor);
 	}
 

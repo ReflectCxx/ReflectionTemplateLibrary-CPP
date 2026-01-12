@@ -22,6 +22,10 @@ namespace rtl::dispatch
         GETTER(traits::uid_t, _record_id, m_record_id)
         GETTER(traits::uid_t, _strict_sign_id, m_strict_args_id)
         GETTER(traits::uid_t, _normal_sign_id, m_normal_args_id)
+        GETTER(detail::member, _member_kind, m_member_kind)
+        GETTER(std::string, _signature_str, m_signature_str)
+        GETTER(std::string, _return_str, m_return_str)
+        GETTER(std::string, _record_str, m_record_str)
 
     protected:
 

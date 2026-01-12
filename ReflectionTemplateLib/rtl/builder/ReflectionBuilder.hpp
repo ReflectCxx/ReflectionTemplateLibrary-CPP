@@ -11,13 +11,11 @@
 
 #pragma once
 
-#include "ReflectionBuilder.h"
-#include "MethodContainer.h"
-#include "SetupMethod.hpp"
 
+#include "SetupMethod.h"
 #include "RegisterCtor.h"
 #include "RegisterFunction.h"
-
+#include "ReflectionBuilder.h"
 
 namespace rtl::detail 
 {	
@@ -55,8 +53,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
-        using Container = MethodContainer<detail::member::NonConst, traits::remove_const_if_not_reference<_signature>...>;
-        auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        auto [typeMeta, functorId] = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
         return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::NonConst);
     }
 
@@ -71,8 +68,7 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
-        using Container = MethodContainer<detail::member::Const, traits::remove_const_if_not_reference<_signature>...>;
-        auto [typeMeta, functorId] = Container::template addFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        auto [typeMeta, functorId] = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
         return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::Const);
     }
 

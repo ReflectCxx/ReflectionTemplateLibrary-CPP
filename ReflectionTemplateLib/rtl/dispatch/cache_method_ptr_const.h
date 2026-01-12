@@ -30,24 +30,23 @@ namespace rtl::cache
             return instance_;
         }
 
-        const dispatch::functor& push(functor_t fptr, std::size_t lambda_index) const
+        const dispatch::functor& push(functor_t fptr) const
         {
-            m_cache.emplace_back(std::make_pair(method_t(fptr), lambda_index));
-            method_t& fn = m_cache.back().first;
+            m_cache.emplace_back(method_t(fptr));
+            method_t& fn = m_cache.back();
             fn.init_lambda();
             return fn;
         }
 
-        std::pair<const dispatch::functor*, std::size_t> find(functor_t fptr) const
+        const dispatch::functor* find(functor_t fptr) const
         {
-            for (auto& itr : m_cache)
+            for (auto& functor : m_cache)
             {
-                const auto& functor = itr.first;
                 if (functor.is_same(fptr)) {
-                    return { &itr.first, itr.second };
+                    return &functor;
                 }
             }
-            return { nullptr, rtl::index_none };
+            return nullptr;
         }
 
         method_ptr(method_ptr&&) = delete;
@@ -58,7 +57,7 @@ namespace rtl::cache
     private:
 
         // No reallocation occurs; original objects stay intact
-        mutable std::list<std::pair<method_t, std::size_t>> m_cache;
+        mutable std::list<method_t> m_cache;
 
         method_ptr() = default;
     };

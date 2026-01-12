@@ -13,8 +13,6 @@
 
 #include <mutex>
 
-#include "type_meta.h"
-
 namespace rtl::detail 
 {
     struct SetupDispatch

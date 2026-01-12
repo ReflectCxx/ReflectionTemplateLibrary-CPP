@@ -11,8 +11,9 @@
 
 #pragma once
 
+
 #include "rtl_constants.h"
-#include "rtl_forward_decls.h"
+#include "functor.h"
 
 namespace rtl::detail
 {
@@ -25,36 +26,37 @@ namespace rtl::detail
     * multiple registartion of same functor will generate same duplicate 'FunctorId'.
 */  struct FunctorId
     {
-        //index of the functor in the functor-table.
-        std::size_t m_lambdaIndex;
-
         //return type-id of the functor registered.
         std::size_t m_returnId;
 
         //if functor is a member-function, type id of class/struct it belongs to.
         traits::uid_t m_recordId;
 
-        //containerId of the functor-table.
-        std::size_t m_containerId;
-
-        //signature of functor as string. platform dependent, may not be very much readable format.
-        std::string m_signature;
-
         const dispatch::functor* m_functor = nullptr;
 
-        GETTER(std::size_t, ReturnId, m_returnId);
-        GETTER(traits::uid_t, RecordId, m_recordId);
-        GETTER(std::size_t, SignatureId, m_containerId)
-        GETTER_CREF(std::string, SignatureStr, m_signature)
+        GETTER(std::size_t, ReturnId, m_returnId)
+        GETTER(traits::uid_t, RecordId, m_recordId)
+        GETTER(traits::uid_t, SignatureId, (m_functor->get_strict_sign_id()))
         GETTER_CREF(dispatch::functor, _functor, (*m_functor))
 
         const bool operator==(const FunctorId& pOther) const
         {
             return (m_returnId == pOther.m_returnId && 
                     m_recordId == pOther.m_recordId &&
-                    m_containerId == pOther.m_containerId &&
-                    m_lambdaIndex == pOther.m_lambdaIndex &&
-                    m_signature == pOther.m_signature);
+                    m_functor == pOther.m_functor);
+        }
+
+        const std::string getSignatureStr(const std::string& pFunctionName = "") const {
+
+            const auto& recordStr = m_functor->get_record_str();
+            if (recordStr.empty()) {
+                return m_functor->get_return_str() + " " + pFunctionName + 
+                       "(" + m_functor->get_signature_str() + ")";
+            }
+            else {
+                return m_functor->get_return_str() + " " + recordStr + "::" +
+                       pFunctionName + "(" + m_functor->get_signature_str() + ")";
+            }
         }
     };
 }

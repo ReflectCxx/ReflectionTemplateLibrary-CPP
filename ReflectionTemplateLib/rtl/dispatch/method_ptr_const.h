@@ -34,8 +34,8 @@ namespace rtl::dispatch
         {
             m_member_kind = detail::member::Const;
 
+            m_is_void = std::is_void_v<return_t>;
             m_return_id = traits::uid<return_t>::value;
-            m_is_void = (m_return_id == traits::uid<void>::value);
             m_record_id = traits::uid<record_t>::value;
 
             m_is_any_arg_ncref = (traits::is_nonconst_ref_v<signature_t> || ...);
@@ -43,6 +43,7 @@ namespace rtl::dispatch
             m_strict_args_id = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
 
             m_return_str = detail::TypeId<return_t>::toString();
+            m_record_str = detail::TypeId<record_t>::toString();
             m_signature_str = detail::TypeId<signature_t...>::toString();
         }
 
