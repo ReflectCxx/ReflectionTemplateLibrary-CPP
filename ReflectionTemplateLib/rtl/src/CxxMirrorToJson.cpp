@@ -22,15 +22,28 @@
 using namespace rtl;
 using namespace rtl::detail;
 
-static const std::string toJson(const FunctorId& pFunctorId)
+static const std::string toJson(const type_meta& pFnMeta)
 {
 	std::stringstream sout;
-	sout << "{\"signatureId\": \"" << std::to_string(pFunctorId.getSignatureId()) << "\",";
-	if (pFunctorId.getRecordId() != traits::uid<>::none) {
-		sout << "\"recordId\": \"" << std::to_string(pFunctorId.getRecordId()) << "\",";
+	sout << "{\"signatureId\": \"" << std::to_string(pFnMeta.get_strict_args_id()) << "\",";
+	if (pFnMeta.get_record_id() != traits::uid<>::none) {
+		sout << "\"recordId\": \"" << std::to_string(pFnMeta.get_record_id()) << "\",";
+		switch (pFnMeta.get_member_kind()) {
+		case member::Static: sout << "\"memberKind\": \"static_function\",";
+			break;
+		case member::Const: sout << "\"memberKind\": \"const_function\",";
+			break;
+		case member::NonConst: sout << "\"memberKind\": \"mutable_function\",";
+			break;
+		case member::UserCtor: sout << "\"memberKind\": \"overloaded_ctor\",";
+			break;
+		case member::DefaultCtor: sout << "\"memberKind\": \"default_ctor\",";
+			break;
+		default: break;
+		}
 	}
-	sout << "\"returnId\": \"" << std::to_string(pFunctorId.getReturnId()) << "\",";
-	sout << "\"signature\": \"" << pFunctorId.getSignatureStr() << "\"}";
+	sout << "\"returnId\": \"" << std::to_string(pFnMeta.get_return_id()) << "\",";
+	sout << "\"signature\": \"" << pFnMeta.get_signature_str() << "\"}";
 	return sout.str();
 }
 
@@ -38,7 +51,7 @@ static const std::string toJson(const FunctorId& pFunctorId)
 static const std::string toJson(const Function& pFunction)
 {
 	std::stringstream sout;
-	const auto& functors = pFunction.getFunctors();
+	const auto& functors = pFunction.getFunctorsMeta();
 	const std::string& record = pFunction.getRecordName();
 	const std::string& nmspace = pFunction.getNamespace();
 
@@ -51,7 +64,7 @@ static const std::string toJson(const Function& pFunction)
 	}
 
 	int index = 0;
-	sout << "\"functorId\": [";
+	sout << "\"functorMeta\": [";
 	for (const auto& funtorId : functors) {
 		sout << toJson(funtorId);
 		if (++index < functors.size()) {

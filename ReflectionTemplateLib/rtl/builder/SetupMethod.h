@@ -19,11 +19,11 @@ namespace rtl::detail
     struct RegisterMethod : public SetupDispatch
     {
         template<class record_t, class return_t, class ...args_t>
-        static std::pair<rtl::type_meta, detail::FunctorId> addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...))
+        static type_meta addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...))
         {
             const auto& doRegister = [=]()->type_meta {
 
-                return rtl::type_meta::add_method(pMthFunctor);
+                return type_meta::add_method(pMthFunctor);
             };
 
             const auto& isRegistered = [=]()->type_meta {
@@ -36,26 +36,16 @@ namespace rtl::detail
                 return type_meta();
             };
 
-            type_meta typeMeta = init<record_t, return_t, args_t...>(isRegistered, doRegister);
-            const auto& signatureStr = (TypeId<return_t>::toString() + " " + TypeId<record_t>::toString() + 
-                                        "::(" + TypeId<args_t...>::toString() + ")");
-
-            return {
-                typeMeta,
-                FunctorId {
-                    typeMeta.get_return_id(),
-                    typeMeta.get_record_id(),
-                    &(typeMeta.get_functor())
-                }
-            };
+            return init<record_t, return_t, args_t...>(isRegistered, doRegister);
         }
 
+
         template<class record_t, class return_t, class ...args_t>
-        static std::pair<rtl::type_meta, detail::FunctorId> addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...) const)
+        static type_meta addMethodFunctor(return_t(record_t::* pMthFunctor)(args_t...) const)
         {
             const auto& doRegister = [=]()->type_meta {
 
-                return rtl::type_meta::add_method(pMthFunctor);
+                return type_meta::add_method(pMthFunctor);
             };
 
             const auto& isRegistered = [=]()->type_meta {
@@ -68,16 +58,7 @@ namespace rtl::detail
                 return type_meta();
             };
 
-            type_meta typeMeta = init<record_t, return_t, args_t...>(isRegistered, doRegister);
-
-            return {
-                typeMeta,
-                FunctorId {
-                    typeMeta.get_return_id(),
-                    typeMeta.get_record_id(),
-                    &(typeMeta.get_functor())
-                }
-            };
+            return init<record_t, return_t, args_t...>(isRegistered, doRegister);
         }
     };
 }

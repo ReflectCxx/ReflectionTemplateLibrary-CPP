@@ -19,8 +19,8 @@ namespace rtl::detail
     struct RegisterFunction : public SetupDispatch
     {
         template<class return_t, class ...signature_t>
-        static std::pair<rtl::type_meta, detail::FunctorId> addFunctor(return_t(*pFunctor)(signature_t...),
-                                                                       traits::uid_t pRecordUid, member pMemberType)
+        static rtl::type_meta addFunctor(return_t(*pFunctor)(signature_t...),
+                                         traits::uid_t pRecordUid, member pMemberType)
         {
             const auto& doRegister = [=]()->type_meta {
 
@@ -37,16 +37,7 @@ namespace rtl::detail
                 return type_meta();
             };
 
-            type_meta typeMeta = init<return_t, signature_t...>(isRegistered, doRegister);
-
-            return {
-                typeMeta,
-                FunctorId {
-                    typeMeta.get_return_id(),
-                    pRecordUid,
-                    &(typeMeta.get_functor())
-                }
-            };
+            return init<return_t, signature_t...>(isRegistered, doRegister);
         }
     };
 }

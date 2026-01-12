@@ -164,9 +164,6 @@ namespace rtl {
                         constructor.m_recordStr = record.m_recordName;
                         constructor.m_namespaceStr = record.m_namespaceStr;
                         constructor.m_function = ctor_name(record.m_recordName);
-                        //add metadata to type_meta
-                        constructor.m_functorsMeta.back().set_namespace_str(record.m_namespaceStr);
-                        constructor.m_functorsMeta.back().set_record_str(ctor_name(record.m_recordName));
                         addMethod(record.getFunctionsMap(), constructor);
                     }
                 }
@@ -188,11 +185,12 @@ namespace rtl {
     *   Here, the record-type is `std::string_view`, but the method pointer belongs to `std::string`.
     */  const bool CxxReflection::validateMethodByRecordId(const Function& pFunction)
         {
+            const auto& functor = pFunction.getFunctors().back();
             const traits::uid_t givenRecordId = pFunction.getRecordTypeId();
-            const traits::uid_t actualRecordId = pFunction.getFunctorIds().back().getRecordId();
+            const traits::uid_t actualRecordId = functor.get_record_id();
             if (givenRecordId != actualRecordId) {
                 std::cout << "\n[WARNING] Member function pointer does not belong to the class/struct being registered."
-                          << "\n          Member function: " << pFunction.getFunctorIds().back().getSignatureStr(pFunction.getFunctionName())
+                          << "\n          Member function: " << functor.get_signature_str()
                           << "\n          This function is ignored and not registered.\n";
                 return false;
             }
@@ -213,9 +211,6 @@ namespace rtl {
 
                     memberFunc.m_recordStr = record.m_recordName;
                     memberFunc.m_namespaceStr = record.m_namespaceStr;
-                    //add metadata to type_meta.
-                    memberFunc.m_functorsMeta.back().set_record_str(record.m_recordName);
-                    memberFunc.m_functorsMeta.back().set_namespace_str(record.m_namespaceStr);
                     addMethod(record.getFunctionsMap(), memberFunc);
                 }
                 else {

@@ -42,9 +42,9 @@ namespace rtl::dispatch
             m_normal_args_id = traits::uid<traits::normal_sign_id_t<signature_t...>>::value;
             m_strict_args_id = traits::uid<traits::strict_sign_id_t<signature_t...>>::value;
 
-            m_return_str = detail::TypeId<return_t>::toString();
-            m_record_str = detail::TypeId<record_t>::toString();
-            m_signature_str = detail::TypeId<signature_t...>::toString();
+            m_signature_str = detail::TypeId<return_t>::toString() + " [" + 
+                              detail::TypeId<record_t>::toString() + "]::(" +
+                              detail::TypeId<signature_t...>::toString() + ") const";
         }
 
     private:

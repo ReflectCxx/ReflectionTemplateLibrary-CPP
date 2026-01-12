@@ -316,8 +316,8 @@ namespace rtl_tests
 
         // Even though the functions are registered in different namespaces,
         // the underlying FunctorIds (which identify function-pointers) must be equal.
-        const std::vector<rtl::detail::FunctorId>& cfunctorIds = optCstrLen->getFunctors();
-        const std::vector<rtl::detail::FunctorId>& stdfunctorIds = stdStrLen->getFunctors();
+        const std::vector<rtl::type_meta>& cfunctorIds = optCstrLen->getFunctorsMeta();
+        const std::vector<rtl::type_meta>& stdfunctorIds = stdStrLen->getFunctorsMeta();
 
         EXPECT_EQ(cfunctorIds, stdfunctorIds);
     }
@@ -384,8 +384,8 @@ namespace rtl_tests
 
         // Despite different symbolic names, both reflect the same function-pointer.
         // Hence, their FunctorIds must be identical.
-        const std::vector<rtl::detail::FunctorId>& cfunctorIds = optCstrLen->getFunctors();
-        const std::vector<rtl::detail::FunctorId>& stdfunctorIds = stdStrLen->getFunctors();
+        const std::vector<rtl::type_meta>& cfunctorIds = optCstrLen->getFunctorsMeta();
+        const std::vector<rtl::type_meta>& stdfunctorIds = stdStrLen->getFunctorsMeta();
 
         EXPECT_EQ(cfunctorIds, stdfunctorIds);
     }

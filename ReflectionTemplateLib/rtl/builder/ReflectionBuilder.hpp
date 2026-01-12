@@ -38,8 +38,8 @@ namespace rtl::detail
 */  template<class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildFunctor(_returnType(*pFunctor)(_signature...), member pMemberType) const
     {
-        auto [typeMeta, functorId] = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId, pMemberType);
-        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, pMemberType);
+        type_meta fnMeta = RegisterFunction::template addFunctor<_returnType, _signature...>(pFunctor, m_recordId, pMemberType);
+        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, pMemberType);
     }
 
 
@@ -53,8 +53,8 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...)) const
     {
-        auto [typeMeta, functorId] = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::NonConst);
+        type_meta fnMeta = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, member::NonConst);
     }
 
 
@@ -68,8 +68,8 @@ namespace rtl::detail
 */  template<class _recordType, class _returnType, class ..._signature>
     inline const Function ReflectionBuilder::buildMethodFunctor(_returnType(_recordType::* pFunctor)(_signature...) const) const
     {
-        auto [typeMeta, functorId] = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
-        return Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, member::Const);
+        type_meta fnMeta = RegisterMethod::template addMethodFunctor<_recordType, _returnType, _signature...>(pFunctor);
+        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, member::Const);
     }
 
 
@@ -80,8 +80,7 @@ namespace rtl::detail
 */  template<typename _recordType, class ..._ctorSignature>
     inline const Function ReflectionBuilder::buildConstructor() const
     {
-        auto [typeMeta, functorId] = RegisterCtor::template addConstructor<_recordType, _ctorSignature...>();
-        const Function& ctorFunction = Function(m_namespaceStr, m_recordStr, m_function, typeMeta, functorId, m_recordId, typeMeta.get_member_kind());
-        return ctorFunction;
+        type_meta fnMeta = RegisterCtor::template addConstructor<_recordType, _ctorSignature...>();
+        return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, fnMeta.get_member_kind());
     }
 }

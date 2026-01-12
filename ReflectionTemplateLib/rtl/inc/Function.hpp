@@ -38,8 +38,8 @@ namespace rtl
     inline bool Function::hasSignatureId(const traits::uid_t pSignatureId) const
     {
         //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) {
-            if (functorId.get_functor().get_strict_sign_id() == pSignatureId) [[likely]] {
+        for (const auto& fnMeta : m_functorsMeta) {
+            if (fnMeta.get_functor().get_strict_sign_id() == pSignatureId) [[likely]] {
                 return true;
             }
         }

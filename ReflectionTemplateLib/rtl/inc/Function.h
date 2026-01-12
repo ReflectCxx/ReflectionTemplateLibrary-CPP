@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "RObject.h"
-#include "FunctorId.h"
 #include "FunctionCaller.h"
 
 namespace rtl {
@@ -51,25 +50,21 @@ namespace rtl {
 
         mutable std::vector<type_meta> m_functorsMeta;
 
-        //FunctorId acts as a hash-key to look up the functor in table. multiple 'FunctoreId' for overloaded functors.
-        mutable std::vector<detail::FunctorId> m_functorIds;
-
     private:
 
         Function(const std::string& pNamespace, const std::string& pClassName,
-                 const std::string& pFuncName, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                 traits::uid_t pRecordTypeId, const detail::member pQualifier);
+                 const std::string& pFuncName, const type_meta& pFunctorsMeta,
+                 const traits::uid_t pRecordTypeId, const detail::member pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
     protected:
 
-        Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                 const std::string& pFunctorName);
+        Function(const Function& pOther, const type_meta& pFunctorsMeta, const std::string& pFunctorName);
 
         bool hasSignatureId(const traits::uid_t pSignatureId) const;
 
-        GETTER_REF_C(std::vector<detail::FunctorId>, FunctorIds, m_functorIds)
+        GETTER_REF_C(std::vector<type_meta>, Functors, m_functorsMeta)
 
     public:
 
@@ -81,7 +76,6 @@ namespace rtl {
         GETTER_CREF(std::string, Namespace, m_namespaceStr);
         GETTER_CREF(std::string, FunctionName, m_function);
         GETTER_CREF(std::vector<type_meta>, FunctorsMeta, m_functorsMeta)
-        GETTER_CREF(std::vector<detail::FunctorId>, Functors, m_functorIds);
 
         Function() = default;
         Function(Function&&) = default;

@@ -15,12 +15,12 @@
 
 #include "SetupDispatch.h"
 
-namespace rtl::detail 
+namespace rtl::detail
 {
     class RegisterCtor : public SetupDispatch
     {
         template<class record_t, class ...signature_t>
-        static std::pair<type_meta, detail::FunctorId> addConstructor()
+        static type_meta addConstructor()
         {
             using hash_t = std::pair<traits::uid_t, traits::uid_t>;
             static std::map<hash_t, type_meta> ctorMetaSet;
@@ -52,22 +52,12 @@ namespace rtl::detail
                 return type_meta();
             };
             
-            type_meta typeMeta;
             if constexpr (sizeof...(signature_t) == 0) {
-                typeMeta = init<Return, alloc>(isRegistered, doRegister);
+                return init<Return, alloc>(isRegistered, doRegister);
             }
             else {
-                typeMeta = init<Return, signature_t...>(isRegistered, doRegister);
+                return init<Return, signature_t...>(isRegistered, doRegister);
             }
-            
-            return {
-                typeMeta,
-                FunctorId {
-                    typeMeta.get_return_id(),
-                    typeMeta.get_record_id(),
-                    &typeMeta.get_functor()
-                }
-            };
         }
 
         friend ReflectionBuilder;

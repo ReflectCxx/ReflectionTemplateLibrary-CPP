@@ -12,7 +12,6 @@
 #include <iostream>
 
 #include "Function.h"
-#include "FunctorId.h"
 #include "type_meta.h"
 
 namespace rtl 
@@ -26,15 +25,14 @@ namespace rtl
     *        pQualifier - whether the member-function is const or non-const. member::None for non-member & static-member functions.
     * 'Function' object is created for every functor (member/non-member) being registered.
 */  Function::Function(const std::string& pNamespace, const std::string& pRecord,
-                       const std::string& pFunction, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
+                       const std::string& pFunction, const type_meta& pFunctorsMeta,
                        const traits::uid_t pRecordTypeId, const detail::member pQualifier)
         : m_member_kind(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_recordStr(pRecord)
         , m_function(pFunction)
         , m_namespaceStr(pNamespace)
-        , m_functorsMeta({ pFunctorsMeta })
-        , m_functorIds({ pFunctorId }) {
+        , m_functorsMeta({ pFunctorsMeta }) {
     }
 
 
@@ -46,15 +44,13 @@ namespace rtl
     * the copy-constructor's 'FunctorId' is added to the 'Function' object associated with a constructor while registration.
     * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
         'FunctorId' with the 'Function' object associated with a constructor.
-*/  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const detail::FunctorId& pFunctorId,
-                       const std::string& pFunctorName)
+*/  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const std::string& pFunctorName)
         : m_member_kind(pOther.m_member_kind)
         , m_recordTypeId(pOther.m_recordTypeId)
         , m_recordStr(pOther.m_recordStr)
         , m_function(pFunctorName)
         , m_namespaceStr(pOther.m_namespaceStr)
-        , m_functorsMeta({ pFunctorsMeta })
-        , m_functorIds({ pFunctorId }) {
+        , m_functorsMeta({ pFunctorsMeta }) {
     }
 
 
@@ -65,12 +61,12 @@ namespace rtl
     * if the same functor is registered again with the same name, it will be ignored.
 */	void Function::addOverload(const Function& pOtherFunc) const
     {
-        const auto& otherFunctor = pOtherFunc.m_functorIds.back().get_functor();
+        const auto& otherFnMeta = pOtherFunc.m_functorsMeta.back();
         //simple linear-search, efficient for small set of elements.
-        for (const auto& functorId : m_functorIds) 
+        for (const auto& functorId : m_functorsMeta)
         {
-            if (functorId.get_functor().get_member_kind() == otherFunctor.get_member_kind() && 
-                functorId.get_functor().get_strict_sign_id() == otherFunctor.get_strict_sign_id()) {
+            if (functorId.get_member_kind() == otherFnMeta.get_member_kind() &&
+                functorId.get_strict_args_id() == otherFnMeta.get_strict_args_id()) {
 
                 std::cout << "\n[WARNING] Multiple registrations of the same function-pointer detected."
                           << "\n          function-pointer already registered as \"" << m_function << "\""
@@ -79,8 +75,7 @@ namespace rtl
                 return; //ignore and return since its already registered.
             }
         }
-        //add the 'functorId' of the overloaded functor.
-        m_functorIds.push_back(pOtherFunc.m_functorIds.back());
+        //add the 'type_meta' of the overloaded functor.
         m_functorsMeta.push_back(pOtherFunc.m_functorsMeta.back());
     }
 }
