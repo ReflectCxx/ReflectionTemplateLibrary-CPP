@@ -67,4 +67,5 @@ jobs:
           files: coverage_rtl.info
           flags: rtl
           name: RTL-Core-Coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
