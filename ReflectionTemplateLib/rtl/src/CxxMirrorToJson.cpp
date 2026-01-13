@@ -25,9 +25,10 @@ using namespace rtl::detail;
 static const std::string toJson(const type_meta& pFnMeta)
 {
 	std::stringstream sout;
-	sout << "{\"signatureId\": \"" << std::to_string(pFnMeta.get_strict_args_id()) << "\",";
+	sout << "{\"recordId\": \"" << std::to_string(pFnMeta.get_record_id()) << "\",";
+	sout << "\"returnId\": \"" << std::to_string(pFnMeta.get_return_id()) << "\",";
+	sout << "\"signatureId\": \"" << std::to_string(pFnMeta.get_strict_args_id()) << "\",";
 	if (pFnMeta.get_record_id() != traits::uid<>::none) {
-		sout << "\"recordId\": \"" << std::to_string(pFnMeta.get_record_id()) << "\",";
 		switch (pFnMeta.get_member_kind()) {
 		case member::Static: sout << "\"memberKind\": \"static_function\",";
 			break;
@@ -42,7 +43,6 @@ static const std::string toJson(const type_meta& pFnMeta)
 		default: break;
 		}
 	}
-	sout << "\"returnId\": \"" << std::to_string(pFnMeta.get_return_id()) << "\",";
 	sout << "\"signature\": \"" << pFnMeta.get_signature_str() << "\"}";
 	return sout.str();
 }
