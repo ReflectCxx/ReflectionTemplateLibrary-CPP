@@ -60,3 +60,10 @@ jobs:
         with:
           name: rtl-coverage-report
           path: coverage_rtl
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage_rtl.info
+          flags: rtl
+          name: RTL-Core-Coverage
