@@ -3,8 +3,8 @@
 #include <gtest/gtest.h>
 
 
-#include <rtl/builder.h>
-#include <rtl/access.h>
+#include <rtl/rtl_builder.h>
+#include <rtl/rtl_access.h>
 
 #include "Node.h"
 
@@ -12,11 +12,6 @@ using namespace test_utils;
 using namespace rtl;
 
 namespace {
-
-    // Cloning is only available for types explicitly registered by the user.
-    // This is because cloning requires a lambda to be stored in a static table.
-    // Types reflected via rtl::reflect or obtained as the return value of a reflective call
-    // cannot be cloned unless they are explicitly registered.
 
     static rtl::CxxMirror cxx_mirror()
     {

@@ -1,25 +1,25 @@
-/*************************************************************************
- *                                                                       *
- *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
- *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
- *                                                                       *
- *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
- *  SPDX-License-Identifier: MIT                                         *
- *                                                                       *
- *************************************************************************/
+/*****************************************************************************
+ *                                                                           *
+ *  Reflection Template Library (RTL) - A Run-Time Reflection System for C++ *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP              *
+ *                                                                           *
+ *  Copyright (c) 2026 Neeraj Singh <reflectcxx@outlook.com>                 *
+ *  SPDX-License-Identifier: MIT                                             *
+ *                                                                           *
+ *****************************************************************************/
 
 
 #pragma once
 
 #include "SetupDispatch.h"
 
-namespace rtl::detail
+namespace rtl::builder
 {
     struct RegisterFunction : public SetupDispatch
     {
         template<class return_t, class ...signature_t>
         static rtl::type_meta addFunctor(return_t(*pFunctor)(signature_t...),
-                                         traits::uid_t pRecordUid, member pMemberType)
+                                         traits::uid_t pRecordUid, detail::member pMemberType)
         {
             const auto& doRegister = [=]()->type_meta {
 

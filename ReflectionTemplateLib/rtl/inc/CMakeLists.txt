@@ -3,7 +3,6 @@
 # Collect local headers (absolute paths)
 set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/CxxMirror.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CxxMirror.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/CxxMirrorToJson.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Function.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/Function.hpp"

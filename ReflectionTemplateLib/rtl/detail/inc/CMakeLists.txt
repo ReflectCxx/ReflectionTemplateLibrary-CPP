@@ -10,6 +10,8 @@ set(LOCAL_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectId.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjectUPtr.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/RObjExtracter.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/RObjectBuilder.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HopBuilderFunction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/HopBuilderFunction.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HopBuilderMethod.h"

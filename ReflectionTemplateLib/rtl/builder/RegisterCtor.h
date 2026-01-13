@@ -1,12 +1,12 @@
-/*************************************************************************
- *                                                                       *
- *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
- *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
- *                                                                       *
- *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
- *  SPDX-License-Identifier: MIT                                         *
- *                                                                       *
- *************************************************************************/
+/*****************************************************************************
+ *                                                                           *
+ *  Reflection Template Library (RTL) - A Run-Time Reflection System for C++ *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP              *
+ *                                                                           *
+ *  Copyright (c) 2026 Neeraj Singh <reflectcxx@outlook.com>                 *
+ *  SPDX-License-Identifier: MIT                                             *
+ *                                                                           *
+ *****************************************************************************/
 
 
 #pragma once
@@ -15,7 +15,7 @@
 
 #include "SetupDispatch.h"
 
-namespace rtl::detail
+namespace rtl::builder
 {
     class RegisterCtor : public SetupDispatch
     {
@@ -32,12 +32,12 @@ namespace rtl::detail
             const auto& doRegister = [&]()->type_meta {
 
                 if constexpr (sizeof...(signature_t) == 0) {
-                    auto typeMeta = type_meta::add_constructor<member::DefaultCtor, record_t, Return, alloc>();
+                    auto typeMeta = type_meta::add_constructor<detail::member::DefaultCtor, record_t, Return, alloc>();
                     ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
                     return typeMeta;
                 }
                 else {
-                    auto typeMeta = type_meta::add_constructor<member::UserCtor, record_t, Return, signature_t...>();
+                    auto typeMeta = type_meta::add_constructor<detail::member::UserCtor, record_t, Return, signature_t...>();
                     ctorMetaSet.insert(std::make_pair(hashKey, typeMeta));
                     return typeMeta;
                 }

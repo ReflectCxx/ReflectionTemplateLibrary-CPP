@@ -1,12 +1,12 @@
-/*************************************************************************
- *                                                                       *
- *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
- *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
- *                                                                       *
- *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
- *  SPDX-License-Identifier: MIT                                         *
- *                                                                       *
- *************************************************************************/
+/*****************************************************************************
+ *                                                                           *
+ *  Reflection Template Library (RTL) - A Run-Time Reflection System for C++ *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP              *
+ *                                                                           *
+ *  Copyright (c) 2026 Neeraj Singh <reflectcxx@outlook.com>                 *
+ *  SPDX-License-Identifier: MIT                                             *
+ *                                                                           *
+ *****************************************************************************/
 
 
 #pragma once
@@ -37,8 +37,13 @@ namespace rtl::detail
 
 namespace rtl
 {
+    static inline std::size_t getRtlManagedHeapInstanceCount()
+    {
+        return RObject::getInstanceCounter();
+    }
+
     template<class T, std::size_t N>
-    inline RObject reflect(T(&pArr)[N]) noexcept
+    static inline RObject reflect(T(&pArr)[N]) noexcept
     {
         if constexpr (std::is_same_v<traits::raw_t<T>, char>) {
             return detail::RObjectBuilder<std::string_view>::template
@@ -50,9 +55,8 @@ namespace rtl
         }
     }
 
-
     template <class T>
-    inline RObject reflect(T&& pVal) noexcept
+    static inline RObject reflect(T&& pVal) noexcept
     {
         using _T = traits::raw_t<T>;
         if constexpr (traits::std_wrapper<_T>::type == detail::Wrapper::None)

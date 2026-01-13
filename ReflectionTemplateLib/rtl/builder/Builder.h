@@ -1,12 +1,12 @@
-/*************************************************************************
- *                                                                       *
- *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
- *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
- *                                                                       *
- *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
- *  SPDX-License-Identifier: MIT                                         *
- *                                                                       *
- *************************************************************************/
+/*****************************************************************************
+ *                                                                           *
+ *  Reflection Template Library (RTL) - A Run-Time Reflection System for C++ *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP              *
+ *                                                                           *
+ *  Copyright (c) 2026 Neeraj Singh <reflectcxx@outlook.com>                 *
+ *  SPDX-License-Identifier: MIT                                             *
+ *                                                                           *
+ *****************************************************************************/
 
 
 #pragma once
@@ -16,11 +16,12 @@
 
 namespace rtl::builder 
 {
-    struct CtorBuilder : protected detail::ReflectionBuilder
+    struct CtorBuilder : protected ReflectionBuilder
     {
         CtorBuilder(const std::string& pNamespace, const std::string& pRecordStr,
                     const std::string& pFunction, traits::uid_t pRecordUid)
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+        { }
 
     /*  @method: build()
         @param: none
@@ -56,10 +57,11 @@ namespace rtl::builder
 namespace rtl::builder
 {
     template<>
-    struct Builder<detail::member::None, void> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::None, void> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
+        { }
 
     /*  @method: build()
         @param: return_t(*)()
@@ -76,10 +78,11 @@ namespace rtl::builder
 
 
     template<class ...signature_t>
-    struct Builder<detail::member::None, signature_t...> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::None, signature_t...> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
+        { }
 
     /*  @method: build()
         @param: return_t(*)(signature_t...)
@@ -96,11 +99,11 @@ namespace rtl::builder
 
 
     template<>
-    struct Builder<detail::member::None> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::None> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
-            : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) {
-        }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) 
+        { }
 
     /*  @method: build()
         @param: return_t(*)(signature_t...)
@@ -120,11 +123,12 @@ namespace rtl::builder
 namespace rtl::builder
 {
     template<>
-    struct Builder<detail::member::Static, void> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Static, void> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
                 const std::string& pRecordStr, const std::string& pNamespace) 
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+        { }
 
     /*  @method: build()
         @param: return_t(*)()
@@ -141,11 +145,12 @@ namespace rtl::builder
 
 
     template<class ...signature_t>
-    struct Builder<detail::member::Static, signature_t...> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Static, signature_t...> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
                 const std::string& pRecordStr, const std::string& pNamespace) 
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+        { }
 
     /*  @method: build()
         @param: return_t(*)(signature_t...)
@@ -162,11 +167,12 @@ namespace rtl::builder
 
     
     template<>
-    struct Builder<detail::member::Static> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Static> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, const std::string& pFunction,
                 const std::string& pRecordStr, const std::string& pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace) { }
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+        { }
 
     /*  @method: build()
         @param: return_t(*)(signature_t...)
@@ -186,10 +192,11 @@ namespace rtl::builder
 namespace rtl::builder
 {
     template<>
-    struct Builder<detail::member::Const, void> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Const, void> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
     /*  @method: build()
         @param: return_t(record_t::*)() const.
@@ -206,10 +213,11 @@ namespace rtl::builder
 
     
     template<class ...signature_t>
-    struct Builder<detail::member::Const, signature_t...> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Const, signature_t...> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
     /*  @method: build()
         @param: return_t(record_t::*)(signature_t...) const.
@@ -226,10 +234,11 @@ namespace rtl::builder
 
     
     template<>
-    struct Builder<detail::member::Const> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::Const> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
     /*  @method: build()
         @param: return_t(record_t::*)(signature_t...) const.
@@ -249,10 +258,11 @@ namespace rtl::builder
 namespace rtl::builder 
 {
     template<>
-    struct Builder<detail::member::NonConst, void> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::NonConst, void> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
     /*  @method: build()
         @param: return_t(record_t::*)()
@@ -269,7 +279,7 @@ namespace rtl::builder
 
 
     template<class ...signature_t>
-    struct Builder<detail::member::NonConst, signature_t...> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::NonConst, signature_t...> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid)
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
@@ -290,10 +300,11 @@ namespace rtl::builder
 
 
     template<>
-    struct Builder<detail::member::NonConst> : protected detail::ReflectionBuilder
+    struct Builder<detail::member::NonConst> : protected ReflectionBuilder
     {
         Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER) { }
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        { }
 
 
     /*  @method: build()

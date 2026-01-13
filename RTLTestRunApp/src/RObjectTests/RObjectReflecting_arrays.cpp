@@ -14,7 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <rtl/access.h>
+#include <rtl/rtl_access.h>
 
 using namespace rtl;
 

@@ -1,5 +1,5 @@
 
-#include <rtl/builder.h>
+#include <rtl/rtl_builder.h>
 
 #include "MyReflectingType.h"
 
@@ -158,8 +158,6 @@ namespace my_type
         TODO: by value and by-ref overload should not be allowed (enforce compiler behaviour)
               RTL should catch and ignore this kind of registration.
         **************************************************************************************/
-
-
         /*  Example to illustrate overload behavior:
 
             Person person("Tim");

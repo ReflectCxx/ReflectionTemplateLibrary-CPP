@@ -3,7 +3,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include <rtl/builder.h>
+#include <rtl/rtl_builder.h>
 
 #include "../../CxxTestProps/inc/Date.h"
 #include "../../CxxTestProps/inc/Book.h"

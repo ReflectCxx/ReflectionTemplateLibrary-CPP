@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 #include <cstring>
 
-#include <rtl/builder.h>
-#include <rtl/access.h>
+#include <rtl/rtl_builder.h>
+#include <rtl/rtl_access.h>
 
 #include "CxxMirrorToJson.h"
 

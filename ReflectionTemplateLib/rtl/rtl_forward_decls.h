@@ -1,12 +1,12 @@
-/*************************************************************************
- *                                                                       *
- *  Reflection Template Library (RTL) - Modern C++ Reflection Framework  *
- *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP          *
- *                                                                       *
- *  Copyright (c) 2025 Neeraj Singh <reflectcxx@outlook.com>             *
- *  SPDX-License-Identifier: MIT                                         *
- *                                                                       *
- *************************************************************************/
+/*****************************************************************************
+ *                                                                           *
+ *  Reflection Template Library (RTL) - A Run-Time Reflection System for C++ *
+ *  https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP              *
+ *                                                                           *
+ *  Copyright (c) 2026 Neeraj Singh <reflectcxx@outlook.com>                 *
+ *  SPDX-License-Identifier: MIT                                             *
+ *                                                                           *
+ *****************************************************************************/
 
 
 #pragma once
@@ -42,6 +42,11 @@ namespace rtl
     template<class return_t, class ...signature_t>
     struct static_method;
 
+    namespace builder 
+    {
+        struct ReflectionBuilder;
+    }
+
     namespace detail
     {
         enum call_by {
@@ -54,16 +59,7 @@ namespace rtl
 
         struct RObjectId;
 
-        struct SetupFunction;
-
-        struct SetupConstructor;
-
         class CxxReflection;
-
-        struct ReflectionBuilder;
-
-        template<class _derivedType>
-        class SetupMethod;
 
         template<member, class record_t = std::nullptr_t>
         struct HopBuilder;
