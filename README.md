@@ -4,9 +4,9 @@
 &nbsp;
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
 &nbsp;
-[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Adevelop)
+[![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Adevelop)
 &nbsp;
-[![RTL Coverage](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/coverage.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/coverage.yml?query=branch%3Adevelop)
+[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/develop/graph/badge.svg?flag=rtl)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
