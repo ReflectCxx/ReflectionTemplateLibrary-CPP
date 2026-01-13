@@ -6,7 +6,7 @@
 &nbsp;
 [![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Adevelop)
 &nbsp;
-[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/develop/graph/badge.svg?flag=rtl)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
+[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/develop/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
