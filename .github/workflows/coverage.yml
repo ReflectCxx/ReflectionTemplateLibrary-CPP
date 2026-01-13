@@ -37,12 +37,10 @@ jobs:
 
       - name: Run tests
         run: |
-          cd build
           ./bin/RTLTestRunApp
 
       - name: Capture RTL coverage
         run: |
-          cd build
           lcov --capture --directory . \
                --output-file coverage.info \
                --ignore-errors=inconsistent,negative
@@ -53,7 +51,6 @@ jobs:
 
       - name: Generate HTML report
         run: |
-          cd build
           genhtml coverage_rtl.info \
             --output-directory coverage_rtl \
             --ignore-errors inconsistent,corrupt
@@ -62,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rtl-coverage-report
-          path: build/coverage_rtl
+          path: coverage_rtl
