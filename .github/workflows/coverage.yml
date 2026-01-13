@@ -1,0 +1,124 @@
+name: RTL Build & Coverage
+
+on:
+  push:
+    branches: [ release, develop ]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches: [ release, develop ]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  # -------------------------------
+  # Existing Build Matrix
+  # -------------------------------
+  build:
+    name: Build (${{ matrix.os }} / ${{ matrix.compiler }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        compiler: [gcc, clang, msvc]
+        exclude:
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+          - os: ubuntu-latest
+            compiler: msvc
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # Linux dependencies
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y ninja-build g++ clang
+
+      # Linux configure
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++;
+          else
+            cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++;
+          fi
+
+      # Windows configure
+      - name: Configure (Windows / MSVC)
+        if: runner.os == 'Windows'
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+
+      # Build
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      # Upload artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-test-binaries-${{ matrix.compiler }}
+          path: bin/
+
+  # -------------------------------
+  # Coverage Job (Linux Only)
+  # -------------------------------
+  coverage:
+    name: RTL Coverage (Linux / GCC)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install coverage tools
+        run: |
+          sudo apt update
+          sudo apt install -y lcov gcovr ninja-build g++
+
+      - name: Configure (Coverage)
+        run: |
+          cmake -B build -G Ninja \
+                -DENABLE_COVERAGE=ON \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DCMAKE_CXX_COMPILER=g++
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        run: |
+          cd build
+          ./bin/RTLTestRunApp
+
+      - name: Capture RTL coverage
+        run: |
+          cd build
+          lcov --capture --directory . \
+               --output-file coverage.info \
+               --ignore-errors=inconsistent,negative
+
+          lcov --extract coverage.info \
+               '*ReflectionTemplateLib/rtl/*' \
+               -o coverage_rtl.info
+
+      - name: Generate HTML report
+        run: |
+          cd build
+          genhtml coverage_rtl.info \
+            --output-directory coverage_rtl \
+            --ignore-errors inconsistent,corrupt
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-coverage-report
+          path: build/coverage_rtl
