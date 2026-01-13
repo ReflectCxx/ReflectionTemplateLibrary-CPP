@@ -43,7 +43,7 @@ jobs:
         run: |
           lcov --capture --directory . \
                --output-file coverage.info \
-               --ignore-errors=inconsistent,negative
+               --ignore-errors=inconsistent,negative,mismatch
 
           lcov --extract coverage.info \
                '*ReflectionTemplateLib/rtl/*' \
