@@ -4,9 +4,9 @@
 &nbsp;
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
 &nbsp;
-[![RTL Build](https://img.shields.io/github/actions/workflow/status/ReflectCxx/ReflectionTemplateLibrary-CPP/build.yml?branch=release&label=Build&logo=github&logoColor=white)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)
+[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Adevelop)
 &nbsp;
-[![RTL Coverage](https://img.shields.io/github/actions/workflow/status/ReflectCxx/ReflectionTemplateLibrary-CPP/coverage.yml?branch=release&label=Coverage&logo=github&logoColor=white)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/coverage.yml?query=branch%3Arelease)
+[![RTL Coverage](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/coverage.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/coverage.yml?query=branch%3Adevelop)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
