@@ -174,15 +174,15 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 
 RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
-`rtl::function<...>` - Free (non-member) functions
+`rtl::function<...>` – Free (non-member) functions
 
-`rtl::constructor<...>` - Constructors
+`rtl::constructor<...>` – Constructors
 
-`rtl::method<...>` - Non-const member functions
+`rtl::method<...>` – Non-const member functions
 
-`rtl::const_method<...>` - Const-qualified member functions
+`rtl::const_method<...>` – Const-qualified member functions
 
-`rtl::static_method<...>` - Static member functions
+`rtl::static_method<...>` – Static member functions
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
@@ -190,15 +190,15 @@ When invoked, each callable returns an `rtl::error` along with the result, which
 
 ### Allocation and Lifetime Management
 
-* Heap (`alloc::Heap`) — objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
+* Heap (`alloc::Heap`) – objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
 
-* Stack (`alloc::Stack`) — independent copies behave like normal stack values and clean up at scope exit.
+* Stack (`alloc::Stack`) – independent copies behave like normal stack values and clean up at scope exit.
 
-* Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+* Move semantics – `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
 
-* Return values — All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
+* Return values – All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
 
-RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
+RTL doesn’t invent a new paradigm – it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
 
 ## Reflection Features
 
@@ -221,7 +221,7 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 
 * ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
-* ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations(no exceptions, no silent failures).
+* ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations (no exceptions, no silent failures).
 * ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
 * 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
 * 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
