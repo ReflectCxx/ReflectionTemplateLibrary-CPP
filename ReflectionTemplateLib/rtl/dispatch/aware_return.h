@@ -11,10 +11,8 @@
 
 #pragma once
 
-#include <any>
-
-#include "function_ptr.h"
-#include "RObjectBuilder.hpp"
+#include <dispatch/function_ptr.h>
+#include <detail/inc/RObjectBuilder.hpp>
 
 namespace rtl::dispatch
 {

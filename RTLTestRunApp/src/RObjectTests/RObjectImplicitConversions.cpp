@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "ConversionUtils.h"
+#include <rtl/detail/inc/ConversionUtils.h>
 
 namespace rtl_tests
 {

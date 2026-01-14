@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "method_ptr.h"
-#include "aware_return_n_target.h"
+#include <dispatch/method_ptr.h>
+#include <dispatch/aware_return_n_target.h>
 
 namespace rtl::dispatch
 {

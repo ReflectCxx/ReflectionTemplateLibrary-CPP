@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "type_meta.h"
-#include "cache_method_ptr.h"
-#include "cache_function_ptr.h"
-#include "cache_method_ptr_const.h"
+#include <inc/type_meta.h>
+#include <dispatch/cache_method_ptr.h>
+#include <dispatch/cache_function_ptr.h>
+#include <dispatch/cache_method_ptr_const.h>
 
 namespace rtl
 {

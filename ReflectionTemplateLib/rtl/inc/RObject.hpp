@@ -11,12 +11,12 @@
 
 #pragma once
 
-#include "view.hpp"
-#include "RObject.h"
-#include "RObjectUPtr.h"
-#include "ReflectCast.h"
-#include "RObjExtracter.h"
-#include "RObjectBuilder.h"
+#include <inc/view.hpp>
+#include <inc/RObject.h>
+#include <detail/inc/RObjectUPtr.h>
+#include <detail/inc/ReflectCast.h>
+#include <detail/inc/RObjExtracter.h>
+#include <detail/inc/RObjectBuilder.h>
 
 namespace rtl
 {

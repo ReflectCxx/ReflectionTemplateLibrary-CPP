@@ -10,8 +10,8 @@
 
 
 #pragma once
-#include "Method.h"
-#include "HopBuilderMethod.hpp"
+#include <inc/Method.h>
+#include <detail/inc/HopBuilderMethod.hpp>
 
 namespace rtl
 {

@@ -1,7 +1,7 @@
 
 #include "TestUtilsPerson.h"
 
-#include "RObject.hpp"
+#include <rtl/inc/RObject.hpp>
 
 //User defined types.
 #include "Person.h"

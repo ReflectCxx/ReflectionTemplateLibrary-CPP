@@ -3,8 +3,8 @@
 #include <gtest/gtest.h>
 
 
-#include <rtl/rtl_builder.h>
-#include <rtl/rtl_access.h>
+#include <rtl_builder.h>
+#include <rtl_access.h>
 
 #include "Node.h"
 

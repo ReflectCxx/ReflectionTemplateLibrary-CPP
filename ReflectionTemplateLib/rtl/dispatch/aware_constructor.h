@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "RObjectBuilder.hpp"
+#include <detail/inc/RObjectBuilder.hpp>
 
 namespace rtl::dispatch
 {

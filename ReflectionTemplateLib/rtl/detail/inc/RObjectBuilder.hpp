@@ -11,11 +11,9 @@
 
 #pragma once
 
-#include <utility>
-
-#include "RObject.hpp"
-#include "RObjectUPtr.h"
-#include "RObjectBuilder.h"
+#include <inc/RObject.hpp>
+#include <detail/inc/RObjectUPtr.h>
+#include <detail/inc/RObjectBuilder.h>
 
 namespace rtl::detail 
 {

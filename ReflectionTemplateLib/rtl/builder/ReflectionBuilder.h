@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "Function.h"
-#include "RegisterCtor.h"
-#include "RegisterMethod.h"
-#include "RegisterFunction.h"
+#include <inc/Function.h>
+#include <builder/RegisterCtor.h>
+#include <builder/RegisterMethod.h>
+#include <builder/RegisterFunction.h>
 
 namespace rtl::builder {
 

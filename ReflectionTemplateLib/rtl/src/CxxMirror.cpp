@@ -9,9 +9,9 @@
  *****************************************************************************/
 
 
-#include "Record.h"
-#include "CxxMirror.h"
-#include "ReflectCast.h"
+#include <inc/Record.h>
+#include <inc/CxxMirror.h>
+#include <detail/inc/ReflectCast.h>
 
 namespace rtl
 {

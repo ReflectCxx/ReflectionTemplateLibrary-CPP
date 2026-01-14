@@ -1,7 +1,7 @@
 
 #include "TestUtilsBook.h"
 
-#include "RObject.hpp"
+#include <rtl/inc/RObject.hpp>
 
 //User defined types.
 #include "Book.h"

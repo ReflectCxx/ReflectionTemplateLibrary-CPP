@@ -10,9 +10,8 @@
 
 
 #include <iostream>
-
-#include "Function.h"
-#include "type_meta.h"
+#include <inc/Function.h>
+#include <inc/type_meta.h>
 
 namespace rtl 
 {

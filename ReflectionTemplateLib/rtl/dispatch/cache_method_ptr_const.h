@@ -12,8 +12,7 @@
 #pragma once
 
 #include <list>
-
-#include "method_ptr_const.hpp"
+#include <dispatch/method_ptr_const.hpp>
 
 namespace rtl::cache
 {

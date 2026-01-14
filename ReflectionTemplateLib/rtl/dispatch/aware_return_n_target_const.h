@@ -11,9 +11,7 @@
 
 #pragma once
 
-#include <any>
-
-#include "method_ptr_const.h"
+#include <dispatch/method_ptr_const.h>
 
 namespace rtl::dispatch
 {

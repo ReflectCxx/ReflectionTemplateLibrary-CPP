@@ -13,7 +13,7 @@
 
 #include <map>
 
-#include "SetupDispatch.h"
+#include <builder/SetupDispatch.h>
 
 namespace rtl::builder
 {

@@ -34,9 +34,7 @@
  */
 
 
-#include <optional>
-#include <type_traits>
-#include "rtl_traits.h"
+#include <rtl_traits.h>
 
 namespace rtl {
 

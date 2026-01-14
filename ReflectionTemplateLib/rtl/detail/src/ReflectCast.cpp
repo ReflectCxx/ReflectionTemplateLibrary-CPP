@@ -9,8 +9,8 @@
  *****************************************************************************/
 
 
-#include "ReflectCast.hpp"
-#include "ReflectCastUtil.h"
+#include <detail/inc/ReflectCast.hpp>
+#include <detail/inc/ReflectCastUtil.h>
 
 namespace rtl::detail
 {

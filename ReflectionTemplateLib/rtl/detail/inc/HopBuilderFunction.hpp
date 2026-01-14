@@ -11,14 +11,13 @@
 
 #pragma once
 
-#include "RObject.h"
-#include "Function.h"
-#include "HopBuilderFunction.h"
-
-#include "functor_cast.h"
-#include "function_ptr.h"
-#include "rtl_function.h"
-#include "rtl_function_erased_return.h"
+#include <inc/RObject.h>
+#include <inc/Function.h>
+#include <rtl_function.h>
+#include <rtl_function_erased_return.h>
+#include <dispatch/functor_cast.h>
+#include <dispatch/function_ptr.h>
+#include <detail/inc/HopBuilderFunction.h>
 
 namespace rtl::detail
 {

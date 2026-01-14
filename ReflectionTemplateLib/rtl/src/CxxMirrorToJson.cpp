@@ -13,11 +13,11 @@
 #include <filesystem>
 #include <algorithm>
 
-#include "Method.h"
-#include "Record.h"
-#include "Function.h"
-#include "CxxMirror.h"
-#include "CxxMirrorToJson.h"
+#include <inc/Method.h>
+#include <inc/Record.h>
+#include <inc/Function.h>
+#include <inc/CxxMirror.h>
+#include <inc/CxxMirrorToJson.h>
 
 using namespace rtl;
 using namespace rtl::detail;

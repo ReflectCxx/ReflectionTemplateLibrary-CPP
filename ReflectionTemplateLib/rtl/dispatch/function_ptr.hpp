@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "RObjectId.h"
-#include "function_ptr.h"
-#include "aware_return.h"
-#include "aware_constructor.h"
+#include <detail/inc/RObjectId.h>
+#include <dispatch/function_ptr.h>
+#include <dispatch/aware_return.h>
+#include <dispatch/aware_constructor.h>
 
 namespace rtl::dispatch
 {

@@ -11,19 +11,18 @@
 
 #pragma once
 
-#include "Method.h"
-#include "RObject.h"
-#include "HopBuilderMethod.h"
+#include <inc/Method.h>
+#include <inc/RObject.h>
 
-#include "method_ptr.h"
-#include "method_ptr_const.h"
+#include <dispatch/method_ptr.h>
+#include <dispatch/method_ptr_const.h>
+#include <detail/inc/HopBuilderMethod.h>
 
-#include "rtl_method.h"
-#include "rtl_method_const.h"
-#include "rtl_method_erased.h"
-#include "rtl_method_erased_target.h"
-#include "rtl_method_erased_return.h"
-
+#include <rtl_method.h>
+#include <rtl_method_const.h>
+#include <rtl_method_erased.h>
+#include <rtl_method_erased_target.h>
+#include <rtl_method_erased_return.h>
 
 namespace rtl::detail 
 {

@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "Function.h"
-#include "ReflectionBuilder.h"
+#include <inc/Function.h>
+#include <builder/ReflectionBuilder.h>
 
 namespace rtl::builder 
 {

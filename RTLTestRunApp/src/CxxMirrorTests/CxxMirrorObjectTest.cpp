@@ -2,10 +2,10 @@
 #include <gtest/gtest.h>
 #include <cstring>
 
-#include <rtl/rtl_builder.h>
-#include <rtl/rtl_access.h>
+#include <rtl_builder.h>
+#include <rtl_access.h>
 
-#include "CxxMirrorToJson.h"
+#include <rtl/inc/CxxMirrorToJson.h>
 
 namespace
 {

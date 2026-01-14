@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "CxxReflection.h"
+#include <detail/inc/CxxReflection.h>
 
 namespace rtl 
 {   

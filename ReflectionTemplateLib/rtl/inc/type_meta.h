@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "functor.h"
+#include <dispatch/functor.h>
 
 namespace rtl
 {

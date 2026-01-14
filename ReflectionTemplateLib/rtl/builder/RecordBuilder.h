@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "Function.h"
-#include "Builder.h"
-#include "ConstructorBuilder.h"
+#include <inc/Function.h>
+#include <builder/Builder.h>
+#include <builder/ConstructorBuilder.h>
 
 namespace rtl::builder
 {
