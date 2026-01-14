@@ -49,8 +49,6 @@ namespace rtl
 
     protected:
 
-        Function(const Function& pOther, const type_meta& pFunctorsMeta, const std::string& pFunctorName);
-
         bool hasSignatureId(const traits::uid_t pSignatureId) const;
 
         GETTER_REF_C(std::vector<type_meta>, Functors, m_functorsMeta)

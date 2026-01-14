@@ -56,32 +56,6 @@ namespace test_utils
 	}
 
 
-	const bool person::test_copy_constructor_overload_src_const_obj(const rtl::RObject& pInstance)
-	{
-		if (pInstance.canViewAs<Person>()) 
-		{
-			const Person personSrc;
-			Person person(personSrc);
-			const Person& rPerson = pInstance.view<Person>()->get();
-			return (person == rPerson);
-		}
-		return false;
-	}
-
-
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const rtl::RObject& pInstance)
-	{
-		if (pInstance.canViewAs<Person>()) 
-		{
-			Person personSrc;
-			Person person(personSrc);
-			const Person& rPerson = pInstance.view<Person>()->get();
-			return (person == rPerson);
-		}
-		return false;
-	}
-
-
 	template<>
 	const bool person::test_method_updateAddress<string>(const rtl::RObject& pInstance)
 	{

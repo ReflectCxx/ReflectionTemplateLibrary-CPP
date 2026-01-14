@@ -30,11 +30,6 @@ namespace rtl {
             : Function(pFunction)
         { }
 
-        //private ctor, called by 'Record' class.
-        Method(const Function& pFunction, const type_meta& pFunctorMeta, const std::string& pFunctorName)
-            : Function(pFunction, pFunctorMeta, pFunctorName)
-        { }
-
     public:
 
         Method() = default;

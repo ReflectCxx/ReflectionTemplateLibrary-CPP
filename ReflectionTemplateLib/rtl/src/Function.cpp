@@ -35,24 +35,6 @@ namespace rtl
     }
 
 
-/*  @constructor: Function()
-    @params: pOther - 'Function' object associated with a constructor.
-    *        pFunctorId - 'FunctorId', object associated with a copy-constructor.
-    *        pFunctorName - name of the constructor.
-    * this constructor is only called to create 'Function' object associated with copy-constructor.
-    * the copy-constructor's 'FunctorId' is added to the 'Function' object associated with a constructor while registration.
-    * the very first registration of constructor adds the copy-constructor lambda in the functor-container and sends its
-        'FunctorId' with the 'Function' object associated with a constructor.
-*/  Function::Function(const Function& pOther, const type_meta& pFunctorsMeta, const std::string& pFunctorName)
-        : m_member_kind(pOther.m_member_kind)
-        , m_recordTypeId(pOther.m_recordTypeId)
-        , m_recordStr(pOther.m_recordStr)
-        , m_function(pFunctorName)
-        , m_namespaceStr(pOther.m_namespaceStr)
-        , m_functorsMeta({ pFunctorsMeta }) {
-    }
-
-
 /*  @method: addOverload()
     @param: 'Function' object
     * every 'Function' object produced while registration will have a single 'FunctorId' object, except constructors.
