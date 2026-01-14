@@ -26,8 +26,7 @@ rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("com
 if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
-/* cxx::mirror() returns an instance of 'rtl::CxxMirror', the reflection access interface
-   for querying types and invoking function, method and constructors registered with RTL. */
+// cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
 > *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
@@ -80,11 +79,10 @@ struct cxx { static rtl::CxxMirror& mirror(); };	// The Singleton.
 define and register everything in an isolated translation unit,
 *`(MyReflection.cpp)`*
 ```c++
-#include <rtl/builder.h> 	// Reflection builder interface.
+#include <rtl_builder.h> 	// Reflection builder interface.
 
 rtl::CxxMirror& cxx::mirror() {
-    // Inherently thread safe.
-    static auto cxx_mirror = rtl::CxxMirror({
+    static auto cxx_mirror = rtl::CxxMirror({   // Inherently thread safe.
         /* ...register all types here... */
     });
     return cxx_mirror;
@@ -95,63 +93,73 @@ Singleton ensures one central registry, initialized once, accessible everywhere.
 **RTL in action:**
 
 ```c++
-#include <rtl/access.h>    // Reflection access interface.
+#include <rtl_access.h>    // Reflection access interface.
 #include "MyReflection.h"
 
 int main()
 {
-    // Query reflected record for class `Person` (dynamic lookup).
+    // lookup class `Person` by name (given at registration time).
     std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
     if (!classPerson) { return 0; } // Class not registered.
+```
+`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for class/struct, and `rtl::Function` for non-member functions.
 
-    // Get constructor overload: Person(const char*, int).
-    rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
+From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
+
+Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
+For example, the default constructor:
+```c++
+    rtl::constructor<> personCtor = classPerson->ctor();
+```
+Or the overloaded constructor `Person(std::string, int)` -
+```c++
+    rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
     if (!personCtor) { return 0; } // Constructor with expected signature not found.
-
-    // Construct a stack-allocated instance; returns {error, RObject}.
+```
+Instances can be created on the `Heap` or `Stack` with automatic lifetime management:
+```c++
     auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
     if (err != rtl::error::None) { return 0; } // Construction failed.
+```
+The constructed object is returned wrapped in `rtl::RObject`. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
 
-    // Lookup reflected method `setAge`.
+Similarly, member-function callers can be materialized:
+```c++
     std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
     if (!oSetAge) { return 0; } // Method not found.
 
-    // When target/return types are known (fastest path).
-    {
-        // Materialize typed method: Person::setAge(int) -> void.
-        rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
-                                                       .argsT<int>().returnT<void>();
-        if (setAge) {
-            // View the underlying Person instance.
-            const Person& person = robj.view<Person>()->get();
-
-            // Near-zero-overhead dispatch (pointer-level cost).
-            setAge(person)(47);
-        }
+    rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
+                                                    .argsT<int>().returnT<void>();
+    if (setAge) {
+        Person person;
+        setAge(person)(47);
     }
+```
+The above `setAge`invocation is effectively a native function-pointer hop, since all types are known at compile time.
 
-    // When target/return types are erased (more flexible).
-    {
-        // Materialize erased method: RObject target, erased return.
-        rtl::method<rtl::RObject, rtl::Return(int)> setAge = oSetAge->targetT()
-                                                                    .argsT<int>().returnT();
-        if (setAge) {
-            // Slightly slower than typed path; comparable to std::function.
-            auto [err, ret] = setAge(robj)(47);
-            if (err == rtl::error::None) { /* call succeeded; return is void ('ret' empty)*/ }
-        }
-    }
-
+If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target.
+```c++
     // Lookup reflected method `getName`.
     std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
     if (!oGetName) { return 0; } // Method not found.
 
-    // Materialize erased method: getName() -> std::string.
+    // Materialize erased method: std::string Person::getName().
+    rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
+                                                               .argsT().returnT<std::string>();
+    if (getName) {
+        auto [err, opt_ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
+        if (err == rtl::error::None && opt_ret.has_value()) {
+            std::string name = opt_ret->get();
+            std::cout << name;
+        }
+    }
+```
+If the return type is also not known at compile time, `rtl::Return` can be used:
+```c++
     rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
                                                                .argsT().returnT();
-    if (getName)
-	{
-        auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
+    if (getName) {
+        auto [err, ret] = getName(robj)();	// Invoke and receive return value std::string wrapped in rtl::RObject.
         if (err == rtl::error::None && ret.canViewAs<std::string>()) {
             const std::string& name = ret.view<std::string>()->get();
             std::cout << name;	// Safely view the returned std::string.
@@ -160,29 +168,37 @@ int main()
     return 0;
 }
 ```
-### Performance Model (Benchmarking Results)
+### How RTL Fits Together
 
-* Non-erased RTL calls are equivalent to direct calls (≤ ~1 ns overhead).
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (constructors, free functions, and member functions) are materialized through `rtl::Function` and `rtl::Method`, all of which are discoverable via `rtl::CxxMirror`.
 
-* Erased calls incur a bounded overhead (worst case ~15–16 ns on trivial functions).
+RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
-* For real workloads, erased calls typically add 3–10%, often less.
+`rtl::function<...>` – Free (non-member) functions
 
-> RTL exposes performance tradeoffs directly in its API, delivering near-zero-overhead calls with full type information and a small, bounded cost with erased dispatch.
+`rtl::constructor<...>` – Constructors
 
-### `Heap` vs `Stack` Allocation and Lifetime Management
+`rtl::method<...>` – Non-const member functions
 
-RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:
+`rtl::const_method<...>` – Const-qualified member functions
 
-* Heap (`alloc::Heap`) — objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
+`rtl::static_method<...>` – Static member functions
 
-* Stack (`alloc::Stack`) — independent copies behave like normal stack values and clean up at scope exit.
+These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
-* Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+When invoked, each callable returns an `rtl::error` along with the result, which is wrapped either in `rtl::RObject` (for type-erased returns) or in `std::optional<T>` when the return type is known at compile time.
 
-* Return values — All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
+### Allocation and Lifetime Management
 
-RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
+* Heap (`alloc::Heap`) – objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
+
+* Stack (`alloc::Stack`) – independent copies behave like normal stack values and clean up at scope exit.
+
+* Move semantics – `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+
+* Return values – All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
+
+RTL doesn’t invent a new paradigm – it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
 
 ## Reflection Features
 
@@ -205,9 +221,8 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 
 * ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
-* ✅ **Namespace Support** – Group and reflect under namespaces.
-* ✅ **Reflected Returns** – Access return values whose types are unknown at compile time. Validate against the expected type and extract the content safely.
-* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
+* ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations (no exceptions, no silent failures).
+* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
 * 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
 * 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
 * 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
