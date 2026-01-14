@@ -26,8 +26,7 @@ rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("com
 if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
-/* cxx::mirror() returns an instance of 'rtl::CxxMirror', the reflection access interface
-   for querying types and invoking function, method and constructors registered with RTL. */
+// cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
 > *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
@@ -169,19 +168,27 @@ If the return type is also not known at compile time, `rtl::Return` can be used:
     return 0;
 }
 ```
-### Performance Model (Benchmarking Results)
+### How RTL Fits Together
 
-* Non-erased RTL calls are equivalent to direct calls (≤ ~1 ns overhead).
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (constructors, free functions, and member functions) are materialized through `rtl::Function` and `rtl::Method`, all of which are discoverable via `rtl::CxxMirror`.
 
-* Erased calls incur a bounded overhead (worst case ~15–16 ns on trivial functions).
+RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
-* For real workloads, erased calls typically add 3–10%, often less.
+`rtl::function<...>` - Free (non-member) functions
 
-> RTL exposes performance tradeoffs directly in its API, delivering near-zero-overhead calls with full type information and a small, bounded cost with erased dispatch.
+`rtl::constructor<...>` - Constructors
 
-### `Heap` vs `Stack` Allocation and Lifetime Management
+`rtl::method<...>` - Non-const member functions
 
-RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:
+`rtl::const_method<...>` - Const-qualified member functions
+
+`rtl::static_method<...>` - Static member functions
+
+These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
+
+When invoked, each callable returns an `rtl::error` along with the result, which is wrapped either in `rtl::RObject` (for type-erased returns) or in `std::optional<T>` when the return type is known at compile time.
+
+### Allocation and Lifetime Management
 
 * Heap (`alloc::Heap`) — objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
 
@@ -214,9 +221,8 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
 
 * ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
 * ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
-* ✅ **Namespace Support** – Group and reflect under namespaces.
-* ✅ **Reflected Returns** – Access return values whose types are unknown at compile time. Validate against the expected type and extract the content safely.
-* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
+* ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations(no exceptions, no silent failures).
+* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
 * 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
 * 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
 * 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
