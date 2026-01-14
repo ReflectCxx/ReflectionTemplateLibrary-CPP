@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "functor.h"
-#include "RObject.hpp"
+#include <dispatch/functor.h>
+#include <inc/RObject.hpp>
 
 namespace rtl
 {

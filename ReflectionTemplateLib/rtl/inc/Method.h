@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Function.h"
+#include <inc/Function.h>
 
 namespace rtl {
 
@@ -28,11 +28,6 @@ namespace rtl {
         //private ctor, called by 'Record' class.
         Method(const Function& pFunction)
             : Function(pFunction)
-        { }
-
-        //private ctor, called by 'Record' class.
-        Method(const Function& pFunction, const type_meta& pFunctorMeta, const std::string& pFunctorName)
-            : Function(pFunction, pFunctorMeta, pFunctorName)
         { }
 
     public:

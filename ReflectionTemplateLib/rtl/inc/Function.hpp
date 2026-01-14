@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "Function.h"
-#include "HopBuilderFunction.hpp"
+#include <inc/Function.h>
+#include <detail/inc/HopBuilderFunction.hpp>
 
 namespace rtl 
 {

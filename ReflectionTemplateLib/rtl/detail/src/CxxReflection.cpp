@@ -11,10 +11,10 @@
 
 #include <iostream>
 
-#include "type_meta.h"
-#include "Record.h"
-#include "Method.h"
-#include "CxxReflection.h"
+#include <inc/Record.h>
+#include <inc/Method.h>
+#include <inc/type_meta.h>
+#include <detail/inc/CxxReflection.h>
 
 namespace rtl {
 

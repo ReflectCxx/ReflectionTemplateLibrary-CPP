@@ -2,7 +2,7 @@
 
 # Make the 'inc' folder visible as a public include dir
 target_include_directories(ReflectionTemplateLib
-    PUBLIC
+    PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/inc"
 )
 

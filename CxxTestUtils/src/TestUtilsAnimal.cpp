@@ -1,5 +1,5 @@
 
-#include "RObject.hpp"
+#include <rtl/inc/RObject.hpp>
 
 #include "TestUtilsAnimal.h"
 #include "Animal.h"

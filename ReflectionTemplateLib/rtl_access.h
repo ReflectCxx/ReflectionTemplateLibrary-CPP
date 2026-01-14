@@ -23,7 +23,7 @@
 *
 * Declared in namespace rtl.
 */
-#include <inc/Record.hpp>
+#include <rtl/inc/Record.hpp>
 
 
 /*
@@ -38,7 +38,7 @@
 *
 * Declared in namespace rtl.
 */
-#include <inc/Function.hpp>
+#include <rtl/inc/Function.hpp>
 
 
 /*
@@ -60,7 +60,7 @@
 *
 * Declared in namespace rtl.
 */
-#include <inc/Method.hpp>
+#include <rtl/inc/Method.hpp>
 
 
 /*
@@ -78,7 +78,7 @@
 *
 * Declared in namespace rtl.
 */
-#include <inc/CxxMirror.h>
+#include <rtl/inc/CxxMirror.h>
 
 
-#include <detail/inc/RObjectBuilder.hpp>
+#include <rtl/detail/inc/RObjectBuilder.hpp>

@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "Record.h"
-#include "function_ptr.h"
-#include "rtl_constructor.h"
+#include <inc/Record.h>
+#include <dispatch/function_ptr.h>
+#include <rtl_constructor.h>
 
 namespace rtl
 {

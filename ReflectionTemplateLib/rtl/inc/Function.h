@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "type_meta.h"
+#include <inc/type_meta.h>
 
 namespace rtl 
 {
@@ -48,8 +48,6 @@ namespace rtl
         void addOverload(const Function& pOtherFunc) const;
 
     protected:
-
-        Function(const Function& pOther, const type_meta& pFunctorsMeta, const std::string& pFunctorName);
 
         bool hasSignatureId(const traits::uid_t pSignatureId) const;
 

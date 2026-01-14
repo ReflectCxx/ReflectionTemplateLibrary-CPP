@@ -11,10 +11,7 @@
 
 #pragma once
 
-#include <optional>
-#include <type_traits>
-
-#include "RObjectUPtr.h"
+#include <detail/inc/RObjectUPtr.h>
 
 /**
  * @brief A lightweight immutable view of a const T object.

@@ -1,10 +1,11 @@
 
 #include <iostream>
 #include <filesystem>
-#include <CxxMirror.h>
+
+#include <rtl_builder.h>
+#include <inc/CxxMirrorToJson.h>
 
 #include "Registration.h"
-#include "CxxMirrorToJson.h"
 #include "TestMirrorProvider.h"
 
 namespace test_mirror

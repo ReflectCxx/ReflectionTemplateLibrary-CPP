@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "RecordBuilder.h"
+#include <builder/RecordBuilder.h>
 
 namespace rtl
 {

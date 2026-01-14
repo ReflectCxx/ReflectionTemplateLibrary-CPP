@@ -1,7 +1,7 @@
 
 #include "TestUtilsPerson.h"
 
-#include "RObject.hpp"
+#include <rtl/inc/RObject.hpp>
 
 //User defined types.
 #include "Person.h"
@@ -53,32 +53,6 @@ namespace test_utils
 		}
 		return false;
 
-	}
-
-
-	const bool person::test_copy_constructor_overload_src_const_obj(const rtl::RObject& pInstance)
-	{
-		if (pInstance.canViewAs<Person>()) 
-		{
-			const Person personSrc;
-			Person person(personSrc);
-			const Person& rPerson = pInstance.view<Person>()->get();
-			return (person == rPerson);
-		}
-		return false;
-	}
-
-
-	const bool person::test_copy_constructor_overload_src_non_const_obj(const rtl::RObject& pInstance)
-	{
-		if (pInstance.canViewAs<Person>()) 
-		{
-			Person personSrc;
-			Person person(personSrc);
-			const Person& rPerson = pInstance.view<Person>()->get();
-			return (person == rPerson);
-		}
-		return false;
 	}
 
 

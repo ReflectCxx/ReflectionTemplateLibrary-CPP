@@ -2,11 +2,9 @@
 /*
 * 
 * Below error codes are covered in ConstMethodOverloadTests.cpp
-*   rtl::error::IllegalConstCast
-* 	rtl::error::AmbiguousConstOverload
 *	rtl::error::ConstOverloadMissing
 *	rtl::error::NonConstOverloadMissing
-*   rtl::error::ConstCallViolation
+*   rtl::error::InvalidCallOnConstTarget
 * 
 * Covered in ReturnTypeErasedDispatch.cpp
 *   rtl::error::ExplicitRefBindingRequired
@@ -19,7 +17,7 @@
 */
 
 
-#include <rtl/rtl_access.h>
+#include <rtl_access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
@@ -35,7 +33,29 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(ReflectionOperationStatus, error_EmptyRObject)
+    TEST(ReflectionOpErrorCodeTests, rtl_error_strings)
+    {
+        EXPECT_EQ(rtl::to_string(rtl::error::None), rtl::errstr_None);
+        EXPECT_EQ(rtl::to_string(rtl::error::EmptyRObject), rtl::errstr_EmptyRObject);
+        EXPECT_EQ(rtl::to_string(rtl::error::InvalidCaller), rtl::errstr_InvalidCaller);
+        EXPECT_EQ(rtl::to_string(rtl::error::SignatureMismatch), rtl::errstr_SignatureMismatch);
+        EXPECT_EQ(rtl::to_string(rtl::error::TargetTypeMismatch), rtl::errstr_TargetTypeMismatch);
+        EXPECT_EQ(rtl::to_string(rtl::error::ReturnTypeMismatch), rtl::errstr_ReturnTypeMismatch);
+        EXPECT_EQ(rtl::to_string(rtl::error::RefBindingMismatch), rtl::errstr_RefBindingMismatch);
+        EXPECT_EQ(rtl::to_string(rtl::error::ExplicitRefBindingRequired), rtl::errstr_ExplicitRefBindingRequired);
+        EXPECT_EQ(rtl::to_string(rtl::error::InvalidStaticMethodCaller), rtl::errstr_InvalidStaticMethodCaller);
+        EXPECT_EQ(rtl::to_string(rtl::error::InvalidNonStaticMethodCaller), rtl::errstr_InvalidNonStaticMethodCaller);
+        EXPECT_EQ(rtl::to_string(rtl::error::FunctionNotRegistered), rtl::errstr_FunctionNotRegistered);
+        EXPECT_EQ(rtl::to_string(rtl::error::ConstOverloadMissing), rtl::errstr_ConstOverloadMissing);
+        EXPECT_EQ(rtl::to_string(rtl::error::NonConstOverloadMissing), rtl::errstr_NonConstOverloadMissing);
+        EXPECT_EQ(rtl::to_string(rtl::error::InvalidCallOnConstTarget), rtl::errstr_InvalidCallOnConstTarget);
+        EXPECT_EQ(rtl::to_string(rtl::error::TypeNotCopyConstructible), rtl::errstr_TypeNotCopyConstructible);
+        EXPECT_EQ(rtl::to_string(rtl::error::TypeNotDefaultConstructible), rtl::errstr_TypeNotDefaultConstructible);
+        EXPECT_EQ(rtl::to_string(rtl::error::StlWrapperHeapAllocForbidden), rtl::errstr_StlWrapperHeapAllocForbidden);
+        EXPECT_EQ(rtl::to_string(static_cast<rtl::error>(-1)), rtl::errstr_Unknown);
+    }
+
+    TEST(ReflectionOpErrorCodeTests, error_EmptyRObject)
     {
         {
             RObject emptyObj;
@@ -54,7 +74,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, error_TypeNotDefaultConstructible)
+    TEST(ReflectionOpErrorCodeTests, error_TypeNotDefaultConstructible)
     {
         optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
@@ -71,7 +91,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, error_ReflectedObjectIsNotInWrapper)
+    TEST(ReflectionOpErrorCodeTests, error_ReflectedObjectIsNotInWrapper)
     {
         char ch = 'R';
         RObject rCh = rtl::reflect(ch);
@@ -104,7 +124,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, std_unique_ptr__error_TypeNotCopyConstructible)
+    TEST(ReflectionOpErrorCodeTests, std_unique_ptr__error_TypeNotCopyConstructible)
     {
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         std::unique_ptr<char> chPtr = std::make_unique<char>('R');
@@ -176,7 +196,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, copy_construct__error_TypeNotCopyConstructible)
+    TEST(ReflectionOpErrorCodeTests, copy_construct__error_TypeNotCopyConstructible)
     {
         {
             optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
@@ -210,7 +230,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, alloc_on_stack__error_TypeNotCopyConstructible)
+    TEST(ReflectionOpErrorCodeTests, alloc_on_stack__error_TypeNotCopyConstructible)
     {
         {
             // Fetch the reflected Record for class 'Library'.
@@ -242,7 +262,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, static_method_call__error_SignatureMismatch)
+    TEST(ReflectionOpErrorCodeTests, static_method_call__error_SignatureMismatch)
     {
         optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
@@ -261,7 +281,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, method_call__error_EmptyRObject)
+    TEST(ReflectionOpErrorCodeTests, method_call__error_EmptyRObject)
     {
         {
             RObject emptyObj;
@@ -280,7 +300,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, method_call_using_heap_object__error_TargetMismatch)
+    TEST(ReflectionOpErrorCodeTests, method_call_using_heap_object__error_TargetMismatch)
     {
         {
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
@@ -308,7 +328,7 @@ namespace rtl_tests
     }
 
 
-    TEST(ReflectionOperationStatus, method_call_using_stack_object__error_TargetMismatch)
+    TEST(ReflectionOpErrorCodeTests, method_call_using_stack_object__error_TargetMismatch)
     {
         {
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);

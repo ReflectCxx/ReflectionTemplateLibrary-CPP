@@ -11,11 +11,7 @@
 
 #pragma once
 
-#include <any>
-#include <vector>
-#include <functional>
-
-#include "rtl_traits.h"
+#include <rtl_traits.h>
 
 namespace rtl::detail
 {

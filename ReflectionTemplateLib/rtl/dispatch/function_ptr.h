@@ -12,9 +12,8 @@
 #pragma once
 
 #include <variant>
-
-#include "functor.h"
-#include "function_lambda.h"
+#include <dispatch/functor.h>
+#include <dispatch/function_lambda.h>
 
 namespace rtl::dispatch
 {

@@ -10,11 +10,8 @@
 
 
 #pragma once
-#include <memory>
-#include <cassert>
-#include <utility>
 
-#include "RObject.h"
+#include <inc/RObject.h>
 
 /*------------------------------------------------------------------------------------------
     RObjectUPtr<T>
@@ -45,6 +42,8 @@
     4. Tracks heap allocation count via RObject's internal counter for lifetime diagnostics.
 
 --------------------------------------------------------------------------------------------*/
+
+#include <cassert>
 
 namespace rtl::detail
 {

@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "functor.h"
-#include "method_lambda.h"
-#include "function_lambda.h"
+#include <dispatch/functor.h>
+#include <dispatch/method_lambda.h>
+#include <dispatch/function_lambda.h>
 
 namespace rtl::dispatch
 {

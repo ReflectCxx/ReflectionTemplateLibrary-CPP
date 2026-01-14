@@ -12,8 +12,7 @@
 #pragma once
 
 #include <list>
-
-#include "function_ptr.hpp"
+#include <dispatch/function_ptr.hpp>
 
 namespace rtl::cache
 {

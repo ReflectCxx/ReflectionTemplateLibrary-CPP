@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "rtl_typeid.h"
-#include "ReflectCast.h"
-#include "ConversionUtils.h"
+#include <rtl_typeid.h>
+#include <detail/inc/ReflectCast.h>
+#include <detail/inc/ConversionUtils.h>
 
 namespace rtl::detail
 {

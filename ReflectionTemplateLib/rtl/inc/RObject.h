@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include "view.h"
-#include "RObjectId.h"
+#include <inc/view.h>
+#include <detail/inc/RObjectId.h>
 
 namespace rtl::detail
 {

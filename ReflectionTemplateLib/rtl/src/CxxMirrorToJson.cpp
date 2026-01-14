@@ -13,11 +13,11 @@
 #include <filesystem>
 #include <algorithm>
 
-#include "Method.h"
-#include "Record.h"
-#include "Function.h"
-#include "CxxMirror.h"
-#include "CxxMirrorToJson.h"
+#include <inc/Method.h>
+#include <inc/Record.h>
+#include <inc/Function.h>
+#include <inc/CxxMirror.h>
+#include <inc/CxxMirrorToJson.h>
 
 using namespace rtl;
 using namespace rtl::detail;
@@ -29,19 +29,16 @@ static const std::string toJson(const type_meta& pFnMeta)
 	sout << "\"returnId\": \"" << std::to_string(pFnMeta.get_return_id()) << "\",";
 	sout << "\"signatureId\": \"" << std::to_string(pFnMeta.get_strict_args_id()) << "\",";
 	if (pFnMeta.get_record_id() != traits::uid<>::none) {
-		switch (pFnMeta.get_member_kind()) {
-		case member::Static: sout << "\"memberKind\": \"static_function\",";
-			break;
-		case member::Const: sout << "\"memberKind\": \"const_function\",";
-			break;
-		case member::NonConst: sout << "\"memberKind\": \"mutable_function\",";
-			break;
-		case member::UserCtor: sout << "\"memberKind\": \"overloaded_ctor\",";
-			break;
-		case member::DefaultCtor: sout << "\"memberKind\": \"default_ctor\",";
-			break;
-		default: break;
-		}
+		if (pFnMeta.get_member_kind() == member::Static)
+			sout << "\"memberKind\": \"static_function\",";
+		else if (pFnMeta.get_member_kind() == member::Const)
+			sout << "\"memberKind\": \"const_function\",";
+		else if (pFnMeta.get_member_kind() == member::NonConst)
+			sout << "\"memberKind\": \"mutable_function\",";
+		else if (pFnMeta.get_member_kind() == member::UserCtor)
+			sout << "\"memberKind\": \"overloaded_ctor\",";
+		else if (pFnMeta.get_member_kind() == member::DefaultCtor)
+			sout << "\"memberKind\": \"default_ctor\",";
 	}
 	sout << "\"signature\": \"" << pFnMeta.get_signature_str() << "\"}";
 	return sout.str();

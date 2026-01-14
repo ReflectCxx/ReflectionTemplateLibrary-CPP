@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "ReflectCast.h"
+#include <detail/inc/ReflectCast.h>
 
 namespace
 {

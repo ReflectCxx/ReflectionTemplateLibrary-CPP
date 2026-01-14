@@ -47,9 +47,5 @@ namespace test_utils
 
 		template<class ...signature_t>
 		static const bool test_method_updateAddress_const(const rtl::RObject& pInstance);
-
-		static const bool test_copy_constructor_overload_src_const_obj(const rtl::RObject& pInstance);
-
-		static const bool test_copy_constructor_overload_src_non_const_obj(const rtl::RObject& pInstance);
 	};
 }
