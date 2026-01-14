@@ -1,29 +1,53 @@
-# Reflection Template Library - Modern C++ Reflection Framework
+# Reflection Template Library (RTL) – A Run-Time Reflection System for C++.
 
-*Reflection Template Library (RTL)* is a lightweight C++ runtime reflection library that enables introspection and dynamic manipulation of ***Types*** — allowing you to access, modify, and invoke objects at runtime without compile-time type knowledge.
+[![CMake](https://img.shields.io/badge/CMake-Enabled-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
+&nbsp;
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
+&nbsp;
+[![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)
+&nbsp;
+[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
+&nbsp;
+[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
-RTL is implemented as a *static library* that organizes function pointers into `std::vector` tables, with each functor wrapped in a lambda. This design enables constant-time `O(1)` lookups while ensuring type-safe and efficient runtime access.
+**RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
-[![CMake](https://img.shields.io/badge/CMake-Enabled-brightgreen)](https://cmake.org)&nbsp;[![C++20](https://img.shields.io/badge/C++-20-blue)](https://isocpp.org)&nbsp;[![RTL Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+It enables name-based discovery and invocation of functions, constructors, and objects through a non-intrusive, type-safe reflection system that remains close to native execution.
 
+For example, imagine you’ve written a simple function,
+```c++
+std::string complexToStr(float real, float img);
+```
+Using **RTL**, discover it by name and call dynamically:
+```c++
+rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
+                                                               ->argsT<float, float>()
+                                                               .returnT<std::string>();
+if(cToStr) {   // Function materialized?
+    std::string result = cToStr(61, 35);  // Works!
+}
+/* cxx::mirror() returns an instance of 'rtl::CxxMirror', the reflection access interface
+   for querying types and invoking function, method and constructors registered with RTL. */
+```
+> *No includes. No compile-time linking. No argument type-casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
-## What RTL Brings to Your Code
+### ⚡ Performance
 
-* ***Runtime Reflection for C++*** – Introspect and manipulate objects dynamically, similar to Java or .NET, but with modern C++ idioms.
+**RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
 
-* ***Single Source of Truth*** – All metadata lives in one immutable `rtl::CxxMirror`, ensuring a consistent, thread-safe, duplication-free, and deterministic view of reflection data.
+## Design Highlights
 
-* ***Non-Intrusive & Macro-Free*** – Register reflection metadata externally via a clean builder pattern; no macros, base classes, or global registries.
+* ***Single Source of Truth*** – All reflection metadata can be centralized in a single immutable `rtl::CxxMirror`, providing a consistent, thread-safe, duplication-free, and deterministic view of reflected state.
 
-* ***Zero-Overhead by Design*** – Metadata is registered and resolved only when used. Reflection introduces no cost beyond the features you explicitly employ.
+* ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
 
-* ***Exception-Free Surface*** – All predictable failures return error codes; no hidden throws.
+* ***Zero-Overhead by Design*** – Metadata is registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
 
 * ***Deterministic Lifetimes*** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
 
-* ***Cross-Compiler Consistency*** – Pure standard C++20, with no compiler extensions or conditional branching on compiler differences.
+* ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
-* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized object that can be shared with tools and frameworks without compile-time type knowledge — ideal for serializers, debuggers, test frameworks, scripting engines, and editors.
+* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 
 [![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
@@ -31,64 +55,121 @@ RTL is implemented as a *static library* that organizes function pointers into `
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-```c++
-#include "RTLibInterface.h" // Reflection access interface.
-```
-Create an instance of `CxxMirror`, passing all type information directly to its constructor — and you're done!
+First, Create an instance of `CxxMirror`, passing all type information directly to its constructor –
 ```c++
 auto cxx_mirror = rtl::CxxMirror({
-	/* ...register all types here... */
-	rtl::type().record<Person>("Person").build(),
+	// Register free(C-Style) function -
+	rtl::type().function("complexToStr").build(complexToStr),
+	// Register class 'Person' ('record' is general term used for 'struct/class') -
+	rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
+	// Register user defined ctor -
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
-	rtl::type().member<Person>().method("setAge").build(Person::setAge),
-	rtl::type().member<Person>().method("getName").build(Person::getName)
+    // Register methods -
+	rtl::type().member<Person>().method("setAge").build(&Person::setAge),
+	rtl::type().member<Person>().method("getName").build(&Person::getName)
 });
 ```
+The `cxx_mirror` object is your gateway to runtime reflection – it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere – in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
 
-With just this much, you’ve registered your types and unlocked full runtime reflection. The `cxx_mirror` object is your gateway to query, introspect, and instantiate types at runtime — all without compile-time knowledge of those types, without strict static coupling.
-
-***Without reflection:***
-
+And what better way to do that than a **Singleton**,
+*`(MyReflection.h)`*
 ```c++
-Person p("John", 42);
-p.setAge(43);
-std::cout << p.getName();
+namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
+struct cxx { static rtl::CxxMirror& mirror(); };	// The Singleton.
 ```
-
-***With reflection:***
-
+define and register everything in an isolated translation unit,
+*`(MyReflection.cpp)`*
 ```c++
-// Look up the class by name
-std::optional<rtl::Record> classPerson = cxx_mirror.getRecord("Person");
+#include <rtl/builder.h> 	// Reflection builder interface.
 
-if (classPerson)  // Check has_value() before use.
-{
-    // Create a stack-allocated instance. Returns- std::pair<rtl::error, rtl::RObject>
-    auto [err, robj] = classPerson->create<alloc::Stack>("John", 42);
-    if (err == rtl::error::None)  //Construction successful.
-    {
-        // Call setAge(43) on the reflected object
-        std::optional<rtl::Method> setAge = classPerson->getMethod("setAge");
-        if (setAge) {
-			// Binds rtl::RObject & rtl::Method, calls with args.
-            auto [err, ret] = setAge->bind(robj).call(43);  //'setAge' is void ('ret' empty).
-			if (err == rtl::error::None) { /* Operation succeeded. */ }
-        }
-
-        // Call getName(), which returns std::string
-        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
-        if (getName) {
-			//Returns- std::pair<rtl::error, rtl::RObject>
-            auto [err, ret] = getName->bind(robj).call();
-            if (err == rtl::error::None && ret.canViewAs<std::string>())
-            {
-                std::optional<rtl::view<std::string>> viewStr = ret.view<std::string>();
-                std::cout << viewStr->get();  // safe. validated above.
-            }
-        }
-    }
+rtl::CxxMirror& cxx::mirror() {
+    // Inherently thread safe.
+    static auto cxx_mirror = rtl::CxxMirror({
+        /* ...register all types here... */
+    });
+    return cxx_mirror;
 }
 ```
+Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
+
+**RTL in action:**
+
+```c++
+#include <rtl/access.h>    // Reflection access interface.
+#include "MyReflection.h"
+
+int main()
+{
+    // Query reflected record for class `Person` (dynamic lookup).
+    std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+    if (!classPerson) { return 0; } // Class not registered.
+
+    // Get constructor overload: Person(const char*, int).
+    rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
+    if (!personCtor) { return 0; } // Constructor with expected signature not found.
+
+    // Construct a stack-allocated instance; returns {error, RObject}.
+    auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
+    if (err != rtl::error::None) { return 0; } // Construction failed.
+
+    // Lookup reflected method `setAge`.
+    std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
+    if (!oSetAge) { return 0; } // Method not found.
+
+    // When target/return types are known (fastest path).
+    {
+        // Materialize typed method: Person::setAge(int) -> void.
+        rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
+                                                       .argsT<int>().returnT<void>();
+        if (setAge) {
+            // View the underlying Person instance.
+            const Person& person = robj.view<Person>()->get();
+
+            // Near-zero-overhead dispatch (pointer-level cost).
+            setAge(person)(47);
+        }
+    }
+
+    // When target/return types are erased (more flexible).
+    {
+        // Materialize erased method: RObject target, erased return.
+        rtl::method<rtl::RObject, rtl::Return(int)> setAge = oSetAge->targetT()
+                                                                    .argsT<int>().returnT();
+        if (setAge) {
+            // Slightly slower than typed path; comparable to std::function.
+            auto [err, ret] = setAge(robj)(47);
+            if (err == rtl::error::None) { /* call succeeded; return is void ('ret' empty)*/ }
+        }
+    }
+
+    // Lookup reflected method `getName`.
+    std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+    if (!oGetName) { return 0; } // Method not found.
+
+    // Materialize erased method: getName() -> std::string.
+    rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
+                                                               .argsT().returnT();
+    if (getName)
+	{
+        auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
+        if (err == rtl::error::None && ret.canViewAs<std::string>()) {
+            const std::string& name = ret.view<std::string>()->get();
+            std::cout << name;	// Safely view the returned std::string.
+        }
+    }
+    return 0;
+}
+```
+### Performance Model (Benchmarking Results)
+
+* Non-erased RTL calls are equivalent to direct calls (≤ ~1 ns overhead).
+
+* Erased calls incur a bounded overhead (worst case ~15–16 ns on trivial functions).
+
+* For real workloads, erased calls typically add 3–10%, often less.
+
+> RTL exposes performance tradeoffs directly in its API, delivering near-zero-overhead calls with full type information and a small, bounded cost with erased dispatch.
+
 ### `Heap` vs `Stack` Allocation and Lifetime Management
 
 RTL lets you create reflected objects on the `Heap` or `Stack` with automatic lifetime management:
@@ -99,9 +180,9 @@ RTL lets you create reflected objects on the `Heap` or `Stack` with automatic li
 
 * Move semantics — `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
 
-* Return values — All returns are propagated back wrapped in `rtl::RObject`, with temporaries (e.g. smart pointers) cleaned up automatically at scope exit.
+* Return values — All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
 
-RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at runtime.
+RTL doesn’t invent a new paradigm — it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
 
 ## Reflection Features
 

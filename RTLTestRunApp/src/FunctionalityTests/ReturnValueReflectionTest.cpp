@@ -1,10 +1,9 @@
 
+#include <rtl/rtl_access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
 #include "TestUtilsDate.h"
-//#include "TestUtilsBook.h"
-//#include "GlobalTestUtils.h"
 
 using namespace test_utils;
 using namespace test_mirror;
@@ -14,19 +13,19 @@ namespace rtl_tests
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
         //I don't know if the 'Event' is class or struct..Reflection YaY!. :P
-        auto classEvent = cxx::mirror().getRecord(reflected_id::event);
+        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(event::struct_));
         ASSERT_TRUE(classEvent);
 
-        auto [err0, robj0] = classEvent->create<rtl::alloc::Stack>();
+        auto [err0, robj0] = classEvent->ctor()(rtl::alloc::Stack);
 
         //Event's constructor is private, not accessible, Hence the error.
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
         {
-            auto classCalender = cxx::mirror().getRecord(reflected_id::calender);
+            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(calender::struct_));
             ASSERT_TRUE(classCalender);
 
-            auto [err1, calender] = classCalender->create<rtl::alloc::Stack>();
+            auto [err1, calender] = classCalender->ctor()(rtl::alloc::Stack);
 
             EXPECT_TRUE(err1 == rtl::error::None);
             ASSERT_FALSE(calender.isEmpty());
@@ -40,28 +39,21 @@ namespace rtl_tests
             auto getEvent = classCalender->getMethod(calender::str_getTheEvent);
             ASSERT_TRUE(getEvent);
 
+            auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
+
             // get the Event's object from the 'Calender' object.
-            auto [err2, event] = getEvent->bind(calender).call();
+            auto [err2, event] = get_event(calender)();
+
             EXPECT_TRUE(err2 == rtl::error::None);
             ASSERT_FALSE(event.isEmpty());
-            EXPECT_TRUE(event.getTypeId() == reflected_id::event);
+            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(event::struct_));
             {
-                {
-                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
-                    EXPECT_TRUE(err == rtl::error::CloningDisabled);
-                }
-                
-                rtl::error reterr = cxx::mirror().setupCloning(event);
-                ASSERT_TRUE(reterr == rtl::error::None);
-                
-                {
-                    auto [err, robj] = event.clone<rtl::alloc::Heap>();
-                    //Event's copy-constructor private or deleted.
-                    EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-                    ASSERT_TRUE(robj.isEmpty());
-                    // Two 'Event' instances, owned by 'Calender'
-                    EXPECT_TRUE(event::get_instance_count() == 2);
-                }
+                auto [err, robj] = event.clone<rtl::alloc::Heap>();
+                //Event's copy-constructor private or deleted.
+                EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+                ASSERT_TRUE(robj.isEmpty());
+                // Two 'Event' instances, owned by 'Calender'
+                EXPECT_TRUE(event::get_instance_count() == 2);
             } {
                 auto [err, robj] = event.clone<rtl::alloc::Stack>();
                 //Event's copy-constructor private or deleted.

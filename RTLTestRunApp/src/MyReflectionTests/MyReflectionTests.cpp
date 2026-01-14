@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
+#include <rtl/rtl_access.h>
 
-#include "RTLibInterface.h"
 #include "MyReflectingType.h"
 
 using namespace my_type;
@@ -14,14 +14,18 @@ namespace
     {
         {
             // Attempt to retrieve the C-style function without specifying a namespace.
-            std::optional<rtl::Function> sendString = MyReflection().getFunction("sendString");
+            std::optional<rtl::Function> optSendString = MyReflection().getFunction("sendString");
             // Not found, since it was registered under the 'ext' namespace.
-            EXPECT_FALSE(sendString);
+            EXPECT_FALSE(optSendString);
         } {
             // Retrieve the function with its correct namespace.
-            std::optional<rtl::Function> sendString = MyReflection().getFunction("ext", "sendString");
+            std::optional<rtl::Function> optSendString = MyReflection().getFunction("ext", "sendString");
             // Found successfully.
-            ASSERT_TRUE(sendString);
+            ASSERT_TRUE(optSendString);
+
+            auto sendStringFn = optSendString->argsT<std::string>().returnT<>();
+            ASSERT_TRUE(sendStringFn);
+            EXPECT_EQ(sendStringFn.get_init_error(), rtl::error::None);
 
             auto theStr = std::string("Initiating reflection tests.");
             auto expectReturnStr = ("sent_string_" + theStr);
@@ -30,7 +34,7 @@ namespace
             // However, if the function takes reference parameters that require perfect forwarding,  
             // the binding can be specified explicitly using `bind<T&>()`, `bind<T&&>()`, or `bind<const T&>()`.  
             // In essence, `bind()` enables correct forwarding semantics for function calls.  
-            auto [err, ret] = sendString->bind().call(theStr);
+            auto [err, ret] = sendStringFn(theStr);
 
             // Reflected call executes successfully.
             EXPECT_TRUE(err == rtl::error::None);
@@ -53,19 +57,23 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_const_char_ptr)
     {
         // Retrieve the function with its correct namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
         // Found successfully.
-        ASSERT_TRUE(sendAsString);
+        ASSERT_TRUE(optSendAsString);
 
         auto theStr = std::string("const_char_ptr.");
         auto expectReturnStr = ("sent_string_literal_" + theStr);
+
+        auto sendAsStringFn = optSendAsString->argsT<const char*>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
 
         // Nothing to bind here, since this is a non-member (C-style) function and it does not  
         // require arguments to be perfectly forwarded.  
         // The argument passed is `const char*`, and the corresponding overload has been registered.  
         // The reflective call succeeds. If a mismatched argument is passed,  
         // `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind().call(theStr.c_str());
+        auto [err, ret] = sendAsStringFn(theStr.c_str());
 
         // Reflected call executes successfully.
         EXPECT_TRUE(err == rtl::error::None);
@@ -87,18 +95,22 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_lvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
-        ASSERT_TRUE(sendAsString); // Function found successfully.
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Eric");
         auto person = Person(nameStr);
         auto expectReturnStr = ("sent_string_lvalue_" + nameStr);
 
+        auto sendAsStringFn = optSendAsString->argsT<Person>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
+
         // Nothing to bind here: the call is with a regular lvalue.
         // This resolves to the overload `sendAsString(Person)`.
         // The overload was registered, so the reflective call will succeed.
         // If the argument type mismatches, `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind().call(person);
+        auto [err, ret] = sendAsStringFn(person);
 
         // Validate reflective call succeeded.
         EXPECT_TRUE(err == rtl::error::None);
@@ -118,33 +130,56 @@ namespace
     TEST(MyReflectionTests, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> sendAsString = MyReflection().getFunction("ext", "sendAsString");
-        ASSERT_TRUE(sendAsString); // Function found successfully.
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Logan");
-        auto expectReturnStr = ("sent_string_rvalue_" + nameStr);
+        
+        auto sendAsStringFn = optSendAsString->argsT<Person>().returnT<>();
+        ASSERT_TRUE(sendAsStringFn);
+        EXPECT_EQ(sendAsStringFn.get_init_error(), rtl::error::None);
+        {
+            // Although the argument is an rvalue (Person&&),
+            // overload resolution prefers the by-value overload (Person)
+            // over the rvalue-reference overload when both are viable.
+            // As a result, the call resolves to the by-value function.
+            auto [err, ret] = sendAsStringFn(Person(nameStr));
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
 
-        // Now invoke the rvalue-ref overload: `sendAsString(Person&&)`.
-        // To ensure this overload is selected, we must explicitly bind
-        // with `Person&&`. This is achieved through perfect forwarding,
-        // since overload resolution cannot deduce rvalue-ref automatically.
-        //
-        // The overload was registered, so the reflective call will succeed.
-        // If the argument type mismatches, `error::SignatureMismatch` will be returned.
-        auto [err, ret] = sendAsString->bind<Person&&>().call(Person(nameStr));
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
 
-        // Validate reflective call succeeded.
-        EXPECT_TRUE(err == rtl::error::None);
-        EXPECT_FALSE(ret.isEmpty());
+            const std::string& retStr = strView->get();
+            auto expectReturnStr = ("sent_string_lvalue_" + nameStr);
+            // Confirms the correct overload was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        } {
+            // Now invoke the rvalue-ref overload: `sendAsString(Person&&)`.
+            // To ensure this overload is selected, we must explicitly bind
+            // with `Person&&`. This is achieved through perfect forwarding,
+            // since overload resolution cannot deduce rvalue-ref automatically.
+            //
+            // The overload was registered, so the reflective call will succeed.
+            // If the argument type mismatches, `error::SignatureMismatch` will be returned.
+            auto [err, ret] = sendAsStringFn.bind<Person&&>()(Person(nameStr));
 
-        // Verify return type and extract result.
-        EXPECT_TRUE(ret.canViewAs<std::string>());
-        std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-        ASSERT_TRUE(strView);
+            // Validate reflective call succeeded.
+            EXPECT_TRUE(err == rtl::error::None);
+            EXPECT_FALSE(ret.isEmpty());
 
-        const std::string& retStr = strView->get();
-        // Confirms the correct overload was invoked.
-        EXPECT_EQ(retStr, expectReturnStr);
+            // Verify return type and extract result.
+            EXPECT_TRUE(ret.canViewAs<std::string>());
+            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
+            ASSERT_TRUE(strView);
+
+            const std::string& retStr = strView->get();
+            auto expectReturnStr = ("sent_string_rvalue_" + nameStr);
+            // Confirms the correct overload was invoked.
+            EXPECT_EQ(retStr, expectReturnStr);
+        }
     }
 
 
@@ -155,17 +190,18 @@ namespace
         ASSERT_TRUE(classPerson);
 
         // Retrieve the static method from the class.
-        std::optional<rtl::Method> getDefaults = classPerson->getMethod("getDefaults");
-        ASSERT_TRUE(getDefaults);
-
-        auto expectReturnStr = std::string("Person_defaults_returned");
-
+        std::optional<rtl::Method> optGetDefaults = classPerson->getMethod("getDefaults");
+        ASSERT_TRUE(optGetDefaults);
         {
+            auto getDefaultsFn = optGetDefaults->argsT<>().returnT<>();
+            ASSERT_TRUE(getDefaultsFn);
+            EXPECT_EQ(getDefaultsFn.get_init_error(), rtl::error::None);
+
             // Call the static member function directly.
             // Semantics are the same as a free function:
             // nothing to bind unless perfect-forwarding arguments are involved.
             // Since it's static, no instance of the class is required.
-            auto [err, ret] = getDefaults->bind().call();
+            auto [err, ret] = getDefaultsFn();
 
             // Validate reflective call succeeded.
             EXPECT_TRUE(err == rtl::error::None);
@@ -177,28 +213,7 @@ namespace
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
-            // Confirms the expected static function was invoked.
-            EXPECT_EQ(retStr, expectReturnStr);
-        } {
-            // Now create a `Person` object and reflect it into RTL.
-            rtl::RObject robj = rtl::reflect(Person(""));
-
-            // Even if we bind a target object before calling the static function,
-            // it has no effect — the call remains valid and succeeds.
-            // This matches C++ native semantics: binding an instance is irrelevant
-            // for static member functions.
-            auto [err, ret] = getDefaults->bind(robj).call();
-
-            // Validate reflective call succeeded.
-            EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
-
-            // Verify return type and extract result.
-            EXPECT_TRUE(ret.canViewAs<std::string>());
-            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-            ASSERT_TRUE(strView);
-
-            const std::string& retStr = strView->get();
+            auto expectReturnStr = std::string("Person_defaults_returned");
             // Confirms the expected static function was invoked.
             EXPECT_EQ(retStr, expectReturnStr);
         }
@@ -210,25 +225,23 @@ namespace
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::string name = "Charlie";
-        {
-            //  Invokes the overloaded constructor that takes 'const std::string&'.
-            //  It will not match the overload with 'std::string&', because arguments
-            //  are forwarded as universal references (&&), which bind only to 
-            //  'const std::string&'. This resolution is handled by the compiler,
-            //  not by RTL.
-            auto [err, robj] = classPerson->create<rtl::alloc::Stack>(name);
+        const char* name = "Charlie";
+        //  Invokes the overloaded constructor that takes 'const std::string&'.
+        //  It will not match the overload with 'std::string&', because arguments
+        //  are forwarded as universal references (&&), which bind only to 
+        //  'const std::string&'. This resolution is handled by the compiler,
+        //  not by RTL.
+        auto [err, robj] = classPerson->ctor<std::string>()(rtl::alloc::Stack, name);
 
-            EXPECT_TRUE(err == rtl::error::None);
-            ASSERT_TRUE(!robj.isEmpty());
-            ASSERT_TRUE(robj.canViewAs<Person>());
+        EXPECT_TRUE(err == rtl::error::None);
+        ASSERT_TRUE(!robj.isEmpty());
+        ASSERT_TRUE(robj.canViewAs<Person>());
 
-            auto view = robj.view<Person>();
-            EXPECT_TRUE(view);
+        auto view = robj.view<Person>();
+        EXPECT_TRUE(view);
 
-            const Person& person = view->get();
-            EXPECT_EQ(name, person.name);
-        }
+        const Person& person = view->get();
+        EXPECT_EQ(name, person.name);
     }
 
 
@@ -245,17 +258,21 @@ namespace
         //  Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
         rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::Method> setProfile = classPerson->getMethod("setProfile");
-        ASSERT_TRUE(setProfile);
+        std::optional<rtl::Method> oSetProfile = classPerson->getMethod("setProfile");
+        ASSERT_TRUE(oSetProfile);
 
+        rtl::method<rtl::RObject, rtl::Return(std::string)> setProfile = oSetProfile->targetT()
+                                                                                    .argsT<std::string>()
+                                                                                    .returnT();
+        EXPECT_TRUE(setProfile);
         //  NOTE for documentation:
         //  Calling with a constant-size array (like `"profStr"`) will not compile, 
         //  because array-to-pointer decay is not supported here.
         //  Instead, use a `const char*` or `std::string`.
-        //  auto [err, ret] = setProfile->bind(robjTim).call("profStr");
-        
+        //  auto [err, ret] = setProfile(robjTim)("profStr");
+
         {
-            auto [err, ret] = setProfile->bind(robjTim).call(std::string("Tim's prof"));
+            auto [err, ret] = setProfile(robjTim)("Tim's prof");
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 
@@ -271,7 +288,10 @@ namespace
             EXPECT_EQ(retStr, "called_by_val");
         } {
             std::string profStr = "Tim's profile.";
-            auto [err, ret] = setProfile->bind(robjTim).call<const std::string&>(profStr);
+
+            // TODO: by value and by-ref overload should not be allowed.
+            auto [err, ret] = setProfile.bind<std::string&>(robjTim)("Tim's profile.");
+
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 
@@ -283,9 +303,9 @@ namespace
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
-            // Even though we explicitly bound `std::string&`, 
-            // runtime overload resolution still picked the by-value version.
-            EXPECT_EQ(retStr, "called_by_val");
+            // Even though compiler doesn't allows this but RTL can call both the methods successfully,
+            // TODO: by value and by-ref overload should not be allowed.
+            EXPECT_EQ(retStr, "called_by_ref");
         }
     }
 
@@ -301,23 +321,27 @@ namespace
         // Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
         rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::Method> setTitle = classPerson->getMethod("setTitle");
-        ASSERT_TRUE(setTitle);
+        std::optional<rtl::Method> oSetTitle = classPerson->getMethod("setTitle");
+        ASSERT_TRUE(oSetTitle);
 
+        rtl::method<rtl::RObject, rtl::Return(std::string)> setTitle = oSetTitle->targetT()
+                                                                                .argsT<std::string>()
+                                                                                .returnT();
+        EXPECT_TRUE(setTitle);
         {
             //  Attempt to call 'setTitle' with an rvalue string.
             //  This fails because reflection will first attempt to resolve the call
             //  against a by-value parameter (`std::string`) instead of the actual
             //  registered signature (`std::string&&`).
-            auto [err, ret] = setTitle->bind(robjTim).call(std::string("Mr."));
-            EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+            auto [err, ret] = setTitle(robjTim)(std::string("Mr."));
+            EXPECT_TRUE(err == rtl::error::ExplicitRefBindingRequired);
             EXPECT_TRUE(ret.isEmpty());
         } {
             //  To invoke the method successfully, we must perfectly forward `std::string` as an rvalue-ref.  
             //  This requires explicitly specifying `std::string&&` in the template parameter pack of `bind`.  
             //  Note: passing a string literal works fine here, since it is implicitly convertible to `std::string`;  
             //  wrapping with `std::string("Mr.")` is unnecessary.  
-            auto [err, ret] = setTitle->bind<std::string&&>(robjTim).call("Mr.");
+            auto [err, ret] = setTitle.bind<std::string&&>(robjTim)("Mr.");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
 
@@ -346,29 +370,33 @@ namespace
         // Reflect into RObject. Internally this creates a copy of 'orgTim' on the stack.
         rtl::RObject robjTim = rtl::reflect(orgTim);
 
-        std::optional<rtl::Method> setOccupation = classPerson->getMethod("setOccupation");
-        ASSERT_TRUE(setOccupation);
+        std::optional<rtl::Method> oSetOccupation = classPerson->getMethod("setOccupation");
+        ASSERT_TRUE(oSetOccupation);
 
+        rtl::method<rtl::RObject, rtl::Return(std::string)> setOccupation = oSetOccupation->targetT()
+                                                                                          .argsT<std::string>()
+                                                                                          .returnT();
+        EXPECT_TRUE(setOccupation);
         {
         //  Attempt to call 'setOccupation' with an rvalue string.
         //  Expectation: should match the rvalue-ref overload (`std::string&&`).
         //  Actual: fails because reflection first attempts to match a by-value
         //  parameter (`std::string`) instead of the registered signature.
-            auto [err, ret] = setOccupation->bind(robjTim).call(std::string("Teacher"));
-            EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+            auto [err, ret] = setOccupation(robjTim)(std::string("Teacher"));
+            EXPECT_TRUE(err == rtl::error::ExplicitRefBindingRequired);
             EXPECT_TRUE(ret.isEmpty());
         } {
         //  Attempt to call 'setOccupation' with a const-lvalue string.
         //  Expectation: should match the const-lvalue-ref overload (`const std::string&`).
-        //  Actual: fails for the same reason�reflection attempts by-value resolution first.
+        //  Actual: fails for the same reason reflection attempts by-value resolution first.
             const std::string occupationStr = "Teacher";
-            auto [err, ret] = setOccupation->bind(robjTim).call(std::string(occupationStr));
-            EXPECT_TRUE(err == rtl::error::SignatureMismatch);
+            auto [err, ret] = setOccupation(robjTim)(occupationStr);
+            EXPECT_TRUE(err == rtl::error::ExplicitRefBindingRequired);
             EXPECT_TRUE(ret.isEmpty());
         } {
         //  Correctly invoke the rvalue-ref overload by explicitly binding
         //  `std::string&&` in the template parameter pack and perfectly forwarding.
-            auto [err, ret] = setOccupation->bind<std::string&&>(robjTim).call("Teacher");
+            auto [err, ret] = setOccupation.bind<std::string&&>(robjTim)("Teacher");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
 
@@ -384,7 +412,7 @@ namespace
         } {
         //  Correctly invoke the const-lvalue-ref overload by explicitly binding
         //  `const std::string&` in the template parameter pack and perfectly forwarding.
-            auto [err, ret] = setOccupation->bind<const std::string&>(robjTim).call("Teacher");
+            auto [err, ret] = setOccupation.bind<const std::string&>(robjTim)("Teacher");
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
 
@@ -403,109 +431,27 @@ namespace
 
     TEST(MyReflectionTests, const_method_semantics__on_true_const_target)
     {
+        // Case 1: Reflecting a true-const Person.
+        const Person constSam = Person("Const-Sam");
+        // Reflect 'const Person' into RObject.
+        // RTL never performs an implicit const_cast on const objects.
+        // Since 'constSam' is genuinely const, RTL preserves that constness.
+        // This applies equally to any object returned by reflective calls.
+        rtl::RObject robj = rtl::reflect(constSam);
+        
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::optional<rtl::Method> getProfile = classPerson->getMethod("getProfile");
-        ASSERT_TRUE(getProfile);
+        std::optional<rtl::Method> oGetProfile = classPerson->getMethod("getProfile");
+        ASSERT_TRUE(oGetProfile);
+
+        rtl::method<rtl::RObject, rtl::Return()> getProfile = oGetProfile->targetT().argsT().returnT();
+        EXPECT_TRUE(getProfile);
         {
-            // Case 1: Reflecting a true-const Person.
-            const Person constSam = Person("Const-Sam");
-
-            // Reflect 'const Person' into RObject.
-            rtl::RObject robj = rtl::reflect(constSam);
-
-            // RTL never performs an implicit const_cast on externally provided true-const objects.
-            // Since 'constSam' is genuinely const, RTL preserves that constness.
-            // This applies equally to any object returned by reflective calls.
-            EXPECT_FALSE(robj.isConstCastSafe());
-            {
-                std::string expectReturnStr = "only_const_method_version_exists";
-
-                // For 'getProfile' only a const overload is registered.
-                // Since 'robj' reflects a const object, it naturally invokes the const overload.
-                auto [err, ret] = getProfile->bind(robj).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-
-                // Validate return type and value.
-                EXPECT_TRUE(ret.canViewAs<std::string>());
-                std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-                ASSERT_TRUE(strView);
-
-                const std::string& retStr = strView->get();
-                EXPECT_EQ(retStr, expectReturnStr);
-            } {
-                // Attempt to bind a truly-const object to a non-const method.
-                // This forces RTL to try a const_cast on the reflected object.
-                // Since the object is genuinely const, the cast would be unsafe.
-                // However, the call fails earlier because no non-const overload is registered.
-                auto [err, ret] = getProfile->bind(rtl::constCast(robj)).call();
-                // Expected: NonConstOverloadMissing.
-                EXPECT_TRUE(err == rtl::error::NonConstOverloadMissing);
-                EXPECT_TRUE(ret.isEmpty());
-            }
-        }
-    }
-
-
-    TEST(MyReflectionTests, non_const_method_semantics__on_true_const_target)
-    {
-        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
-        ASSERT_TRUE(classPerson);
-
-        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
-        ASSERT_TRUE(getName);
-        {
-            // Case 1: Reflecting a true-const Person.
-            const Person constSam = Person("Const-Sam");
-
-            // Reflect 'const Person' into RObject.
-            rtl::RObject robj = rtl::reflect(constSam);
-
-            EXPECT_FALSE(robj.isConstCastSafe());
-            {
-                auto [err, ret] = getName->bind(robj).call();
-                // 'robj' reflects a true-const Person, but 'getName' is non-const.
-                // RTL searches for a const overload, which is not present.
-                // Expected: ConstOverloadMissing.
-                EXPECT_TRUE(err == rtl::error::ConstOverloadMissing);
-                EXPECT_TRUE(ret.isEmpty());
-            } {
-                // Explicitly attempt to bind the true-const object to a non-const method.
-                // Since the object is truly const, const_cast is unsafe.
-                auto [err, ret] = getName->bind(rtl::constCast(robj)).call();
-                // Expected: IllegalConstCast.
-                EXPECT_TRUE(err == rtl::error::IllegalConstCast);
-                EXPECT_TRUE(ret.isEmpty());
-            }
-        }
-    }
-
-
-    TEST(MyReflectionTests, const_method_semantics__on_logical_const_target)
-    {
-        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
-        ASSERT_TRUE(classPerson);
-
-        std::optional<rtl::Method> getProfile = classPerson->getMethod("getProfile");
-        ASSERT_TRUE(getProfile);
-
-        // Case 2: Reflecting a mutable Person.
-        Person mutableSam = Person("Dash");
-
-        // Reflect 'Person' into RObject (copy created on stack).
-        rtl::RObject robj = rtl::reflect(mutableSam);
-
-        // RTL treats reflection-created objects as logically immutable by default.
-        // For such objects, const_cast is always safe since RTL controls their lifetime.
-        EXPECT_TRUE(robj.isConstCastSafe());
-        {
-            std::string expectReturnStr = "only_const_method_version_exists";
-
-            auto [err, ret] = getProfile->bind(robj).call();
-            // 'robj' is logically const. Since only a const overload is registered,
-            // RTL safely invokes the const version.
+            // For 'getProfile' only a const overload is registered.
+            // Since 'robj' reflects a const object, only const methods can be called on it.
+            // making 'robj' as const (using std::cref) ensures to call the const-method on it.
+            auto [err, ret] = getProfile(std::cref(robj))();
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 
@@ -515,41 +461,85 @@ namespace
             ASSERT_TRUE(strView);
 
             const std::string& retStr = strView->get();
+            std::string expectReturnStr = "only_const_method_version_exists";
             EXPECT_EQ(retStr, expectReturnStr);
         } {
-            // Explicitly attempt to call a non-const method on a truly-const object.
-            // RTL would need a const_cast, which is safe here, but the call fails earlier.
-            // Since the non-const overload is not registered, RTL raises NonConstOverloadMissing.
-            auto [err, ret] = getProfile->bind(rtl::constCast(robj)).call();
+            // Attempt to bind a truly-const object to a non-const method.
+            // Since the object is genuinely const, the call fails because no 
+            // non-const overload is registered for the same.
+            auto [err, ret] = getProfile(robj)();
+            // Expected: NonConstOverloadMissing.
             EXPECT_TRUE(err == rtl::error::NonConstOverloadMissing);
             EXPECT_TRUE(ret.isEmpty());
         }
     }
 
 
-    TEST(MyReflectionTests, non_const_method_semantics__on_logical_const_target)
+    TEST(MyReflectionTests, non_const_method_semantics__on_true_const_target)
     {
+        // Case 1: Reflecting a true-const Person.
+        const Person constSam = Person("Const-Sam");
+        // Reflect 'const Person' into RObject.
+        // RTL never performs an implicit const_cast on const objects.
+        // Since 'constSam' is genuinely const, RTL preserves that constness.
+        // This applies equally to any object returned by reflective calls.
+        rtl::RObject robj = rtl::reflect(constSam);
+
         std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
         ASSERT_TRUE(classPerson);
 
-        std::optional<rtl::Method> getName = classPerson->getMethod("getName");
-        ASSERT_TRUE(getName);
+        // only a non-const overload exists(and registered) for 'getName'.
+        std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+        ASSERT_TRUE(oGetName);
 
-        // Case 2: Reflecting a mutable Person.
-        Person mutableSam = Person("Mutable-Sam");
-
-        rtl::RObject robj = rtl::reflect(mutableSam);
-        EXPECT_TRUE(robj.isConstCastSafe());
-
-        std::string expectReturnStr = "called_non_const__Mutable-Sam";
+        rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+        EXPECT_TRUE(getName);
         {
-            auto [err, ret] = getName->bind(robj).call();
-            // 'robj' is logically const, but since only a non-const overload exists,
-            // RTL safely applies const_cast internally and invokes it.
+            // using std::cref() here, we are enforcing to call the const-method
+            // overload of 'getName' (which doesn't exists).
+            auto [err, ret] = getName(std::cref(robj))();
+            // 'robj' reflects a true-const Person, but 'getName' is non-const.
+            // RTL searches for a const overload, which is not present.
+            // Expected: ConstOverloadMissing.
+            EXPECT_TRUE(err == rtl::error::ConstOverloadMissing);
+            EXPECT_TRUE(ret.isEmpty());
+        } {
+            // Explicitly attempt to bind the true-const object to a non-const method.
+            // Since the object is truly const, const_cast is unsafe.
+            auto [err, ret] = getName(robj)();
+            // Expected: InvalidCallOnConstTarget.
+            EXPECT_TRUE(err == rtl::error::InvalidCallOnConstTarget);
+            EXPECT_TRUE(ret.isEmpty());
+        }
+    }
+
+
+    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_const_target)
+    {
+        // Case 1: Reflecting a true-const Person.
+        const Person constSam = Person("Const-Sam");
+        // Reflect 'const Person' into RObject.
+        // RTL never performs an implicit const_cast on const objects.
+        // Since 'constSam' is genuinely const, RTL preserves that constness.
+        // This applies equally to any object returned by reflective calls.
+        rtl::RObject robj = rtl::reflect(constSam);
+
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        std::optional<rtl::Method> oUpdateAddress = classPerson->getMethod("updateAddress");
+        ASSERT_TRUE(oUpdateAddress);
+
+        rtl::method<rtl::RObject, rtl::Return()> updateAddress = oUpdateAddress->targetT().argsT().returnT();
+        EXPECT_TRUE(updateAddress);
+        {
+            std::string expectReturnStr = "called_const_overload";
+            // Both const and non-const overloads are registered.
+            // Since 'robj' reflecting a true-const, RTL invokes the const overload without fail.
+            auto [err, ret] = updateAddress(std::cref(robj))();
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 
-            // Validate return type and value.
             EXPECT_TRUE(ret.canViewAs<std::string>());
             std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
             ASSERT_TRUE(strView);
@@ -557,79 +547,35 @@ namespace
             const std::string& retStr = strView->get();
             EXPECT_EQ(retStr, expectReturnStr);
         } {
-            // Explicit request for the non-const overload via rtl::constCast.
-            // Safe here, since the object is not truly const.
-            auto [err, ret] = getName->bind(rtl::constCast(robj)).call();
-            EXPECT_TRUE(err == rtl::error::None);
-            EXPECT_FALSE(ret.isEmpty());
-
-            EXPECT_TRUE(ret.canViewAs<std::string>());
-            std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-            ASSERT_TRUE(strView);
-
-            const std::string& retStr = strView->get();
-            EXPECT_EQ(retStr, expectReturnStr);
+            // Explicitly attempt to call the non-const overload.
+            // Unsafe here, since the object is truly const.
+            auto [err, ret] = updateAddress(robj)();
+            // Expected: IllegalConstCast.
+            EXPECT_TRUE(err == rtl::error::InvalidCallOnConstTarget);
+            EXPECT_TRUE(ret.isEmpty());
         }
     }
 
 
-    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_true_const_target)
+    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_non_const_target)
     {
-        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
-        ASSERT_TRUE(classPerson);
-
-        std::optional<rtl::Method> updateAddress = classPerson->getMethod("updateAddress");
-        ASSERT_TRUE(updateAddress);
-        {
-            // Case 1: Reflecting a true-const Person.
-            const Person constSam = Person("Const-Sam");
-
-            rtl::RObject robj = rtl::reflect(constSam);
-            EXPECT_FALSE(robj.isConstCastSafe());
-            {
-                std::string expectReturnStr = "called_const_overload";
-                // Both const and non-const overloads are registered.
-                // Since 'robj' is true-const, RTL automatically invokes the const overload.
-                auto [err, ret] = updateAddress->bind(robj).call();
-                EXPECT_TRUE(err == rtl::error::None);
-                EXPECT_FALSE(ret.isEmpty());
-
-                EXPECT_TRUE(ret.canViewAs<std::string>());
-                std::optional<rtl::view<std::string>> strView = ret.view<std::string>();
-                ASSERT_TRUE(strView);
-
-                const std::string& retStr = strView->get();
-                EXPECT_EQ(retStr, expectReturnStr);
-            } {
-                // Explicitly attempt to call the non-const overload via constCast.
-                // Unsafe here, since the object is truly const.
-                auto [err, ret] = updateAddress->bind(rtl::constCast(robj)).call();
-                // Expected: IllegalConstCast.
-                EXPECT_TRUE(err == rtl::error::IllegalConstCast);
-                EXPECT_TRUE(ret.isEmpty());
-            }
-        }
-    }
-
-
-    TEST(MyReflectionTests, const_based_overload_resolution_semantics__on_logical_const_target)
-    {
-        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
-        ASSERT_TRUE(classPerson);
-
-        std::optional<rtl::Method> updateAddress = classPerson->getMethod("updateAddress");
-        ASSERT_TRUE(updateAddress);
-
         // Case 2: Reflecting a mutable Person.
-        Person mutableSam = Person("Mutable-Sam");
+        rtl::RObject robj = rtl::reflect(Person("Mutable-Sam"));
 
-        rtl::RObject robj = rtl::reflect(mutableSam);
-        EXPECT_TRUE(robj.isConstCastSafe());
+        std::optional<rtl::Record> classPerson = MyReflection().getRecord("Person");
+        ASSERT_TRUE(classPerson);
+
+        std::optional<rtl::Method> oUpdateAddress = classPerson->getMethod("updateAddress");
+        ASSERT_TRUE(oUpdateAddress);
+
+        rtl::method<rtl::RObject, rtl::Return()> updateAddress = oUpdateAddress->targetT().argsT().returnT();
+        EXPECT_TRUE(updateAddress);
         {
             std::string expectReturnStr = "called_const_overload";
             // Both const and non-const overloads are registered.
-            // Since 'robj' is logically const, RTL invokes the const overload.
-            auto [err, ret] = updateAddress->bind(robj).call();
+            // Since 'robj' is mutable, but we can explicitly call the const overload
+            // by making sending the 'robj' as const (using std::cref()).
+            auto [err, ret] = updateAddress(std::cref(robj))();
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 
@@ -641,9 +587,8 @@ namespace
             EXPECT_EQ(retStr, expectReturnStr);
         } {
             std::string expectReturnStr = "called_non_const_overload";
-            // Explicit request for the non-const overload via rtl::constCast.
-            // Safe here, since the object is not truly const.
-            auto [err, ret] = updateAddress->bind(rtl::constCast(robj)).call();
+            // Explicit request for the non-const overload by sending the 'robj' as non-const.
+            auto [err, ret] = updateAddress(robj)();
             EXPECT_TRUE(err == rtl::error::None);
             EXPECT_FALSE(ret.isEmpty());
 

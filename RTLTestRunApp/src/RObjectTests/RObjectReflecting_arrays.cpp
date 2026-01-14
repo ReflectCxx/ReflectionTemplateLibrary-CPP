@@ -14,8 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-
-#include "RTLibInterface.h"
+#include <rtl/rtl_access.h>
 
 using namespace rtl;
 

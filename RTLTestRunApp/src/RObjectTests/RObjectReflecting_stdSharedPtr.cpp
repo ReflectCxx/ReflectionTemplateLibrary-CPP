@@ -2,18 +2,16 @@
 #include <memory>
 #include <gtest/gtest.h>
 
+
+#include <rtl/rtl_builder.h>
+#include <rtl/rtl_access.h>
+
 #include "Node.h"
-#include "RTLibInterface.h"
 
 using namespace test_utils;
 using namespace rtl;
 
 namespace {
-
-    // Cloning is only available for types explicitly registered by the user.
-    // This is because cloning requires a lambda to be stored in a static table.
-    // Types reflected via rtl::reflect or obtained as the return value of a reflective call
-    // cannot be cloned unless they are explicitly registered.
 
     static rtl::CxxMirror cxx_mirror()
     {
@@ -118,10 +116,6 @@ namespace rtl::unit_test
     {
         constexpr const int NUM = -20438;
         RObject robj = reflect(std::make_shared<int>(NUM));
-
-        error reterr = cxx_mirror().setupCloning(robj);
-        ASSERT_TRUE(reterr == error::None);
-
         ASSERT_FALSE(robj.isEmpty());
 
         // --- Step 1: Clone by default (entity::Auto semantics) ---
@@ -152,6 +146,7 @@ namespace rtl::unit_test
             // Copies the underlying value, *not* the wrapper.
             auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
+            ASSERT_FALSE(robj0.isEmpty());
 
             // Cannot view as shared_ptr, because we cloned the contained value.
             EXPECT_FALSE(robj0.canViewAs<std::shared_ptr<int>>());
@@ -214,9 +209,6 @@ namespace rtl::unit_test
         RObject robj = reflect(std::make_shared<int>(NUM));
         ASSERT_FALSE(robj.isEmpty());
 
-        error reterr = cxx_mirror().setupCloning(robj);
-        ASSERT_TRUE(reterr == error::None);
-
         // --- Step 1: Clone by default (entity::Auto semantics) ---
         {
             // Default cloning shallow-copies the wrapper.
@@ -230,6 +222,7 @@ namespace rtl::unit_test
             // Copies the underlying value, *not* the wrapper.
             auto [err, robj0] = robj.clone<alloc::Stack, copy::Value>();
             EXPECT_TRUE(err == error::None);
+            ASSERT_FALSE(robj0.isEmpty());
 
             // Cannot view as shared_ptr, because we cloned the contained value.
             EXPECT_FALSE(robj0.canViewAs<std::shared_ptr<int>>());
@@ -270,9 +263,6 @@ namespace rtl::unit_test
             RObject robj = reflect(std::make_shared<Node>(NUM));
             ASSERT_FALSE(robj.isEmpty());
             ASSERT_TRUE(Node::instanceCount() == 1);
-
-            error reterr = cxx_mirror().setupCloning(robj);
-            ASSERT_TRUE(reterr == error::None);
 
             // --- Step 2: Clone by default (entity::Auto semantics) ---
             {
@@ -353,9 +343,6 @@ namespace rtl::unit_test
         {
             constexpr const int NUM = 241054;
             RObject robj = reflect(std::make_shared<Node>(NUM));
-
-            error reterr = cxx_mirror().setupCloning(robj);
-            ASSERT_TRUE(reterr == error::None);
 
             ASSERT_FALSE(robj.isEmpty());
             ASSERT_TRUE(Node::instanceCount() == 1);
@@ -598,9 +585,6 @@ namespace rtl::unit_test
         {
             constexpr const int NUM = 10742;
             RObject robj = reflect(std::make_shared<Node>(NUM));
-
-            error reterr = cxx_mirror().setupCloning(robj);
-            ASSERT_TRUE(reterr == error::None);
 
             ASSERT_FALSE(robj.isEmpty());
             EXPECT_TRUE(robj.canViewAs<std::shared_ptr<Node>>());

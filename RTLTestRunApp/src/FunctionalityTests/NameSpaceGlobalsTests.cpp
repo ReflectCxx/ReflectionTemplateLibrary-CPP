@@ -1,6 +1,8 @@
 
-#include <complex>
+#include <rtl/rtl_access.h>
 #include <gtest/gtest.h>
+
+#include <complex>
 
 #include "TestMirrorProvider.h"
 #include "GlobalTestUtils.h"
@@ -16,7 +18,7 @@ namespace rtl_tests
 
     TEST(Reflecting_pod, construct_char_on_heap_and_stack)
     {
-        optional<Record> charType = cxx::mirror().getRecord(reflected_id::char_t);
+        optional<Record> charType = cxx::mirror().getRecord(cxx::reflected_id("char"));
         ASSERT_TRUE(charType);
         {
     /*      Attempting to construct a POD type('char') with a value directly via Record::create<>().
@@ -36,17 +38,17 @@ namespace rtl_tests
                 into an RObject in a type-erased manner. (demonstrated in next test case.)
             Therefore, this call yields 'SignatureMismatch' by design.
     */      
-            auto [err, rchar] = charType->create<rtl::alloc::Stack>('Q');
+            auto [err, rchar] = charType->ctor<char>()(rtl::alloc::Stack, 'Q');
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             ASSERT_TRUE(rchar.isEmpty());
         } {
-            auto [err, rchar] = charType->create<rtl::alloc::Stack>();
+            auto [err, rchar] = charType->ctor()(rtl::alloc::Stack);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(rchar.isEmpty());
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         {
-            auto [err, rchar] = charType->create<rtl::alloc::Heap>();
+            auto [err, rchar] = charType->ctor()(rtl::alloc::Heap);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(rchar.isEmpty());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
@@ -59,10 +61,6 @@ namespace rtl_tests
     {
         //Now for cases, if you want to handle it type-erased and pass around.
         RObject reflChar = rtl::reflect('Q');
-
-        error reterr = cxx::mirror().setupCloning(reflChar);
-
-        ASSERT_TRUE(reterr == error::None);
         {
             //Internally calls the copy constructor.
             auto [err, rchar] = reflChar.clone<rtl::alloc::Stack>();
@@ -131,71 +129,79 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
-        optional<Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
-        ASSERT_TRUE(getMagnitude);
+        {
+            optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+            ASSERT_TRUE(fnSetReal);
+            EXPECT_TRUE(fnSetReal->hasSignature<double>());
 
-        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
-        ASSERT_TRUE(setReal);
+            rtl::function<rtl::Return(double)> setReal = fnSetReal->argsT<double>().returnT<>();
+            EXPECT_TRUE(setReal);
+            EXPECT_EQ(setReal.get_init_error(), rtl::error::None);
 
-        optional<Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
-        ASSERT_TRUE(setImaginary);
+            auto [err, ret] = setReal(g_real);
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_TRUE(ret.isEmpty());
+        } {
+            optional<Function> fnSetImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+            ASSERT_TRUE(fnSetImaginary);
+            EXPECT_TRUE(fnSetImaginary->hasSignature<double>());
 
-        EXPECT_TRUE(setReal->hasSignature<double>());
+            rtl::function<rtl::Return(double)> setImginary = fnSetImaginary->argsT<double>().returnT<>();
+            EXPECT_TRUE(setImginary);
+            EXPECT_EQ(setImginary.get_init_error(), rtl::error::None);
 
-        double real = g_real;    //g_real's type is "const double", so can't be passed directly to setReal else,
-                                 //its type will be inferred 'const double' instead of 'double'.
-        auto [err0, ret0] = (*setReal)(real);
-        EXPECT_TRUE(err0 == rtl::error::None);
-        ASSERT_TRUE(ret0.isEmpty());
+            auto [err, ret] = setImginary(g_imaginary);
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_TRUE(ret.isEmpty());
+        } {
+            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
+            ASSERT_TRUE(fnGetMagnitude);
+            EXPECT_TRUE(fnGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
-        EXPECT_TRUE(setImaginary->hasSignature<double>());
+            rtl::function<rtl::Return()> getMagnitude = fnGetMagnitude->argsT<>().returnT<>();
+            EXPECT_TRUE(getMagnitude);
+            EXPECT_EQ(getMagnitude.get_init_error(), rtl::error::None);
 
-        double imaginary = g_imaginary;    //g_imaginary's type is "const double", so can't be passed directly to setImaginary else,
-                                           //its type will be inferred 'const double' instead of 'double'.
-        auto [err1, ret1] = (*setImaginary)(imaginary);
-        EXPECT_TRUE(err1 == rtl::error::None);
-        ASSERT_TRUE(ret1.isEmpty());
+            auto [err, ret] = getMagnitude();
+            EXPECT_TRUE(err == rtl::error::None);
+            ASSERT_FALSE(ret.isEmpty());
+            EXPECT_TRUE(ret.canViewAs<double>());
 
-        EXPECT_TRUE(getMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
-
-        auto [err2, ret2] = (*getMagnitude)();
-
-        EXPECT_TRUE(err2 == rtl::error::None);
-        ASSERT_FALSE(ret2.isEmpty());
-        EXPECT_TRUE(ret2.canViewAs<double>());
-
-        double retVal = ret2.view<double>()->get();
-        double magnitude = abs(complex(g_real, g_imaginary));
-        EXPECT_DOUBLE_EQ(magnitude, retVal);
+            double retVal = ret.view<double>()->get();
+            double magnitude = abs(complex(g_real, g_imaginary));
+            EXPECT_DOUBLE_EQ(magnitude, retVal);
+        }
     }
 
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
-        ASSERT_TRUE(setReal);
+        optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        ASSERT_TRUE(fnSetReal);
 
-        EXPECT_TRUE(setReal->hasSignature<double>());
-        EXPECT_FALSE(setReal->hasSignature<float>());
+        EXPECT_TRUE(fnSetReal->hasSignature<double>());
+        EXPECT_FALSE(fnSetReal->hasSignature<float>());
 
-        //g_real's type is "const double", so can't be passed directly to setReal.
-        //Instead we can explicitly specify the types as template parameter,
-        //like, (*setReal).operator()<float>(g_real);
-        //or we can use the bind<...>().call(), specifying type as template param, like,
-        auto [err, robj] = setReal->bind<float>().call(g_real);
+        rtl::function<rtl::Return(float)> setReal = fnSetReal->argsT<float>().returnT<>();
+        EXPECT_FALSE(setReal);
+        EXPECT_EQ(setReal.get_init_error(), rtl::error::SignatureMismatch);
 
-        EXPECT_TRUE(err == rtl::error::SignatureMismatch);
-        ASSERT_TRUE(robj.isEmpty());
+        auto [err, robj] = setReal(g_real);
+        EXPECT_EQ(err, rtl::error::SignatureMismatch);
+        EXPECT_TRUE(robj.isEmpty());
     }
 
 
     TEST(GlobalFunction, get_function_execute_return)
     {
-        optional<Function> getComplexNumAsString = cxx::mirror().getFunction(str_getComplexNumAsString);
-        ASSERT_TRUE(getComplexNumAsString);
+        optional<Function> fnGetComplexAsStr = cxx::mirror().getFunction(str_getComplexNumAsString);
+        ASSERT_TRUE(fnGetComplexAsStr);
 
-        auto [err, ret] = (*getComplexNumAsString)();
+        rtl::function<rtl::Return()> getComplexNumAsStr = fnGetComplexAsStr->argsT<>().returnT<>();
+        EXPECT_TRUE(getComplexNumAsStr);
+        EXPECT_EQ(getComplexNumAsStr.get_init_error(), rtl::error::None);
 
+        auto [err, ret] = getComplexNumAsStr();
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_FALSE(ret.isEmpty());
         EXPECT_TRUE(ret.canViewAs<string>());
@@ -208,37 +214,45 @@ namespace rtl_tests
 
     TEST(GlobalFunction, overloaded_function_execute_return)
     {
-        optional<Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        optional<Function> fnReverseString = cxx::mirror().getFunction(str_reverseString);
+        ASSERT_TRUE(fnReverseString);
+
+        rtl::function<rtl::Return(std::string)> reverseString = fnReverseString->argsT<std::string>().returnT<>();
         ASSERT_TRUE(reverseString);
         {
-            //STRA's type is 'consexpr const char*', function accepts 'string',
+            //STRA's type is 'const char*', function accepts 'string',
             //so type-casting in place as 'string'
-            auto [err, ret] = (*reverseString)(string(STRA));
+            auto [err, ret] = reverseString(STRA);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
-            string retVal = ret.view<std::string>()->get();
-            EXPECT_TRUE(retVal == STRA_REVERSE);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
+            EXPECT_EQ(retStr, expStr);
         } {
-            //STRB's type is 'consexpr const char*', function accepts 'string',
+            //STRB's type is 'const char*', function accepts 'string',
             //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-            auto [err, ret] = reverseString->bind<string>().call(STRB);
+            auto [err, ret] = reverseString(STRB);
 
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
 
-           string retVal = ret.view<std::string>()->get();
-           EXPECT_TRUE(retVal == STRB_REVERSE);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(STRB_REVERSE) + SUFFIX_std_string;
+            EXPECT_EQ(retStr, expStr);
         } {
-            auto [err, ret] = (*reverseString)();
+            rtl::function<rtl::Return()> reverseString = fnReverseString->argsT<>().returnT<>();
+
+            auto [err, ret] = reverseString();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
             
-            string retVal = ret.view<std::string>()->get();
-            EXPECT_TRUE(retVal == REV_STR_VOID_RET);
+            string retStr = ret.view<std::string>()->get();
+            auto expStr = std::string(REV_STR_VOID_RET) + SUFFIX_void;
+            EXPECT_EQ(retStr, expStr);
         }
     }
 
@@ -248,12 +262,15 @@ namespace rtl_tests
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
         ASSERT_TRUE(stdStringClass);
 
-        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
+        optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(fnIsStringEmpty);
 
         RObject reflected_str0 = rtl::reflect(std::string(""));	//empty string.
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str0))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -261,7 +278,10 @@ namespace rtl_tests
         }
         RObject reflected_str1 = rtl::reflect(std::string("not_empty"));
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str1))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -275,12 +295,15 @@ namespace rtl_tests
         optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
         ASSERT_TRUE(stdStringClass);
 
-        optional<Method> isStringEmpty = stdStringClass->getMethod("empty");
-        ASSERT_TRUE(isStringEmpty);
+        optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");
+        ASSERT_TRUE(fnIsStringEmpty);
 
         RObject reflected_str0 = rtl::reflect("");	//empty string.
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str0).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str0))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());
@@ -288,7 +311,10 @@ namespace rtl_tests
         }
         RObject reflected_str1 = rtl::reflect("not_empty");
         {
-            auto [err, ret] = isStringEmpty->bind(reflected_str1).call();
+            auto isStringEmpty = fnIsStringEmpty->targetT().argsT().returnT();
+            EXPECT_TRUE(isStringEmpty);
+
+            auto [err, ret] = isStringEmpty(std::cref(reflected_str1))();
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<bool>());

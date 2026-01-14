@@ -1,3 +1,5 @@
+
+#include <rtl/rtl_access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
@@ -12,52 +14,34 @@ using namespace test_mirror;
 
 namespace rtl_tests
 {
-    TEST(ConstMethodOverload, explicitly_making_const_call__on_static_method)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> getDefaults = classPerson->getMethod(person::str_getDefaults);
-            ASSERT_TRUE(getDefaults);
-            EXPECT_TRUE(getDefaults->hasSignature<>());
-            {
-                // enabling this results compiler error.
-                // auto [err, ret] = getDefaults->bind().call();
-                // auto [err, ret] = getDefaults->bind().call();
-            }
-        }
-    }
-
-
     TEST(ConstMethodOverload, explicitly_making_const_call__on_wrong_target)
     {
         {
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, book] = classBook->create<alloc::Stack>();
+            auto [err0, book] = classBook->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
-            EXPECT_TRUE(book.isConstCastSafe());
             ASSERT_FALSE(book.isEmpty());
 
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
+            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            ASSERT_TRUE(oUpdateLastName);
+            EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
-            string lastName = person::LAST_NAME;
+            method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
+            EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName->bind(constCast(book)).call(lastName);
-
-                EXPECT_TRUE(err == error::TargetMismatch);
+                auto [err, ret] = updateLastName(book)(person::LAST_NAME);
+                // Only const method exits for this function, no non-const overload.
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateLastName->bind(constCast(book)).call(lastName);
+                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME);
 
-                EXPECT_TRUE(err == error::TargetMismatch);
+                EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
             }
         }
@@ -70,396 +54,110 @@ namespace rtl_tests
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 			
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
+            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            ASSERT_TRUE(oUpdateLastName);
+            EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
-            string lastName = person::LAST_NAME;
+            method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
+            EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName->bind(constCast(RObject{ })).call(lastName);
-
-                EXPECT_TRUE(err == error::EmptyRObject);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                auto [err, ret] = updateLastName->bind(constCast(RObject{ })).call(lastName);
-
-                EXPECT_TRUE(err == error::EmptyRObject);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-        }
-    }
-
-
-    TEST(ConstMethodOverload, semantics_with_heap_target__only_const_method_exists)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // 'person' is created via reflection, so its logically-const,
-            // hence const_cast on the object bieng reflected is safe.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-
-            // this will by default bind to the const-method.
-            // Since the reflected object is bieng treated as 'const', so the 
-            // 'const' method will be preffered with no-need of explicit resolution, since it exists.
-            auto [err, ret] = updateLastName->bind(person).call(lastName);
-            EXPECT_TRUE(err == error::None);
-            ASSERT_TRUE(ret.isEmpty());
-
-            EXPECT_TRUE(person::test_method_updateLastName_const(person));
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, semantics_with_stack_target__only_const_method_exists)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // 'person' is created via reflection, so its logically-const,
-            // hence const_cast on the object bieng reflected is safe.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-
-            // this will by default bind to the const-method.
-            // Since the reflected object is bieng treated as 'const', so the 
-            // 'const' method will be preffered with no-need of explicit resolution, since it exists.
-            auto [err, ret] = updateLastName->bind(person).call(lastName);
-            EXPECT_TRUE(err == error::None);
-            ASSERT_TRUE(ret.isEmpty());
-
-            EXPECT_TRUE(person::test_method_updateLastName_const(person));
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, implicit_method_resolution__only_const_method_exists__on_heap_target)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-            {
-                string_view lastName = "invalid_arg";
-                auto [err, ret] = (*updateLastName)(person)(lastName);
-
-                EXPECT_TRUE(err == error::SignatureMismatch);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                string lastName = person::LAST_NAME;
-                auto [err, ret] = (*updateLastName)(person)(lastName);
-
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-            EXPECT_TRUE(person::test_method_updateLastName_const(person));
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, implicit_method_resolution__only_const_method_exists__on_stack_target)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-            {
-                string_view lastName = "invalid_arg";
-                auto [err, ret] = (*updateLastName)(person)(lastName);
-
-                EXPECT_TRUE(err == error::SignatureMismatch);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                string lastName = person::LAST_NAME;
-                auto [err, ret] = (*updateLastName)(person)(lastName);
-
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-            EXPECT_TRUE(person::test_method_updateLastName_const(person));
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, semantics_with_target_on_heap__overloads_exists)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
-            ASSERT_TRUE(updateAddress);
-
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // RTL treats objects created via reflection as logically immutable (i.e., 'const' by default).
-            // For such objects, applying a logical 'const_cast' is always safe, hence the check below is true.
-            // However, RTL respects the const-ness of objects originating outside RTL (e.g., return values).
-            // If an object is provided to RTL as 'const', a 'const_cast' would not be safe, and the check
-            // would return false. RTL never performs such unsafe casts internally.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateAddress->hasSignature<string>());
-            
-            auto address = string(person::ADDRESS);
-            {
-                // by default it calls the const-method overload. since 
-                // it exists and the target is logically-const reflected-object. 
-                auto [err, ret] = updateAddress->bind(person).call(address);
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                // Since both the oveload exists then implicit call will bind to const-method by default,
-                // To explicitly choose the non-const method, we can explicitly bind by wrapping the target
-                // in 'rtl::constCast<RObject>'.
-                auto [err, ret] = updateAddress->bind(constCast(person)).call(address);
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, semantics_with_target_on_stack__overloads_exists)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-
-            optional<Method> updateAddress = classPerson->getMethod(person::str_updateAddress);
-            ASSERT_TRUE(updateAddress);
-
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
-
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // RTL treats objects created via reflection as logically immutable (i.e., 'const' by default).
-            // For such objects, applying a logical 'const_cast' is always safe, hence the check below is true.
-            // However, RTL respects the const-ness of objects originating outside RTL (e.g., return values).
-            // If an object is provided to RTL as 'const', a 'const_cast' would not be safe, and the check
-            // would return false. RTL never performs such unsafe casts internally.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateAddress->hasSignature<string>());
-            
-            auto address = string(person::ADDRESS);
-            {
-                // by default it calls the const-method overload. since 
-                // it exists and the target is logically-const reflected-object. 
-                auto [err, ret] = updateAddress->bind(person).call(address);
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                // Since both the oveload exists then implicit call will bind to const-method by default,
-                // To explicitly choose the non-const method, we can explicitly bind by wrapping the target
-                // in 'rtl::constCast<RObject>'.
-                auto [err, ret] = updateAddress->bind(constCast(person)).call(address);
-                EXPECT_TRUE(err == error::None);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, explicitly_bind_non_const_method_with_target_on_heap__only_const_method_exists)
-    {
-        {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-            
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-            
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
-            
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered logically-immutable by default. So const_cast on them is safe
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-            {
-                auto [err, ret] = updateLastName->bind(constCast(person)).call(lastName);
-                
+                // only const-overload exists, this tries to call the non-const version since 
+                // the 'robj' is non-const.
+                RObject robj;
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateLastName->bind(constCast(person)).call(0); //invalid argument
-
-				EXPECT_TRUE(err == error::SignatureMismatch);
+                // Here the const-method is invoked, since the 'robj' is decleared const,
+                // it automatically binds to const-overload, however the 'robj' is empty
+                // hence the expecetd return error is error::EmptyRObject.
+                const RObject robj;
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
+                EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());
             }
         }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 
 
-	TEST(ConstMethodOverload, explicitly_bind_non_const_method_with_target_on_stack__only_const_method_exists)
+    TEST(ConstMethodOverload, semantics_when_only_const_method_exists)
     {
-        {   
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-            
-            optional<Method> updateLastName = classPerson->getMethod(person::str_updateLastName);
-            ASSERT_TRUE(updateLastName);
-            
-            string lastName = person::LAST_NAME;
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
-            
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(updateLastName->hasSignature<string>());
-            {
-                auto [err, ret] = updateLastName->bind(constCast(person)).call(lastName);
-                
-                EXPECT_TRUE(err == error::NonConstOverloadMissing);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                auto [err, ret] = updateLastName->bind(constCast(person)).call(0); //invalid argument
-                
-                EXPECT_TRUE(err == error::SignatureMismatch);
-                ASSERT_TRUE(ret.isEmpty());
-            }
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_heap_target)
-    {
-        {   
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
-            ASSERT_TRUE(classPerson);
-            
-            optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
-            ASSERT_TRUE(getFirstName);
-            
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Heap>(firstName);
-            
-            EXPECT_TRUE(err0 == error::None);
-            ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(getFirstName->hasSignature<>());
-            {
-                auto [err, ret] = getFirstName->bind(constCast(person)).call(0); //invalid argument
-                
-                EXPECT_TRUE(err == error::SignatureMismatch);
-                ASSERT_TRUE(ret.isEmpty());
-            } {
-                auto [err, ret] = getFirstName->bind(constCast(person)).call();
-                
-                EXPECT_TRUE(err == error::None);
-                ASSERT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<std::string>());
-                
-                auto& fname = ret.view<std::string>()->get();
-                EXPECT_EQ(fname, firstName);
-            }
-        }
-        EXPECT_TRUE(person::assert_zero_instance_count());
-        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
-    }
-
-
-    TEST(ConstMethodOverload, explicit_non_const_method_resolution__only_non_const_method_exists__on_stack_target)
-    {
+        auto testWithAllocOn = [](alloc alloc)->void
         {
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
-            ASSERT_TRUE(getFirstName);
+            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            ASSERT_TRUE(oUpdateLastName);
 
-            string firstName = person::FIRST_NAME;
-            auto [err0, person] = classPerson->create<alloc::Stack>(firstName);
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
-            // Objects created through reflection are considered mutable (non-const) by default.
-            EXPECT_TRUE(person.isConstCastSafe());
-            EXPECT_TRUE(getFirstName->hasSignature<>());
-            {
-                auto [err, ret] = getFirstName->bind(constCast(person)).call(0); //invalid argument
+            EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
-                EXPECT_TRUE(err == error::SignatureMismatch);
+            method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
+            EXPECT_TRUE(updateLastName);
+            {
+                auto [err, ret] = updateLastName(person)(person::LAST_NAME);
+                // only const method exists, no non-const overload found.
+                EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = getFirstName->bind(constCast(person)).call();
+                // explicit call to const method.
+                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME);
 
                 EXPECT_TRUE(err == error::None);
-                ASSERT_FALSE(ret.isEmpty());
-                EXPECT_TRUE(ret.canViewAs<std::string>());
-
-                auto& fname = ret.view<std::string>()->get();
-                EXPECT_EQ(fname, firstName);
+                ASSERT_TRUE(ret.isEmpty());
             }
-        }
+            EXPECT_TRUE(person::test_method_updateLastName_const(person));
+        };
+
+        testWithAllocOn(alloc::Heap);
+        EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+
+        testWithAllocOn(alloc::Stack);
+        EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(ConstMethodOverload, semantics_when_const_and_nonconst_overload_exists)
+    {
+        auto testWithAllocOn = [](alloc alloc)->void
+        {
+            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            ASSERT_TRUE(classPerson);
+
+            auto [err0, person] = classPerson->ctor<std::string>()(alloc, person::FIRST_NAME);
+            EXPECT_TRUE(err0 == error::None);
+            ASSERT_FALSE(person.isEmpty());
+
+            optional<Method> oUpdateAddress = classPerson->getMethod(person::str_updateAddress);
+            ASSERT_TRUE(oUpdateAddress);
+            EXPECT_TRUE(oUpdateAddress->hasSignature<string>());
+
+            method<RObject, Return(string)> updateAddress = oUpdateAddress->targetT().argsT<string>().returnT();
+            EXPECT_TRUE(updateAddress);
+            {
+                // sending 'person' as const (using std::cref) calls the const-method overload.
+                auto [err, ret] = updateAddress(cref(person))(person::ADDRESS);
+                EXPECT_TRUE(err == error::None);
+                ASSERT_TRUE(ret.isEmpty());
+            } {
+                // sending 'person' as non-const calls the non-const-method overload.
+                auto [err, ret] = updateAddress(person)(person::ADDRESS);
+                EXPECT_TRUE(err == error::None);
+                ASSERT_TRUE(ret.isEmpty());
+            }
+        };
+
+        testWithAllocOn(alloc::Heap);
+        EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+
+        testWithAllocOn(alloc::Stack);
         EXPECT_TRUE(person::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
@@ -474,19 +172,22 @@ namespace rtl_tests
             optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
             ASSERT_TRUE(createConstPerson);
 
-            auto [err0, constPerson] = createConstPerson->bind().call();
+            static_method<Return()> createPerson = createConstPerson->argsT().returnT();
+            EXPECT_TRUE(createPerson);
+            EXPECT_EQ(createPerson.get_init_error(), rtl::error::None);
+
+            auto [err0, constPerson] = createPerson();
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPerson.isEmpty());
-            // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.
-            EXPECT_FALSE(constPerson.isConstCastSafe());
 
-            optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
-            ASSERT_TRUE(getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            ASSERT_TRUE(oGetFirstName);
+            EXPECT_TRUE(oGetFirstName->hasSignature<>());
 
-            string firstName = person::FIRST_NAME;
-            EXPECT_TRUE(getFirstName->hasSignature<>());
+            method<RObject, Return()> getFirstName = oGetFirstName->targetT().argsT().returnT();
+            EXPECT_TRUE(getFirstName);
             {
-                auto [err, ret] = getFirstName->bind(constPerson).call();
+                auto [err, ret] = getFirstName(cref(constPerson))();
 
                 // A non-const version exists, but the object itself is truly const.
                 // Therefore, only const-qualified methods can be called on it.
@@ -494,8 +195,8 @@ namespace rtl_tests
                 EXPECT_TRUE(err == error::ConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = getFirstName->bind(constCast(constPerson)).call();
-                EXPECT_TRUE(err == error::IllegalConstCast);
+                auto [err, ret] = getFirstName(constPerson)();
+                EXPECT_TRUE(err == error::InvalidCallOnConstTarget);
                 ASSERT_TRUE(ret.isEmpty());
             }
         }
@@ -513,29 +214,31 @@ namespace rtl_tests
             optional<Method> createConstPtrPerson = classPerson->getMethod(person::str_createPtr);
             ASSERT_TRUE(createConstPtrPerson);
 
+            static_method<Return()> createPerson = createConstPtrPerson->argsT().returnT();
+            EXPECT_TRUE(createPerson);
+            EXPECT_EQ(createPerson.get_init_error(), rtl::error::None);
+
             // Returns 'const Person*', unmanaged, need explicit call to 'delete'.
-            auto [err0, constPersonPtr] = createConstPtrPerson->bind().call();
+            auto [err0, constPersonPtr] = createPerson();
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPersonPtr.isEmpty());
-            // RTL treats own objects as mutable (logical const enforced), preserves external const; type system ensures const-safety.
-            EXPECT_FALSE(constPersonPtr.isConstCastSafe());
 
-            optional<Method> getFirstName = classPerson->getMethod(person::str_getFirstName);
-            ASSERT_TRUE(getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            ASSERT_TRUE(oGetFirstName);
+            EXPECT_TRUE(oGetFirstName->hasSignature<>());
 
-            string firstName = person::FIRST_NAME;
-            EXPECT_TRUE(getFirstName->hasSignature<>());
+            method<RObject, Return()> getFirstName = oGetFirstName->targetT().argsT().returnT();
+            EXPECT_TRUE(getFirstName);
             {
-                auto [err, ret] = getFirstName->bind(constPersonPtr).call();
+                auto [err, ret] = getFirstName(cref(constPersonPtr))();
                 // A non-const version exists, but the object itself is truly const.
                 // Therefore, only const-qualified methods can be called on it.
                 // However, no const-overload is available.
                 EXPECT_TRUE(err == error::ConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = getFirstName->bind(constCast(constPersonPtr)).call();
-
-                EXPECT_TRUE(err == error::IllegalConstCast);
+                auto [err, ret] = getFirstName(constPersonPtr)();
+                EXPECT_TRUE(err == error::InvalidCallOnConstTarget);
                 ASSERT_TRUE(ret.isEmpty());
             }
             EXPECT_TRUE(person::delete_unmanaged_person_instance_created_via_createPtr(constPersonPtr));

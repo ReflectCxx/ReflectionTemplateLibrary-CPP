@@ -1,35 +1,7 @@
 
 #include <complex>
-#include <algorithm>
 
 #include "Complex.h"
-
-namespace test_utils {
-
-	const char* REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
-}
-
-std::string reverseString()
-{
-	return test_utils::REV_STR_VOID_RET;
-}
-
-
-std::string reverseString(std::string pStr)
-{
-	std::string retStr = pStr;
-	std::reverse(retStr.begin(), retStr.end());
-	return retStr;
-}
-
-
-std::string reverseString(const char* pStr)
-{
-	std::string retStr = pStr;
-	std::reverse(retStr.begin(), retStr.end());
-	return retStr;
-}
-
 
 namespace complex
 {
@@ -50,7 +22,6 @@ namespace complex
 		g_imgNumber = pNum;
 	}
 }
-
 
 std::string getComplexNumAsString()
 {

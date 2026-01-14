@@ -1,4 +1,5 @@
 
+#include <any>
 #include <iostream>
 #include <optional>
 #include <functional>
@@ -9,8 +10,8 @@
 namespace 
 {
     static auto _put_line = []() {
-        std::cout << "-------------------------------------"
-        "-------------------------------------" << std::endl;
+        std::cout << "-----------------------------------------------"
+                 "---------------------------------------------------" << std::endl;
         return 0;
     };
 
@@ -31,71 +32,72 @@ namespace bm
 
     extern std::function<void(argStr_t&)> SendMessage;
 
-    extern std::function<void(argStr_t&)> NodeSendMessage;
+    extern std::function<void(bm::Node, argStr_t&)> NodeSendMessage;
 
     extern std::function<retStr_t(argStr_t&)> GetMessage;
 
-    extern std::function<retStr_t(argStr_t&)> NodeGetMessage;
+    extern std::function<retStr_t(bm::Node, argStr_t&)> NodeGetMessage;
 }
 
-
-void NativeCall::set(benchmark::State& state)
+namespace bm_call
 {
-    for (auto _: state)
+    void direct__Function::set_string(benchmark::State& state)
     {
-        bm::sendMessage(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        for (auto _ : state)
+        {
+            bm::sendMessage(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
+    }
+
+    void direct__Function::get_string(benchmark::State& state)
+    {
+        static auto _ = _put_line();
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(bm::getMessage(bm::g_longStr));
+        }
     }
 }
 
 
-void NativeCall::get(benchmark::State& state)
+namespace bm_std
 {
-    static auto _=_put_line();
-    for (auto _: state)
+    void function_calls__Function::set_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(bm::getMessage(bm::g_longStr));
+        static auto _ = _new_line();
+        for (auto _ : state)
+        {
+            bm::SendMessage(bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
     }
-}
 
-
-void StdFuncCall::set(benchmark::State& state)
-{
-    static auto _=_new_line();
-    for (auto _: state)
+    void function_calls____Method::set_string(benchmark::State& state)
     {
-        bm::SendMessage(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        static bm::Node nodeObj;
+        for (auto _ : state)
+        {
+            bm::NodeSendMessage(nodeObj, bm::g_longStr);
+            benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        }
     }
-}
 
-
-void StdFuncMethodCall::set(benchmark::State& state)
-{
-    static auto _=_new_line();
-    for (auto _: state)
+    void function_calls__Function::get_string(benchmark::State& state)
     {
-        bm::NodeSendMessage(bm::g_longStr);
-        benchmark::DoNotOptimize(bm::g_work_done->c_str());
+        static auto _ = _new_line();
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(bm::GetMessage(bm::g_longStr));
+        }
     }
-}
 
-
-void StdFuncCall::get(benchmark::State& state)
-{
-    static auto _=_new_line();
-    for (auto _: state)
+    void function_calls____Method::get_string(benchmark::State& state)
     {
-        benchmark::DoNotOptimize(bm::GetMessage(bm::g_longStr));
-    }
-}
-
-
-void StdFuncMethodCall::get(benchmark::State& state)
-{
-    static auto _=_new_line();
-    for (auto _: state)
-    {
-        benchmark::DoNotOptimize(bm::NodeGetMessage(bm::g_longStr));
+        static bm::Node nodeObj;
+        for (auto _ : state)
+        {
+            benchmark::DoNotOptimize(bm::NodeGetMessage(nodeObj, bm::g_longStr));
+        }
     }
 }

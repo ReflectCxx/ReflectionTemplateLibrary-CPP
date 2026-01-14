@@ -3,6 +3,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <rtl/rtl_builder.h>
 
 #include "../../CxxTestProps/inc/Date.h"
 #include "../../CxxTestProps/inc/Book.h"
@@ -10,6 +11,7 @@
 #include "../../CxxTestProps/inc/Person.h"
 #include "../../CxxTestProps/inc/Library.h"
 #include "../../CxxTestProps/inc/Complex.h"
+#include "../../CxxTestProps/inc/StringOps.h"
 #include "../MyReflectionTests/MyReflectingType.h"
 
 #include "TestUtilsBook.h"
@@ -18,7 +20,6 @@
 #include "TestUtilsAnimal.h"
 #include "GlobalTestUtils.h"
 
-#include "RTLibInterface.h"
 #include "CxxMirrorThreadingTest.h"
 
 using namespace test_utils;

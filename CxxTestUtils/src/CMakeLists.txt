@@ -10,12 +10,6 @@ set(LOCAL_SOURCES
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsDate.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsPerson.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/TestUtilsAnimal.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Book.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Complex.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Date.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Person.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Animal.cpp"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/src/Library.cpp"
 )
 
 SET(LOCAL_HEADERS
@@ -25,12 +19,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/GlobalTestUtils.h"
 	"${PROJECT_SOURCE_DIR}/inc/TestUtilsPerson.h"
 	"${PROJECT_SOURCE_DIR}/inc/TestUtilsAnimal.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Book.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Complex.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Date.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Person.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Animal.h"
-	"${CMAKE_SOURCE_DIR}/CxxTestProps/inc/Library.h"
 )
 
 # Add any additional source files if needed

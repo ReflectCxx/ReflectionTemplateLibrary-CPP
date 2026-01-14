@@ -10,8 +10,6 @@ Provides interface for Testing/Comparing the global functions & types (may or no
 */
 namespace test_utils {
 
-	extern const char* REV_STR_VOID_RET;
-
 	static constexpr double g_real = 3.92;
 	static constexpr double g_imaginary = 9.27;
 
@@ -21,11 +19,42 @@ namespace test_utils {
 	static constexpr const char* STRB = "cxxReflection";
 	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
 
-	static constexpr const char* str_reverseString = "reverseString";
+	static constexpr const char* str_reverseString = "reverseString"; 
+	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
+	static constexpr const char* str_revStrRValueRefArg = "revStrRValueRefArg";
+	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
+	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
+	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
+	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadValRefAndCRef";
+
 	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
 
 	static constexpr const char* str_complex = "complex";
 	static constexpr const char* str_setReal = "setReal";
+
 	static constexpr const char* str_setImaginary = "setImaginary";
 	static constexpr const char* str_getMagnitude = "getMagnitude";
+
+	static const char* SUFFIX_void = "_void";
+	static const char* SUFFIX_ctor = "_ctor";
+	static const char* SUFFIX_const = "_const";
+	static const char* SUFFIX_static = "_static";
+	static const char* SUFFIX_const_char_ptr = "_const_char_*";
+
+	static const char* SUFFIX_std_string = "_std::string";
+
+	static const char* SUFFIX_std_string_ptr = "_std::string*";
+	static const char* SUFFIX_std_string_cptr = "_const_std::string*";
+
+	static const char* SUFFIX_std_string_lvref = "_std::string&";
+	static const char* SUFFIX_std_string_clvref = "_const_std::string&";
+
+	static const char* SUFFIX_std_string_rvref = "_std::string&&";
+
+	static const char* REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
+
+	static const char* SUFFIX_std_string_view = "_std::string_view";
+	static const char* SUFFIX_std_string_view_lvref = "_std::string_view&";
+	static const char* SUFFIX_std_string_view_rvref = "_std::string_view&&";
+	static const char* SUFFIX_std_string_view_clvref = "_const_std::string_view&";
 }

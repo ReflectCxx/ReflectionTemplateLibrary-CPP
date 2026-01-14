@@ -1,4 +1,5 @@
 
+#include <rtl/rtl_access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
@@ -20,11 +21,10 @@ namespace rtl_tests
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = classCalender->create<alloc::Stack>();
+            auto [err0, calender0] = classCalender->ctor()(alloc::Stack);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -44,7 +44,6 @@ namespace rtl_tests
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
@@ -85,11 +84,10 @@ namespace rtl_tests
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
-            auto [err0, calender0] = classCalender->create<alloc::Heap>();
+            auto [err0, calender0] = classCalender->ctor()(alloc::Heap);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_TRUE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -109,7 +107,6 @@ namespace rtl_tests
             EXPECT_TRUE(calender::get_move_ops_count() == 0);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_TRUE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.
@@ -138,11 +135,11 @@ namespace rtl_tests
             optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> getTheEvent = classCalender->getMethod(calender::str_getTheEvent);
-            ASSERT_TRUE(getTheEvent);
+            optional<Method> oGetTheEvent = classCalender->getMethod(calender::str_getTheEvent);
+            ASSERT_TRUE(oGetTheEvent);
 
             // Create a stack-allocated object via reflection
-            auto [err, calender] = classCalender->create<alloc::Stack>();
+            auto [err, calender] = classCalender->ctor()(alloc::Stack);
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(calender.isEmpty());
 
@@ -152,53 +149,57 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
             {
+                method<RObject, Return()> getTheEvent = oGetTheEvent->targetT().argsT().returnT();
+                EXPECT_TRUE(getTheEvent);
+
                 // getTheEvent() returns 'const Event&', hence Reflecetd as true-const. 
-                auto [err0, event0] = getTheEvent->bind(calender).call();
+                auto [err0, event0] = getTheEvent(calender)();
                 EXPECT_TRUE(err0 == error::None);
                 ASSERT_FALSE(event0.isEmpty());
-                EXPECT_FALSE(event0.isConstCastSafe()); // Retured as True-Const from reflected call, even RTL will not const_cast it.
 
                 optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
                 ASSERT_TRUE(classEvent);
-                {
-                    optional<Method> eventReset = classEvent->getMethod(event::str_reset);
-                    ASSERT_TRUE(eventReset);
-                    // 'Event::reset()' Method is non-const.
-                    EXPECT_FALSE(eventReset->isConst());
 
-                    auto [e0, r0] = eventReset->bind(event0).call();
+                optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
+                ASSERT_TRUE(oEventReset);
+
+                method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();
+                EXPECT_TRUE(eventReset);
+                {
+                    auto [e0, r0] = eventReset(std::cref(event0))();
                     EXPECT_TRUE(e0 == error::ConstOverloadMissing);
                     ASSERT_TRUE(r0.isEmpty());
-
-                    auto [e1, r2] = eventReset->bind(constCast(event0)).call();
-                    EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    ASSERT_TRUE(r2.isEmpty());
+                } {
+                    auto [e0, r0] = eventReset(event0)();
+                    EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
+                    ASSERT_TRUE(r0.isEmpty());
                 }
+                //   TODO: provide option to 'const_cast' the underlying object being reflected.
+                //{  (should it be even allowed?)
+                //    auto [e0, r0] = eventReset(constCast(event0))();
+                //    EXPECT_TRUE(e0 == error::IllegalConstCast);
+                //    ASSERT_TRUE(r0.isEmpty());
+                //}
 
                 // RObject reflecting 'const Event&', storing pointer to reflected type internally, So just the
                 // address wrapped in std::any inside Robject is moved. Event's move constructor is not called.
                 RObject event1 = std::move(event0);
 
                 ASSERT_FALSE(event1.isEmpty());
-                EXPECT_FALSE(event1.isConstCastSafe());
 
                 // 'event0' must be empty now.
                 ASSERT_TRUE(event0.isEmpty());
                 EXPECT_NE(event0.getTypeId(), event1.getTypeId());
                 {
                     // Event::reset() is a non-const method. can't be called on const-object.
-                    optional<Method> eventReset = classEvent->getMethod(event::str_reset);
-                    ASSERT_TRUE(eventReset);
-
-                    // So here, call to 'non-const' method on 'const' target fails here.
-                    auto [e0, r0] = eventReset->bind(event1).call();
+                    auto [e0, r0] = eventReset(std::cref(event1))();
                     EXPECT_TRUE(e0 == error::ConstOverloadMissing);
                     ASSERT_TRUE(r0.isEmpty());
-
-                    // Since the  here, call to 'non-const' method on 'const' target fails here.
-                    auto [e1, r2] = eventReset->bind(constCast(event1)).call();
-                    EXPECT_TRUE(e1 == error::IllegalConstCast);
-                    ASSERT_TRUE(r2.isEmpty());
+                } {
+                    // call to 'non-const' method on 'const' target fails here.
+                    auto [e0, r0] = eventReset(event1)();
+                    EXPECT_TRUE(e0 == error::InvalidCallOnConstTarget);
+                    ASSERT_TRUE(r0.isEmpty());
                 }
             }
             // After move, these instance count must remain same.
@@ -223,16 +224,19 @@ namespace rtl_tests
             optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> createCalender = classCalender->getMethod(calender::str_create);
-            ASSERT_TRUE(createCalender);
+            optional<Method> optCreateCalender = classCalender->getMethod(calender::str_create);
+            ASSERT_TRUE(optCreateCalender);
+
+            auto createCalenderFn = optCreateCalender->argsT<>().returnT<>();
+            ASSERT_TRUE(createCalenderFn);
+            EXPECT_EQ(createCalenderFn.get_init_error(), rtl::error::None);
 
             // Calender::create is a static method that returns stack-allocated Calender object.
             // Calling this via reflection, moves the return value from Calender::create to here.
-            auto [err0, calender0] = (*createCalender)()();
+            auto [err0, calender0] = createCalenderFn();
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender0.isEmpty());
-            EXPECT_TRUE(calender0.isConstCastSafe());
             EXPECT_FALSE(calender0.isOnHeap());
 
             EXPECT_TRUE(calender::get_instance_count() == 1);
@@ -252,7 +256,6 @@ namespace rtl_tests
             // EXPECT_TRUE(calender::get_move_ops_count() == 1);
 
             ASSERT_FALSE(calender1.isEmpty());
-            EXPECT_TRUE(calender1.isConstCastSafe());
             EXPECT_FALSE(calender1.isOnHeap());
 
             // 'calander0' must be empty now.

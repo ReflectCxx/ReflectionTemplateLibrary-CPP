@@ -1,12 +1,9 @@
 
 
 #include <optional>
-#include <iostream>
-#include <functional>
+#include <rtl/rtl_builder.h>
 
 #include "BenchMark.h"
-#include "RTLibInterface.h"
-
 
 namespace bm
 {
@@ -20,34 +17,38 @@ namespace bm
 
 namespace bm
 {
-    void sendMessage(argStr_t pMsg) 
+    void sendMessage(argStr_t pMsg) noexcept
     {
         if(g_work_load){
             g_work_done = perform_work(pMsg);
         }
     }
 
-    void Node::sendMessage(argStr_t pMsg) 
+    void Node::sendMessage(argStr_t pMsg) noexcept
     {
         if(g_work_load){
             g_work_done = perform_work(pMsg);
         }
     }
 
-    retStr_t getMessage(argStr_t pMsg)
+    retStr_t getMessage(argStr_t pMsg) noexcept
     {
+        retStr_t retStr = g_work_done->c_str();
         if(g_work_load){
             g_work_done = perform_work(pMsg);
+            retStr = g_work_done->c_str();
         }
-        return retStr_t(g_work_done->c_str());
+        return retStr;
     }
 
-    retStr_t Node::getMessage(argStr_t pMsg)
+    retStr_t Node::getMessage(argStr_t pMsg) noexcept
     {
+        retStr_t retStr = g_work_done->c_str();
         if(g_work_load){
             g_work_done = perform_work(pMsg);
+            retStr = g_work_done->c_str();
         }
-        return retStr_t(g_work_done->c_str());
+        return retStr;
     }
 }
 

@@ -1,26 +1,42 @@
 
 #include <iostream>
-#include <optional>
 #include <benchmark/benchmark.h>
 
 #include "StandardCall.h"
-#include "ReflectedCall.h"
+#include "ReflectedCallKnownReturn.h"
+#include "ReflectedCallUnknownReturn.h"
 
-BENCHMARK(NativeCall::set);
+BENCHMARK(bm_call::direct__Function::set_string);
 
-BENCHMARK(StdFuncCall::set);
-BENCHMARK(ReflectedCall::set);
+BENCHMARK(bm_call::via_function_ptr__Function::set_string);
+BENCHMARK(bm_call::via_function_ptr____Method::set_string);
 
-BENCHMARK(StdFuncMethodCall::set);
-BENCHMARK(ReflectedMethodCall::set);
+BENCHMARK(bm_std::function_calls__Function::set_string);
+BENCHMARK(bm_std::function_calls____Method::set_string);
 
-BENCHMARK(NativeCall::get);
+BENCHMARK(bm_rtl::function_calls__Function::set_string);
+BENCHMARK(bm_rtl::method_calls______Method::set_string);
 
-BENCHMARK(StdFuncCall::get);
-BENCHMARK(ReflectedCall::get);
+BENCHMARK(bm_rtl::function__ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method____ErasedReturnType::set_string);
+BENCHMARK(bm_rtl::method____ErasedTargetType::set_string);
+BENCHMARK(bm_rtl::method____ErasedTargetAndReturnType::set_string);
 
-BENCHMARK(StdFuncMethodCall::get);
-BENCHMARK(ReflectedMethodCall::get);
+BENCHMARK(bm_call::direct__Function::get_string);
+
+BENCHMARK(bm_call::via_function_ptr__Function::get_string);
+BENCHMARK(bm_call::via_function_ptr____Method::get_string);
+
+BENCHMARK(bm_std::function_calls__Function::get_string);
+BENCHMARK(bm_std::function_calls____Method::get_string);
+
+BENCHMARK(bm_rtl::function_calls__Function::get_string);
+BENCHMARK(bm_rtl::method_calls______Method::get_string);
+
+BENCHMARK(bm_rtl::function__ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method____ErasedReturnType::get_string);
+BENCHMARK(bm_rtl::method____ErasedTargetType::get_string);
+BENCHMARK(bm_rtl::method____ErasedTargetAndReturnType::get_string);
 
 namespace bm 
 {

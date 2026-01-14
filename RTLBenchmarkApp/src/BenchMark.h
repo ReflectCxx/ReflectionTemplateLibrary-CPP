@@ -10,8 +10,8 @@ namespace bm
     
     struct Node
     {
-        void sendMessage(argStr_t);
-        retStr_t getMessage(argStr_t);
+        void sendMessage(argStr_t) noexcept;
+        retStr_t getMessage(argStr_t) noexcept;
     };
 }
 

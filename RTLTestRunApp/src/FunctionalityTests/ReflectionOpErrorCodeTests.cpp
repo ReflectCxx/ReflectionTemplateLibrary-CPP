@@ -7,6 +7,10 @@
 *	rtl::error::ConstOverloadMissing
 *	rtl::error::NonConstOverloadMissing
 *   rtl::error::ConstCallViolation
+* 
+* Covered in ReturnTypeErasedDispatch.cpp
+*   rtl::error::ExplicitRefBindingRequired
+* 
 * and,
 *	rtl::error::FunctionNotRegistered, is not internally used by RTL.
 * Function/Method objects are returned wrapped in std::optional<>, which will 
@@ -14,6 +18,8 @@
 * 
 */
 
+
+#include <rtl/rtl_access.h>
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
@@ -53,12 +59,12 @@ namespace rtl_tests
         optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
-        auto [err0, robj0] = classEvent->create<alloc::Stack>();
+        auto [err0, robj0] = classEvent->ctor()(alloc::Stack);
 
         EXPECT_TRUE(err0 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
 
-        auto [err1, robj1] = classEvent->create<alloc::Heap>();
+        auto [err1, robj1] = classEvent->ctor()(alloc::Heap);
 
         EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj1.isEmpty());
@@ -69,10 +75,6 @@ namespace rtl_tests
     {
         char ch = 'R';
         RObject rCh = rtl::reflect(ch);
-
-        error reterr = cxx::mirror().setupCloning(rCh);
-        ASSERT_TRUE(reterr == error::None);
-
         EXPECT_FALSE(rCh.isAllocatedByRtl());
         {
             auto [err, rch] = rCh.clone<alloc::Stack, copy::Value>();
@@ -114,8 +116,8 @@ namespace rtl_tests
             EXPECT_FALSE(rChptr.isAllocatedByRtl());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
 
-            error reterr = cxx::mirror().setupCloning(rChptr);
-            ASSERT_TRUE(reterr == error::None);
+            //error reterr = cxx::mirror().setupCloning(rChptr);
+            //ASSERT_TRUE(reterr == error::None);
 
             EXPECT_TRUE(rChptr.canViewAs<char>());
             {
@@ -185,23 +187,16 @@ namespace rtl_tests
             ASSERT_TRUE(getEvent);
 
             // Create Calender, which will create a Event's instance.
-            auto [err0, calender] = classCalender->create<alloc::Stack>();
+            auto [err0, calender] = classCalender->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender.isEmpty());
 
+            auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
+
             // Get the Event's instance.
-            auto [err1, event] = getEvent->bind(calender).call();
+            auto [err1, event] = get_event(calender)();
             EXPECT_TRUE(err1 == error::None);
             ASSERT_FALSE(event.isEmpty());
-
-            // Try to call copy-constructor of class Event.
-            auto [err2, eventCp0] = event.clone<alloc::Heap>();
-            
-            EXPECT_TRUE(err2 == error::CloningDisabled);
-            ASSERT_TRUE(eventCp0.isEmpty());
-
-            error reterr = cxx::mirror().setupCloning(event);
-            ASSERT_TRUE(reterr == error::None);
 
             // Try to call copy-constructor of class Event.
             auto [err3, eventCp1] = event.clone<alloc::Heap>();
@@ -223,7 +218,7 @@ namespace rtl_tests
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
-                auto [err, robj] = classLibrary->create<alloc::Heap>();
+                auto [err, robj] = classLibrary->ctor()(alloc::Heap);
             /*  Heap allocation succeeds:
             *   Even though Library's copy constructor is deleted, RObject internally stores
             *   the pointer directly inside std::any (type-erased), without requiring the type T
@@ -235,7 +230,7 @@ namespace rtl_tests
             EXPECT_TRUE(library::assert_zero_instance_count());
             {
                 // Attempt to create a reflected instance allocated on the stack.
-                auto [err, robj] = classLibrary->create<alloc::Stack>();
+                auto [err, robj] = classLibrary->ctor()(alloc::Stack);
             /*  Stack allocation fails:
             *   Creating a stack instance requires storing the actual object inside std::any.
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
@@ -252,14 +247,17 @@ namespace rtl_tests
         optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
         ASSERT_TRUE(classPerson);
 
-        optional<Method> getProfile = classPerson->getMethod(person::str_getProfile);
-        ASSERT_TRUE(getProfile);
-        EXPECT_TRUE(getProfile->hasSignature<>());  //empty template params checks for zero arguments.
+        optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+        ASSERT_TRUE(optGetProfile);
+        EXPECT_TRUE(optGetProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
-        auto [err, robj] = getProfile->bind().call(std::string());
+        rtl::static_method<rtl::Return(std::string)> getProfileFn = optGetProfile->argsT<std::string>().returnT<>();
+        EXPECT_FALSE(getProfileFn);
+        EXPECT_EQ(getProfileFn.get_init_error(), error::SignatureMismatch);
 
-        EXPECT_TRUE(err == error::SignatureMismatch);
-        ASSERT_TRUE(robj.isEmpty());
+        auto [err, robj] = getProfileFn(std::string());
+        EXPECT_EQ(err, error::SignatureMismatch);
+        EXPECT_TRUE(robj.isEmpty());
     }
 
 
@@ -272,7 +270,9 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)->bind(emptyObj).call();
+            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)
+                                       ->targetT().argsT().returnT()(emptyObj)();
+
             EXPECT_TRUE(err == error::EmptyRObject);
             ASSERT_TRUE(ret.isEmpty());
         }
@@ -289,15 +289,18 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, person] = classPerson->create<alloc::Heap>();
+            auto [err0, person] = classPerson->ctor()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(oGetPublishedOn);
+            
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
+            EXPECT_TRUE(getPublishedOn);
 
-            auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::TargetMismatch);
+            auto [err1, ret] = getPublishedOn(person)();
+            EXPECT_TRUE(err1 == error::TargetTypeMismatch);
             ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
@@ -314,15 +317,18 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, person] = classPerson->create<alloc::Stack>();
+            auto [err0, person] = classPerson->ctor()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> getPublishedOn = classBook->getMethod(book::str_getPublishedOn);
-            ASSERT_TRUE(getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            ASSERT_TRUE(oGetPublishedOn);
 
-            auto [err1, ret] = getPublishedOn->bind(person).call();
-            EXPECT_TRUE(err1 == error::TargetMismatch);
+            rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
+            EXPECT_TRUE(getPublishedOn);
+
+            auto [err1, ret] = getPublishedOn(person)();
+            EXPECT_TRUE(err1 == error::TargetTypeMismatch);
             ASSERT_TRUE(ret.isEmpty());
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
