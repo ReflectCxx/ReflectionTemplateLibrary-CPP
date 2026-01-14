@@ -4,9 +4,9 @@
 &nbsp;
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
 &nbsp;
-[![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Adevelop)
+[![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)
 &nbsp;
-[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/develop/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
+[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
@@ -203,15 +203,15 @@ RTL doesn’t invent a new paradigm — it extends C++ itself. You create object
   * Const/Non-const methods.
   * Any overloaded method, Const/Non-Const based as well.
 
-* ✅ **Perfect Forwarding** 🚀 – Binds LValue/RValue to correct overload.
-* ✅ **Zero Overhead Forwarding** ⚡ – No temporaries or copies during method forwarding.
-* ✅ **Namespace Support** 🗂️ – Group and reflect under namespaces.
-* ✅ **Reflected Returns** 🔍 – Access return values whose types are unknown at compile-time. Validate against the expected type and use them as if the type was known all along.
-* ✅ **Smart Pointer Reflection** 🔗 – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
-* 🟨 **Conservative Conversions** 🛡️ – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
-* 🟨 **Materialize New Types** 🔄 – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
-* 🚧 **STL Wrapper Support** 📦 – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and handle them seamlessly. *(In Progress)*
-* 🚧 **Relaxed Argument Matching** ⚙️ – Flexible parameter matching for reflective calls, enabling intuitive conversions and overload resolution. *(In Progress)*
+* ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
+* ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
+* ✅ **Namespace Support** – Group and reflect under namespaces.
+* ✅ **Reflected Returns** – Access return values whose types are unknown at compile time. Validate against the expected type and extract the content safely.
+* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, and benefit from automatic lifetime management with full sharing and cloning semantics.
+* 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
+* 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
+* 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
+* 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling intuitive conversions and overload resolution. *(In Progress)*
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Composite Type Reflection**: Planned.
