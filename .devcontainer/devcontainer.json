@@ -1,7 +1,7 @@
 {
   "name": "RTL Demo (Codespaces)",
   "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu",
-  "postCreateCommand": "cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build",
+  "postCreateCommand": "cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --target RTLDemoApp && echo '--- Running RTL Demo ---' && ./bin/RTLDemoApp",
   "customizations": {
     "vscode": {
       "extensions": [
