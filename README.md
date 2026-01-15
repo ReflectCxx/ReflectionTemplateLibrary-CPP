@@ -9,8 +9,6 @@
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/develop/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
-**▶ Try RTL Online (No Setup):**  
-https://github.com/codespaces/new?repo=ReflectCxx/ReflectionTemplateLibrary-CPP&quickstart=1
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
@@ -35,6 +33,9 @@ if(cToStr) {   // Function materialized?
 ### ⚡ Performance
 
 **RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
+
+**▶ Try RTL Online (No Setup):**
+https://github.com/codespaces/new?repo=ReflectCxx/ReflectionTemplateLibrary-CPP&quickstart=1
 
 ## Design Highlights
 
