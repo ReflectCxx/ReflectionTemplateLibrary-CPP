@@ -59,7 +59,7 @@ First, create an instance of `CxxMirror` –
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
 The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
-it can reside in any translation unit and is initialized on first use. To make it globally accessible in a controlled manner, a singleton interface can be used –
+It can reside in any translation unit and is initialized on first use. To make it globally accessible in a controlled manner, a singleton interface can be used –
 *`(MyReflection.h)`*
 ```c++
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
@@ -129,19 +129,18 @@ else {
     std::string nameStr = getName(person)(); // Returns string 'Alex'.
 }
 ```
-The above `getName`invocation is effectively a native function-pointer hop, since all types are known at compile time.
+The above `getName` invocation is effectively a native function-pointer hop, since all types are known at compile time.
 
 If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target.
-Materialize a erased-target(`Person`) but aware-return type method -
 ```c++
 rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
                                                             .argsT().returnT<std::string>();
-auto [err, opt_ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
-if (err == rtl::error::None && opt_ret.has_value()) {
-    std::cout << opt_ret.value();
+auto [err, ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
+if (err == rtl::error::None && ret.has_value()) {
+    std::cout << ret.value();
 }
 ```
-If the return type is also not known at compile time, `rtl::Return` can be used:
+If the return type is also not known at compile time,`rtl::Return` can be used:
 ```c++
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
                                                             .argsT().returnT();
@@ -169,7 +168,7 @@ RTL provides the following callable wrappers, designed to be as lightweight and 
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
-When invoked, each callable returns an `rtl::error` along with the result, which is wrapped either in `rtl::RObject` (for type-erased returns) or in `std::optional<T>` when the return type is known at compile time.
+When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
 
 ### Allocation and Lifetime Management
 
