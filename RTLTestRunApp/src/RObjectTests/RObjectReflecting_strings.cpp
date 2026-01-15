@@ -332,6 +332,49 @@ namespace unit_test
     }
 
 
+    TEST(RObject_init_with_stdString, clone_and_view)
+    {
+        // Create an RObject that reflects a string value (init with 'std::string').
+        RObject robj = rtl::reflect(STR_STD_STRING);
+
+        // Check if the value can be accessed as 'std::string'.
+        ASSERT_TRUE(robj.canViewAs<std::string>());
+
+        // Try to obtain a view as 'std::string' and verify it is present.
+        auto view0 = robj.view<std::string>();
+        ASSERT_TRUE(view0.has_value());
+
+        // Validate the string content matches the original input.
+        const std::string& str_cref0 = view0->get();
+        ASSERT_EQ(str_cref0, STR_STD_STRING);
+
+        auto [err, robjcp] = robj.clone<rtl::alloc::Heap>();
+        EXPECT_EQ(err, rtl::error::None);
+        EXPECT_EQ(robj.getTypeId(), robjcp.getTypeId());
+
+        // Check if the value can be accessed as 'std::string'.
+        ASSERT_TRUE(robj.canViewAs<std::string>());
+
+        // Try to obtain a view as 'std::string' and verify it is present.
+        auto view1 = robj.view<std::string>();
+        ASSERT_TRUE(view1.has_value());
+
+        // Validate the string content matches the original input.
+        const std::string& str_cref1 = view1->get();
+        ASSERT_EQ(str_cref1, STR_STD_STRING);
+        ASSERT_TRUE(robjcp.canViewAs<char>());
+        ASSERT_TRUE(robjcp.canViewAs<std::string>());
+
+        // Try to obtain a view as 'const char*' and verify it is present.
+        auto view2 = robjcp.view<char>();
+        ASSERT_TRUE(view2.has_value());
+
+        // Validate the base address are different, since RObject is reflecting a copy.
+        const char& str_addr = view2->get();
+        ASSERT_NE(&str_addr, STR_STD_STRING.c_str());
+    }
+
+
     TEST(RObject_init_with_stdString_rvalue, view_as_std_string)
     {
         // Create an RObject that reflects a string value (init with 'std::string' rvalue).

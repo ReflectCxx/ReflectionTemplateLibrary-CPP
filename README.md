@@ -63,8 +63,7 @@ auto cxx_mirror = rtl::CxxMirror({
 	rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
 	// Register user defined ctor -
 	rtl::type().member<Person>().constructor<std::string, int>().build(),
-    // Register methods -
-	rtl::type().member<Person>().method("setAge").build(&Person::setAge),
+    // Register method -
 	rtl::type().member<Person>().method("getName").build(&Person::getName)
 });
 ```
@@ -92,79 +91,69 @@ Singleton ensures one central registry, initialized once, accessible everywhere.
 
 **RTL in action:**
 
-```c++
-#include <rtl_access.h>    // Reflection access interface.
-#include "MyReflection.h"
-
-int main()
-{
-    // lookup class `Person` by name (given at registration time).
-    std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-    if (!classPerson) { return 0; } // Class not registered.
+Lookup class `Person` by name (given at registration time).
+```c++ 
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+if (!classPerson) { // Class not registered. }
 ```
 `rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for class/struct, and `rtl::Function` for non-member functions.
 
 From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
 
 Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
-For example, the default constructor:
+For example, the overloaded constructor `Person(std::string, int)` -
 ```c++
-    rtl::constructor<> personCtor = classPerson->ctor();
+rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
+if (!personCtor) { // Constructor with expected signature not found. }
 ```
-Or the overloaded constructor `Person(std::string, int)` -
+Or the default constructor -
 ```c++
-    rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
-    if (!personCtor) { return 0; } // Constructor with expected signature not found.
+rtl::constructor<> personCtor = classPerson->ctor();
 ```
 Instances can be created on the `Heap` or `Stack` with automatic lifetime management:
 ```c++
-    auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
-    if (err != rtl::error::None) { return 0; } // Construction failed.
+auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
+if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
 The constructed object is returned wrapped in `rtl::RObject`. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
 
-Similarly, member-function callers can be materialized:
+Now, Lookup a member-function by name -
 ```c++
-    std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
-    if (!oSetAge) { return 0; } // Method not found.
-
-    rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
-                                                    .argsT<int>().returnT<void>();
-    if (setAge) {
-        Person person;
-        setAge(person)(47);
-    }
+std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+if (!oGetName) { // Member function not registered. }
 ```
-The above `setAge`invocation is effectively a native function-pointer hop, since all types are known at compile time.
+And materialize a complete type-aware caller -
+```c++
+rtl::method<Person, void(int)> getName = oGetName->targetT<Person>()
+                                                    .argsT().returnT<std::string>();
+if (!getName) { 
+    std::cerr << rtl::to_string(getName.get_init_err()); 
+}
+else {
+    Person person("Alex", 23);
+    std::string nameStr = getName(person)(); // Returns string 'Alex'.
+}
+```
+The above `getName`invocation is effectively a native function-pointer hop, since all types are known at compile time.
 
 If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target.
+Materialize a erased-target(`Person`) but aware-return type method -
 ```c++
-    // Lookup reflected method `getName`.
-    std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
-    if (!oGetName) { return 0; } // Method not found.
-
-    // Materialize erased method: std::string Person::getName().
-    rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
-                                                               .argsT().returnT<std::string>();
-    if (getName) {
-        auto [err, opt_ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
-        if (err == rtl::error::None && opt_ret.has_value()) {
-            std::cout << opt_ret.value();
-        }
-    }
+rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
+                                                            .argsT().returnT<std::string>();
+auto [err, opt_ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
+if (err == rtl::error::None && opt_ret.has_value()) {
+    std::cout << opt_ret.value();
+}
 ```
 If the return type is also not known at compile time, `rtl::Return` can be used:
 ```c++
-    rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
-                                                               .argsT().returnT();
-    if (getName) {
-        auto [err, ret] = getName(robj)();	// Invoke and receive return value std::string wrapped in rtl::RObject.
-        if (err == rtl::error::None && ret.canViewAs<std::string>()) {
-            const std::string& name = ret.view<std::string>()->get();
-            std::cout << name;	// Safely view the returned std::string.
-        }
-    }
-    return 0;
+rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
+                                                            .argsT().returnT();
+auto [err, ret] = getName(robj)();	// Invoke and receive return value std::string wrapped in rtl::RObject.
+if (err == rtl::error::None && ret.canViewAs<std::string>()) {
+    const std::string& name = ret.view<std::string>()->get();
+    std::cout << name;	// Safely view the returned std::string.
 }
 ```
 ### How RTL Fits Together
