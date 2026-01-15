@@ -86,7 +86,9 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-### RTL in action: **[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
+### RTL in action:
+
+**[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
 Lookup class `Person` by name (given at registration time).
 ```c++ 
