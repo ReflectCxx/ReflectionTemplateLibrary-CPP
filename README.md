@@ -104,7 +104,7 @@ Callables are materialized by explicitly providing the argument types we intend 
 For example, the overloaded constructor `Person(std::string, int)` -
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
-if (!personCtor) { // Constructor with expected signature not found. }
+if (!personCtor) { /*Constructor with expected signature not found.*/ }
 ```
 Or the default constructor -
 ```c++
@@ -120,12 +120,12 @@ The constructed object is returned wrapped in `rtl::RObject`. Heap-allocated obj
 Now, Lookup a member-function by name -
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
-if (!oGetName) { // Member function not registered. }
+if (!oGetName) { /* Member function not registered */ }
 ```
 And materialize a complete type-aware caller -
 ```c++
-rtl::method<Person, void(int)> getName = oGetName->targetT<Person>()
-                                                    .argsT().returnT<std::string>();
+rtl::method<Person, std::string()> getName = oGetName->targetT<Person>()
+                                                     .argsT().returnT<std::string>();
 if (!getName) { 
     std::cerr << rtl::to_string(getName.get_init_err()); 
 }
