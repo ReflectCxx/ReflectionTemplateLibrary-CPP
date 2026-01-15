@@ -9,57 +9,98 @@ int main()
 {
     // Query reflected record for class `Person` (dynamic lookup).
     std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-    if (!classPerson) { return 0; } // Class not registered.
-
-    // Get constructor overload: Person(const char*, int).
-    rtl::constructor<const char*, int> personCtor = classPerson->ctor<const char*, int>();
-    if (!personCtor) { return 0; } // Constructor with expected signature not found.
-
-    // Construct a stack-allocated instance; returns {error, RObject}.
-    auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
-
-    if (err != rtl::error::None) { return 0; } // Construction failed.
-
-    // Lookup reflected method `setAge`.
-    std::optional<rtl::Method> oSetAge = classPerson->getMethod("setAge");
-    if (!oSetAge) { return 0; } // Method not found.
-
-    // When target/return types are known (fastest path).
-    {
-        // Materialize typed method: Person::setAge(int) -> void.
-        rtl::method<Person, void(int)> setAge = oSetAge->targetT<Person>()
-                                                       .argsT<int>().returnT<void>();
-        if (setAge) {
-            Person person("Alex", 24);
-            setAge(person)(25); // Near-zero-overhead dispatch (pointer-level cost).
-        }
+    if (!classPerson) {
+        std::cerr << "\n[error]     Class \"Person\" not found.";
+        return 0; 
     }
 
-    // When target/return types are erased (more flexible).
-    {
-        // Materialize erased method: RObject target, erased return.
-        rtl::method<rtl::RObject, rtl::Return(int)> setAge = oSetAge->targetT()
-                                                                    .argsT<int>().returnT();
-        if (setAge) {
-            // Slightly slower than typed path; comparable to std::function.
-            auto [err, ret] = setAge(robj)(47);
-            if (err == rtl::error::None) { /* call succeeded; return is void ('ret' empty)*/ }
+    {   // Materialize default constructor.
+        rtl::constructor<> personCtor = classPerson->ctor();
+        if (!personCtor) {
+            std::cerr << "\n[error]     Constructor with expected signature not found.";
+            return 0;
         }
+
+        // Construct a stack-allocated instance.
+        // This will call the default constructor and since 
+        // its placed in std::any, move(or copy) constructor will also be called.
+        auto [err, person] = personCtor(rtl::alloc::Stack);
+        if (err != rtl::error::None) { // Construction failed.
+            std::cerr << "\n[error]     " << rtl::to_string(err);
+            return 0;
+        }
+    }   // 'person' will get destroyed automatically.
+
+    std::cout << std::endl;
+
+    // Materialize constructor: Person(std::string, int).
+    rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
+    if (!personCtor) {
+        std::cerr << "\n[error]     " << rtl::to_string(personCtor.get_init_error());
+        return 0;
+    }
+
+    // Construct a heap-allocated instance, constructor will be called only once.
+    auto [err, robj] = personCtor(rtl::alloc::Heap, "Bernard Reflection", 42);
+    if (err != rtl::error::None) { // Construction failed.
+        std::cerr << "\n[error]     " << rtl::to_string(err);
+        return 0;
     }
 
     // Lookup reflected method `getName`.
     std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
-    if (!oGetName) { return 0; } // Method not found.
+    if (!oGetName) { // Method not found.
+        std::cerr << "\n[error]     Method \"getName\" not found.";
+        return 0;
+    }
 
-    // Materialize erased method: getName() -> std::string.
-    rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
-                                                               .argsT().returnT();
-    if (getName)
-	{
-        auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
-        if (err == rtl::error::None && ret.canViewAs<std::string>()) {
-            const std::string& name = ret.view<std::string>()->get();
-            std::cout << name;	// Safely view the returned std::string.
+    {   // Materialize complete type-aware caller.
+        rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT().returnT<std::string>();
+
+        if (getName) {
+            Person alice("Alex Non-Reflected", 10);
+            std::cout << std::endl;
+            std::string nameStr = getName(alice)();
+            std::cout << "\n[rtl-call]  complete type-aware, getName(), returns: " << nameStr;
+        }
+        else {
+            std::cerr << "\n[error]     " << rtl::to_string(getName.get_init_error());
+            return 0;
+        }
+    }
+    std::cout << std::endl;
+    {   // Materialize erased-target caller.
+        rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT().returnT<std::string>();
+
+        if (getName) {
+            auto [err, opt_ret] = getName(robj)();	// Invoke and receive erased return value.
+            
+            if (err != rtl::error::None) {
+                std::cerr << "\n[error]     " << rtl::to_string(err);
+                return 0;
+            }
+            if (opt_ret.has_value()) {
+                std::cout << "\n[rtl-call]  return type-aware, erased-type 'Person', getName(), returns: " << opt_ret.value();	// Safely view the returned std::string.
+            }
+        }
+    }
+    std::cout << std::endl;
+    {
+        // Materialize erased-target & return caller.
+        rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+
+        if (getName)
+        {
+            auto [err, ret] = getName(robj)();	// Invoke and receive erased return value.
+
+            if (err != rtl::error::None) {
+                std::cerr << "\n[error]     " << rtl::to_string(err);
+                return 0;
+            }
+            if (ret.canViewAs<std::string>()) {
+                const std::string& name = ret.view<std::string>()->get();
+                std::cout << "\n[rtl-call]  complete type-erased, getName(), returns: " << name;	// Safely view the returned std::string.
+            }
         }
     }
     return 0;

@@ -149,8 +149,7 @@ If the concrete type `Person` is not accessible at the call site, its member fun
     if (getName) {
         auto [err, opt_ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
         if (err == rtl::error::None && opt_ret.has_value()) {
-            std::string name = opt_ret->get();
-            std::cout << name;
+            std::cout << opt_ret.value();
         }
     }
 ```

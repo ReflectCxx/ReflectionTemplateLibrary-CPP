@@ -14,9 +14,7 @@ const rtl::CxxMirror& cxx::mirror()
         // Register user defined ctor -
         rtl::type().member<Person>().constructor<std::string, int>().build(),
 
-        // Register methods -
-        rtl::type().member<Person>().method("setAge").build(&Person::setAge),
-
+        // Register method
         rtl::type().member<Person>().method("getName").build(&Person::getName)
     });
 

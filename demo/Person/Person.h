@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 class Person
 {
@@ -9,20 +10,39 @@ class Person
 
 public:
 
-    Person(std::string pName, int pAge)
+    Person()
+        : m_name("John Doe")
+        , m_age(0)
+    { 
+        std::cout << "\n[ctor]      Person() called, init name: " << m_name;
+    }
+
+    Person(Person&& pOther) noexcept
+        : m_name(pOther.m_name)
+        , m_age(pOther.m_age)
+    {
+        std::cout << "\n[move-ctor] Person() called, init name: " << m_name;
+    }
+
+    Person(const Person& pOther) noexcept
+        : m_name(pOther.m_name)
+        , m_age(pOther.m_age)
+    {
+        std::cout << "\n[copy-ctor] Person(const Person&) called, init name: " << m_name;
+    }
+
+    Person(std::string pName, int pAge) noexcept
         : m_age(pAge)
-        , m_name(pName)
-    { }
-
-    int getAge() {
-        return m_age;
+        , m_name(pName) { 
+        std::cout << "\n[ctor]      Person(std::string, int) called, init name: " << m_name;
     }
 
-    void setAge(const int pAge) {
-        m_age = pAge;
+    ~Person() noexcept {
+        std::cout << "\n[dtor]      ~Person() called, Destructing: " << m_name;
     }
 
-    std::string getName() {
+    std::string getName() noexcept {
+        std::cout << "\n[method]    Person::getName() called.";
         return m_name;
     }
 };
