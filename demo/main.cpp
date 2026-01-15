@@ -90,8 +90,7 @@ int main()
         {
             // Compile-time target + return type
             rtl::method<Person, std::string()> getName = oGetName->targetT<Person>()
-                .argsT()
-                .returnT<std::string>();
+                                                                 .argsT().returnT<std::string>();
             if (!getName) {
                 die(getName.get_init_error());
             }
@@ -110,8 +109,7 @@ int main()
         {
             // Runtime object, compile-time return type
             rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
-                .argsT()
-                .returnT<std::string>();
+                                                                       .argsT().returnT<std::string>();
             if (!getName) {
                 die(getName.get_init_error());
             }
@@ -134,8 +132,7 @@ int main()
         {
             // Runtime object + runtime return type
             rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
-                .argsT()
-                .returnT();
+                                                                       .argsT().returnT();
             if (!getName) {
                 die(getName.get_init_error());
             }

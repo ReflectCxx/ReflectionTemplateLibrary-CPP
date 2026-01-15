@@ -54,22 +54,12 @@ if(cToStr) {   // Function materialized?
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-First, Create an instance of `CxxMirror`, passing all type information directly to its constructor –
+First, create an instance of `CxxMirror` –
 ```c++
-auto cxx_mirror = rtl::CxxMirror({
-	// Register free(C-Style) function -
-	rtl::type().function("complexToStr").build(complexToStr),
-	// Register class 'Person' ('record' is general term used for 'struct/class') -
-	rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
-	// Register user defined ctor -
-	rtl::type().member<Person>().constructor<std::string, int>().build(),
-    // Register method -
-	rtl::type().member<Person>().method("getName").build(&Person::getName)
-});
+auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
-The `cxx_mirror` object is your gateway to runtime reflection – it lets you query, introspect, and even instantiate types without any compile-time knowledge. It can live anywhere – in any translation unit, quietly resting in a corner of your codebase, remaining dormant until first access. All you need is to expose the `cxx_mirror` wherever reflection is required.
-
-And what better way to do that than a **Singleton**,
+The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
+it can reside in any translation unit and is initialized on first use. To make it globally accessible in a controlled manner, a singleton interface can be used –
 *`(MyReflection.h)`*
 ```c++
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
@@ -82,19 +72,24 @@ define and register everything in an isolated translation unit,
 
 rtl::CxxMirror& cxx::mirror() {
     static auto cxx_mirror = rtl::CxxMirror({   // Inherently thread safe.
-        /* ...register all types here... */
+        // Register free(C-Style) function -
+	    rtl::type().function("complexToStr").build(complexToStr),
+	    // Register class 'Person' ('record' is general term used for 'struct/class') -
+	    rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
+	    // Register user defined ctor -
+	    rtl::type().member<Person>().constructor<std::string, int>().build(),
+        // Register method -
+	    rtl::type().member<Person>().method("getName").build(&Person::getName)
     });
     return cxx_mirror;
 }
 ```
-Singleton ensures one central registry, initialized once, accessible everywhere. No static coupling, no multiple instances, just clean runtime reflection.
-
-**RTL in action:**
+### RTL in action:
 
 Lookup class `Person` by name (given at registration time).
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-if (!classPerson) { // Class not registered. }
+if (!classPerson) { /* Class not registered. */ }
 ```
 `rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for class/struct, and `rtl::Function` for non-member functions.
 
@@ -104,7 +99,7 @@ Callables are materialized by explicitly providing the argument types we intend 
 For example, the overloaded constructor `Person(std::string, int)` -
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
-if (!personCtor) { /*Constructor with expected signature not found.*/ }
+if (!personCtor) { /* Constructor with expected signature not found. */ }
 ```
 Or the default constructor -
 ```c++
