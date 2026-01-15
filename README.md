@@ -86,7 +86,7 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-### RTL in action:
+### RTL in action: **[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
 Lookup class `Person` by name (given at registration time).
 ```c++ 
@@ -171,8 +171,6 @@ RTL provides the following callable wrappers, designed to be as lightweight and 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
-
-**[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
 ### Allocation and Lifetime Management
 
