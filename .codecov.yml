@@ -10,3 +10,7 @@ coverage:
 comment:
   layout: "diff, flags, files"
   behavior: default
+
+ignore:
+  - "demo/**"
+  - "RTLBenchmarkApp/**"

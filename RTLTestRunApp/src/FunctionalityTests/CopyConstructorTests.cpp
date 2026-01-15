@@ -27,7 +27,9 @@ namespace rtl_tests
             auto [err1, book1] = book0.clone<alloc::Heap>();
 
             EXPECT_TRUE(err1 == error::None);
-            ASSERT_FALSE(book1.isEmpty());
+            EXPECT_FALSE(book1.isEmpty());
+
+            EXPECT_EQ(book0.getTypeId(), book1.getTypeId());
 
             EXPECT_TRUE(book::get_book_instance_count() == 2);
             EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 2);

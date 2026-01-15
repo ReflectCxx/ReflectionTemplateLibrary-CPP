@@ -48,8 +48,6 @@ add_executable(${CXX_EXE_NAME}
 )
 
 
-target_include_directories(${CXX_EXE_NAME} PRIVATE ${RTL_INCLUDE_DIRS})
-
 target_link_libraries(${CXX_EXE_NAME}
     PRIVATE
         benchmark
