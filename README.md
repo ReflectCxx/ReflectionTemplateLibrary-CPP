@@ -10,8 +10,7 @@
 &nbsp;
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
 
-▶ **Try RTL Online**  
-[Open in GitHub Codespaces](https://github.com/codespaces/new?repo=ReflectCxx/ReflectionTemplateLibrary-CPP&quickstart=1)
+▶ **Try RTL Online**  [Open in GitHub Codespaces](https://github.com/codespaces/new?repo=ReflectCxx/ReflectionTemplateLibrary-CPP&quickstart=1)
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
