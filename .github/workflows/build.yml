@@ -5,12 +5,15 @@ on:
     branches: [ release, develop ]
     paths-ignore:
       - '**/*.md'
+  push:
+    branches: [ release ]
   workflow_dispatch:
 
 jobs:
   build:
     name: Build (${{ matrix.os }} / ${{ matrix.compiler }})
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -22,17 +25,19 @@ jobs:
             compiler: clang
           - os: ubuntu-latest
             compiler: msvc
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # Linux builds
+      # Linux dependencies
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt update
           sudo apt install -y ninja-build g++ clang
 
+      # Configure (Linux)
       - name: Configure (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -42,7 +47,7 @@ jobs:
             cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++;
           fi
 
-      # Windows builds (MSVC)
+      # Configure (Windows / MSVC)
       - name: Configure (Windows / MSVC)
         if: runner.os == 'Windows'
         run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
@@ -51,9 +56,35 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel
 
-      # Upload artifacts per compiler
+      # Rename binaries (Linux)
+      - name: Rename binaries (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mv bin/RTLTestApp bin/RTLTestApp-linux-${{ matrix.compiler }}
+          mv bin/RTLBenchmarkApp bin/RTLBenchmarkApp-linux-${{ matrix.compiler }}
+
+      # Rename binaries (Windows / MSVC)
+      - name: Rename binaries (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          ren bin\RTLTestApp.exe RTLTestApp-msvc.exe
+          ren bin\RTLBenchmarkApp.exe RTLBenchmarkApp-msvc.exe
+
+      # Upload artifacts (all builds)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: rtl-test-binaries-${{ matrix.compiler }}
+          name: rtl-test-binaries-${{ matrix.os }}-${{ matrix.compiler }}
           path: bin/
+
+      # Publish to GitHub Release (release branch only)
+      - name: Publish to GitHub Release (All binaries)
+        if: github.ref == 'refs/heads/release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest RTL Build
+          files: |
+            bin/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
