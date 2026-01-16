@@ -1,5 +1,7 @@
 # Reflection Template Library (RTL) – A Run-Time Reflection System for C++.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
+&nbsp;
 [![CMake](https://img.shields.io/badge/CMake-Enabled-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
 &nbsp;
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
@@ -8,7 +10,7 @@
 &nbsp;
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
-[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
+[![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
@@ -29,8 +31,6 @@ if(cToStr) {   // Function materialized?
 // cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
 > *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
-
-▶ **Try RTL Online** – [Open in GitHub Codespaces](https://github.com/codespaces/new?repo=ReflectCxx/ReflectionTemplateLibrary-CPP&quickstart=1)
 
 ### ⚡ Performance
 
@@ -87,6 +87,8 @@ rtl::CxxMirror& cxx::mirror() {
 }
 ```
 ### RTL in action:
+
+**[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
 Lookup class `Person` by name (given at registration time).
 ```c++ 
