@@ -60,14 +60,14 @@ jobs:
       - name: Rename binaries (Linux)
         if: runner.os == 'Linux'
         run: |
-          mv bin/RTLTestApp bin/RTLTestApp-linux-${{ matrix.compiler }}
+          mv bin/RTLTestRunApp bin/RTLTestRunApp-linux-${{ matrix.compiler }}
           mv bin/RTLBenchmarkApp bin/RTLBenchmarkApp-linux-${{ matrix.compiler }}
 
       # Rename binaries (Windows / MSVC)
       - name: Rename binaries (Windows)
         if: runner.os == 'Windows'
         run: |
-          ren bin\RTLTestApp.exe RTLTestApp-msvc.exe
+          ren bin\RTLTestRunApp.exe RTLTestRunApp-msvc.exe
           ren bin\RTLBenchmarkApp.exe RTLBenchmarkApp-msvc.exe
 
       # Upload artifacts (all builds)
