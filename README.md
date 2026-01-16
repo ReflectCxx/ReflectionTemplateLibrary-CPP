@@ -59,7 +59,7 @@ First, create an instance of `CxxMirror` –
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
 The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
-It can reside in any translation unit. To make it globally accessible in a controlled manner and ensure it is initialized only when needed, a singleton interface can be used –
+It can reside in any translation unit. To make it globally accessible and ensure it is initialized only when needed, a singleton interface can be used –
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
@@ -93,7 +93,7 @@ Lookup the `Person` class by its registered name –
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
-`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for any registered type (class, struct or pod), and `rtl::Function` for non-member functions.
+`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for any registered type (class, struct or pod) and `rtl::Function` for non-member functions.
 
 From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
 
