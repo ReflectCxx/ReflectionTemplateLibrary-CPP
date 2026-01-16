@@ -14,13 +14,13 @@
 &nbsp;
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
-**RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
+RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
 It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function –
 ```c++
 std::string complexToStr(float real, float img);
 ```
-Using **RTL**, you can discover this function by name and invoke it dynamically –
+Using RTL, you can discover this function by name and invoke it dynamically –
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
@@ -28,13 +28,13 @@ rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("com
 if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
-// cxx::mirror() returns an instance of rtl::CxxMirror (explained in Quick-Preview section)
+// cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
 > *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
 ⚡ **Performance**
 
-**RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
+RTL’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
 
 ## Design Highlights
 
