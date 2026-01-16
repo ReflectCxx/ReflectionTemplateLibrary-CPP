@@ -11,8 +11,6 @@
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
-&nbsp;
-[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
@@ -162,31 +160,53 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 
 RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
-`rtl::function<...>` – Free (non-member) functions
+`rtl::function<>` – Free (non-member) functions
 
-`rtl::constructor<...>` – Constructors
+`rtl::constructor<>` – Constructors
 
-`rtl::method<...>` – Non-const member functions
+`rtl::method<>` – Non-const member functions
 
-`rtl::const_method<...>` – Const-qualified member functions
+`rtl::const_method<>` – Const-qualified member functions
 
-`rtl::static_method<...>` – Static member functions
+`rtl::static_method<>` – Static member functions
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
 
-### Allocation and Lifetime Management
+## ## How to Build (Windows / Linux)
+```sh
+mkdir build && cd build
+cmake -G "<Generator>"    # Use a C++20-compatible compiler
+cmake --build .
+```
+Run the generated binaries from `bin/`:
 
-* Heap (`alloc::Heap`) – objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
+* `RTLTestRunApp` – Reflection tests and examples
+* `RTLBenchmarkApp` – Performance benchmarks
 
-* Stack (`alloc::Stack`) – independent copies behave like normal stack values and clean up at scope exit.
+Additional resources:
 
-* Move semantics – `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+* `CxxTestRegistration/src/MyReflectionTests/` – Tutorial examples
+* `RTLTestRunApp/src` – Detailed test cases
+* `RTLBenchmarkApp/src` – Benchmark implementations
+* `run_benchmarks.sh` – Automated benchmark runs
+> Tested with MSVC 19, GCC 14, and Clang 19
 
-* Return values – All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
+## 💚 Support RTL’s Development
 
-RTL doesn’t invent a new paradigm – it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
+Reflection Template Library (RTL) is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
+
+Sponsorship supports continued development of:
+
+* Inheritance-aware reflection with property and enum support
+* Production-ready examples
+* Tooling and documentation
+* Cross-platform CI and testing
+
+If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
+
+[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-EA4AAA?style=for-the-badge\&logo=github-sponsors)](https://github.com/sponsors/ReflectCxx)
 
 ## Reflection Features
 
@@ -219,40 +239,6 @@ RTL doesn’t invent a new paradigm – it extends C++ itself. You create object
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Composite Type Reflection**: Planned.
 * ❌ **Inheritance Support**: Planned.
-
-## How To build (Windows/Linux)
-
-Create a build directory in the project root folder:
-
-```sh
-mkdir build && cd build
-```
-
-Generate a build system using **Unix Makefiles** or **Visual Studio** in CMake (use a compiler with C++20):
-
-```sh
-cmake -G "<Generator>"
-```
-
-To build, use any IDE applicable to the generator, or build straight from CMake:
-
-```sh
-cmake --build .
-```
-
-Run the `RTLTestRunApp` or `RTLBenchmarkApp` binaries generated in the `bin/` directory. (Tested with MSVC 19, GCC 14, and Clang 19)
-* See `CxxTestRegistration/src/MyReflectionTests/` for introductory examples of type registration and reflective programming.
-* See `RTLTestRunApp/src` for detailed test cases.
-* See `RTLBenchmarkApp/src` for benchmarking implementations.
-* Run `run_benchmarks.sh` to perform automated benchmarking, from micro-level tests to scaled workloads.
-  
-## Contributions
-
-Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
-
-## Contact
-
-GitHub issues or email at `reflectcxx@outlook.com`.
 
 ##
 
