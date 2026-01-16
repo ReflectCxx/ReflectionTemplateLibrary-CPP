@@ -242,4 +242,4 @@ If you’re interested in advancing practical runtime reflection in C++ and supp
 
 ##
 
-***C++ joins the reflection party! — why should Java & .NET have all the fun?***
+***C++ joins the reflection party! – why should Java have all the fun?***
