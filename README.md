@@ -16,13 +16,11 @@
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
-It enables name-based discovery and invocation of functions, constructors, and objects through a non-intrusive, type-safe reflection system that remains close to native execution.
-
-For example, imagine you’ve written a simple function,
+It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function –
 ```c++
 std::string complexToStr(float real, float img);
 ```
-Using **RTL**, discover it by name and call dynamically:
+Using **RTL**, you can discover this function by name and invoke it dynamically –
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
