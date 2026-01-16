@@ -63,8 +63,8 @@ jobs:
       - name: Rename binaries (Linux)
         if: runner.os == 'Linux'
         run: |
-          mv bin/RTLTestRunApp bin/RTLTestRunApp-linux-${{ matrix.compiler }}
-          mv bin/RTLBenchmarkApp bin/RTLBenchmarkApp-linux-${{ matrix.compiler }}
+          mv bin/RTLTestRunApp bin/RTLTestRunApp-${{ matrix.compiler }}
+          mv bin/RTLBenchmarkApp bin/RTLBenchmarkApp-${{ matrix.compiler }}
 
       # Rename binaries (Windows / MSVC)
       - name: Rename binaries (Windows)
@@ -77,7 +77,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: rtl-test-binaries-${{ matrix.os }}-${{ matrix.compiler }}
+          name: rtl-test-binaries-${{ matrix.compiler }}
           path: bin/
 
       # Publish to GitHub Release (release branch only)
