@@ -28,11 +28,11 @@ rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("com
 if(cToStr) {   // Function materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
-// cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
+// cxx::mirror() returns an instance of rtl::CxxMirror (explained in Quick-Preview section)
 ```
 > *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
-### ⚡ Performance
+⚡ **Performance**
 
 **RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
 
