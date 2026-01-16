@@ -174,7 +174,7 @@ These callable types are regular value types: they can be copied, moved, stored 
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
 
-## ## How to Build (Windows / Linux)
+### How to Build (Windows / Linux)
 ```sh
 mkdir build && cd build
 cmake -G "<Generator>"    # Use a C++20-compatible compiler
@@ -197,9 +197,8 @@ Additional resources:
 
 Reflection Template Library (RTL) is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
 
-Sponsorship supports continued development of:
+Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
 
-* Inheritance-aware reflection with property and enum support
 * Production-ready examples
 * Tooling and documentation
 * Cross-platform CI and testing
