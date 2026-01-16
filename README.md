@@ -11,6 +11,8 @@
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
+&nbsp;
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
@@ -61,13 +63,13 @@ First, create an instance of `CxxMirror` –
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
 The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
-It can reside in any translation unit and is initialized on first use. To make it globally accessible in a controlled manner, a singleton interface can be used –
+It can reside in any translation unit. To make it globally accessible in a controlled manner and ensure it is initialized only when needed, a singleton interface can be used –
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
 struct cxx { static rtl::CxxMirror& mirror(); };	// The Singleton.
 ```
-define and register everything in an isolated translation unit,
+define and register everything in an isolated translation unit –
 ```c++
 // MyReflection.cpp
 #include <rtl_builder.h> 	// Reflection builder interface.
@@ -90,7 +92,7 @@ rtl::CxxMirror& cxx::mirror() {
 
 **[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
-Lookup class `Person` by name (given at registration time).
+Lookup the `Person` class by its registered name –
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
@@ -100,28 +102,28 @@ if (!classPerson) { /* Class not registered. */ }
 From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
 
 Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
-For example, the overloaded constructor `Person(std::string, int)` -
+For example, the overloaded constructor `Person(std::string, int)` –
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
 if (!personCtor) { /* Constructor with expected signature not found. */ }
 ```
-Or the default constructor -
+Or the default constructor –
 ```c++
 rtl::constructor<> personCtor = classPerson->ctor();
 ```
-Instances can be created on the `Heap` or `Stack` with automatic lifetime management:
+Instances can be created on the `Heap` or `Stack` with automatic lifetime management –
 ```c++
 auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
 if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
 The constructed object is returned wrapped in `rtl::RObject`. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
 
-Now, Lookup a member-function by name -
+Now, Lookup a member-function by name –
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
-And materialize a complete type-aware caller -
+And materialize a complete type-aware caller –
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>()
                                                      .argsT().returnT<std::string>();
@@ -135,7 +137,7 @@ else {
 ```
 The above `getName` invocation is effectively a native function-pointer hop, since all types are known at compile time.
 
-If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target.
+If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target –
 ```c++
 rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
                                                             .argsT().returnT<std::string>();
@@ -144,7 +146,7 @@ if (err == rtl::error::None && ret.has_value()) {
     std::cout << ret.value();
 }
 ```
-If the return type is also not known at compile time,`rtl::Return` can be used:
+If the return type is also not known at compile time,`rtl::Return` can be used –
 ```c++
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
                                                             .argsT().returnT();
@@ -160,31 +162,51 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 
 RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
-`rtl::function<...>` – Free (non-member) functions
+`rtl::function<>` – Free (non-member) functions
 
-`rtl::constructor<...>` – Constructors
+`rtl::constructor<>` – Constructors
 
-`rtl::method<...>` – Non-const member functions
+`rtl::method<>` – Non-const member functions
 
-`rtl::const_method<...>` – Const-qualified member functions
+`rtl::const_method<>` – Const-qualified member functions
 
-`rtl::static_method<...>` – Static member functions
+`rtl::static_method<>` – Static member functions
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
 
-### Allocation and Lifetime Management
+### How to Build (Windows / Linux)
+```sh
+mkdir build && cd build
+cmake -G "<Generator>"    # Use a C++20-compatible compiler
+cmake --build .
+```
+Run the generated binaries from `bin/`:
 
-* Heap (`alloc::Heap`) – objects are owned by an internal `std::unique_ptr` and destroyed when their `rtl::RObject` wrapper goes out of scope.
+* `RTLTestRunApp` – Reflection tests and examples
+* `RTLBenchmarkApp` – Performance benchmarks
 
-* Stack (`alloc::Stack`) – independent copies behave like normal stack values and clean up at scope exit.
+Additional resources:
 
-* Move semantics – `Heap` objects follow `std::unique_ptr` rules (move transfers ownership, copy/assign disabled). `Stack` objects move like regular values.
+* `CxxTestRegistration/src/MyReflectionTests/` – Tutorial examples
+* `RTLTestRunApp/src` – Detailed test cases
+* `RTLBenchmarkApp/src` – Benchmark implementations
+* `run_benchmarks.sh` – Automated benchmark runs
 
-* Return values – All returns are propagated back wrapped in `rtl::RObject`, cleaned up automatically at scope exit.
+## 💚 Support RTL’s Development
 
-RTL doesn’t invent a new paradigm – it extends C++ itself. You create objects, call methods, and work with types as usual, but now safely at run-time.
+Reflection Template Library (RTL) is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
+
+Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
+
+* Production-ready examples
+* Tooling and documentation
+* Cross-platform CI and testing
+
+If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
+
+[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 ## Reflection Features
 
@@ -218,40 +240,6 @@ RTL doesn’t invent a new paradigm – it extends C++ itself. You create object
 * ❌ **Composite Type Reflection**: Planned.
 * ❌ **Inheritance Support**: Planned.
 
-## How To build (Windows/Linux)
-
-Create a build directory in the project root folder:
-
-```sh
-mkdir build && cd build
-```
-
-Generate a build system using **Unix Makefiles** or **Visual Studio** in CMake (use a compiler with C++20):
-
-```sh
-cmake -G "<Generator>"
-```
-
-To build, use any IDE applicable to the generator, or build straight from CMake:
-
-```sh
-cmake --build .
-```
-
-Run the `RTLTestRunApp` or `RTLBenchmarkApp` binaries generated in the `bin/` directory. (Tested with MSVC 19, GCC 14, and Clang 19)
-* See `CxxTestRegistration/src/MyReflectionTests/` for introductory examples of type registration and reflective programming.
-* See `RTLTestRunApp/src` for detailed test cases.
-* See `RTLBenchmarkApp/src` for benchmarking implementations.
-* Run `run_benchmarks.sh` to perform automated benchmarking, from micro-level tests to scaled workloads.
-  
-## Contributions
-
-Contributions welcome! Report bugs, request features, or submit PRs on GitHub.
-
-## Contact
-
-GitHub issues or email at `reflectcxx@outlook.com`.
-
 ##
 
-***C++ joins the reflection party! — why should Java & .NET have all the fun?***
+***C++ joins the reflection party! – why should Java have all the fun?***
