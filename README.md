@@ -191,7 +191,6 @@ Additional resources:
 * `RTLTestRunApp/src` – Detailed test cases
 * `RTLBenchmarkApp/src` – Benchmark implementations
 * `run_benchmarks.sh` – Automated benchmark runs
-> Tested with MSVC 19, GCC 14, and Clang 19
 
 ## 💚 Support RTL’s Development
 
@@ -205,7 +204,7 @@ Sponsorship supports continued improvement of RTL’s core reflection capabiliti
 
 If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
 
-[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-EA4AAA?style=for-the-badge\&logo=github-sponsors)](https://github.com/sponsors/ReflectCxx)
+[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 ## Reflection Features
 
