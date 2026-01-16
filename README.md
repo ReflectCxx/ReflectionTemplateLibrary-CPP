@@ -11,6 +11,8 @@
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
+&nbsp;
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 **RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
 
