@@ -67,8 +67,8 @@ jobs:
       - name: Rename binaries (Windows)
         if: runner.os == 'Windows'
         run: |
-          ren bin\RTLTestRunApp.exe RTLTestRunApp-msvc.exe
-          ren bin\RTLBenchmarkApp.exe RTLBenchmarkApp-msvc.exe
+          ren bin\Release\RTLTestRunApp.exe RTLTestRunApp-msvc.exe
+          ren bin\Release\RTLBenchmarkApp.exe RTLBenchmarkApp-msvc.exe
 
       # Upload artifacts (all builds)
       - name: Upload build artifacts
