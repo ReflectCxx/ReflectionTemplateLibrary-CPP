@@ -348,20 +348,20 @@ namespace unit_test
             EXPECT_EQ(robj.getTypeId(), robjcp.getTypeId());
             {
                 // Check if the value can be accessed as 'std::string'.
-                ASSERT_TRUE(robjcp.canViewAs<std::string>());
+                ASSERT_TRUE(robjcp.template canViewAs<std::string>());
 
                 // Try to obtain a view as 'std::string' and verify it is present.
-                auto view = robjcp.view<std::string>();
+                auto view = robjcp.template view<std::string>();
                 ASSERT_TRUE(view.has_value());
 
                 // Validate the string content matches the original input.
                 const std::string& str_cref = view->get();
                 ASSERT_EQ(str_cref, STR_STD_STRING);
             } {
-                ASSERT_TRUE(robjcp.canViewAs<char>());
+                ASSERT_TRUE(robjcp.template canViewAs<char>());
 
                 // Try to obtain a view as 'const char*' and verify it is present.
-                auto view = robjcp.view<char>();
+                auto view = robjcp.template view<char>();
                 ASSERT_TRUE(view.has_value());
 
                 // Validate the base address are different, since RObject is reflecting a copy.
@@ -370,7 +370,10 @@ namespace unit_test
             }
         };
         testWithAlloc.operator()<rtl::alloc::Stack>();
-        //TODO: This fails. Fix it.
+        // TODO: This fails. Fix it.
+        // Should even std::string to 'char' conversion be allowed implicitly?
+        // Need to re-think it. The implicit conversions are not used in core dispatch yet.
+        // will sit on it for a while.
         //testWithAlloc.operator()<rtl::alloc::Heap>();
     }
 
