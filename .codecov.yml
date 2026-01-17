@@ -14,3 +14,4 @@ comment:
 ignore:
   - "demo/**"
   - "RTLBenchmarkApp/**"
+  - "ReflectionTemplateLib/rtl/detail/src/RObjectConverters_string.cpp"
