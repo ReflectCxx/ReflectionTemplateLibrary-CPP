@@ -14,15 +14,13 @@
 &nbsp;
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
-**RTL** provides type-safe run-time reflection for modern C++ – combining compile-time guarantees with controlled run-time flexibility.
+RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
-It enables name-based discovery and invocation of functions, constructors, and objects through a non-intrusive, type-safe reflection system that remains close to native execution.
-
-For example, imagine you’ve written a simple function,
+It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function –
 ```c++
 std::string complexToStr(float real, float img);
 ```
-Using **RTL**, discover it by name and call dynamically:
+Using RTL, you can discover this function by name and invoke it dynamically –
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
@@ -34,9 +32,9 @@ if(cToStr) {   // Function materialized?
 ```
 > *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
-### ⚡ Performance
+⚡ **Performance**
 
-**RTL**’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
+RTL’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
 
 ## Design Highlights
 
@@ -44,9 +42,7 @@ if(cToStr) {   // Function materialized?
 
 * ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
 
-* ***Zero-Overhead by Design*** – Metadata is registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
-
-* ***Deterministic Lifetimes*** – Automatic ownership tracking of `Heap` and `Stack` instances with zero hidden deep copies.
+* ***Zero-Overhead by Design*** – Metadata can be registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
 
 * ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
@@ -63,7 +59,7 @@ First, create an instance of `CxxMirror` –
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
 The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
-It can reside in any translation unit. To make it globally accessible in a controlled manner and ensure it is initialized only when needed, a singleton interface can be used –
+It can reside in any translation unit. To make it globally accessible and ensure it is initialized only when needed, a singleton interface can be used –
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
@@ -97,7 +93,7 @@ Lookup the `Person` class by its registered name –
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
-`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for class/struct, and `rtl::Function` for non-member functions.
+`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for any registered type (class, struct or pod) and `rtl::Function` for non-member functions.
 
 From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
 
@@ -150,7 +146,7 @@ If the return type is also not known at compile time,`rtl::Return` can be used �
 ```c++
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
                                                             .argsT().returnT();
-auto [err, ret] = getName(robj)();	// Invoke and receive return value std::string wrapped in rtl::RObject.
+auto [err, ret] = getName(robj)();	// Invoke and receive rtl::RObject as return, wrapping std::string underneath.
 if (err == rtl::error::None && ret.canViewAs<std::string>()) {
     const std::string& name = ret.view<std::string>()->get();
     std::cout << name;	// Safely view the returned std::string.
@@ -158,9 +154,9 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 ```
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (constructors, free functions, and member functions) are materialized through `rtl::Function` and `rtl::Method`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
-RTL provides the following callable wrappers, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
+RTL provides the following callable entities, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
 
 `rtl::function<>` – Free (non-member) functions
 
@@ -174,7 +170,7 @@ RTL provides the following callable wrappers, designed to be as lightweight and 
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
-When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error wrapper.
+When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error (by design).
 
 ### How to Build (Windows / Linux)
 ```sh
@@ -189,8 +185,8 @@ Run the generated binaries from `bin/`:
 
 Additional resources:
 
-* `CxxTestRegistration/src/MyReflectionTests/` – Tutorial examples
 * `RTLTestRunApp/src` – Detailed test cases
+* `RTLTestRunApp/src/MyReflectionTests/` – Tutorial example
 * `RTLBenchmarkApp/src` – Benchmark implementations
 * `run_benchmarks.sh` – Automated benchmark runs
 
@@ -228,17 +224,17 @@ If you’re interested in advancing practical runtime reflection in C++ and supp
   * Any overloaded method, Const/Non-Const based as well.
 
 * ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
-* ✅ **Zero Overhead Forwarding** – No temporaries or copies during method forwarding.
+* ✅ **Zero Overhead Forwarding** – No temporaries or copies during dispatch and arguments forwarding.
 * ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations (no exceptions, no silent failures).
 * ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
 * 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
-* 🟨 **Materialize New Types** – Convert a reflected type `A` into type `B` if they are implicitly convertible. Define custom conversions at registration to make them available automatically. *(In Progress)*
 * 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
-* 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling intuitive conversions and overload resolution. *(In Progress)*
+* 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling safe conversions (ex- base/derived) and overload resolution. *(In Progress)*
+* ❌ **Inheritance Support**: Next in line.
+* ❌ **Composition Support**: Planned.
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
-* ❌ **Composite Type Reflection**: Planned.
-* ❌ **Inheritance Support**: Planned.
+* ❌ **Metadata iterators**: Planned.
 
 ##
 
