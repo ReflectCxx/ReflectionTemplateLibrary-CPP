@@ -369,12 +369,11 @@ namespace unit_test
                 ASSERT_NE(&str_addr, STR_STD_STRING.c_str());
             }
         };
-        testWithAlloc.operator()<rtl::alloc::Stack>();
-        // TODO: This fails. Fix it.
+
         // Should even std::string to 'char' conversion be allowed implicitly?
         // Need to re-think it. The implicit conversions are not used in core dispatch yet.
-        // will sit on it for a while.
-        //testWithAlloc.operator()<rtl::alloc::Heap>();
+        testWithAlloc.operator()<rtl::alloc::Stack>();
+        testWithAlloc.operator()<rtl::alloc::Heap>();
     }
 
 
