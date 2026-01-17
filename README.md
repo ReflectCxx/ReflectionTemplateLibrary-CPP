@@ -11,8 +11,6 @@
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
 [![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
-&nbsp;
-[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
@@ -190,20 +188,6 @@ Additional resources:
 * `RTLBenchmarkApp/src` – Benchmark implementations
 * `run_benchmarks.sh` – Automated benchmark runs
 
-## 💚 Support RTL’s Development
-
-RTL is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
-
-Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
-
-* Production-ready examples
-* Tooling and documentation
-* Cross-platform CI and testing
-
-If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
-
-[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
-
 ## Reflection Features
 
 * ✅ **Function Reflection** – Register and invoke C-style functions, supporting all kinds of overloads.
@@ -227,14 +211,28 @@ If you’re interested in advancing practical runtime reflection in C++ and supp
 * ✅ **Zero Overhead Forwarding** – No temporaries or copies during dispatch and arguments forwarding.
 * ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations (no exceptions, no silent failures).
 * ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
-* 🟨 **Conservative Conversions** – Safely reinterpret reflected values without hidden costs. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` — with no hidden copies and only safe, non-widening POD conversions. *(In Progress)*
-* 🚧 **STL Wrapper Support** – Extended support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
+* 🟨 **Conservative Conversions** – Safely reinterpret reflected values. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` *(In Progress)*
+* 🚧 **STL Wrapper Support** – support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
 * 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling safe conversions (ex- base/derived) and overload resolution. *(In Progress)*
 * ❌ **Inheritance Support**: Next in line.
 * ❌ **Composition Support**: Planned.
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Metadata iterators**: Planned.
+
+## 💚 Support RTL’s Development
+
+RTL is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
+
+Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
+
+* Production-ready examples
+* Tooling and documentation
+* Cross-platform CI and testing
+
+If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
+
+[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
 
 ##
 
