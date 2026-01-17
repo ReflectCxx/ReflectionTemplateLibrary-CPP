@@ -24,20 +24,24 @@ namespace rtl::detail
             try {
                 pNewEntityKind = EntityKind::Ptr;
                 const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
+                // GCOVR_EXCL_START
                 if (pSrcEntityKind == EntityKind::Wrapper) {
                     //TODO: Will fail for any other wrapper other than 'RObjectUPtr<>'.
                     const auto& srcRUptr = std::any_cast<const RObjectUPtr<std::string>&>(pSrc);
                     return std::any(srcRUptr.get()->c_str());
                 }
+                // GCOVR_EXCL_STOP
                 else {
                     const auto& srcObj = (isPtr ? *std::any_cast<const std::string*>(pSrc) : std::any_cast<const std::string&>(pSrc));
                     return std::any(srcObj.c_str());
                 }
             }
-            catch (std::exception e) {
+            // GCOVR_EXCL_START
+            catch (const std::exception&) {
                 pNewEntityKind = EntityKind::None;
                 return std::any();
             }
+            // GCOVR_EXCL_STOP
         };
         conversions().emplace_back(std::pair(traits::uid<char>::value, conversion));
     }
@@ -52,20 +56,24 @@ namespace rtl::detail
             try {
                 pNewEntityKind = EntityKind::Ptr;
                 const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
+                // GCOVR_EXCL_START
                 if (pSrcEntityKind == EntityKind::Wrapper) {
                     //TODO: Will fail for any other wrapper other than 'RObjectUPtr<>'.
                     const auto& srcRUptr = std::any_cast<const RObjectUPtr<std::string>&>(pSrc);
                     return std::any(srcRUptr.get()->data());
                 }
+                // GCOVR_EXCL_STOP
                 else {
                     const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
                     return std::any(srcObj.data());
                 }
             }
-            catch (std::exception e) {
+            // GCOVR_EXCL_START
+            catch (const std::exception&) {
                 pNewEntityKind = EntityKind::None;
                 return std::any();
             }
+            // GCOVR_EXCL_STOP
         };
         conversions().emplace_back(std::pair(traits::uid<char>::value, conversion));
     }
@@ -81,20 +89,24 @@ namespace rtl::detail
             try {
                 pNewEntityKind = EntityKind::Value;
                 const auto& isPtr = (pSrcEntityKind == EntityKind::Ptr);
+                // GCOVR_EXCL_START
                 if (pSrcEntityKind == EntityKind::Wrapper) {
                     //TODO: Will fail for any other wrapper other than 'RObjectUPtr<>'.
                     const auto& srcRUptr = std::any_cast<const RObjectUPtr<std::string_view>&>(pSrc);
                     return std::any(_toType(*srcRUptr.get()));
                 }
+                // GCOVR_EXCL_STOP
                 else {
                     const auto& srcObj = (isPtr ? *std::any_cast<const std::string_view*>(pSrc) : std::any_cast<const std::string_view&>(pSrc));
                     return std::any(_toType(srcObj));
                 }
             }
-            catch (std::exception e) {
+            // GCOVR_EXCL_START
+            catch (const std::exception&) {
                 pNewEntityKind = EntityKind::None;
                 return std::any();
             }
+            // GCOVR_EXCL_STOP
         };
         conversions().emplace_back(std::pair(traits::uid<_toType>::value, conversion));
     }
