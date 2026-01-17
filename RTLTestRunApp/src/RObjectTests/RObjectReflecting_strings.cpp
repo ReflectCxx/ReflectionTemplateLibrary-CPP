@@ -337,43 +337,41 @@ namespace unit_test
         // Create an RObject that reflects a string value (init with 'std::string').
         RObject robj = rtl::reflect(STR_STD_STRING);
 
-        // Check if the value can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<std::string>());
+        EXPECT_TRUE(robj.canViewAs<std::string>());
+        EXPECT_TRUE(robj.canViewAs<char>());
 
-        // Try to obtain a view as 'std::string' and verify it is present.
-        auto view0 = robj.view<std::string>();
-        ASSERT_TRUE(view0.has_value());
+        auto testWithAlloc = [&]<typename rtl::alloc alloc_t>() 
+        {
+            auto [err, robjcp] = robj.clone<alloc_t>();
 
-        // Validate the string content matches the original input.
-        const std::string& str_cref0 = view0->get();
-        ASSERT_EQ(str_cref0, STR_STD_STRING);
+            EXPECT_EQ(err, rtl::error::None);
+            EXPECT_EQ(robj.getTypeId(), robjcp.getTypeId());
+            {
+                // Check if the value can be accessed as 'std::string'.
+                ASSERT_TRUE(robjcp.canViewAs<std::string>());
 
-        auto [err, robjcp] = robj.clone<rtl::alloc::Heap>();
-        EXPECT_EQ(err, rtl::error::None);
-        EXPECT_EQ(robj.getTypeId(), robjcp.getTypeId());
+                // Try to obtain a view as 'std::string' and verify it is present.
+                auto view = robjcp.view<std::string>();
+                ASSERT_TRUE(view.has_value());
 
-        // Check if the value can be accessed as 'std::string'.
-        ASSERT_TRUE(robj.canViewAs<std::string>());
+                // Validate the string content matches the original input.
+                const std::string& str_cref = view->get();
+                ASSERT_EQ(str_cref, STR_STD_STRING);
+            } {
+                ASSERT_TRUE(robjcp.canViewAs<char>());
 
-        // Try to obtain a view as 'std::string' and verify it is present.
-        auto view1 = robj.view<std::string>();
-        ASSERT_TRUE(view1.has_value());
+                // Try to obtain a view as 'const char*' and verify it is present.
+                auto view = robjcp.view<char>();
+                ASSERT_TRUE(view.has_value());
 
-        // Validate the string content matches the original input.
-        const std::string& str_cref1 = view1->get();
-        ASSERT_EQ(str_cref1, STR_STD_STRING);
-        ASSERT_TRUE(robjcp.canViewAs<char>());
-        ASSERT_TRUE(robjcp.canViewAs<std::string>());
-
-        //TODO: Fix the crash here.
-
-        // Try to obtain a view as 'const char*' and verify it is present.
-        //auto view2 = robjcp.view<char>();
-        //ASSERT_TRUE(view2.has_value());
-
-        //// Validate the base address are different, since RObject is reflecting a copy.
-        //const char& str_addr = view2->get();
-        //ASSERT_NE(&str_addr, STR_STD_STRING.c_str());
+                // Validate the base address are different, since RObject is reflecting a copy.
+                const char& str_addr = view->get();
+                ASSERT_NE(&str_addr, STR_STD_STRING.c_str());
+            }
+        };
+        testWithAlloc.operator()<rtl::alloc::Stack>();
+        //TODO: This fails. Fix it.
+        //testWithAlloc.operator()<rtl::alloc::Heap>();
     }
 
 

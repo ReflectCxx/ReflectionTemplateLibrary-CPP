@@ -170,12 +170,12 @@ RTL provides the following callable entities, designed to be as lightweight and 
 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
-When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` when both the return and target types are erased or as `std::optional<T>` when only the target type is erased, while fully type-aware callables return `T` directly with no error (by design).
+When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` *(when both the return and target types are erased)* or as `std::optional<T>` *(when only the target type is erased)*, while fully type-aware callables return `T` directly with no error (by design).
 
 ### How to Build (Windows / Linux)
 ```sh
 mkdir build && cd build
-cmake -G "<Generator>"    # Use a C++20-compatible compiler
+cmake ../ -G "<Generator>"    # Use a C++20-compatible compiler
 cmake --build .
 ```
 Run the generated binaries from `bin/`:
