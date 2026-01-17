@@ -192,7 +192,7 @@ Additional resources:
 
 ## 💚 Support RTL’s Development
 
-Reflection Template Library (RTL) is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
+RTL is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
 
 Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
 
