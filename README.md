@@ -52,12 +52,12 @@ RTL’s reflective calls are comparable to `std::function` for fully type-erased
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-First, create an instance of `CxxMirror` –
+First, create an instance of `rtl::CxxMirror` –
 ```c++
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
 The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
-It can reside in any translation unit. To make it globally accessible and ensure it is initialized only when needed, a singleton interface can be used –
+It can reside in any translation unit. To make it globally accessible and ensure it is initialized only when needed, a singleton access interface can be used –
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
@@ -82,9 +82,7 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-`cxx_mirror` is a immutable, stack-allocated, value-type object and is safe to copy.
-However, when used as a singleton (as shown above), implicit copies (e.g., `auto mirror = cxx::mirror()`) can unintentionally violate the singleton semantics.
-To prevent this, the `rtl::CxxMirror`'s copy constructor is restricted to avoid such unintended duplication.
+`cxx_mirror` is an immutable, stack-allocated, value-type object and is safe to copy, but when used as a singleton (as shown above), implicit copies (e.g., `auto mirror = cxx::mirror();`) can unintentionally violate the singleton semantics, so `rtl::CxxMirror` restricts such copy construction.
 
 ### RTL in action:
 

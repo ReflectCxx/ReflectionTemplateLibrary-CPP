@@ -46,7 +46,7 @@ namespace rtl::dispatch
     {
         using if_ref_t = std::conditional_t<std::is_reference_v<known_t>, std::remove_reference_t<known_t>*, known_t>;
 
-        using if_void_t = std::conditional_t<std::is_void_v<known_t>, void*, if_ref_t>;
+        using if_void_t = std::conditional_t<std::is_void_v<known_t>, std::nullptr_t, if_ref_t>;
 
         using return_t = std::pair<error, std::optional<if_void_t>>;
 

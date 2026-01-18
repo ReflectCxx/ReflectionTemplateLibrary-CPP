@@ -15,11 +15,12 @@
 
 namespace rtl
 {
-    // TODO: Needs to be well tested, special case return-type 'void' (which does not returns std::nullopt for now)
     template<class return_t, class ...signature_t> requires (!std::is_same_v<return_t, Return>)
     struct method<RObject, return_t(signature_t...)>
     {
-        using hopper_t = dispatch::forward_call<std::pair<error, std::optional<return_t>>, const RObject&, signature_t...>;
+        using cond_ret_t = std::conditional_t<std::is_void_v<return_t>, std::nullptr_t, return_t>;
+
+        using hopper_t = dispatch::forward_call<std::pair<error, std::optional<cond_ret_t>>, const RObject&, signature_t...>;
 
         struct invoker
         {
@@ -30,7 +31,7 @@ namespace rtl
             template<class ...args_t> 
                 requires (sizeof...(args_t) == sizeof...(signature_t))
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-            constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
+            constexpr std::pair<error, std::optional<cond_ret_t>> operator()(args_t&&...params) const noexcept
             {
                 if (init_err != error::None) [[unlikely]] {
                     return { init_err, std::nullopt };
@@ -53,7 +54,7 @@ namespace rtl
             
             template<class ...args_t>
             [[nodiscard]] [[gnu::hot]] [[gnu::flatten]]
-            constexpr std::pair<error, std::optional<return_t>> operator()(args_t&&...params) const noexcept
+            constexpr std::pair<error, std::optional<cond_ret_t>> operator()(args_t&&...params) const noexcept
             {
                 if (init_err != error::None) [[unlikely]] {
                     return { init_err, std::nullopt };
