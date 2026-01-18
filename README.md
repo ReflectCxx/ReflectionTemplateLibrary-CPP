@@ -84,7 +84,7 @@ rtl::CxxMirror& cxx::mirror() {
 ```
 `cxx_mirror` is a immutable, stack-allocated, value-type object and is safe to copy.
 However, when used as a singleton (as shown above), implicit copies (e.g., `auto mirror = cxx::mirror()`) can unintentionally violate the singleton semantics.
-To prevent this, the `CxxMirror`'s copy constructor is restricted to avoid such unintended duplication.
+To prevent this, the `rtl::CxxMirror`'s copy constructor is restricted to avoid such unintended duplication.
 
 ### RTL in action:
 
