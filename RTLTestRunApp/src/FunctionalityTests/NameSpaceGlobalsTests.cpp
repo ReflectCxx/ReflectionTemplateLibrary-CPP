@@ -38,17 +38,17 @@ namespace rtl_tests
                 into an RObject in a type-erased manner. (demonstrated in next test case.)
             Therefore, this call yields 'SignatureMismatch' by design.
     */      
-            auto [err, rchar] = charType->ctor<char>()(rtl::alloc::Stack, 'Q');
+            auto [err, rchar] = charType->ctorT<char>()(rtl::alloc::Stack, 'Q');
             EXPECT_TRUE(err == rtl::error::SignatureMismatch);
             ASSERT_TRUE(rchar.isEmpty());
         } {
-            auto [err, rchar] = charType->ctor()(rtl::alloc::Stack);
+            auto [err, rchar] = charType->ctorT()(rtl::alloc::Stack);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(rchar.isEmpty());
         }
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
         {
-            auto [err, rchar] = charType->ctor()(rtl::alloc::Heap);
+            auto [err, rchar] = charType->ctorT()(rtl::alloc::Heap);
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(rchar.isEmpty());
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);

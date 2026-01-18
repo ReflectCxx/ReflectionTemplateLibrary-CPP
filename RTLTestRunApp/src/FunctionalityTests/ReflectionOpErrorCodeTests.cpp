@@ -79,12 +79,12 @@ namespace rtl_tests
         optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
         ASSERT_TRUE(classEvent);
 
-        auto [err0, robj0] = classEvent->ctor()(alloc::Stack);
+        auto [err0, robj0] = classEvent->ctorT()(alloc::Stack);
 
         EXPECT_TRUE(err0 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
 
-        auto [err1, robj1] = classEvent->ctor()(alloc::Heap);
+        auto [err1, robj1] = classEvent->ctorT()(alloc::Heap);
 
         EXPECT_TRUE(err1 == error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj1.isEmpty());
@@ -207,7 +207,7 @@ namespace rtl_tests
             ASSERT_TRUE(getEvent);
 
             // Create Calender, which will create a Event's instance.
-            auto [err0, calender] = classCalender->ctor()(alloc::Stack);
+            auto [err0, calender] = classCalender->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(calender.isEmpty());
 
@@ -238,7 +238,7 @@ namespace rtl_tests
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
-                auto [err, robj] = classLibrary->ctor()(alloc::Heap);
+                auto [err, robj] = classLibrary->ctorT()(alloc::Heap);
             /*  Heap allocation succeeds:
             *   Even though Library's copy constructor is deleted, RObject internally stores
             *   the pointer directly inside std::any (type-erased), without requiring the type T
@@ -250,7 +250,7 @@ namespace rtl_tests
             EXPECT_TRUE(library::assert_zero_instance_count());
             {
                 // Attempt to create a reflected instance allocated on the stack.
-                auto [err, robj] = classLibrary->ctor()(alloc::Stack);
+                auto [err, robj] = classLibrary->ctorT()(alloc::Stack);
             /*  Stack allocation fails:
             *   Creating a stack instance requires storing the actual object inside std::any.
             *   Since std::any requires the contained type T to be copy-constructible for emplacement,
@@ -309,7 +309,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, person] = classPerson->ctor()(alloc::Heap);
+            auto [err0, person] = classPerson->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
@@ -337,7 +337,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, person] = classPerson->ctor()(alloc::Stack);
+            auto [err0, person] = classPerson->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 

@@ -30,7 +30,7 @@ namespace
 
     static rtl::RObject nodeObj = []()
     {
-        auto [err, robj] = class_Node.ctor()(rtl::alloc::Stack);
+        auto [err, robj] = class_Node.ctorT()(rtl::alloc::Stack);
         if (robj.isEmpty()) {
             std::cerr << "[x] error: " << rtl::to_string(err) << "\n";
         }

@@ -20,7 +20,7 @@ namespace rtl_tests
             optional<Record> classBook = cxx::mirror().getRecord(book::class_);
             ASSERT_TRUE(classBook);
 
-            auto [err0, book] = classBook->ctor()(alloc::Stack);
+            auto [err0, book] = classBook->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
@@ -90,7 +90,7 @@ namespace rtl_tests
             optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(oUpdateLastName);
 
-            auto [err0, person] = classPerson->ctor<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -130,7 +130,7 @@ namespace rtl_tests
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            auto [err0, person] = classPerson->ctor<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 

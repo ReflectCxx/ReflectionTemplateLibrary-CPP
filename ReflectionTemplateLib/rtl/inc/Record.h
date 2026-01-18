@@ -55,7 +55,7 @@ namespace rtl
         GETTER_CREF(std::string, RecordName, m_recordName)
         
         template<class ...args_t>
-        constructor<args_t...> ctor() const;
+        constructor<args_t...> ctorT() const;
 
 /*      @method: getMethod
         @param: const std::string& (name of the method)

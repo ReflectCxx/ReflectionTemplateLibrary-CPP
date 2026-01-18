@@ -18,7 +18,7 @@ namespace rtl_tests
 
         auto testWithAlloc = [&](rtl::alloc pAlloc) 
         {
-            auto [err, robj] = recStrConstOverload->ctor()(pAlloc);
+            auto [err, robj] = recStrConstOverload->ctorT()(pAlloc);
             EXPECT_EQ(err, rtl::error::None);
             EXPECT_TRUE(!robj.isEmpty());
 

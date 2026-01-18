@@ -98,12 +98,12 @@ From `rtl::Record`, registered member functions can be queried as `rtl::Method`.
 Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
 For example, the overloaded constructor `Person(std::string, int)` –
 ```c++
-rtl::constructor<std::string, int> personCtor = classPerson->ctor<std::string, int>();
+rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
 if (!personCtor) { /* Constructor with expected signature not found. */ }
 ```
 Or the default constructor –
 ```c++
-rtl::constructor<> personCtor = classPerson->ctor();
+rtl::constructor<> personCtor = classPerson->ctorT<>();
 ```
 Instances can be created on the `Heap` or `Stack` with automatic lifetime management –
 ```c++
@@ -134,7 +134,7 @@ The above `getName` invocation is effectively a native function-pointer hop, sin
 If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target –
 ```c++
 rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
-                                                            .argsT().returnT<std::string>();
+                                                           .argsT().returnT<std::string>();
 auto [err, ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
 if (err == rtl::error::None && ret.has_value()) {
     std::cout << ret.value();
@@ -143,7 +143,7 @@ if (err == rtl::error::None && ret.has_value()) {
 If the return type is also not known at compile time,`rtl::Return` can be used –
 ```c++
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
-                                                            .argsT().returnT();
+                                                           .argsT().returnT();
 auto [err, ret] = getName(robj)();	// Invoke and receive rtl::RObject as return, wrapping std::string underneath.
 if (err == rtl::error::None && ret.canViewAs<std::string>()) {
     const std::string& name = ret.view<std::string>()->get();
