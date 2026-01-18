@@ -10,6 +10,8 @@ on:
       - '**/*.md'
   push:
     branches: [ release ]
+    paths-ignore:
+      - '**/*.md'
   workflow_dispatch:
 
 jobs:
