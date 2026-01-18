@@ -36,6 +36,8 @@ namespace test_utils
 
 		static const bool test_method_setAnimalName_const_lvalue_ref_args(const rtl::RObject& pInstance);
 
+		static const bool test_method_const_setAnimalName_const_lvalue_ref_args(const rtl::RObject& pInstance);
+
 		static const bool test_method_setAnimalName_non_const_lvalue_ref_args(const rtl::RObject& pInstance);
 
 		template<class ...signature_t>

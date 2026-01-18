@@ -103,22 +103,21 @@ namespace rtl_tests
             // Lookup push_back method and call it multiple times with different values.
             std::optional<rtl::Method> oPushBack = classVectorInt->getMethod("push_back");
             ASSERT_TRUE(oPushBack);
-
-            // TODO: specialize caller for known 'void' return type.
-            // due to std::optional<void>, compiler error for now -
-            // rtl::method<rtl::RObject, void(int)> pushBack = oPushBack->targetT().argsT<int>().returnT<void>();
             
-            rtl::method<rtl::RObject, rtl::Return(int)> pushBack = oPushBack->targetT().argsT<int>().returnT();
+            rtl::method<rtl::RObject, void(int)> pushBack = oPushBack->targetT().argsT<int>().returnT<void>();
             EXPECT_TRUE(pushBack);
             {
                 auto [err, ret] = pushBack(robj)(intArr0[0]);
-                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_EQ(ret, std::nullopt);
             } {
                 auto [err, ret] = pushBack(robj)(intArr0[1]);
-                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_EQ(ret, std::nullopt);
             } {
                 auto [err, ret] = pushBack(robj)(intArr0[2]);
-                EXPECT_TRUE(err == rtl::error::None);
+                EXPECT_EQ(err, rtl::error::None);
+                EXPECT_EQ(ret, std::nullopt);
             }
         }
 

@@ -91,16 +91,14 @@ namespace
         return method;
     }();
 
-    //TODO: make return-type 'void' work here, fix compile error.
-    //     rtl::method<rtl::RObject, void(bm::argStr_t)>
-    static rtl::method<rtl::RObject, bm::retStr_t(bm::argStr_t)> ErasedTargetAwareReturn_SendMessage = []()
+    static rtl::method<rtl::RObject, void(bm::argStr_t)> ErasedTargetAwareReturn_SendMessage = []()
     {
         std::optional<rtl::Method> optMethod = class_Node.getMethod("sendMessage");
         if (!optMethod) {
             std::cerr << "[3] error: method 'Node::sendMessage' not found.\n";
             std::abort();
         }
-        auto method = optMethod->targetT<>().argsT<bm::argStr_t>().returnT<bm::retStr_t>();
+        auto method = optMethod->targetT<>().argsT<bm::argStr_t>().returnT<void>();
         if (!method) {
             std::cerr << "[3] error: invalid method caller.\n";
             std::abort();

@@ -28,7 +28,7 @@ namespace rtl::dispatch
             if constexpr (std::is_void_v<return_t>) 
             {
                 (const_cast<record_t&>(target).*mptr)(std::forward<signature_t>(params)...);
-                return std::make_pair(error::None, std::optional<void*>());
+                return std::make_pair(error::None, std::optional<std::nullptr_t>());
             }
             else
             {

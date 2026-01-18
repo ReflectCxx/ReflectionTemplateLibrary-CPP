@@ -37,7 +37,12 @@ namespace test_mirror
         fns.push_back(rtl::type().member<Animal>()
                                  .method<const std::string&>(animal::str_setAnimalName)
                                  .build(&Animal::setAnimalName));
-        
+
+        //  Overloaded const-method, taking const-ref as argument.
+        fns.push_back(rtl::type().member<Animal>()
+                                 .methodConst<const std::string&>(animal::str_setAnimalName)
+                                 .build(&Animal::setAnimalName));
+
         //  Static method, taking const-ref as argument.
         fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<const std::string&>(animal::str_updateZooKeeper)
