@@ -12,6 +12,7 @@ comment:
   behavior: default
 
 ignore:
-  - "demo/**"
+  - "CxxTestProps/**"
+  - "CxxTestUtils/**"
   - "RTLBenchmarkApp/**"
   - "ReflectionTemplateLib/rtl/detail/src/RObjectConverters_string.cpp"
