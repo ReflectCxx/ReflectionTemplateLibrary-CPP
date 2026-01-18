@@ -15,52 +15,57 @@
 
 namespace rtl 
 {   
-/*  @class CxxMirror
-    * Provides the primary interface to access registered functions and methods by name.
-    * This is the single point of access to the entire reflection system.
+    /**
+    * @class CxxMirror
     *
-    * All type registrations happen during object construction.
+    * @brief Primary interface for accessing all registered types, functions, and methods by name.
     *
-    * Objects of this class are regular stack-allocated objects (non-singleton) and are destroyed automatically when they go out of scope.
-    * Copy constructor and assignment operator are deleted, instances can only be passed by reference or wrapped in a smart pointer.
+    * CxxMirror serves as the single point of entry to the entire reflection system.
+    * All type, function, and method registrations occur during object construction.
     *
-    * All inherited members are properly destroyed when the object is destroyed, except for the *functor containers*.
+    * Instances of this class are regular, stack-allocated value-type objects.
+    * The copy constructor is explicit, and the assignment operator is deleted.
     *
-    * Notes on Functor Storage:
-    *   - Functor containers have static lifetime and are not part of this class or its base class.
-    *   - This class (and its base) store only `Function` objects, which serve as hash-keys to look up actual functors.
-    *   - Registering the same functor multiple times across different `CxxMirror` instances will not duplicate the functor in the container.
-    *   - However, each `CxxMirror` instance will maintain its own unique `Function` hash-keys, even for the same functor.
-    *   - Within a single `CxxMirror` object, registering the same functor multiple times is ignored (no duplicate `Function` hash-keys).
+    * The class stores only metadata in the form of strings and PODs.
+    * It does not own or manage any heap-allocated or static-lifetime resources.
     *
-    * Summary:
-    *   - Functor objects are shared and static.
-    *   - `Function` keys are per-instance.
-    *   - Functor storage remains unaffected by the number of `CxxMirror` instances.
-*/  
+    * Function pointers provided during registration are cached separately and are
+    * decoupled from this class. Each CxxMirror instance maintains its own metadata
+    * that references the registered function pointers.
+    *
+    * As a result, the same function pointer may be associated with different string
+    * keys across different CxxMirror instances without duplicating the underlying
+    * function pointer storage.
+    *
+    * Within a single CxxMirror instance, attempting to register the same functor
+    * multiple times is ignored, and a warning is emitted to the console.
+    */
     class CxxMirror : public detail::CxxReflection
     {
     public:
 
+        // avoids implicit move.
         explicit CxxMirror(CxxMirror&&) = default;
+
+        // avoids implicit copy.
         explicit CxxMirror(const CxxMirror&) = default;
 
-        // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
+        // Constructs CxxMirror using a set of Function objects.
         explicit CxxMirror(const std::vector<Function>& pFunctions);
 
-        // Returns a Record containing function hash-keys for the given record ID.
-        std::optional<Record> getRecord(const std::size_t pRecordId) const;
+        // Returns a valid Record if the type is found by id; otherwise, std::nullopt.
+        std::optional<Record> getRecord(const traits::uid_t pRecordId) const;
 
-        // Returns a Record containing function hash-keys for the given record name.
+        // Returns a valid Record if the type is found by name in default namespace group; otherwise, std::nullopt.
         std::optional<Record> getRecord(const std::string& pRecordName) const;
 
-        // Returns a Record containing function hash-keys for the given record name (overloaded for namespace support).
+        // Returns a valid Record if the type is found by name in the given namespace group; otherwise, std::nullopt.
         std::optional<Record> getRecord(const std::string& pNameSpaceName, const std::string& pRecordName) const;
 
-        // Returns a Function object for the given function name (non-member function).
+        // Returns a valid Function if found by name in default namespace group; otherwise, std::nullopt.
         std::optional<Function> getFunction(const std::string& pFunctionName) const;
 
-        // Returns a Function object for the given function name, within the specified namespace.
+        // Returns a valid Function if found by name in the given namespace group; otherwise, std::nullopt.
         std::optional<Function> getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const;
     };
 }
