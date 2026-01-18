@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "TestMirrorProvider.h"
+#include "TestUtilsAnimal.h"
 #include "TestUtilsPerson.h"
 #include "TestUtilsBook.h"
 
@@ -244,6 +245,43 @@ namespace rtl_tests
             EXPECT_TRUE(person::delete_unmanaged_person_instance_created_via_createPtr(constPersonPtr));
         }
         EXPECT_TRUE(person::assert_zero_instance_count());
+        ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
+    }
+
+
+    TEST(ConstMethodOverload, erased_target_known_return_void)
+    {
+        {
+            // Retrieve the metadata for the "Animal" class.
+            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            ASSERT_TRUE(classAnimal);
+
+            // Create an instance of the "Animal" class.
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Heap);
+            EXPECT_TRUE(err0 == error::None);
+            ASSERT_FALSE(animal.isEmpty());
+
+            // Retrieve the "setAnimalName" method.
+            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            ASSERT_TRUE(oSetAnimalName);
+            // Verify that the method has the correct signature for a const L-value reference.
+            EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
+
+            auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT<void>();
+            EXPECT_TRUE(setAnimalName);
+
+            // Invoke the method with a const L-value reference.
+            auto [err1, ret1] = setAnimalName(std::cref(animal))(animal::NAME);
+
+            EXPECT_EQ(err1, error::None);
+            EXPECT_EQ(ret1, std::nullopt);
+
+            // Validate the behavior of the method.
+            EXPECT_TRUE(animal::test_method_const_setAnimalName_const_lvalue_ref_args(animal));
+        }
+
+        // Ensure that all instances are cleaned up.
+        EXPECT_TRUE(animal::assert_zero_instance_count());
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
     }
 }

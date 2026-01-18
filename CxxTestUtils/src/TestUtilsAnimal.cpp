@@ -78,3 +78,18 @@ const bool test_utils::animal::test_method_setAnimalName_non_const_lvalue_ref_ar
 	}
 	return false;
 }
+
+
+const bool test_utils::animal::test_method_const_setAnimalName_const_lvalue_ref_args(const rtl::RObject& pInstance)
+{
+	if (pInstance.canViewAs<Animal>())
+	{
+		const Animal animal;
+		auto nameStr = std::string(NAME);
+		animal.setAnimalName(nameStr);
+
+		const Animal& rAnimal = pInstance.view<Animal>()->get();
+		return (animal == rAnimal);
+	}
+	return false;
+}

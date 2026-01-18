@@ -5,7 +5,7 @@
 
 class Animal
 {
-	std::string m_name;
+	mutable std::string m_name;
 	std::string m_familyName;
 
 	static std::string m_zooKeeper;
@@ -36,6 +36,8 @@ public:
 	void setAnimalName(std::string&& pName);
 
 	void setAnimalName(const std::string& pName);
+
+	void setAnimalName(const std::string& pName) const;
 
 	static std::string updateZooKeeper(std::string& pZooKeeper);
 

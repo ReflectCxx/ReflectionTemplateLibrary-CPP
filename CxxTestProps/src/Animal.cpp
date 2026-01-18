@@ -105,6 +105,12 @@ void Animal::setAnimalName(const std::string& pName)
 }
 
 
+void Animal::setAnimalName(const std::string& pName) const
+{
+	m_name = pName + "__args_const_lvalue_ref_method_const...";
+}
+
+
 std::string Animal::updateZooKeeper(std::string& pZooKeeper)
 {
 	m_zooKeeper = pZooKeeper + "__args_non_const_lvalue_ref...";
