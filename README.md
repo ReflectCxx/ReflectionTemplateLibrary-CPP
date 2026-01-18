@@ -56,7 +56,7 @@ First, create an instance of `rtl::CxxMirror` –
 ```c++
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
-The `cxx_mirror` object provides access to the runtime reflection system. It enables querying, introspection, and instantiation of registered types without requiring compile-time type knowledge at the call site.
+The `cxx_mirror` object provides access to the runtime reflection system. It enables function and method invocation, as well as type instantiation, without requiring compile-time type knowledge at the call site.
 It can reside in any translation unit. To make it globally accessible and ensure it is initialized only when needed, a singleton access interface can be used –
 ```c++
 // MyReflection.h
