@@ -11,17 +11,6 @@
 using namespace test_utils;
 using namespace rtl;
 
-namespace {
-
-    static const rtl::CxxMirror& cxx_mirror()
-    {
-        static rtl::CxxMirror m = rtl::CxxMirror({
-            rtl::type().record<int>("int").build(),
-            rtl::type().record<Node>("Node").build()
-        });
-        return m;
-    }
-}
 
 namespace rtl::unit_test
 {
