@@ -42,8 +42,8 @@ namespace rtl
     {
     public:
 
-        CxxMirror(CxxMirror&&) = default;
-        CxxMirror(const CxxMirror&) = default;
+        explicit CxxMirror(CxxMirror&&) = default;
+        explicit CxxMirror(const CxxMirror&) = default;
 
         // Constructs CxxMirror using a set of Function objects. All other constructors are disabled.
         explicit CxxMirror(const std::vector<Function>& pFunctions);

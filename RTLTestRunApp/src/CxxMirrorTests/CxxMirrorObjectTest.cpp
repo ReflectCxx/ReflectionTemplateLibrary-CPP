@@ -47,7 +47,7 @@ namespace rtl_tests
             // Two mirrors constructed from same set of registrations must serialize identically.
             // Confirms stability of metadata and deterministic JSON output.
             rtl::CxxMirror mirror = cxx_mirror();
-            rtl::CxxMirror mirror0 = mirror;
+            rtl::CxxMirror mirror0(mirror);
             mirrorStr0 = rtl::CxxMirrorToJson::toJson(mirror0);
         }
         std::string mirrorStr1;

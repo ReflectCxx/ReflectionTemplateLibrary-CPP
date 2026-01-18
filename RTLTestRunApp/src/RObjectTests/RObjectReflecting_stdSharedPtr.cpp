@@ -13,7 +13,7 @@ using namespace rtl;
 
 namespace {
 
-    static rtl::CxxMirror cxx_mirror()
+    static const rtl::CxxMirror& cxx_mirror()
     {
         static rtl::CxxMirror m = rtl::CxxMirror({
             rtl::type().record<int>("int").build(),
