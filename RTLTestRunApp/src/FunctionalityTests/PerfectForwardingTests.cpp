@@ -45,7 +45,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -87,7 +87,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -129,7 +129,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Heap);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -173,7 +173,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -215,7 +215,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 
@@ -257,7 +257,7 @@ namespace rtl_tests
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
-            auto [err0, animal] = classAnimal->ctor()(alloc::Stack);
+            auto [err0, animal] = classAnimal->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(animal.isEmpty());
 

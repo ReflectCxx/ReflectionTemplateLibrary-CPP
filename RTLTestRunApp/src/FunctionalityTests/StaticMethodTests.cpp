@@ -136,7 +136,7 @@ namespace rtl_tests
 			EXPECT_FALSE(getDefaultsFn);
 			EXPECT_EQ(getDefaultsFn.get_init_error(), error::SignatureMismatch);
 
-			auto [err0, person] = classPerson->ctor()(alloc::Heap);
+			auto [err0, person] = classPerson->ctorT<>()(alloc::Heap);
 
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());
@@ -177,7 +177,7 @@ namespace rtl_tests
 			EXPECT_FALSE(optGetProfile);
 			EXPECT_EQ(optGetProfile.get_init_error(), error::SignatureMismatch);
 
-			auto [err0, person] = classPerson->ctor()(alloc::Heap);
+			auto [err0, person] = classPerson->ctorT()(alloc::Heap);
 
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());

@@ -18,7 +18,7 @@
 namespace rtl
 {
     template<>
-    inline constructor<> Record::ctor() const
+    inline constructor<> Record::ctorT() const
     {
         constructor<> fnCtor;
         auto strictId = traits::uid<traits::strict_sign_id_t<alloc>>::value;
@@ -41,7 +41,7 @@ namespace rtl
 
 
     template<class ...args_t>
-    inline constructor<args_t...> Record::ctor() const
+    inline constructor<args_t...> Record::ctorT() const
     {
         std::vector<rtl::type_meta> fnTyMetas(detail::call_by::ncref);
         auto normalId = traits::uid<traits::normal_sign_id_t<args_t...>>::value;

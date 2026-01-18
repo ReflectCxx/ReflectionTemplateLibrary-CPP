@@ -231,7 +231,7 @@ namespace
         //  are forwarded as universal references (&&), which bind only to 
         //  'const std::string&'. This resolution is handled by the compiler,
         //  not by RTL.
-        auto [err, robj] = classPerson->ctor<std::string>()(rtl::alloc::Stack, name);
+        auto [err, robj] = classPerson->ctorT<std::string>()(rtl::alloc::Stack, name);
 
         EXPECT_TRUE(err == rtl::error::None);
         ASSERT_TRUE(!robj.isEmpty());

@@ -16,7 +16,7 @@ namespace rtl_tests
         auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(event::struct_));
         ASSERT_TRUE(classEvent);
 
-        auto [err0, robj0] = classEvent->ctor()(rtl::alloc::Stack);
+        auto [err0, robj0] = classEvent->ctorT()(rtl::alloc::Stack);
 
         //Event's constructor is private, not accessible, Hence the error.
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
@@ -25,7 +25,7 @@ namespace rtl_tests
             auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(calender::struct_));
             ASSERT_TRUE(classCalender);
 
-            auto [err1, calender] = classCalender->ctor()(rtl::alloc::Stack);
+            auto [err1, calender] = classCalender->ctorT()(rtl::alloc::Stack);
 
             EXPECT_TRUE(err1 == rtl::error::None);
             ASSERT_FALSE(calender.isEmpty());

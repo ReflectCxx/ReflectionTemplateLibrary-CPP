@@ -14,10 +14,10 @@ namespace rtl_tests
     TEST(ReturnErased_Constructor, std_string_constructor_call)
     {
         {
-            rtl::constructor<int> ctor;
-            EXPECT_FALSE(ctor);
+            rtl::constructor<int> ctorT;
+            EXPECT_FALSE(ctorT);
 
-            auto [err, robj] = ctor(rtl::alloc::Stack, 0);
+            auto [err, robj] = ctorT(rtl::alloc::Stack, 0);
             EXPECT_EQ(err, rtl::error::InvalidCaller);
             EXPECT_TRUE(robj.isEmpty());
         }
@@ -26,10 +26,10 @@ namespace rtl_tests
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto ctor = classStdString->ctor<>();
-                EXPECT_TRUE(ctor);
+                auto ctorT = classStdString->ctorT<>();
+                EXPECT_TRUE(ctorT);
 
-                auto [err, robj] = ctor(alloc_on);
+                auto [err, robj] = ctorT(alloc_on);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -46,10 +46,10 @@ namespace rtl_tests
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto ctor = classStdString->ctor<const char*>();
-                EXPECT_TRUE(ctor);
+                auto ctorT = classStdString->ctorT<const char*>();
+                EXPECT_TRUE(ctorT);
 
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -72,10 +72,10 @@ namespace rtl_tests
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto ctor = classStrWrap->ctor<>();
-                EXPECT_TRUE(ctor);
+                auto ctorT = classStrWrap->ctorT<>();
+                EXPECT_TRUE(ctorT);
 
-                auto [err, robj] = ctor(alloc_on);
+                auto [err, robj] = ctorT(alloc_on);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -93,10 +93,10 @@ namespace rtl_tests
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto ctor = classStrWrap->ctor<std::string_view>();
-                EXPECT_TRUE(ctor);
+                auto ctorT = classStrWrap->ctorT<std::string_view>();
+                EXPECT_TRUE(ctorT);
 
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -113,10 +113,10 @@ namespace rtl_tests
         } {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto ctor = classStrWrap->ctor<const char*>();
-                EXPECT_TRUE(ctor);
+                auto ctorT = classStrWrap->ctorT<const char*>();
+                EXPECT_TRUE(ctorT);
 
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -140,12 +140,12 @@ namespace rtl_tests
         std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
         ASSERT_TRUE(classStrWrap);
 
-        auto ctor = classStrWrap->ctor<std::string>();
-        EXPECT_TRUE(ctor);
+        auto ctorT = classStrWrap->ctorT<std::string>();
+        EXPECT_TRUE(ctorT);
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor.bind<std::string&>()(alloc_on, SPARTA);
+                auto [err, robj] = ctorT.bind<std::string&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -162,7 +162,7 @@ namespace rtl_tests
         } {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor.bind<std::string&&>()(alloc_on, SPARTA);
+                auto [err, robj] = ctorT.bind<std::string&&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -179,7 +179,7 @@ namespace rtl_tests
         } {
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor.bind<const std::string&>()(alloc_on, SPARTA);
+                auto [err, robj] = ctorT.bind<const std::string&>()(alloc_on, SPARTA);
                 EXPECT_EQ(err, rtl::error::None);
                 EXPECT_FALSE(robj.isEmpty());
 
@@ -204,12 +204,12 @@ namespace rtl_tests
             std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapA::struct_);
             ASSERT_TRUE(classStrWrap);
 
-            auto ctor = classStrWrap->ctor<std::string>();
-            EXPECT_TRUE(ctor);
+            auto ctorT = classStrWrap->ctorT<std::string>();
+            EXPECT_TRUE(ctorT);
 
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 // More than one reference-based overloads exists.
                 EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
                 EXPECT_TRUE(robj.isEmpty());
@@ -220,12 +220,12 @@ namespace rtl_tests
             std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapB::struct_);
             ASSERT_TRUE(classStrWrap);
 
-            auto ctor = classStrWrap->ctor<std::string>();
-            EXPECT_TRUE(ctor);
+            auto ctorT = classStrWrap->ctorT<std::string>();
+            EXPECT_TRUE(ctorT);
 
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 // More than one reference-based overloads exists.
                 EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
                 EXPECT_TRUE(robj.isEmpty());
@@ -236,12 +236,12 @@ namespace rtl_tests
             std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapC::struct_);
             ASSERT_TRUE(classStrWrap);
 
-            auto ctor = classStrWrap->ctor<std::string>();
-            EXPECT_TRUE(ctor);
+            auto ctorT = classStrWrap->ctorT<std::string>();
+            EXPECT_TRUE(ctorT);
 
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 // only non-const-reference-based ctor exists.
                 // mutating call should be explicit.
                 EXPECT_EQ(err, rtl::error::ExplicitRefBindingRequired);
@@ -253,12 +253,12 @@ namespace rtl_tests
             std::optional<rtl::Record> classStrWrap = cxx::mirror().getRecord(StrWrapD::struct_);
             ASSERT_TRUE(classStrWrap);
 
-            auto ctor = classStrWrap->ctor<std::string>();
-            EXPECT_TRUE(ctor);
+            auto ctorT = classStrWrap->ctorT<std::string>();
+            EXPECT_TRUE(ctorT);
 
             auto testCreateOn = [&](rtl::alloc alloc_on)
             {
-                auto [err, robj] = ctor(alloc_on, SPARTA);
+                auto [err, robj] = ctorT(alloc_on, SPARTA);
                 // only const-reference-based ctor exists.
                 // non-mutating call chosen by default.
                 EXPECT_EQ(err, rtl::error::None);

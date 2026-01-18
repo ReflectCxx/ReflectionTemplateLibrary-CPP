@@ -44,7 +44,7 @@ namespace rtl_tests
 
 				const rtl::Record& reflectedClass = itr->second;
 
-				auto [err, robj] = reflectedClass.ctor()(rtl::alloc::Stack);
+				auto [err, robj] = reflectedClass.ctorT<>()(rtl::alloc::Stack);
 
 				if (recordName == event::struct_) {
 					//Event's default constructor is private or deleted.
@@ -82,7 +82,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -111,7 +111,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -140,7 +140,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -172,7 +172,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -204,7 +204,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -233,7 +233,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -262,7 +262,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -291,7 +291,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -320,7 +320,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -351,7 +351,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -382,7 +382,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -413,7 +413,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -444,7 +444,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -477,7 +477,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -510,7 +510,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Stack);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -547,7 +547,7 @@ namespace rtl_tests
 			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
 			ASSERT_TRUE(classBook);
 
-			auto [err0, book] = classBook->ctor()(alloc::Heap);
+			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
 
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
