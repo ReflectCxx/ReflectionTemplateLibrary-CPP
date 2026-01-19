@@ -1,27 +1,39 @@
-### 🪶 No Static Globals, No Macros, No Surprises
+### 🪶 Registration Model and Metadata Lifetime
 
-RTL does not rely on:
+RTL does not use macro-based reflection, implicit static initialization at program startup, or centralized global registries.
+All registration is performed lazily and explicitly by user code, and registered metadata persists for the lifetime of the process.
 
-* Hidden static registration
-* Centralized global registries
-* Preprocessor hacks
+For every registered type, method, or function, RTL creates a **dedicated dispatch object** that encapsulates:
 
-Instead, registration is explicit and lazy.
+* The callable pointer (function, method, or functor)
+* The associated reflection metadata
 
-For each registered type, RTL contributes **two lightweight entries** into its process-local tables:
+These dispatch objects are defined in:
 
-* A **lambda wrapper** placed in a scoped `static` `std::vector` and is responsible for making the final call using the actual functor.
-* A **raw function pointer** stored in a parallel scoped `static` `std::vector`, used to detect and prevent redundant registrations.
+```
+rtl/dispatch/function_ptr.h  
+rtl/dispatch/method_ptr.h  
+```
 
-From there, `rtl::CxxMirror` does not hold onto heavyweight state. It is **as ordinary as any local variable** — you can construct one, keep it alive for the entire application, or discard it after a short-lived query. The `CxxMirror` can be materialized again with the same or different set of types. RTL guarantees that **materializing the same registration statement multiple times** (for example):
+Each dispatch object is:
+
+* Created **exactly once per unique registration**
+* Stored in a process-lifetime `std::list`
+* Reused across all `rtl::CxxMirror` instances
+* Never duplicated, regardless of how many times or where the same registration statement is executed
+
+Repeated registration attempts always resolve to the same existing object.
+
+`rtl::CxxMirror` does not own or duplicate this metadata. It is a lightweight, ordinary object that can be constructed, copied, or destroyed without affecting the underlying registration state. Mirrors may be created with different type sets, and the same registration statements can be materialized multiple times.
+
+For example:
 
 ```cpp
 rtl::type().member<Person>().method("getName").build(&Person::getName);
 ```
 
-will always yield **exactly the same metadata**, without ever admitting redundant lambdas or functors into the static tables.
-
-> *"Mirrors are **cheap and repeatable**: the metadata is stable, redundant entries are never entertained, and the user remains in full control of a mirror’s lifetime."*
+will always yield the same metadata and dispatch object for `Person::getName`.
+The lifetime of registered metadata is independent of any individual `CxxMirror` instance and persists for the duration of the program.
 
 ---
 

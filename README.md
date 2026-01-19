@@ -120,8 +120,8 @@ if (!oGetName) { /* Member function not registered */ }
 ```
 And materialize a complete type-aware caller –
 ```c++
-rtl::method<Person, std::string()> getName = oGetName->targetT<Person>()
-                                                     .argsT().returnT<std::string>();
+rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
+                                                     .returnT<std::string>();
 if (!getName) { 
     std::cerr << rtl::to_string(getName.get_init_err()); 
 }
@@ -134,8 +134,8 @@ The above `getName` invocation is effectively a native function-pointer hop, sin
 
 If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target –
 ```c++
-rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
-                                                           .argsT().returnT<std::string>();
+rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT()
+                                                           .returnT<std::string>();
 auto [err, ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
 if (err == rtl::error::None && ret.has_value()) {
     std::string nameStr = ret.value();
@@ -143,8 +143,8 @@ if (err == rtl::error::None && ret.has_value()) {
 ```
 If the return type is also not known at compile time,`rtl::Return` can be used –
 ```c++
-rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
-                                                           .argsT().returnT();
+rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+
 auto [err, ret] = getName(robj)();	// Invoke and receive rtl::RObject as return, wrapping std::string underneath.
 if (err == rtl::error::None && ret.canViewAs<std::string>()) {
     std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
