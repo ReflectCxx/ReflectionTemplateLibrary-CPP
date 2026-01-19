@@ -48,7 +48,7 @@ Performance depends on how much type information is provided:
 * **Fully specified signatures** compile to direct function-pointer calls, faster than `std::function`.
 * **Type-erased signatures** invoke through a lightweight dispatch layer whose performance is comparable to `std::function` under real workloads.
 
-By requiring explicit materialization, RTL produces lightweight, reusable callables that behave like ordinary value-type objects and can be stored in standard containers, letting developers control performance and safety at each call site.
+By requiring explicit materialization, RTL produces lightweight, reusable callables that behave like ordinary value-type objects and can be stored in standard containers.
 
 At call time, RTL performs no dynamic allocations, no RTTI lookups, and no hidden metadata traversals. The runtime cost is explicit, minimal, and comparable to what a developer would implement manually for equivalent type safety and flexibility.
 
@@ -56,29 +56,13 @@ At call time, RTL performs no dynamic allocations, no RTTI lookups, and no hidde
 
 ### 🛡 Exception-Free Guarantee
 
-RTL is designed to be virtually exception-free. If an exception ever emerges from RTL, it signals that something deeper is wrong. In practice, such exceptions are almost always caused by client/user code and merely propagate through RTL. Internally, only one scenario could theoretically throw:
+RTL is designed to be exception-free. In practice, any exceptions that occur are almost always introduced by user code and merely propagate through RTL.
 
-* `std::any_cast` — guarded by strict, break-proof type checks that make throwing virtually impossible.
+For all predictable failure cases, RTL reports errors through explicit error codes(`rtl::error`) rather than throwing exceptions. Critical assumptions are validated before execution, ensuring that failure conditions are detected early and handled in a controlled manner.
 
-This is extremely unlikely, but not absolutely impossible — no system is perfect.
-For every predictable failure case, RTL returns explicit error codes instead of throwing.
-RTL validates all critical assumptions before proceeding, ensuring predictable behavior and eliminating mid-operation surprises.
+This design promotes predictable behavior and avoids unexpected control flow during reflective operations.
 
-> *"Exceptions should never surprise you — in RTL, failures are explicit, validated, and reported as error codes, not as hidden runtime traps."*
-
----
-
-### 🔒 Const-By-Default Discipline
-
-RTL enforces a *const-by-default* discipline. All objects **created through reflection** start as *logically-const* — they default to immutability. If no const overload exists, RTL will **automatically fall back** to the non-const overload, since these objects were never originally declared `const`. Explicit `rtl::constCast()` is only required when both const and non-const overloads are present.
- 
-The guiding principle is simple: reflective objects are safe by default, and any mutation must be a conscious, visible decision by the caller.
- 
-At the same time, RTL strictly respects **true-const** objects (e.g., declared-`const` instances or const return values). Such objects remain immutable inside RTL — any attempt to force mutation results in predictable error code (`rtl::error::IllegalConstCast`).
-
-> *"RTL never mutates true-const objects, and for RTL-created ones it defaults to const, falling back only if needed — explicit rtl::constCast() is required when both overloads exist."*
-
-This discipline complements RTL’s exception-free guarantee, ensuring both **predictability** and **safety** at the API boundary.
+> *Exception-handling behavior has not yet been exhaustively stress-tested across all edge cases, but the system is architected to avoid exception-based control flow by design.*
 
 ---
 

@@ -146,6 +146,10 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
     std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
 }
 ```
+[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+&nbsp;
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./text-design-docs/RTL_SYNTAX_AND_SEMANTICS.md)
+
 ### How RTL Fits Together
 
 At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
@@ -165,10 +169,6 @@ RTL provides the following callable entities, designed to be as lightweight and 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` *(when both the return and target types are erased)* or as `std::optional<T>` *(when only the target type is erased)*, while fully type-aware callables return `T` directly with no error (by design).
-
-[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-&nbsp;
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./text-design-docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ### How to Build (Windows / Linux)
 ```sh
