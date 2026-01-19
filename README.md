@@ -18,7 +18,7 @@ It enables name-based discovery and invocation of functions, constructors, and o
 ```c++
 std::string complexToStr(float real, float img);
 ```
-Using RTL, you can discover this function by name and invoke it dynamically –
+Using RTL, you can discover this function by name and call it dynamically –
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
@@ -44,7 +44,7 @@ RTL’s reflective calls are comparable to `std::function` for fully type-erased
 
 * ***Cross-Compiler Consistency*** – Implemented entirely in standard C++20, with no compiler extensions or compiler-specific conditional behavior.
 
-* ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
+* ***Tooling-Friendly Architecture*** – Reflection metadata is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
@@ -77,7 +77,7 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-`cxx_mirror` is an immutable, stack-allocated, value-type object and is safe to copy, but when used as a singleton (as shown above), implicit copies (e.g., `auto mirror = cxx::mirror();`) can unintentionally violate the singleton semantics, so `rtl::CxxMirror` restricts such copy construction.
+`cxx_mirror` is an immutable, value-type object that allows only explicit copy construction. It does not own reflection metadata.
 
 ### RTL in action:
 
