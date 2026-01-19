@@ -94,7 +94,7 @@ if (!classPerson) { /* Class not registered. */ }
 ```
 `rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for any registered type (class, struct or pod) and `rtl::Function` for non-member functions.
 
-From `rtl::Record`, registered member functions can be queried as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
 
 Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
 For example, the overloaded constructor `Person(std::string, int)` –
@@ -138,7 +138,7 @@ rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT()
                                                            .argsT().returnT<std::string>();
 auto [err, ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
 if (err == rtl::error::None && ret.has_value()) {
-    std::cout << ret.value();
+    std::string nameStr = ret.value();
 }
 ```
 If the return type is also not known at compile time,`rtl::Return` can be used –
@@ -147,8 +147,7 @@ rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT()
                                                            .argsT().returnT();
 auto [err, ret] = getName(robj)();	// Invoke and receive rtl::RObject as return, wrapping std::string underneath.
 if (err == rtl::error::None && ret.canViewAs<std::string>()) {
-    const std::string& name = ret.view<std::string>()->get();
-    std::cout << name;	// Safely view the returned std::string.
+    std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
 }
 ```
 ### How RTL Fits Together
