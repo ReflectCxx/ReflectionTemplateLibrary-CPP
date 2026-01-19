@@ -85,7 +85,7 @@ Reflection semantics are aligned with standard C++ object semantics, ensuring co
 
 ---
 
-### 🧠 Tooling-Friendly Architecture
+### 💡 Tooling-Friendly Architecture
 
 **RTL** separates the *generation* of reflection metadata from its *consumption*. This makes it ideal not just for runtime introspection, but also for external tools like:
 
@@ -98,7 +98,7 @@ Reflection semantics are aligned with standard C++ object semantics, ensuring co
 
 > *A client system hands off a `rtl::CxxMirror` to RTL — and RTL sees its reflection.*
 
-That’s it. The mirror is a **single object**, typically returned from a function like:
+The mirror is a **single object**, typically returned from a function like:
 
 ```cpp
 extern const rtl::CxxMirror& MyReflection();
