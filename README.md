@@ -46,10 +46,6 @@ RTL’s reflective calls are comparable to `std::function` for fully type-erased
 
 * ***Tooling-Friendly Architecture*** – Reflection data is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
-
-[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./text-design-docs/RTL_SYNTAX_AND_SEMANTICS.md)
-
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 First, create an instance of `rtl::CxxMirror` –
@@ -169,6 +165,10 @@ RTL provides the following callable entities, designed to be as lightweight and 
 These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
 
 When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` *(when both the return and target types are erased)* or as `std::optional<T>` *(when only the target type is erased)*, while fully type-aware callables return `T` directly with no error (by design).
+
+[![Design Features](https://img.shields.io/badge/Doc-Design%20Features-blue)](./text-design-docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+&nbsp;
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./text-design-docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 ### How to Build (Windows / Linux)
 ```sh

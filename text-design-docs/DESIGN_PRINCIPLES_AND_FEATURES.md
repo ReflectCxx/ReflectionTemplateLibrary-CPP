@@ -33,21 +33,24 @@ rtl::type().member<Person>().method("getName").build(&Person::getName);
 ```
 
 will always yield the same metadata and dispatch object for `Person::getName`.
-The lifetime of registered metadata is independent of any individual `CxxMirror` instance and persists for the duration of the program.
+The lifetime of registered metadata is independent of any individual `rtl::CxxMirror` instance and persists for the duration of the program.
 
 ---
 
-### ⚡ Reflective Call Performance
+### ⚡ Reflective Call Materialization and Performance
 
-Reflective calls in RTL are designed to be explicit, predictable, and minimal. The mechanism unfolds in two clear steps:
+RTL employs a two-phase invocation model. Metadata queries return lightweight descriptors such as `rtl::Function` and `rtl::Method`, which must be explicitly **materialized** into callable objects by specifying the expected signature.
 
-1. **Signature Matching** — Each call signature yields a unique type-ID, compared directly against the ID of the lambda-table holding the final call. With a single overload this resolves immediately; if multiple overloads exist, RTL just scans a tiny `std::vector` of candidate IDs.
+This deferred materialization acts as a compile-time contract: the user declares the argument and return types they intend to use, and RTL validates and prepares an optimized invocation path accordingly.
 
-2. **Call Dispatch** — Once the correct overload is identified, RTL performs constant-time `std::vector` indexing to retrieve the associated lambda wrapper. This wrapper executes a single hop to the underlying function pointer, forwarding the provided arguments perfectly.
+Performance depends on how much type information is provided:
 
-The net overhead of a reflective call is thus a handful of integer comparisons, one direct `std::vector` access, and one lambda-to-function-pointer indirection. There are no dynamic allocations, RTTI lookups, or hidden metadata traversals at call time. The cost is transparent and limited to exactly what is required for overload resolution and safe forwarding — no more, no less.
+* **Fully specified signatures** compile to direct function-pointer calls, faster than `std::function`.
+* **Type-erased signatures** invoke through a lightweight dispatch layer whose performance is comparable to `std::function` under real workloads.
 
-> *"A reflective call in RTL is not free, but its cost is explicit, transparent, and no greater than what you would write by hand."*
+By requiring explicit materialization, RTL produces lightweight, reusable callables that behave like ordinary value-type objects and can be stored in standard containers, letting developers control performance and safety at each call site.
+
+At call time, RTL performs no dynamic allocations, no RTTI lookups, and no hidden metadata traversals. The runtime cost is explicit, minimal, and comparable to what a developer would implement manually for equivalent type safety and flexibility.
 
 ---
 
