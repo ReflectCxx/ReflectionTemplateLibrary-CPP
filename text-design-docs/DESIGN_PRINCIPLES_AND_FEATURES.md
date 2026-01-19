@@ -22,9 +22,10 @@ Each dispatch object is:
 * Reused across all `rtl::CxxMirror` instances
 * Never duplicated, regardless of how many times or where the same registration statement is executed
 
-Repeated registration attempts always resolve to the same existing object.
+Repeated registration attempts always resolve to the same existing object. This ensures deterministic behavior – 
+metadata identity is stable regardless of initialization order or how many translation units register the same type.
 
-`rtl::CxxMirror` does not own or duplicate this metadata. It is a lightweight, ordinary object that can be constructed, copied, or destroyed without affecting the underlying registration state. Mirrors may be created with different type sets, and the same registration statements can be materialized multiple times.
+`rtl::CxxMirror` does not own or duplicate this metadata. It encapsulates references to it as a lightweight, ordinary object. Mirrors may be created with different type sets, and the same registration statements can be materialized multiple times.
 
 For example:
 
@@ -66,22 +67,21 @@ This design promotes predictable behavior and avoids unexpected control flow dur
 
 ---
 
-### 🎁 Transparent Handling of Smart Pointers
+### 🎁 Smart Pointer Handling
 
-Reflection should never feel like a cage.
-In everyday C++, if you hold a `std::unique_ptr<T>` or `std::shared_ptr<T>`, you don’t think twice about how to use it — you simply work with the object it points to, sometimes copying it, sometimes sharing it, sometimes moving it. RTL extends this same natural experience into runtime reflection.
+RTL supports working with objects managed by `std::unique_ptr` and `std::shared_ptr` in a manner consistent with standard C++ usage.
 
-Every heap object created through RTL is safely managed inside a smart pointer. Yet to you, as the developer, that detail is invisible. You can look at it as the smart pointer if you wish, or simply as the underlying type `T`.
+Heap-allocated objects created through RTL are internally managed using smart pointers to ensure safe ownership and lifetime control. These details are not imposed on the user: reflected objects can be accessed either through their smart-pointer representation or through views of the underlying type `T`.
 
-When you ask RTL to clone, it adapts to the situation in the most intuitive way:
+When cloning or transferring reflected objects, RTL preserves the ownership semantics of the original type:
 
-* If a type is naturally shared, you can get a shared view.
-* If it is unique, RTL respects that uniqueness.
-* And if the value itself can be copied, you can always ask for a fresh independent object.
+* Objects intended to be shared can be accessed through shared ownership.
+* Uniquely owned objects retain their uniqueness.
+* Copyable values can be duplicated to produce independent instances.
 
-The key idea is that RTL doesn’t force you into a wrapper-first mindset. Instead, it makes wrappers feel transparent — you can still reason in terms of *your type*, just as you would in normal C++.
+This design allows developers to work with reflected objects using the same ownership and lifetime expectations they would apply in ordinary C++ code, without requiring special handling for reflection-specific wrappers.
 
-> *"Developers shouldn’t have to think about “reflection semantics” versus “normal C++ semantics.” With RTL, the two worlds are aligned. Whether you’re holding a raw object or a smart pointer, the same intuition applies — reflection just works the way you expect."*
+Reflection semantics are aligned with standard C++ object semantics, ensuring consistent behavior regardless of whether an object is accessed directly or through a smart pointer.
 
 ---
 
@@ -96,7 +96,7 @@ The key idea is that RTL doesn’t force you into a wrapper-first mindset. Inste
 
 #### ✨ The Mirror & The Reflection
 
-> *A client system hands off a `CxxMirror` to RTL — and RTL sees its reflection.*
+> *A client system hands off a `rtl::CxxMirror` to RTL — and RTL sees its reflection.*
 
 That’s it. The mirror is a **single object**, typically returned from a function like:
 
@@ -117,4 +117,4 @@ This design turns RTL into a **pluggable, runtime-agnostic consumer** of metadat
 * Reflect types from external libraries
 * Link in auto-generated metadata modules
 * Expose your reflection system to scripts or tools without tight coupling
-* Swap different `CxxMirror` sources depending on build mode (dev/editor/runtime)
+* Swap different `rtl::CxxMirror` sources depending on build mode (dev/editor/runtime)
