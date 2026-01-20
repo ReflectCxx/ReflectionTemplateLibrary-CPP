@@ -16,15 +16,14 @@ This guide walks you step by step through RTL’s reflection syntax.
    * [Binding an Object and Calling 🔗](#binding-an-object-and-calling)
    * [Binding Signatures and Perfect Forwarding 🎯](#binding-signatures-and-perfect-forwarding)
    * [Const vs Non-Const Method Binding ⚡](#const-vs-non-const-method-binding)
-4. [Const-by-Default Discipline 🛡️](#const-by-default-discipline)
-5. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
-6. [Move Semantics in RTL 🔀](#move-semantics-in-rtl)
+4. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
+5. [Move Semantics in RTL 🔀](#move-semantics-in-rtl)
 
 ---
 
 ## Building the Mirror 🪞
 
-Before registering anything, you need a central place to hold all reflection metadata: the `rtl::CxxMirror`. You can create an instance, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
+Before registering anything, you need a central place to hold all reflection metadata references: the `rtl::CxxMirror`. You can create an instance, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
 
 ```cpp
   auto cxx_mirror = rtl::CxxMirror({
@@ -32,25 +31,25 @@ Before registering anything, you need a central place to hold all reflection met
     });
 ```
 
-Every registration statement you add here is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` forms the backbone of RTL. Every type, function, or method you register ultimately gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+Every registration statement you add here is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` is an access-interface of RTL. Every type, function, or method you register, the metadata references gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
 
 ### A few key points about managing this object
 
 * ***Dispensable by design*** → The `CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
 
-* ***Duplicate registration is harmless*** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the lambda/functor table — the metadata simply refers back to the existing entry.
+* ***Duplicate registration is harmless*** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the metadata cache — it simply refers back to the existing entry.
 
 * ***Thread-safety guaranteed by RTL*** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
 
 * ***Overhead is deliberate*** → Each registration carries a small cost in memory and initialization time. Concretely:
-  * Every registration statement acquires a lock on the functor table.
-  * It checks whether the function or lambda is already present.
-  * If not, it adds the new entry to the lambda table and updates the functor table.
+  * Every registration statement acquires a lock on the metadata cache.
+  * It checks whether the function-pointer is already present.
+  * If not, it adds the new entry to the metadata cache.
   
-This ensures thread-safety and prevents redundant entries. While negligible for isolated registrations, this cost can accumulate when creating many mirrors or registering large numbers of types.
+This ensures thread-safety and prevents redundant entries. While negligible for isolated registrations, this cost can accumulate when initializing many mirrors in hot loops or same again and again.
 
 👉 Bottom Line
-> *"Manage `CxxMirror` however your design requires — singleton, multiple, or transient. Each registration incurs a lock and table lookup, but the cost is negligible in normal use and only noticeable when scaling to very large numbers of types."*
+> *"Manage `CxxMirror` however your design requires — singleton, multiple, or transient. Each registration incurs a lock and table lookup, but the cost is negligible in normal use and only exists at initialization time."*
 
 ---
 
@@ -146,7 +145,6 @@ if (popMessage)
     // function exists, safe to invoke
 }
 ```
-
 ---
 
 <a id="performing-reflective-calls" name="performing-reflective-calls"></a>
@@ -155,6 +153,7 @@ if (popMessage)
 
 Once you have a `rtl::Function`, a complete reflective call involves two steps:
 
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 ```cpp
 auto [err, retObj] = popMessage->bind().call();
 ```
@@ -235,6 +234,7 @@ if (classPerson)
 
 ### Binding an Object and Calling 🔗
 
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 ```cpp
 auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
 ```
@@ -257,6 +257,7 @@ Errors specific to member function calls:
 
 ### Binding Signatures and Perfect Forwarding 🎯
 
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 ```cpp
 setProfile->bind(targetObj).call(10);          // 10 forwarded as int
 setProfile->bind<double>(targetObj).call(10);  // 10 forwarded as double (10.0)
@@ -276,6 +277,7 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 
 ### Const vs Non-Const Method Binding ⚡
 
+[THIS SECTION NEEDS TO BE UPDATED AS PER THE NEW CALLABLES]
 When binding methods reflectively, RTL enforces const-correctness in a way that mirrors C++ itself, but with an extra layer of runtime safety. Let’s walk through how this works.
 
 #### Default Behavior
@@ -292,6 +294,7 @@ auto [err, ret] = someMethod->bind(robj).call();
 
 #### Choosing the Non-Const Path
 
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 Sometimes you really do want the non-const overload. RTL requires you to be explicit in that case, by using `rtl::constCast()`:
 
 ```cpp
@@ -346,45 +349,6 @@ bool safe = robj.isConstCastSafe();
 
 ---
 
-<a id="const-by-default-discipline" name="const-by-default-discipline"></a>
-## Const-by-Default Discipline 🛡️
-
-C++ treats **const** as a contract: a `const` object can only invoke `const` methods, and any attempt to mutate it without an explicit `const_cast` leads to undefined behavior. A non-const object, by contrast, freely chooses non-const overloads but can fall back to const ones when needed.
-
-RTL mirrors this model but strengthens it with **provenance-aware constness**. In other words, RTL distinguishes between objects it created itself and objects provided externally, applying rules that match their origin.
-
-### Two Kinds of Constness in RTL
-
-* **Logically-Const (RTL-Created)**
-
-  * Objects constructed reflectively—whether on the stack or heap—are treated as *const-first*.
-  * If a non-const overload is the only option, RTL may safely apply an internal `const_cast` because these objects were never originally declared `const`.
-  * Users can still opt into non-const explicitly via `rtl::constCast()` if both overloads exist.
-
-* **True-Const (Externally Provided)**
-
-  * Objects passed into RTL with declared `const` remain **strictly const**.
-  * RTL will never cast them internally, ensuring you can’t accidentally mutate something the compiler itself forbids.
-  * Missing const overloads result in `rtl::error::ConstOverloadMissing`. Forcing a non-const call results in `rtl::error::IllegalConstCast`.
-
-### Quick Comparison
-
-| Case                 | Native C++                                                             | RTL Behavior                                                                                                                                           |
-| -------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Const object**     | Only const overload allowed; non-const requires cast; mutation is UB.  | **True-const**: only const overload allowed; missing const → `ConstOverloadMissing`; forcing non-const → `IllegalConstCast`.                           |
-| **Non-const object** | Prefers non-const overload, but may call const if that’s the only one. | **Logically-const**: defaults to const; missing const but non-const present → safe fallback; both present → explicit non-const via `rtl::constCast()`. |
-
-✅ Key Takeaway
-
-RTL codifies C++’s const rules at runtime:
-
-* **True-const** objects are strictly immutable.
-* **Logically-const** objects default to immutability but can be safely relaxed when overload resolution requires it.
-
-This makes overload resolution **predictable, safe, and explicit**, giving you runtime reflection that behaves like C++—but with added clarity.
-
----
-
 <a id="reflective-construction-and-destruction" name="reflective-construction-and-destruction"></a>
 ## Reflective Construction and Destruction 🏗️
 
@@ -398,6 +362,7 @@ To construct a reflected object, first grab the `Record` that represents the typ
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
 // Default constructor — create on heap
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Heap>();
 if (err == rtl::error::None)
 {
@@ -405,6 +370,7 @@ if (err == rtl::error::None)
 }
 
 // Overloaded constructor — this time create on stack
+[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Stack>(
     std::string("John Doe"),
     42
