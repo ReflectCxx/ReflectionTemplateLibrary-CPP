@@ -32,7 +32,7 @@ if(cToStr) {   // Function materialized?
 
 ⚡ **Performance**
 
-RTL’s reflective calls are comparable to `std::function` for fully type-erased dispatch, and achieve lower call overhead *(just a function-pointer hop)* when argument and return types are known.
+RTL’s reflective calls are comparable to `std::function`, and achieve lower overhead when argument and return types are fully specified.
 
 ## Design Highlights
 
