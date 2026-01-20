@@ -49,17 +49,13 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 ### Dispatch Overhead (Scale = 0)
 
-<p align="center">
-  <img src="images/string_view_micro_bm.png" width="600">
-</p>
+<img src="images/string_view_micro_bm.png" width="600">
 
 > **RTL (erased)** refers to fully type-erased calls where the target and/or return type are erased at runtime.
 
 ### Moderate Workload (Scale = 0–150)
 
-<p align="center">
-  <img src="images/string_view_workload_bm.png" width="600">
-</p>
+<img src="images/string_view_workload_bm.png" width="800">
 
 ### Key Observations
 
@@ -72,15 +68,11 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 ### Dispatch Overhead (Scale = 0)
 
-<p align="center">
-  <img src="images/string_micro_bm.png" width="600">
-</p>
+<img src="images/string_micro_bm.png" width="600">
 
 ### Heavy Workload (Scale = 0-150)
 
-<p align="center">
-  <img src="images/string_workload_bm.png" width="600">
-</p>
+<img src="images/string_workload_bm.png" width="800">
 
 ### Key Observations
 
