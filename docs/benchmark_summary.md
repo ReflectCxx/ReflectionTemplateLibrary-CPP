@@ -8,6 +8,8 @@ The benchmark measures the cost of invoking functions that perform simple but re
 
 ### Lightweight Workflow
 
+The get/set functions are called via reflection and, and RTL’s dispatch layer perfect-forwards the provided arguments to the target call site.
+
 * The input string of length 500 is passed by value as `std::string_view`.
 * The function `set(std::string_view)` copies the argument. This copy is very lightweight, as it only contains a pointer and a size.
 * The actual work performed is concatenating the passed string into a global `std::string` for a given number of iterations (the workload scale).
@@ -25,25 +27,6 @@ In both cases, the real work is dominated by string concatenation, allocation, a
 The benchmarks therefore highlight how different call paths – direct calls, `std::function`, and reflected(`rtl::function`/`rtl::method`) calls behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
 
 Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
-
-## 🖥️ Test Platform (Linux)
-
-The benchmarks were executed on a modern multi-core x86_64 system with dynamic CPU frequency scaling.
-
-**Hardware characteristics observed across runs:**
-
-* **CPU:** 16 logical cores
-* **Frequency:** ~800 MHz to ~4.8 GHz (dynamic scaling)
-* **Cache hierarchy:**
-
-  * L1 Data: 48 KiB × 8
-  * L1 Instruction: 32 KiB × 8
-  * L2 Unified: 1280 KiB × 8
-  * L3 Unified: 20 MiB × 1
-* **Load average:** Typically below 1.0
-* All benchmarks were compiled with `clang 21` using default release optimizations.
-
-Multiple runs at different frequencies confirm that the relative performance trends are stable and not tied to a specific clock rate.
 
 ## 🚀 Results with `std::string_view` Workflow
 
@@ -91,6 +74,26 @@ Multiple runs at different frequencies confirm that the relative performance tre
 * Memory allocation and string copying become the primary performance costs.
 * Reflection does not distort scaling behavior or introduce nonlinear slowdowns.
 * The value vs view semantics have a larger performance impact than reflection itself.
+
+## 🖥️ Test Bed
+
+The benchmarks were executed on a Linux x86_64 system in a typical release-style configuration. The details below capture the essential factors needed for reproducibility.
+
+* **OS:** Linux (Kernel `6.12.38+kali-amd64`)
+* **Compiler:** Clang++ **21.1.8**
+* **C++ Standard:** GNU++20 (`-std=gnu++20`)
+* **Optimization:** `-O3 -DNDEBUG`
+* **LTO:** disabled (no `-flto`)
+* **RTTI / Exceptions:** enabled (defaults)
+* **CPU tuning:** generic x86-64 (no `-march=native`)
+* **Standard library:** `libstdc++` (system default)
+
+**Hardware (observed):**
+
+* 16 logical cores
+* Dynamic frequency scaling (~800 MHz – ~4.8 GHz)
+
+Benchmarks were run multiple times under **low system load** (load average consistently < 1.0, as recorded in logs) to ensure stable and comparable performance trends across workloads.
 
 ## 📂 Raw Benchmark Logs
 
