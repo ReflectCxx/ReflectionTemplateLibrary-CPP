@@ -4,11 +4,11 @@ This document provides a concise, evidence-backed overview of the runtime perfor
 
 ## 🧪 Benchmark Overview
 
-The benchmark measures the cost of invoking functions that perform simple but realistic `string` work. Two variants are evaluated using the types `std::string_view` and `std::string`.
+The benchmark measures the cost of calling functions that perform simple but realistic `string` work. Two variants are evaluated using the types `std::string_view` and `std::string`.
 
 ### Lightweight Workflow
 
-The `set`/`get` functions are called via reflection and, and RTL’s dispatch layer perfect-forwards the provided arguments to the target call site.
+The `set`/`get` functions are called via reflection and, RTL’s dispatch layer perfect-forwards the provided arguments to the target call site.
 
 * The input string of length 500 is passed by value as `std::string_view`.
 * The function `set(std::string_view)` copies the argument. This copy is very lightweight, as it only contains a pointer and a size.
