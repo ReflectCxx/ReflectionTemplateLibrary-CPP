@@ -42,7 +42,9 @@ RTL’s reflective calls are comparable to `std::function` for fully type-erased
 
 * ***Zero-Overhead by Design*** – Metadata can be registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
 
-* ***Hot-Loop Safe*** – Typed reflection calls exhibit near-zero overhead and scale like direct calls, making RTL suitable for performance-critical and tight-loop workloads. [Benchmark Summary](docs/benchmark_summary.md)
+* ***Hot-Loop Safe*** – Typed reflection calls exhibit near-zero overhead and scale like direct calls, making RTL suitable for performance-critical and tight-loop workloads.
+
+[Benchmark Summary](docs/benchmark_summary.md)
 
 * ***Tooling-Friendly Architecture*** – Reflection metadata is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
 
