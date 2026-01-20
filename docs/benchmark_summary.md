@@ -4,7 +4,7 @@ This document provides a concise, evidence-backed overview of the runtime perfor
 
 ## 🧪 Benchmark Overview
 
-The benchmark measures the cost of invoking functions that perform simple but realistic string work. Two variants are evaluated using the types `std::string_view` and `std::string`.
+The benchmark measures the cost of invoking functions that perform simple but realistic `string` work. Two variants are evaluated using the types `std::string_view` and `std::string`.
 
 ### Lightweight Workflow
 
@@ -22,11 +22,11 @@ The dispatch setup of the heavy workflow is the same, except it uses `std::strin
 * The getter `std::string get(std::string)`, returns a full `std::string` copy of the stored value, which again requires heap allocation.
 
 In both cases, the real work is dominated by string concatenation, allocation, and copying.
-The benchmarks therefore highlight how different call paths – direct calls, `std::function`, and reflected(`rtl::function`/`rtl::method`) calls—behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
+The benchmarks therefore highlight how different call paths – direct calls, `std::function`, and reflected(`rtl::function`/`rtl::method`) calls behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
 
 Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
 
-## 🖥️ Test Platform
+## 🖥️ Test Platform (Linux)
 
 The benchmarks were executed on a modern multi-core x86_64 system with dynamic CPU frequency scaling.
 
@@ -41,7 +41,7 @@ The benchmarks were executed on a modern multi-core x86_64 system with dynamic C
   * L2 Unified: 1280 KiB × 8
   * L3 Unified: 20 MiB × 1
 * **Load average:** Typically below 1.0
-* All benchmarks were compiled with **clang 21.1** using default release optimizations.
+* All benchmarks were compiled with `clang 21` using default release optimizations.
 
 Multiple runs at different frequencies confirm that the relative performance trends are stable and not tied to a specific clock rate.
 
