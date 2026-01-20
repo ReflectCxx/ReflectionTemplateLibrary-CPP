@@ -8,7 +8,7 @@ The benchmark measures the cost of invoking functions that perform simple but re
 
 ### Lightweight Workflow
 
-The get/set functions are called via reflection and, and RTL’s dispatch layer perfect-forwards the provided arguments to the target call site.
+The `set`/`get` functions are called via reflection and, and RTL’s dispatch layer perfect-forwards the provided arguments to the target call site.
 
 * The input string of length 500 is passed by value as `std::string_view`.
 * The function `set(std::string_view)` copies the argument. This copy is very lightweight, as it only contains a pointer and a size.
@@ -30,15 +30,15 @@ Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
 
 ## 🚀 Results with `std::string_view` Workflow
 
-### Dispatch Overhead (Scale = 0)
+### Dispatch Overhead
 
 <img src="images/string_view_micro_bm.png" width="600">
 
 ***RTL (standard)** refers to typed calls where the target and return types are known at compile time.*
 
-### Moderate Workload (Scale = 0–150)
+### Scaling Workloads (0 to 150)
 
-<img src="images/string_view_workload_bm.png" width="600">
+<img src="images/string_view_workload_bm.png" width="800">
 
 ### Observations
 
@@ -49,13 +49,13 @@ Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
 
 ## 🧱 Results with `std::string` Workflow
 
-### Dispatch Overhead (Scale = 0)
+### Dispatch Overhead
 
 <img src="images/string_micro_bm.png" width="600">
 
-### Heavy Workload (Scale = 0-150)
+### Scaling Workloads (0 to 150)
 
-<img src="images/string_workload_bm.png" width="600">
+<img src="images/string_workload_bm.png" width="800">
 
 ### Observations
 
