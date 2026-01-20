@@ -34,7 +34,7 @@ Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
 
 <img src="images/string_view_micro_bm.png" width="600">
 
-> **RTL (erased)** refers to fully type-erased calls where the target and return type are erased at runtime.
+***RTL (standard)** refers to typed calls where the target and return types are known at compile time.*
 
 ### Moderate Workload (Scale = 0–150)
 
