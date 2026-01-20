@@ -107,7 +107,7 @@ Instances can be created on the `Heap` or `Stack` with automatic lifetime manage
 auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
 if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
-The constructed object is returned wrapped in `rtl::RObject`. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
+The constructed object is returned wrapped in `rtl::RObject`, which hides the concrete type of the underlying object. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
 
 Now, Lookup a member-function by name –
 ```c++
