@@ -153,7 +153,8 @@ if (popMessage)
 
 Once you have a `rtl::Function`, a complete reflective call involves two steps:
 
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
+**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
+
 ```cpp
 auto [err, retObj] = popMessage->bind().call();
 ```
@@ -234,7 +235,8 @@ if (classPerson)
 
 ### Binding an Object and Calling 🔗
 
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
+**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
+
 ```cpp
 auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
 ```
@@ -257,7 +259,8 @@ Errors specific to member function calls:
 
 ### Binding Signatures and Perfect Forwarding 🎯
 
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
+**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
+
 ```cpp
 setProfile->bind(targetObj).call(10);          // 10 forwarded as int
 setProfile->bind<double>(targetObj).call(10);  // 10 forwarded as double (10.0)
@@ -277,7 +280,8 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 
 ### Const vs Non-Const Method Binding ⚡
 
-[THIS SECTION NEEDS TO BE UPDATED AS PER THE NEW CALLABLES]
+**[THIS SECTION NEEDS TO BE UPDATED AS PER THE NEW CALLABLES]**
+
 When binding methods reflectively, RTL enforces const-correctness in a way that mirrors C++ itself, but with an extra layer of runtime safety. Let’s walk through how this works.
 
 #### Default Behavior
@@ -362,14 +366,17 @@ To construct a reflected object, first grab the `Record` that represents the typ
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
 // Default constructor — create on heap
+
 [THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Heap>();
+
 if (err == rtl::error::None)
 {
     // construction successful, use object to call methods now...
 }
 
 // Overloaded constructor — this time create on stack
+
 [THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Stack>(
     std::string("John Doe"),
