@@ -49,25 +49,17 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 ### Dispatch Overhead (Scale = 0)
 
-| Call Path        | Setter      | Getter       |
-| ---------------- | ----------- | ------------ |
-| Direct           | ~0.6–1.4 ns | ~1.4 ns      |
-| Function pointer | ~1.0–2.6 ns | ~2.4–2.6 ns  |
-| `std::function`  | ~1.2–3.2 ns | ~2.4–3.2 ns  |
-| `rtl::function`  | ~1.0–2.7 ns | ~2.2–2.7 ns  |
-| RTL (erased)     | ~3.0–8.6 ns | ~6.7–15.5 ns |
+<p align="center">
+  <img src="images/string_view_micro_bm.png" width="600">
+</p>
 
 > **RTL (erased)** refers to fully type-erased calls where the target and/or return type are erased at runtime.
 
-### Moderate Workload (Scale = 20–25)
+### Moderate Workload (Scale = 0–150)
 
-| Call Path        | Setter      | Getter      |
-| ---------------- | ----------- | ----------- |
-| Direct           | ~266–290 ns | ~365–366 ns |
-| Function pointer | ~266–268 ns | ~365–366 ns |
-| `std::function`  | ~264–268 ns | ~365–368 ns |
-| `rtl::function`  | ~264 ns     | ~366 ns     |
-| RTL (erased)     | ~270–275 ns | ~375–378 ns |
+<p align="center">
+  <img src="images/string_view_workload_bm.png" width="600">
+</p>
 
 ### Key Observations
 
@@ -80,23 +72,15 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 ### Dispatch Overhead (Scale = 0)
 
-| Call Path        | Setter        | Getter        |
-| ---------------- | ------------- | ------------- |
-| Direct           | ~9.7–9.8 ns   | ~12.7–12.8 ns |
-| Function pointer | ~10.5–10.7 ns | ~12.5–12.7 ns |
-| `std::function`  | ~10.6–10.7 ns | ~12.5–13.2 ns |
-| `rtl::function`  | ~10.1–10.5 ns | ~12.1–12.5 ns |
-| RTL (erased)     | ~13.5–15.3 ns | ~24.9–32.2 ns |
+<p align="center">
+  <img src="images/string_micro_bm.png" width="600">
+</p>
 
-### Heavy Workload (Scale = 25)
+### Heavy Workload (Scale = 0-150)
 
-| Call Path        | Setter      | Getter      |
-| ---------------- | ----------- | ----------- |
-| Direct           | ~348–362 ns | ~741–761 ns |
-| Function pointer | ~354–355 ns | ~744–749 ns |
-| `std::function`  | ~348–362 ns | ~752–761 ns |
-| `rtl::function`  | ~356 ns     | ~745 ns     |
-| RTL (erased)     | ~355–363 ns | ~765–781 ns |
+<p align="center">
+  <img src="images/string_workload_bm.png" width="600">
+</p>
 
 ### Key Observations
 
