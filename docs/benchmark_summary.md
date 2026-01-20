@@ -1,27 +1,28 @@
 # ⚡ RTL Performance Summary
 
-This document provides a concise, evidence-backed overview of the runtime performance characteristics of **RTL**, derived from systematic microbenchmarking across multiple workload scales, CPU frequencies, and representative workload designs.
+This document provides a concise, evidence-backed overview of the runtime performance characteristics of **RTL**, derived from systematic microbenchmarking across multiple workload scales, CPU frequencies, and typical real-world C++ usage patterns.
 
 ## 🧪 Benchmark Overview
 
 The benchmark measures the cost of invoking functions that perform simple but realistic string work. Two variants are evaluated using the types `std::string_view` and `std::string`.
 
-### Lightweight Workflow (`std::string_view`)
+### Lightweight Workflow
 
 * The input string of length 500 is passed by value as `std::string_view`.
-* The function `set(std::string_view)` copies the argument (pointer + size only).
-* The actual work is concatenating the passed string into a global `std::string` for a given number of iterations.
-* The getter `std::string_view get(std::string_view)` returns a lightweight view of the stored string.
+* The function `set(std::string_view)` copies the argument. This copy is very lightweight, as it only contains a pointer and a size.
+* The actual work performed is concatenating the passed string into a global `std::string` for a given number of iterations (the workload scale).
+* The getter, `std::string_view get(std::string_view)`, follows the same flow, including the argument copy, and returns a `std::string_view` pointing to the globally stored string, which is again a lightweight object.
 
-### Heavy Workflow (`std::string`)
+### Heavy Workflow
 
-The dispatch setup is the same, except it uses `std::string` instead of `std::string_view`, which means:
+The dispatch setup of the heavy workflow is the same, except it uses `std::string` instead of `std::string_view`, which means:
 
-* The input string is passed by value as `std::string` and copied on every call (heap allocation).
-* Each workload iteration concatenates a 500-character string into the global storage.
-* The getter `std::string get(std::string)` returns a full string copy (heap allocation).
+* The input string is passed by value as `std::string` and is copied on every call. Both `set` and `get` perform this copy operation for a 500-character string, typically involving heap allocation.
+* Each workload iteration concatenates this 500-character string into the global storage.
+* The getter `std::string get(std::string)`, returns a full `std::string` copy of the stored value, which again requires heap allocation.
 
-In both cases, the real work is dominated by string concatenation, allocation, and copying. The benchmarks therefore highlight how different call paths behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
+In both cases, the real work is dominated by string concatenation, allocation, and copying.
+The benchmarks therefore highlight how different call paths – direct calls, `std::function`, and reflected(`rtl::function`/`rtl::method`) calls—behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
 
 Workload scales tested: *0, 1, 5, 10, 15, 20, 25 … up to 150.*
 
