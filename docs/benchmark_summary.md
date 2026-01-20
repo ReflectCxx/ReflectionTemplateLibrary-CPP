@@ -19,7 +19,7 @@ The dispatch setup of the heavy workflow is the same, except it uses `std::strin
 
 * The input string is passed by value as `std::string` and is copied on every call. Both `set` and `get` perform this copy operation for a 500-character string, typically involving heap allocation.
 * Each workload iteration concatenates this 500-character string into the global storage.
-* The getter `std::string get(std::string)`, returns a full `std::string` copy of the stored value, which again requires heap allocation.
+* The getter `std::string get(std::string)`, returns a full `std::string` copy of the accumulated global string, which grows in size with the workload and requires heap allocation.
 
 In both cases, the real work is dominated by string concatenation, allocation, and copying.
 The benchmarks therefore highlight how different call paths – direct calls, `std::function`, and reflected(`rtl::function`/`rtl::method`) calls behave when meaningful work is present, rather than measuring dispatch overhead in isolation.
@@ -51,13 +51,13 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 <img src="images/string_view_micro_bm.png" width="600">
 
-> **RTL (erased)** refers to fully type-erased calls where the target and/or return type are erased at runtime.
+> **RTL (erased)** refers to fully type-erased calls where the target and return type are erased at runtime.
 
 ### Moderate Workload (Scale = 0–150)
 
-<img src="images/string_view_workload_bm.png" width="800">
+<img src="images/string_view_workload_bm.png" width="600">
 
-### Key Observations
+### Observations
 
 * `rtl::function` matches or outperforms `std::function`.
 * Non-erased RTL calls are effectively zero-overhead.
@@ -72,9 +72,9 @@ Multiple runs at different frequencies confirm that the relative performance tre
 
 ### Heavy Workload (Scale = 0-150)
 
-<img src="images/string_workload_bm.png" width="800">
+<img src="images/string_workload_bm.png" width="600">
 
-### Key Observations
+### Observations
 
 * Getter cost is significantly higher due to return-by-value.
 * Memory allocation and copying dominate runtime.
