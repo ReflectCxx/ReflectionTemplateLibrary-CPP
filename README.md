@@ -52,7 +52,7 @@ First, create an instance of `rtl::CxxMirror` –
 ```c++
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
-The `cxx_mirror` object provides access to the runtime reflection system. It stores metadata for all registered entities and supports name-based lookup. The object may reside in any translation unit. To make it globally accessible while ensuring lazy initialization, a singleton access interface can be used –
+The `cxx_mirror` object provides access to the runtime reflection system. It references metadata for all registered entities and supports name-based lookup. The object may reside in any translation unit. To make it globally accessible while ensuring lazy initialization, a singleton access interface can be used –
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
