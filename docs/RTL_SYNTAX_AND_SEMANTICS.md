@@ -155,7 +155,7 @@ std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("model", "Person");
 ```
 `rtl::Record` represents any registered C++ type, including user-defined `class` and `struct` types, as well as POD types.
-The term *Record* follows the naming convention used in the *LLVM* project (for example, `CXXRecordDecl`).
+The term **Record** follows the naming convention used in the **LLVM** project (e.g. `CXXRecordDecl`).
 
 `rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile-time type.
@@ -171,18 +171,18 @@ POD types do not have member functions.
 
 ### Reflective Invocations with RTL ⚙️
 
-Once a reflected function or method has been queried, it must be materialized into a callable object before it can be invoked.
+`rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly invoked through these objects. Instead, RTL uses a materialization model to produce callable entities.
 
-RTL does not expose reflected functions as directly callable objects. Instead, querying returns metadata descriptors (such as `rtl::Function` and `rtl::Method`) that must be explicitly materialized into typed callables by specifying the intended call signature.
+Callables are materialized by explicitly specifying the argument and return types. This design avoids a single, fully type-erased invocation path for all use cases. By requiring the user to declare the intended call signature, RTL can validate the request and select an invocation path optimized for the available type information.
 
-This design avoids a single, type-erased invocation path for all use cases. By requiring the user to declare the argument and return types they intend to use, RTL can validate the request and select an invocation path that is optimized for the available type information.
-
-When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for the return/target), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
+When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for an unknown return or target type), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
 
 ⚖️ **The Idea:**
 > *In RTL, materialization makes the performance–flexibility trade-off explicit at each call site.*
 
-#### Materializing an `rtl::function`
+RTL provides the following callable entities,
+
+#### `rtl::constructor`
 
 **[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
 ```cpp
