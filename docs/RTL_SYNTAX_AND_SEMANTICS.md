@@ -92,7 +92,7 @@ rtl::type().ns("ext").function<const char*>("sendMessage").build(ext::sendMessag
 rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendMessage);
 ```
 
-### Classes / Structs
+### PODs / Classes / Structs
 
 ```cpp
 rtl::type().ns("ext").record<T>("type-name").build();
@@ -160,10 +160,17 @@ if (popMessage)
 
 ### Performing Reflective Calls ⚙️
 
-Once you have a `rtl::Function`, a complete reflective call involves two steps:
+Once a reflected function or method has been queried, it must be materialized into a callable object before it can be invoked.
+
+RTL does not expose reflected functions as directly callable objects. Instead, querying returns metadata descriptors (such as `rtl::Function` and `rtl::Method`) that must be explicitly materialized into typed callables by specifying the intended call signature.
+
+This design avoids a single, type-erased invocation path for all use cases. By requiring the user to declare the argument and return types they intend to use, RTL can validate the request and select an invocation path that is optimized for the available type information.
+
+When full type information is provided, materialized callables compile to **direct function-pointer calls** with near-zero overhead. When type erasure is required (for example, for the return-type or the method-target), invocation proceeds through a lightweight dispatch layer with performance **comparable to** `std::function`.
+
+#### Materializing an `rtl::function`
 
 **[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
-
 ```cpp
 auto [err, retObj] = popMessage->bind().call();
 ```
