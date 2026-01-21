@@ -135,6 +135,7 @@ Once the Mirror is initialized with metadata references, it can be queried for r
 `rtl::CxxMirror` provides lookup APIs that return reflection metadata objects.
 Registered types (`class`, `struct`, or POD) are queried as `rtl::Record`, while non-member functions are queried as `rtl::Function`.
 For example:
+
 ```cpp
 // Function without a namespace
 std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
@@ -142,11 +143,13 @@ std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage"
 // Function registered with a namespace, e.g. "utils"
 std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
 ```
+
 * If a function is registered without a namespace, it must be queried without specifying a namespace.
 * If a function is registered with a namespace, it must be queried using the same namespace.
 
 These metadata are returned wrapped in `std::optional<>`, which is empty if the requested entity is not found by the name specified.
 All registered member functions of a type can be obtained from its corresponding `rtl::Record` as `rtl::Method` objects.
+
 ```cpp
 // Querying a type without a namespace
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
@@ -154,6 +157,7 @@ std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 // Querying a type with a namespace, e.g. "model"
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("model", "Person");
 ```
+
 `rtl::Record` represents any registered C++ type, including user-defined `class` and `struct` types, as well as POD types.
 The term **Record** follows the naming convention used in the **LLVM** project (e.g. `CXXRecordDecl`).
 
@@ -189,6 +193,7 @@ Fully type-specified callables do not return an error code (except constructors)
 
 Constructors can be materialized directly from an `rtl::Record`.
 For example, an overloaded constructor can be materialized as follows:
+
 ```cpp
 // classPerson is of type std::optional<rtl::Record>.
 rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
@@ -196,14 +201,17 @@ if (personCtor) {	// Constructor successfully materialized
 	auto [err, person] = personCtor(rtl::alloc::Stack, "Waldo", 42);	// Safe to call.
 }
 ```
+
 If no constructor is registered with the specified signature, the callable is not initialized. Calling it without validation does not throw an exception; instead, it returns `rtl::error::SignatureMismatch` in the `err` variable.
 
 A default constructor can be materialized as follows:
+
 ```cpp
 rtl::constructor<> personCtor = classPerson->ctorT();
 // No validation required
 auto [err, person] = personCtor(rtl::alloc::Heap, "Waldo", 42);	// Safe to call.
 ```
+
 The default constructor for a type `T` is implicitly registered when the type is registered using `rtl::type().record<T>()`. It is guaranteed to be materializable and safe to call. If the default constructor is not publicly accessible or is deleted,
 `rtl::error::TypeNotDefaultConstructible` is returned in the `err` variable.
 
