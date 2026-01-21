@@ -86,11 +86,10 @@ Lookup the `Person` class by its registered name –
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
-`rtl::CxxMirror` provides two lookup APIs that return reflection metadata objects: `rtl::Record` for any registered type (class, struct or pod) and `rtl::Function` for non-member functions.
+`rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
 
-From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors (not callables) and are returned as `std::optional`, which will be empty if the requested entity is not found.
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors (not callables). Callable entities are materialized by explicitly providing the argument types we intend to pass.
 
-Callables are materialized by explicitly providing the argument types we intend to pass. If the signature is valid, the resulting callable can be invoked safely.
 For example, the overloaded constructor `Person(std::string, int)` –
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
@@ -105,8 +104,7 @@ Instances can be created on the `Heap` or `Stack` with automatic lifetime manage
 auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
 if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
-The constructed object is returned wrapped in `rtl::RObject`, which hides the concrete type of the underlying object. Heap-allocated objects are internally managed via `std::unique_ptr`, while stack-allocated objects are stored directly in `std::any`.
-
+The constructed object is returned wrapped in `rtl::RObject`.
 Now, Lookup a member-function by name –
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
@@ -124,7 +122,7 @@ else {
     std::string nameStr = getName(person)(); // Returns string 'Alex'.
 }
 ```
-The above `getName` invocation is effectively a native function-pointer hop, since all types are known at compile time.
+The above `getName` invocation is effectively a **native function-pointer hop**, since all types are known at compile time.
 
 If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target –
 ```c++
@@ -163,10 +161,6 @@ RTL provides the following callable entities, designed to be as lightweight and 
 `rtl::const_method<>` – Const-qualified member functions
 
 `rtl::static_method<>` – Static member functions
-
-These callable types are regular value types: they can be copied, moved, stored in standard containers, and passed around like any other lightweight object.
-
-When invoked, only type-erased callables return an `rtl::error`, with results provided as `rtl::RObject` *(when both the return and target types are erased)* or as `std::optional<T>` *(when only the target type is erased)*, while fully type-aware callables return `T` directly with no error (by design).
 
 ### How to Build (Windows / Linux)
 ```sh
