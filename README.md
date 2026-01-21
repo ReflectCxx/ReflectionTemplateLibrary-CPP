@@ -14,11 +14,11 @@
 
 RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
-It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function –
+It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function:
 ```c++
 std::string complexToStr(float real, float img);
 ```
-Using RTL, you can discover this function by name and call it dynamically –
+Using RTL, you can discover this function by name and call it dynamically:
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
@@ -48,17 +48,17 @@ RTL’s reflective calls are comparable to `std::function`, and achieve lower ov
 
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
-First, create an instance of `rtl::CxxMirror` –
+First, create an instance of `rtl::CxxMirror`:
 ```c++
 auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
 ```
-The `cxx_mirror` object provides access to the runtime reflection system. It references metadata for all registered entities and supports name-based lookup. The object may reside in any translation unit. To make it globally accessible while ensuring lazy initialization, a singleton access interface can be used –
+The `cxx_mirror` object provides access to the runtime reflection system. It references metadata for all registered entities and supports name-based lookup. The object may reside in any translation unit. To make it globally accessible while ensuring lazy initialization, a singleton access interface can be used:
 ```c++
 // MyReflection.h
 namespace rtl { class CxxMirror; }	// Forward declaration, no includes here!
 struct cxx { static rtl::CxxMirror& mirror(); };	// The singleton interface.
 ```
-define and register everything in an isolated translation unit –
+define and register everything in an isolated translation unit:
 ```c++
 // MyReflection.cpp
 rtl::CxxMirror& cxx::mirror() {
