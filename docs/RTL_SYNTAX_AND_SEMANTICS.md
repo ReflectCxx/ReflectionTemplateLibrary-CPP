@@ -24,7 +24,7 @@ This guide walks you step by step through RTL’s reflection syntax.
 ## Building the Mirror 🪞
 
 Before querying or using reflection, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities.
-The mirror is constructed using an initializer list of registration expressions, typically produced via `rtl::type<T>()`.
+The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...` registration statements.
 
 ```cpp
 auto cxx_mirror = rtl::CxxMirror({
@@ -65,20 +65,20 @@ Registration in RTL follows a builder-style composition pattern. Individual comp
 ### Non-Member Functions
 
 ```cpp
-rtl::type().ns("ext").function("func").build(ptr);
+rtl::type().ns("ext").function("func-name").build(ptr);
 ```
 
-* **`ns("ext")`** – Specifies the namespace under which the function is registered.
+* `ns("ext")` – Specifies the namespace under which the function is registered.
   Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function in the global namespace.
 
-* **`function("func")`** – Declares the function by name.
-  If multiple overloads exist, the template parameter (`function<...>("..")`) disambiguates the selected overload.
+* `function("func")` – Declares the function by name.
+  If multiple overloads exist, the template parameter (`function<...>(..)`) disambiguates the selected overload.
 
-* **`.build(ptr)`** – Supplies the function pointer and completes the registration.
+* `.build(ptr)` – Supplies the function-pointer and completes the registration.
 
 ### Handling Overloads
 
-If multiple overloads exist, the signature must be specified as a template argument. Otherwise, the compiler cannot resolve the intended function pointer.
+If multiple overloads exist, the signature must be specified as a template argument. Otherwise, the compiler cannot resolve the intended function-pointer.
 
 For example:
 
@@ -94,36 +94,36 @@ rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendM
 ### Classes / Structs
 
 ```cpp
-rtl::type().ns("ext").record<T>("Name").build();
+rtl::type().ns("ext").record<T>("type-name").build();
 ```
 
 * Registers a type by name and associates it with the specified namespace.
-* This type `T` registration is **mandatory** for any of its members to be registered. The order of registration does not matter.
+* This type (`T`) registration is **mandatory** for any of its members to be registered. The order of registration does not matter.
 * The default, copy, and move constructors, along with the destructor, are registered automatically. Explicit registration of these special members is disallowed and will result in a compile-time error.
 
 ### Constructors
 
 ```cpp
-rtl::type().member<T>().constructor<..signature..>().build();
+rtl::type().member<T>().constructor<...>().build();
 ```
 
-* **`.member<T>()`**: enters the scope of class/struct `T`.
-* **`.constructor<..signature..>()`**: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function pointer is available for deduction, and this also disambiguates overloads.
+* `.member<T>()`: enters the scope of class/struct `T`.
+* `.constructor<...>()`: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function-pointer is available for deduction, and this also disambiguates overloads.
 
 ### Member Functions
 
 ```cpp
-rtl::type().member<T>().method<..signature..>("method").build(&T::f);
+rtl::type().member<T>().method<...>("method-name").build(&T::f);
 ```
 
-* **`.member<T>()`**: enters the scope of class/struct `T`.
-* **`.method<..signature..>(...)`**: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
+* `.member<T>()`: enters the scope of class/struct `T`.
+* `.method<...>(..)`**: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
 👉 **Note:** 
-> ***The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.***
+> *The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.*
 
-With these constructs–namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods–you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
+With these constructs – namespaces, non-member functions, overloads, records `(pod/class/struct)`, constructors, and methods – you now have the full registration syntax for RTL. Together, they allow you to build a complete reflective model of your C++ code.
 
 ---
 
