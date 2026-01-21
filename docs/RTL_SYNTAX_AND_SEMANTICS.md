@@ -37,7 +37,7 @@ Each registration expression contributes references to the underlying metadata o
 
 Through the mirror, all registered types, functions, and methods can be queried, inspected, and instantiated at runtime. The mirror serves as a single entry point for reflection operations without introducing centralized global state.
 
-### Key Points on Managing `rtl::CxxMirror`
+#### Managing `rtl::CxxMirror`
 
 * **Dispensable by design** – `rtl::CxxMirror` carries no hidden global state. You may define a single central mirror, create multiple mirrors in different scopes, or rebuild mirrors on demand. RTL imposes no restrictions on how its lifetime is managed.
 
@@ -166,7 +166,10 @@ RTL does not expose reflected functions as directly callable objects. Instead, q
 
 This design avoids a single, type-erased invocation path for all use cases. By requiring the user to declare the argument and return types they intend to use, RTL can validate the request and select an invocation path that is optimized for the available type information.
 
-When full type information is provided, materialized callables compile to **direct function-pointer calls** with near-zero overhead. When type erasure is required (for example, for the return-type or the method-target), invocation proceeds through a lightweight dispatch layer with performance **comparable to** `std::function`.
+When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for the return/target), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
+
+⚖️ **The Idea:**
+> *In RTL, materialization makes the performance–flexibility trade-off explicit at each call site.*
 
 #### Materializing an `rtl::function`
 
