@@ -75,13 +75,11 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-`cxx_mirror` is an immutable, value-type object that allows only explicit copy construction. It does not own reflection metadata.
-
 ### RTL in action:
 
 **[Explore the demo code](https://github.com/ReflectCxx/RTL-Demo)**
 
-Lookup the `Person` class by its registered name –
+Lookup the `Person` class by its registered name:
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
@@ -90,27 +88,27 @@ if (!classPerson) { /* Class not registered. */ }
 
 From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors (not callables). Callable entities are materialized by explicitly providing the argument types we intend to pass.
 
-For example, the overloaded constructor `Person(std::string, int)` –
+For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
 if (!personCtor) { /* Constructor with expected signature not found. */ }
 ```
-Or the default constructor –
+Or the default constructor:
 ```c++
 rtl::constructor<> personCtor = classPerson->ctorT<>();
 ```
-Instances can be created on the `Heap` or `Stack` with automatic lifetime management –
+Instances can be created on the `Heap` or `Stack` with automatic lifetime management:
 ```c++
 auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
 if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
 The constructed object is returned wrapped in `rtl::RObject`.
-Now, Lookup a member-function by name –
+Now, Lookup a member-function by name:
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
-And materialize a complete type-aware caller –
+And materialize a complete type-aware caller:
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
@@ -124,7 +122,7 @@ else {
 ```
 The above `getName` invocation is effectively a **native function-pointer hop**, since all types are known at compile time.
 
-If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target –
+If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target:
 ```c++
 rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT()
                                                            .returnT<std::string>();
@@ -133,7 +131,7 @@ if (err == rtl::error::None && ret.has_value()) {
     std::string nameStr = ret.value();
 }
 ```
-If the return type is also not known at compile time,`rtl::Return` can be used –
+If the return type is also not known at compile time,`rtl::Return` can be used:
 ```c++
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
 
@@ -150,7 +148,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
-RTL provides the following callable entities, designed to be as lightweight and performant as `std::function` (and in many micro-benchmarks, faster when fully type-aware):
+RTL provides the following callable entities, designed to be as lightweight and performant as `std::function`:
 
 `rtl::function<>` – Free (non-member) functions
 
