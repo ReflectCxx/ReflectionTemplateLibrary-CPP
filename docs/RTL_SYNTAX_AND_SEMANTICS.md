@@ -60,21 +60,21 @@ Through the mirror, all registered types, functions, and methods can be queried,
 
 ## Getting Started with Registration 📝
 
-Registration in RTL follows a builder-style composition pattern. Individual components are chained together to describe the reflected entity, and `.build()` finalizes the registration.
+Registration in RTL follows a builder-style composition pattern. Individual components are chained together to describe the reflected entity, and `.build()` finalizes the registration. The builder interface is exposed via the `rtl_builder.h` header.
 
 ### Non-Member Functions
 
 ```cpp
-rtl::type().ns("ext").function("func-name").build(ptr);
+rtl::type().ns("ext").function("fn-name").build(functor);
 ```
 
 * `ns("ext")` – Specifies the namespace under which the function is registered.
   Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function in the global namespace.
 
-* `function("func")` – Declares the function by name.
+* `function("fn-name")` – Declares the function by name.
   If multiple overloads exist, the template parameter (`function<...>(..)`) disambiguates the selected overload.
 
-* `.build(ptr)` – Supplies the function-pointer and completes the registration.
+* `.build(functor)` – Supplies the function-pointer and completes the registration.
 
 ### Handling Overloads
 
@@ -83,9 +83,10 @@ If multiple overloads exist, the signature must be specified as a template argum
 For example:
 
 ```cpp
-
-bool sendMessage(const char*);
-void sendMessage(int, std::string);
+namespace ext {
+    bool sendMessage(const char*);
+    void sendMessage(int, std::string);
+}
 
 rtl::type().ns("ext").function<const char*>("sendMessage").build(ext::sendMessage);
 rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendMessage);
@@ -107,7 +108,7 @@ rtl::type().ns("ext").record<T>("type-name").build();
 rtl::type().member<T>().constructor<...>().build();
 ```
 
-* `.member<T>()`: enters the scope of class/struct `T`.
+* `.member<T>()`: enters the scope of `T` (pod/class/struct).
 * `.constructor<...>()`: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function-pointer is available for deduction, and this also disambiguates overloads.
 
 ### Member Functions
@@ -129,8 +130,7 @@ With these constructs – namespaces, non-member functions, overloads, records `
 
 ## Reflective Invocations with RTL ✨
 
-Discover how to query, invoke, and manipulate functions and objects at runtime using RTL’s powerful reflection API.
-Once a function is registered in `rtl::CxxMirror`, you can query it and perform reflective calls dynamically.
+Once a function is registered in `rtl::CxxMirror`, it can be queried and invoked through RTL’s access interface, which is exposed via the `rtl_access.h` header.
 
 <a id="querying-c-style-functions" name="querying-c-style-functions"></a>
 
@@ -144,9 +144,9 @@ std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage"
 std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
 ```
 
-* If a function is registered **without a namespace**, it can only be retrieved without specifying a namespace.
-* If a function is registered **with a namespace**, it **must** be queried with the correct namespace.
-* The returned value is an `std::optional<rtl::Function>`. If the function is not found, the optional is empty.
+* If a function is registered without a namespace, it must be queried without specifying a namespace.
+* If a function is registered with a namespace, it must be queried using the same namespace.
+* The return type is `std::optional<rtl::Function>`. If the function is not found, the optional is empty.
 
 ```cpp
 if (popMessage)

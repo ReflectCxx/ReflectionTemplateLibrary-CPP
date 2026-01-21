@@ -61,8 +61,6 @@ struct cxx { static rtl::CxxMirror& mirror(); };	// The singleton interface.
 define and register everything in an isolated translation unit –
 ```c++
 // MyReflection.cpp
-#include <rtl_builder.h> 	// Reflection builder interface.
-
 rtl::CxxMirror& cxx::mirror() {
     static auto cxx_mirror = rtl::CxxMirror({   // Inherently thread safe.
         // Register free(C-Style) function -
