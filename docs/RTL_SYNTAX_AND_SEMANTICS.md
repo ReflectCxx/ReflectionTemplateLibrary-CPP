@@ -144,11 +144,7 @@ std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage"
 std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
 ```
 
-* If a function is registered without a namespace, it must be queried without specifying a namespace.
-* If a function is registered with a namespace, it must be queried using the same namespace.
-
 These metadata are returned wrapped in `std::optional<>`, which is empty if the requested entity is not found by the name specified.
-All registered member functions of a type can be obtained from its corresponding `rtl::Record` as `rtl::Method` objects.
 
 ```cpp
 // Querying a type without a namespace
@@ -158,16 +154,20 @@ std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("model", "Person");
 ```
 
+* If a type or function is registered without a namespace, it must be queried without specifying a namespace.
+* If a type or function is registered with a namespace, it must be queried using the same namespace.
+
 `rtl::Record` represents any registered C++ type, including user-defined `class` and `struct` types, as well as POD types.
 The term **Record** follows the naming convention used in the **LLVM** project (e.g. `CXXRecordDecl`).
+
+All registered member functions of a type can be obtained from its corresponding `rtl::Record` as `rtl::Method` objects.
+For POD types such as `char`, the type can still be registered as an `rtl::Record`.
+In this case, only the implicitly supported special members (copy/move constructors and the destructor) are available.
+POD types do not have member functions.
 
 `rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile-time type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
-
-For POD types such as `char`, the type can still be registered as an `rtl::Record`.
-In this case, only the implicitly supported special members (copy/move constructors and the destructor) are available.
-POD types do not have member functions.
 
 ---
 
