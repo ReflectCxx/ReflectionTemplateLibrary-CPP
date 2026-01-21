@@ -144,6 +144,7 @@ std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "s
 ```
 * If a function is registered without a namespace, it must be queried without specifying a namespace.
 * If a function is registered with a namespace, it must be queried using the same namespace.
+
 These metadata are returned wrapped in `std::optional<>`, which is empty if the requested entity is not found by the name specified.
 All registered member functions of a type can be obtained from its corresponding `rtl::Record` as `rtl::Method` objects.
 ```cpp
