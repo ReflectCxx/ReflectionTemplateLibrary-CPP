@@ -5,7 +5,7 @@ All registration is performed lazily and explicitly by user code, and registered
 
 For every registered type, method, or function, RTL creates a **dedicated dispatch object** that encapsulates:
 
-* The callable pointer (function, method, or functor)
+* The callable function-pointer
 * The associated reflection metadata
 
 These dispatch objects are defined in:
@@ -18,9 +18,8 @@ rtl/dispatch/method_ptr.h
 Each dispatch object is:
 
 * Created **exactly once per unique registration**
-* Stored in a process-lifetime `std::list`
+* Stored in a process-lifetime (`static std::list`)
 * Reused across all `rtl::CxxMirror` instances
-* Never duplicated, regardless of how many times or where the same registration statement is executed
 
 Repeated registration attempts always resolve to the same existing object. This ensures deterministic behavior – 
 metadata identity is stable regardless of initialization order or how many translation units register the same type.
