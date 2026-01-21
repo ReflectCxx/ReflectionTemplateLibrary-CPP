@@ -21,7 +21,7 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ---
 
-## Building the Mirror 🪞
+## Building the Mirror
 
 To set up a runtime reflection system using RTL, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities and provide access to them at runtime.
 The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...build()` registration statements.
@@ -58,7 +58,7 @@ Through the mirror, all registered types, functions, and methods can be queried,
 
 ---
 
-## Getting Started with Registration 📝
+## Getting Started with Registration
 
 Registration in RTL follows a builder-style composition pattern. Individual components are chained together to describe the reflected entity, and `.build()` finalizes the registration. The builder interface is exposed via the `rtl_builder.h` header.
 
@@ -128,13 +128,13 @@ With these constructs – namespaces, non-member functions, overloads, records `
 
 ---
 
-## Querying the metadata ✨
+## Querying the Metadata
 
 Once the Mirror is initialized with metadata references, it can be queried for registered entities and used to introspect types at runtime through RTL’s access interface, which is exposed via the `rtl_access.h` header.
 
 `rtl::CxxMirror` provides lookup APIs that return reflection metadata objects.
 Registered types (`class`, `struct`, or POD) are queried as `rtl::Record`, while non-member functions are queried as `rtl::Function`.
-For example –
+For example:
 ```cpp
 // Function without a namespace
 std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
@@ -167,9 +167,7 @@ POD types do not have member functions.
 
 ---
 
-<a id="performing-reflective-calls" name="performing-reflective-calls"></a>
-
-### Reflective Invocations with RTL ⚙️
+## Reflective Invocations with RTL️
 
 `rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly invoked through these objects. Instead, RTL uses a materialization model to produce callable entities.
 
@@ -180,24 +178,39 @@ When full type information is provided, materialized callables compile to **dire
 ⚖️ **The Idea:**
 > *In RTL, materialization makes the performance–flexibility trade-off explicit at each call site.*
 
-RTL provides the following callable entities,
-
-#### `rtl::constructor`
-
-**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
-```cpp
-auto [err, retObj] = popMessage->bind().call();
-```
-
-* **`.bind<>()`**: Associates an object for member functions and allows explicit specification of the **signature** of the arguments to be forwarded. For non-member functions, you can simply call `.bind()` without arguments.
-* **`.call(args...)`**: Executes the function with the provided arguments.
-
-Every reflective call returns a `std::pair<rtl::error, rtl::RObject>`:
+Every type-erased reflective call returns either `std::pair<rtl::error, rtl::RObject>` or `std::pair<rtl::error, std::optional<T>>`.
 
 * `rtl::error` indicates whether the call was successful (`rtl::error::None`) or if an error occurred.
+* `rtl::RObject` or `std::optional` contains the return value if the function returns something, or is empty if the function returns `void`.
 
-  * `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
-* `rtl::RObject` contains the return value if the function returns something, or is empty if the function returns `void`.
+Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to invoke.
+
+RTL provides the following callable entities:
+### `rtl::constructor`
+
+Constructors can be materialized directly from an rtl::Record.
+For example, an overloaded constructor can be materialized as follows:
+```cpp
+// classPerson is of type std::optional<rtl::Record>.
+rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
+if (personCtor) {	// Constructor successfully materialized
+	auto [err, person] = personCtor(rtl::alloc::Stack, "Waldo", 42);	// Safe to call.
+}
+```
+If no constructor is registered with the specified signature, the callable is not initialized. Calling it without validation does not throw an exception; instead, it returns `rtl::error::SignatureMismatch` in the `err` variable.
+
+A default constructor can be materialized as follows:
+```cpp
+rtl::constructor<> personCtor = classPerson->ctorT();
+// No validation required
+auto [err, person] = personCtor(rtl::alloc::Stack, "Waldo", 42);	// Safe to call.
+```
+The default constructor for a type `T` is implicitly registered when the type is registered using `rtl::type().record<T>()`. It is guaranteed to be materializable and safe to call. If the default constructor is not publicly accessible or is deleted,
+`rtl::error::TypeNotDefaultConstructible` is returned in the `err` variable.
+The constructed object is returned as an rtl::RObject, which type-erases the underlying object.
+
+* Heap-allocated objects are managed using std::unique_ptr.
+* Stack-allocated objects are stored directly in std::any.
 
 ---
 
