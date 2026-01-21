@@ -24,7 +24,6 @@ This guide walks you step by step through RTL’s reflection syntax.
 ## Building the Mirror 🪞
 
 Before querying or using reflection, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities.
-
 The mirror is constructed using an initializer list of registration expressions, typically produced via `rtl::type<T>()`.
 
 ```cpp
@@ -55,27 +54,31 @@ Through the mirror, all registered types, functions, and methods can be queried,
   This ensures thread safety and prevents redundant metadata. While negligible for typical usage, the cost can accumulate if registrations are repeatedly performed in hot paths or tight loops.
 
 👉 Bottom Line
-> *Manage `rtl::CxxMirror` according to your design needs–singleton, multiple, or transient. Registration involves a lock and a lookup, but the cost is incurred only during initialization and remains negligible for normal usage.*
+> *Manage `rtl::CxxMirror` according to your design needs– singleton, multiple, or transient. Registration involves a lock and a lookup, but the cost is incurred only during initialization and remains negligible for normal usage.*
 
 ---
 
 ## Getting Started with Registration 📝
 
-The fundamental pattern of registration in RTL is a **builder combination**. You chain together parts to declare what you are reflecting, and then call `.build()` to complete it.
+Registration in RTL follows a builder-style composition pattern. Individual components are chained together to describe the reflected entity, and `.build()` finalizes the registration.
 
 ### Non-Member Functions
 
 ```cpp
-rtl::type().ns("ext").function<..signature..>("func").build(ptr);
+rtl::type().ns("ext").function("func").build(ptr);
 ```
 
-* **`ns("ext")`**: specifies the namespace under which the function lives. Omitting `.ns()` or passing an empty string `.ns("")` keeps the function in the global namespace.
-* **`function<..signature..>("func")`**: declares the function by name. If overloaded, the template parameter `<..signature..>` disambiguates which overload to pick.
-* **`.build(ptr)`**: supplies the actual function pointer to complete the registration.
+* **`ns("ext")`** – Specifies the namespace under which the function is registered.
+  Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function in the global namespace.
+
+* **`function("func")`** – Declares the function by name.
+  If multiple overloads exist, the template parameter (`function<...>("..")`) disambiguates the selected overload.
+
+* **`.build(ptr)`** – Supplies the function pointer and completes the registration.
 
 ### Handling Overloads
 
-If multiple overloads exist, you must specify the signature in the template argument. Otherwise, the compiler cannot resolve which function pointer you mean.
+If multiple overloads exist, the signature must be specified as a template argument. Otherwise, the compiler cannot resolve the intended function pointer.
 
 For example:
 
@@ -94,9 +97,9 @@ rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendM
 rtl::type().ns("ext").record<T>("Name").build();
 ```
 
-* Registers a type by reflective name under a namespace.
-* This step is **mandatory** to register any of its members.
-* Default, copy, and move constructors, along with the destructor, are automatically registered. Explicit registration of these special members is disallowed and will result in a compile error.
+* Registers a type by name and associates it with the specified namespace.
+* This type `T` registration is **mandatory** for any of its members to be registered. The order of registration does not matter.
+* The default, copy, and move constructors, along with the destructor, are registered automatically. Explicit registration of these special members is disallowed and will result in a compile-time error.
 
 ### Constructors
 
