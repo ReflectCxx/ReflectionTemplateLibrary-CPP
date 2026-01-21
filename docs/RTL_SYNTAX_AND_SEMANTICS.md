@@ -215,10 +215,10 @@ auto [err, person] = personCtor(rtl::alloc::Heap, "Waldo", 42);	// Safe to call.
 The default constructor for a type `T` is implicitly registered when the type is registered using `rtl::type().record<T>()`. It is guaranteed to be materializable and safe to call. If the default constructor is not publicly accessible or is deleted,
 `rtl::error::TypeNotDefaultConstructible` is returned in the `err` variable.
 
-Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Heap` as the first parameter. The constructed object is returned as an rtl::RObject, which type-erases the underlying object.
+Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Heap` as the first parameter. The constructed object is returned as an `rtl::RObject`, which type-erases the underlying object.
 
-* Heap-allocated objects are managed using std::unique_ptr.
-* Stack-allocated objects are stored directly in std::any.
+* `Heap` allocated objects are managed using `std::unique_ptr`.
+* `Stack` allocated objects are stored directly in `std::any`.
 
 ---
 
