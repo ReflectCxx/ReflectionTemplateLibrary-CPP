@@ -183,12 +183,11 @@ Every type-erased reflective call returns either `std::pair<rtl::error, rtl::ROb
 * `rtl::error` indicates whether the call was successful (`rtl::error::None`) or if an error occurred.
 * `rtl::RObject` or `std::optional` contains the return value if the function returns something, or is empty if the function returns `void`.
 
-Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to invoke.
+Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to invoke. RTL provides the following callable entities:
 
-RTL provides the following callable entities:
 ### `rtl::constructor`
 
-Constructors can be materialized directly from an rtl::Record.
+Constructors can be materialized directly from an `rtl::Record`.
 For example, an overloaded constructor can be materialized as follows:
 ```cpp
 // classPerson is of type std::optional<rtl::Record>.
@@ -203,11 +202,12 @@ A default constructor can be materialized as follows:
 ```cpp
 rtl::constructor<> personCtor = classPerson->ctorT();
 // No validation required
-auto [err, person] = personCtor(rtl::alloc::Stack, "Waldo", 42);	// Safe to call.
+auto [err, person] = personCtor(rtl::alloc::Heap, "Waldo", 42);	// Safe to call.
 ```
 The default constructor for a type `T` is implicitly registered when the type is registered using `rtl::type().record<T>()`. It is guaranteed to be materializable and safe to call. If the default constructor is not publicly accessible or is deleted,
 `rtl::error::TypeNotDefaultConstructible` is returned in the `err` variable.
-The constructed object is returned as an rtl::RObject, which type-erases the underlying object.
+
+Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Heap` as the first parameter. The constructed object is returned as an rtl::RObject, which type-erases the underlying object.
 
 * Heap-allocated objects are managed using std::unique_ptr.
 * Stack-allocated objects are stored directly in std::any.
