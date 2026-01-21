@@ -23,33 +23,39 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
 
-Before registering anything, you need a central place to hold all reflection metadata references: the `rtl::CxxMirror`. You can create an instance, passing all type metadata through an initializer list — each type obtained via `rtl::type<T>()`.
+Before querying or using reflection, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities.
+
+The mirror is constructed using an initializer list of registration expressions, typically produced via `rtl::type<T>()`.
 
 ```cpp
-  auto cxx_mirror = rtl::CxxMirror({
-      // .. all the registrations go here, comma separated ..
-    });
+auto cxx_mirror = rtl::CxxMirror({
+    // registration expressions, comma separated
+});
 ```
 
-Every registration statement you add here is collected into the `rtl::CxxMirror` as an `rtl::Function` object. The `CxxMirror` is an access-interface of RTL. Every type, function, or method you register, the metadata references gets encapsulated into this single object, serving as the gateway to query, introspect, and instantiate all registered types at runtime.
+Each registration expression contributes references to the underlying metadata objects, which are created by RTL only if they do not already exist.
+`rtl::CxxMirror` does not own or duplicate this metadata; it encapsulates references to it and acts as a lightweight access interface.
 
-### A few key points about managing this object
+Through the mirror, all registered types, functions, and methods can be queried, inspected, and instantiated at runtime. The mirror serves as a single entry point for reflection operations without introducing centralized global state.
 
-* ***Dispensable by design*** → The `CxxMirror` itself carries no hidden global state. You can define one central mirror, create multiple mirrors in different scopes, or even rebuild mirrors on demand. RTL imposes no restriction on how you manage its lifetime.
+### Key Points on Managing `rtl::CxxMirror`
 
-* ***Duplicate registration is harmless*** → Identical registrations always materialize the same metadata. If a canonical function pointer is already registered, it is not added again to the metadata cache — it simply refers back to the existing entry.
+* **Dispensable by design** – `rtl::CxxMirror` carries no hidden global state. You may define a single central mirror, create multiple mirrors in different scopes, or rebuild mirrors on demand. RTL imposes no restrictions on how its lifetime is managed.
 
-* ***Thread-safety guaranteed by RTL*** → No matter how you choose to manage mirrors (singleton, multiple, or transient), RTL itself guarantees synchronized, race-free registration and access across threads.
+* **Duplicate registration is harmless** – Identical registrations always resolve to the same metadata. If a canonical function-pointer is already registered, it is not inserted again; subsequent registrations simply reference the existing entry.
 
-* ***Overhead is deliberate*** → Each registration carries a small cost in memory and initialization time. Concretely:
-  * Every registration statement acquires a lock on the metadata cache.
-  * It checks whether the function-pointer is already present.
-  * If not, it adds the new entry to the metadata cache.
-  
-This ensures thread-safety and prevents redundant entries. While negligible for isolated registrations, this cost can accumulate when initializing many mirrors in hot loops or same again and again.
+* **Thread-safety guaranteed by RTL** – Regardless of how mirrors are managed (singleton, multiple, or transient), RTL ensures synchronized, race-free registration and access across threads.
+
+* **Registration overhead is deliberate** – Each registration incurs a small, one-time cost in memory and initialization time:
+
+  * A lock is acquired on the metadata cache.
+  * Existing entries are checked for a function-pointer.
+  * If no match is found, a new entry is inserted.
+
+  This ensures thread safety and prevents redundant metadata. While negligible for typical usage, the cost can accumulate if registrations are repeatedly performed in hot paths or tight loops.
 
 👉 Bottom Line
-> *"Manage `CxxMirror` however your design requires — singleton, multiple, or transient. Each registration incurs a lock and table lookup, but the cost is negligible in normal use and only exists at initialization time."*
+> *Manage `rtl::CxxMirror` according to your design needs–singleton, multiple, or transient. Registration involves a lock and a lookup, but the cost is incurred only during initialization and remains negligible for normal usage.*
 
 ---
 
@@ -114,7 +120,7 @@ rtl::type().member<T>().method<..signature..>("method").build(&T::f);
 👉 **Note:** 
 > ***The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.***
 
-With these constructs—namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods—you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
+With these constructs–namespaces, non-member functions, overloads, records `(class/struct)`, constructors, and methods–you now have the full registration syntax for RTL. Together, they let you build a complete reflective model of your C++ code.
 
 ---
 
@@ -356,7 +362,7 @@ bool safe = robj.isConstCastSafe();
 <a id="reflective-construction-and-destruction" name="reflective-construction-and-destruction"></a>
 ## Reflective Construction and Destruction 🏗️
 
-Reflection in RTL doesn’t stop at functions and methods — you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
+Reflection in RTL doesn’t stop at functions and methods – you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
 
 ### Constructing Objects
 
@@ -365,7 +371,7 @@ To construct a reflected object, first grab the `Record` that represents the typ
 ```cpp
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
-// Default constructor — create on heap
+// Default constructor – create on heap
 
 [THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Heap>();
@@ -375,7 +381,7 @@ if (err == rtl::error::None)
     // construction successful, use object to call methods now...
 }
 
-// Overloaded constructor — this time create on stack
+// Overloaded constructor – this time create on stack
 
 [THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
 auto [err, person] = classPerson->create<alloc::Stack>(
@@ -386,7 +392,7 @@ auto [err, person] = classPerson->create<alloc::Stack>(
 
 Key takeaways:
 
-* Allocation policy is always explicit — you decide `Heap` or `Stack`.
+* Allocation policy is always explicit – you decide `Heap` or `Stack`.
 * Creation returns `[rtl::error, rtl::RObject]`.
 * If construction fails, `error != rtl::error::None` and the `RObject` will be empty.
 * `rtl::error::SignatureMismatch` if provided arguments/signature don’t match with expected signature or any overload.
@@ -406,9 +412,9 @@ RTL does **not** give you a “destroy” API. All lifetime management is pure *
 This design is intentional:
 
 * No risk of manual double-free or dangling references.
-* Mirrors idiomatic C++ usage — you never call destructors explicitly in regular code, and you don’t here either.
+* Mirrors idiomatic C++ usage – you never call destructors explicitly in regular code, and you don’t here either.
 
-**Bottom line:** you never destroy a reflected object yourself — RAII does it for you.
+**Bottom line:** you never destroy a reflected object yourself – RAII does it for you.
 
 ### Creating Reflected Objects With Static-Type
 
@@ -446,7 +452,7 @@ RObject obj2 = std::move(obj1);
 * The reflected type’s **move constructor** is invoked.
 * Ownership of the object transfers into `obj2`.
 * The moved-from object (`obj1`) becomes **empty**.
-* No duplication or destruction happens — the object is simply relocated.
+* No duplication or destruction happens – the object is simply relocated.
 
 👉 **Key idea:** 
 > *Stack move = reflected type’s move constructor is called.*
@@ -476,7 +482,7 @@ Across both stack and heap moves:
 
 * The moved-from `RObject` is always **empty**.
 * The destination `RObject` becomes the sole owner.
-* RAII ensures proper cleanup — objects are destroyed once and only once.
+* RAII ensures proper cleanup – objects are destroyed once and only once.
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
 ✅ Bottom Line
