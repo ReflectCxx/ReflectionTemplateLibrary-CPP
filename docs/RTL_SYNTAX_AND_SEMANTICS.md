@@ -23,8 +23,8 @@ This guide walks you step by step through RTL’s reflection syntax.
 
 ## Building the Mirror 🪞
 
-Before querying or using reflection, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities.
-The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...` registration statements.
+To set up a runtime reflection system using RTL, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities and provide access to them at runtime.
+The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...build()` registration statements.
 
 ```cpp
 auto cxx_mirror = rtl::CxxMirror({
@@ -128,37 +128,47 @@ With these constructs – namespaces, non-member functions, overloads, records `
 
 ---
 
-## Reflective Invocations with RTL ✨
+## Querying the metadata ✨
 
-Once a function is registered in `rtl::CxxMirror`, it can be queried and invoked through RTL’s access interface, which is exposed via the `rtl_access.h` header.
+Once the Mirror is initialized with metadata references, it can be queried for registered entities and used to introspect types at runtime through RTL’s access interface, which is exposed via the `rtl_access.h` header.
 
-<a id="querying-c-style-functions" name="querying-c-style-functions"></a>
-
-### Querying C-Style Functions 🔍
-
+`rtl::CxxMirror` provides lookup APIs that return reflection metadata objects.
+Registered types (`class`, `struct`, or POD) are queried as `rtl::Record`, while non-member functions are queried as `rtl::Function`.
+For example –
 ```cpp
 // Function without a namespace
 std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
 
-// Function registered with a namespace
+// Function registered with a namespace, e.g. "utils"
 std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
 ```
-
 * If a function is registered without a namespace, it must be queried without specifying a namespace.
 * If a function is registered with a namespace, it must be queried using the same namespace.
-* The return type is `std::optional<rtl::Function>`. If the function is not found, the optional is empty.
-
+These metadata are returned wrapped in `std::optional<>`, which is empty if the requested entity is not found by the name specified.
+All registered member functions of a type can be obtained from its corresponding `rtl::Record` as `rtl::Method` objects.
 ```cpp
-if (popMessage)
-{
-    // function exists, safe to invoke
-}
+// Querying a type without a namespace
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+
+// Querying a type with a namespace, e.g. "model"
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("model", "Person");
 ```
+`rtl::Record` represents any registered C++ type, including user-defined `class` and `struct` types, as well as POD types.
+The term *Record* follows the naming convention used in the *LLVM* project (for example, `CXXRecordDecl`).
+
+`rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
+This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile-time type.
+The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
+
+For POD types such as `char`, the type can still be registered as an `rtl::Record`.
+In this case, only the implicitly supported special members (copy/move constructors and the destructor) are available.
+POD types do not have member functions.
+
 ---
 
 <a id="performing-reflective-calls" name="performing-reflective-calls"></a>
 
-### Performing Reflective Calls ⚙️
+### Reflective Invocations with RTL ⚙️
 
 Once a reflected function or method has been queried, it must be materialized into a callable object before it can be invoked.
 
