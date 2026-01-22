@@ -150,15 +150,15 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 
 RTL provides the following callable entities, designed to be as lightweight and performant as `std::function`:
 
-`rtl::function<>` – Free (non-member) functions
+`rtl::function` – Free (non-member) functions
 
-`rtl::constructor<>` – Constructors
+`rtl::constructor` – Constructors
 
-`rtl::method<>` – Non-const member functions
+`rtl::method` – Non-const member functions
 
-`rtl::const_method<>` – Const-qualified member functions
+`rtl::const_method` – Const-qualified member functions
 
-`rtl::static_method<>` – Static member functions
+`rtl::static_method` – Static member functions
 
 ### How to Build (Windows / Linux)
 ```sh

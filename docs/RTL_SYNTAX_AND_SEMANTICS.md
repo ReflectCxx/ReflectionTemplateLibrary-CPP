@@ -190,7 +190,7 @@ Fully type-specified callables do not return an error code (except constructors)
 
 RTL provides the following callable entities:
 
-### `rtl::constructor<>`
+### `rtl::constructor`
 
 Constructors can be materialized directly from an `rtl::Record`.
 For example, an overloaded constructor can be materialized as follows:
@@ -221,9 +221,9 @@ Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Hea
 * `Heap` allocated objects are managed using `std::unique_ptr`.
 * `Stack` allocated objects are stored directly in `std::any`.
 
-### Type-Aware `rtl::function<>`
+### `rtl::function` – Type Aware.
 
-Non-member functions can be materialized directly from an `rtl::Function`:
+Non-member functions can be materialized from an `rtl::Function`:
 
 ```c++
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
@@ -240,8 +240,7 @@ else {
 Here, the return type and argument types are fully specified at compile time.
 This allows RTL to resolve the function pointer by signature and provide it wrapped in a thin callable layer that effectively reduces to a single function-pointer hop at runtime. The overhead is comparable to a native C-style function pointer call.
 
-The materialized callable must be validated before invocation. Calling an unvalidated callable may result in undefined behavior.
-
+The materialized `rtl::function` must be validated before invocation. Calling it without validation may result in undefined behavior.
 If materialization fails, the error can be retrieved using `get_init_err()`.
 Possible error values include:
 
@@ -249,7 +248,7 @@ Possible error values include:
 * `rtl::error::SignatureMismatch`
 * `rtl::error::ReturnTypeMismatch`
 
-### Return-Erased `rtl::function<>`
+### `rtl::function` – Return Erased.
 
 If the return type is not known at compile time, `rtl::Return` can be used as the return type.
 In this case, the `.returnT()` template parameter can be omitted, and `rtl::Return` will be selected automatically.
@@ -267,13 +266,50 @@ else {
 }
 ```
 
-Validation of the materialized callable is optional in this case. Calling an unvalidated callable does not result in undefined behavior; instead, an appropriate `rtl::error` is returned. If the callable was not successfully materialized, invoking it returns the same error as `get_init_err()` on the callable, typically `rtl::error::SignatureMismatch`.
+Validation of the materialized `rtl::function` is optional in this case. Calling it without validation does not result in undefined behavior; instead, an appropriate `rtl::error` is returned. If the callable was not successfully materialized, invoking it returns the same error as `get_init_err()` on the callable, typically `rtl::error::SignatureMismatch`.
 
 If materialization succeeds but the call fails, possible error values include:
 
 * `rtl::error::InvalidCaller`
 * `rtl::error::RefBindingMismatch`
 * `rtl::error::ExplicitRefBindingRequired`
+
+### `rtl::method` – Type Aware.
+
+To materialize a member function, the corresponding `rtl::Method` metadata must first be obtained.
+This requires querying the `rtl::CxxMirror` for the desired class or struct as an `rtl::Record`.
+
+```c++
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+if (!classPerson) { /* Type not registered. */ }
+
+// From rtl::Record, fetch the desired method metadata
+std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+if (!oGetName) { /* Member function not registered */ }
+```
+
+Once the `rtl::Method` is available, member functions can be materialized from it.
+
+```c++
+rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
+                                                     .returnT<std::string>();
+if (!getName) { // Member function with expected signature not found.
+    std::cerr << rtl::to_string(getName.get_init_err()); 
+}
+else {
+    Person person("Alex", 23);
+    std::string nameStr = getName(person)(); // Returns string 'Alex'.
+}
+```
+
+When fully type-specified, the materialized callable reduces to a direct function-pointer invocation.
+If materialization fails, calling `rtl::method` without validation results in undefined behavior. The initialization error can be retrieved using `get_init_err()`.
+
+Possible error values include:
+
+* `rtl::error::InvalidCaller`
+* `rtl::error::SignatureMismatch`
+* `rtl::error::ReturnTypeMismatch`
 
 ---
 
