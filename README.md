@@ -91,9 +91,6 @@ From `rtl::Record`, registered member functions can be obtained as `rtl::Method`
 For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
-if (!personCtor) { // Constructor with expected signature not found.
-    std::cerr << rtl::to_string(personCtor.get_init_err());
-}
 ```
 Or the default constructor:
 ```c++
