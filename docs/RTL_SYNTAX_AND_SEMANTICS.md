@@ -1,23 +1,21 @@
-# RTL: Syntax & Semantics ⚡
+# RTL: Syntax & Semantics 🔍
 
 RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
 This guide walks you step by step through RTL’s reflection syntax.
 
 ### 📖 Index
 
-1. [Building the Mirror 🪞](#building-the-mirror-)
-2. [Getting Started with Registration 📝](#getting-started-with-registration-)
-3. [Reflective Invocations with RTL ✨](#reflective-invocations-with-rtl-)
-
-   * [Querying C-Style Functions 🔍](#querying-c-style-functions)
-   * [Performing Reflective Calls ⚙️](#performing-reflective-calls)
-   * [Extracting Return Values 📤](#extracting-return-values)
-   * [Querying Member Functions 👤](#querying-member-functions)
-   * [Binding an Object and Calling 🔗](#binding-an-object-and-calling)
-   * [Binding Signatures and Perfect Forwarding 🎯](#binding-signatures-and-perfect-forwarding)
-   * [Const vs Non-Const Method Binding ⚡](#const-vs-non-const-method-binding)
-4. [Reflective Construction and Destruction 🏗️](#reflective-construction-and-destruction)
-5. [Move Semantics in RTL 🔀](#move-semantics-in-rtl)
+1. [Building the Mirror](#building-the-mirror)
+2. [Getting Started with Registration](#getting-started-with-registration)
+3. [Querying the Metadata](#querying-the-metadata)
+4. [The `rtl::RObject`](#the-rtlrobject)
+5. [Reflective Invocations with RTL](#reflective-invocations-with-rtl)
+   - [`rtl::constructor`](#rtlconstructor)
+   - [`rtl::function` – Type Aware](#rtlfunction--type-aware)
+   - [`rtl::function` – Return Erased](#rtlfunction--return-erased)
+   - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
+   - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
+6. [Reference Binding and Overload Resolution](#reference-binding-and-overload-resolution)
 
 ---
 
@@ -603,7 +601,7 @@ RTL does not follow C++ overload resolution rules directly. Instead, it enforces
 
 This ensures that reflective calls remain predictable, safe, and explicit in their side effects.
 
-### Summary
+#### Summary
 
 | Situation                | RTL Behavior                |
 | ------------------------ | --------------------------- |
