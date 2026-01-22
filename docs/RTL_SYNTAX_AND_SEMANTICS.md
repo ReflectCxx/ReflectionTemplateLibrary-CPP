@@ -221,7 +221,7 @@ Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Hea
 * `Heap` allocated objects are managed using `std::unique_ptr`.
 * `Stack` allocated objects are stored directly in `std::any`.
 
-### `rtl::function` – Type Aware.
+### `rtl::function` – Type Aware
 
 Non-member functions can be materialized from an `rtl::Function`:
 
@@ -248,7 +248,7 @@ Possible error values include:
 * `rtl::error::SignatureMismatch`
 * `rtl::error::ReturnTypeMismatch`
 
-### `rtl::function` – Return Erased.
+### `rtl::function` – Return Erased
 
 If the return type is not known at compile time, `rtl::Return` can be used as the return type.
 In this case, the `.returnT()` template parameter can be omitted, and `rtl::Return` will be selected automatically.
@@ -274,7 +274,7 @@ If materialization succeeds but the call fails, possible error values include:
 * `rtl::error::RefBindingMismatch`
 * `rtl::error::ExplicitRefBindingRequired`
 
-### `rtl::method` – Type Aware.
+### `rtl::method` – Type Aware
 
 To materialize a member function, the corresponding `rtl::Method` metadata must first be obtained.
 This requires querying the `rtl::CxxMirror` for the desired `class` or `struct` as an `rtl::Record`.
@@ -302,11 +302,11 @@ else {
 }
 ```
 
-#### `rtl::const_method` and `rtl::static_method`
+#### `rtl::const_method` and `rtl::static_method`:
 
 The `rtl::method` can only invoke `mutable` member functions. To invoke a `const` member function, `rtl::const_method` must be used.
 
-A `const` method is materialized by specifying a `const` target type in the `.targetT<>()` call:
+An `rtl::const_method` is materialized by specifying a `const` target type in the `.targetT<>()` call:
 ```c++
 rtl::const_method<Person, std::string()> getName = oGetName->targetT<const Person>().argsT()
                                                            .returnT<std::string>();
@@ -324,7 +324,7 @@ To invoke a `static` member function, `rtl::static_method` is used. Static metho
 // Assume Person::getName() is a static function registered under the same name.
 rtl::static_method<std::string()> getName = oGetName->argsT().returnT<std::string>();
 if (getName) {
-    std::string nameStr = getName()(); // Returns some default std::string.
+    std::string nameStr = getName()(); // Returns a default std::string.
 }
 ```
 
@@ -342,34 +342,65 @@ Possible error values include:
 
 `rtl::error::InvalidNonStaticMethodCaller` is returned when a non-static member function is materialized without specifying a target type using `.targetT<>()`, causing it to be treated as a static function.
 
-### `rtl::method` – Type Erased.
+### `rtl::method` – Type Erased
 
 When the concrete target type is not available at compile time, `rtl::method` can be materialized without specifying a target type.
 Calling `.targetT()` without a template parameter defaults the target type to `rtl::RObject`.
 
 ```c++
 
-// Create a type-erased instance
+// Materializing a default constructor
 rtl::constructor<> personCtor = classPerson->ctorT();
 
 // No validation required
-auto [err0, personObj] = personCtor(rtl::alloc::Stack); // Safe to call
+auto [err, personObj] = personCtor(rtl::alloc::Stack); // Safe to call
 
 rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT()
                                                            .returnT<std::string>();
-auto [err1, ret] = getName(personObj)();	// Invoke and receive return as std::optional<std::string>.
-if (err1 == rtl::error::None && ret.has_value()) {
+auto [err0, ret] = getName(personObj)();	// Invoke and receive return as std::optional<std::string>.
+if (err0 == rtl::error::None && ret.has_value()) {
     std::string nameStr = ret.value();
 }
 ```
+In this case, the typed return value is wrapped in `std::optional`. If the member function returns `void`, the optional is empty.
 
-In this case, the typed return value is wrapped in `std::optional<T>`. If the member function returns `void`, the optional is empty (`std::nullopt`).
+#### Return-Erased Variants:
 
-#### Const and Mutable Member Functions with Type-Erased Targets
+Along with the target type, the return type can also be erased. Leaving the `.returnT()` template parameter empty defaults the return type to `rtl::Return`.
 
-There is no separate callable entity such as `rtl::const_method` for type-erased targets.
+```c++
+
+rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+
+auto [err0, ret] = getName(personObj)();	// Invoke and receive return as rtl::RObject.
+if (err0 == rtl::error::None  && ret.canViewAs<std::string>()) {
+    std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
+}
+```
+
+#### Mixed Variants:
+
+If the target type is known but the return type is erased:
+
+```c++
+rtl::method<Person, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+```
+For static methods, `rtl::static_method` is used and `.targetT()` is omitted:
+
+```c++
+rtl::static_method<rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+```
+
+All of these variants follow the same invocation semantics. The only difference is the return representation:
+
+* Known return types are returned as `std::optional`
+* Erased return types are returned as `rtl::RObject`
+
+#### `const` and `mutable` Member Functions with Type-Erased Targets:
+
+There is no separate callable entity such as `rtl::const_method` for type-erased invocations.
 The same `rtl::method` with `rtl::RObject` as the target type is used for both `const` and `mutable` member functions.
-To invoke a `const` member function, the target must be passed as a `const reference`:
+To invoke a `const` member function, the target must be passed as a `const` reference:
 
 ```c++
 auto [err, ret] = getName(std::cref(personObj))();
@@ -378,8 +409,8 @@ This call will succeed only if `Person::getName()` is a `const` member function.
 
 When both `const` and `mutable` overloads are registered, the following rules apply:
 
+* Passing a `mutable` target binds to the `mutable` overload.
 * Passing a `const` target (`std::cref(personObj)`) binds to the `const` overload.
-* Passing a non-const target binds to the mutable overload.
 
 👉 **Note:** 
 > *RTL does not perform automatic `const`/`mutable` overload resolution. The intended overload must be selected explicitly by the user through the target’s `const` qualification.*
