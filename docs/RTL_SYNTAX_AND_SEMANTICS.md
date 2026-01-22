@@ -167,6 +167,7 @@ POD types do not have member functions.
 `rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
+
 ---
 
 ## The `rtl::RObject`
