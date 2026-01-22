@@ -238,7 +238,7 @@ else {
 ```
 
 Here, the return type and argument types are fully specified at compile time.
-This allows RTL to resolve the function pointer by signature and provide it wrapped in a thin callable layer that effectively reduces to a single function-pointer hop at runtime. The overhead is comparable to a native C-style function pointer call.
+This allows RTL to resolve the function pointer by signature and provide it wrapped in a thin callable layer that effectively reduces to a single **function-pointer hop** at runtime. The overhead is comparable to a native C-style function pointer call.
 
 The materialized `rtl::function` must be validated before invocation. Calling it without validation may result in undefined behavior.
 If materialization fails, the error can be retrieved using `get_init_err()`.
@@ -277,13 +277,13 @@ If materialization succeeds but the call fails, possible error values include:
 ### `rtl::method` – Type Aware.
 
 To materialize a member function, the corresponding `rtl::Method` metadata must first be obtained.
-This requires querying the `rtl::CxxMirror` for the desired class or struct as an `rtl::Record`.
+This requires querying the `rtl::CxxMirror` for the desired `class` or `struct` as an `rtl::Record`.
 
 ```c++
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Type not registered. */ }
 
-// From rtl::Record, fetch the desired method metadata
+// From rtl::Record, fetch the desired member-function metadata
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
@@ -293,7 +293,7 @@ Once the `rtl::Method` is available, member functions can be materialized from i
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
-if (!getName) { // Member function with expected signature not found.
+if (!getName) { // Member-function with expected signature not found.
     std::cerr << rtl::to_string(getName.get_init_err()); 
 }
 else {
@@ -302,14 +302,43 @@ else {
 }
 ```
 
-When fully type-specified, the materialized callable reduces to a direct function-pointer invocation.
-If materialization fails, calling `rtl::method` without validation results in undefined behavior. The initialization error can be retrieved using `get_init_err()`.
+#### `rtl::const_method` and `rtl::static_method`
+
+The `rtl::method` can only invoke `mutable` member functions. To invoke a `const` member function, `rtl::const_method` must be used.
+
+A `const` method is materialized by specifying a `const` target type in the `.targetT<>` call:
+```c++
+rtl::const_method<Person, std::string()> getName = oGetName->targetT<const Person>().argsT()
+                                                           .returnT<std::string>();
+if (getName) {
+    const Person person("Alex", 23);
+    std::string nameStr = getName(person)(); // Returns string 'Alex'.
+}
+```
+
+Here, the target type is marked `const` via the template argument to `.targetT<const Person>()`. As a result, `rtl::const_method` only accepts a `const Person` object as its invocation target.
+
+To invoke a `static` member function, `rtl::static_method` is used. Static methods do not require a target object, so the `.targetT()` call is omitted:
+
+```c++
+// Assume Person::getName() is a static function registered under the same name.
+rtl::static_method<std::string()> getName = oGetName->argsT().returnT<std::string>();
+if (getName) {
+    std::string nameStr = getName()(); // Returns some default std::string.
+}
+```
+
+When the return type, target type, and argument types are fully specified, these materialized callables reduce to a **direct function-pointer** invocation at runtime.
+
+If materialization fails, calling `rtl::method`, `rtl::const_method`, or `rtl::static_method` without validation results in undefined behavior.
+The initialization error can be retrieved using `get_init_err()`.
 
 Possible error values include:
 
 * `rtl::error::InvalidCaller`
 * `rtl::error::SignatureMismatch`
 * `rtl::error::ReturnTypeMismatch`
+* `rtl::error::InvalidNonStaticMethodCaller`
 
 ---
 
