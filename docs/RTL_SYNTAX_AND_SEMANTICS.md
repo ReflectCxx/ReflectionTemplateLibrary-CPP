@@ -221,7 +221,59 @@ Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Hea
 * `Heap` allocated objects are managed using `std::unique_ptr`.
 * `Stack` allocated objects are stored directly in `std::any`.
 
-### `rtl::function<>`
+### Type-Aware `rtl::function<>`
+
+Non-member functions can be materialized directly from an `rtl::Function`:
+
+```c++
+rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
+                                                               ->argsT<float, float>()
+                                                               .returnT<std::string>();
+if(cToStr) {    // Function successfully materialized
+    std::string result = cToStr(61, 35);
+}
+else {
+    std::cerr << rtl::to_string(cToStr.get_init_err());
+}
+```
+
+Here, the return type and argument types are fully specified at compile time.
+This allows RTL to resolve the function pointer by signature and provide it wrapped in a thin callable layer that effectively reduces to a single function-pointer hop at runtime. The overhead is comparable to a native C-style function pointer call.
+
+The materialized callable must be validated before invocation. Calling an unvalidated callable may result in undefined behavior.
+
+If materialization fails, the error can be retrieved using `get_init_err()`.
+Possible error values include:
+
+* `rtl::error::InvalidCaller`
+* `rtl::error::SignatureMismatch`
+* `rtl::error::ReturnTypeMismatch`
+
+### Return-Erased `rtl::function<>`
+
+If the return type is not known at compile time, `rtl::Return` can be used as the return type.
+In this case, the `.returnT()` template parameter can be omitted, and `rtl::Return` will be selected automatically.
+
+```c++
+rtl::function<rtl::Return(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
+                                                               ->argsT<float, float>()
+                                                               .returnT();
+auto [err, robj] = cToStr(61, 35);
+if(err != rtl::error::None) {
+    // Call succeeded, returned std::string inside 'robj' (type: rtl::RObject)
+}
+else {
+    std::cerr << rtl::to_string(err);
+}
+```
+
+Validation of the materialized callable is optional in this case. Calling an unvalidated callable does not result in undefined behavior; instead, an appropriate `rtl::error` is returned. If the callable was not successfully materialized, invoking it returns the same error as `get_init_err()` on the callable, typically `rtl::error::SignatureMismatch`.
+
+If materialization succeeds but the call fails, possible error values include:
+
+* `rtl::error::InvalidCaller`
+* `rtl::error::RefBindingMismatch`
+* `rtl::error::ExplicitRefBindingRequired`
 
 ---
 
