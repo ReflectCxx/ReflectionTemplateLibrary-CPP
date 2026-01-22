@@ -176,11 +176,11 @@ The generated ID may be cached and reused for runtime lookups without requiring 
 It can be returned from reflective function calls, member-function calls, and constructor calls.
 It can also be created directly from a known value or object.
 
-Objects constructed on the heap via a reflective constructor call are returned as an `rtl::RObject` and are internally managed using `std::unique_ptr` for automatic lifetime management.
+Objects constructed on the **Heap** via a reflective constructor call are returned as an `rtl::RObject` and are internally managed using `std::unique_ptr` for automatic lifetime management.
 
-Objects returned from reflective function or member-function calls, as well as values directly wrapped in an `rtl::RObject`, are stored on the stack using `std::any`.
+Objects returned from reflective function or member-function calls, as well as values directly wrapped in an `rtl::RObject`, are stored on the **Stack** using `std::any`.
 
-### Accessing Values from `rtl::RObject`
+#### Accessing Values from `rtl::RObject`:
 
 When working with `rtl::RObject`, the following interfaces provide safe access to the stored value:
 
@@ -191,9 +191,65 @@ When working with `rtl::RObject`, the following interfaces provide safe access t
 | `view<T>()`        | Returns a typed view of the stored value, or an empty `std::optional`. |
 | `view<T>()->get()` | Accesses the stored value as a `const T&`.                             |
 
-**Tip**
+👉 **Tip**
 
-> Use `canViewAs<T>()` for a lightweight boolean check when branching, and `view<T>()` when you need to access the value.
+> *Use `canViewAs<T>()` for a lightweight boolean check when branching, and `view<T>()` when you need to access the value.*
+
+### Move Semantics with `rtl::RObject`
+
+`rtl::RObject` is a **move-only** type. Copying is disallowed, and ownership transfer is performed exclusively through move semantics.
+The behavior differs depending on whether the underlying object is stored on the **Stack** or on the **Heap**.
+
+#### Stack-Allocated Objects:
+
+When an object is created on **Stack**, the underlying instance is stored directly inside `rtl::RObject` using `std::any`.
+
+```cpp
+rtl::RObject obj1 = rtl::RObject(std::string_view("Hello"));
+rtl::RObject obj2 = std::move(obj1);
+```
+
+**Behavior:**
+
+* The reflected type’s **move constructor** is invoked.
+* Ownership transfers to `obj2`.
+* The moved-from object (`obj1`) becomes empty.
+* No duplication occurs.
+
+👉 **Key idea:**
+> *Stack move semantics invoke the reflected type’s move constructor.*
+
+### Heap-Allocated Objects:
+
+Objects on the **Heap** can only be created through a reflective constructor call. The returned instance is managed internally using `std::unique_ptr`.
+Moving such an rtl::RObject transfers ownership of the pointer.
+
+**Behavior:**
+
+* The internal `std::unique_ptr` is moved.
+* The reflected type’s move constructor is **not** invoked.
+* Ownership transfers to the destination object.
+* The moved-from object becomes empty.
+* The underlying heap object remains valid until the final owner is destroyed.
+
+👉 **Key idea:**
+> *Heap move semantics transfer the `unique_ptr` without moving the underlying object.*
+
+Across both **Stack** and **Heap** moves:
+
+* The moved-from `rtl::RObject` becomes empty.
+* The destination `rtl::RObject` becomes the sole owner.
+* Object destruction occurs exactly once.
+* Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
+
+**Summary**
+
+When an `rtl::RObject` is moved, RTL either:
+
+* Invokes the reflected type’s move constructor (stack allocation), or
+* Transfers ownership of the internal `std::unique_ptr` (heap allocation).
+
+In both cases, the source object is invalidated and ownership remains well-defined.
 
 ---
 
@@ -474,17 +530,14 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 
 ---
 
-<a id="move-semantics-in-rtl" name="move-semantics-in-rtl"></a>
-## Move Semantics in RTL 🔀
+#### Move Semantics with `rtl::RObject`
 
 Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
 
-### Moving Stack-Allocated Objects
-
-When you create an object reflectively with `alloc::Stack`, the underlying instance lives directly inside the `RObject`. Moving such an `RObject` looks just like a regular C++ move:
+When you create an object reflectively with `alloc::Stack`, the underlying instance lives inside the `RObject` wrapped directlty in `std::any`. Moving such an `RObject` looks just like a regular C++ move:
 
 ```cpp
-RObject obj1 = /* created on stack */;
+RObject obj1 = RObject(std::string_view("Hello"));
 RObject obj2 = std::move(obj1);
 ```
 **What happens here:**
@@ -497,14 +550,8 @@ RObject obj2 = std::move(obj1);
 👉 **Key idea:** 
 > *Stack move = reflected type’s move constructor is called.*
 
-### Moving Heap-Allocated Objects
-
 When you create an object reflectively with `alloc::Heap`, the instance is managed inside a **`std::unique_ptr<T>`**. Moving such an `RObject` also uses standard C++ move semantics:
 
-```cpp
-RObject obj1 = /* created on heap */;
-RObject obj2 = std::move(obj1);
-```
 **What happens here:**
 
 * The internal `unique_ptr` is moved.
