@@ -1,4 +1,4 @@
-# RTL at a Glance: Syntax & Semantics ⚡
+# RTL: Syntax & Semantics ⚡
 
 RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
 This guide walks you step by step through RTL’s reflection syntax.
@@ -24,7 +24,7 @@ This guide walks you step by step through RTL’s reflection syntax.
 ## Building the Mirror
 
 To set up a runtime reflection system using RTL, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities and provide access to them at runtime.
-The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...build()` registration statements.
+The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...build();` registration expressions.
 
 ```cpp
 auto cxx_mirror = rtl::CxxMirror({
@@ -65,7 +65,7 @@ Registration in RTL follows a builder-style composition pattern. Individual comp
 ### Non-Member Functions
 
 ```cpp
-rtl::type().ns("ext").function("fn-name").build(functor);
+rtl::type().ns("ext").function("fn-name").build(fn-ptr);
 ```
 
 * `ns("ext")` – Specifies the namespace under which the function is registered.
@@ -74,7 +74,7 @@ rtl::type().ns("ext").function("fn-name").build(functor);
 * `function("fn-name")` – Declares the function by name.
   If multiple overloads exist, the template parameter (`function<...>(..)`) disambiguates the selected overload.
 
-* `.build(functor)` – Supplies the function-pointer and completes the registration.
+* `.build(fn-ptr)` – Supplies the function-pointer and completes the registration.
 
 ### Handling Overloads
 
@@ -108,8 +108,8 @@ rtl::type().ns("ext").record<T>("type-name").build();
 rtl::type().member<T>().constructor<...>().build();
 ```
 
-* `.member<T>()`: enters the scope of `T` (pod/class/struct).
-* `.constructor<...>()`: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function-pointer is available for deduction, and this also disambiguates overloads.
+* `.member<T>()`: enters the scope of `T` (POD/class/struct).
+* `.constructor<...>()`: registers a user-defined constructor. The template parameter `<..signature..>` must be provided since no function-pointer is available for type deduction, and this also disambiguates overloads.
 
 ### Member Functions
 
@@ -117,8 +117,7 @@ rtl::type().member<T>().constructor<...>().build();
 rtl::type().member<T>().method<...>("method-name").build(&T::f);
 ```
 
-* `.member<T>()`: enters the scope of class/struct `T`.
-* `.method<...>(..)`**: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
+* `.method<...>(..)`: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
 👉 **Note:** 
@@ -166,16 +165,16 @@ In this case, only the implicitly supported special members (copy/move construct
 POD types do not have member functions.
 
 `rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
-This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile-time type.
+This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
 
 ---
 
 ## Reflective Invocations with RTL️
 
-`rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly invoked through these objects. Instead, RTL uses a materialization model to produce callable entities.
+`rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly called through these objects. Instead, RTL uses a materialization model to produce callable entities.
 
-Callables are materialized by explicitly specifying the argument and return types. This design avoids a single, fully type-erased invocation path for all use cases. By requiring the user to declare the intended call signature, RTL can validate the request and select an invocation path optimized for the available type information.
+Callable entities are materialized by explicitly specifying the argument and return types. This design avoids a single, fully type-erased invocation path for all use cases. By requiring the user to declare the intended call signature, RTL can validate the request and select an invocation path optimized for the available type information.
 
 When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for an unknown return or target type), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
 
@@ -187,7 +186,9 @@ Every type-erased reflective call returns either `std::pair<rtl::error, rtl::ROb
 * `rtl::error` indicates whether the call was successful (`rtl::error::None`) or if an error occurred.
 * `rtl::RObject` or `std::optional` contains the return value if the function returns something, or is empty if the function returns `void`.
 
-Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to invoke. RTL provides the following callable entities:
+Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to call.
+
+RTL provides the following callable entities:
 
 ### `rtl::constructor<>`
 
