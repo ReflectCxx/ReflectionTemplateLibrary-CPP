@@ -167,6 +167,32 @@ POD types do not have member functions.
 `rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
+---
+
+## The `rtl::RObject`
+
+`rtl::RObject` exists to wrap values or objects of any type in a type-erased form while providing safe access interfaces.
+It can be returned from reflective function calls, member-function calls, and constructor calls.
+It can also be created directly from a known value or object.
+
+Objects constructed on the heap via a reflective constructor call are returned as an `rtl::RObject` and are internally managed using `std::unique_ptr` for automatic lifetime management.
+
+Objects returned from reflective function or member-function calls, as well as values directly wrapped in an `rtl::RObject`, are stored on the stack using `std::any`.
+
+### Accessing Values from `rtl::RObject`
+
+When working with `rtl::RObject`, the following interfaces provide safe access to the stored value:
+
+| Function           | Purpose                                                                |
+| ------------------ | ---------------------------------------------------------------------- |
+| `isEmpty()`        | Checks whether the object contains a value.                            |
+| `canViewAs<T>()`   | Returns `true` if the stored type is `T` or safely convertible to `T`. |
+| `view<T>()`        | Returns a typed view of the stored value, or an empty `std::optional`. |
+| `view<T>()->get()` | Accesses the stored value as a `const T&`.                             |
+
+**Tip**
+
+> Use `canViewAs<T>()` for a lightweight boolean check when branching, and `view<T>()` when you need to access the value.
 
 ---
 
@@ -383,12 +409,12 @@ if (err0 == rtl::error::None  && ret.canViewAs<std::string>()) {
 If the target type is known but the return type is erased:
 
 ```c++
-rtl::method<Person, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+rtl::method<Person, rtl::Return()> getName = oGetName->targetT<Person>().argsT().returnT();
 ```
 For static methods, `rtl::static_method` is used and `.targetT()` is omitted:
 
 ```c++
-rtl::static_method<rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+rtl::static_method<rtl::Return()> getName = oGetName->argsT().returnT();
 ```
 
 All of these variants follow the same invocation semantics. The only difference is the return representation:
@@ -399,7 +425,7 @@ All of these variants follow the same invocation semantics. The only difference 
 #### `const` and `mutable` Member Functions with Type-Erased Targets:
 
 There is no separate callable entity such as `rtl::const_method` for type-erased invocations.
-The same `rtl::method` with `rtl::RObject` as the target type is used for both `const` and `mutable` member functions.
+The same `rtl::method` is used for both `const` and `mutable` member functions.
 To invoke a `const` member function, the target must be passed as a `const` reference:
 
 ```c++
@@ -428,40 +454,6 @@ If materialization succeeds but the call fails, possible error values include:
 
 ---
 
-### Extracting Return Values
-
-```cpp
-if (err == rtl::error::None)
-{
-    if (!retObj.isEmpty() && retObj.canViewAs<std::string>())
-    {
-        std::optional<rtl::view<std::string>> viewStr = retObj.view<std::string>();
-        std::string retStr = viewStr->get(); // fully-typed returned string
-    }
-}
-```
-
-* Return Handling Summary
-
-When dealing with `rtl::RObject` results:
-
-| Function           | Purpose                                                                                                                 |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `isEmpty()`        | Checks if the function returned anything (i.e., non-`void`).                                                            |
-| `canViewAs<T>()`   | Quick type check: returns `true` if the stored type is exactly `T` or safely convertible.                               |
-| `view<T>()`        | Retrieves a typed **view** of the stored value if possible. Returns an empty `std::optional` if the type doesn’t match. |
-| `view<T>()->get()` | Extracts a const reference or value of `T` from the view, safely typed.                                                 |
-
-👉 **Tip**
-
-> ***Use `canViewAs<T>()` for a cheap boolean check when branching, and `view<T>()` when you actually need the value.***
-
----
-
-**[OLD DOCUMENTATION ONWARDS EXPLAINING DEPRECATED APIS, DOCS BIENG UPDATED]**
-
----
-
 ### Binding Signatures and Perfect Forwarding 🎯
 
 **[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
@@ -478,158 +470,6 @@ setProfile->bind<std::string>(targetObj).call(10); // compile-time error
 * `rtl::RObject` contains the return value, or is empty if the method returns `void`.
 
 > ***By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.***
-
----
-
-<a id="const-vs-non-const-method-binding" name="const-vs-non-const-method-binding"></a>
-
-### Const vs Non-Const Method Binding ⚡
-
-**[THIS SECTION NEEDS TO BE UPDATED AS PER THE NEW CALLABLES]**
-
-When binding methods reflectively, RTL enforces const-correctness in a way that mirrors C++ itself, but with an extra layer of runtime safety. Let’s walk through how this works.
-
-#### Default Behavior
-
-Whenever both `const` and `non-const` overloads of a method exist, RTL prefers the **const overload**. This is consistent with RTL’s *const-by-default* philosophy: reflective calls always begin from the safest stance possible.
-
-```cpp
-Person john("John");
-rtl::RObject robj = rtl::type(john);    // Reflect object with statically-type; details covered later.
-
-// If both overloads exist, RTL selects the const one.
-auto [err, ret] = someMethod->bind(robj).call();
-```
-
-#### Choosing the Non-Const Path
-
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
-Sometimes you really do want the non-const overload. RTL requires you to be explicit in that case, by using `rtl::constCast()`:
-
-```cpp
-auto [err, ret] = someMethod->bind(rtl::constCast(robj)).call();
-```
-
-This signals intent clearly: *“Treat this object as non-const for this call.”* If the object is safe to cast, RTL allows it.
-
-#### Fallback to Non-Const
-
-If a class only defines a non-const method and no const variant exists, RTL will safely fall back and bind to the non-const overload. No extra steps are required, and this remains safe so long as the object wasn’t originally declared `const`.
-
-#### Declared-Const Objects
-
-Things change when the reflected object itself was declared `const` in the first place:
-
-```cpp
-const Person constSam("Const-Sam");    // Reflect 'const' with statically-type; details covered later.
-rtl::RObject robj = rtl::type(constSam);
-```
-
-Here, RTL preserves that constness strictly. Non-const methods cannot be invoked on such an object. Attempts to do so will result in `rtl::error::IllegalConstCast`.
-
-If you attempt a method where **no const overload exists**, RTL reports `rtl::error::ConstOverloadMissing`.
-
-#### Checking Provenance
-
-Because reflective calls may hand back new `RObject`s, you may sometimes wonder whether an object is safe to cast. That’s what `isConstCastSafe()` is for:
-
-```cpp
-bool safe = robj.isConstCastSafe();
-```
-
-* `false` → The object was originally declared const; treating it as mutable is unsafe.
-* `true` → The object wasn’t originally const; RTL may relax constness internally if needed.
-
-#### Error Codes
-
-* **None** → Success; call resolved safely.
-* **ConstOverloadMissing** → A const-qualified overload was required but not found.
-* **NonConstOverloadMissing** → A non-const overload was explicitly requested but not found.
-* **IllegalConstCast** → Attempted to cast away `const` from a true-const object.
-
-#### Summary
-
-* RTL defaults to the const overload when both exist.
-* Explicitly request the non-const overload with `rtl::constCast()`.
-* If only non-const exists, RTL uses it safely (unless the object was declared const).
-* Declared-const objects reject non-const calls (`rtl::error::IllegalConstCast`) and fail if no const overload is present (`rtl::error::ConstOverloadMissing`).
-* `isConstCastSafe()` tells you whether relaxation is permitted.
-* Reflective objects are always const-first; declared-const objects are strictly immutable.
-
----
-
-<a id="reflective-construction-and-destruction" name="reflective-construction-and-destruction"></a>
-## Reflective Construction and Destruction 🏗️
-
-Reflection in RTL doesn’t stop at functions and methods – you can also create full-fledged objects at runtime, directly through their reflected constructors. Cleanup, on the other hand, is fully automatic thanks to C++’s RAII.
-
-### Constructing Objects
-
-To construct a reflected object, first grab the `Record` that represents the type, then call one of its `create` helpers:
-
-```cpp
-std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-
-// Default constructor – create on heap
-
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
-auto [err, person] = classPerson->create<alloc::Heap>();
-
-if (err == rtl::error::None)
-{
-    // construction successful, use object to call methods now...
-}
-
-// Overloaded constructor – this time create on stack
-
-[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]
-auto [err, person] = classPerson->create<alloc::Stack>(
-    std::string("John Doe"),
-    42
-);
-```
-
-Key takeaways:
-
-* Allocation policy is always explicit – you decide `Heap` or `Stack`.
-* Creation returns `[rtl::error, rtl::RObject]`.
-* If construction fails, `error != rtl::error::None` and the `RObject` will be empty.
-* `rtl::error::SignatureMismatch` if provided arguments/signature don’t match with expected signature or any overload.
-* `RObject` is the type-erased container that can hold either:
-
-  * An instance created via a reflected constructor.
-  * A return value from any reflected call (as we have already seen earlier).
-
-### Destruction Semantics
-
-RTL does **not** give you a “destroy” API. All lifetime management is pure **RAII**:
-
-* **Heap objects** → wrapped in `std::unique_ptr`, destroyed automatically when the owning `RObject` goes out of scope.
-* **Stack objects** → destroyed at scope exit like any local variable.
-* **Return values** → temporary values that follow normal C++ value semantics.
-
-This design is intentional:
-
-* No risk of manual double-free or dangling references.
-* Mirrors idiomatic C++ usage – you never call destructors explicitly in regular code, and you don’t here either.
-
-**Bottom line:** you never destroy a reflected object yourself – RAII does it for you.
-
-### Creating Reflected Objects With Static-Type
-
-Besides constructing objects via reflective calls (`create<Heap>()` or `create<Stack>()`), RTL also lets you create an `RObject` by **reflecting an existing object**:
-
-```cpp
-Person mutableSam("Mutable-Sam");
-const Person constSam("Const-Sam");
-
-rtl::RObject robj1 = rtl::type(mutableSam);
-rtl::RObject robj2 = rtl::type(constSam);
-```
-
-* This always creates a **copy on the stack** inside the `RObject`.
-* These stack-based reflections are **scope bound** and never heap-managed.
-* Useful for **testing**, since you can quickly reflect arbitrary statically-typed objects.
 
 ---
 
