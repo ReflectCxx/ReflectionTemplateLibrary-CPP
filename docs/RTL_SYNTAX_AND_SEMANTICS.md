@@ -511,7 +511,110 @@ If materialization succeeds but the call fails, possible error values include:
 
 ---
 
-## Perfect Forwarding – The References
+## Reference Binding and Overload Resolution
+
+RTL applies a safety-oriented overload resolution strategy when invoking reflected functions and methods.
+The goal is to avoid implicit mutation of user data and require explicit intent whenever a call may modify its arguments.
+
+This reference-based overload resolution is applied only to type-erased or partially type-erased callables.
+Fully type-aware callables are materialized by explicitly specifying the target, argument, and return types at compile time, so no ambiguity or safety-based resolution is required.
+
+#### Implicit Resolution Rules:
+
+When multiple reference based overloads of same function signature exists,
+
+```c++
+std::string reverse(std::string);              // (1) by value
+std::string reverse(std::string&);             // (2) lvalue ref
+std::string reverse(const std::string&);       // (3) const lvalue ref
+std::string reverse(std::string&&);            // (4) rvalue ref
+
+```
+While calling such functions with any type erased callables, RTL prefers non-mutating call paths by default:
+
+| Available Overloads | Call binds to       |
+| ------------------- | ------------------- |
+| `T` + `const T&`    | `T` (by value)      |
+| `T` + `T&`          | `T` (by value)      |
+| `T` only            | `T`                 |
+| `const T&` only     | `const T&`          |
+
+By-value and `const` reference bindings cannot mutate the caller’s object, so they are considered safe and are selected implicitly.
+
+#### Explicit Binding for Mutating Overloads:
+
+Overloads that may mutate the caller’s data require explicit user intent:
+
+* Non-const lvalue reference (`T&`)
+* Rvalue reference (`T&&`)
+
+To invoke these overloads, the user must explicitly specify the reference type using `.bind<...>()`:
+
+```cpp
+rtl::function<rtl::RObject()> reverseString = cxx::mirror().getFunction("reverse")
+														   .argsT().returnT();
+// explicitly call the lvalue ref overload.
+auto [err0, ret0] = reverseString.bind<std::string&>()(str);
+// explicitly call the rvalue ref overload.
+auto [err1, ret1] = reverseString.bind<std::string&&>()(std::string(str));
+```
+
+If a mutating overload exists but no explicit binding is provided, RTL returns `rtl::error::ExplicitRefBindingRequired`.
+
+#### Ambiguous Reference Overloads:
+
+If both `T&` and `const T&` overloads exist, RTL treats the situation as ambiguous and refuses to guess the user’s intent regarding mutability.
+
+In such cases, implicit invocation is rejected and explicit selection is required:
+
+```cpp
+reverseString.bind<std::string&>()(str);        // Allows mutation
+reverseString.bind<const std::string&>()(str); 	// Disallows mutation
+```
+
+Without explicit binding, RTL returns `rtl::error::ExplicitRefBindingRequired`
+
+#### Const-Reference Only Overloads:
+
+If a function provides only a `const T&` overload, RTL resolves the call implicitly. Since `const` references cannot mutate the caller, no explicit binding is required.
+
+#### Rvalue Reference Overloads:
+
+Overloads taking `T&&` always require explicit binding:
+
+```cpp
+reverseString.bind<std::string&&>()(std::string(str));
+```
+Without explicit binding, RTL returns `rtl::error::ExplicitRefBindingRequired`
+
+#### Binding Mismatches:
+
+If the explicitly bound reference type does not match the function signature, RTL returns`rtl::error::RefBindingMismatch`. This indicates a hard type mismatch rather than an ambiguity.
+
+#### Design Rationale:
+
+RTL does not follow C++ overload resolution rules directly. Instead, it enforces a reflection-specific policy:
+
+* Prefer non-mutating call paths
+* Avoid implicit mutation
+* Require explicit intent for mutation
+* Reject ambiguous reference overloads
+* Never guess user intent
+
+This ensures that reflective calls remain predictable, safe, and explicit in their side effects.
+
+### Summary
+
+| Situation                | RTL Behavior                |
+| ------------------------ | --------------------------- |
+| Safe overload exists     | Implicitly selected         |
+| Mutating overload exists | Requires explicit binding   |
+| `T&` + `const T&`        | Explicit selection required |
+| Only `const T&`          | Implicitly allowed          |
+| `T&&` overload           | Explicit binding required   |
+| Wrong binding            | `RefBindingMismatch`        |
+
+This policy guarantees that reflective invocation never mutates user data without explicit consent.
 
 ---
 
