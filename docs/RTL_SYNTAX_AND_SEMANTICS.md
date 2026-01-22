@@ -205,7 +205,7 @@ The behavior differs depending on whether the underlying object is stored on the
 When an object is created on **Stack**, the underlying instance is stored directly inside `rtl::RObject` using `std::any`.
 
 ```cpp
-rtl::RObject obj1 = rtl::RObject(std::string_view("Hello"));
+rtl::RObject obj1 = rtl::RObject(std::string_view("Hello"));  // No internal heap allocation, stored on the stack.
 rtl::RObject obj2 = std::move(obj1);
 ```
 
@@ -222,7 +222,7 @@ rtl::RObject obj2 = std::move(obj1);
 ### Heap-Allocated Objects:
 
 Objects on the **Heap** can only be created through a reflective constructor call. The returned instance is managed internally using `std::unique_ptr`.
-Moving such an rtl::RObject transfers ownership of the pointer.
+Moving such an `rtl::RObject` transfers ownership of the pointer.
 
 **Behavior:**
 
@@ -246,8 +246,8 @@ Across both **Stack** and **Heap** moves:
 
 When an `rtl::RObject` is moved, RTL either:
 
-* Invokes the reflected type’s move constructor (stack allocation), or
-* Transfers ownership of the internal `std::unique_ptr` (heap allocation).
+* Invokes the reflected type’s move constructor (**Stack** allocation), or
+* Transfers ownership of the internal `std::unique_ptr` (**Heap** allocation).
 
 In both cases, the source object is invalidated and ownership remains well-defined.
 
@@ -511,69 +511,7 @@ If materialization succeeds but the call fails, possible error values include:
 
 ---
 
-### Binding Signatures and Perfect Forwarding 🎯
-
-**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
-
-```cpp
-setProfile->bind(targetObj).call(10);          // 10 forwarded as int
-setProfile->bind<double>(targetObj).call(10);  // 10 forwarded as double (10.0)
-setProfile->bind<std::string>(targetObj).call(10); // compile-time error
-```
-
-* The template parameter in `bind<..signature..>()` tells RTL how to perceive and forward the arguments.
-* RTL uses the template signature to ***figure out*** which method (and which overload, if multiple exist) to select from the registration.
-* All arguments are forwarded as universal references (`&&`), enabling **perfect forwarding** with **no copies**. Arguments are ultimately received exactly as the registered function expects (`lvalue`, `rvalue`, `const-lvalue-ref`).
-* `rtl::RObject` contains the return value, or is empty if the method returns `void`.
-
-> ***By retrieving a `Method` from a `Record`, binding a target instance, and specifying the signature as needed, RTL allows safe, perfectly-forwarded reflective calls on member functions.***
-
----
-
-#### Move Semantics with `rtl::RObject`
-
-Let’s walk you through how **move semantics** work in RTL. Since `rtl::RObject` is **move-only** (copying is disallowed), moving objects is the primary way ownership is transferred. The behavior differs depending on whether the object was created on the **stack** or the **heap**.
-
-When you create an object reflectively with `alloc::Stack`, the underlying instance lives inside the `RObject` wrapped directlty in `std::any`. Moving such an `RObject` looks just like a regular C++ move:
-
-```cpp
-RObject obj1 = RObject(std::string_view("Hello"));
-RObject obj2 = std::move(obj1);
-```
-**What happens here:**
-
-* The reflected type’s **move constructor** is invoked.
-* Ownership of the object transfers into `obj2`.
-* The moved-from object (`obj1`) becomes **empty**.
-* No duplication or destruction happens – the object is simply relocated.
-
-👉 **Key idea:** 
-> *Stack move = reflected type’s move constructor is called.*
-
-When you create an object reflectively with `alloc::Heap`, the instance is managed inside a **`std::unique_ptr<T>`**. Moving such an `RObject` also uses standard C++ move semantics:
-
-**What happens here:**
-
-* The internal `unique_ptr` is moved.
-* No move constructor of the reflected type is called.
-* Ownership transfers to `obj2`.
-* The moved-from object (`obj1`) becomes **empty**.
-* The underlying heap object remains untouched and alive until its final owner is destroyed.
-
-👉 **Key idea** 
-> ***Heap move = `unique_ptr` move semantics (cheap pointer transfer).***
-
-### Consistent Guarantees 🟨
-
-Across both stack and heap moves:
-
-* The moved-from `RObject` is always **empty**.
-* The destination `RObject` becomes the sole owner.
-* RAII ensures proper cleanup – objects are destroyed once and only once.
-* Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
-
-✅ Bottom Line
-> ***“When you move an `RObject`, RTL either calls your type’s move constructor (stack) or transfers ownership of its `unique_ptr` (heap). In both cases, the source is emptied and ownership remains safe.”***
+## Perfect Forwarding – The References
 
 ---
 
