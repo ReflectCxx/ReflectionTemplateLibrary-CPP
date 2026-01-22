@@ -210,7 +210,7 @@ A default constructor can be materialized as follows:
 ```cpp
 rtl::constructor<> personCtor = classPerson->ctorT();
 // No validation required
-auto [err, person] = personCtor(rtl::alloc::Heap, "Waldo", 42);	// Safe to call.
+auto [err, person] = personCtor(rtl::alloc::Heap);	// Safe to call.
 ```
 
 The default constructor for a type `T` is implicitly registered when the type is registered using `rtl::type().record<T>()`. It is guaranteed to be materializable and safe to call. If the default constructor is not publicly accessible or is deleted,
@@ -306,7 +306,7 @@ else {
 
 The `rtl::method` can only invoke `mutable` member functions. To invoke a `const` member function, `rtl::const_method` must be used.
 
-A `const` method is materialized by specifying a `const` target type in the `.targetT<>` call:
+A `const` method is materialized by specifying a `const` target type in the `.targetT<>()` call:
 ```c++
 rtl::const_method<Person, std::string()> getName = oGetName->targetT<const Person>().argsT()
                                                            .returnT<std::string>();
@@ -340,6 +340,61 @@ Possible error values include:
 * `rtl::error::ReturnTypeMismatch`
 * `rtl::error::InvalidNonStaticMethodCaller`
 
+`rtl::error::InvalidNonStaticMethodCaller` is returned when a non-static member function is materialized without specifying a target type using `.targetT<>()`, causing it to be treated as a static function.
+
+### `rtl::method` – Type Erased.
+
+When the concrete target type is not available at compile time, `rtl::method` can be materialized without specifying a target type.
+Calling `.targetT()` without a template parameter defaults the target type to `rtl::RObject`.
+
+```c++
+
+// Create a type-erased instance
+rtl::constructor<> personCtor = classPerson->ctorT();
+
+// No validation required
+auto [err0, personObj] = personCtor(rtl::alloc::Stack); // Safe to call
+
+rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT()
+                                                           .returnT<std::string>();
+auto [err1, ret] = getName(personObj)();	// Invoke and receive return as std::optional<std::string>.
+if (err1 == rtl::error::None && ret.has_value()) {
+    std::string nameStr = ret.value();
+}
+```
+
+In this case, the typed return value is wrapped in `std::optional<T>`. If the member function returns `void`, the optional is empty (`std::nullopt`).
+
+#### Const and Mutable Member Functions with Type-Erased Targets
+
+There is no separate callable entity such as `rtl::const_method` for type-erased targets.
+The same `rtl::method` with `rtl::RObject` as the target type is used for both `const` and `mutable` member functions.
+To invoke a `const` member function, the target must be passed as a `const reference`:
+
+```c++
+auto [err, ret] = getName(std::cref(personObj))();
+```
+This call will succeed only if `Person::getName()` is a `const` member function. If no matching `const` overload exists, the call returns `rtl::error::ConstOverloadMissing` and if only a `mutable` overload exists and a `const` target is provided, the call returns `rtl::error::NonConstOverloadMissing`.
+
+When both `const` and `mutable` overloads are registered, the following rules apply:
+
+* Passing a `const` target (`std::cref(personObj)`) binds to the `const` overload.
+* Passing a non-const target binds to the mutable overload.
+
+👉 **Note:** 
+> *RTL does not perform automatic `const`/`mutable` overload resolution. The intended overload must be selected explicitly by the user through the target’s `const` qualification.*
+
+As with `rtl::function`, validation of the materialized `rtl::method` is optional in this case.
+Calling it without validation does not result in undefined behavior; instead, an appropriate `rtl::error` is returned. If the callable was not successfully materialized, invoking it returns the same error as `get_init_err()` on the callable, typically `rtl::error::SignatureMismatch`.
+
+If materialization succeeds but the call fails, possible error values include:
+
+* `rtl::error::InvalidCaller`
+* `rtl::error::ConstOverloadMissing`
+* `rtl::error::NonConstOverloadMissing`
+* `rtl::error::RefBindingMismatch`
+* `rtl::error::ExplicitRefBindingRequired`
+
 ---
 
 ### Extracting Return Values
@@ -372,59 +427,9 @@ When dealing with `rtl::RObject` results:
 
 ---
 
-<a id="querying-member-functions" name="querying-member-functions"></a>
-
-### Querying Member Functions 👤
-
-Member functions require an instance of the class to call upon. RTL provides a two-step process: first retrieve the `rtl::Record` for the type, then get the `rtl::Method` from that record.
-
-```cpp
-// Retrieve the record for the class
-std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
-
-if (classPerson)
-{
-    // Retrieve a specific method from the record
-    std::optional<rtl::Method> setProfile = classPerson->getMethod("setProfile");
-
-    if (setProfile)
-    {
-        // You can now bind an object and call the method
-    }
-}
-```
-
-* `getRecord("TypeName")` returns the registered class/struct as `rtl::Record`.
-* `getMethod("methodName")` retrieves a member function from the record. Returns `std::optional<rtl::Method>`.
-* An empty optional indicates the method was not found.
+**[OLD DOCUMENTATION ONWARDS EXPLAINING DEPRECATED APIS, DOCS BIENG UPDATED]**
 
 ---
-
-<a id="binding-an-object-and-calling" name="binding-an-object-and-calling"></a>
-
-### Binding an Object and Calling 🔗
-
-**[THIS API IS REMOVED, NOW CALLABLES ARE USED. DOC NOT UPDATED YET]**
-
-```cpp
-auto [err, retObj] = setProfile->bind(targetObj).call(std::string("Developer"));
-```
-
-* **`.bind(targetObj)`**: binds the target instance for the method.
-
-  * `targetObj` is an `rtl::RObject` instance representing the object.
-  * You can create this instance reflectively using the `rtl::Record`’s constructor (we’ll cover this shortly).
-* **`.call(args...)`**: executes the method on the bound object with the provided arguments.
-
-Errors specific to member function calls:
-
-* `rtl::error::TargetMismatch` → when the bound `RObject` does not represent the same type as the method’s owning class.
-* `rtl::error::EmptyTarget` → when attempting to bind an empty `RObject`.
-* `rtl::error::SignatureMismatch` → provided arguments/signature don’t match with expected signature or any overload.
-
----
-
-<a id="binding-signatures-and-perfect-forwarding" name="binding-signatures-and-perfect-forwarding"></a>
 
 ### Binding Signatures and Perfect Forwarding 🎯
 
