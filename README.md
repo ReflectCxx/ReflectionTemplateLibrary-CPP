@@ -91,7 +91,9 @@ From `rtl::Record`, registered member functions can be obtained as `rtl::Method`
 For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
 rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
-if (!personCtor) { /* Constructor with expected signature not found. */ }
+if (!personCtor) { // Constructor with expected signature not found.
+    std::cerr << rtl::to_string(personCtor.get_init_err());
+}
 ```
 Or the default constructor:
 ```c++
@@ -112,7 +114,7 @@ And materialize a complete type-aware caller:
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
-if (!getName) { 
+if (!getName) { // Member function with expected signature not found.
     std::cerr << rtl::to_string(getName.get_init_err()); 
 }
 else {

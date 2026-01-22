@@ -189,7 +189,7 @@ Every type-erased reflective call returns either `std::pair<rtl::error, rtl::ROb
 
 Fully type-specified callables do not return an error code (except constructors). Once materialized successfully, they are guaranteed to be safe to invoke. RTL provides the following callable entities:
 
-### `rtl::constructor`
+### `rtl::constructor<>`
 
 Constructors can be materialized directly from an `rtl::Record`.
 For example, an overloaded constructor can be materialized as follows:
@@ -220,11 +220,11 @@ Objects can be constructed by specifying `rtl::alloc::Stack` or `rtl::alloc::Hea
 * `Heap` allocated objects are managed using `std::unique_ptr`.
 * `Stack` allocated objects are stored directly in `std::any`.
 
+### `rtl::function<>`
+
 ---
 
-<a id="extracting-return-values" name="extracting-return-values"></a>
-
-### Extracting Return Values 📤
+### Extracting Return Values
 
 ```cpp
 if (err == rtl::error::None)
