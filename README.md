@@ -101,8 +101,9 @@ Instances can be created on the `Heap` or `Stack` with automatic lifetime manage
 auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
 if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
 ```
-The constructed object is returned wrapped in `rtl::RObject`.
-Now, Lookup a member-function by name:
+The constructed object is returned as an `rtl::RObject` in the variable `robj`.
+
+Looking up a member function by name:
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }

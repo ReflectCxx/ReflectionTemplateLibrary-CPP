@@ -2,7 +2,7 @@
 
 This document provides a concise, evidence-backed overview of the runtime performance characteristics of **RTL**, derived from systematic microbenchmarking across multiple workload scales, CPU frequencies, and typical real-world C++ usage patterns.
 
-## 🧪 Benchmark Overview
+## Benchmark Overview
 
 The benchmark measures the cost of calling functions that perform simple but realistic `string` work. Two variants are evaluated using the types `std::string_view` and `std::string`.
 
