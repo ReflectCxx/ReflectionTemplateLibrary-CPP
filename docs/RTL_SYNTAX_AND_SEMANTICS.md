@@ -166,12 +166,11 @@ POD types do not have member functions.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
 
-The rtl::Method and rtl::Function metadata objects can be further queried to determine whether a specific call signature is valid for a given function or method. This allows callers to validate argument compatibility before attempting materialization or invocation.
+The `rtl::Method` and `rtl::Function` metadata objects can be further queried to determine whether a specific call signature is valid for a given function or method. This allows callers to validate argument compatibility before attempting materialization or invocation.
 
 ```c++
 // Obtain metadata for the registered function.
-std::optional<rtl::Function> sendMessage =
-    cxx::mirror().getFunction("ext", "sendMessage");
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("ext", "sendMessage");
 
 // Query supported call signatures.
 bool isSignature0 = sendMessage->hasSignature<const char*>();        // true
@@ -183,12 +182,12 @@ bool isSignature2 = sendMessage->hasSignature<>();                   // false (n
 ## The `rtl::RObject`
 
 `rtl::RObject` exists to wrap values or objects of any type in a type-erased form while providing safe access interfaces.
-It can be returned from reflective function calls, member-function calls, and constructor calls.
+It can be returned from reflective function calls, method calls, and constructor calls.
 It can also be created directly from a known value or object.
 
 Objects constructed on the **Heap** via a reflective constructor call are returned as an `rtl::RObject` and are internally managed using `std::unique_ptr` for automatic lifetime management.
 
-Objects returned from reflective function or member-function calls, as well as values directly wrapped in an `rtl::RObject`, are stored on the **Stack** using `std::any`.
+Objects returned from reflective function or method calls, as well as values directly wrapped in an `rtl::RObject`, are stored on the **Stack** using `std::any`.
 
 #### Accessing Values from `rtl::RObject`:
 
@@ -208,7 +207,7 @@ When working with `rtl::RObject`, the following interfaces provide safe access t
 ### Move Semantics with `rtl::RObject`
 
 `rtl::RObject` is a **move-only** type. Copying is disallowed, and ownership transfer is performed exclusively through move semantics.
-The behavior differs depending on whether the underlying object is stored on the **Stack** or on the **Heap**.
+The behavior differs internally based on whether the underlying object is stored on the **Stack** or on the **Heap**, without any impact on the public interface or user-visible behavior.
 
 #### Stack-Allocated Objects:
 
