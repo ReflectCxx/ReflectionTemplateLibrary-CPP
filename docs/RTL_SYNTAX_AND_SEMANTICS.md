@@ -15,13 +15,14 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
    - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
    - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
 6. [Perferct Forwarding](#perferct-forwarding)
+7. [Error Taxonomy](#error-taxonomy)
 
 ---
 
 ## Building the Mirror
 
 `rtl::CxxMirror` is the runtime entry point for querying reflection metadata registered with RTL.
-It aggregates references to metadata descriptors produced by `rtl::type()...build()` registration expressions and exposes them through a unified lookup interface.
+It aggregates references to metadata descriptors produced by `rtl::type()...build();` registration expressions and exposes them through a unified lookup interface.
 
 ```cpp
 auto cxx_mirror = rtl::CxxMirror({
@@ -34,18 +35,18 @@ Each registration expression contributes references to metadata objects that are
 
 Through the mirror, all registered types, functions, and methods can be queried, inspected, and materialized at runtime. The mirror itself is a lightweight facade and does not introduce centralized global state.
 
-### Managing `rtl::CxxMirror`
+#### Managing `rtl::CxxMirror`
 
-* **No hidden global state**
+* **No hidden global state** – 
   `rtl::CxxMirror` is dispensable by design. You may use a single global mirror, multiple mirrors, or construct mirrors on demand. All mirrors reference the same underlying metadata cache.
 
-* **Duplicate registration is benign**
+* **Duplicate registration is benign** – 
   Re-registering the same function pointer or type is safe. If matching metadata already exists, RTL reuses it; no duplicate entries are created.
 
-* **Thread-safe by construction**
+* **Thread-safe by construction** – 
   Metadata registration and access are internally synchronized. Thread safety is guaranteed regardless of how many mirrors exist or where they are constructed.
 
-* **Registration cost is one-time**
+* **Registration cost is one-time** – 
   Each registration performs:
 
   * a synchronized lookup in the metadata cache
@@ -54,7 +55,7 @@ Through the mirror, all registered types, functions, and methods can be queried,
   This cost is incurred only during registration and is negligible for normal initialization paths. Repeated registration in hot paths should be avoided.
 
 👉 Bottom Line
-> *`rtl::CxxMirror` is a lightweight, non-owning access layer over RTL’s metadata.*
+> *`rtl::CxxMirror` is a lightweight, non-owning access layer over RTL’s metadata. Its lifetime and multiplicity are entirely user-controlled, and its overhead is limited to initialization-time lookups.*
 
 ---
 
@@ -610,4 +611,26 @@ explicit binding is required, even when these overloads exist in isolation. This
 
 ---
 
+## Error Taxonomy
+
+The table below lists RTL errors with brief, intent-focused descriptions, providing a direct mapping from failure conditions to their semantic meaning.
+
+| Error                          | semantic meaning                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| `None`                         | Operation completed successfully; no error occurred.                            |
+| `EmptyRObject`                 | The `RObject` is empty, typically due to a move or invalidation.                |
+| `InvalidCaller`                | The callable was never successfully materialized or is otherwise invalid.       |
+| `SignatureMismatch`            | No registered overload matches the requested call signature.                    |
+| `TargetTypeMismatch`           | The bound target object type is incompatible with the method’s expected target. |
+| `ReturnTypeMismatch`           | The specified return type does not match the function’s actual return type.     |
+| `RefBindingMismatch`           | Reference qualifiers of the arguments do not match any registered overload.     |
+| `ExplicitRefBindingRequired`   | Overload set allows mutation; binding intent must be stated explicitly.         |
+| `InvalidNonStaticMethodCaller` | A non-static method was invoked without providing a valid target object.        |
+| `ConstOverloadMissing`         | A const-qualified overload does not exist for the given invocation.             |
+| `NonConstOverloadMissing`      | A non-const overload does not exist as explicitly requested.                    |
+| `InvalidCallOnConstTarget`     | A non-const method was invoked on an object reflecting const state.             |
+| `TypeNotCopyConstructible`     | The reflected type cannot be copy-constructed due to access or deletion.        |
+| `TypeNotDefaultConstructible`  | The reflected type cannot be default-constructed.                               |
+
+---
 ***More to come...***
