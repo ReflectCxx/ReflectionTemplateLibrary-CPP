@@ -1,7 +1,6 @@
 # RTL: Syntax & Semantics 🔍
 
 RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
-This guide walks you step by step through RTL’s reflection syntax.
 
 ### 📖 Index
 
@@ -41,7 +40,7 @@ Through the mirror, all registered types, functions, and methods can be queried,
 
 * **Duplicate registration is harmless** – Identical registrations always resolve to the same metadata. If a canonical function-pointer is already registered, it is not inserted again; subsequent registrations simply reference the existing entry.
 
-* **Thread-safety guaranteed by RTL** – Regardless of how mirrors are managed (singleton, multiple, or transient), RTL ensures synchronized, race-free registration and access across threads.
+* **Thread-safety guaranteed by RTL** – Regardless of how mirrors are managed (singleton, multiple, or transient), RTL ensures synchronized, race-free registration and access threads.
 
 * **Registration overhead is deliberate** – Each registration incurs a small, one-time cost in memory and initialization time:
 
@@ -67,7 +66,7 @@ rtl::type().ns("ext").function("fn-name").build(fn-ptr);
 ```
 
 * `ns("ext")` – Specifies the namespace under which the function is registered.
-  Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function in the global namespace.
+  Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function under `rtl::global`. This is not a declared C++ namespace; rather, it is a logical, string-based grouping used to prevent naming conflicts.
 
 * `function("fn-name")` – Declares the function by name.
   If multiple overloads exist, the template parameter (`function<...>(..)`) disambiguates the selected overload.
@@ -85,7 +84,8 @@ namespace ext {
     bool sendMessage(const char*);
     void sendMessage(int, std::string);
 }
-
+```
+```c++
 rtl::type().ns("ext").function<const char*>("sendMessage").build(ext::sendMessage);
 rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendMessage);
 ```
@@ -137,11 +137,11 @@ For example:
 // Function without a namespace
 std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
 
-// Function registered with a namespace, e.g. "utils"
-std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("utils", "sendMessage");
+// Function registered with a namespace, e.g. "ext"
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("ext", "sendMessage");
 ```
 
-These metadata are returned wrapped in `std::optional<>`, which is empty if the requested entity is not found by the name specified.
+These metadata are returned wrapped in `std::optional`, which is empty if the requested entity is not found by the name specified.
 
 ```cpp
 // Querying a type without a namespace
@@ -166,6 +166,18 @@ POD types do not have member functions.
 This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
 The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
 
+The rtl::Method and rtl::Function metadata objects can be further queried to determine whether a specific call signature is valid for a given function or method. This allows callers to validate argument compatibility before attempting materialization or invocation.
+
+```c++
+// Obtain metadata for the registered function.
+std::optional<rtl::Function> sendMessage =
+    cxx::mirror().getFunction("ext", "sendMessage");
+
+// Query supported call signatures.
+bool isSignature0 = sendMessage->hasSignature<const char*>();        // true
+bool isSignature1 = sendMessage->hasSignature<int, std::string>();   // true
+bool isSignature2 = sendMessage->hasSignature<>();                   // false (no parameters)
+```
 ---
 
 ## The `rtl::RObject`
@@ -251,7 +263,7 @@ In both cases, the source object is invalidated and ownership remains well-defin
 
 ---
 
-## Reflective Invocations with RTL️
+## Reflective Invocations with RTL
 
 `rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly called through these objects. Instead, RTL uses a materialization model to produce callable entities.
 
