@@ -14,7 +14,7 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
    - [`rtl::function` – Return Erased](#rtlfunction--return-erased)
    - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
    - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
-6. [Perferct Forwarding](#perferct-forwarding)
+6. [Perfect Forwarding](#perfect-forwarding)
 7. [Error Taxonomy](#error-taxonomy)
 
 ---
