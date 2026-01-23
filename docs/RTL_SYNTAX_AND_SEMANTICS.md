@@ -14,7 +14,7 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
    - [`rtl::function` – Return Erased](#rtlfunction--return-erased)
    - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
    - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
-6. [Reference Binding and Overload Resolution](#reference-binding-and-overload-resolution)
+6. [Perferct Forwarding](#perferct-forwarding)
 
 ---
 
@@ -526,7 +526,7 @@ If materialization succeeds but the call fails, possible error values include:
 
 ---
 
-## Reference Binding and Overload Resolution
+## Perferct Forwarding
 
 When multiple reference-based overloads of the same function signature exist, for example:
 
@@ -558,7 +558,7 @@ Meaning, if all such overloads are registered and an `rtl::function<rtl::Return(
 
 This behavior follows directly from the fact that RTL invocation is equivalent to calling through a fully specified function pointer, which is explicitly permitted by standard C++.
 
-#### Perferct Forwarding:
+#### Reference Binding:
 
 Each overload shown above can be invoked by explicitly providing the intended call signature as a template parameter to `bind<>()`. RTL then perfect-forwards the arguments to the selected overload:
 
