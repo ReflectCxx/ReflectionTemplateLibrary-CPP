@@ -20,38 +20,41 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
 
 ## Building the Mirror
 
-To set up a runtime reflection system using RTL, a `rtl::CxxMirror` instance is created to aggregate references to the registered entities and provide access to them at runtime.
-The `rtl::CxxMirror` is constructed using a collection of metadata descriptors produced by `rtl::type()...build();` registration expressions.
+`rtl::CxxMirror` is the runtime entry point for querying reflection metadata registered with RTL.
+It aggregates references to metadata descriptors produced by `rtl::type()...build()` registration expressions and exposes them through a unified lookup interface.
 
 ```cpp
 auto cxx_mirror = rtl::CxxMirror({
-    // registration expressions, comma separated
+    // registration expressions
 });
 ```
 
-Each registration expression contributes references to the underlying metadata objects, which are created by RTL only if they do not already exist.
-`rtl::CxxMirror` does not own or duplicate this metadata; it encapsulates references to it and acts as a lightweight access interface.
+Each registration expression contributes references to metadata objects that are lazily created on first use.
+`rtl::CxxMirror` **does not own** this metadata and never duplicates it; it merely provides structured access to already-registered entities.
 
-Through the mirror, all registered types, functions, and methods can be queried, inspected, and instantiated at runtime. The mirror serves as a single entry point for reflection operations without introducing centralized global state.
+Through the mirror, all registered types, functions, and methods can be queried, inspected, and materialized at runtime. The mirror itself is a lightweight facade and does not introduce centralized global state.
 
-#### Managing `rtl::CxxMirror`
+### Managing `rtl::CxxMirror`
 
-* **Dispensable by design** – `rtl::CxxMirror` carries no hidden global state. You may define a single central mirror, create multiple mirrors in different scopes, or rebuild mirrors on demand. RTL imposes no restrictions on how its lifetime is managed.
+* **No hidden global state**
+  `rtl::CxxMirror` is dispensable by design. You may use a single global mirror, multiple mirrors, or construct mirrors on demand. All mirrors reference the same underlying metadata cache.
 
-* **Duplicate registration is harmless** – Identical registrations always resolve to the same metadata. If a canonical function-pointer is already registered, it is not inserted again; subsequent registrations simply reference the existing entry.
+* **Duplicate registration is benign**
+  Re-registering the same function pointer or type is safe. If matching metadata already exists, RTL reuses it; no duplicate entries are created.
 
-* **Thread-safety guaranteed by RTL** – Regardless of how mirrors are managed (singleton, multiple, or transient), RTL ensures synchronized, race-free registration and access threads.
+* **Thread-safe by construction**
+  Metadata registration and access are internally synchronized. Thread safety is guaranteed regardless of how many mirrors exist or where they are constructed.
 
-* **Registration overhead is deliberate** – Each registration incurs a small, one-time cost in memory and initialization time:
+* **Registration cost is one-time**
+  Each registration performs:
 
-  * A lock is acquired on the metadata cache.
-  * Existing entries are checked for a function-pointer.
-  * If no match is found, a new entry is inserted.
+  * a synchronized lookup in the metadata cache
+  * conditional insertion if no match exists
 
-  This ensures thread safety and prevents redundant metadata. While negligible for typical usage, the cost can accumulate if registrations are repeatedly performed in hot paths or tight loops.
+  This cost is incurred only during registration and is negligible for normal initialization paths. Repeated registration in hot paths should be avoided.
 
 👉 Bottom Line
-> *Manage `rtl::CxxMirror` according to your design needs– singleton, multiple, or transient. Registration involves a lock and a lookup, but the cost is incurred only during initialization and remains negligible for normal usage.*
+> *`rtl::CxxMirror` is a lightweight, non-owning access layer over RTL’s metadata.*
 
 ---
 
@@ -526,7 +529,7 @@ If materialization succeeds but the call fails, possible error values include:
 
 ---
 
-## Perferct Forwarding
+## Perfect Forwarding
 
 When multiple reference-based overloads of the same function signature exist, for example:
 
