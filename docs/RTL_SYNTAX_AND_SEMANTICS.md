@@ -399,9 +399,9 @@ else {
 }
 ```
 
-#### `rtl::const_method` and `rtl::static_method`:
+#### `rtl::const_method`:
 
-The `rtl::method` can only invoke `mutable` member functions. To invoke a `const` member function, `rtl::const_method` must be used.
+The `rtl::method` can only invoke non-`const` member functions. To invoke a `const` qualified member function, `rtl::const_method` must be used.
 
 An `rtl::const_method` is materialized by specifying a `const` target type in the `.targetT<>()` call:
 ```c++
@@ -414,6 +414,8 @@ if (getName) {
 ```
 
 Here, the target type is marked `const` via the template argument to `.targetT<const Person>()`. As a result, `rtl::const_method` only accepts a `const Person` object as its invocation target.
+
+#### `rtl::static_method`:
 
 To invoke a `static` member function, `rtl::static_method` is used. Static methods do not require a target object, so the `.targetT()` call is omitted:
 
@@ -489,24 +491,24 @@ All of these variants follow the same invocation semantics. The only difference 
 * Known return types are returned as `std::optional`
 * Erased return types are returned as `rtl::RObject`
 
-#### `const` and `mutable` Member Functions with Type-Erased Targets:
+#### `const` and non-`const` Member Functions with Type-Erased Targets:
 
-There is no separate callable entity such as `rtl::const_method` for type-erased invocations.
-The same `rtl::method` is used for both `const` and `mutable` member functions.
+There is no separate callable entity such as `rtl::const_method` for type-erased invocation of `const`-qualified member function overloads.
+The same `rtl::method` is used for both `const` and non-`const` member functions.
 To invoke a `const` member function, the target must be passed as a `const` reference:
 
 ```c++
 auto [err, ret] = getName(std::cref(personObj))();
 ```
-This call will succeed only if `Person::getName()` is a `const` member function. If no matching `const` overload exists, the call returns `rtl::error::ConstOverloadMissing` and if only a `mutable` overload exists and a `const` target is provided, the call returns `rtl::error::NonConstOverloadMissing`.
+This call will succeed only if a `const`-qualified overload of `Person::getName()` exists. If it does not, the call returns `rtl::error::ConstOverloadMissing`. If only a `const` overload exists and a non-`const` target is provided, the call returns `rtl::error::NonConstOverloadMissing`.
 
-When both `const` and `mutable` overloads are registered, the following rules apply:
+When both `const` and non-`const` overloads are registered, the following rules apply:
 
-* Passing a `mutable` target binds to the `mutable` overload.
+* Passing a non-`const` target binds to the non-`const` overload.
 * Passing a `const` target (`std::cref(personObj)`) binds to the `const` overload.
 
 👉 Note 
-> *RTL does not perform automatic `const`/`mutable` overload resolution. The intended overload must be selected explicitly by the user through the target’s `const` qualification.*
+> *RTL does not perform automatic `const`/non-`const` overload resolution. The intended overload must be selected explicitly by the user through the target’s `const` qualification.*
 
 As with `rtl::function`, validation of the materialized `rtl::method` is optional in this case.
 Calling it without validation does not result in undefined behavior; instead, an appropriate `rtl::error` is returned. If the callable was not successfully materialized, invoking it returns the same error as `get_init_err()` on the callable, typically `rtl::error::SignatureMismatch`.
