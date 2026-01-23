@@ -228,7 +228,11 @@ rtl::RObject obj2 = std::move(obj1);
 👉 **Key idea:**
 > *Stack move semantics invoke the reflected type’s move constructor.*
 
-### Heap-Allocated Objects:
+`rtl::RObject` itself does not perform heap allocation when wrapping stack-stored values. Any dynamic allocation that occurs is solely an implementation detail of `std::any`, dependent on the stored type’s size, alignment, and move characteristics. While many standard library implementations apply a small-object optimization (SSO), this behavior is not guaranteed by the C++ standard.
+
+RTL uses controlled, type-erased storage with retained runtime type information as a safe alternative to `void*`, enforcing validated access and well-defined semantics while avoiding unchecked casts and undefined behavior.
+
+#### Heap-Allocated Objects:
 
 Objects on the **Heap** can only be created through a reflective constructor call. The returned instance is managed internally using `std::unique_ptr`.
 Moving such an `rtl::RObject` transfers ownership of the pointer.
