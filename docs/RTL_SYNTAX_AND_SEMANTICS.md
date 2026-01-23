@@ -500,7 +500,9 @@ To invoke a `const` member function, the target must be passed as a `const` refe
 ```c++
 auto [err, ret] = getName(std::cref(personObj))();
 ```
-This call will succeed only if a `const`-qualified overload of `Person::getName()` exists. If it does not, the call returns `rtl::error::ConstOverloadMissing`. If only a `const` overload exists and a non-`const` target is provided, the call returns `rtl::error::NonConstOverloadMissing`.
+This call will succeed only if a `const`-qualified overload of `Person::getName()` exists. If it does not, the call returns `rtl::error::ConstOverloadMissing`.
+
+If only a `const` overload exists and a non-`const` target is provided, the call returns `rtl::error::NonConstOverloadMissing`.
 
 When both `const` and non-`const` overloads are registered, the following rules apply:
 
@@ -526,15 +528,7 @@ If materialization succeeds but the call fails, possible error values include:
 
 ## Reference Binding and Overload Resolution
 
-RTL applies a safety-oriented overload resolution strategy when invoking reflected functions and methods.
-The goal is to avoid implicit mutation of user data and require explicit intent whenever a call may modify its arguments.
-
-This reference-based overload resolution is applied only to type-erased or partially type-erased callables.
-Fully type-aware callables are materialized by explicitly specifying the target, argument, and return types at compile time, so no ambiguity or safety-based resolution is required.
-
-#### Implicit Resolution Rules:
-
-When multiple reference based overloads of same function signature exists,
+When multiple reference-based overloads of the same function signature exist, for example:
 
 ```c++
 std::string reverse(std::string);              // (1) by value
@@ -543,6 +537,49 @@ std::string reverse(const std::string&);       // (3) const lvalue ref
 std::string reverse(std::string&&);            // (4) rvalue ref
 
 ```
+
+In standard C++, invoking `reverse` by name with such an overload set results in a compile-time ambiguity error.
+This occurs because the pass-by-value overload conflicts with every reference-based overload, and overload resolution cannot establish a single best match.
+
+If these functions are not invoked by name, but instead referenced through explicitly typed function-pointers, each overload can be selected unambiguously:
+
+```c++
+auto fptr0 = static_cast<std::string(*)(std::string)>(reverseString);
+auto fptr1 = static_cast<std::string(*)(std::string&&)>(reverseString);
+auto fptr3 = static_cast<std::string(*)(std::string&)>(reverseString);
+auto fptr2 = static_cast<std::string(*)(const std::string&)>(reverseString);
+```
+Here, the explicit function-pointer type fully specifies the intended overload, bypassing overload resolution ambiguity.
+Since RTL requires only a distinct function-pointer to register a function or method, all of the above overloads can be registered without ambiguity. 
+
+During invocation, where the compiler would reject a direct call due to pass-by-value overload ambiguity, RTL instead deterministically defaults to the pass-by-value overload unless a more specific intent is explicitly expressed by the user.
+Meaning, if all such overloads are registered and an `rtl::function<rtl::Return(std::string)>` is materialized and invoked, the call will unambiguously bind to the pass-by-value overload.
+
+This behavior follows directly from the fact that RTL invocation is equivalent to calling through a fully specified function pointer, which is explicitly permitted by standard C++.
+
+#### Perferct Forwarding:
+
+Each overload shown above can be invoked by explicitly providing the intended call signature as a template parameter to `bind<>()`. RTL then perfect-forwards the arguments to the selected overload:
+
+```c++
+rtl::function<rtl::Return(std::string)> reverseStr = cxx::mirror().getFunction("reverseString")
+                                                                  .argsT().returnT();
+
+auto [err0, ret0] = reverseStr("Hello");                         // calls by-value overload (1)
+auto [err1, ret1] = reverseStr.bind<std::string&>()("Hello");    // calls lvalue-ref overload (2)
+auto [err2, ret2] = reverseStr.bind<const std::string&>()("Hello"); // calls const lvalue-ref overload (3)
+auto [err3, ret3] = reverseStr.bind<std::string&&>()("Hello");   // calls rvalue-ref overload (4)
+```
+
+If no pass-by-value overload is registered, explicit binding is required to invoke the desired overload. Otherwise, the call results in `rtl::error::RefBindingMismatch`.
+
+
+
+
+
+
+
+
 While calling such functions with any type erased callables, RTL prefers non-mutating call paths by default:
 
 | Available Overloads | Call binds to       |
