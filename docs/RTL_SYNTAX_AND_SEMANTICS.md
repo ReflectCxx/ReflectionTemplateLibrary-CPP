@@ -552,8 +552,9 @@ auto fptr2 = static_cast<std::string(*)(const std::string&)>(reverseString);
 Here, the explicit function-pointer type fully specifies the intended overload, bypassing overload resolution ambiguity.
 Since RTL requires only a distinct function-pointer to register a function or method, all of the above overloads can be registered without ambiguity. 
 
-During invocation, where the compiler would reject a direct call due to pass-by-value overload ambiguity, RTL instead deterministically defaults to the pass-by-value overload unless a more specific intent is explicitly expressed by the user.
-Meaning, if all such overloads are registered and an `rtl::function<rtl::Return(std::string)>` is materialized and invoked, the call will unambiguously bind to the pass-by-value overload.
+During invocation, where the compiler would reject a direct call due to pass-by-value overload ambiguity, RTL instead deterministically defaults to the **pass-by-value** overload unless a more specific intent is explicitly expressed by the user.
+
+Meaning, if all such overloads are registered and an `rtl::function<rtl::Return(std::string)>` is materialized and invoked, the call will unambiguously bind to the **pass-by-value** overload.
 
 This behavior follows directly from the fact that RTL invocation is equivalent to calling through a fully specified function pointer, which is explicitly permitted by standard C++.
 
@@ -571,100 +572,38 @@ auto [err2, ret2] = reverseStr.bind<const std::string&>()("Hello"); // calls con
 auto [err3, ret3] = reverseStr.bind<std::string&&>()("Hello");   // calls rvalue-ref overload (4)
 ```
 
-If no pass-by-value overload is registered, explicit binding is required to invoke the desired overload. Otherwise, the call results in `rtl::error::RefBindingMismatch`.
+If no pass-by-value overload is registered, explicit binding is required to invoke the desired overload. Otherwise, the call results in `rtl::error::ExplicitRefBindingRequired`.
 
+Now consider a case where only overloads (2) and (3) are registered:
 
-
-
-
-
-
-
-While calling such functions with any type erased callables, RTL prefers non-mutating call paths by default:
-
-| Available Overloads | Call binds to       |
-| ------------------- | ------------------- |
-| `T` + `const T&`    | `T` (by value)      |
-| `T` + `T&`          | `T` (by value)      |
-| `T` only            | `T`                 |
-| `const T&` only     | `const T&`          |
-
-By-value and `const` reference bindings cannot mutate the caller’s object, so they are considered safe and are selected implicitly.
-
-#### Explicit Binding for Mutating Overloads:
-
-Overloads that may mutate the caller’s data require explicit user intent:
-
-* Non-const lvalue reference (`T&`)
-* Rvalue reference (`T&&`)
-
-To invoke these overloads, the user must explicitly specify the reference type using `.bind<...>()`:
-
-```cpp
-rtl::function<rtl::RObject()> reverseString = cxx::mirror().getFunction("reverse")
-														   .argsT().returnT();
-// explicitly call the lvalue ref overload.
-auto [err0, ret0] = reverseString.bind<std::string&>()(str);
-// explicitly call the rvalue ref overload.
-auto [err1, ret1] = reverseString.bind<std::string&&>()(std::string(str));
+```c++
+std::string reverse(std::string&);             // (2)
+std::string reverse(const std::string&);       // (3)
 ```
 
-If a mutating overload exists but no explicit binding is provided, RTL returns `rtl::error::ExplicitRefBindingRequired`.
+Both overloads can be invoked explicitly using `bind<>()`. However, if the user attempts to bind a signature that has not been registered, for example:
 
-#### Ambiguous Reference Overloads:
-
-If both `T&` and `const T&` overloads exist, RTL treats the situation as ambiguous and refuses to guess the user’s intent regarding mutability.
-
-In such cases, implicit invocation is rejected and explicit selection is required:
-
-```cpp
-reverseString.bind<std::string&>()(str);        // Allows mutation
-reverseString.bind<const std::string&>()(str); 	// Disallows mutation
+```c++
+auto [err, ret] = reverseStr.bind<std::string&&>()("Hello");
 ```
 
-Without explicit binding, RTL returns `rtl::error::ExplicitRefBindingRequired`
+the invocation fails with `rtl::error::RefBindingMismatch`, as no rvalue-reference overload exists in the registered overload set. Now consider the case where only overload (3) is registered:
 
-#### Const-Reference Only Overloads:
-
-If a function provides only a `const T&` overload, RTL resolves the call implicitly. Since `const` references cannot mutate the caller, no explicit binding is required.
-
-#### Rvalue Reference Overloads:
-
-Overloads taking `T&&` always require explicit binding:
-
-```cpp
-reverseString.bind<std::string&&>()(std::string(str));
+```c++
+std::string reverse(const std::string&);  // (3)
 ```
-Without explicit binding, RTL returns `rtl::error::ExplicitRefBindingRequired`
 
-#### Binding Mismatches:
+In this case, no explicit binding is required, as there is no overload ambiguity and the function guarantees that the argument will not be modified. If only overload (2) or only overload (4) is registered:
 
-If the explicitly bound reference type does not match the function signature, RTL returns`rtl::error::RefBindingMismatch`. This indicates a hard type mismatch rather than an ambiguity.
+```c++
+std::string reverse(std::string&);    // (2)
+std::string reverse(std::string&&);   // (4)
+```
 
-#### Design Rationale:
+explicit binding is required, even when these overloads exist in isolation. This is because both signatures permit mutation of the argument, and RTL requires such intent to be expressed explicitly by the user.
 
-RTL does not follow C++ overload resolution rules directly. Instead, it enforces a reflection-specific policy:
-
-* Prefer non-mutating call paths
-* Avoid implicit mutation
-* Require explicit intent for mutation
-* Reject ambiguous reference overloads
-* Never guess user intent
-
-This ensures that reflective calls remain predictable, safe, and explicit in their side effects.
-
-#### Summary
-
-| Situation                | RTL Behavior                |
-| ------------------------ | --------------------------- |
-| Safe overload exists     | Implicitly selected         |
-| Mutating overload exists | Requires explicit binding   |
-| `T&` + `const T&`        | Explicit selection required |
-| Only `const T&`          | Implicitly allowed          |
-| `T&&` overload           | Explicit binding required   |
-| Wrong binding            | `RefBindingMismatch`        |
-
-This policy guarantees that reflective invocation never mutates user data without explicit consent.
+👉 Rationale
+> *RTL’s philosophy is to make mutating calls loud and explicit, as reflection inherently hides type information.*
 
 ---
 
