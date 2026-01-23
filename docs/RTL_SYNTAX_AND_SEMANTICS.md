@@ -125,8 +125,6 @@ rtl::type().member<T>().method<...>("method-name").build(&T::f);
 👉 Note
 > *The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.*
 
-With these constructs – namespaces, non-member functions, overloads, records `(pod/class/struct)`, constructors, and methods – you now have the full registration syntax for RTL. Together, they allow you to build a complete reflective model of your C++ code.
-
 ---
 
 ## Querying the Metadata
@@ -560,7 +558,7 @@ During invocation, where the compiler would reject a direct call due to pass-by-
 
 Meaning, if all such overloads are registered and an `rtl::function<rtl::Return(std::string)>` is materialized and invoked, the call will unambiguously bind to the **pass-by-value** overload.
 
-This behavior follows directly from the fact that RTL invocation is equivalent to calling through a fully specified function pointer, which is explicitly permitted by standard C++.
+This behavior follows directly from the fact that RTL invocation is equivalent to calling through a fully specified function-pointer, which is explicitly permitted by standard C++.
 
 #### Reference Binding:
 
