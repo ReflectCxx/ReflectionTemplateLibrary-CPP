@@ -118,7 +118,7 @@ rtl::type().member<T>().method<...>("method-name").build(&T::f);
 * `.method<...>(..)`: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
-👉 Note 
+👉 Mental Note
 > *The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.*
 
 With these constructs – namespaces, non-member functions, overloads, records `(pod/class/struct)`, constructors, and methods – you now have the full registration syntax for RTL. Together, they allow you to build a complete reflective model of your C++ code.
@@ -200,7 +200,7 @@ When working with `rtl::RObject`, the following interfaces provide safe access t
 | `view<T>()`        | Returns a typed view of the stored value, or an empty `std::optional`. |
 | `view<T>()->get()` | Accesses the stored value as a `const T&`.                             |
 
-👉 **Tip**
+👉 Tip
 
 > *Use `canViewAs<T>()` for a lightweight boolean check when branching, and `view<T>()` when you need to access the value.*
 
@@ -225,7 +225,7 @@ rtl::RObject obj2 = std::move(obj1);
 * The moved-from object (`obj1`) becomes empty.
 * No duplication occurs.
 
-👉 **Key idea:**
+👉 Mental Note
 > *Stack move semantics invoke the reflected type’s move constructor.*
 
 `rtl::RObject` itself does not perform heap allocation when wrapping stack-stored values. Any dynamic allocation that occurs is solely an implementation detail of `std::any`. By leveraging `std::any`, RTL provides controlled, type-erased storage with retained runtime type information as a safe alternative to `void*`, enforcing validated access and well-defined semantics while avoiding unchecked casts and undefined behavior.
@@ -243,7 +243,7 @@ Moving such an `rtl::RObject` transfers ownership of the pointer.
 * The moved-from object becomes empty.
 * The underlying heap object remains valid until the final owner is destroyed.
 
-👉 **Key idea:**
+👉 Mental Note
 > *Heap move semantics transfer the `unique_ptr` without moving the underlying object.*
 
 Across both **Stack** and **Heap** moves:
@@ -253,7 +253,7 @@ Across both **Stack** and **Heap** moves:
 * Object destruction occurs exactly once.
 * Cloning or invoking a moved-from object results in `rtl::error::EmptyRObject`.
 
-**Summary**
+**Summary:**
 
 When an `rtl::RObject` is moved, RTL either:
 
@@ -272,7 +272,7 @@ Callable entities are materialized by explicitly specifying the argument and ret
 
 When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for an unknown return or target type), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
 
-⚖️ **The Idea:**
+⚖️ The Idea
 > *In RTL, materialization makes the performance–flexibility trade-off explicit at each call site.*
 
 Every type-erased reflective call returns either `std::pair<rtl::error, rtl::RObject>` or `std::pair<rtl::error, std::optional<T>>`.
@@ -461,8 +461,6 @@ if (err0 == rtl::error::None && ret.has_value()) {
 ```
 In this case, the typed return value is wrapped in `std::optional`. If the member function returns `void`, the optional is empty.
 
-#### Return-Erased Variants:
-
 Along with the target type, the return type can also be erased. Leaving the `.returnT()` template parameter empty defaults the return type to `rtl::Return`.
 
 ```c++
@@ -475,9 +473,7 @@ if (err0 == rtl::error::None  && ret.canViewAs<std::string>()) {
 }
 ```
 
-#### Mixed Variants:
-
-If the target type is known but the return type is erased:
+And finally, If the target type is known but the return type is erased:
 
 ```c++
 rtl::method<Person, rtl::Return()> getName = oGetName->targetT<Person>().argsT().returnT();
@@ -509,7 +505,7 @@ When both `const` and `mutable` overloads are registered, the following rules ap
 * Passing a `mutable` target binds to the `mutable` overload.
 * Passing a `const` target (`std::cref(personObj)`) binds to the `const` overload.
 
-👉 **Note:** 
+👉 Note 
 > *RTL does not perform automatic `const`/`mutable` overload resolution. The intended overload must be selected explicitly by the user through the target’s `const` qualification.*
 
 As with `rtl::function`, validation of the materialized `rtl::method` is optional in this case.
