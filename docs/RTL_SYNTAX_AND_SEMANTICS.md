@@ -118,7 +118,7 @@ rtl::type().member<T>().method<...>("method-name").build(&T::f);
 * `.method<...>(..)`: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
-👉 **Note:** 
+👉 Note 
 > *The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.*
 
 With these constructs – namespaces, non-member functions, overloads, records `(pod/class/struct)`, constructors, and methods – you now have the full registration syntax for RTL. Together, they allow you to build a complete reflective model of your C++ code.
@@ -228,9 +228,7 @@ rtl::RObject obj2 = std::move(obj1);
 👉 **Key idea:**
 > *Stack move semantics invoke the reflected type’s move constructor.*
 
-`rtl::RObject` itself does not perform heap allocation when wrapping stack-stored values. Any dynamic allocation that occurs is solely an implementation detail of `std::any`, dependent on the stored type’s size, alignment, and move characteristics. While many standard library implementations apply a small-object optimization (SSO), this behavior is not guaranteed by the C++ standard.
-
-RTL uses controlled, type-erased storage with retained runtime type information as a safe alternative to `void*`, enforcing validated access and well-defined semantics while avoiding unchecked casts and undefined behavior.
+`rtl::RObject` itself does not perform heap allocation when wrapping stack-stored values. Any dynamic allocation that occurs is solely an implementation detail of `std::any`. By leveraging `std::any`, RTL provides controlled, type-erased storage with retained runtime type information as a safe alternative to `void*`, enforcing validated access and well-defined semantics while avoiding unchecked casts and undefined behavior.
 
 #### Heap-Allocated Objects:
 
@@ -369,6 +367,9 @@ If materialization succeeds but the call fails, possible error values include:
 * `rtl::error::InvalidCaller`
 * `rtl::error::RefBindingMismatch`
 * `rtl::error::ExplicitRefBindingRequired`
+
+👉 Mental Note
+> *Fully type-specified callables must be validated before invocation to avoid undefined behavior; type-erased callables are safe to invoke without prior validation and report errors at runtime.*
 
 ### `rtl::method` – Type Aware
 
