@@ -118,7 +118,7 @@ rtl::type().member<T>().method<...>("method-name").build(&T::f);
 * `.method<...>(..)`: registers a non-const member function. The template parameter `<..signature..>` disambiguates overloads.
 * Variants exist for const (`.methodConst`) and static (`.methodStatic`) methods.
 
-👉 Mental Note
+👉 Note
 > *The `function<..signature..>` and `method<..signature..>` template parameters are primarily for overload resolution. They tell RTL exactly which overload of a function or method you mean to register.*
 
 With these constructs – namespaces, non-member functions, overloads, records `(pod/class/struct)`, constructors, and methods – you now have the full registration syntax for RTL. Together, they allow you to build a complete reflective model of your C++ code.
@@ -351,9 +351,9 @@ In this case, the `.returnT()` template parameter can be omitted, and `rtl::Retu
 rtl::function<rtl::Return(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
                                                                .returnT();
-auto [err, robj] = cToStr(61, 35);
-if(err != rtl::error::None) {
-    // Call succeeded, returned std::string inside 'robj' (type: rtl::RObject)
+auto [err, ret] = cToStr(61, 35);
+if(err != rtl::error::None && ret.canViewAs<std::string>()) {
+    std::string resultStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
 }
 else {
     std::cerr << rtl::to_string(err);
@@ -470,7 +470,7 @@ Along with the target type, the return type can also be erased. Leaving the `.re
 rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
 
 auto [err0, ret] = getName(personObj)();	// Invoke and receive return as rtl::RObject.
-if (err0 == rtl::error::None  && ret.canViewAs<std::string>()) {
+if (err0 == rtl::error::None && ret.canViewAs<std::string>()) {
     std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
 }
 ```
@@ -520,6 +520,7 @@ If materialization succeeds but the call fails, possible error values include:
 * `rtl::error::NonConstOverloadMissing`
 * `rtl::error::RefBindingMismatch`
 * `rtl::error::ExplicitRefBindingRequired`
+* `rtl::error::EmptyRObject`
 
 ---
 
