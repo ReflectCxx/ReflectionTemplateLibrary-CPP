@@ -8,14 +8,15 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
 2. [Getting Started with Registration](#getting-started-with-registration)
 3. [Querying the Metadata](#querying-the-metadata)
 4. [The `rtl::RObject`](#the-rtlrobject)
-5. [Reflective Invocations with RTL](#reflective-invocations-with-rtl)
+5. [The `rtl::view`](#the-rtlview)
+6. [Reflective Invocations with RTL](#reflective-invocations-with-rtl)
    - [`rtl::constructor`](#rtlconstructor)
    - [`rtl::function` – Type Aware](#rtlfunction--type-aware)
    - [`rtl::function` – Type Erased](#rtlfunction--type-erased)
    - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
    - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
-6. [Perfect Forwarding](#perfect-forwarding)
-7. [Error Taxonomy](#error-taxonomy)
+7. [Perfect Forwarding](#perfect-forwarding)
+8. [Error Taxonomy](#error-taxonomy)
 
 ---
 
@@ -291,7 +292,7 @@ if (view) {
 This contract is uniform across all reflected types, including PODs, user-defined types, and standard library wrappers and smart pointers.
 
 👉 Ongoing
-> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr`.*
+> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr` only.*
 
 ### Smart Pointer Semantics with `rtl::view`
 
