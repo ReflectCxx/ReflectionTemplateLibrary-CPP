@@ -44,6 +44,12 @@ namespace rtl
 
         const detail::RObjectUPtr<T>& m_uptrRef;
 
+        //_asType move() const {
+        //    return std::move(m_uptrRef.release());
+        //}
+
+        //friend rtl::RObject;
+
     public:
 
         //  Construct from reference (no copy, no default init)
@@ -55,8 +61,11 @@ namespace rtl
         view& operator=(view&&) = delete;
         view& operator=(const view&) = delete;
 
-        _asType get() const {
-            return std::move(m_uptrRef.release());
+        // UPDATE: MOVING DISALLOWED NOW.
+	    // cannot move a std::unique_ptr out once its inside rtl::RObject. it can only be viewed.
+	    // done for keeping the rtl::view strictly Read-only and a consistent interface.
+        const _asType& get() const {
+            return m_uptrRef.cref();
         }
     };
 }
