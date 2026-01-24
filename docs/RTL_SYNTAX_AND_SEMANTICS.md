@@ -344,13 +344,13 @@ However, unlike `std::shared_ptr<T>`, a reflected `std::unique_ptr<T>` does **no
 
 ```c++
 
-// This is NOT possible (unique_ptr is move-only)
+// This is NOT allowed, std::unique_ptr is move-only
 auto view = robj.view<std::unique_ptr<int>>();
 std::unique_ptr<int> uptrCpy = view->get();  // ERROR: cannot copy unique_ptr
 
-// But you CAN access the pointee
+// the pointee can be accessed
 if (robj.canViewAs<int>()) {
-    int value = robj.view<int>()->get();  // Works! value = 42
+    int value = robj.view<int>()->get(); // Creates a copy of int.
 }
 
 ```
@@ -363,7 +363,7 @@ if (robj.canViewAs<int>()) {
 In other words, within RTL:
 
 * `std::shared_ptr` exposes shared-ownership semantics because it is copy-constructible and reference-counted.
-* `std::unique_ptr` is treated as an exclusive-ownership wrapper whose lifetime is managed entirely by rtl::RObject, because it is not copy-constructible and represents unique ownership.
+* `std::unique_ptr` is treated as an exclusive-ownership wrapper whose lifetime is managed entirely by `rtl::RObject`, because it is not copy-constructible and represents unique ownership.
 
 ---
 
