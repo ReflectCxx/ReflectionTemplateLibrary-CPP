@@ -8,6 +8,8 @@
 using namespace test_utils;
 using namespace rtl;
 
+// TODO: Refine these, remove moot cases after this-> UPDATE: MOVING DISALLOWED NOW.
+
 namespace rtl::unit_test
 {
     TEST(RObject_reflecting_unique_ptr, clone_on__heap_stack)
@@ -63,10 +65,8 @@ namespace rtl::unit_test
             // Access the moved-out value
             EXPECT_EQ(*uptr, NUM);
 
+            // this is compile error now.
             //int* ptr = uptr.release();
-            //// Addresses must be same.
-            //EXPECT_EQ(numPtr, ptr);
-            //delete ptr;     //RTL must not delete again, once 'robj' out of scope.
         }
         // there must not be any crash.
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 0);
@@ -151,33 +151,6 @@ namespace rtl::unit_test
 
         // RTL still owns it
         ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
-
-        // RObject still exists with correct metadata, but the stored unique_ptr is now empty
-        ASSERT_FALSE(robj.isEmpty());
-
-        // UPDATE: MOVING DISALLOWED NOW.
-        // Any subsequent view will still be obtainable
-        auto view3 = robj.view<std::unique_ptr<int>>();
-        ASSERT_TRUE(view3);
-
-        // UPDATE: MOVING DISALLOWED NOW.
-        // But the unique_ptr inside is now empty due to the earlier move
-        const std::unique_ptr<int>& uptr3 = view3->get();
-        //ASSERT_TRUE(uptr3 == nullptr);
-
-        // UPDATE: MOVING DISALLOWED NOW.
-        // All earlier views now yield empty unique_ptrs as well- no dangling pointers, no UB
-        const std::unique_ptr<int>& uptr2 = view2->get();
-        //ASSERT_TRUE(uptr3 == nullptr);
-
-        // UPDATE: MOVING DISALLOWED NOW.
-        const std::unique_ptr<int>& uptr1 = view1->get();
-        //ASSERT_TRUE(uptr3 == nullptr);
-
-        // UPDATE: MOVING DISALLOWED NOW.
-        // Even reusing the moved-from view0 is safe- just returns empty
-        const std::unique_ptr<int>& uptr00 = view0->get();
-        //ASSERT_TRUE(uptr00 == nullptr);
     }
 
 
@@ -235,29 +208,6 @@ namespace rtl::unit_test
                 ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
                 // Node still exists.
                 EXPECT_TRUE(Node::instanceCount() == 1);
-
-                // Any subsequent view will still be obtainable
-                auto view3 = robj.view<std::unique_ptr<Node>>();
-                ASSERT_TRUE(view3);
-
-                // UPDATE: MOVING DISALLOWED NOW.
-                // But the unique_ptr inside is now empty due to the earlier move
-                const std::unique_ptr<Node>& uptr3 = view3->get();
-                //ASSERT_TRUE(uptr3 == nullptr);
-
-                // UPDATE: MOVING DISALLOWED NOW.
-                // All earlier views now yield empty unique_ptrs as well- no dangling pointers, no UB
-                const std::unique_ptr<Node>& uptr2 = view2->get();
-                //ASSERT_TRUE(uptr3 == nullptr);
-
-                // UPDATE: MOVING DISALLOWED NOW.
-                const std::unique_ptr<Node>& uptr1 = view1->get();
-                //ASSERT_TRUE(uptr3 == nullptr);
-
-                // UPDATE: MOVING DISALLOWED NOW.
-                // Even reusing the moved-from view0 is safe- just returns empty
-                const std::unique_ptr<Node>& uptr00 = view0->get();
-                //ASSERT_TRUE(uptr00 == nullptr);
             }
             EXPECT_TRUE(Node::instanceCount() == 1);
             ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
@@ -293,7 +243,7 @@ namespace rtl::unit_test
             {
                 // Get a view of the view as `shared_ptr<int>`
                 auto view = robj.view<std::shared_ptr<Node>>();
-                ASSERT_FALSE(view);
+                EXPECT_FALSE(view);
             }
             // Check if RObject can reflect as `unique_ptr<Node>`
             EXPECT_TRUE(robj.canViewAs<std::unique_ptr<Node>>());
@@ -301,11 +251,6 @@ namespace rtl::unit_test
                 // Get a view of the view as `shared_ptr<int>`
                 auto view = robj.view<std::unique_ptr<Node>>();
                 EXPECT_TRUE(view);
-                ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() != 0);
-                {
-                    // UPDATE: MOVING DISALLOWED NOW.
-                    const std::unique_ptr<Node>& movedOutPtr = view->get();
-                }
                 EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
                 EXPECT_TRUE(Node::instanceCount() == 1);
             }
@@ -347,11 +292,6 @@ namespace rtl::unit_test
                 // Get a view of the view as `shared_ptr<int>`
                 auto view = robj.view<std::unique_ptr<Node>>();
                 EXPECT_TRUE(view);
-                ASSERT_TRUE(rtl::getRtlManagedHeapInstanceCount() != 0);
-                {
-                    // UPDATE: MOVING DISALLOWED NOW.
-                    const std::unique_ptr<Node>& movedOutPtr = view->get();
-                }
                 EXPECT_TRUE(rtl::getRtlManagedHeapInstanceCount() == 1);
                 EXPECT_TRUE(Node::instanceCount() == 1);
             }
@@ -386,7 +326,7 @@ namespace rtl::unit_test
                 ASSERT_FALSE(robj.isEmpty());
 
                 // UPDATE: MOVING DISALLOWED NOW.
-                const std::unique_ptr<Node>& uptrNode = std::move(view->get());
+                const std::unique_ptr<Node>& uptrNode = view->get();
                 EXPECT_EQ(uptrNode->data(), NUM);
             }
         }
