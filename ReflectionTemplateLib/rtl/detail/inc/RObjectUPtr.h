@@ -82,13 +82,8 @@ namespace rtl::detail
             return m_uniquePtr.get();
         }
 
-        std::unique_ptr<T> release() const 
-        {
-            if (m_uniquePtr) {
-                RObject::getInstanceCounter()--;//.fetch_sub(1, std::memory_order_relaxed);
-                return std::move(m_uniquePtr);
-            }
-            return nullptr;
+        const std::unique_ptr<T>& cref() const {
+            return m_uniquePtr;
         }
 
     private:
