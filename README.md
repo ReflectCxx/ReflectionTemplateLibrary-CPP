@@ -148,18 +148,6 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
-RTL provides the following callable entities, designed to be as lightweight and performant as `std::function`:
-
-`rtl::function` – Free (non-member) functions
-
-`rtl::constructor` – Constructors
-
-`rtl::method` – Non-const member functions
-
-`rtl::const_method` – Const-qualified member functions
-
-`rtl::static_method` – Static member functions
-
 ### How to Build (Windows / Linux)
 ```sh
 mkdir build && cd build
