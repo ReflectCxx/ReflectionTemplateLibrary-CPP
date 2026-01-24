@@ -327,9 +327,9 @@ if (robj.canViewAs<std::shared_ptr<int>>()) { // true
         std::shared_ptr<int> sptrCpy = view->get();
         bool hasTwoOwners = (sptrCpy.use_count() == 2);    // true
     }
+	// After temporary copies go out of scope, ownership returns to robj alone.
+	bool backToSingleOwner = (view->get().use_count() == 1);   // true (robj is still alive)
 }
-// After temporary copies go out of scope, ownership returns to robj alone.
-bool backToSingleOwner = (view->get().use_count() == 1);   // true (robj is still alive)
 ```
 
 Accessing a reflected `std::shared_ptr<T>` through `rtl::RObject` preserves native shared ownership semantics: observing it does not change the reference count, and copying it produces a shallow, ref-counted copy exactly as in normal C++.
