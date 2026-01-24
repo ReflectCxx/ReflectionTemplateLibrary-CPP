@@ -77,8 +77,6 @@ rtl::CxxMirror& cxx::mirror() {
 ```
 ### RTL in action:
 
-**[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
-
 Lookup the `Person` class by its registered name:
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
@@ -147,6 +145,8 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 [![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-blue)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 &nbsp;
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
+
+**[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
 
 ### How to Build (Windows / Linux)
 ```sh
