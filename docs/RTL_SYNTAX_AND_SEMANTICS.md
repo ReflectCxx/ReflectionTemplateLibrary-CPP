@@ -4,7 +4,7 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
 
 ### 📖 Index
 
-1. [Building the Mirror](#building-the-mirror)
+1. [The `rtl::CxxMirror`](#the-rtlcxxmirror)
 2. [Getting Started with Registration](#getting-started-with-registration)
 3. [Querying the Metadata](#querying-the-metadata)
 4. [The `rtl::RObject`](#the-rtlrobject)
@@ -19,7 +19,7 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
 
 ---
 
-## Building the Mirror
+## The `rtl::CxxMirror`
 
 `rtl::CxxMirror` is the runtime entry point for querying reflection metadata registered with RTL.
 It aggregates references to metadata descriptors produced by `rtl::type()...build();` registration expressions and exposes them through a unified lookup interface.
@@ -37,18 +37,13 @@ Through the mirror, all registered types, functions, and methods can be queried,
 
 #### Managing `rtl::CxxMirror`
 
-* **No hidden global state** – 
-  `rtl::CxxMirror` is dispensable by design. You may use a single global mirror, multiple mirrors, or construct mirrors on demand. All mirrors reference the same underlying metadata cache.
+* **No hidden global state** – `rtl::CxxMirror` is dispensable by design. You may use a single global mirror, multiple mirrors, or construct mirrors on demand. All mirrors reference the same underlying metadata cache.
 
-* **Duplicate registration is benign** – 
-  Re-registering the same function pointer or type is safe. If matching metadata already exists, RTL reuses it; no duplicate entries are created.
+* **Duplicate registration is benign** – Re-registering the same function pointer or type is safe. If matching metadata already exists, RTL reuses it; no duplicate entries are created.
 
-* **Thread-safe by construction** – 
-  Metadata registration and access are internally synchronized. Thread safety is guaranteed regardless of how many mirrors exist or where they are constructed.
+* **Thread-safe by construction** – Metadata registration and access are internally synchronized. Thread safety is guaranteed regardless of how many mirrors exist or where they are constructed.
 
-* **Registration cost is one-time** – 
-  Each registration performs:
-
+* **Registration cost is one-time** –  Each registration performs:
   * a synchronized lookup in the metadata cache
   * conditional insertion if no match exists
 
@@ -279,18 +274,10 @@ A `rtl::view<T>` never exposes ownership. It only exposes **observation**.
 
 #### Properties:
 
-* **Read-only** – 
-  A `rtl::view<T>` only provides access as `const T&`.
-
-* **Non-owning abstraction** – 
-  Whether the underlying value is owned or referenced is intentionally hidden.
-
-* **Non-copyable and non-movable** – 
-  A `rtl::view<T>` cannot be copied or moved. It must be consumed immediately.
-
-* **Lifetime-bound** – 
-  A `rtl::view<T>` is only valid as long as the originating `rtl::RObject` remains alive.
-  Using a `rtl::view<T>` after the `rtl::RObject` is destroyed results in undefined behavior.
+* **Read-only** – A `rtl::view<T>` only provides access as `const T&`.
+* **Non-owning abstraction** – Whether the underlying value is owned or referenced is intentionally hidden.
+* **Non-copyable and non-movable** – A `rtl::view<T>` cannot be copied or moved. It must be consumed immediately.
+* **Lifetime-bound** – A `rtl::view<T>` is only valid as long as the originating `rtl::RObject` remains alive. Using a `rtl::view<T>` after the `rtl::RObject` is destroyed results in undefined behavior.
 
 #### Access Pattern:
 
@@ -304,7 +291,7 @@ if (view) {
 This contract is uniform across all reflected types, including PODs, user-defined types, and standard library wrappers and smart pointers.
 
 👉 Ongoing
-> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr`.
+> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr`.*
 
 ### Smart Pointer Semantics with `rtl::view`
 
@@ -335,8 +322,8 @@ if (robj.canViewAs<std::shared_ptr<int>>()) { // true
         const std::shared_ptr<int>& sptrRef = view->get(); 
         bool hasSingleOwner = (sptrRef.use_count() == 1);   // true
     } {
-        std::shared_ptr<int> sptrCopy = view->get(); 
-        bool hasTwoOwners = (sptrCopy.use_count() == 2);    // true
+        std::shared_ptr<int> sptrCpy = view->get(); 
+        bool hasTwoOwners = (sptrCpy.use_count() == 2);    // true
     }
 }
 // After temporary copies go out of scope, ownership returns to robj alone.
