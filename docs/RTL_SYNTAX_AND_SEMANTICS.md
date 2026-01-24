@@ -301,10 +301,10 @@ if (view) {
 }
 ```
 
-This contract is uniform across all reflected types, including PODs, user-defined types & `std` wrappers and smart pointers.
+This contract is uniform across all reflected types, including PODs, user-defined types, and standard library wrappers and smart pointers.
 
 👉 Ongoing
-> *RTL aims to support seamless and transparent access to all `std` wrappers (like `std::optional`, `std::variant`, `std::weak_ptr` and so on), with their proper defined semantics. Currently it is done and tested for `std::shared_ptr` & `std::unique_ptr`.
+> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr`.
 
 ### Smart Pointer Semantics with `rtl::view`
 
