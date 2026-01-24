@@ -11,7 +11,7 @@ RTL makes C++ reflection feel like a natural extension of the language. Let’s 
 5. [Reflective Invocations with RTL](#reflective-invocations-with-rtl)
    - [`rtl::constructor`](#rtlconstructor)
    - [`rtl::function` – Type Aware](#rtlfunction--type-aware)
-   - [`rtl::function` – Return Erased](#rtlfunction--return-erased)
+   - [`rtl::function` – Type Erased](#rtlfunction--type-erased)
    - [`rtl::method` – Type Aware](#rtlmethod--type-aware)
    - [`rtl::method` – Type Erased](#rtlmethod--type-erased)
 6. [Perfect Forwarding](#perfect-forwarding)
@@ -204,7 +204,7 @@ When working with `rtl::RObject`, the following interfaces provide safe access t
 
 👉 Tip
 
-> *Use `canViewAs<T>()` for a lightweight boolean check when branching, and `view<T>()` when you need to access the value.*
+> *Use `.canViewAs<T>()` for a lightweight boolean check when branching, and `.view<T>()` when you need to access the value.*
 
 ### Move Semantics with `rtl::RObject`
 
@@ -266,6 +266,86 @@ In both cases, the source object is invalidated and ownership remains well-defin
 
 ---
 
+## The `rtl::view`
+
+`rtl::view<T>` is a lightweight, immutable handle that provides safe, read-only access to a value stored inside an `rtl::RObject`.
+
+It exists to bridge the gap between:
+
+* type-erased storage (`rtl::RObject`), and
+* typed access (`const T&`).
+
+A `rtl::view<T>` never exposes ownership. It only exposes **observation**.
+
+#### Properties:
+
+* **Read-only** – 
+  A `rtl::view<T>` only provides access as `const T&`.
+
+* **Non-owning abstraction** – 
+  Whether the underlying value is owned or referenced is intentionally hidden.
+
+* **Non-copyable and non-movable** – 
+  A `rtl::view<T>` cannot be copied or moved. It must be consumed immediately.
+
+* **Lifetime-bound** – 
+  A `rtl::view<T>` is only valid as long as the originating `rtl::RObject` remains alive.
+  Using a `rtl::view<T>` after the `rtl::RObject` is destroyed results in undefined behavior.
+
+#### Access Pattern:
+
+```cpp
+auto view = robj.view<T>();
+if (view) {
+    const T& value = view->get();
+}
+```
+
+This contract is uniform across all reflected types, including PODs, user-defined types & `std` wrappers and smart pointers.
+
+👉 Ongoing
+> *RTL aims to support seamless and transparent access to all `std` wrappers (like `std::optional`, `std::variant`, `std::weak_ptr` and so on), with their proper defined semantics. Currently it is done and tested for `std::shared_ptr` & `std::unique_ptr`.
+
+### Smart Pointer Semantics with `rtl::view`
+
+RTL treats smart pointers as **first-class reflected values** while preserving their native ownership rules.
+No implicit deep copies are ever performed.
+The behavior differs intentionally between `std::shared_ptr` and `std::unique_ptr`.
+
+#### `std::shared_ptr<T>`:
+
+When an `rtl::RObject` reflects a `std::shared_ptr<T>`, it can be viewed either as `T` directly or as `std::shared_ptr<T>`.
+
+While viewing directly as `T`, a `const T&` access is provided. The user may either observe the value or create copies, depending on what liberties are provided by `T`’s copy semantics.
+
+```cpp
+rtl::RObject robj = rtl::reflect(std::make_shared<int>(20438)); // std::shared_ptr is on Stack.
+
+if (robj.canViewAs<int>()) {          // true
+    int viewCpy = robj.view<int>();   // Creates a copy of int.
+    const int& viewCRef = robj.view<int>(); // References the underlying value.
+}
+```
+The same object can also be accessed as `std::shared_ptr<T>`, in which case native shared ownership semantics are preserved:
+
+```cpp
+if (robj.canViewAs<std::shared_ptr<int>>()) { // true
+    auto view = robj.view<std::shared_ptr<int>>();
+    {
+        const std::shared_ptr<int>& sptrRef = view->get(); 
+        bool hasSingleOwner = (sptrRef.use_count() == 1);   // true
+    } {
+        std::shared_ptr<int> sptrCopy = view->get(); 
+        bool hasTwoOwners = (sptrCopy.use_count() == 2);    // true
+    }
+}
+// After temporary copies go out of scope, ownership returns to robj alone.
+bool backToSingleOwner = (view->get().use_count() == 1);   // true (robj is still alive)
+```
+Accessing a reflected `std::shared_ptr` through `rtl::RObject` preserves native shared ownership semantics: observing it does not change the reference count, and copying it produces a shallow, ref-counted copy exactly as in normal C++.
+
+---
+
 ## Reflective Invocations with RTL
 
 `rtl::Method` and `rtl::Function` are metadata descriptors. Functions and methods cannot be directly called through these objects. Instead, RTL uses a materialization model to produce callable entities.
@@ -274,7 +354,7 @@ Callable entities are materialized by explicitly specifying the argument and ret
 
 When full type information is provided, materialized callables compile to **direct function-pointer** calls with near-zero overhead. When type erasure is required (for example, for an unknown return or target type), invocation proceeds through a lightweight dispatch layer with performance **comparable** to `std::function`.
 
-⚖️ The Idea
+👉 The Idea
 > *In RTL, materialization makes the performance–flexibility trade-off explicit at each call site.*
 
 Every type-erased reflective call returns either `std::pair<rtl::error, rtl::RObject>` or `std::pair<rtl::error, std::optional<T>>`.
@@ -344,7 +424,7 @@ Possible error values include:
 * `rtl::error::SignatureMismatch`
 * `rtl::error::ReturnTypeMismatch`
 
-### `rtl::function` – Return Erased
+### `rtl::function` – Type Erased
 
 If the return type is not known at compile time, `rtl::Return` can be used as the return type.
 In this case, the `.returnT()` template parameter can be omitted, and `rtl::Return` will be selected automatically.
