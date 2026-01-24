@@ -342,6 +342,19 @@ When an `rtl::RObject` reflects a `std::unique_ptr<T>`, it can likewise be viewe
 
 However, unlike `std::shared_ptr<T>`, a reflected `std::unique_ptr<T>` does **not** permit ownership transfer through a view:
 
+```c++
+
+// This is NOT possible (unique_ptr is move-only)
+auto view = robj.view<std::unique_ptr<int>>();
+std::unique_ptr<int> uptrCpy = view->get();  // ERROR: cannot copy unique_ptr
+
+// But you CAN access the pointee
+if (robj.canViewAs<int>()) {
+    int value = robj.view<int>()->get();  // Works! value = 42
+}
+
+```
+
 * Access is always provided as `const std::unique_ptr<T>&`.
 * No move operation is possible through `rtl::view`.
 * Ownership remains exclusively with the `rtl::RObject`.
