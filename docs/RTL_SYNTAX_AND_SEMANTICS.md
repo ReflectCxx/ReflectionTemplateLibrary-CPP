@@ -277,7 +277,7 @@ A `rtl::view<T>` never exposes ownership. It only exposes **observation**.
 
 * **Read-only** – A `rtl::view<T>` only provides access as `const T&`.
 * **Non-owning abstraction** – Whether the underlying value is owned or referenced is intentionally hidden.
-* **Non-copyable and non-movable** – A `rtl::view<T>` cannot be copied or moved. It must be consumed immediately.
+* **Non-copyable and non-movable** – A `rtl::view<T>` cannot be copied or moved and must be consumed immediately.
 * **Lifetime-bound** – A `rtl::view<T>` is only valid as long as the originating `rtl::RObject` remains alive. Using a `rtl::view<T>` after the `rtl::RObject` is destroyed results in undefined behavior.
 
 #### Access Pattern:
@@ -292,15 +292,15 @@ if (view) {
 This contract is uniform across all reflected types, including PODs, user-defined types, and standard library wrappers and smart pointers.
 
 👉 Ongoing
-> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated for `std::shared_ptr` and `std::unique_ptr` only.*
+
+> *RTL is designed to support seamless and transparent access to standard library wrapper types (such as `std::optional`, `std::variant`, `std::weak_ptr`, and others) while preserving their native semantics. At present, this behavior is fully implemented and validated only for `std::shared_ptr` and `std::unique_ptr`.*
 
 ### Smart Pointer Semantics with `rtl::view`
 
 RTL treats smart pointers as **first-class reflected values** while preserving their native ownership rules.
 No implicit deep copies are ever performed.
-The behavior differs intentionally between `std::shared_ptr` and `std::unique_ptr`.
 
-#### `std::shared_ptr<T>`:
+#### `std::shared_ptr`:
 
 When an `rtl::RObject` reflects a `std::shared_ptr<T>`, it can be viewed either as `T` directly or as `std::shared_ptr<T>`.
 
@@ -314,23 +314,43 @@ if (robj.canViewAs<int>()) {          // true
     const int& viewCRef = robj.view<int>(); // References the underlying value.
 }
 ```
+
 The same object can also be accessed as `std::shared_ptr<T>`, in which case native shared ownership semantics are preserved:
 
 ```cpp
 if (robj.canViewAs<std::shared_ptr<int>>()) { // true
     auto view = robj.view<std::shared_ptr<int>>();
     {
-        const std::shared_ptr<int>& sptrRef = view->get(); 
+        const std::shared_ptr<int>& sptrRef = view->get();
         bool hasSingleOwner = (sptrRef.use_count() == 1);   // true
     } {
-        std::shared_ptr<int> sptrCpy = view->get(); 
+        std::shared_ptr<int> sptrCpy = view->get();
         bool hasTwoOwners = (sptrCpy.use_count() == 2);    // true
     }
 }
 // After temporary copies go out of scope, ownership returns to robj alone.
 bool backToSingleOwner = (view->get().use_count() == 1);   // true (robj is still alive)
 ```
-Accessing a reflected `std::shared_ptr` through `rtl::RObject` preserves native shared ownership semantics: observing it does not change the reference count, and copying it produces a shallow, ref-counted copy exactly as in normal C++.
+
+Accessing a reflected `std::shared_ptr<T>` through `rtl::RObject` preserves native shared ownership semantics: observing it does not change the reference count, and copying it produces a shallow, ref-counted copy exactly as in normal C++.
+
+#### `std::unique_ptr`:
+
+The behavior of `std::unique_ptr` differs from `std::shared_ptr` only in its ownership model.
+
+When an `rtl::RObject` reflects a `std::unique_ptr<T>`, it can likewise be viewed as `T` directly or as `std::unique_ptr<T>`. Viewing it as `T` provides the same `const T&` access as described earlier, and the user may observe or copy the value according to `T`’s copy semantics.
+
+However, unlike `std::shared_ptr<T>`, a reflected `std::unique_ptr<T>` does **not** permit ownership transfer through a view:
+
+* Access is always provided as `const std::unique_ptr<T>&`.
+* No move operation is possible through `rtl::view`.
+* Ownership remains exclusively with the `rtl::RObject`.
+* The pointee can still be accessed safely via `view<T>()`.
+
+In other words, within RTL:
+
+* `std::shared_ptr` exposes shared-ownership semantics because it is copy-constructible and reference-counted.
+* `std::unique_ptr` is treated as an exclusive-ownership wrapper whose lifetime is managed entirely by rtl::RObject, because it is not copy-constructible and represents unique ownership.
 
 ---
 
