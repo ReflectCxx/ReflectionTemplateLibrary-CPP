@@ -14,5 +14,6 @@ comment:
 ignore:
   - "CxxTestProps/**"
   - "CxxTestUtils/**"
+  - "RTLTestRunApp/**"
   - "RTLBenchmarkApp/**"
   - "ReflectionTemplateLib/rtl/detail/src/RObjectConverters_string.cpp"
