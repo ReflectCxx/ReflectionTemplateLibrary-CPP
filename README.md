@@ -144,7 +144,7 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 
 [![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-teal)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 &nbsp;
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-064F8C)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
 
 **[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
 
