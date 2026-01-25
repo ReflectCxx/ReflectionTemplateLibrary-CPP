@@ -142,11 +142,15 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
-[![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-teal)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
-&nbsp;
-[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-064F8C)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
-
 **[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
+
+👉 Deep Dive
+
+[![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-blue)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+&nbsp;
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
+&nbsp;
+[![Benchmark Summary](https://img.shields.io/badge/Doc-Benchmark%20Summary-teal)](./docs/benchmark_summary.md)
 
 ### How to Build (Windows / Linux)
 ```sh
