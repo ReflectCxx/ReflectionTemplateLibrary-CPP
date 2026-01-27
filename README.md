@@ -138,13 +138,13 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
     std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
 }
 ```
+**[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
+
 ### How RTL Fits Together
 
 At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
-
-**[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
 
 [![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-blue)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
 &nbsp;
