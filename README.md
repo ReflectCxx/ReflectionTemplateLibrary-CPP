@@ -150,7 +150,7 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 &nbsp;
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
 &nbsp;
-[![Benchmark Summary](https://img.shields.io/badge/Doc-Benchmark%20Summary-teal)](./docs/benchmark_summary.md)
+[![Benchmarks](https://img.shields.io/badge/Doc-Benchmarks-teal)](./docs/benchmark_summary.md)
 
 ### How to Build (Windows / Linux)
 ```sh
