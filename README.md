@@ -178,6 +178,7 @@ Additional resources:
   * Default construction.
   * Copy/Move construction.
   * Any overloaded constructor.
+  * Automatic destruction.
 
 * ✅ **Allocation Strategies & Ownership** :
   * Choose between `Heap` or `Stack` allocation.
