@@ -1,6 +1,6 @@
 # RTL: Syntax & Semantics 🔍
 
-RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
+RTL is designed to mirror the C++ compiler’s semantic model at runtime using strictly standard-conforming C++ constructs, enabling reflection that obeys the same type, overload, and object semantics as the language itself.
 
 ### 📖 Index
 
