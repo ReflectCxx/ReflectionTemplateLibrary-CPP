@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rtl_traits.h>
+#include <rtcl_meta_ids.h>
 
 namespace rtl {
 	class CxxMirror;

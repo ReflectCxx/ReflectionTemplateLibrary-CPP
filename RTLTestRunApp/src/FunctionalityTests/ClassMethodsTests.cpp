@@ -79,7 +79,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_heapInstance, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(std::string(rtcl::type::Book::id));
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -87,7 +87,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+			optional<Method> oSetAuthor = classBook->getMethod(std::string(rtcl::type::Book::method::setAuthor));
 			ASSERT_TRUE(oSetAuthor);
 			EXPECT_FALSE(oSetAuthor->hasSignature<const char*>());
 
