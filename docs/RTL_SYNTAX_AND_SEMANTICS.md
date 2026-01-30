@@ -137,7 +137,7 @@ std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("sendMessag
 These metadata are returned wrapped in `std::optional`, which is empty if the requested entity is not found by the name specified.
 
 ```cpp
-// Querying types by their registered names.
+// Query a record by its registered name.
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
 ```
@@ -154,7 +154,7 @@ The `rtl::Method` and `rtl::Function` metadata objects can be further queried to
 
 ```c++
 // Obtain metadata for the registered function.
-std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("ext", "sendMessage");
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("sendMessage");
 
 // Query supported call signatures.
 bool isSignature0 = sendMessage->hasSignature<const char*>();        // true
