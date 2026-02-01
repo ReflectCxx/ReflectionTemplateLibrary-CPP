@@ -40,7 +40,7 @@ RTL’s reflective calls are comparable to `std::function`, and achieve lower ov
 
 * ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
 
-* ***Zero-Overhead by Design*** – Metadata can be registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
+* ***Zero-Overhead by Design*** – Reflection Metadata is registered and resolved lazily. You pay only if you use..
 
 * ***Hot-Loop Ready*** – Typed reflection calls exhibit near-zero overhead and scale like direct calls, making RTL suitable for performance-critical and tight-loop workloads. *([Performance Summary](docs/benchmark_summary.md))*
 
