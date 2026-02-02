@@ -102,7 +102,7 @@ Looking up a member function by name:
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
-And materialize a complete type-aware caller:
+And materialize a complete type-aware functor:
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
