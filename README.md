@@ -23,7 +23,7 @@ Using RTL, you can discover this function by name and call it dynamically:
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
                                                                .returnT<std::string>();
-if(cToStr) {   // Function materialized?
+if(cToStr) {   // Functor materialized?
     std::string result = cToStr(61, 35);  // Works!
 }
 // cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
