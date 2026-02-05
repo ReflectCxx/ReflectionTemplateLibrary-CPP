@@ -198,21 +198,3 @@ Additional resources:
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Metadata iterators**: Planned.
-
-## 💚 Support RTL’s Development
-
-RTL is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
-
-Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
-
-* Production-ready examples
-* Tooling and documentation
-* Cross-platform CI and testing
-
-If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
-
-[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
-
-##
-
-***C++ joins the reflection party! – why should Java have all the fun?***
