@@ -80,7 +80,7 @@ if (!classPerson) { /* Class not registered. */ }
 ```
 `rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
 
-From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are obtained by explicitly providing the argument types we intend to pass.
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are produced by explicitly providing the argument types we intend to pass.
 
 For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
@@ -138,7 +138,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are obtained through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors—are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
 
