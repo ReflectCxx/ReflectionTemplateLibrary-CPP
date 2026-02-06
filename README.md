@@ -38,9 +38,7 @@ if(cToStr) {   // Functor valid?
 
 * ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
-The [Performance Summary](docs/benchmark_summary.md) provides benchmark details.
-
-Registration boilerplate can be auto-generated via [clang-mirror](https://github.com/ReflectCxx/clang-mirror).
+The [Performance Summary](docs/benchmark_summary.md) provides benchmark details, and registration boilerplate can be auto-generated via [clang-mirror](https://github.com/ReflectCxx/clang-mirror).
   
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
