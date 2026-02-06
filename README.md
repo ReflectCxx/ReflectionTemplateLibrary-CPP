@@ -23,7 +23,7 @@ Using RTL, you can discover this function by name and call it dynamically:
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
                                                                .returnT<std::string>();
-if(cToStr) {   // Functor materialized?
+if(cToStr) {   // Functor valid?
     std::string result = cToStr(61, 35);  // Works!
 }
 // cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
@@ -80,7 +80,7 @@ if (!classPerson) { /* Class not registered. */ }
 ```
 `rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
 
-From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are materialized by explicitly providing the argument types we intend to pass.
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are obtained by explicitly providing the argument types we intend to pass.
 
 For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
@@ -102,7 +102,7 @@ Looking up a member function by name:
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
-And materialize a complete type-aware functor:
+And obtain a complete type-aware functor:
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
@@ -138,7 +138,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are obtained through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
 
