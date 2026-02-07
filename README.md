@@ -73,9 +73,14 @@ Manual registration with string-based type identifiers can become error-prone an
 
 ### RTL in action:
 
-Lookup the `Person` class by its registered name:
+Lookup the `Person` class by its registered name using a string literal:
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+if (!classPerson) { /* Class not registered. */ }
+```
+When using `clang-mirror` output, prefer the generated compile-time identifier:
+```c++ 
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 if (!classPerson) { /* Class not registered. */ }
 ```
 `rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
@@ -100,6 +105,11 @@ The constructed object is returned as an `rtl::RObject` in the variable `robj`.
 Looking up a member function by name:
 ```c++
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+if (!oGetName) { /* Member function not registered */ }
+```
+Or, preferably, using the generated member-function identifier:
+```c++
+std::optional<rtl::Method> oGetName = classPerson->getMethod(cxx::type::Person::fn::getName::id);
 if (!oGetName) { /* Member function not registered */ }
 ```
 And obtain a complete type-aware functor:
