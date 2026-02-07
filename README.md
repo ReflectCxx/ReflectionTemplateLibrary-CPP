@@ -69,7 +69,7 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
-For larger projects, registration boilerplate can be generated automatically using [clang-mirror](https://github.com/ReflectCxx/clang-mirror), which parses your code and emits reflection registration code compatible with `rtl::CxxMirror`.
+Manual registration with string-based type identifiers can become error-prone and difficult to maintain in larger codebases. The [clang-mirror](https://github.com/ReflectCxx/clang-mirror) tool can auto-generate the registration boilerplate and derive these identifiers directly from the source AST, preserving developer-written names and emitting them as compile-time `constexpr` values validated against the parsed code.
 
 ### RTL in action:
 
