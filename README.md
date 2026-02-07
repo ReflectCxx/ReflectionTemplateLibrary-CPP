@@ -38,7 +38,7 @@ if(cToStr) {   // Functor valid?
 
 * ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
-See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
+  See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
   
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
