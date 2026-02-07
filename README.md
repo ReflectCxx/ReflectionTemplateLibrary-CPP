@@ -38,7 +38,7 @@ if(cToStr) {   // Functor valid?
 
 * ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
-See the [Performance Summary](docs/benchmark_summary.md) for benchmark details, and auto-generate registration boilerplate via [clang-mirror](https://github.com/ReflectCxx/clang-mirror).
+See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
   
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
@@ -69,6 +69,8 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
+For larger projects, registration boilerplate can be generated automatically using [clang-mirror](https://github.com/ReflectCxx/clang-mirror), which parses your code and emits reflection registration code compatible with `rtl::CxxMirror`.
+
 ### RTL in action:
 
 Lookup the `Person` class by its registered name:
