@@ -31,8 +31,8 @@ namespace rtl::builder {
         const std::string m_function;
         const std::string m_namespaceStr;
 
-        ReflectionBuilder(const std::string& pFunction, std::size_t pRecordId,
-                            const std::string& pRecordStr, const std::string& pNamespace) 
+        ReflectionBuilder(std::string_view pFunction, std::size_t pRecordId,
+                          std::string_view pRecordStr, std::string_view pNamespace)
             : m_recordId(pRecordId)
             , m_recordStr(pRecordStr)
             , m_function(pFunction)
@@ -40,14 +40,14 @@ namespace rtl::builder {
         { }
 
         template<class record_t, class ...signature_t>
-        const Function buildConstructor() const
+        constexpr const Function buildConstructor() const
         {
             type_meta fnMeta = RegisterCtor::template addConstructor<record_t, signature_t...>();
             return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, fnMeta.get_member_kind());
         }
 
         template<class return_t, class ...signature_t>
-        const Function buildFunctor(return_t(*pFunctor)(signature_t...), detail::member pMemberType) const
+        constexpr const Function buildFunctor(return_t(*pFunctor)(signature_t...), detail::member pMemberType) const
         {
             type_meta fnMeta = RegisterFunction::template addFunctor<return_t, signature_t...>(pFunctor, m_recordId, pMemberType);
             return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, pMemberType);
@@ -55,7 +55,7 @@ namespace rtl::builder {
 
         //adds 'pFunctor' to the 'MethodContainer'.
         template<class record_t, class return_t, class ...signature_t>
-        const Function buildMethodFunctor(return_t(record_t::* pFunctor)(signature_t...)) const
+        constexpr const Function buildMethodFunctor(return_t(record_t::* pFunctor)(signature_t...)) const
         {
             type_meta fnMeta = RegisterMethod::template addMethodFunctor<record_t, return_t, signature_t...>(pFunctor);
             return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, detail::member::NonConst);
@@ -63,7 +63,7 @@ namespace rtl::builder {
 
         //adds 'pFunctor' to the 'MethodContainer'.
         template<class record_t, class return_t, class ...signature_t>
-        const Function buildMethodFunctor(return_t(record_t::* pFunctor)(signature_t...) const) const
+        constexpr const Function buildMethodFunctor(return_t(record_t::* pFunctor)(signature_t...) const) const
         {
             type_meta fnMeta = RegisterMethod::template addMethodFunctor<record_t, return_t, signature_t...>(pFunctor);
             return Function(m_namespaceStr, m_recordStr, m_function, fnMeta, m_recordId, detail::member::Const);

@@ -18,8 +18,8 @@ namespace rtl::builder
 {
     struct CtorBuilder : protected ReflectionBuilder
     {
-        CtorBuilder(const std::string& pNamespace, const std::string& pRecordStr,
-                    const std::string& pFunction, traits::uid_t pRecordUid)
+        CtorBuilder(std::string_view pNamespace, std::string_view pRecordStr,
+                    std::string_view pFunction, traits::uid_t pRecordUid)
         : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
         { }
 
@@ -31,7 +31,7 @@ namespace rtl::builder
         * template params <...>, explicitly specified.
         * calling with zero template params will build the default constructor ie, 'RecordBuilder<record_t>::constructor()'
     */  template<class record_t, class ...signature_t>
-        const Function build() const
+        constexpr const Function build() const
         {
             return buildConstructor<record_t, signature_t...>();
         }   
@@ -59,7 +59,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::None, void> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
         : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
         { }
 
@@ -70,7 +70,7 @@ namespace rtl::builder
         * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<record_t>::methodStatic<void>(..)'
         * template param 'void' is explicitly specified.
     */  template<class return_t>
-        const Function build(return_t(*pFunctor)()) const
+        constexpr const Function build(return_t(*pFunctor)()) const
         {
             return buildFunctor(pFunctor, detail::member::None);
         }
@@ -80,7 +80,7 @@ namespace rtl::builder
     template<class ...signature_t>
     struct Builder<detail::member::None, signature_t...> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
         : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
         { }
 
@@ -91,7 +91,7 @@ namespace rtl::builder
         * called on objects returned by 'type::function<...>(..)' & 'RecordBuilder<record_t>::methodStatic<...>(..)'.
         * template params are explicitly specified.
     */  template<class return_t>
-        const Function build(return_t(*pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(*pFunctor)(signature_t...)) const
         {
             return buildFunctor(pFunctor, detail::member::None);
         }
@@ -101,7 +101,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::None> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction, const std::string& pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
         : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) 
         { }
 
@@ -112,7 +112,7 @@ namespace rtl::builder
         * called on the objects returned by 'type::function()' & 'RecordBuilder<record_t>::methodStatic(..)'.
         * template params are auto deduced from the function pointer passed.
     */	template<class return_t, class ...signature_t>
-        const Function build(return_t(*pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(*pFunctor)(signature_t...)) const
         {
             return buildFunctor(pFunctor, detail::member::None);
         }
@@ -125,8 +125,8 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::Static, void> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace) 
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction,
+                std::string_view pRecordStr, std::string_view pNamespace) 
         : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
         { }
 
@@ -137,7 +137,7 @@ namespace rtl::builder
         * called on objects returned by 'type::function<void>(..)' & 'RecordBuilder<record_t>::methodStatic<void>(..)'
         * template param 'void' is explicitly specified.
     */  template<class return_t>
-        const Function build(return_t(*pFunctor)()) const
+        constexpr const Function build(return_t(*pFunctor)()) const
         {
             return buildFunctor(pFunctor, detail::member::Static);
         }
@@ -147,8 +147,8 @@ namespace rtl::builder
     template<class ...signature_t>
     struct Builder<detail::member::Static, signature_t...> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace) 
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction,
+                std::string_view pRecordStr, std::string_view pNamespace) 
         : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
         { }
 
@@ -159,7 +159,7 @@ namespace rtl::builder
         * called on objects returned by 'type::function<...>(..)' & 'RecordBuilder<record_t>::methodStatic<...>(..)'.
         * template params are explicitly specified.
     */  template<class return_t>
-        inline const Function build(return_t(*pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(*pFunctor)(signature_t...)) const
         {
             return buildFunctor(pFunctor, detail::member::Static);
         }
@@ -169,8 +169,8 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::Static> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, const std::string& pFunction,
-                const std::string& pRecordStr, const std::string& pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction,
+                std::string_view pRecordStr, std::string_view pNamespace)
         : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
         { }
 
@@ -181,7 +181,7 @@ namespace rtl::builder
         * called on the objects returned by 'type::function()' & 'RecordBuilder<record_t>::methodStatic(..)'.
         * template params are auto deduced from the function pointer passed.
     */	template<class return_t, class ...signature_t>
-        const Function build(return_t(*pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(*pFunctor)(signature_t...)) const
         {
             return buildFunctor(pFunctor, detail::member::Static);
         }
@@ -194,7 +194,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::Const, void> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -205,7 +205,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::methodConst<void>()'
         * template param 'void' is explicitly specified.
     */  template<class record_t, class return_t>
-        const Function build(return_t(record_t::* pFunctor)() const) const
+        constexpr const Function build(return_t(record_t::* pFunctor)() const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -215,7 +215,7 @@ namespace rtl::builder
     template<class ...signature_t>
     struct Builder<detail::member::Const, signature_t...> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -226,7 +226,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::methodConst<...>()'
         * template param are explicitly specified.
     */  template<class record_t, class return_t>
-        const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
+        constexpr const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -236,7 +236,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::Const> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -247,7 +247,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::methodConst()'
         * template params will be auto deduced from the function pointer passed.
     */  template<class record_t, class return_t, class ...signature_t>
-        const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
+        constexpr const Function build(return_t(record_t::* pFunctor)(signature_t...) const) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -260,7 +260,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::NonConst, void> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid)
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid)
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -271,7 +271,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::method<void>()'
         * template param 'void' is explicitly specified.
     */  template<class record_t, class return_t>
-        const Function build(return_t(record_t::* pFunctor)()) const
+        constexpr const Function build(return_t(record_t::* pFunctor)()) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -281,7 +281,7 @@ namespace rtl::builder
     template<class ...signature_t>
     struct Builder<detail::member::NonConst, signature_t...> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid)
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid)
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -292,7 +292,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::method<...>()'
         * template params are explicitly specified.
     */  template<class record_t, class return_t>
-        const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
         {
             return buildMethodFunctor(pFunctor);
         }
@@ -302,7 +302,7 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::NonConst> : protected ReflectionBuilder
     {
-        Builder(const std::string& pFunction, traits::uid_t pRecordUid) 
+        Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
         : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
         { }
 
@@ -314,7 +314,7 @@ namespace rtl::builder
         * called on object returned by 'RecordBuilder<record_t>::method()'
         * template params are auto deduced from the pointer passed.
     */  template<class record_t, class return_t, class ...signature_t>
-        const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
+        constexpr const Function build(return_t(record_t::* pFunctor)(signature_t...)) const
         {
             return buildMethodFunctor(pFunctor);
         }

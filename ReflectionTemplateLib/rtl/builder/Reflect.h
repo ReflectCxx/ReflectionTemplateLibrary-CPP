@@ -37,9 +37,9 @@ namespace rtl
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- 'record_t'.
     */  template<class record_t>
-        constexpr const builder::RecordBuilder<record_t> record(const std::string& pClass)
+        constexpr const builder::RecordBuilder<record_t> record(std::string_view pClass)
         {
-            return builder::RecordBuilder<record_t>(m_namespaceStr, pClass, traits::uid<record_t>::value);
+            return builder::RecordBuilder<record_t>(m_namespaceStr, std::string(pClass), traits::uid<record_t>::value);
         }
 
     /*  @method: function<...>()
@@ -51,9 +51,9 @@ namespace rtl
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if any member function pointer is passed.
     */  template<class ...signature_t>
-        constexpr const builder::Builder<detail::member::None, signature_t...> function(const std::string& pFunction)
+        constexpr const builder::Builder<detail::member::None, signature_t...> function(std::string_view pFunction)
         {
-            return builder::Builder<detail::member::None, signature_t...>(traits::uid<>::none, pFunction, m_namespaceStr);
+            return builder::Builder<detail::member::None, signature_t...>(traits::uid<>::none, std::string(pFunction), m_namespaceStr);
         }
 
     /*  @function: function()
@@ -62,9 +62,9 @@ namespace rtl
         * registers only non-member functions.
         * the 'build(..)' called on return object accepts non-member function pointer only.
         * compiler error on 'build(..)' if member function pointer is passed.
-    */  const builder::Builder<detail::member::None> function(const std::string& pFunction)
+    */  const builder::Builder<detail::member::None> function(std::string_view pFunction)
         {
-            return builder::Builder<detail::member::None>(traits::uid<>::none, pFunction, m_namespaceStr);
+            return builder::Builder<detail::member::None>(traits::uid<>::none, std::string(pFunction), m_namespaceStr);
         }
 
     private:
@@ -109,13 +109,13 @@ namespace rtl
         }
 
         template<class record_t>
-        constexpr const builder::RecordBuilder<record_t> record(const std::string& pClass) 
+        constexpr const builder::RecordBuilder<record_t> record(std::string_view pClass)
         {
             return ns(detail::NAMESPACE_GLOBAL).record<record_t>(pClass);
         }
 
         template<class ...signature_t>
-        constexpr const builder::Builder<detail::member::None, signature_t...> function(const std::string& pFunction) 
+        constexpr const builder::Builder<detail::member::None, signature_t...> function(std::string_view pFunction)
         {
             constexpr bool hasConstRValueRef = ((std::is_const_v<std::remove_reference_t<signature_t>> && std::is_rvalue_reference_v<signature_t>) || ...);
             static_assert(!hasConstRValueRef, "Registration of functions with 'const T&&' parameters is not allowed.");
