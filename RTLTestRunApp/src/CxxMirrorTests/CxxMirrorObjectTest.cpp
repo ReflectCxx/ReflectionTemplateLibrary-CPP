@@ -262,7 +262,7 @@ namespace rtl_tests
             // (one global, one inside namespace "std").
             // Both functions wrap the same function-pointer, so their FunctorIds match.
             rtl::type().function("strlen").build(strlen),
-            rtl::type().ns("std").function("strlen").build(std::strlen)
+            rtl::type().function("std::strlen").build(std::strlen)
         });
 
         // Lookup global function "strlen".
@@ -290,7 +290,7 @@ namespace rtl_tests
         }
 
         // Lookup namespaced function "std::strlen".
-        std::optional<rtl::Function> stdStrLen = cxxMirror.getFunction("std", "strlen");
+        std::optional<rtl::Function> stdStrLen = cxxMirror.getFunction("std::strlen");
         ASSERT_TRUE(stdStrLen);
         {
             auto strlen_fn = stdStrLen->argsT<const char*>().returnT<>();

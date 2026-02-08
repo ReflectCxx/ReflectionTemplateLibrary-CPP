@@ -30,7 +30,7 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().ns(event::ns).record<nsdate::Event>(event::struct_).build(),
+            rtl::type().record<nsdate::Event>(event::struct_).build(),
 
             rtl::type().member<nsdate::Event>().method(event::str_reset).build(&nsdate::Event::reset),
         });
@@ -58,7 +58,7 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().ns(date::ns).record<nsdate::Date>(date::struct_).build(),
+            rtl::type().record<nsdate::Date>(date::struct_).build(),
 
             rtl::type().member<nsdate::Date>().constructor<std::string>().build(),
 
@@ -77,7 +77,7 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().ns(date::ns).record<nsdate::Calender>(calender::struct_).build(),
+            rtl::type().record<nsdate::Calender>(calender::struct_).build(),
 
             rtl::type().member<nsdate::Calender>().methodStatic(calender::str_create).build(&nsdate::Calender::create),
 
@@ -104,9 +104,9 @@ namespace rtl_tests
 
             rtl::type().record<std::vector<int>>("vector_int").build(),
 
-            rtl::type().ns("std").record<std::string>("string").build(),
+            rtl::type().record<std::string>("std::string").build(),
 
-            rtl::type().ns("std").record<std::string_view>("string_view").build(),
+            rtl::type().record<std::string_view>("std::string_view").build(),
 
             rtl::type().member<std::string>().methodConst("empty").build(&std::string::empty),
 
@@ -133,19 +133,19 @@ namespace rtl_tests
 
             rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
 
-            rtl::type().ns(str_complex).function(str_setReal).build(complex::setReal),
+            rtl::type().function(str_setReal).build(complex::setReal),
 
-            rtl::type().ns(str_complex).function(str_setImaginary).build(complex::setImaginary),
+            rtl::type().function(str_setImaginary).build(complex::setImaginary),
 
-            rtl::type().ns(str_complex).function(str_getMagnitude).build(complex::getMagnitude),
+            rtl::type().function(str_getMagnitude).build(complex::getMagnitude),
 
-            rtl::type().ns("ext").function("sendString").build(my_type::ext::sendString),
+            rtl::type().function("ext::sendString").build(my_type::ext::sendString),
 
-            rtl::type().ns("ext").function<const char*>("sendAsString").build(my_type::ext::sendAsString),
+            rtl::type().function<const char*>("ext::sendAsString").build(my_type::ext::sendAsString),
 
-            rtl::type().ns("ext").function<my_type::Person>("sendAsString").build(my_type::ext::sendAsString),
+            rtl::type().function<my_type::Person>("ext::sendAsString").build(my_type::ext::sendAsString),
 
-            rtl::type().ns("ext").function<my_type::Person&&>("sendAsString").build(my_type::ext::sendAsString)
+            rtl::type().function<my_type::Person&&>("ext::sendAsString").build(my_type::ext::sendAsString)
         });
 
         std::cout << "\n  [t9]\trtl_tests::InitMirror::reflectingCStyleFunctions() ==> Done.\n";

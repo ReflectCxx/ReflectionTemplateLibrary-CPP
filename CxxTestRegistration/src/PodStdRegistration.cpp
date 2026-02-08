@@ -9,8 +9,8 @@ namespace test_mirror
     {
         id.insert(std::make_pair("int", rtl::traits::uid<int>::value));
         id.insert(std::make_pair("char", rtl::traits::uid<char>::value));
-        id.insert(std::make_pair("string", rtl::traits::uid<std::string>::value));
-        id.insert(std::make_pair("string_view", rtl::traits::uid<std::string_view>::value));
+        id.insert(std::make_pair("std::string", rtl::traits::uid<std::string>::value));
+        id.insert(std::make_pair("std::string_view", rtl::traits::uid<std::string_view>::value));
     }
 
 	void Register::stdTypes(std::vector<rtl::Function>& fns)
@@ -33,8 +33,7 @@ namespace test_mirror
         fns.push_back(rtl::type().record<char>("char")
                                  .build());
 
-        fns.push_back(rtl::type().ns("std")
-                                 .record<std::string_view>("string_view")
+        fns.push_back(rtl::type().record<std::string_view>("std::string_view")
                                  .build());
 
         //  Registers std::string class
@@ -49,8 +48,7 @@ namespace test_mirror
                                  .methodConst<void>("empty")
                                  .build(&std::string::empty));
 
-        fns.push_back(rtl::type().ns("std")
-                                 .record<std::string>("string")
+        fns.push_back(rtl::type().record<std::string>("std::string")
                                  .build());
 
         fns.push_back(rtl::type().member<std::string>()

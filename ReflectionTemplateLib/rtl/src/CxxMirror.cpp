@@ -23,34 +23,6 @@ namespace rtl
     /**
     * @method getRecord
     * 
-    * @param pRecordName The name of the class or struct to look up.
-    * @return std::optional<rtl::Record>
-    *         Returns a valid Record if the type is found by name in default namespace group; otherwise, std::nullopt.
-    *
-    * All registered classes and structs are grouped under a namespace.
-    * If no namespace is specified during registration, NAMESPACE_GLOBAL(the default) is used. */
-    std::optional<Record> CxxMirror::getRecord(const std::string& pRecordName) const
-    {
-        return getRecord(std::string(detail::NAMESPACE_GLOBAL), pRecordName);
-    }
-
-    /**
-    * @method getFunction
-    * 
-    * @param pFunctionName The name of the non-member function to look up.
-    * @return std::optional<rtl::Function>
-    *         Returns a valid Function if found by name in default namespace group; otherwise, std::nullopt.
-    *
-    * All registered non-member functions are grouped under a namespace.
-    * If no namespace is specified during registration, NAMESPACE_GLOBAL(the default) is used. */
-    std::optional<Function> CxxMirror::getFunction(const std::string& pFunctionName) const
-    {
-        return getFunction(std::string(detail::NAMESPACE_GLOBAL), pFunctionName);
-    }
-
-    /**
-    * @method getRecord
-    * 
     * @param pRecordId The RTL-specific unique type identifier.
     * @return std::optional<rtl::Record>
     *         Returns a valid Record if the type is found; otherwise, std::nullopt.
@@ -76,10 +48,10 @@ namespace rtl
     *         Returns a valid Record if the type is found by name in the given namespace group; otherwise, std::nullopt.
     *
     * Retrieves the class or struct registered under the specified namespace. */
-    std::optional<Record> CxxMirror::getRecord(const std::string& pNameSpaceName, const std::string& pRecordName) const
+    std::optional<Record> CxxMirror::getRecord(const std::string& pRecordName) const
     {
         const auto& nsRecordMap = getNamespaceRecordMap();
-        const auto& itr = nsRecordMap.find(pNameSpaceName);
+        const auto& itr = nsRecordMap.find(detail::NAMESPACE_GLOBAL);
         if (itr != nsRecordMap.end())
         {
             const auto& recordMap = itr->second;
@@ -100,10 +72,10 @@ namespace rtl
     *         Returns a valid Function if found by name in the given namespace group; otherwise, std::nullopt.
     *
     * Retrieves the non-member function registered under the specified namespace. */
-    std::optional<Function> CxxMirror::getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const
+    std::optional<Function> CxxMirror::getFunction(const std::string& pFunctionName) const
     {
         const auto& nsFunctionMap = getNamespaceFunctionsMap();
-        const auto& itr = nsFunctionMap.find(pNameSpaceName);
+        const auto& itr = nsFunctionMap.find(detail::NAMESPACE_GLOBAL);
         if (itr != nsFunctionMap.end())
         {
             const auto& functionMap = itr->second;

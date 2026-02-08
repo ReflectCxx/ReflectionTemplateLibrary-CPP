@@ -21,7 +21,7 @@ namespace rtl_tests
             EXPECT_EQ(err, rtl::error::InvalidCaller);
             EXPECT_TRUE(robj.isEmpty());
         }
-        std::optional<rtl::Record> classStdString = cxx::mirror().getRecord("std", "string");
+        std::optional<rtl::Record> classStdString = cxx::mirror().getRecord("std::string");
         ASSERT_TRUE(classStdString);
         {
             auto testCreateOn = [&](rtl::alloc alloc_on)

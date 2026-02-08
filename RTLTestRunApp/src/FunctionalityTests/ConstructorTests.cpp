@@ -16,10 +16,10 @@ namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_record_types_with_wrong_names)
 	{
-		optional<Function> badFunc = cxx::mirror().getFunction(date::ns, "wrong_date_struct");
+		optional<Function> badFunc = cxx::mirror().getFunction("wrong_date_struct");
 		EXPECT_FALSE(badFunc);
 
-		optional<Record> badRec = cxx::mirror().getRecord(date::ns, "wrong" + std::string(date::struct_));
+		optional<Record> badRec = cxx::mirror().getRecord("wrong" + std::string(date::struct_));
 		EXPECT_FALSE(badRec);
 	}
 
@@ -27,7 +27,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, wrong_args)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string, int> ctorT = classDate->ctorT<std::string, int>();
@@ -44,7 +44,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, wrong_args)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string, int> ctorT = classDate->ctorT<std::string, int>();
@@ -61,7 +61,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_void)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Heap);
@@ -78,7 +78,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_void)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Stack);
@@ -95,7 +95,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_string)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
@@ -113,7 +113,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_string)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
@@ -131,7 +131,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto ctorT = classDate->ctorT<unsigned, unsigned, unsigned>();
@@ -151,7 +151,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			unsigned day = date::DAY;
@@ -175,7 +175,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_heap)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Heap);
@@ -192,7 +192,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_stack)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::ns, date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Stack);

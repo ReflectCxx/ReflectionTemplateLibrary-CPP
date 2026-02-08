@@ -60,7 +60,6 @@ namespace rtl
         GETTER(traits::uid_t, RecordTypeId, m_recordTypeId);
 
         GETTER_CREF(std::string, RecordName, m_recordStr);
-        GETTER_CREF(std::string, Namespace, m_namespaceStr);
         GETTER_CREF(std::string, FunctionName, m_function);
         GETTER_CREF(std::vector<type_meta>, FunctorsMeta, m_functorsMeta)
 

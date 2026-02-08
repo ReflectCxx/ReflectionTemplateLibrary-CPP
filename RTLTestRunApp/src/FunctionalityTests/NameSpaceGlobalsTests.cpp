@@ -16,6 +16,13 @@ using namespace test_mirror;
 namespace rtl_tests
 {
 
+    TEST(RTLInterfaceCxxMirror, get_global_functions_with_wrong_names)
+    {
+        optional<Function> badFunc = cxx::mirror().getFunction("wrong_getComplexNumAsString");
+        EXPECT_FALSE(badFunc);
+    }
+
+
     TEST(Reflecting_pod, construct_char_on_heap_and_stack)
     {
         optional<Record> charType = cxx::mirror().getRecord(cxx::reflected_id("char"));
@@ -97,32 +104,15 @@ namespace rtl_tests
     }
 
 
-    TEST(RTLInterfaceCxxMirror, get_global_functions_with_wrong_names)
-    {
-        {
-            optional<Function> badFunc = cxx::mirror().getFunction("wrong_namespace", "wrong_function");
-            EXPECT_FALSE(badFunc);
-        } {
-            optional<Function> badFunc = cxx::mirror().getFunction(str_complex, "wrong_function");
-            EXPECT_FALSE(badFunc);
-        } {
-            optional<Function> badFunc = cxx::mirror().getFunction("wrong_getComplexNumAsString");
-            EXPECT_FALSE(badFunc);
-        }
-    }
-
-
     TEST(FunctionInNameSpace, get_namespace_function_types)
     {
-        optional<Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        optional<Function> setReal = cxx::mirror().getFunction(str_setReal);
         ASSERT_TRUE(setReal);
 
-        optional<Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+        optional<Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
         ASSERT_TRUE(setImaginary);
 
-        EXPECT_TRUE(setReal->getNamespace() == str_complex);
         EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
-        EXPECT_TRUE(setImaginary->getNamespace() == str_complex);
         EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
     }
 
@@ -130,7 +120,7 @@ namespace rtl_tests
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
         {
-            optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+            optional<Function> fnSetReal = cxx::mirror().getFunction(str_setReal);
             ASSERT_TRUE(fnSetReal);
             EXPECT_TRUE(fnSetReal->hasSignature<double>());
 
@@ -142,7 +132,7 @@ namespace rtl_tests
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> fnSetImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+            optional<Function> fnSetImaginary = cxx::mirror().getFunction(str_setImaginary);
             ASSERT_TRUE(fnSetImaginary);
             EXPECT_TRUE(fnSetImaginary->hasSignature<double>());
 
@@ -154,7 +144,7 @@ namespace rtl_tests
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
+            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(str_getMagnitude);
             ASSERT_TRUE(fnGetMagnitude);
             EXPECT_TRUE(fnGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
@@ -176,7 +166,7 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        optional<Function> fnSetReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        optional<Function> fnSetReal = cxx::mirror().getFunction(str_setReal);
         ASSERT_TRUE(fnSetReal);
 
         EXPECT_TRUE(fnSetReal->hasSignature<double>());
@@ -259,7 +249,7 @@ namespace rtl_tests
 
     TEST(Reflecting_STL_class, std_string__call_reflected_method)
     {
-        optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string");
+        optional<Record> stdStringClass = cxx::mirror().getRecord("std::string");
         ASSERT_TRUE(stdStringClass);
 
         optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");
@@ -292,7 +282,7 @@ namespace rtl_tests
 
     TEST(Reflecting_STL_class, std_string_view__call_reflected_method)
     {
-        optional<Record> stdStringClass = cxx::mirror().getRecord("std", "string_view");
+        optional<Record> stdStringClass = cxx::mirror().getRecord("std::string_view");
         ASSERT_TRUE(stdStringClass);
 
         optional<Method> fnIsStringEmpty = stdStringClass->getMethod("empty");

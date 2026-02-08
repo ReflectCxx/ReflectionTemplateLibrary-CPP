@@ -19,7 +19,7 @@ namespace
             EXPECT_FALSE(optSendString);
         } {
             // Retrieve the function with its correct namespace.
-            std::optional<rtl::Function> optSendString = MyReflection().getFunction("ext", "sendString");
+            std::optional<rtl::Function> optSendString = MyReflection().getFunction("ext::sendString");
             // Found successfully.
             ASSERT_TRUE(optSendString);
 
@@ -57,7 +57,7 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_const_char_ptr)
     {
         // Retrieve the function with its correct namespace.
-        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext::sendAsString");
         // Found successfully.
         ASSERT_TRUE(optSendAsString);
 
@@ -95,7 +95,7 @@ namespace
     TEST(MyReflectionTests, overload_resolution_semantics__arg_lvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext::sendAsString");
         ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Eric");
@@ -130,7 +130,7 @@ namespace
     TEST(MyReflectionTests, overload_resolution_with_perfect_forwarding_semantics__arg_rvalue)
     {
         // Retrieve the function from its namespace.
-        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext", "sendAsString");
+        std::optional<rtl::Function> optSendAsString = MyReflection().getFunction("ext::sendAsString");
         ASSERT_TRUE(optSendAsString); // Function found successfully.
 
         auto nameStr = std::string("person_Logan");

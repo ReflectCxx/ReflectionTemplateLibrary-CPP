@@ -292,7 +292,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -345,7 +345,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::struct_);
                 ASSERT_TRUE(structDate);
 
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
@@ -373,7 +373,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -426,7 +426,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::struct_);
                 ASSERT_TRUE(structDate);
 
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
@@ -454,7 +454,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -507,7 +507,7 @@ namespace rtl_tests
                 // both objects must be equal (shared via shared_ptr inside 'Calender')
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::struct_);
                 ASSERT_TRUE(structDate);
 
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);
@@ -535,7 +535,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> typeCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
+            optional<Record> typeCalender = cxx::mirror().getRecord(calender::struct_);
             ASSERT_TRUE(typeCalender);
 
             // Create a stack-allocated object via reflection
@@ -588,7 +588,7 @@ namespace rtl_tests
                 // both objects must be equal, created via default-constructor, different instances, not shared.
                 EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
 
-                optional<Record> structDate = cxx::mirror().getRecord(date::ns, date::struct_);
+                optional<Record> structDate = cxx::mirror().getRecord(date::struct_);
                 ASSERT_TRUE(structDate);
                 
                 optional<Method> oUpdateDate = structDate->getMethod(date::str_updateDate);

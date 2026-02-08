@@ -14,10 +14,9 @@ namespace rtl_tests
 {
     TEST(TypeAware_Function, init_errors_validation)
     {
-        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_setReal);
         ASSERT_TRUE(setReal);
         {
-            EXPECT_TRUE(setReal->getNamespace() == str_complex);
             EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
             {
                 rtl::function<void(double)> functor = setReal->argsT<double>().returnT<void>();
@@ -30,10 +29,9 @@ namespace rtl_tests
             }
         }
 
-        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
         ASSERT_TRUE(setImaginary);
         {
-            EXPECT_TRUE(setImaginary->getNamespace() == str_complex);
             EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
             {
                 rtl::function<void(double)> functor = setImaginary->argsT<double>().returnT<void>();
@@ -50,19 +48,19 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, namespace_fn_call_with_known_signature)
     {
-        std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_complex, str_getMagnitude);
+        std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_getMagnitude);
         ASSERT_TRUE(getMagnitude);
 
         rtl::function<double()> get_magnitude = getMagnitude->argsT<>().returnT<double>();
         ASSERT_TRUE(get_magnitude);
 
-        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_complex, str_setReal);
+        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_setReal);
         ASSERT_TRUE(setReal);
 
         rtl::function<void(double)> set_real = setReal->argsT<double>().returnT<void>();
         ASSERT_TRUE(set_real);
 
-        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_complex, str_setImaginary);
+        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
         ASSERT_TRUE(setImaginary);
 
         rtl::function<void(double)> set_imaginary = setImaginary->argsT<double>().returnT<void>();

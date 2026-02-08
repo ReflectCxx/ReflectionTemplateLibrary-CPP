@@ -88,20 +88,6 @@ namespace rtl
         type& operator=(type&&) = delete;
         type& operator=(const type&) = delete;
 
-    /*  @function: ns()
-        @param: std::string, name of the 'namespace' as string.
-        @return: '*this', Reflect.
-        * used to group registered function, class/struct under a namespace name.
-        * its an internal grouping of registered types under a 'namespace' name.
-        * providing a namespace is optional. registration can be done without a namespace name, even if a type exists in one.
-        * if types are registered with 'namespace' name, then it must be passed when retriving the objects from 'CxxMirror',
-            check functions, CxxMirror::getFunction("name_space", "func_name") & CxxMirror::getRecord("name_space","class_name"),
-            if no namespace is given, then CxxMirror::getFunction("func_name") & CxxMirror::getRecord("class_name")
-    */  type_ns ns(const std::string& pNamespace)
-        {
-            return type_ns(pNamespace);
-        }
-
         template<class record_t>
         constexpr const builder::MethodBuilder<record_t> member() 
         {
@@ -111,7 +97,7 @@ namespace rtl
         template<class record_t>
         constexpr const builder::RecordBuilder<record_t> record(std::string_view pClass)
         {
-            return ns(detail::NAMESPACE_GLOBAL).record<record_t>(pClass);
+            return type_ns(detail::NAMESPACE_GLOBAL).record<record_t>(pClass);
         }
 
         template<class ...signature_t>
@@ -120,7 +106,7 @@ namespace rtl
             constexpr bool hasConstRValueRef = ((std::is_const_v<std::remove_reference_t<signature_t>> && std::is_rvalue_reference_v<signature_t>) || ...);
             static_assert(!hasConstRValueRef, "Registration of functions with 'const T&&' parameters is not allowed.");
 
-            return ns(detail::NAMESPACE_GLOBAL).function<signature_t...>(pFunction);
+            return type_ns(detail::NAMESPACE_GLOBAL).function<signature_t...>(pFunction);
         }
     };
 }

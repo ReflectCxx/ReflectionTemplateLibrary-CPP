@@ -95,7 +95,7 @@ namespace rtl {
         * seggregates all the 'Function' objects and builds 'Record' & 'Method' objects.
     */  void CxxReflection::insertFunctionToNamespaceMap(const Function& pFunction)
         {
-            const std::string& nameSpace = pFunction.getNamespace();
+            const std::string& nameSpace = detail::NAMESPACE_GLOBAL; //pFunction.getNamespace();
             const std::string& recordName = pFunction.getRecordName();
             const traits::uid_t recordId = pFunction.getRecordTypeId();
             //if the recordId(class/struct's type-id) is TypeId<>::None, 'Function' object is considered as non-member function.

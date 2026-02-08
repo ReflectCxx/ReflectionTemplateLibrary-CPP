@@ -18,8 +18,7 @@ namespace test_mirror
 	{
 		//  Registering 'Event' for reflection; instance creation via reflection fails since its default constructor is private or deleted.
 		//  At least one member must be registered for RTL to recognize the type. be it property, member-function or constructor.
-		fns.push_back(rtl::type().ns(event::ns)
-								 .record<nsdate::Event>(event::struct_)
+		fns.push_back(rtl::type().record<nsdate::Event>(event::struct_)
 								 .build());
 
 		fns.push_back(rtl::type().member<nsdate::Event>()

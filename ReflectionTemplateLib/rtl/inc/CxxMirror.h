@@ -59,13 +59,7 @@ namespace rtl
         // Returns a valid Record if the type is found by name in default namespace group; otherwise, std::nullopt.
         std::optional<Record> getRecord(const std::string& pRecordName) const;
 
-        // Returns a valid Record if the type is found by name in the given namespace group; otherwise, std::nullopt.
-        std::optional<Record> getRecord(const std::string& pNameSpaceName, const std::string& pRecordName) const;
-
         // Returns a valid Function if found by name in default namespace group; otherwise, std::nullopt.
         std::optional<Function> getFunction(const std::string& pFunctionName) const;
-
-        // Returns a valid Function if found by name in the given namespace group; otherwise, std::nullopt.
-        std::optional<Function> getFunction(const std::string& pNameSpaceName, const std::string& pFunctionName) const;
     };
 }

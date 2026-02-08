@@ -50,12 +50,8 @@ static const std::string toJson(const Function& pFunction)
 	std::stringstream sout;
 	const auto& functors = pFunction.getFunctorsMeta();
 	const std::string& record = pFunction.getRecordName();
-	const std::string& nmspace = pFunction.getNamespace();
 
 	sout << "{" << (record.empty() ? "\"function\"" : "\"method\"") << ": \"" << pFunction.getFunctionName() << "\",";
-	if (nmspace != rtl::detail::NAMESPACE_GLOBAL) {
-		sout << "\"namespace\": \"" << nmspace << "\",";
-	}
 	if (!record.empty()) {
 		sout << "\"record\": \"" << record << "\",";
 	}

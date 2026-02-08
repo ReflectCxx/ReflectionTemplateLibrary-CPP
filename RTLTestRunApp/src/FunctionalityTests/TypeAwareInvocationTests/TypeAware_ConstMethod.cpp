@@ -13,7 +13,7 @@ namespace rtl_tests
 {
     TEST(TypeAware_ConstMethod, std_string_view_method_call_with_known_signature)
     {
-        std::optional<rtl::Record> stdStringViewClass = cxx::mirror().getRecord("std", "string_view");
+        std::optional<rtl::Record> stdStringViewClass = cxx::mirror().getRecord("std::string_view");
         ASSERT_TRUE(stdStringViewClass);
 
         std::optional<rtl::Method> isStringEmpty = stdStringViewClass->getMethod("empty");
@@ -264,7 +264,7 @@ namespace rtl_tests
 
     TEST(TypeAware_ConstMethod, std_string_method_call_with_known_signature)
     {
-        std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std", "string");
+        std::optional<rtl::Record> stdStringClass = cxx::mirror().getRecord("std::string");
         ASSERT_TRUE(stdStringClass);
 
         std::optional<rtl::Method> isStringEmpty = stdStringClass->getMethod("empty");
