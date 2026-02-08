@@ -47,8 +47,6 @@ namespace test_mirror
         fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<const std::string&>(animal::str_updateZooKeeper)
                                  .build(&Animal::updateZooKeeper));
-
-#if defined(__GNUC__) && !defined(__clang__)
 /*
     GCC here fails to automatically resolve the correct overloaded functor
     when both a lvalue reference and an rvalue overload exist.
@@ -71,22 +69,5 @@ namespace test_mirror
         fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<std::string&&>(animal::str_updateZooKeeper)
                                  .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper))); //static method, taking rvalue reference as argument.
-#else
-        fns.push_back(rtl::type().member<Animal>()
-                                 .method<std::string&>(animal::str_setAnimalName)
-                                 .build(&Animal::setAnimalName));  //overloaded method, taking non-const lvalue reference as argument.
-                
-        fns.push_back(rtl::type().member<Animal>()
-                                 .method<std::string&&>(animal::str_setAnimalName)
-                                 .build(&Animal::setAnimalName));  //overloaded method, taking rvalue reference as argument.
-                
-        fns.push_back(rtl::type().member<Animal>()
-                                 .methodStatic<std::string&>(animal::str_updateZooKeeper)
-                                 .build(&Animal::updateZooKeeper));  //static method, taking non-const lvalue reference as argument.
-                
-        fns.push_back(rtl::type().member<Animal>()
-                                 .methodStatic<std::string&&>(animal::str_updateZooKeeper)
-                                 .build(&Animal::updateZooKeeper)); //static method, taking rvalue reference as argument.
-#endif
 	}
 }

@@ -23,7 +23,7 @@ namespace test_mirror
         fns.push_back(rtl::type().function<const char*>(str_reverseString)
                                  .build(reverseString));
         //  numereous other overloads.
- #if defined(__GNUC__) && !defined(__clang__)
+
 /*
         GCC here fails to automatically resolve the correct overloaded functor
         when both a lvalue reference and an rvalue overload exist.
@@ -39,16 +39,7 @@ namespace test_mirror
         
         fns.push_back(rtl::type().function<std::string&&>(str_reverseString)
                                  .build(static_cast<std::string(*)(std::string&&)>(reverseString)));
-#else
-        fns.push_back(rtl::type().function<std::string&>(str_reverseString)
-                                 .build(reverseString));
 
-        fns.push_back(rtl::type().function<std::string&&>(str_reverseString)
-                                 .build(reverseString));
-
-        fns.push_back(rtl::type().function<const std::string&>(str_reverseString)
-                                 .build(reverseString));
-#endif
         fns.push_back(rtl::type().function<std::string*>(str_reverseString)
                                  .build(reverseString));
 

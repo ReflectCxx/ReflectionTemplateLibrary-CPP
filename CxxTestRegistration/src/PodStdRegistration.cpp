@@ -46,7 +46,7 @@ namespace test_mirror
     *   RTL will ignore this duplicate registration and retain the first one. Emits a warning on the console:
     *   "[WARNING] Multiple registrations of the same type with different names detected."
     */  fns.push_back(rtl::type().member<std::string>()
-                                 .methodConst("empty")
+                                 .methodConst<void>("empty")
                                  .build(&std::string::empty));
 
         fns.push_back(rtl::type().ns("std")
