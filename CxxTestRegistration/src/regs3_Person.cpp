@@ -44,7 +44,7 @@ namespace regs3::type0 {
                                  .build(&Person::getProfile));
 
         fns.push_back(rtl::type().member<Person>()
-                                 .methodStatic<std::string, unsigned long long>(cxx::type::Person::fn::getProfile::id)
+                                 .methodStatic<std::string, std::size_t>(cxx::type::Person::fn::getProfile::id)
                                  .build(&Person::getProfile));
 
         fns.push_back(rtl::type().member<Person>()
