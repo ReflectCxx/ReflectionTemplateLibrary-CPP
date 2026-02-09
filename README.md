@@ -23,29 +23,23 @@ Using RTL, you can discover this function by name and call it dynamically:
 rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
                                                                ->argsT<float, float>()
                                                                .returnT<std::string>();
-if(cToStr) {   // Function materialized?
+if(cToStr) {   // Functor valid?
     std::string result = cToStr(61, 35);  // Works!
 }
 // cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
 > *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
-⚡ **Performance**
-
-RTL’s reflective calls are comparable to `std::function`, and achieve lower overhead when argument and return types are fully specified.
-
 ## Design Highlights
 
-* ***Single Source of Truth*** – All reflection metadata can be centralized in a single immutable `rtl::CxxMirror`, providing a consistent, thread-safe, duplication-free, and deterministic view of reflected state.
+* ***Zero-Overhead by Design*** – Reflection metadata is registered and resolved lazily. You only pay for what you actually use.
 
-* ***Non-Intrusive & Macro-Free*** – Reflection metadata is registered externally via a builder-style API, with no macros, base classes, or intrusive annotations required on user types.
+* ***Non-Intrusive & Macro-Free*** – No macros, base classes, or intrusive user-type annotations required.
 
-* ***Zero-Overhead by Design*** – Metadata can be registered and resolved lazily. Reflection introduces no runtime cost beyond the features explicitly exercised by the user.
+* ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
-* ***Hot-Loop Ready*** – Typed reflection calls exhibit near-zero overhead and scale like direct calls, making RTL suitable for performance-critical and tight-loop workloads. *([Performance Summary](docs/benchmark_summary.md))*
-
-* ***Tooling-Friendly Architecture*** – Reflection metadata is encapsulated in a single immutable, lazily-initialized structure that can be shared with external tools and frameworks without compile-time type knowledge – suitable for serializers, debuggers, test frameworks, scripting engines, and editors.
-
+  See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
+  
 ## A Quick Preview: Reflection That Looks and Feels Like C++
 
 First, create an instance of `rtl::CxxMirror`:
@@ -75,16 +69,23 @@ rtl::CxxMirror& cxx::mirror() {
     return cxx_mirror;
 }
 ```
+Manual registration with string-based type identifiers can become error-prone and difficult to maintain in larger codebases. The [clang-mirror](https://github.com/ReflectCxx/clang-mirror) tool can auto-generate the registration boilerplate and derive these identifiers directly from the source AST, preserving developer-written names and emitting them as compile-time `constexpr` values validated against the parsed code.
+
 ### RTL in action:
 
-Lookup the `Person` class by its registered name:
+Lookup the `Person` class by its registered name using a string literal:
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
+When using `clang-mirror` output, prefer the generated compile-time identifier:
+```c++ 
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
+if (!classPerson) { /* Class not registered. */ }
+```
 `rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
 
-From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors (not callables). Callable entities are materialized by explicitly providing the argument types we intend to pass.
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are produced by explicitly providing the argument types we intend to pass.
 
 For example, the overloaded constructor `Person(std::string, int)`:
 ```c++
@@ -106,7 +107,12 @@ Looking up a member function by name:
 std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
 if (!oGetName) { /* Member function not registered */ }
 ```
-And materialize a complete type-aware caller:
+Or, preferably, using the generated member-function identifier:
+```c++
+std::optional<rtl::Method> oGetName = classPerson->getMethod(cxx::type::Person::fn::getName::id);
+if (!oGetName) { /* Member function not registered */ }
+```
+And obtain a complete type-aware functor:
 ```c++
 rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
                                                      .returnT<std::string>();
@@ -142,7 +148,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities (functions, member functions and constructors) are materialized through `rtl::Function`, `rtl::Method` and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors—are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
 
@@ -150,7 +156,7 @@ At a high level, every registered C++ type is encapsulated as an `rtl::Record`. 
 &nbsp;
 [![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
 &nbsp;
-[![Benchmark Summary](https://img.shields.io/badge/Doc-Benchmark%20Summary-teal)](./docs/benchmark_summary.md)
+[![Benchmarks](https://img.shields.io/badge/Doc-Benchmarks-teal)](./docs/benchmark_summary.md)
 
 ### How to Build (Windows / Linux)
 ```sh
@@ -178,6 +184,7 @@ Additional resources:
   * Default construction.
   * Copy/Move construction.
   * Any overloaded constructor.
+  * Automatic destruction.
 
 * ✅ **Allocation Strategies & Ownership** :
   * Choose between `Heap` or `Stack` allocation.
@@ -201,21 +208,3 @@ Additional resources:
 * ❌ **Property Reflection**: Planned.
 * ❌ **Enum Reflection**: Planned.
 * ❌ **Metadata iterators**: Planned.
-
-## 💚 Support RTL’s Development
-
-RTL is an actively maintained, production-oriented C++ runtime reflection system focused on performance, type safety, and real-world usability.
-
-Sponsorship supports continued improvement of RTL’s core reflection capabilities, along with:
-
-* Production-ready examples
-* Tooling and documentation
-* Cross-platform CI and testing
-
-If you’re interested in advancing practical runtime reflection in C++ and supporting the continued evolution of RTL’s core capabilities, consider sponsoring the project.
-
-[![Sponsor RTL](https://img.shields.io/badge/Sponsor-RTL_Development-ea4aaa?logo=github)](https://github.com/sponsors/ReflectCxx)
-
-##
-
-***C++ joins the reflection party! – why should Java have all the fun?***

@@ -39,18 +39,18 @@ The lifetime of registered metadata is independent of any individual `rtl::CxxMi
 
 ### ⚡ Reflective Call Materialization and Performance
 
-RTL employs a two-phase invocation model. Metadata queries return lightweight descriptors such as `rtl::Function` and `rtl::Method`, which must be explicitly **materialized** into callable entity by specifying the expected signature.
+RTL employs a two-phase invocation model. Metadata queries return lightweight descriptors such as `rtl::Function` and `rtl::Method`, which must be explicitly **instantiated** into functors (callable–entities) by specifying the expected signature.
 
-This deferred materialization acts as a compile-time contract: the user declares the argument and return types they intend to use, and RTL validates and prepares an optimized invocation path accordingly.
+This deferred instantiation acts as a compile-time contract: the user declares the argument and return types they intend to use, and RTL validates and prepares an optimized invocation path accordingly.
 
 Performance depends on how much type information is provided:
 
-* Fully specified signatures compile to **direct function-pointer calls**, faster than `std::function`.
+* Fully specified signatures compile to **direct function-pointer calls**.
 * Type-erased signatures invoke through a lightweight dispatch layer whose performance **is comparable** to `std::function` under real workloads.
 
-By requiring explicit materialization, RTL produces lightweight, reusable callable entity that behave like ordinary value-type objects and can be stored in standard containers.
+By requiring explicit instantiation, RTL produces lightweight, reusable functors that behave like ordinary value-type objects and can be stored in standard containers.
 
-At call time, RTL performs no dynamic allocations, no RTTI lookups, no `void*` stuff, and no hidden metadata traversals. The runtime cost is explicit, minimal, and comparable to what a developer would implement manually for equivalent type safety and flexibility.
+At call time, RTL performs no dynamic allocations, no RTTI lookups, no `void*` usage, and no hidden metadata traversals. The runtime cost is explicit, minimal, and comparable to what a developer would implement manually for equivalent type safety and flexibility.
 
 ---
 
