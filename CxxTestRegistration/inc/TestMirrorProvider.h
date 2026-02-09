@@ -12,5 +12,5 @@ namespace cxx {
 
 	const rtl::CxxMirror& mirror();
 
-	const rtl::traits::uid_t reflected_id(const std::string& pRecordName);
+	const rtl::traits::uid_t reflected_id(const std::string_view pRecordName);
 };

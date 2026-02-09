@@ -199,11 +199,11 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, copy_construct__error_TypeNotCopyConstructible)
     {
         {
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             //Events's constructor not registered, get its instance from 'Calander'.
-            optional<Method> getEvent = classCalender->getMethod(calender::str_getTheEvent);
+            optional<Method> getEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(getEvent);
 
             // Create Calender, which will create a Event's instance.

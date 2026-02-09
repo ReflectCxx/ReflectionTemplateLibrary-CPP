@@ -17,7 +17,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -80,7 +80,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -132,10 +132,10 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> oGetTheEvent = classCalender->getMethod(calender::str_getTheEvent);
+            optional<Method> oGetTheEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(oGetTheEvent);
 
             // Create a stack-allocated object via reflection
@@ -221,10 +221,10 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> optCreateCalender = classCalender->getMethod(calender::str_create);
+            optional<Method> optCreateCalender = classCalender->getMethod(cxx::type::nsdate::Calender::fn::create::id);
             ASSERT_TRUE(optCreateCalender);
 
             auto createCalenderFn = optCreateCalender->argsT<>().returnT<>();

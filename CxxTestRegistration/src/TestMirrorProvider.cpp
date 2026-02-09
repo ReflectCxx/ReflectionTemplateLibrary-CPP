@@ -123,7 +123,7 @@ const rtl::CxxMirror& cxx::mirror()
     return cxx_mirror;
 }
 
-const rtl::traits::uid_t cxx::reflected_id(const std::string& pRecordName)
+const rtl::traits::uid_t cxx::reflected_id(const std::string_view pRecordName)
 {
     static std::unordered_map<std::string_view, rtl::traits::uid_t> nameIdMap = {
 

@@ -60,15 +60,15 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<nsdate::Date>(date::struct_).build(),
+            rtl::type().record<nsdate::Date>(cxx::type::nsdate::Date::id).build(),
 
             rtl::type().member<nsdate::Date>().constructor<std::string>().build(),
 
             rtl::type().member<nsdate::Date>().constructor<unsigned, unsigned, unsigned>().build(),
 
-            rtl::type().member<nsdate::Date>().method(date::str_updateDate).build(&nsdate::Date::updateDate),
+            rtl::type().member<nsdate::Date>().method(cxx::type::nsdate::Date::fn::updateDate::id).build(&nsdate::Date::updateDate),
 
-            rtl::type().member<nsdate::Date>().methodConst(date::str_getAsString).build(&nsdate::Date::getAsString)
+            rtl::type().member<nsdate::Date>().methodConst(cxx::type::nsdate::Date::fn::getAsString::id).build(&nsdate::Date::getAsString)
         });
 
         std::cout << "\n  [t1]\trtl_tests::InitMirror::reflectingDate() ==> Done.\n";
@@ -79,17 +79,17 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<nsdate::Calender>(calender::struct_).build(),
+            rtl::type().record<nsdate::Calender>(cxx::type::nsdate::Calender::id).build(),
 
-            rtl::type().member<nsdate::Calender>().methodStatic(calender::str_create).build(&nsdate::Calender::create),
+            rtl::type().member<nsdate::Calender>().methodStatic(cxx::type::nsdate::Calender::fn::create::id).build(&nsdate::Calender::create),
 
-            rtl::type().member<nsdate::Calender>().method(calender::str_getTheEvent).build(&nsdate::Calender::getTheEvent),
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getTheEvent::id).build(&nsdate::Calender::getTheEvent),
 
-            rtl::type().member<nsdate::Calender>().method(calender::str_getTheDate).build(&nsdate::Calender::getTheDate),
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getTheDate::id).build(&nsdate::Calender::getTheDate),
 
-            rtl::type().member<nsdate::Calender>().method(calender::str_getSavedEvent).build(&nsdate::Calender::getSavedEvent),
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getSavedEvent::id).build(&nsdate::Calender::getSavedEvent),
 
-            rtl::type().member<nsdate::Calender>().method(calender::str_getSavedDate).build(&nsdate::Calender::getSavedDate)
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getSavedDate::id).build(&nsdate::Calender::getSavedDate)
         });
 
         std::cout << "\n  [t7]\trtl_tests::InitMirror::reflectingCalender() ==> Done.\n";

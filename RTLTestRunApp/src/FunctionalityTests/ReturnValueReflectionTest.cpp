@@ -22,7 +22,7 @@ namespace rtl_tests
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
         {
-            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(calender::struct_));
+            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(cxx::type::nsdate::Calender::id));
             ASSERT_TRUE(classCalender);
 
             auto [err1, calender] = classCalender->ctorT()(rtl::alloc::Stack);
@@ -36,7 +36,7 @@ namespace rtl_tests
             EXPECT_TRUE(event::get_instance_count() == 2);
 
             // Event's object can be obtained from Calender's object ('Calander' has-a 'Event').
-            auto getEvent = classCalender->getMethod(calender::str_getTheEvent);
+            auto getEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(getEvent);
 
             auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
