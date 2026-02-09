@@ -17,69 +17,6 @@ namespace rtl
 {
 /*  @class: Reflect
     * provides interface to register all kinds of functions (member/non-member).
-*/  struct type_ns
-    {
-        type_ns() = delete;
-        type_ns(type_ns&&) = delete;
-        type_ns(const type_ns&) = delete;
-        type_ns& operator=(type_ns&&) = delete;
-        type_ns& operator=(const type_ns&) = delete;
-
-        type_ns(const std::string& pNamespace) 
-            : m_recordStr("")
-            , m_namespaceStr(pNamespace)
-        { }
-
-    /*  @function: record()
-        @param: std::string (name of class/struct)
-        @return: RecordBuilder<record_t>
-        * provides object of 'RecordBuilder', which provides interface to registers member functions of class/struct of 'record_t'.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if function pointer passed is not a member of class/struct- 'record_t'.
-    */  template<class record_t>
-        constexpr const builder::RecordBuilder<record_t> record(std::string_view pClass)
-        {
-            return builder::RecordBuilder<record_t>(m_namespaceStr, std::string(pClass), traits::uid<record_t>::value);
-        }
-
-    /*  @method: function<...>()
-        @param: std::string (name of function)
-        @return: Builder<detail::member::None, signature_t...>
-        * registers only non-member functions.
-        * used for registering overloads, if unique member function, use non-templated version 'function()'.
-        * template parameters must be explicitly specified, should be exactly same as the function being registered.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if any member function pointer is passed.
-    */  template<class ...signature_t>
-        constexpr const builder::Builder<detail::member::None, signature_t...> function(std::string_view pFunction)
-        {
-            return builder::Builder<detail::member::None, signature_t...>(traits::uid<>::none, std::string(pFunction), m_namespaceStr);
-        }
-
-    /*  @function: function()
-        @param: std::string (name of the function).
-        @return: Builder<detail::member::None>
-        * registers only non-member functions.
-        * the 'build(..)' called on return object accepts non-member function pointer only.
-        * compiler error on 'build(..)' if member function pointer is passed.
-    */  const builder::Builder<detail::member::None> function(std::string_view pFunction)
-        {
-            return builder::Builder<detail::member::None>(traits::uid<>::none, std::string(pFunction), m_namespaceStr);
-        }
-
-    private:
-
-        //name of the class, struct being registered.
-        std::string m_recordStr;
-
-        //name of the namespace being registered.
-        std::string m_namespaceStr;
-    };
-
-
-
-/*  @class: Reflect
-    * provides interface to register all kinds of functions (member/non-member).
 */  struct type
     {
         type() = default;
@@ -97,7 +34,7 @@ namespace rtl
         template<class record_t>
         constexpr const builder::RecordBuilder<record_t> record(std::string_view pClass)
         {
-            return type_ns(detail::NAMESPACE_GLOBAL).record<record_t>(pClass);
+            return builder::RecordBuilder<record_t>(std::string(pClass), traits::uid<record_t>::value);
         }
 
         template<class ...signature_t>
@@ -106,7 +43,7 @@ namespace rtl
             constexpr bool hasConstRValueRef = ((std::is_const_v<std::remove_reference_t<signature_t>> && std::is_rvalue_reference_v<signature_t>) || ...);
             static_assert(!hasConstRValueRef, "Registration of functions with 'const T&&' parameters is not allowed.");
 
-            return type_ns(detail::NAMESPACE_GLOBAL).function<signature_t...>(pFunction);
+            return builder::Builder<detail::member::None, signature_t...>(traits::uid<>::none, std::string(pFunction));
         }
     };
 }

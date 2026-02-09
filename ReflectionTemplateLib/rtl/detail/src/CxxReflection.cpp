@@ -104,7 +104,7 @@ namespace rtl {
                         const auto& itr = m_recordIdMap.find(recordId);
                         if (itr == m_recordIdMap.end()) {
                             
-                            auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespaceStr)).first->second;
+                            auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId)).first->second;
                             const auto& itr0 = m_recordMap.find(recordName);
                             if (itr0 == m_recordMap.end()) {
                                 m_recordMap.emplace(recordName, std::ref(record));
@@ -113,6 +113,7 @@ namespace rtl {
                                 std::cout << "\n[WARNING] Multiple registrations of different type with same name detected."
                                           << "\n          Attempted re-registration as \"" << recordName << "\""
                                           << "\n          This registration is ignored.\n";
+                                std::abort();   //TODO : remove with proper message.
                             }
                             return record;
                         }
@@ -132,7 +133,6 @@ namespace rtl {
                     if (!isRegistrationIgnored) {
                         Function constructor = function;
                         constructor.m_recordStr = record.m_recordName;
-                        constructor.m_namespaceStr = record.m_namespaceStr;
                         constructor.m_function = ctor_name(record.m_recordName);
                         addMethod(record.getFunctionsMap(), constructor);
                     }
@@ -180,7 +180,6 @@ namespace rtl {
                     Function memberFunc = pFunction;
 
                     memberFunc.m_recordStr = record.m_recordName;
-                    memberFunc.m_namespaceStr = record.m_namespaceStr;
                     addMethod(record.getFunctionsMap(), memberFunc);
                 }
                 else {

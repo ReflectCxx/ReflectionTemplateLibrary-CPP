@@ -18,9 +18,8 @@ namespace rtl::builder
 {
     struct CtorBuilder : protected ReflectionBuilder
     {
-        CtorBuilder(std::string_view pNamespace, std::string_view pRecordStr,
-                    std::string_view pFunction, traits::uid_t pRecordUid)
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+        CtorBuilder(const std::string& pRecordStr, const std::string& pFunction, traits::uid_t pRecordUid)
+        : ReflectionBuilder(std::string_view(pFunction), pRecordUid, std::string_view(pRecordStr))
         { }
 
     /*  @method: build()
@@ -59,8 +58,8 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::None, void> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE)
         { }
 
     /*  @method: build()
@@ -80,8 +79,8 @@ namespace rtl::builder
     template<class ...signature_t>
     struct Builder<detail::member::None, signature_t...> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace)
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE)
         { }
 
     /*  @method: build()
@@ -101,8 +100,8 @@ namespace rtl::builder
     template<>
     struct Builder<detail::member::None> : protected ReflectionBuilder
     {
-        Builder(traits::uid_t pRecordUid, std::string_view pFunction, std::string_view pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE, pNamespace) 
+        Builder(traits::uid_t pRecordUid, std::string_view pFunction)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::RECORD_NONE) 
         { }
 
     /*  @method: build()
@@ -126,8 +125,8 @@ namespace rtl::builder
     struct Builder<detail::member::Static, void> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, std::string_view pFunction,
-                std::string_view pRecordStr, std::string_view pNamespace) 
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+                std::string_view pRecordStr) 
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr)
         { }
 
     /*  @method: build()
@@ -148,8 +147,8 @@ namespace rtl::builder
     struct Builder<detail::member::Static, signature_t...> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, std::string_view pFunction,
-                std::string_view pRecordStr, std::string_view pNamespace) 
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+                std::string_view pRecordStr) 
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr)
         { }
 
     /*  @method: build()
@@ -170,8 +169,8 @@ namespace rtl::builder
     struct Builder<detail::member::Static> : protected ReflectionBuilder
     {
         Builder(traits::uid_t pRecordUid, std::string_view pFunction,
-                std::string_view pRecordStr, std::string_view pNamespace)
-        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr, pNamespace)
+                std::string_view pRecordStr)
+        : ReflectionBuilder(pFunction, pRecordUid, pRecordStr)
         { }
 
     /*  @method: build()
@@ -195,7 +194,7 @@ namespace rtl::builder
     struct Builder<detail::member::Const, void> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
     /*  @method: build()
@@ -216,7 +215,7 @@ namespace rtl::builder
     struct Builder<detail::member::Const, signature_t...> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
     /*  @method: build()
@@ -237,7 +236,7 @@ namespace rtl::builder
     struct Builder<detail::member::Const> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
     /*  @method: build()
@@ -261,7 +260,7 @@ namespace rtl::builder
     struct Builder<detail::member::NonConst, void> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
     /*  @method: build()
@@ -282,7 +281,7 @@ namespace rtl::builder
     struct Builder<detail::member::NonConst, signature_t...> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid)
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
     /*  @method: build()
@@ -303,7 +302,7 @@ namespace rtl::builder
     struct Builder<detail::member::NonConst> : protected ReflectionBuilder
     {
         Builder(std::string_view pFunction, traits::uid_t pRecordUid) 
-        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER, detail::INIT_LATER)
+        : ReflectionBuilder(pFunction, pRecordUid, detail::INIT_LATER)
         { }
 
 
