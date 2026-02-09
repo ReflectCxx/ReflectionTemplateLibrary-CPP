@@ -35,11 +35,11 @@ namespace rtl_tests
 		{
 			const std::string& recordName = itr.first;
 			const traits::uid_t recordId = cxx::reflected_id(recordName);
-			const auto& itr = rtl_recordIdMap.find(recordId);
+			const auto& itr0 = rtl_recordIdMap.find(recordId);
 
-			ASSERT_TRUE(itr != rtl_recordIdMap.end());
+			ASSERT_TRUE(itr0 != rtl_recordIdMap.end());
 
-			const rtl::Record& reflectedClass = itr->second;
+			const rtl::Record& reflectedClass = itr0->second;
 
 			auto [err, robj] = reflectedClass.ctorT<>()(rtl::alloc::Stack);
 
