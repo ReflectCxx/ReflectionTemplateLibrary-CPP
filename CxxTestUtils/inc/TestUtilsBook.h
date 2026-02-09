@@ -33,15 +33,6 @@ namespace test_utils
 		static constexpr const char* PREFACE = "This is a preface.";
 		static constexpr const char* ACKNOWLEDGEMENTS = "This is an acknowledgement.";
 
-		static constexpr const char* class_ = "Book";
-		static constexpr const char* str_setAuthor = "setAuthor";
-		static constexpr const char* str_addPreface = "addPreface";
-		static constexpr const char* str_setDescription = "setDescription";
-		static constexpr const char* str_getPublishedOn = "getPublishedOn";
-		static constexpr const char* str_setPublishedOn = "setPublishedOn";
-		static constexpr const char* str_updateBookInfo = "updateBookInfo";
-		static constexpr const char* str_addCopyrightTag = "addCopyrightTag";
-
 		static const int get_book_instance_count();
 
 		static const bool assert_zero_instance_count();

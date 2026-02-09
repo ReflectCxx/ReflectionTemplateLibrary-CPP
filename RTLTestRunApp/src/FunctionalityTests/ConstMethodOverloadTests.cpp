@@ -18,7 +18,7 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_wrong_target)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book] = classBook->ctorT()(alloc::Stack);

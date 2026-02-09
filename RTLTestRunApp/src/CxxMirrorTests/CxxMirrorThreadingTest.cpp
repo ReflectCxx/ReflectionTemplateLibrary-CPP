@@ -14,6 +14,8 @@
 #include "../../CxxTestProps/inc/StringOps.h"
 #include "../MyReflectionTests/MyReflectingType.h"
 
+#include "reg_ids.h"
+
 #include "TestUtilsBook.h"
 #include "TestUtilsDate.h"
 #include "TestUtilsPerson.h"
@@ -156,25 +158,25 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<Book>(book::class_).build(),
+            rtl::type().record<Book>(cxx::type::Book::id).build(),
 
             rtl::type().member<Book>().constructor<double, std::string>().build(),
 
-            rtl::type().member<Book>().method(book::str_setAuthor).build(&Book::setAuthor),
+            rtl::type().member<Book>().method(cxx::type::Book::fn::setAuthor::id).build(&Book::setAuthor),
 
-            rtl::type().member<Book>().method(book::str_addPreface).build(&Book::addPreface),
+            rtl::type().member<Book>().method(cxx::type::Book::fn::addPreface::id).build(&Book::addPreface),
 
-            rtl::type().member<Book>().method(book::str_setDescription).build(&Book::setDescription),
+            rtl::type().member<Book>().method(cxx::type::Book::fn::setDescription::id).build(&Book::setDescription),
             
-            rtl::type().member<Book>().method(book::str_getPublishedOn).build(&Book::getPublishedOn),
+            rtl::type().member<Book>().method(cxx::type::Book::fn::getPublishedOn::id).build(&Book::getPublishedOn),
             
-            rtl::type().member<Book>().method(book::str_addCopyrightTag).build(&Book::addCopyrightTag),
+            rtl::type().member<Book>().method(cxx::type::Book::fn::addCopyrightTag::id).build(&Book::addCopyrightTag),
 
-            rtl::type().member<Book>().method<void>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+            rtl::type().member<Book>().method<void>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo),
             
-            rtl::type().member<Book>().method<const char*, double, std::string>(book::str_updateBookInfo).build(&Book::updateBookInfo),
+            rtl::type().member<Book>().method<const char*, double, std::string>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo),
             
-            rtl::type().member<Book>().method<std::string, double, const char*>(book::str_updateBookInfo).build(&Book::updateBookInfo)
+            rtl::type().member<Book>().method<std::string, double, const char*>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo)
         });
 
         std::cout << "\n  [t0]\trtl_tests::InitMirror::reflectingBook() ==> Done.\n";

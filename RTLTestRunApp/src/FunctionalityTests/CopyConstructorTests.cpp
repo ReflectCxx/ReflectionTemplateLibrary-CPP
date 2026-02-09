@@ -17,7 +17,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_heap_source_on_heap)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->ctorT()(alloc::Heap);
@@ -42,7 +42,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_stack_source_on_stack)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->ctorT()(alloc::Stack);
@@ -65,7 +65,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_heap_source_on_stack)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->ctorT()(alloc::Stack);
@@ -88,7 +88,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_default_instance_on_stack_source_on_heap)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book0] = classBook->ctorT()(alloc::Heap);
@@ -111,7 +111,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_heap)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -120,7 +120,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
-                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
                 ASSERT_TRUE(oSetAuthor);
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
@@ -129,7 +129,7 @@ namespace rtl_tests
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                optional<Method> oSetDescription = classBook->getMethod(cxx::type::Book::fn::setDescription::id);
                 ASSERT_TRUE(oSetDescription);
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
@@ -156,7 +156,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_stack)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -165,7 +165,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
-                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
                 ASSERT_TRUE(oSetAuthor);
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
@@ -174,7 +174,7 @@ namespace rtl_tests
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                optional<Method> oSetDescription = classBook->getMethod(cxx::type::Book::fn::setDescription::id);
                 ASSERT_TRUE(oSetDescription);
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
@@ -201,7 +201,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_heap_source_on_stack)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
             
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -210,7 +210,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
-                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
                 ASSERT_TRUE(oSetAuthor);
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
@@ -219,7 +219,7 @@ namespace rtl_tests
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                optional<Method> oSetDescription = classBook->getMethod(cxx::type::Book::fn::setDescription::id);
                 ASSERT_TRUE(oSetDescription);
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
@@ -246,7 +246,7 @@ namespace rtl_tests
     TEST(CopyConstructor, clone_mutated_instance_on_stack_source_on_heap)
     {
         {   
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
             
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -255,7 +255,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
-                optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+                optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
                 ASSERT_TRUE(oSetAuthor);
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
@@ -264,7 +264,7 @@ namespace rtl_tests
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                optional<Method> oSetDescription = classBook->getMethod(book::str_setDescription);
+                optional<Method> oSetDescription = classBook->getMethod(cxx::type::Book::fn::setDescription::id);
                 ASSERT_TRUE(oSetDescription);
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();

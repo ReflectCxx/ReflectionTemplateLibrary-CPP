@@ -113,7 +113,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+			optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
 			ASSERT_TRUE(oSetAuthor);
 			EXPECT_FALSE(oSetAuthor->hasSignature<const char*>());
 
@@ -142,7 +142,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+			optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
 			ASSERT_TRUE(oGetPublishedOn);
 			EXPECT_TRUE(oGetPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
@@ -174,7 +174,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+			optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
 			ASSERT_TRUE(oGetPublishedOn);
 			EXPECT_TRUE(oGetPublishedOn->hasSignature<>());	//empty template params checks for zero arguments.
 
@@ -206,7 +206,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+			optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
 			ASSERT_TRUE(oSetAuthor);
 			EXPECT_TRUE(oSetAuthor->hasSignature<std::string>());
 
@@ -235,7 +235,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+			optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
 			ASSERT_TRUE(oSetAuthor);
 			EXPECT_TRUE(oSetAuthor->hasSignature<std::string>());
 
@@ -264,7 +264,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE(oUpdateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 			
@@ -293,7 +293,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE(oUpdateBookInfo->hasSignature<>());	//empty template params checks for zero arguments.
 
@@ -322,7 +322,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE((oUpdateBookInfo->hasSignature<string, double, const char*>()));
 
@@ -353,7 +353,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE((oUpdateBookInfo->hasSignature<string, double, const char*>()));
 
@@ -384,7 +384,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE((oUpdateBookInfo->hasSignature<const char*, double, string>()));
 
@@ -415,7 +415,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oUpdateBookInfo = classBook->getMethod(book::str_updateBookInfo);
+			optional<Method> oUpdateBookInfo = classBook->getMethod(cxx::type::Book::fn::updateBookInfo::id);
 			ASSERT_TRUE(oUpdateBookInfo);
 			EXPECT_TRUE((oUpdateBookInfo->hasSignature<const char*, double, string>()));
 
@@ -446,7 +446,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oAddCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
+			optional<Method> oAddCopyrightTag = classBook->getMethod(cxx::type::Book::fn::addCopyrightTag::id);
 			ASSERT_TRUE(oAddCopyrightTag);
 			EXPECT_TRUE(oAddCopyrightTag->hasSignature<string>());
 
@@ -479,7 +479,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oAddCopyrightTag = classBook->getMethod(book::str_addCopyrightTag);
+			optional<Method> oAddCopyrightTag = classBook->getMethod(cxx::type::Book::fn::addCopyrightTag::id);
 			ASSERT_TRUE(oAddCopyrightTag);
 			EXPECT_TRUE((oAddCopyrightTag->hasSignature<string>()));
 
@@ -512,7 +512,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oAddPreface = classBook->getMethod(book::str_addPreface);
+			optional<Method> oAddPreface = classBook->getMethod(cxx::type::Book::fn::addPreface::id);
 			ASSERT_TRUE(oAddPreface); 
 			EXPECT_FALSE((oAddPreface->hasSignature<string, string&>()));
 			EXPECT_FALSE((oAddPreface->hasSignature<string, const string>()));
@@ -549,7 +549,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oAddPreface = classBook->getMethod(book::str_addPreface);
+			optional<Method> oAddPreface = classBook->getMethod(cxx::type::Book::fn::addPreface::id);
 			ASSERT_TRUE(oAddPreface); 
 			EXPECT_FALSE((oAddPreface->hasSignature<string, string>()));
 			EXPECT_FALSE((oAddPreface->hasSignature<string, string&>()));

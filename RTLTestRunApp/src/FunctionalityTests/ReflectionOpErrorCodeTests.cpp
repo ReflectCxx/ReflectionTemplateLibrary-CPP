@@ -287,10 +287,10 @@ namespace rtl_tests
             RObject emptyObj;
             ASSERT_TRUE(emptyObj.isEmpty());
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
-            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)
+            auto [err, ret] = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id)
                                        ->targetT().argsT().returnT()(emptyObj)();
 
             EXPECT_TRUE(err == error::EmptyRObject);
@@ -306,14 +306,14 @@ namespace rtl_tests
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
             ASSERT_TRUE(oGetPublishedOn);
             
             rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
@@ -334,14 +334,14 @@ namespace rtl_tests
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
             ASSERT_TRUE(oGetPublishedOn);
 
             rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();

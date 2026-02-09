@@ -209,7 +209,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT<float, int>()(alloc::Heap, 19.0, 87.5);
@@ -225,7 +225,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT<float, int>()(alloc::Stack, 19.0, 87.5);
@@ -241,7 +241,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_default)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Heap);
@@ -258,7 +258,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_default)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Stack);
@@ -275,7 +275,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -295,7 +295,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
@@ -315,7 +315,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_heap)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Heap);
@@ -332,7 +332,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_stack)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Stack);
