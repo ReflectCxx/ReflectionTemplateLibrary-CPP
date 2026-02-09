@@ -92,29 +92,20 @@ namespace rtl
 	{
 		std::stringstream sout;
 		sout << "[";
-		bool atLeastOne = false;
-		const auto& nsfuncMap = pCxxMirror.getNamespaceFunctionsMap();
-		for (const auto& itr : nsfuncMap)
+		const auto& functionsMap = pCxxMirror.getFunctionsMap();
+		for (const auto& itr : functionsMap)
 		{
-			for (const auto& itr0 : itr.second)
-			{
-				const std::string& functionStr = ::toJson(itr0.second);
-				sout << functionStr << ",";
-				atLeastOne = true;
-			}
+			const std::string& functionStr = ::toJson(itr.second);
+			sout << functionStr << ",";
 		}
 
-		const auto& recfuncMap = pCxxMirror.getNamespaceRecordMap();
-		for (const auto& itr : recfuncMap)
+		const auto& recordsMap = pCxxMirror.getRecordsMap();
+		for (const auto& itr0 : recordsMap)
 		{
-			for (const auto& itr0 : itr.second)
+			for (const auto& itr1 : itr0.second.get().getMethodMap())
 			{
-				for (const auto& itr1 : itr0.second.get().getMethodMap())
-				{
-					const std::string& methodStr = ::toJson(itr1.second);
-					sout << methodStr << ",";
-					atLeastOne = true;
-				}
+				const std::string& methodStr = ::toJson(itr1.second);
+				sout << methodStr << ",";
 			}
 		}
 

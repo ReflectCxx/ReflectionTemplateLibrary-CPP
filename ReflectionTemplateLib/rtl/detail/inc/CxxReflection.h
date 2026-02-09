@@ -24,24 +24,22 @@ namespace rtl::detail {
     * organizes the 'Function' objects by namespace, class/structs.
 */  class CxxReflection
     {
-        using RecordRef = std::reference_wrapper<Record>; 
+        using RecordRef = std::reference_wrapper<Record>;
         using RecordMap = std::unordered_map <std::string, RecordRef>;
         using MethodMap = std::unordered_map <std::string, Method>;
         using FunctionMap = std::unordered_map <std::string, Function>;
 
         std::unordered_map<traits::uid_t, Record> m_recordIdMap;
         //contains 'Record' (class/struct) objects, mapped with given namespace name.
-        std::unordered_map<std::string, RecordMap> m_recordNamespaceMap;
+        std::unordered_map<std::string, RecordRef> m_recordMap;
         //contains 'Function' (non-member-function) objects, mapped with given namespace name.
-        std::unordered_map<std::string, FunctionMap> m_functionNamespaceMap;
+        std::unordered_map<std::string, Function> m_functionsMap;
 
-        void addInNamespaceMap(Record& pRecord);
         void buildRecordIdMap(const std::vector<Function>& pFunctions);
-        void insertFunctionToNamespaceMap(const Function& pFunction);
         bool insertMethodsToRecordIdMap(const Function& pFunction);
 
+        void addFunction(const Function& pFunction);
         static void addMethod(MethodMap& pMethodMap, const Function& pFunction);
-        static void addFunction(FunctionMap& pFunctionMap, const Function& pFunction);
         static const bool validateMethodByRecordId(const Function& pFunction);
 
     protected:
@@ -62,13 +60,13 @@ namespace rtl::detail {
         }
 
         //returns the complete map of registered methods grouped by namespace, contained in 'Record' (class/struct) objects.
-        constexpr const std::unordered_map<std::string, RecordMap>& getNamespaceRecordMap() const {
-            return m_recordNamespaceMap;
+        constexpr const std::unordered_map<std::string, RecordRef>& getRecordsMap() const {
+            return m_recordMap;
         }
 
         //returns the complete map of registered functions ('Function' objects) under a namespace.
-        constexpr const std::unordered_map<std::string, FunctionMap>& getNamespaceFunctionsMap() const {
-            return m_functionNamespaceMap;
+        constexpr const std::unordered_map<std::string, Function>& getFunctionsMap() const {
+            return m_functionsMap;
         }
     };
 }

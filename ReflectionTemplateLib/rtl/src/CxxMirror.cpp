@@ -50,15 +50,10 @@ namespace rtl
     * Retrieves the class or struct registered under the specified namespace. */
     std::optional<Record> CxxMirror::getRecord(const std::string& pRecordName) const
     {
-        const auto& nsRecordMap = getNamespaceRecordMap();
-        const auto& itr = nsRecordMap.find(detail::NAMESPACE_GLOBAL);
-        if (itr != nsRecordMap.end())
-        {
-            const auto& recordMap = itr->second;
-            const auto& itr0 = recordMap.find(pRecordName);
-            if (itr0 != recordMap.end()) {
-                return std::make_optional(itr0->second);
-            }
+        const auto& recordMap = getRecordsMap();
+        const auto& itr = recordMap.find(pRecordName);
+        if (itr != recordMap.end()) {
+            return std::make_optional(itr->second);
         }
         return std::nullopt;
     }
@@ -74,15 +69,10 @@ namespace rtl
     * Retrieves the non-member function registered under the specified namespace. */
     std::optional<Function> CxxMirror::getFunction(const std::string& pFunctionName) const
     {
-        const auto& nsFunctionMap = getNamespaceFunctionsMap();
-        const auto& itr = nsFunctionMap.find(detail::NAMESPACE_GLOBAL);
-        if (itr != nsFunctionMap.end())
-        {
-            const auto& functionMap = itr->second;
-            const auto& itr0 = functionMap.find(pFunctionName);
-            if (itr0 != functionMap.end()) {
-                return std::make_optional(itr0->second);
-            }
+        const auto& functionMap = getFunctionsMap();
+        const auto& itr = functionMap.find(pFunctionName);
+        if (itr != functionMap.end()) {
+            return std::make_optional(itr->second);
         }
         return std::nullopt;
     }
