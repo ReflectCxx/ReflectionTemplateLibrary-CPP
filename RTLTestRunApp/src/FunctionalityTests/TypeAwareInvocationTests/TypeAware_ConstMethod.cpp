@@ -7,7 +7,7 @@
 #include "../CxxTestProps/inc/StringConst.h"
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
@@ -23,6 +23,10 @@ namespace rtl_tests
                                                                            .argsT<>()
                                                                            .returnT<bool>();
             EXPECT_FALSE(is_empty);
+
+            // TODO: this should return proper error that the 'const' version is present but non-const not.
+            EXPECT_EQ(is_empty.get_init_error(), rtl::error::SignatureMismatch);
+
         } {
             rtl::const_method<std::string_view, bool()> is_empty = isStringEmpty->targetT<const std::string_view>()
                                                                                  .argsT<>()

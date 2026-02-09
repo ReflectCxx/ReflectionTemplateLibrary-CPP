@@ -8,7 +8,7 @@
 #include "GlobalTestUtils.h"
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 // TODO: test cases for functions with return type 'void'.
 

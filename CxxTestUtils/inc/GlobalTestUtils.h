@@ -25,7 +25,7 @@ namespace test_utils {
 	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
 	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
 	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
-	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadValRefAndCRef";
+	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadRefAndCRef";
 
 	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
 

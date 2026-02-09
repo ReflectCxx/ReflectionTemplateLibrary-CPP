@@ -1,0 +1,84 @@
+
+
+#include "reg_ids.h"
+#include "reg_decls.h"
+
+#include "StringMute.h"
+
+
+namespace regs4::type0 {
+    void init(std::vector<rtl::Function>& fns) {
+
+        fns.push_back(rtl::type().record<StrMute>(cxx::type::StrMute::id)
+                                 .build());
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string_view>(cxx::type::StrMute::fn::revStrOverloadValCRef::id)
+                                 .build(&StrMute::revStrOverloadValCRef));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<const std::string_view &>(cxx::type::StrMute::fn::revStrOverloadValCRef::id)
+                                 .build(&StrMute::revStrOverloadValCRef));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<void>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<const char *>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string &>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string &&>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<const std::string &>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string *>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<const std::string *>(cxx::type::StrMute::fn::reverseString::id)
+                                 .build(&StrMute::reverseString));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method(cxx::type::StrMute::fn::revStrConstRefArg::id)
+                                 .build(&StrMute::revStrConstRefArg));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method(cxx::type::StrMute::fn::revStrRValueRefArg::id)
+                                 .build(&StrMute::revStrRValueRefArg));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method(cxx::type::StrMute::fn::revStrNonConstRefArg::id)
+                                 .build(&StrMute::revStrNonConstRefArg));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string_view &>(cxx::type::StrMute::fn::revStrOverloadRefAndCRef::id)
+                                 .build(&StrMute::revStrOverloadRefAndCRef));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<const std::string_view &>(cxx::type::StrMute::fn::revStrOverloadRefAndCRef::id)
+                                 .build(&StrMute::revStrOverloadRefAndCRef));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string_view>(cxx::type::StrMute::fn::revStrOverloadValRef::id)
+                                 .build(&StrMute::revStrOverloadValRef));
+
+        fns.push_back(rtl::type().member<StrMute>()
+                                 .method<std::string_view &>(cxx::type::StrMute::fn::revStrOverloadValRef::id)
+                                 .build(&StrMute::revStrOverloadValRef));
+    }
+}
+

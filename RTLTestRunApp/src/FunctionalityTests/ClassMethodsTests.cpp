@@ -13,13 +13,12 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
 
 namespace rtl_tests
 {
 	TEST(RTLInterfaceCxxMirror, get_class_methods_with_wrong_names)
 	{
-		optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+		optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 		ASSERT_TRUE(classBook);
 
 		optional<Method> badMethod = classBook->getMethod("no_method");
@@ -43,12 +42,12 @@ namespace rtl_tests
 
 			auto [err, robj] = reflectedClass.ctorT<>()(rtl::alloc::Stack);
 
-			if (recordName == event::struct_) {
+			if (recordName == cxx::type::nsdate::Event::id) {
 				//Event's default constructor is private or deleted.
 				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 				ASSERT_TRUE(robj.isEmpty());
 			}
-			else if (recordName == library::class_) {
+			else if (recordName == cxx::type::Library::id) {
 				//Library's copy-constructor is deleted or private.
 				EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
 				ASSERT_TRUE(robj.isEmpty());
@@ -58,12 +57,14 @@ namespace rtl_tests
 				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 				ASSERT_TRUE(robj.isEmpty());
 			}
-			else if (recordName == StrWrapB::struct_ ||
-				recordName == StrWrapC::struct_ ||
-				recordName == StrWrapD::struct_) {
-				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
+			else if (recordName == cxx::type::StrWrap::id ||
+					 recordName == cxx::type::StrWrapB::id ||
+				     recordName == cxx::type::StrWrapC::id ||
+				     recordName == cxx::type::StrWrapD::id) {
+				     EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
 			}
 			else {
+
 				EXPECT_TRUE(err == rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
 				EXPECT_TRUE(robj.getTypeId() == recordId);
@@ -75,7 +76,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_heapInstance, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -83,7 +84,7 @@ namespace rtl_tests
 			EXPECT_TRUE(err0 == error::None);
 			ASSERT_FALSE(book.isEmpty());
 
-			optional<Method> oSetAuthor = classBook->getMethod(book::str_setAuthor);
+			optional<Method> oSetAuthor = classBook->getMethod(cxx::type::Book::fn::setAuthor::id);
 			ASSERT_TRUE(oSetAuthor);
 			EXPECT_FALSE(oSetAuthor->hasSignature<const char*>());
 
@@ -104,7 +105,7 @@ namespace rtl_tests
 	TEST(ReflectionMethodCall_stackInstance, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -133,7 +134,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_void)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -165,7 +166,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_void)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -197,7 +198,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_heapInstance, args_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -226,7 +227,7 @@ namespace rtl_tests
 	TEST(ClassBookMethod_stackInstance, args_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -255,7 +256,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_void)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -284,7 +285,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_void)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -313,7 +314,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_string_double_charPtr)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -344,7 +345,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_string_double_charPtr)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -375,7 +376,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, args_charPtr_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -406,7 +407,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, args_charPtr_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -437,7 +438,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -470,7 +471,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_args_const_string___call_with_non_const_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);
@@ -503,7 +504,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_stackInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Stack);
@@ -540,7 +541,7 @@ namespace rtl_tests
 	TEST(ClassBookMethodOverload_heapInstance, method_taking_args_const_string_and_const_string_ref)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err0, book] = classBook->ctorT<>()(alloc::Heap);

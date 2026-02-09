@@ -2,16 +2,15 @@
 
 #include <rtl_traits.h>
 
+#include "reg_ids.h"
+
 namespace rtl {
 	class CxxMirror;
 }
 
-namespace test_mirror
-{
-	struct cxx {
+namespace cxx {
 
-		static const rtl::CxxMirror& mirror();
+	const rtl::CxxMirror& mirror();
 
-		static const rtl::traits::uid_t reflected_id(const std::string& pRecordName);
-	};
-}
+	const rtl::traits::uid_t reflected_id(const std::string& pRecordName);
+};

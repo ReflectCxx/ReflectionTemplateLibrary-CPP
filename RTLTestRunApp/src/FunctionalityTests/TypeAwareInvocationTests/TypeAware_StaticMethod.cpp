@@ -9,7 +9,7 @@
 #include "../CxxTestProps/inc/StringStatic.h"
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
