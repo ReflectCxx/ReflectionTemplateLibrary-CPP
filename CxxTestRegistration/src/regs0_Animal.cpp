@@ -18,13 +18,16 @@ namespace regs0::type0 {
                                  .methodConst(cxx::type::Animal::fn::getFamilyName::id)
                                  .build(&Animal::getFamilyName));
 
-        fns.push_back(rtl::type().member<Animal>()
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().member<Animal>()
                                  .method<std::string &>(cxx::type::Animal::fn::setAnimalName::id)
-                                 .build(&Animal::setAnimalName));
+                                 .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)));
 
         fns.push_back(rtl::type().member<Animal>()
                                  .method<std::string &&>(cxx::type::Animal::fn::setAnimalName::id)
-                                 .build(&Animal::setAnimalName));
+                                 .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)));
 
         fns.push_back(rtl::type().member<Animal>()
                                  .method<const std::string &>(cxx::type::Animal::fn::setAnimalName::id)
@@ -42,13 +45,16 @@ namespace regs0::type0 {
                                  .methodStatic(cxx::type::Animal::fn::getInstanceCount::id)
                                  .build(&Animal::getInstanceCount));
 
-        fns.push_back(rtl::type().member<Animal>()
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<std::string &>(cxx::type::Animal::fn::updateZooKeeper::id)
-                                 .build(&Animal::updateZooKeeper));
+                                 .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)));
 
         fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<std::string &&>(cxx::type::Animal::fn::updateZooKeeper::id)
-                                 .build(&Animal::updateZooKeeper));
+                                 .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)));
 
         fns.push_back(rtl::type().member<Animal>()
                                  .methodStatic<const std::string &>(cxx::type::Animal::fn::updateZooKeeper::id)
