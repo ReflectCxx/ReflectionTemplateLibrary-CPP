@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rtl_traits.h>
+#include <rtcl_meta_ids.h>
 
 #include "reg_ids.h"
 

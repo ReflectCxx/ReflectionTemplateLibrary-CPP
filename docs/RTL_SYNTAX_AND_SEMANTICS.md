@@ -1,6 +1,6 @@
 # RTL: Syntax & Semantics 🔍
 
-RTL makes C++ reflection feel like a natural extension of the language. Let’s explore its syntax and the semantics it unlocks.
+RTL is designed to mirror the C++ compiler’s semantic model at runtime using strictly standard-conforming C++ constructs, enabling reflection that obeys the same type, overload, and object semantics as the language itself.
 
 ### 📖 Index
 
@@ -62,12 +62,8 @@ Registration in RTL follows a builder-style composition pattern. Individual comp
 ### Non-Member Functions
 
 ```cpp
-rtl::type().ns("ext").function("fn-name").build(fn-ptr);
+rtl::type().function("fn-name").build(fn-ptr);
 ```
-
-* `ns("ext")` – Specifies the namespace under which the function is registered.
-  Omitting `.ns()` or passing an empty string (`.ns("")`) registers the function under `rtl::global`. This is not a declared C++ namespace; rather, it is a logical, string-based grouping used to prevent naming conflicts.
-
 * `function("fn-name")` – Declares the function by name.
   If multiple overloads exist, the template parameter (`function<...>(..)`) disambiguates the selected overload.
 
@@ -86,17 +82,17 @@ namespace ext {
 }
 ```
 ```c++
-rtl::type().ns("ext").function<const char*>("sendMessage").build(ext::sendMessage);
-rtl::type().ns("ext").function<int, std::string>("sendMessage").build(ext::sendMessage);
+rtl::type().function<const char*>("sendMessage").build(ext::sendMessage);
+rtl::type().function<int, std::string>("sendMessage").build(ext::sendMessage);
 ```
 
 ### PODs / Classes / Structs
 
 ```cpp
-rtl::type().ns("ext").record<T>("type-name").build();
+rtl::type().record<T>("type-name").build();
 ```
 
-* Registers a type by name and associates it with the specified namespace.
+* Registers a type by name.
 * This type (`T`) registration is **mandatory** for any of its members to be registered. The order of registration does not matter.
 * The default, copy, and move constructors, along with the destructor, are registered automatically. Explicit registration of these special members is disallowed and will result in a compile-time error.
 
@@ -132,25 +128,19 @@ Registered types (`class`, `struct`, or POD) are queried as `rtl::Record`, while
 For example:
 
 ```cpp
-// Function without a namespace
+// Querying functions by their registered names.
 std::optional<rtl::Function> popMessage = cxx::mirror().getFunction("popMessage");
 
-// Function registered with a namespace, e.g. "ext"
-std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("ext", "sendMessage");
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("sendMessage");
 ```
 
 These metadata are returned wrapped in `std::optional`, which is empty if the requested entity is not found by the name specified.
 
 ```cpp
-// Querying a type without a namespace
+// Query a record by its registered name.
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 
-// Querying a type with a namespace, e.g. "model"
-std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("model", "Person");
 ```
-
-* If a type or function is registered without a namespace, it must be queried without specifying a namespace.
-* If a type or function is registered with a namespace, it must be queried using the same namespace.
 
 `rtl::Record` represents any registered C++ type, including user-defined `class` and `struct` types, as well as POD types.
 The term **Record** follows the naming convention used in the **LLVM** project (e.g. `CXXRecordDecl`).
@@ -160,15 +150,11 @@ For POD types such as `char`, the type can still be registered as an `rtl::Recor
 In this case, only the implicitly supported special members (copy/move constructors and the destructor) are available.
 POD types do not have member functions.
 
-`rtl::CxxMirror` also provides an overload of `getRecord()` that accepts an `std::uintptr_t` instead of a string identifier.
-This ID can be generated using `rtl::traits::uid<T>`, where `T` is a compile time known type.
-The generated ID may be cached and reused for runtime lookups without requiring a namespace or string-based queries.
-
 The `rtl::Method` and `rtl::Function` metadata objects can be further queried to determine whether a specific call signature is valid for a given function or method. This allows callers to validate argument compatibility before attempting materialization or invocation.
 
 ```c++
 // Obtain metadata for the registered function.
-std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("ext", "sendMessage");
+std::optional<rtl::Function> sendMessage = cxx::mirror().getFunction("sendMessage");
 
 // Query supported call signatures.
 bool isSignature0 = sendMessage->hasSignature<const char*>();        // true
