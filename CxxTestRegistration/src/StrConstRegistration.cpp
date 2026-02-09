@@ -35,7 +35,6 @@ namespace test_mirror
                                  .build(&StrConst::reverseString));
 
         //  numereous other overloads.
- #if defined(__GNUC__) && !defined(__clang__)
         /*
             GCC here fails to automatically resolve the correct overloaded functor
             when both a lvalue reference and an rvalue overload exist.
@@ -54,19 +53,7 @@ namespace test_mirror
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string&&>(str_reverseString)
                                  .build(static_cast<std::string(StrConst::*)(std::string&&) const>(&StrConst::reverseString)));
-#else
-        fns.push_back(rtl::type().member<StrConst>()
-                                 .methodConst<std::string&>(str_reverseString)
-                                 .build(&StrConst::reverseString));
 
-        fns.push_back(rtl::type().member<StrConst>()
-                                 .methodConst<std::string&&>(str_reverseString)
-                                 .build(&StrConst::reverseString));
-
-        fns.push_back(rtl::type().member<StrConst>()
-                                 .methodConst<const std::string&>(str_reverseString)
-                                 .build(&StrConst::reverseString));
-#endif
         fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string*>(str_reverseString)
                                  .build(&StrConst::reverseString));

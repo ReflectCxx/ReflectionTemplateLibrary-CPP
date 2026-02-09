@@ -18,8 +18,7 @@ namespace test_mirror
 	{
         //  Constructors registration, class/struct name and type must be passed 'record<TYPE>("NAME")'.
         //  Registers default constructor with implicit registration of destructor & copy-constructor.
-        fns.push_back(rtl::type().ns(date::ns)
-                                 .record<nsdate::Date>(date::struct_)
+        fns.push_back(rtl::type().record<nsdate::Date>(date::struct_)
                                  .build());
 
         //  Overloaded constructor, taking 'string' as argument, signature must be specified as template parameter.

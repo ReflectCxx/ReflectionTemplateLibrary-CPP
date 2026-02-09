@@ -30,47 +30,43 @@ namespace rtl_tests
 	TEST(RTLInterfaceCxxMirror, verify_typeIds_of_registered_records)
 	{
 		const auto& rtl_recordIdMap = cxx::mirror().getRecordIdMap();
-
-		for (const auto& itr0 : cxx::mirror().getNamespaceRecordMap())
+		const auto& rtl_recordsNameMap = cxx::mirror().getRecordsMap();
+		for (const auto& itr : rtl_recordsNameMap)
 		{
-			const auto& namespaceRecordMap = itr0.second;
-			for (const auto& itr1 : namespaceRecordMap)
-			{
-				const std::string& recordName = itr1.first;
-				const traits::uid_t recordId = cxx::reflected_id(recordName);
-				const auto& itr = rtl_recordIdMap.find(recordId);
+			const std::string& recordName = itr.first;
+			const traits::uid_t recordId = cxx::reflected_id(recordName);
+			const auto& itr0 = rtl_recordIdMap.find(recordId);
 
-				ASSERT_TRUE(itr != rtl_recordIdMap.end());
+			ASSERT_TRUE(itr0 != rtl_recordIdMap.end());
 
-				const rtl::Record& reflectedClass = itr->second;
+			const rtl::Record& reflectedClass = itr0->second;
 
-				auto [err, robj] = reflectedClass.ctorT<>()(rtl::alloc::Stack);
+			auto [err, robj] = reflectedClass.ctorT<>()(rtl::alloc::Stack);
 
-				if (recordName == event::struct_) {
-					//Event's default constructor is private or deleted.
-					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					ASSERT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == library::class_) {
-					//Library's copy-constructor is deleted or private.
-					EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
-					ASSERT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == "void") {
-					//no constructor of class std::string is registered in RTL, but the calss is registered.
-					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-					ASSERT_TRUE(robj.isEmpty());
-				}
-				else if (recordName == StrWrapB::struct_ ||
-                         recordName == StrWrapC::struct_ ||
-                         recordName == StrWrapD::struct_) {
-					EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
-				}
-				else {
-					EXPECT_TRUE(err == rtl::error::None);
-					ASSERT_FALSE(robj.isEmpty());
-					EXPECT_TRUE(robj.getTypeId() == recordId);
-				}
+			if (recordName == event::struct_) {
+				//Event's default constructor is private or deleted.
+				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
+				ASSERT_TRUE(robj.isEmpty());
+			}
+			else if (recordName == library::class_) {
+				//Library's copy-constructor is deleted or private.
+				EXPECT_TRUE(err == rtl::error::TypeNotCopyConstructible);
+				ASSERT_TRUE(robj.isEmpty());
+			}
+			else if (recordName == "void") {
+				//no constructor of class std::string is registered in RTL, but the calss is registered.
+				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
+				ASSERT_TRUE(robj.isEmpty());
+			}
+			else if (recordName == StrWrapB::struct_ ||
+				recordName == StrWrapC::struct_ ||
+				recordName == StrWrapD::struct_) {
+				EXPECT_TRUE(err == rtl::error::TypeNotDefaultConstructible);
+			}
+			else {
+				EXPECT_TRUE(err == rtl::error::None);
+				ASSERT_FALSE(robj.isEmpty());
+				EXPECT_TRUE(robj.getTypeId() == recordId);
 			}
 		}
 	}

@@ -15,8 +15,7 @@ namespace test_utils
 {
 	struct event
 	{
-		static constexpr const char* ns = "nsdate";
-		static constexpr const char* struct_ = "Event";
+		static constexpr const char* struct_ = "nsdate::Event";
 		static constexpr const char* str_getDate = "getDate";
 		static constexpr const char* str_reset = "reset";
 
@@ -26,8 +25,7 @@ namespace test_utils
 
 	struct calender
 	{
-		static constexpr const char* ns = "nsdate";
-		static constexpr const char* struct_ = "Calender";
+		static constexpr const char* struct_ = "nsdate::Calender";
 		static constexpr const char* str_create = "create";
 		static constexpr const char* str_getTheDate = "getTheDate";
 		static constexpr const char* str_getSavedDate = "getSavedDate";
@@ -48,8 +46,7 @@ namespace test_utils
 		static constexpr const char* DATE_STR0 = "23/12/2024";
 		static constexpr const char* DATE_STR1 = "04/05/2025";
 
-		static constexpr const char* ns = "nsdate";
-		static constexpr const char* struct_ = "Date";
+		static constexpr const char* struct_ = "nsdate::Date";
 		static constexpr const char* str_updateDate = "updateDate";
 		static constexpr const char* str_getAsString = "getAsString";
 

@@ -35,7 +35,7 @@ namespace test_mirror
                                  .build(&StrMute::reverseString));
 
         //  numereous other overloads.
- #if defined(__GNUC__) && !defined(__clang__)
+
         /*
             GCC here fails to automatically resolve the correct overloaded functor
             when both a lvalue reference and an rvalue overload exist.
@@ -54,19 +54,7 @@ namespace test_mirror
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string&&>(str_reverseString)
                                  .build(static_cast<std::string(StrMute::*)(std::string&&)>(&StrMute::reverseString)));
-#else
-        fns.push_back(rtl::type().member<StrMute>()
-                                 .method<std::string&>(str_reverseString)
-                                 .build(&StrMute::reverseString));
 
-        fns.push_back(rtl::type().member<StrMute>()
-                                 .method<std::string&&>(str_reverseString)
-                                 .build(&StrMute::reverseString));
-
-        fns.push_back(rtl::type().member<StrMute>()
-                                 .method<const std::string&>(str_reverseString)
-                                 .build(&StrMute::reverseString));
-#endif
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string*>(str_reverseString)
                                  .build(&StrMute::reverseString));

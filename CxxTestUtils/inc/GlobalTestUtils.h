@@ -29,11 +29,9 @@ namespace test_utils {
 
 	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
 
-	static constexpr const char* str_complex = "complex";
-	static constexpr const char* str_setReal = "setReal";
-
-	static constexpr const char* str_setImaginary = "setImaginary";
-	static constexpr const char* str_getMagnitude = "getMagnitude";
+	static constexpr const char* str_setReal = "complex::setReal";
+	static constexpr const char* str_setImaginary = "complex::setImaginary";
+	static constexpr const char* str_getMagnitude = "complex::getMagnitude";
 
 	static const char* SUFFIX_void = "_void";
 	static const char* SUFFIX_ctor = "_ctor";

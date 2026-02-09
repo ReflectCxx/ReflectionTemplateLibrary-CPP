@@ -34,16 +34,13 @@ namespace rtl
         //name of the function as supplied by the user.
         std::string m_function;
 
-        //name of the namespace as supplied by the user.
-        std::string m_namespaceStr;
-
         mutable std::vector<type_meta> m_functorsMeta;
 
     private:
 
-        Function(const std::string& pNamespace, const std::string& pClassName,
-                 const std::string& pFuncName, const type_meta& pFunctorsMeta,
-                 const traits::uid_t pRecordTypeId, const detail::member pQualifier);
+        Function(const std::string& pRecord, const std::string& pFunction, 
+                 const type_meta& pFunctorsMeta, const traits::uid_t pRecordTypeId,
+                 const detail::member pQualifier);
 
         void addOverload(const Function& pOtherFunc) const;
 
@@ -60,7 +57,6 @@ namespace rtl
         GETTER(traits::uid_t, RecordTypeId, m_recordTypeId);
 
         GETTER_CREF(std::string, RecordName, m_recordStr);
-        GETTER_CREF(std::string, Namespace, m_namespaceStr);
         GETTER_CREF(std::string, FunctionName, m_function);
         GETTER_CREF(std::vector<type_meta>, FunctorsMeta, m_functorsMeta)
 

@@ -24,20 +24,18 @@ namespace rtl::builder
     class RecordBuilder
     {
         const std::string m_recordStr;
-        const std::string m_namespaceStr;
         const traits::uid_t m_recordId;
 
     public:
 
-        RecordBuilder(const std::string& pNamespace, const std::string& pRecord, traits::uid_t pRecordId)
+        RecordBuilder(const std::string& pRecord, traits::uid_t pRecordId)
             : m_recordStr(pRecord)
-            , m_namespaceStr(pNamespace)
             , m_recordId(pRecordId)
         { }
 
         constexpr const Function build() const
         {
-            return ConstructorBuilder<record_t>(m_namespaceStr, m_recordStr).build();
+            return ConstructorBuilder<record_t>(m_recordStr).build();
         }
     };
 
@@ -74,9 +72,9 @@ namespace rtl::builder
         * used for registering unique static member function, if overload exists, use templated version 'methodStatic<...>()'.
         * the 'build(..)' called on return object will accepts static member function pointer only.
         * compiler error on 'build(..)' if non-static member or non-member function pointer is passed.
-    */  const Builder<detail::member::Static> methodStatic(const std::string& pFunction) const
+    */  const Builder<detail::member::Static> methodStatic(std::string_view pFunction) const
         {
-            return Builder<detail::member::Static>(traits::uid<record_t>::value, pFunction, detail::INIT_LATER, detail::INIT_LATER);
+            return Builder<detail::member::Static>(traits::uid<record_t>::value, pFunction, detail::INIT_LATER);
         }
 
     /*  @method: methodStatic<...>()
@@ -88,9 +86,9 @@ namespace rtl::builder
         * the 'build(..)' called on return object will accepts static member function pointer only.
         * compiler error on 'build(..)' if const member or non-member function pointer is passed.
     */  template<class ...signature_t>
-        const Builder<detail::member::Static, signature_t...> methodStatic(const std::string& pFunction) const
+        const Builder<detail::member::Static, signature_t...> methodStatic(std::string_view pFunction) const
         {
-            return Builder<detail::member::Static, signature_t...>(traits::uid<record_t>::value, pFunction, detail::INIT_LATER, detail::INIT_LATER);
+            return Builder<detail::member::Static, signature_t...>(traits::uid<record_t>::value, pFunction, detail::INIT_LATER);
         }
 
 
@@ -100,7 +98,7 @@ namespace rtl::builder
         * registers non-const, non-static member functions.
         * the 'build(..)' called on return object will accepts non-const, non-static member-function-pointer only.
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
-    */  const Builder<detail::member::NonConst> method(const std::string& pFunction) const
+    */  const Builder<detail::member::NonConst> method(std::string_view pFunction) const
         {
             return Builder<detail::member::NonConst>(pFunction, traits::uid<record_t>::value);
         }
@@ -113,7 +111,7 @@ namespace rtl::builder
         * template parameters must be explicitly specified, should be exactly same as the member-function being registered.
         * the 'build(..)' called on return object will accepts non-const member-function-pointer only.
         * compiler error 'build(..)' if non-const, static member or non-member function pointer is passed.
-    */  const Builder<detail::member::Const> methodConst(const std::string& pFunction) const
+    */  const Builder<detail::member::Const> methodConst(std::string_view pFunction) const
         {
             return Builder<detail::member::Const>(pFunction, traits::uid<record_t>::value);
         }
@@ -127,7 +125,7 @@ namespace rtl::builder
         * the 'build(..)' called on return object will accepts non-const member-function-pointer only.
         * compiler error on 'build(..)' if const, static member or non-member function pointer is passed.
     */  template<class ...signature_t>
-        const Builder<detail::member::NonConst, signature_t...> method(const std::string& pFunction) const
+        const Builder<detail::member::NonConst, signature_t...> method(std::string_view pFunction) const
         {
             return Builder<detail::member::NonConst, signature_t...>(pFunction, traits::uid<record_t>::value);
         }
@@ -141,7 +139,7 @@ namespace rtl::builder
         * the 'build(..)' called on return object will accepts const member-function-pointer only.
         * compiler error on 'build(..)' if non-const, static member or non-member function pointer is passed.
     */  template<class ...signature_t>
-        const Builder<detail::member::Const, signature_t...> methodConst(const std::string& pFunction) const
+        const Builder<detail::member::Const, signature_t...> methodConst(std::string_view pFunction) const
         {
             return Builder<detail::member::Const, signature_t...>(pFunction, traits::uid<record_t>::value);
         }

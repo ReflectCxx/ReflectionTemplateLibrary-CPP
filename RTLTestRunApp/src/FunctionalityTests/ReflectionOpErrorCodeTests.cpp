@@ -76,7 +76,7 @@ namespace rtl_tests
 
     TEST(ReflectionOpErrorCodeTests, error_TypeNotDefaultConstructible)
     {
-        optional<Record> classEvent = cxx::mirror().getRecord(event::ns, event::struct_);
+        optional<Record> classEvent = cxx::mirror().getRecord(event::struct_);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->ctorT()(alloc::Stack);
@@ -199,7 +199,7 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, copy_construct__error_TypeNotCopyConstructible)
     {
         {
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::ns, calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
             ASSERT_TRUE(classCalender);
 
             //Events's constructor not registered, get its instance from 'Calander'.

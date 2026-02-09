@@ -14,7 +14,7 @@ namespace my_type
                 cxx_mirror().getFunction("ext", "sendString")
             Note: when registering free functions, the '&' operator is not required
             when passing the function pointer to build().
-        */  rtl::type().ns("ext").function("sendString").build(ext::sendString),
+        */  rtl::type().function("ext::sendString").build(ext::sendString),
 
 
         /*  Another free (C-style) function inside a namespace.
@@ -30,21 +30,21 @@ namespace my_type
 
             This guides `.build()` to correctly resolve the intended overload.
             Omitting the template type will result in a compile-time error.
-        */  rtl::type().ns("ext").function<const char*>("sendAsString").build(ext::sendAsString),
+        */  rtl::type().function<const char*>("ext::sendAsString").build(ext::sendAsString),
 
 
         /*  Next overload registration:
                 void sendAsString(Person)
             As with other overloads, the signature must be explicitly specified
             so that `.build()` can select the correct function pointer.
-        */  rtl::type().ns("ext").function<Person>("sendAsString").build(ext::sendAsString),
+        */  rtl::type().function<Person>("ext::sendAsString").build(ext::sendAsString),
 
 
         /*  And finally, the overload with an rvalue parameter:
                 void sendAsString(Person&&)
             Again, the signature must be explicitly specified
             to ensure `.build()` resolves to the correct function pointer.
-        */  rtl::type().ns("ext").function<Person&&>("sendAsString").build(ext::sendAsString),
+        */  rtl::type().function<Person&&>("ext::sendAsString").build(ext::sendAsString),
 
 
         /*  Register a class/struct type without a namespace.

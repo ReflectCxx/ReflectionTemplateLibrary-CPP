@@ -42,7 +42,7 @@ namespace rtl {
                     !insertMethodsToRecordIdMap(function) )
                 {
                     // Finally, register the 'function' as a non-member function under the given or global namespace.
-                    insertFunctionToNamespaceMap(function);
+                    addFunction(function);
                 }
             }
         }
@@ -51,12 +51,12 @@ namespace rtl {
     /*  @method: addFunction
         @params: FunctionMap, Function
         * adds the 'Function' object as non-member function mapped to the given namespace name.
-    */  void CxxReflection::addFunction(FunctionMap& pFunctionMap, const Function& pFunction)
+    */  void CxxReflection::addFunction(const Function& pFunction)
         {
             const auto& fname = pFunction.getFunctionName();
-            const auto& itr = pFunctionMap.find(fname);
-            if (itr == pFunctionMap.end()) {
-                pFunctionMap.emplace(fname, pFunction);
+            const auto& itr = m_functionsMap.find(fname);
+            if (itr == m_functionsMap.end()) {
+                m_functionsMap.emplace(fname, pFunction);
             }
             else {
                 const auto& function = itr->second;
@@ -90,48 +90,6 @@ namespace rtl {
         }
 
 
-    /*  @method: organizeFunctorsMetaData
-        @params: Function
-        * seggregates all the 'Function' objects and builds 'Record' & 'Method' objects.
-    */  void CxxReflection::insertFunctionToNamespaceMap(const Function& pFunction)
-        {
-            const std::string& nameSpace = pFunction.getNamespace();
-            const std::string& recordName = pFunction.getRecordName();
-            const traits::uid_t recordId = pFunction.getRecordTypeId();
-            //if the recordId(class/struct's type-id) is TypeId<>::None, 'Function' object is considered as non-member function.
-            if (recordId == traits::uid<>::none)
-            {
-                const auto& itr = m_functionNamespaceMap.find(nameSpace);
-                if (itr == m_functionNamespaceMap.end()) {
-                    const auto& funcMapItr = m_functionNamespaceMap.emplace(nameSpace, FunctionMap());
-                    addFunction(funcMapItr.first->second, pFunction);
-                }
-                else {
-                    addFunction(itr->second, pFunction);
-                }
-            }
-        }
-
-
-        void CxxReflection::addInNamespaceMap(Record& pRecord)
-        {
-            const auto& itr = m_recordNamespaceMap.find(pRecord.m_namespaceStr);
-            if (itr == m_recordNamespaceMap.end())
-            {
-                RecordMap& recordStrMap = m_recordNamespaceMap.emplace(pRecord.m_namespaceStr, RecordMap()).first->second;
-                recordStrMap.emplace(pRecord.m_recordName, std::ref(pRecord));
-            }
-            else
-            {
-                RecordMap& recordStrMap = itr->second;
-                const auto& itr0 = recordStrMap.find(pRecord.m_recordName);
-                if (itr0 == recordStrMap.end()) {
-                    recordStrMap.emplace(pRecord.m_recordName, std::ref(pRecord));
-                }
-            }
-        }
-
-
         void CxxReflection::buildRecordIdMap(const std::vector<Function>& pFunctions)
         {
             for (auto& function : pFunctions) {
@@ -145,8 +103,18 @@ namespace rtl {
                     auto& record = [&]()->const Record& {
                         const auto& itr = m_recordIdMap.find(recordId);
                         if (itr == m_recordIdMap.end()) {
-                            auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId, function.m_namespaceStr)).first->second;
-                            addInNamespaceMap(record);
+                            
+                            auto& record = m_recordIdMap.emplace(recordId, Record(recordName, recordId)).first->second;
+                            const auto& itr0 = m_recordMap.find(recordName);
+                            if (itr0 == m_recordMap.end()) {
+                                m_recordMap.emplace(recordName, std::ref(record));
+                            }
+                            else {
+                                std::cout << "\n[WARNING] Multiple registrations of different type with same name detected."
+                                          << "\n          Attempted re-registration as \"" << recordName << "\""
+                                          << "\n          This registration is ignored.\n";
+                                std::abort();   //TODO : remove with proper message.
+                            }
                             return record;
                         }
                         else {
@@ -165,7 +133,6 @@ namespace rtl {
                     if (!isRegistrationIgnored) {
                         Function constructor = function;
                         constructor.m_recordStr = record.m_recordName;
-                        constructor.m_namespaceStr = record.m_namespaceStr;
                         constructor.m_function = ctor_name(record.m_recordName);
                         addMethod(record.getFunctionsMap(), constructor);
                     }
@@ -213,7 +180,6 @@ namespace rtl {
                     Function memberFunc = pFunction;
 
                     memberFunc.m_recordStr = record.m_recordName;
-                    memberFunc.m_namespaceStr = record.m_namespaceStr;
                     addMethod(record.getFunctionsMap(), memberFunc);
                 }
                 else {

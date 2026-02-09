@@ -23,14 +23,13 @@ namespace rtl
     *        pRecordTypeId - type id of class/struct if the functor is member-function, '0' for non-member-functions.
     *        pQualifier - whether the member-function is const or non-const. member::None for non-member & static-member functions.
     * 'Function' object is created for every functor (member/non-member) being registered.
-*/  Function::Function(const std::string& pNamespace, const std::string& pRecord,
-                       const std::string& pFunction, const type_meta& pFunctorsMeta,
-                       const traits::uid_t pRecordTypeId, const detail::member pQualifier)
+*/  Function::Function(const std::string& pRecord, const std::string& pFunction, 
+                       const type_meta& pFunctorsMeta, const traits::uid_t pRecordTypeId,
+                       const detail::member pQualifier)
         : m_member_kind(pQualifier)
         , m_recordTypeId(pRecordTypeId)
         , m_recordStr(pRecord)
         , m_function(pFunction)
-        , m_namespaceStr(pNamespace)
         , m_functorsMeta({ pFunctorsMeta }) {
     }
 

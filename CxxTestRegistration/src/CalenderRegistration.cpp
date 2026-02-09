@@ -39,8 +39,7 @@ namespace test_mirror
                                  .build(&nsdate::Calender::getSavedDate));
 
         //  class Calender, registering after the methods. (order doesn't matter)
-        fns.push_back(rtl::type().ns(date::ns)
-                                 .record<nsdate::Calender>(calender::struct_)
+        fns.push_back(rtl::type().record<nsdate::Calender>(calender::struct_)
                                  .build());
 	}
 }
