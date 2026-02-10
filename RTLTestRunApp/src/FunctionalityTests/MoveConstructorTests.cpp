@@ -157,10 +157,10 @@ namespace rtl_tests
                 EXPECT_TRUE(err0 == error::None);
                 ASSERT_FALSE(event0.isEmpty());
 
-                optional<Record> classEvent = cxx::mirror().getRecord(event::struct_);
+                optional<Record> classEvent = cxx::mirror().getRecord(cxx::type::nsdate::Event::id);
                 ASSERT_TRUE(classEvent);
 
-                optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
+                optional<Method> oEventReset = classEvent->getMethod(cxx::type::nsdate::Event::fn::reset::id);
                 ASSERT_TRUE(oEventReset);
 
                 method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();

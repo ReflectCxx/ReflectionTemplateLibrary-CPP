@@ -32,9 +32,9 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<nsdate::Event>(event::struct_).build(),
+            rtl::type().record<nsdate::Event>(cxx::type::nsdate::Event::id).build(),
 
-            rtl::type().member<nsdate::Event>().method(event::str_reset).build(&nsdate::Event::reset),
+            rtl::type().member<nsdate::Event>().method(cxx::type::nsdate::Event::fn::reset::id).build(&nsdate::Event::reset),
         });
 
         std::cout << "\n  [t2]\trtl_tests::InitMirror::reflectingEvent() ==> Done.\n";

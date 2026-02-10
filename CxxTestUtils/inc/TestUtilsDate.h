@@ -15,10 +15,6 @@ namespace test_utils
 {
 	struct event
 	{
-		static constexpr std::string_view struct_ = "nsdate::Event";
-		static constexpr std::string_view str_getDate = "getDate";
-		static constexpr std::string_view str_reset = "reset";
-
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
 	};

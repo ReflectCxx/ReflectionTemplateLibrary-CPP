@@ -76,7 +76,7 @@ namespace rtl_tests
 
     TEST(ReflectionOpErrorCodeTests, error_TypeNotDefaultConstructible)
     {
-        optional<Record> classEvent = cxx::mirror().getRecord(event::struct_);
+        optional<Record> classEvent = cxx::mirror().getRecord(cxx::type::nsdate::Event::id);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->ctorT()(alloc::Stack);

@@ -13,7 +13,7 @@ namespace rtl_tests
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
         //I don't know if the 'Event' is class or struct..Reflection YaY!. :P
-        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(event::struct_));
+        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(cxx::type::nsdate::Event::id));
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->ctorT()(rtl::alloc::Stack);
@@ -46,7 +46,7 @@ namespace rtl_tests
 
             EXPECT_TRUE(err2 == rtl::error::None);
             ASSERT_FALSE(event.isEmpty());
-            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(event::struct_));
+            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(cxx::type::nsdate::Event::id));
             {
                 auto [err, robj] = event.clone<rtl::alloc::Heap>();
                 //Event's copy-constructor private or deleted.
