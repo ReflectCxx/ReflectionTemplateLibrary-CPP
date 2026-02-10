@@ -34,15 +34,15 @@ namespace regs4::type0 {
 
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string &>(cxx::type::StrMute::fn::reverseString::id)
-                                 .build(&StrMute::reverseString));
+                                 .build(static_cast<std::string(StrMute::*)(std::string&)>(&StrMute::reverseString)));
 
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string &&>(cxx::type::StrMute::fn::reverseString::id)
-                                 .build(&StrMute::reverseString));
+                                 .build(static_cast<std::string(StrMute::*)(std::string&&)>(&StrMute::reverseString)));
 
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<const std::string &>(cxx::type::StrMute::fn::reverseString::id)
-                                 .build(&StrMute::reverseString));
+                                 .build(static_cast<std::string(StrMute::*)(const std::string&)>(&StrMute::reverseString)));
 
         fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string *>(cxx::type::StrMute::fn::reverseString::id)
