@@ -25,10 +25,10 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            optional<Method> oUpdateLastName = classPerson->getMethod(cxx::type::Person::fn::updateLastName::id);
             ASSERT_TRUE(oUpdateLastName);
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
@@ -85,10 +85,10 @@ namespace rtl_tests
     {
         auto testWithAllocOn = [](alloc alloc)->void
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            optional<Method> oUpdateLastName = classPerson->getMethod(cxx::type::Person::fn::updateLastName::id);
             ASSERT_TRUE(oUpdateLastName);
 
             auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
@@ -128,14 +128,14 @@ namespace rtl_tests
     {
         auto testWithAllocOn = [](alloc alloc)->void
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
             auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oUpdateAddress = classPerson->getMethod(person::str_updateAddress);
+            optional<Method> oUpdateAddress = classPerson->getMethod(cxx::type::Person::fn::updateAddress::id);
             ASSERT_TRUE(oUpdateAddress);
             EXPECT_TRUE(oUpdateAddress->hasSignature<string>());
 
@@ -167,10 +167,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
+            optional<Method> createConstPerson = classPerson->getMethod(cxx::type::Person::fn::createConst::id);
             ASSERT_TRUE(createConstPerson);
 
             static_method<Return()> createPerson = createConstPerson->argsT().returnT();
@@ -181,7 +181,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPerson.isEmpty());
 
-            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(cxx::type::Person::fn::getFirstName::id);
             ASSERT_TRUE(oGetFirstName);
             EXPECT_TRUE(oGetFirstName->hasSignature<>());
 
@@ -209,10 +209,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_pointer_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> createConstPtrPerson = classPerson->getMethod(person::str_createPtr);
+            optional<Method> createConstPtrPerson = classPerson->getMethod(cxx::type::Person::fn::createPtr::id);
             ASSERT_TRUE(createConstPtrPerson);
 
             static_method<Return()> createPerson = createConstPtrPerson->argsT().returnT();
@@ -224,7 +224,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPersonPtr.isEmpty());
 
-            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(cxx::type::Person::fn::getFirstName::id);
             ASSERT_TRUE(oGetFirstName);
             EXPECT_TRUE(oGetFirstName->hasSignature<>());
 

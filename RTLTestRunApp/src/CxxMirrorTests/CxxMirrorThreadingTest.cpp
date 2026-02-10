@@ -220,33 +220,33 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<Person>(person::class_).build(),
+            rtl::type().record<Person>(cxx::type::Person::id).build(),
 
             rtl::type().member<Person>().constructor<std::string>().build(),
 
-            rtl::type().member<Person>().methodStatic(person::str_createPtr).build(&Person::createPtr),
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::createPtr::id).build(&Person::createPtr),
 
-            rtl::type().member<Person>().method<void>(person::str_updateAddress).build(&Person::updateAddress),
+            rtl::type().member<Person>().method<void>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
 
-            rtl::type().member<Person>().method<std::string>(person::str_updateAddress).build(&Person::updateAddress),
+            rtl::type().member<Person>().method<std::string>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
 
-            rtl::type().member<Person>().method(person::str_getFirstName).build(&Person::getFirstName),
+            rtl::type().member<Person>().method(cxx::type::Person::fn::getFirstName::id).build(&Person::getFirstName),
 
-            rtl::type().member<Person>().methodConst(person::str_updateLastName).build(&Person::updateLastName),
+            rtl::type().member<Person>().methodConst(cxx::type::Person::fn::updateLastName::id).build(&Person::updateLastName),
 
-            rtl::type().member<Person>().methodConst<void>(person::str_updateAddress).build(&Person::updateAddress),
+            rtl::type().member<Person>().methodConst<void>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
 
-            rtl::type().member<Person>().methodConst<std::string>(person::str_updateAddress).build(&Person::updateAddress),
+            rtl::type().member<Person>().methodConst<std::string>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
 
-            rtl::type().member<Person>().methodStatic(person::str_getDefaults).build(&Person::getDefaults),
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::getDefaults::id).build(&Person::getDefaults),
 
-            rtl::type().member<Person>().methodStatic(person::str_createConst).build(&Person::createConst),
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::createConst::id).build(&Person::createConst),
 
-            rtl::type().member<Person>().methodStatic<void>(person::str_getProfile).build(&Person::getProfile),
+            rtl::type().member<Person>().methodStatic<void>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile),
 
-            rtl::type().member<Person>().methodStatic<bool>(person::str_getProfile).build(&Person::getProfile),
+            rtl::type().member<Person>().methodStatic<bool>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile),
 
-            rtl::type().member<Person>().methodStatic<std::string, size_t>(person::str_getProfile).build(&Person::getProfile)
+            rtl::type().member<Person>().methodStatic<std::string, size_t>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile)
         });
 
         std::cout << "\n  [t4]\trtl_tests::InitMirror::reflectingPerson() ==> Done.\n";
@@ -272,20 +272,20 @@ namespace rtl_tests
         /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
             we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
         */  rtl::type().member<Animal>()
-                        .method<std::string&>(cxx::type::Animal::fn::setAnimalName::id)
-                        .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+                       .method<std::string&>(cxx::type::Animal::fn::setAnimalName::id)
+                       .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
 
             rtl::type().member<Animal>()
-                        .method<std::string&&>(cxx::type::Animal::fn::setAnimalName::id)
-                        .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+                       .method<std::string&&>(cxx::type::Animal::fn::setAnimalName::id)
+                       .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
 
             rtl::type().member<Animal>()
-                        .methodStatic<std::string&>(cxx::type::Animal::fn::updateZooKeeper::id)
-                        .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+                       .methodStatic<std::string&>(cxx::type::Animal::fn::updateZooKeeper::id)
+                       .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
 
             rtl::type().member<Animal>()
-                        .methodStatic<std::string&&>(cxx::type::Animal::fn::updateZooKeeper::id)
-                        .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
+                       .methodStatic<std::string&&>(cxx::type::Animal::fn::updateZooKeeper::id)
+                       .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
 
         });
 

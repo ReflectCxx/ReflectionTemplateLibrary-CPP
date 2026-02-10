@@ -22,15 +22,6 @@ namespace test_utils
 		static constexpr std::string_view ADDRESS = "221B Baker Street.";
 		static constexpr std::string_view OCCUPATION = "Private Detective.";
 
-		static constexpr std::string_view class_ = "Person";
-		static constexpr std::string_view str_createPtr = "createPtr";
-		static constexpr std::string_view str_getProfile = "getProfile";
-		static constexpr std::string_view str_createConst = "createConst";
-		static constexpr std::string_view str_getDefaults = "getDefaults";
-		static constexpr std::string_view str_getFirstName = "getFirstName";
-		static constexpr std::string_view str_updateAddress = "updateAddress";
-		static constexpr std::string_view str_updateLastName = "updateLastName";
-
 		static const bool assert_zero_instance_count();
 
 		static const std::string get_str_returned_on_call_getDefaults();

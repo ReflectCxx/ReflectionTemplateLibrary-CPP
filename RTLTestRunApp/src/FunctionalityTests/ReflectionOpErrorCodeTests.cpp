@@ -264,10 +264,10 @@ namespace rtl_tests
 
     TEST(ReflectionOpErrorCodeTests, static_method_call__error_SignatureMismatch)
     {
-        optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+        optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
         ASSERT_TRUE(classPerson);
 
-        optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+        optional<Method> optGetProfile = classPerson->getMethod(cxx::type::Person::fn::getProfile::id);
         ASSERT_TRUE(optGetProfile);
         EXPECT_TRUE(optGetProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
@@ -303,7 +303,7 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, method_call_using_heap_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
             optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
@@ -331,7 +331,7 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, method_call_using_stack_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
             optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
