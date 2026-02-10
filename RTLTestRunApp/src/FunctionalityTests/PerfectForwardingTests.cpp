@@ -41,7 +41,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -50,7 +50,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for an R-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&&>()));
@@ -83,7 +83,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -92,7 +92,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a non-const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&>()));
@@ -126,7 +126,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -135,7 +135,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
@@ -170,7 +170,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -179,7 +179,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for an R-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&&>()));
@@ -212,7 +212,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -221,7 +221,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a non-const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<std::string&>()));
@@ -254,7 +254,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -263,7 +263,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
@@ -290,10 +290,10 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_overload_resolution_with_rvalue_ref)
     {
         {
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(cxx::type::Animal::fn::updateZooKeeper::id);
             ASSERT_TRUE(oUpdateZooKeeper);
 
             const auto& isValid = oUpdateZooKeeper->hasSignature<std::string&&>();
@@ -324,10 +324,10 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_overload_resolution_with_const_lvalue_ref)
     {
         {
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(cxx::type::Animal::fn::updateZooKeeper::id);
             ASSERT_TRUE(oUpdateZooKeeper);
 
             const auto& isValid = oUpdateZooKeeper->hasSignature<const std::string&>();
@@ -354,10 +354,10 @@ namespace rtl_tests
     TEST(PerfectForwardingTest, static_fn_overload_resolution_with_non_const_lvalue_ref)
     {
         {
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
-            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(animal::str_updateZooKeeper);
+            optional<Method> oUpdateZooKeeper = classAnimal->getMethod(cxx::type::Animal::fn::updateZooKeeper::id);
             ASSERT_TRUE(oUpdateZooKeeper);
 
             const auto& isValid = oUpdateZooKeeper->hasSignature<const std::string&>();

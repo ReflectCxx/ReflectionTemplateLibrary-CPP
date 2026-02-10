@@ -253,7 +253,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -262,7 +262,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));

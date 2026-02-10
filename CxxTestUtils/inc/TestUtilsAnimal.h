@@ -24,12 +24,6 @@ namespace test_utils
 		static constexpr std::string_view FAMILY_NAME = "Great Ape";
 		static constexpr std::string_view ZOO_KEEPER = "Donald McAdams";
 
-		static constexpr std::string_view class_ = "Animal";
-		static constexpr std::string_view str_updateZooKeeper = "updateZooKeeper";
-		static constexpr std::string_view str_setAnimalName = "setAnimalName";
-		static constexpr std::string_view str_setFamilyName = "setFamilyName";
-		static constexpr std::string_view str_getFamilyName = "getFamilyName";
-
 		static const bool assert_zero_instance_count();
 
 		static const bool test_method_setAnimalName_rvalue_args(const rtl::RObject& pInstance);
