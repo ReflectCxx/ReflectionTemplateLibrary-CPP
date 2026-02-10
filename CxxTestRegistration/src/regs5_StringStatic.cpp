@@ -32,17 +32,20 @@ namespace regs5::type0 {
                                  .methodStatic<std::string>(cxx::type::StrStatic::fn::reverseString::id)
                                  .build(&StrStatic::reverseString));
 
-        fns.push_back(rtl::type().member<StrStatic>()
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().member<StrStatic>()
                                  .methodStatic<std::string &>(cxx::type::StrStatic::fn::reverseString::id)
-                                 .build(&StrStatic::reverseString));
+                                 .build(static_cast<std::string(*)(std::string&)>(&StrStatic::reverseString)));
 
         fns.push_back(rtl::type().member<StrStatic>()
                                  .methodStatic<std::string &&>(cxx::type::StrStatic::fn::reverseString::id)
-                                 .build(&StrStatic::reverseString));
+                                 .build(static_cast<std::string(*)(std::string&&)>(&StrStatic::reverseString)));
 
         fns.push_back(rtl::type().member<StrStatic>()
                                  .methodStatic<const std::string &>(cxx::type::StrStatic::fn::reverseString::id)
-                                 .build(&StrStatic::reverseString));
+                                 .build(static_cast<std::string(*)(const std::string&)>(&StrStatic::reverseString)));
 
         fns.push_back(rtl::type().member<StrStatic>()
                                  .methodStatic<std::string *>(cxx::type::StrStatic::fn::reverseString::id)

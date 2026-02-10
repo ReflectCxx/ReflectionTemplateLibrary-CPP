@@ -32,7 +32,10 @@ namespace regs4::type0 {
                                  .method<std::string>(cxx::type::StrMute::fn::reverseString::id)
                                  .build(&StrMute::reverseString));
 
-        fns.push_back(rtl::type().member<StrMute>()
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().member<StrMute>()
                                  .method<std::string &>(cxx::type::StrMute::fn::reverseString::id)
                                  .build(static_cast<std::string(StrMute::*)(std::string&)>(&StrMute::reverseString)));
 

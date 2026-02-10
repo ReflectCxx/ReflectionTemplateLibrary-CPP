@@ -24,14 +24,17 @@ namespace regs7::fn {
         fns.push_back(rtl::type().function<std::string>(cxx::fn::reverseString::id)
                                  .build(&reverseString));
 
-        fns.push_back(rtl::type().function<std::string &>(cxx::fn::reverseString::id)
-                                 .build(&reverseString));
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().function<std::string &>(cxx::fn::reverseString::id)
+                                 .build(static_cast<std::string(*)(std::string&)>(&reverseString)));
 
         fns.push_back(rtl::type().function<std::string &&>(cxx::fn::reverseString::id)
-                                 .build(&reverseString));
+                                 .build(static_cast<std::string(*)(std::string&&)>(&reverseString)));
 
         fns.push_back(rtl::type().function<const std::string &>(cxx::fn::reverseString::id)
-                                 .build(&reverseString));
+                                 .build(static_cast<std::string(*)(const std::string&)>(&reverseString)));
 
         fns.push_back(rtl::type().function<std::string *>(cxx::fn::reverseString::id)
                                  .build(&reverseString));
