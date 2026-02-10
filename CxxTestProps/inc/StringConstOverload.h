@@ -4,7 +4,7 @@
 
 struct StrConstOverload 
 {
-	constexpr static const char* struct_ = "StrConstOverload";
+	constexpr static std::string_view struct_ = "StrConstOverload";
 
 	std::string reverseString();
 

@@ -13,41 +13,41 @@ StrWrap::StrWrap(const std::string& pStr)
 { }
 
 StrWrapA::StrWrapA()
-	:StrWrap(std::string(struct_) + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(SUFFIX_ctor))
 { }
 
 StrWrapA::StrWrapA(std::string_view pStr)
-	:StrWrap(std::string(struct_) + std::string(pStr) + SUFFIX_std_string_view + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_view).append(SUFFIX_ctor))
 { }
 
 StrWrapA::StrWrapA(std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_lvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_lvref).append(SUFFIX_ctor))
 { }
 
 StrWrapA::StrWrapA(const std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_clvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_clvref).append(SUFFIX_ctor))
 { }
 
 StrWrapA::StrWrapA(std::string&& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_rvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_rvref).append(SUFFIX_ctor))
 { }
 
 StrWrapA::StrWrapA(const char* pStr)
-	:StrWrap(std::string(struct_) + std::string(pStr) + SUFFIX_const_char_ptr + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_const_char_ptr).append(SUFFIX_ctor))
 { }
 
 StrWrapB::StrWrapB(const std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_clvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_clvref).append(SUFFIX_ctor))
 { }
 
 StrWrapB::StrWrapB(std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_lvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_lvref).append(SUFFIX_ctor))
 { }
 
 StrWrapC::StrWrapC(std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_lvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_lvref).append(SUFFIX_ctor))
 { }
 
 StrWrapD::StrWrapD(const std::string& pStr)
-	:StrWrap(std::string(struct_) + pStr + SUFFIX_std_string_clvref + SUFFIX_ctor)
+	:StrWrap(std::string(struct_).append(pStr).append(SUFFIX_std_string_clvref).append(SUFFIX_ctor))
 { }

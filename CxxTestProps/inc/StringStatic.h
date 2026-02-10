@@ -5,7 +5,7 @@
 // 'StrStatic' - String-Static, all methods are static.
 struct StrStatic
 {
-	constexpr static const char* struct_ = "StrStatic";
+	constexpr static std::string_view struct_ = "StrStatic";
 
 	static std::string reverseString();
 

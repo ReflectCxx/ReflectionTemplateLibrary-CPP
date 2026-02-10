@@ -84,7 +84,7 @@ namespace rtl_tests
 
                 const auto& stdStr = viewStr->get();
                 EXPECT_EQ(stdStr.sstr(), 
-                    (std::string(StrWrapA::struct_) + SUFFIX_ctor));
+                          (std::string(StrWrapA::struct_).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -104,9 +104,8 @@ namespace rtl_tests
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(), 
-                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
-                        SUFFIX_std_string_view + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(),
+                          (std::string(StrWrapA::struct_).append(SPARTA).append(SUFFIX_std_string_view).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -125,8 +124,7 @@ namespace rtl_tests
 
                 const auto& stdStr = viewStr->get();
                 EXPECT_EQ(stdStr.sstr(),
-                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
-                        SUFFIX_const_char_ptr + SUFFIX_ctor));
+                          (std::string(StrWrapA::struct_).append(SPARTA).append(SUFFIX_const_char_ptr).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -154,8 +152,7 @@ namespace rtl_tests
 
                 const auto& stdStr = viewStr->get();
                 EXPECT_EQ(stdStr.sstr(),
-                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
-                        SUFFIX_std_string_lvref + SUFFIX_ctor));
+                          (std::string(StrWrapA::struct_).append(SPARTA).append(SUFFIX_std_string_lvref).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -171,8 +168,7 @@ namespace rtl_tests
 
                 const auto& stdStr = viewStr->get();
                 EXPECT_EQ(stdStr.sstr(),
-                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
-                        SUFFIX_std_string_rvref + SUFFIX_ctor));
+                          (std::string(StrWrapA::struct_).append(SPARTA).append(SUFFIX_std_string_rvref).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -188,8 +184,7 @@ namespace rtl_tests
 
                 const auto& stdStr = viewStr->get();
                 EXPECT_EQ(stdStr.sstr(),
-                    (std::string(StrWrapA::struct_) + std::string(SPARTA) + 
-                        SUFFIX_std_string_clvref + SUFFIX_ctor));
+                          (std::string(StrWrapA::struct_).append(SPARTA).append(SUFFIX_std_string_clvref).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);
@@ -268,9 +263,8 @@ namespace rtl_tests
                 ASSERT_TRUE(viewStr);
 
                 const auto& stdStr = viewStr->get();
-                EXPECT_EQ(stdStr.sstr(),
-                    (std::string(StrWrapD::struct_) + std::string(SPARTA) +
-                        SUFFIX_std_string_clvref + SUFFIX_ctor));
+                EXPECT_EQ(stdStr.sstr(), 
+                          (std::string(StrWrapD::struct_).append(SPARTA).append(SUFFIX_std_string_clvref).append(SUFFIX_ctor)));
             };
             testCreateOn(rtl::alloc::Heap);
             testCreateOn(rtl::alloc::Stack);

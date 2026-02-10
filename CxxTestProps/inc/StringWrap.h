@@ -13,7 +13,7 @@ struct StrWrap
 // 'StrWrapA' - String-Wrapper, only constructors for testing.
 struct StrWrapA : public StrWrap
 {
-	constexpr static const char* struct_ = "StrWrapA";
+	constexpr static std::string_view struct_ = "StrWrapA";
 
 	StrWrapA();
 
@@ -32,7 +32,7 @@ struct StrWrapA : public StrWrap
 // 'StrWrapB' - String-Wrapper, only constructors for testing.
 struct StrWrapB : public StrWrap
 {
-	constexpr static const char* struct_ = "StrWrapB";
+	constexpr static std::string_view struct_ = "StrWrapB";
 	StrWrapB(std::string& pStr);
 	StrWrapB(const std::string& pStr);
 };
@@ -41,7 +41,7 @@ struct StrWrapB : public StrWrap
 // 'StrWrapC' - String-Wrapper, only constructors for testing.
 struct StrWrapC : public StrWrap
 {
-	constexpr static const char* struct_ = "StrWrapC";
+	constexpr static std::string_view struct_ = "StrWrapC";
 	StrWrapC(std::string& pStr);
 };
 
@@ -49,6 +49,6 @@ struct StrWrapC : public StrWrap
 // 'StrWrapD' - String-Wrapper, only constructors for testing.
 struct StrWrapD : public StrWrap
 {
-	constexpr static const char* struct_ = "StrWrapD";
+	constexpr static std::string_view struct_ = "StrWrapD";
 	StrWrapD(const std::string& pStr);
 };
