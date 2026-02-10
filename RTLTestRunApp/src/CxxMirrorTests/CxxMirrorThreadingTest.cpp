@@ -45,11 +45,11 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().record<Library>(library::class_).build(),
+            rtl::type().record<Library>(cxx::type::Library::id).build(),
 
-            rtl::type().member<Library>().methodStatic(library::str_addBook).build(&Library::addBook),
+            rtl::type().member<Library>().methodStatic(cxx::type::Library::fn::addBook::id).build(&Library::addBook),
 
-            rtl::type().member<Library>().methodStatic(library::str_getBookByTitle).build(&Library::getBookByTitle)
+            rtl::type().member<Library>().methodStatic(cxx::type::Library::fn::getBookByTitle::id).build(&Library::getBookByTitle)
         });
 
         std::cout << "\n  [t5]\trtl_tests::InitMirror::reflectingLibrary() ==> Done.\n";
@@ -265,18 +265,18 @@ namespace rtl_tests
 
             rtl::type().member<Animal>().methodConst(cxx::type::Animal::fn::getFamilyName::id).build(&Animal::getFamilyName),
 
-            rtl::type().member<Animal>().method<const std::string&>(cxx::type::Animal::fn::setFamilyName::id).build(&Animal::setAnimalName),
+            rtl::type().member<Animal>().method<const std::string&>(cxx::type::Animal::fn::setAnimalName::id).build(&Animal::setAnimalName),
 
             rtl::type().member<Animal>().methodStatic<const std::string&>(cxx::type::Animal::fn::updateZooKeeper::id).build(&Animal::updateZooKeeper),
 
         /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
             we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
         */  rtl::type().member<Animal>()
-                        .method<std::string&>(cxx::type::Animal::fn::setFamilyName::id)
+                        .method<std::string&>(cxx::type::Animal::fn::setAnimalName::id)
                         .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
 
             rtl::type().member<Animal>()
-                        .method<std::string&&>(cxx::type::Animal::fn::setFamilyName::id)
+                        .method<std::string&&>(cxx::type::Animal::fn::setAnimalName::id)
                         .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
 
             rtl::type().member<Animal>()

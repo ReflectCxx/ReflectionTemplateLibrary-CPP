@@ -16,10 +16,6 @@ namespace test_utils
 {
 	struct library
 	{
-		static constexpr std::string_view class_ = "Library";
-		static constexpr std::string_view str_addBook = "addBook";
-		static constexpr std::string_view str_getBookByTitle = "getBookByTitle";
-
 		static const bool assert_zero_instance_count();
 	};
 

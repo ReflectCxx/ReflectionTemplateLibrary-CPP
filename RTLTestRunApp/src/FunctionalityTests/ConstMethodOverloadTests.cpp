@@ -262,7 +262,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setFamilyName::id);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setAnimalName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));

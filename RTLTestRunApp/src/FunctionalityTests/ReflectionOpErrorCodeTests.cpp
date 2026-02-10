@@ -234,7 +234,7 @@ namespace rtl_tests
     {
         {
             // Fetch the reflected Record for class 'Library'.
-            optional<Record> classLibrary = cxx::mirror().getRecord(library::class_);
+            optional<Record> classLibrary = cxx::mirror().getRecord(cxx::type::Library::id);
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
