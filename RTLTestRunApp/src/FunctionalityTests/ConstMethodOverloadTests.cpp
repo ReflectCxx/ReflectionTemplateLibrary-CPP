@@ -52,10 +52,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_empty_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(std::string(rtcl::type::Person::id));
+            optional<Record> classPerson = cxx::mirror().getRecord(std::string(cxx::type::Person::id));
             ASSERT_TRUE(classPerson);
 			
-            optional<Method> oUpdateLastName = classPerson->getMethod(std::string(rtcl::type::Person::method::updateLastName));
+            optional<Method> oUpdateLastName = classPerson->getMethod(std::string(cxx::type::Person::fn::updateLastName::id));
             ASSERT_TRUE(oUpdateLastName);
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 

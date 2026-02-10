@@ -24,8 +24,6 @@ SET(LOCAL_HEADERS
 	"${PROJECT_SOURCE_DIR}/inc/reg_ids.h"
 	"${PROJECT_SOURCE_DIR}/inc/reg_decls.h"
 	"${PROJECT_SOURCE_DIR}/inc/TestMirrorProvider.h"
-	
-	"${PROJECT_SOURCE_DIR}/inc/rtcl_meta_ids.h"
 )
 
 # Add any additional source files if needed
