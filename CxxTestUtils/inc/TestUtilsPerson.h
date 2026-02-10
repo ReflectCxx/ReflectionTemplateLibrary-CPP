@@ -17,19 +17,19 @@ namespace test_utils
 	struct person
 	{
 		static constexpr const std::size_t AGE = 34;
-		static constexpr const char* FIRST_NAME = "Sherlock";
-		static constexpr const char* LAST_NAME = "Holmes";
-		static constexpr const char* ADDRESS = "221B Baker Street.";
-		static constexpr const char* OCCUPATION = "Private Detective.";
+		static constexpr std::string_view FIRST_NAME = "Sherlock";
+		static constexpr std::string_view LAST_NAME = "Holmes";
+		static constexpr std::string_view ADDRESS = "221B Baker Street.";
+		static constexpr std::string_view OCCUPATION = "Private Detective.";
 
-		static constexpr const char* class_ = "Person";
-		static constexpr const char* str_createPtr = "createPtr";
-		static constexpr const char* str_getProfile = "getProfile";
-		static constexpr const char* str_createConst = "createConst";
-		static constexpr const char* str_getDefaults = "getDefaults";
-		static constexpr const char* str_getFirstName = "getFirstName";
-		static constexpr const char* str_updateAddress = "updateAddress";
-		static constexpr const char* str_updateLastName = "updateLastName";
+		static constexpr std::string_view class_ = "Person";
+		static constexpr std::string_view str_createPtr = "createPtr";
+		static constexpr std::string_view str_getProfile = "getProfile";
+		static constexpr std::string_view str_createConst = "createConst";
+		static constexpr std::string_view str_getDefaults = "getDefaults";
+		static constexpr std::string_view str_getFirstName = "getFirstName";
+		static constexpr std::string_view str_updateAddress = "updateAddress";
+		static constexpr std::string_view str_updateLastName = "updateLastName";
 
 		static const bool assert_zero_instance_count();
 

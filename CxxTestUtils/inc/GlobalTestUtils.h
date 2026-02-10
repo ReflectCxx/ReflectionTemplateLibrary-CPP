@@ -13,25 +13,24 @@ namespace test_utils {
 	static constexpr double g_real = 3.92;
 	static constexpr double g_imaginary = 9.27;
 
-	static constexpr const char* STRA = "ReflectC++";
-	static constexpr const char* STRA_REVERSE = "++CtcelfeR";
+	inline constexpr std::string_view STRA = "ReflectC++";
+	inline constexpr std::string_view STRA_REVERSE = "++CtcelfeR";
 
-	static constexpr const char* STRB = "cxxReflection";
-	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
+	inline constexpr std::string_view STRB = "cxxReflection";
+	inline constexpr std::string_view STRB_REVERSE = "noitcelfeRxxc";
 
-	static constexpr const char* str_reverseString = "reverseString"; 
-	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
-	static constexpr const char* str_revStrRValueRefArg = "revStrRValueRefArg";
-	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
-	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
-	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
-	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadRefAndCRef";
+	inline constexpr std::string_view str_reverseString = "reverseString"; 
+	inline constexpr std::string_view str_revStrConstRefArg = "revStrConstRefArg";
+	inline constexpr std::string_view str_revStrRValueRefArg = "revStrRValueRefArg";
+	inline constexpr std::string_view str_revStrNonConstRefArg = "revStrNonConstRefArg";
+	inline constexpr std::string_view str_revStrOverloadValRef = "revStrOverloadValRef";
+	inline constexpr std::string_view str_revStrOverloadValCRef = "revStrOverloadValCRef";
 
-	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
+	inline constexpr std::string_view str_getComplexNumAsString = "getComplexNumAsString";
 
-	static constexpr const char* str_setReal = "complex::setReal";
-	static constexpr const char* str_setImaginary = "complex::setImaginary";
-	static constexpr const char* str_getMagnitude = "complex::getMagnitude";
+	inline constexpr std::string_view str_setReal = "complex::setReal";
+	inline constexpr std::string_view str_setImaginary = "complex::setImaginary";
+	inline constexpr std::string_view str_getMagnitude = "complex::getMagnitude";
 
 	static const char* SUFFIX_void = "_void";
 	static const char* SUFFIX_ctor = "_ctor";

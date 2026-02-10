@@ -109,7 +109,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfileFn);
 		EXPECT_EQ(getProfileFn.get_init_error(), rtl::error::None);
 
-		auto [err, ret] = getProfileFn(person::OCCUPATION, person::AGE);
+		auto [err, ret] = getProfileFn(person::OCCUPATION.data(), person::AGE);
 
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
@@ -182,7 +182,7 @@ namespace rtl_tests
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());
 
-			auto [err, ret] = optGetProfile(person)(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person)(person::OCCUPATION.data(), person::AGE);
 
 			EXPECT_EQ(err, error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -190,7 +190,7 @@ namespace rtl_tests
 			rtl::static_method<rtl::Return(std::string, std::size_t)> optGetProfile = getProfileOpt.value()
 																							    .argsT<std::string, std::size_t>()
 																							    .returnT();
-			auto [err, ret] = optGetProfile(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person::OCCUPATION.data(), person::AGE);
 
 			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());

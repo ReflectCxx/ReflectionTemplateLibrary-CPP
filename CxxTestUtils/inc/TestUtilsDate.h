@@ -15,9 +15,9 @@ namespace test_utils
 {
 	struct event
 	{
-		static constexpr const char* struct_ = "nsdate::Event";
-		static constexpr const char* str_getDate = "getDate";
-		static constexpr const char* str_reset = "reset";
+		static constexpr std::string_view struct_ = "nsdate::Event";
+		static constexpr std::string_view str_getDate = "getDate";
+		static constexpr std::string_view str_reset = "reset";
 
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
@@ -36,8 +36,8 @@ namespace test_utils
 		static constexpr const unsigned DAY = 1;
 		static constexpr const unsigned MONTH = 1;
 		static constexpr const unsigned YEAR = 2000;
-		static constexpr const char* DATE_STR0 = "23/12/2024";
-		static constexpr const char* DATE_STR1 = "04/05/2025";
+		static constexpr std::string_view DATE_STR0 = "23/12/2024";
+		static constexpr std::string_view DATE_STR1 = "04/05/2025";
 
 		static const std::size_t get_instance_count();
 

@@ -116,7 +116,7 @@ namespace rtl_tests
 
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
 
-            auto [err0, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE);
+            auto [err0, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
@@ -125,7 +125,7 @@ namespace rtl_tests
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                auto [err, ret] = setAuthor(book)(book::AUTHOR.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
@@ -134,7 +134,7 @@ namespace rtl_tests
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             }
@@ -161,7 +161,7 @@ namespace rtl_tests
 
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
             
-            auto [err0, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE);
+            auto [err0, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
@@ -170,7 +170,7 @@ namespace rtl_tests
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                auto [err, ret] = setAuthor(book)(book::AUTHOR.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
@@ -179,7 +179,7 @@ namespace rtl_tests
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             }
@@ -206,7 +206,7 @@ namespace rtl_tests
             
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
 
-            auto [err0, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE);
+            auto [err0, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
@@ -215,7 +215,7 @@ namespace rtl_tests
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                auto [err, ret] = setAuthor(book)(book::AUTHOR.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
@@ -224,7 +224,7 @@ namespace rtl_tests
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             }
@@ -251,7 +251,7 @@ namespace rtl_tests
             
             rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
 
-            auto [err0, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE);
+            auto [err0, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
             {
@@ -260,7 +260,7 @@ namespace rtl_tests
 
                 auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setAuthor(book)(book::AUTHOR);
+                auto [err, ret] = setAuthor(book)(book::AUTHOR.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             } {
@@ -269,7 +269,7 @@ namespace rtl_tests
 
                 auto setDescription = oSetDescription->targetT().argsT<std::string>().returnT();
 
-                auto [err, ret] = setDescription(book)(book::DESCRIPTION);
+                auto [err, ret] = setDescription(book)(book::DESCRIPTION.data());
                 EXPECT_TRUE(err == error::None);
                 EXPECT_TRUE(ret.isEmpty());
             }
@@ -354,7 +354,7 @@ namespace rtl_tests
                 method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
                 EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1.data());
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -435,7 +435,7 @@ namespace rtl_tests
                 method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
                 EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1.data());
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -516,7 +516,7 @@ namespace rtl_tests
                 method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
                 EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1.data());
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be still equal.
                     EXPECT_TRUE(date::test_if_obejcts_are_equal(date0, date1));
@@ -597,7 +597,7 @@ namespace rtl_tests
                 method<RObject, Return(string)> updateDate = oUpdateDate->targetT().argsT<string>().returnT();
                 EXPECT_TRUE(updateDate);
                 {
-                    auto [err, ret] = updateDate(date0)(date::DATE_STR1);
+                    auto [err, ret] = updateDate(date0)(date::DATE_STR1.data());
                     ASSERT_TRUE(err == error::None && ret.isEmpty());
                     // After mutation, they should be not be equal, since both are unique instances.
                     EXPECT_FALSE(date::test_if_obejcts_are_equal(date0, date1));

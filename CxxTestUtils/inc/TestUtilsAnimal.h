@@ -20,15 +20,15 @@ namespace test_utils
 		static constexpr const int AGE = 0.0;
 		static constexpr const float WEIGHT = 0.0;
 		static constexpr const bool IS_MAMMAL = false;
-		static constexpr const char* NAME = "Orangutan";
-		static constexpr const char* FAMILY_NAME = "Great Ape";
-		static constexpr const char* ZOO_KEEPER = "Donald McAdams";
+		static constexpr std::string_view NAME = "Orangutan";
+		static constexpr std::string_view FAMILY_NAME = "Great Ape";
+		static constexpr std::string_view ZOO_KEEPER = "Donald McAdams";
 
-		static constexpr const char* class_ = "Animal";
-		static constexpr const char* str_updateZooKeeper = "updateZooKeeper";
-		static constexpr const char* str_setAnimalName = "setAnimalName";
-		static constexpr const char* str_setFamilyName = "setFamilyName";
-		static constexpr const char* str_getFamilyName = "getFamilyName";
+		static constexpr std::string_view class_ = "Animal";
+		static constexpr std::string_view str_updateZooKeeper = "updateZooKeeper";
+		static constexpr std::string_view str_setAnimalName = "setAnimalName";
+		static constexpr std::string_view str_setFamilyName = "setFamilyName";
+		static constexpr std::string_view str_getFamilyName = "getFamilyName";
 
 		static const bool assert_zero_instance_count();
 

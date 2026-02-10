@@ -38,7 +38,7 @@ namespace test_utils
 	template<>
 	const std::string person::get_str_returned_on_call_getProfile<string, size_t>(const bool pNoAddress)
 	{
-		return Person::getProfile(OCCUPATION, AGE);
+		return Person::getProfile(std::string(OCCUPATION), AGE);
 	}
 
 
@@ -46,8 +46,12 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			const Person person(FIRST_NAME);
-			person.updateLastName(LAST_NAME);
+			auto lastName = std::string(LAST_NAME);
+			auto firstName = std::string(FIRST_NAME);
+
+			const Person person(firstName);
+			person.updateLastName(lastName);
+
 			const Person& rPerson = pInstance.view<Person>()->get();
 			return (person == rPerson);
 		}
@@ -61,8 +65,11 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			Person person(FIRST_NAME);
-			person.updateAddress(ADDRESS);
+			auto address = std::string(ADDRESS);
+			auto firstName = std::string(FIRST_NAME);
+			
+			Person person(firstName);
+			person.updateAddress(address);
 			const Person& rPerson = pInstance.view<Person>()->get();
 			return (person == rPerson);
 		}
@@ -87,8 +94,11 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			const Person person(FIRST_NAME);
-			person.updateAddress(ADDRESS);
+			auto address = std::string(ADDRESS);
+			auto firstName = std::string(FIRST_NAME);
+
+			const Person person(firstName);
+			person.updateAddress(address);
 			const Person& rPerson = pInstance.view<Person>()->get();
 			return (person == rPerson);
 		}
@@ -101,7 +111,9 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			Person person(FIRST_NAME);
+			auto firstName = std::string(FIRST_NAME);
+
+			Person person(firstName);
 			person.updateAddress();
 			const Person& rPerson = pInstance.view<Person>()->get();
 			return (person == rPerson);
@@ -115,7 +127,9 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Person>()) 
 		{
-			const Person person(FIRST_NAME);
+			auto firstName = std::string(FIRST_NAME);
+
+			const Person person(firstName);
 			person.updateAddress();
 			const Person& rPerson = pInstance.view<Person>()->get();
 			return (person == rPerson);

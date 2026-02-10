@@ -49,15 +49,16 @@ namespace rtl_tests
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
+			std::string str(STRA);
 			rtl::function<rtl::Return(char*)> reverseString = reverseStrOpt->argsT<char*>().returnT<>();
 			EXPECT_FALSE(reverseString);
 			EXPECT_EQ(reverseString.get_init_error(), rtl::error::SignatureMismatch);
 			{
-				auto [err, robj] = reverseString(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString(const_cast<char*>(str.c_str()));
 				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
 			} {
-				auto [err, robj] = reverseString.bind<char*>()(const_cast<char*>(STRA));
+				auto [err, robj] = reverseString.bind<char*>()(const_cast<char*>(str.c_str()));
 
 				EXPECT_EQ(err, rtl::error::SignatureMismatch);
 				EXPECT_TRUE(robj.isEmpty());
@@ -68,7 +69,7 @@ namespace rtl_tests
 			rtl::function<rtl::Return(const char*)> reverseString = reverseStrOpt->argsT<const char*>().returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				auto [err, robj] = reverseString(STRA);
+				auto [err, robj] = reverseString(STRA.data());
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -78,7 +79,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_const_char_ptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				auto [err, robj] = reverseString.bind<const char*>()(STRA);
+				auto [err, robj] = reverseString.bind<const char*>()(STRA.data());
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -94,7 +95,7 @@ namespace rtl_tests
 			rtl::function<rtl::Return(std::string)> reverseString = reverseStrOpt->argsT<std::string>().returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				auto [err, robj] = reverseString(STRA);
+				auto [err, robj] = reverseString(STRA.data());
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -104,7 +105,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				auto [err, robj] = reverseString.bind<std::string>()(STRA);
+				auto [err, robj] = reverseString.bind<std::string>()(STRA.data());
 
 				EXPECT_EQ(err, rtl::error::None);
 				ASSERT_FALSE(robj.isEmpty());
@@ -120,7 +121,7 @@ namespace rtl_tests
 			rtl::function<rtl::Return(std::string*)> reverseString = reverseStrOpt->argsT<std::string*>().returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				std::string str = STRA;
+				std::string str(STRA);
 				auto [err, robj] = reverseString(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
@@ -131,7 +132,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_ptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				std::string str = STRA;
+				std::string str(STRA);
 				auto [err, robj] = reverseString.bind<std::string*>()(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
@@ -148,7 +149,7 @@ namespace rtl_tests
 			rtl::function<rtl::Return(const std::string*)> reverseString = reverseStrOpt->argsT<const std::string*>().returnT<>();
 			EXPECT_TRUE(reverseString);
 			{
-				const std::string str = STRA;
+				const std::string str(STRA);
 				auto [err, robj] = reverseString(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
@@ -159,7 +160,7 @@ namespace rtl_tests
 				std::string expStr = std::string(STRA_REVERSE) + SUFFIX_std_string_cptr;
 				EXPECT_EQ(retStr, expStr);
 			} {
-				const std::string str = STRA;
+				const std::string str(STRA);
 				auto [err, robj] = reverseString.bind<const std::string*>()(&str);
 
 				EXPECT_EQ(err, rtl::error::None);
@@ -481,7 +482,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, implicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
-		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
+		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(cxx::type::StrConst::fn::revStrOverloadRefAndCRef::id);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
 
 		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());
@@ -512,7 +513,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, explicit_resolution_to_ambiguous_ref_and_cref_overload)
 	{
-		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(str_revStrOverloadValRefAndCRef);
+		auto revStrOverloadValRefNCrefOpt = cxx::mirror().getFunction(cxx::type::StrConst::fn::revStrOverloadRefAndCRef::id);
 		ASSERT_TRUE(revStrOverloadValRefNCrefOpt);
 
 		EXPECT_FALSE(revStrOverloadValRefNCrefOpt->hasSignature<std::string_view>());

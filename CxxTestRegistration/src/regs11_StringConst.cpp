@@ -52,7 +52,10 @@ namespace regs11::type0 {
                                  .methodConst<std::string>(cxx::type::StrConst::fn::reverseString::id)
                                  .build(&StrConst::reverseString));
 
-        fns.push_back(rtl::type().member<StrConst>()
+    /*  GCC here fails to automatically resolve the correct overloaded functor
+        when both a lvalue reference and an rvalue overload exist.
+        To disambiguate, explicitly cast the member function pointer.
+    */  fns.push_back(rtl::type().member<StrConst>()
                                  .methodConst<std::string &>(cxx::type::StrConst::fn::reverseString::id)
                                  .build(static_cast<std::string(StrConst::*)(std::string&) const>(&StrConst::reverseString)));
 

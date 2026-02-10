@@ -99,7 +99,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
-			auto [err, date] = ctorT(alloc::Heap, date::DATE_STR0);
+			auto [err, date] = ctorT(alloc::Heap, date::DATE_STR0.data());
 			
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -117,7 +117,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
-			auto [err, date] = ctorT(alloc::Stack, date::DATE_STR0);
+			auto [err, date] = ctorT(alloc::Stack, date::DATE_STR0.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -279,7 +279,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
-			auto [err, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE);
+			auto [err, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -299,7 +299,7 @@ namespace rtl_tests
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
-			auto [err, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE);
+			auto [err, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());

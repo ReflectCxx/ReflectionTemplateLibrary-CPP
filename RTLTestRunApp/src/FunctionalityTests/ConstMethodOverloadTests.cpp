@@ -35,12 +35,12 @@ namespace rtl_tests
             method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
             EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName(book)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(book)(person::LAST_NAME.data());
                 // Only const method exits for this function, no non-const overload.
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME);
+                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME.data());
 
                 EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
@@ -65,7 +65,7 @@ namespace rtl_tests
                 // only const-overload exists, this tries to call the non-const version since 
                 // the 'robj' is non-const.
                 RObject robj;
-                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME.data());
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
@@ -73,7 +73,7 @@ namespace rtl_tests
                 // it automatically binds to const-overload, however the 'robj' is empty
                 // hence the expecetd return error is error::EmptyRObject.
                 const RObject robj;
-                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME.data());
                 EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());
             }
@@ -91,7 +91,7 @@ namespace rtl_tests
             optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
             ASSERT_TRUE(oUpdateLastName);
 
-            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -100,13 +100,13 @@ namespace rtl_tests
             method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
             EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName(person)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(person)(person::LAST_NAME.data());
                 // only const method exists, no non-const overload found.
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 // explicit call to const method.
-                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME);
+                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME.data());
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
@@ -131,7 +131,7 @@ namespace rtl_tests
             optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
             ASSERT_TRUE(classPerson);
 
-            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
@@ -143,12 +143,12 @@ namespace rtl_tests
             EXPECT_TRUE(updateAddress);
             {
                 // sending 'person' as const (using std::cref) calls the const-method overload.
-                auto [err, ret] = updateAddress(cref(person))(person::ADDRESS);
+                auto [err, ret] = updateAddress(cref(person))(person::ADDRESS.data());
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 // sending 'person' as non-const calls the non-const-method overload.
-                auto [err, ret] = updateAddress(person)(person::ADDRESS);
+                auto [err, ret] = updateAddress(person)(person::ADDRESS.data());
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
             }
@@ -271,7 +271,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            auto [err1, ret1] = setAnimalName(std::cref(animal))(animal::NAME);
+            auto [err1, ret1] = setAnimalName(std::cref(animal))(animal::NAME.data());
 
             EXPECT_EQ(err1, error::None);
             EXPECT_EQ(ret1, std::nullopt);

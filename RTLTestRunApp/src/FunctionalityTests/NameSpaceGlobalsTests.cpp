@@ -212,7 +212,7 @@ namespace rtl_tests
         {
             //STRA's type is 'const char*', function accepts 'string',
             //so type-casting in place as 'string'
-            auto [err, ret] = reverseString(STRA);
+            auto [err, ret] = reverseString(STRA.data());
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());
             EXPECT_TRUE(ret.canViewAs<string>());
@@ -223,7 +223,7 @@ namespace rtl_tests
         } {
             //STRB's type is 'const char*', function accepts 'string',
             //so explicitly binding type in template (using bind<...>()) to enforce the type as 'string'.
-            auto [err, ret] = reverseString(STRB);
+            auto [err, ret] = reverseString(STRB.data());
 
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_FALSE(ret.isEmpty());

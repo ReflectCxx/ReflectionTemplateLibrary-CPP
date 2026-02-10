@@ -91,7 +91,7 @@ namespace rtl_tests
 			auto setAuthor = oSetAuthor->targetT<>().argsT<const char*>().returnT<>();
 			EXPECT_FALSE(setAuthor);
 
-			auto [err1, ret] = setAuthor(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor(book)(book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -120,7 +120,7 @@ namespace rtl_tests
 			auto setAuthor = oSetAuthor->targetT().argsT<const char*>().returnT();
 			EXPECT_FALSE(setAuthor);
 
-			auto [err1, ret] = setAuthor(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor(book)(book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -213,7 +213,7 @@ namespace rtl_tests
 			auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 			EXPECT_TRUE(setAuthor);
 
-			auto [err1, ret] = setAuthor(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor(book)(book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -242,7 +242,7 @@ namespace rtl_tests
 			auto setAuthor = oSetAuthor->targetT().argsT<std::string>().returnT();
 			EXPECT_TRUE(setAuthor);
 
-			auto [err1, ret] = setAuthor(book)(book::AUTHOR);
+			auto [err1, ret] = setAuthor(book)(book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -329,7 +329,7 @@ namespace rtl_tests
 			auto updateBookInfo = oUpdateBookInfo->targetT().argsT<std::string, double, const char*>().returnT();
 			EXPECT_TRUE(updateBookInfo);
 
-			auto [err1, ret] = updateBookInfo(book)(book::AUTHOR, book::PRICE, book::TITLE);
+			auto [err1, ret] = updateBookInfo(book)(book::AUTHOR.data(), book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -360,7 +360,7 @@ namespace rtl_tests
 			auto updateBookInfo = oUpdateBookInfo->targetT().argsT<std::string, double, const char*>().returnT();
 			EXPECT_TRUE(updateBookInfo);
 
-			auto [err1, ret] = updateBookInfo(book)(book::AUTHOR, book::PRICE, book::TITLE);
+			auto [err1, ret] = updateBookInfo(book)(book::AUTHOR.data(), book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -391,7 +391,7 @@ namespace rtl_tests
 			auto updateBookInfo = oUpdateBookInfo->targetT().argsT<const char*, double, string>().returnT();
 			EXPECT_TRUE(updateBookInfo);
 
-			auto [err1, ret] = updateBookInfo(book)(book::TITLE, book::PRICE, book::AUTHOR);
+			auto [err1, ret] = updateBookInfo(book)(book::TITLE.data(), book::PRICE, book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -422,7 +422,7 @@ namespace rtl_tests
 			auto updateBookInfo = oUpdateBookInfo->targetT().argsT<const char*, double, std::string>().returnT();
 			EXPECT_TRUE(updateBookInfo);
 
-			auto [err1, ret] = updateBookInfo(book)(book::TITLE, book::PRICE, book::AUTHOR);
+			auto [err1, ret] = updateBookInfo(book)(book::TITLE.data(), book::PRICE, book::AUTHOR.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -455,7 +455,7 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG);
+			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -488,7 +488,7 @@ namespace rtl_tests
 
 			//actual signature is 'const string', but we are passing 'string' as argument. which resolves to right call.
 			//as long as any param_type in signature is not reference, const-qualifier do not matter.
-			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG);
+			auto [err1, ret] = addCopyrightTag(book)(book::COPYRIGHT_TAG.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -525,7 +525,7 @@ namespace rtl_tests
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS, book::PREFACE);
+			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS.data(), book::PREFACE.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());
@@ -562,7 +562,7 @@ namespace rtl_tests
 
 			//if the signature has any one type as reference, then types must be explicitly specified using bind<...>()
 			//And reference type must be specified with exact qualifiers, other 'by value' types do no need to explicitly specify the cv-qualifiers.
-			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS, book::PREFACE);
+			auto [err1, ret] = addPreface.bind<string, const string&>(book)(book::ACKNOWLEDGEMENTS.data(), book::PREFACE.data());
 
 			EXPECT_TRUE(err1 == error::None);
 			ASSERT_TRUE(ret.isEmpty());

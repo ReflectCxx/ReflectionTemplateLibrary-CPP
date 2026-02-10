@@ -59,7 +59,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with an R-value reference.
-            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME.data());
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -100,8 +100,9 @@ namespace rtl_tests
             auto setAnimalName = oSetAnimalName->targetT().argsT<std::string>().returnT();
             EXPECT_TRUE(setAnimalName);
 
+            auto lvstr = std::string(animal::NAME);
             // Invoke the method with a non-const L-value reference.
-            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(lvstr);
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -143,7 +144,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME.data());
 
             EXPECT_TRUE(err1 == error::None);
             EXPECT_TRUE(ret1.isEmpty());
@@ -187,7 +188,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with an R-value reference.
-            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&&>(animal)(animal::NAME.data());
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -229,7 +230,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a non-const L-value reference.
-            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<std::string&>(animal)(animal::NAME.data());
 
             EXPECT_TRUE(err1 == error::None);
             ASSERT_TRUE(ret1.isEmpty());
@@ -271,7 +272,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME);
+            auto [err1, ret1] = setAnimalName.bind<const std::string&>(animal)(animal::NAME.data());
 
             EXPECT_TRUE(err1 == error::None);
             EXPECT_TRUE(ret1.isEmpty());
@@ -300,11 +301,11 @@ namespace rtl_tests
 
             auto updateZooKeeper = oUpdateZooKeeper->argsT<std::string>().returnT<>();
             {
-                auto [err, ret] = updateZooKeeper(animal::ZOO_KEEPER);
+                auto [err, ret] = updateZooKeeper(animal::ZOO_KEEPER.data());
                 EXPECT_TRUE(err == error::ExplicitRefBindingRequired);
                 EXPECT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateZooKeeper.bind<std::string&&>()(animal::ZOO_KEEPER);
+                auto [err, ret] = updateZooKeeper.bind<std::string&&>()(animal::ZOO_KEEPER.data());
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_FALSE(ret.isEmpty());
@@ -335,7 +336,7 @@ namespace rtl_tests
             rtl::static_method<rtl::Return(std::string)> updateZooKeeper = oUpdateZooKeeper->argsT<std::string>()
                                                                                             .returnT<>();
 
-            auto [err, ret] = updateZooKeeper.bind<const std::string&>()(animal::ZOO_KEEPER);
+            auto [err, ret] = updateZooKeeper.bind<const std::string&>()(animal::ZOO_KEEPER.data());
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
@@ -364,7 +365,7 @@ namespace rtl_tests
 
             rtl::static_method<rtl::Return(std::string)> updateZooKeeper = oUpdateZooKeeper->argsT<std::string>()
                                                                                             .returnT<>();
-            auto [err, ret] = updateZooKeeper.bind<std::string&>()(animal::ZOO_KEEPER);
+            auto [err, ret] = updateZooKeeper.bind<std::string&>()(animal::ZOO_KEEPER.data());
 
             EXPECT_TRUE(err == error::None);
             ASSERT_FALSE(ret.isEmpty());
