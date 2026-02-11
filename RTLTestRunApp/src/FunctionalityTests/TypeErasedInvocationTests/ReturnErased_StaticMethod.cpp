@@ -20,7 +20,7 @@ namespace rtl_tests
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);   // has only static-methods.
             ASSERT_TRUE(optStringUtil);
 
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
             ASSERT_TRUE(reverseString);
             {
                 rtl::method<StrStatic, rtl::Return(std::string)> reverse_string = reverseString.value()
@@ -48,7 +48,7 @@ namespace rtl_tests
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrConst::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
 
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
             ASSERT_TRUE(reverseString);
 
             rtl::static_method<rtl::Return(std::string)> reverse_string = reverseString.value()
@@ -64,7 +64,7 @@ namespace rtl_tests
             std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);   // doesn't have any static-methods.
             ASSERT_TRUE(optStringUtil);
 
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
             ASSERT_TRUE(reverseString);
             {
                 rtl::static_method<rtl::Return(std::string)> reverse_string = reverseString.value()
@@ -86,7 +86,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrStatic::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_reverseString);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::reverseString::id);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		auto str = std::string(STRA);

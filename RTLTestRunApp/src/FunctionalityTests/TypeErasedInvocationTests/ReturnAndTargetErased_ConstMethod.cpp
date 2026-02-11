@@ -22,7 +22,7 @@ namespace rtl_tests
             EXPECT_EQ(err, rtl::error::None);
             EXPECT_TRUE(!robj.isEmpty());
 
-            std::optional<rtl::Method> oReverseString = recStrConstOverload->getMethod(str_reverseString);
+            std::optional<rtl::Method> oReverseString = recStrConstOverload->getMethod(cxx::fn::reverseString::id);
             ASSERT_TRUE(oReverseString);
 
             // Both const & non-const overloads are present for this method.

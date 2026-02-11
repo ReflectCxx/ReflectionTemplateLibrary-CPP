@@ -47,7 +47,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_reverseString);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::reverseString::id);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
@@ -220,7 +220,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrOverloadValCRef::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
@@ -270,7 +270,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValCRef);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrOverloadValCRef::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&>());
@@ -313,7 +313,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrOverloadValRef::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
@@ -360,7 +360,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrOverloadValRef);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrOverloadValRef::id);
 		ASSERT_TRUE(reverseStrOpt);
 		
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view&&>());
@@ -402,7 +402,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrNonConstRefArg);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrNonConstRefArg::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
@@ -450,7 +450,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrConstRefArg);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrConstRefArg::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());
@@ -505,7 +505,7 @@ namespace rtl_tests
 		std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
 		ASSERT_TRUE(optStringUtil);
 
-		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(str_revStrRValueRefArg);
+		std::optional<rtl::Method> reverseStrOpt = optStringUtil->getMethod(cxx::fn::revStrRValueRefArg::id);
 		ASSERT_TRUE(reverseStrOpt);
 
 		EXPECT_FALSE(reverseStrOpt->hasSignature<std::string_view>());

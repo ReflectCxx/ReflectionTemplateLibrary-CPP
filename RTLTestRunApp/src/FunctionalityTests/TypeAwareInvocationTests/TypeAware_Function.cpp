@@ -102,7 +102,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(const char)> reverse_string = reverseString->argsT<const char>().returnT<std::string>();
@@ -137,7 +137,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, lvalue_ref_overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(std::string&)> reverse_string = reverseString->argsT<std::string&>().returnT<std::string>();
@@ -161,7 +161,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, rvalue_ref_overload_resolution_with_known_signatures)
     {
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(std::string&&)> reverse_string = reverseString->argsT<std::string&&>().returnT<std::string>();
@@ -180,7 +180,7 @@ namespace rtl_tests
     TEST(TypeAware_Function, ptr_and_const_ptr_overload_resolution_with_known_signatures)
     {
         std::string str(STRA);
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_reverseString);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(std::string*)> reverse_string = reverseString->argsT<std::string*>().returnT<std::string>();
@@ -204,7 +204,7 @@ namespace rtl_tests
     {
         std::string str(STRA);
         {
-            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrConstRefArg);
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::revStrConstRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::function<std::string(const std::string_view&)> reverse_string = reverseString->argsT<const std::string_view&>().returnT<std::string>();
@@ -214,7 +214,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE).append(SUFFIX_std_string_view_clvref);
             EXPECT_EQ(ret_str, exp_str);
         } {
-            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrNonConstRefArg);
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::revStrNonConstRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::function<std::string(std::string_view&)> reverse_string = reverseString->argsT<std::string_view&>().returnT<std::string>();
@@ -225,7 +225,7 @@ namespace rtl_tests
             auto exp_str = std::string(STRA_REVERSE).append(SUFFIX_std_string_view_lvref);
             EXPECT_EQ(ret_str, exp_str);
         } {
-            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrRValueRefArg);
+            std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::revStrRValueRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::function<std::string(std::string_view&&)> reverse_string = reverseString->argsT<std::string_view&&>().returnT<std::string>();
@@ -240,7 +240,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, overloads_with_ref_and_value_args_call_with_known_signature)
     {
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValRef);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::revStrOverloadValRef::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(std::string_view)> reverse_string = reverseString->argsT<std::string_view>().returnT<std::string>();
@@ -263,7 +263,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, overloads_with_const_ref_and_value_args_call_with_known_signature)
     {
-        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+        std::optional<rtl::Function> reverseString = cxx::mirror().getFunction(cxx::fn::revStrOverloadValCRef::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::function<std::string(std::string_view)> reverse_string = reverseString->argsT<std::string_view>().returnT<std::string>();

@@ -19,13 +19,6 @@ namespace test_utils {
 	inline constexpr std::string_view STRB = "cxxReflection";
 	inline constexpr std::string_view STRB_REVERSE = "noitcelfeRxxc";
 
-	inline constexpr std::string_view str_reverseString = "reverseString"; 
-	inline constexpr std::string_view str_revStrConstRefArg = "revStrConstRefArg";
-	inline constexpr std::string_view str_revStrRValueRefArg = "revStrRValueRefArg";
-	inline constexpr std::string_view str_revStrNonConstRefArg = "revStrNonConstRefArg";
-	inline constexpr std::string_view str_revStrOverloadValRef = "revStrOverloadValRef";
-	inline constexpr std::string_view str_revStrOverloadValCRef = "revStrOverloadValCRef";
-
 	inline constexpr std::string_view SUFFIX_void = "_void";
 	inline constexpr std::string_view SUFFIX_ctor = "_ctor";
 	inline constexpr std::string_view SUFFIX_const = "_const";

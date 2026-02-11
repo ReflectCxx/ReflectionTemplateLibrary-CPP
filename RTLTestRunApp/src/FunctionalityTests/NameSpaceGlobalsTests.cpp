@@ -204,7 +204,7 @@ namespace rtl_tests
 
     TEST(GlobalFunction, overloaded_function_execute_return)
     {
-        optional<Function> fnReverseString = cxx::mirror().getFunction(str_reverseString);
+        optional<Function> fnReverseString = cxx::mirror().getFunction(cxx::fn::reverseString::id);
         ASSERT_TRUE(fnReverseString);
 
         rtl::function<rtl::Return(std::string)> reverseString = fnReverseString->argsT<std::string>().returnT<>();

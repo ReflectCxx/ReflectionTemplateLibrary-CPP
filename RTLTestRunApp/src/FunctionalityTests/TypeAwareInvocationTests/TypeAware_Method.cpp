@@ -18,7 +18,7 @@ namespace rtl_tests
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(char*)> reverse_string = reverseString->targetT<StrMute>()
@@ -47,7 +47,7 @@ namespace rtl_tests
         std::optional<rtl::Record> optStringUtil = cxx::mirror().getRecord(StrMute::struct_);
         ASSERT_TRUE(optStringUtil);
 
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(const char)> reverse_string = reverseString->targetT<StrMute>()
@@ -107,7 +107,7 @@ namespace rtl_tests
 
         //non-const target.
         StrMute target;
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             //argument lvalue-ref
@@ -173,7 +173,7 @@ namespace rtl_tests
         ASSERT_TRUE(optStringUtil);
         
         StrMute target;
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(std::string&&)> reverse_string = reverseString->targetT<StrMute>()
@@ -200,7 +200,7 @@ namespace rtl_tests
 
         StrMute target;
         std::string str(STRA);
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_reverseString);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::reverseString::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(std::string*)> reverse_string = reverseString->targetT<StrMute>()
@@ -232,7 +232,7 @@ namespace rtl_tests
         StrMute target;
         std::string str(STRA);
         {
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrConstRefArg);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::revStrConstRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::method<StrMute, std::string(const std::string_view&)> reverse_string = reverseString->targetT<StrMute>()
@@ -244,7 +244,7 @@ namespace rtl_tests
             auto exp_str = std::string(StrMute::struct_).append(STRA_REVERSE).append(SUFFIX_std_string_view_clvref);
             EXPECT_EQ(ret_str, exp_str);
         } {
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrNonConstRefArg);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::revStrNonConstRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::method<StrMute, std::string(std::string_view&)> reverse_string = reverseString->targetT<StrMute>()
@@ -257,7 +257,7 @@ namespace rtl_tests
             auto exp_str = std::string(StrMute::struct_).append(STRA_REVERSE).append(SUFFIX_std_string_view_lvref);
             EXPECT_EQ(ret_str, exp_str);
         } {
-            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrRValueRefArg);
+            std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::revStrRValueRefArg::id);
             ASSERT_TRUE(reverseString);
 
             rtl::method<StrMute, std::string(std::string_view&&)> reverse_string = reverseString->targetT<StrMute>()
@@ -278,7 +278,7 @@ namespace rtl_tests
         ASSERT_TRUE(optStringUtil);
 
         StrMute target;
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrOverloadValRef);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::revStrOverloadValRef::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(std::string_view)> reverse_string = reverseString->targetT<StrMute>()
@@ -309,7 +309,7 @@ namespace rtl_tests
         ASSERT_TRUE(optStringUtil);
 
         StrMute target;
-        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(str_revStrOverloadValCRef);
+        std::optional<rtl::Method> reverseString = optStringUtil->getMethod(cxx::fn::revStrOverloadValCRef::id);
         ASSERT_TRUE(reverseString);
         {
             rtl::method<StrMute, std::string(std::string_view)> reverse_string = reverseString->targetT<StrMute>()

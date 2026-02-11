@@ -127,11 +127,11 @@ namespace rtl_tests
     {
         auto _ = rtl::CxxMirror({
 
-            rtl::type().function<void>(str_reverseString).build(reverseString),
+            rtl::type().function<void>(cxx::fn::reverseString::id).build(reverseString),
 
-            rtl::type().function<std::string>(str_reverseString).build(reverseString),
+            rtl::type().function<std::string>(cxx::fn::reverseString::id).build(reverseString),
 
-            rtl::type().function<const char*>(str_reverseString).build(reverseString),
+            rtl::type().function<const char*>(cxx::fn::reverseString::id).build(reverseString),
 
             rtl::type().function(cxx::fn::getComplexNumAsString::id).build(getComplexNumAsString),
 

@@ -45,7 +45,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, implicit_resolutions_to_call_by_value_overloads)
 	{
-		auto reverseStrOpt = cxx::mirror().getFunction(str_reverseString);
+		auto reverseStrOpt = cxx::mirror().getFunction(cxx::fn::reverseString::id);
 		ASSERT_TRUE(reverseStrOpt);
 		EXPECT_FALSE(reverseStrOpt->hasSignature<char*>());
 		{
@@ -203,7 +203,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, implicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
-		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(cxx::fn::revStrOverloadValCRef::id);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
 
 		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
@@ -247,7 +247,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, explicit_resolution_to_ambiguous_lvalue_and_cref_overload)
 	{
-		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(str_revStrOverloadValCRef);
+		auto revStrOverloadValCRefOpt = cxx::mirror().getFunction(cxx::fn::revStrOverloadValCRef::id);
 		ASSERT_TRUE(revStrOverloadValCRefOpt);
 
 		EXPECT_FALSE(revStrOverloadValCRefOpt->hasSignature<std::string_view&>());
@@ -284,7 +284,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, implicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
-		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
+		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(cxx::fn::revStrOverloadValRef::id);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
 
 		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
@@ -324,7 +324,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, explicit_resolution_to_ambiguous_lvalue_and_ref_overload)
 	{
-		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(str_revStrOverloadValRef);
+		auto revStrOverloadValRefOpt = cxx::mirror().getFunction(cxx::fn::revStrOverloadValRef::id);
 		ASSERT_TRUE(revStrOverloadValRefOpt);
 		
 		EXPECT_FALSE(revStrOverloadValRefOpt->hasSignature<std::string_view&&>());
@@ -359,7 +359,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, calling_non_overloaded_non_const_ref_argument)
 	{
-		auto revStrNonConstRefArgOpt = cxx::mirror().getFunction(str_revStrNonConstRefArg);
+		auto revStrNonConstRefArgOpt = cxx::mirror().getFunction(cxx::fn::revStrNonConstRefArg::id);
 		ASSERT_TRUE(revStrNonConstRefArgOpt);
 
 		EXPECT_FALSE(revStrNonConstRefArgOpt->hasSignature<std::string_view>());
@@ -402,7 +402,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, calling_non_overloaded_const_ref_argument)
 	{
-		auto revStrConstRefArgOpt = cxx::mirror().getFunction(str_revStrConstRefArg);
+		auto revStrConstRefArgOpt = cxx::mirror().getFunction(cxx::fn::revStrConstRefArg::id);
 		ASSERT_TRUE(revStrConstRefArgOpt);
 
 		EXPECT_FALSE(revStrConstRefArgOpt->hasSignature<std::string_view>());
@@ -451,7 +451,7 @@ namespace rtl_tests
 
 	TEST(ReturnErased_Function, calling_non_overloaded_rvalue_ref_argument)
 	{
-		auto revStrRValueRefArgOpt = cxx::mirror().getFunction(str_revStrRValueRefArg);
+		auto revStrRValueRefArgOpt = cxx::mirror().getFunction(cxx::fn::revStrRValueRefArg::id);
 		ASSERT_TRUE(revStrRValueRefArgOpt);
 
 		EXPECT_FALSE(revStrRValueRefArgOpt->hasSignature<std::string_view>());
