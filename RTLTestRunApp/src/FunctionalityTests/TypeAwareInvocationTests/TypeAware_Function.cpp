@@ -14,10 +14,10 @@ namespace rtl_tests
 {
     TEST(TypeAware_Function, init_errors_validation)
     {
-        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_setReal);
+        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(cxx::fn::complex::setReal::id);
         ASSERT_TRUE(setReal);
         {
-            EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
+            EXPECT_TRUE(setReal->getFunctionName() == cxx::fn::complex::setReal::id);
             {
                 rtl::function<void(double)> functor = setReal->argsT<double>().returnT<void>();
                 EXPECT_TRUE(functor);
@@ -29,10 +29,10 @@ namespace rtl_tests
             }
         }
 
-        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
+        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(cxx::fn::complex::setImaginary::id);
         ASSERT_TRUE(setImaginary);
         {
-            EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
+            EXPECT_TRUE(setImaginary->getFunctionName() == cxx::fn::complex::setImaginary::id);
             {
                 rtl::function<void(double)> functor = setImaginary->argsT<double>().returnT<void>();
                 EXPECT_TRUE(functor);
@@ -48,19 +48,19 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, namespace_fn_call_with_known_signature)
     {
-        std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(str_getMagnitude);
+        std::optional<rtl::Function> getMagnitude = cxx::mirror().getFunction(cxx::fn::complex::getMagnitude::id);
         ASSERT_TRUE(getMagnitude);
 
         rtl::function<double()> get_magnitude = getMagnitude->argsT<>().returnT<double>();
         ASSERT_TRUE(get_magnitude);
 
-        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(str_setReal);
+        std::optional<rtl::Function> setReal = cxx::mirror().getFunction(cxx::fn::complex::setReal::id);
         ASSERT_TRUE(setReal);
 
         rtl::function<void(double)> set_real = setReal->argsT<double>().returnT<void>();
         ASSERT_TRUE(set_real);
 
-        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
+        std::optional<rtl::Function> setImaginary = cxx::mirror().getFunction(cxx::fn::complex::setImaginary::id);
         ASSERT_TRUE(setImaginary);
 
         rtl::function<void(double)> set_imaginary = setImaginary->argsT<double>().returnT<void>();
@@ -79,7 +79,7 @@ namespace rtl_tests
 
     TEST(TypeAware_Function, global_fn_call_with_known_signature)
     {
-        std::optional<rtl::Function> getComplexNumStr = cxx::mirror().getFunction(str_getComplexNumAsString);
+        std::optional<rtl::Function> getComplexNumStr = cxx::mirror().getFunction(cxx::fn::getComplexNumAsString::id);
         ASSERT_TRUE(getComplexNumStr);
         {
             rtl::function<const std::string()> get_complex_num_str = getComplexNumStr->argsT<>().returnT<const std::string>();

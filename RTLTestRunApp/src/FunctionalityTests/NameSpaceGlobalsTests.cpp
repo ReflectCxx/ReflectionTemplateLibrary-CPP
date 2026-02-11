@@ -106,21 +106,21 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, get_namespace_function_types)
     {
-        optional<Function> setReal = cxx::mirror().getFunction(str_setReal);
+        optional<Function> setReal = cxx::mirror().getFunction(cxx::fn::complex::setReal::id);
         ASSERT_TRUE(setReal);
 
-        optional<Function> setImaginary = cxx::mirror().getFunction(str_setImaginary);
+        optional<Function> setImaginary = cxx::mirror().getFunction(cxx::fn::complex::setImaginary::id);
         ASSERT_TRUE(setImaginary);
 
-        EXPECT_TRUE(setReal->getFunctionName() == str_setReal);
-        EXPECT_TRUE(setImaginary->getFunctionName() == str_setImaginary);
+        EXPECT_TRUE(setReal->getFunctionName() == cxx::fn::complex::setReal::id);
+        EXPECT_TRUE(setImaginary->getFunctionName() == cxx::fn::complex::setImaginary::id);
     }
 
 
     TEST(FunctionInNameSpace, namespace_function_execute_return)
     {
         {
-            optional<Function> fnSetReal = cxx::mirror().getFunction(str_setReal);
+            optional<Function> fnSetReal = cxx::mirror().getFunction(cxx::fn::complex::setReal::id);
             ASSERT_TRUE(fnSetReal);
             EXPECT_TRUE(fnSetReal->hasSignature<double>());
 
@@ -132,7 +132,7 @@ namespace rtl_tests
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> fnSetImaginary = cxx::mirror().getFunction(str_setImaginary);
+            optional<Function> fnSetImaginary = cxx::mirror().getFunction(cxx::fn::complex::setImaginary::id);
             ASSERT_TRUE(fnSetImaginary);
             EXPECT_TRUE(fnSetImaginary->hasSignature<double>());
 
@@ -144,7 +144,7 @@ namespace rtl_tests
             EXPECT_TRUE(err == rtl::error::None);
             ASSERT_TRUE(ret.isEmpty());
         } {
-            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(str_getMagnitude);
+            optional<Function> fnGetMagnitude = cxx::mirror().getFunction(cxx::fn::complex::getMagnitude::id);
             ASSERT_TRUE(fnGetMagnitude);
             EXPECT_TRUE(fnGetMagnitude->hasSignature<>()); //empty template params checks for zero arguments.
 
@@ -166,7 +166,7 @@ namespace rtl_tests
 
     TEST(FunctionInNameSpace, execute_with_wrong_signature)
     {
-        optional<Function> fnSetReal = cxx::mirror().getFunction(str_setReal);
+        optional<Function> fnSetReal = cxx::mirror().getFunction(cxx::fn::complex::setReal::id);
         ASSERT_TRUE(fnSetReal);
 
         EXPECT_TRUE(fnSetReal->hasSignature<double>());
@@ -184,7 +184,7 @@ namespace rtl_tests
 
     TEST(GlobalFunction, get_function_execute_return)
     {
-        optional<Function> fnGetComplexAsStr = cxx::mirror().getFunction(str_getComplexNumAsString);
+        optional<Function> fnGetComplexAsStr = cxx::mirror().getFunction(cxx::fn::getComplexNumAsString::id);
         ASSERT_TRUE(fnGetComplexAsStr);
 
         rtl::function<rtl::Return()> getComplexNumAsStr = fnGetComplexAsStr->argsT<>().returnT<>();

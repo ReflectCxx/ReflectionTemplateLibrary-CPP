@@ -26,12 +26,6 @@ namespace test_utils {
 	inline constexpr std::string_view str_revStrOverloadValRef = "revStrOverloadValRef";
 	inline constexpr std::string_view str_revStrOverloadValCRef = "revStrOverloadValCRef";
 
-	inline constexpr std::string_view str_getComplexNumAsString = "getComplexNumAsString";
-
-	inline constexpr std::string_view str_setReal = "complex::setReal";
-	inline constexpr std::string_view str_setImaginary = "complex::setImaginary";
-	inline constexpr std::string_view str_getMagnitude = "complex::getMagnitude";
-
 	inline constexpr std::string_view SUFFIX_void = "_void";
 	inline constexpr std::string_view SUFFIX_ctor = "_ctor";
 	inline constexpr std::string_view SUFFIX_const = "_const";

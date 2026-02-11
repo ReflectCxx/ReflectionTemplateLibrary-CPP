@@ -133,13 +133,13 @@ namespace rtl_tests
 
             rtl::type().function<const char*>(str_reverseString).build(reverseString),
 
-            rtl::type().function(str_getComplexNumAsString).build(getComplexNumAsString),
+            rtl::type().function(cxx::fn::getComplexNumAsString::id).build(getComplexNumAsString),
 
-            rtl::type().function(str_setReal).build(complex::setReal),
+            rtl::type().function(cxx::fn::complex::setReal::id).build(complex::setReal),
 
-            rtl::type().function(str_setImaginary).build(complex::setImaginary),
+            rtl::type().function(cxx::fn::complex::setImaginary::id).build(complex::setImaginary),
 
-            rtl::type().function(str_getMagnitude).build(complex::getMagnitude),
+            rtl::type().function(cxx::fn::complex::getMagnitude::id).build(complex::getMagnitude),
 
             rtl::type().function("ext::sendString").build(my_type::ext::sendString),
 
