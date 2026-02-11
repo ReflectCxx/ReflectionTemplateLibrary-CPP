@@ -5,7 +5,7 @@
 // 'StrMute' - String-Mutable, all methods are non-const.
 struct StrMute
 {
-	constexpr static const char* struct_ = "StrMute";
+	constexpr static std::string_view struct_ = "StrMute";
 
 	std::string reverseString();
 

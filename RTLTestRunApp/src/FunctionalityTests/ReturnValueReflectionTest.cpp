@@ -6,14 +6,14 @@
 #include "TestUtilsDate.h"
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
     TEST(ReflecetdReturnValues, on_registered_return_type__test_cloning)
     {   
         //I don't know if the 'Event' is class or struct..Reflection YaY!. :P
-        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(event::struct_));
+        auto classEvent = cxx::mirror().getRecord(cxx::reflected_id(cxx::type::nsdate::Event::id));
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->ctorT()(rtl::alloc::Stack);
@@ -22,7 +22,7 @@ namespace rtl_tests
         EXPECT_TRUE(err0 == rtl::error::TypeNotDefaultConstructible);
         ASSERT_TRUE(robj0.isEmpty());
         {
-            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(calender::struct_));
+            auto classCalender = cxx::mirror().getRecord(cxx::reflected_id(cxx::type::nsdate::Calender::id));
             ASSERT_TRUE(classCalender);
 
             auto [err1, calender] = classCalender->ctorT()(rtl::alloc::Stack);
@@ -36,7 +36,7 @@ namespace rtl_tests
             EXPECT_TRUE(event::get_instance_count() == 2);
 
             // Event's object can be obtained from Calender's object ('Calander' has-a 'Event').
-            auto getEvent = classCalender->getMethod(calender::str_getTheEvent);
+            auto getEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(getEvent);
 
             auto get_event = getEvent->targetT<>().argsT<>().returnT<>();
@@ -46,7 +46,7 @@ namespace rtl_tests
 
             EXPECT_TRUE(err2 == rtl::error::None);
             ASSERT_FALSE(event.isEmpty());
-            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(event::struct_));
+            EXPECT_TRUE(event.getTypeId() == cxx::reflected_id(cxx::type::nsdate::Event::id));
             {
                 auto [err, robj] = event.clone<rtl::alloc::Heap>();
                 //Event's copy-constructor private or deleted.

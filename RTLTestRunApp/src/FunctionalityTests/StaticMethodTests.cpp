@@ -9,16 +9,16 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
 	TEST(StaticMethods, unique_method_call)
 	{
-		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> optGetDefaults = classPerson->getMethod(person::str_getDefaults);
+		optional<Method> optGetDefaults = classPerson->getMethod(cxx::type::Person::fn::getDefaults::id);
 		ASSERT_TRUE(optGetDefaults);
 		EXPECT_TRUE(optGetDefaults->hasSignature<>());	//empty template params checks for zero arguments.
 
@@ -38,10 +38,10 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_void_call)
 	{
-		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+		optional<Method> optGetProfile = classPerson->getMethod(cxx::type::Person::fn::getProfile::id);
 		ASSERT_TRUE(optGetProfile);
 		EXPECT_TRUE(optGetProfile->hasSignature<>());	//empty template params checks for zero arguments.
 
@@ -61,10 +61,10 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_args_bool_call)
 	{
-		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+		optional<Method> optGetProfile = classPerson->getMethod(cxx::type::Person::fn::getProfile::id);
 		ASSERT_TRUE(optGetProfile);
 		EXPECT_TRUE(optGetProfile->hasSignature<bool>());
 
@@ -95,11 +95,11 @@ namespace rtl_tests
 
 	TEST(StaticMethods, overload_method_args_string_size_t_call)
 	{
-		optional<Record> recOpt = cxx::mirror().getRecord(person::class_);
+		optional<Record> recOpt = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(recOpt.has_value());
 
 		const Record& classPerson = recOpt.value();
-		optional<Method> methOpt = classPerson.getMethod(person::str_getProfile);
+		optional<Method> methOpt = classPerson.getMethod(cxx::type::Person::fn::getProfile::id);
 		ASSERT_TRUE(methOpt.has_value());
 
 		const Method& optGetProfile = methOpt.value();
@@ -109,7 +109,7 @@ namespace rtl_tests
 		ASSERT_TRUE(getProfileFn);
 		EXPECT_EQ(getProfileFn.get_init_error(), rtl::error::None);
 
-		auto [err, ret] = getProfileFn(person::OCCUPATION, person::AGE);
+		auto [err, ret] = getProfileFn(person::OCCUPATION.data(), person::AGE);
 
 		EXPECT_TRUE(err == error::None);
 		ASSERT_FALSE(ret.isEmpty());
@@ -124,10 +124,10 @@ namespace rtl_tests
 
 	TEST(StaticMethods, static_method_call_on_target_instance)
 	{
-		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getDefaultsOpt = classPerson->getMethod(person::str_getDefaults);
+		optional<Method> getDefaultsOpt = classPerson->getMethod(cxx::type::Person::fn::getDefaults::id);
 		ASSERT_TRUE(getDefaultsOpt);
 		EXPECT_TRUE(getDefaultsOpt->hasSignature<>());	//empty template params checks for zero arguments.
 		{
@@ -162,10 +162,10 @@ namespace rtl_tests
 
 	TEST(StaticMethods, static_method_call_on_target_instance_with_args)
 	{
-		optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+		optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 		ASSERT_TRUE(classPerson);
 
-		optional<Method> getProfileOpt = classPerson->getMethod(person::str_getProfile);
+		optional<Method> getProfileOpt = classPerson->getMethod(cxx::type::Person::fn::getProfile::id);
 		ASSERT_TRUE(getProfileOpt);
 		EXPECT_TRUE((getProfileOpt->hasSignature<string, size_t>()));
 
@@ -182,7 +182,7 @@ namespace rtl_tests
 			EXPECT_EQ(err0, error::None);
 			ASSERT_FALSE(person.isEmpty());
 
-			auto [err, ret] = optGetProfile(person)(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person)(person::OCCUPATION.data(), person::AGE);
 
 			EXPECT_EQ(err, error::SignatureMismatch);
 			ASSERT_TRUE(ret.isEmpty());
@@ -190,7 +190,7 @@ namespace rtl_tests
 			rtl::static_method<rtl::Return(std::string, std::size_t)> optGetProfile = getProfileOpt.value()
 																							    .argsT<std::string, std::size_t>()
 																							    .returnT();
-			auto [err, ret] = optGetProfile(person::OCCUPATION, person::AGE);
+			auto [err, ret] = optGetProfile(person::OCCUPATION.data(), person::AGE);
 
 			EXPECT_EQ(err, error::None);
 			ASSERT_FALSE(ret.isEmpty());

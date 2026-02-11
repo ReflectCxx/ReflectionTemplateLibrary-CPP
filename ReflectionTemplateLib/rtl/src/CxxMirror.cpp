@@ -48,10 +48,10 @@ namespace rtl
     *         Returns a valid Record if the type is found by name in the given namespace group; otherwise, std::nullopt.
     *
     * Retrieves the class or struct registered under the specified namespace. */
-    std::optional<Record> CxxMirror::getRecord(const std::string& pRecordName) const
+    std::optional<Record> CxxMirror::getRecord(const std::string_view pRecordName) const
     {
         const auto& recordMap = getRecordsMap();
-        const auto& itr = recordMap.find(pRecordName);
+        const auto& itr = recordMap.find(std::string(pRecordName));
         if (itr != recordMap.end()) {
             return std::make_optional(itr->second);
         }
@@ -67,10 +67,10 @@ namespace rtl
     *         Returns a valid Function if found by name in the given namespace group; otherwise, std::nullopt.
     *
     * Retrieves the non-member function registered under the specified namespace. */
-    std::optional<Function> CxxMirror::getFunction(const std::string& pFunctionName) const
+    std::optional<Function> CxxMirror::getFunction(const std::string_view pFunctionName) const
     {
         const auto& functionMap = getFunctionsMap();
-        const auto& itr = functionMap.find(pFunctionName);
+        const auto& itr = functionMap.find(std::string(pFunctionName));
         if (itr != functionMap.end()) {
             return std::make_optional(itr->second);
         }

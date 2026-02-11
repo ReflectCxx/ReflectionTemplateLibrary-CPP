@@ -16,31 +16,18 @@ namespace test_utils
 {
 	struct library
 	{
-		static constexpr const char* class_ = "Library";
-		static constexpr const char* str_addBook = "addBook";
-		static constexpr const char* str_getBookByTitle = "getBookByTitle";
-
 		static const bool assert_zero_instance_count();
 	};
 
 	struct book
 	{
 		static constexpr const double PRICE = 99.923;
-		static constexpr const char* TITLE = "Somehow, I manage.";
-		static constexpr const char* AUTHOR = "Micheal G. Scott";
-		static constexpr const char* DESCRIPTION = "World's greatest boss Michael G. Scott, Regional Manager, shares his wisdom with you.";
-		static constexpr const char* COPYRIGHT_TAG = "Copyright (c) Micheal Scott Paper Company Pvt. Ltd.";
-		static constexpr const char* PREFACE = "This is a preface.";
-		static constexpr const char* ACKNOWLEDGEMENTS = "This is an acknowledgement.";
-
-		static constexpr const char* class_ = "Book";
-		static constexpr const char* str_setAuthor = "setAuthor";
-		static constexpr const char* str_addPreface = "addPreface";
-		static constexpr const char* str_setDescription = "setDescription";
-		static constexpr const char* str_getPublishedOn = "getPublishedOn";
-		static constexpr const char* str_setPublishedOn = "setPublishedOn";
-		static constexpr const char* str_updateBookInfo = "updateBookInfo";
-		static constexpr const char* str_addCopyrightTag = "addCopyrightTag";
+		static constexpr std::string_view TITLE = "Somehow, I manage.";
+		static constexpr std::string_view AUTHOR = "Micheal G. Scott";
+		static constexpr std::string_view DESCRIPTION = "World's greatest boss Michael G. Scott, Regional Manager, shares his wisdom with you.";
+		static constexpr std::string_view COPYRIGHT_TAG = "Copyright (c) Micheal Scott Paper Company Pvt. Ltd.";
+		static constexpr std::string_view PREFACE = "This is a preface.";
+		static constexpr std::string_view ACKNOWLEDGEMENTS = "This is an acknowledgement.";
 
 		static const int get_book_instance_count();
 

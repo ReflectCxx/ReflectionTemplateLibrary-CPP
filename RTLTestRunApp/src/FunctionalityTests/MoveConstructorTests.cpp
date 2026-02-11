@@ -9,7 +9,7 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
@@ -17,7 +17,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -80,7 +80,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             // Create a stack-allocated object via reflection
@@ -132,10 +132,10 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> oGetTheEvent = classCalender->getMethod(calender::str_getTheEvent);
+            optional<Method> oGetTheEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(oGetTheEvent);
 
             // Create a stack-allocated object via reflection
@@ -157,10 +157,10 @@ namespace rtl_tests
                 EXPECT_TRUE(err0 == error::None);
                 ASSERT_FALSE(event0.isEmpty());
 
-                optional<Record> classEvent = cxx::mirror().getRecord(event::struct_);
+                optional<Record> classEvent = cxx::mirror().getRecord(cxx::type::nsdate::Event::id);
                 ASSERT_TRUE(classEvent);
 
-                optional<Method> oEventReset = classEvent->getMethod(event::str_reset);
+                optional<Method> oEventReset = classEvent->getMethod(cxx::type::nsdate::Event::fn::reset::id);
                 ASSERT_TRUE(oEventReset);
 
                 method<RObject, Return()> eventReset = oEventReset->targetT().argsT().returnT();
@@ -221,10 +221,10 @@ namespace rtl_tests
     {
         {
             // Retrieve the reflected Record for the 'Calender' struct
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
-            optional<Method> optCreateCalender = classCalender->getMethod(calender::str_create);
+            optional<Method> optCreateCalender = classCalender->getMethod(cxx::type::nsdate::Calender::fn::create::id);
             ASSERT_TRUE(optCreateCalender);
 
             auto createCalenderFn = optCreateCalender->argsT<>().returnT<>();

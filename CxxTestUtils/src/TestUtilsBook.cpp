@@ -53,7 +53,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			const auto& rbook = pInstance.view<Book>()->get();
-			return (Book(PRICE, TITLE) == rbook);
+			return (Book(PRICE, std::string(TITLE)) == rbook);
 		}
 		return false;
 	}
@@ -64,7 +64,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			Book book;
-			book.setAuthor(AUTHOR);
+			book.setAuthor(AUTHOR.data());
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (book == rbook);
 		}
@@ -76,7 +76,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			Book book;
-			book.addCopyrightTag(COPYRIGHT_TAG);
+			book.addCopyrightTag(std::string(COPYRIGHT_TAG));
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (book == rbook);
 		}
@@ -89,7 +89,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			Book book;
-			book.addPreface(ACKNOWLEDGEMENTS, PREFACE);
+			book.addPreface(std::string(ACKNOWLEDGEMENTS), std::string(PREFACE));
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (book == rbook);
 		}
@@ -117,7 +117,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			Book book;
-			book.updateBookInfo(TITLE, PRICE, string(AUTHOR));
+			book.updateBookInfo(TITLE.data(), PRICE, string(AUTHOR));
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (book == rbook);
 		}
@@ -131,7 +131,7 @@ namespace test_utils
 		if (pInstance.canViewAs<Book>())
 		{
 			Book book;
-			book.updateBookInfo(string(AUTHOR), PRICE, TITLE);
+			book.updateBookInfo(string(AUTHOR), PRICE, TITLE.data());
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (book == rbook);
 		}
@@ -143,9 +143,9 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Book>())
 		{
-			Book obj(PRICE, TITLE);
-			obj.setAuthor(AUTHOR);
-			obj.setDescription(DESCRIPTION);
+			Book obj(PRICE, std::string(TITLE));
+			obj.setAuthor(std::string(AUTHOR));
+			obj.setDescription(std::string(DESCRIPTION));
 			Book copyObj(obj);
 			const auto& rbook = pInstance.view<Book>()->get();
 			return (copyObj == rbook);

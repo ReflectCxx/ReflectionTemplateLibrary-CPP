@@ -29,7 +29,7 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
@@ -76,7 +76,7 @@ namespace rtl_tests
 
     TEST(ReflectionOpErrorCodeTests, error_TypeNotDefaultConstructible)
     {
-        optional<Record> classEvent = cxx::mirror().getRecord(event::struct_);
+        optional<Record> classEvent = cxx::mirror().getRecord(cxx::type::nsdate::Event::id);
         ASSERT_TRUE(classEvent);
 
         auto [err0, robj0] = classEvent->ctorT()(alloc::Stack);
@@ -199,11 +199,11 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, copy_construct__error_TypeNotCopyConstructible)
     {
         {
-            optional<Record> classCalender = cxx::mirror().getRecord(calender::struct_);
+            optional<Record> classCalender = cxx::mirror().getRecord(cxx::type::nsdate::Calender::id);
             ASSERT_TRUE(classCalender);
 
             //Events's constructor not registered, get its instance from 'Calander'.
-            optional<Method> getEvent = classCalender->getMethod(calender::str_getTheEvent);
+            optional<Method> getEvent = classCalender->getMethod(cxx::type::nsdate::Calender::fn::getTheEvent::id);
             ASSERT_TRUE(getEvent);
 
             // Create Calender, which will create a Event's instance.
@@ -234,7 +234,7 @@ namespace rtl_tests
     {
         {
             // Fetch the reflected Record for class 'Library'.
-            optional<Record> classLibrary = cxx::mirror().getRecord(library::class_);
+            optional<Record> classLibrary = cxx::mirror().getRecord(cxx::type::Library::id);
             ASSERT_TRUE(classLibrary);
             {
                 // Attempt to create a reflected instance allocated on the heap.
@@ -264,10 +264,10 @@ namespace rtl_tests
 
     TEST(ReflectionOpErrorCodeTests, static_method_call__error_SignatureMismatch)
     {
-        optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+        optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
         ASSERT_TRUE(classPerson);
 
-        optional<Method> optGetProfile = classPerson->getMethod(person::str_getProfile);
+        optional<Method> optGetProfile = classPerson->getMethod(cxx::type::Person::fn::getProfile::id);
         ASSERT_TRUE(optGetProfile);
         EXPECT_TRUE(optGetProfile->hasSignature<>());  //empty template params checks for zero arguments.
 
@@ -287,10 +287,10 @@ namespace rtl_tests
             RObject emptyObj;
             ASSERT_TRUE(emptyObj.isEmpty());
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
-            auto [err, ret] = classBook->getMethod(book::str_getPublishedOn)
+            auto [err, ret] = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id)
                                        ->targetT().argsT().returnT()(emptyObj)();
 
             EXPECT_TRUE(err == error::EmptyRObject);
@@ -303,17 +303,17 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, method_call_using_heap_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->ctorT()(alloc::Heap);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
             ASSERT_TRUE(oGetPublishedOn);
             
             rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();
@@ -331,17 +331,17 @@ namespace rtl_tests
     TEST(ReflectionOpErrorCodeTests, method_call_using_stack_object__error_TargetMismatch)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, person] = classPerson->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oGetPublishedOn = classBook->getMethod(book::str_getPublishedOn);
+            optional<Method> oGetPublishedOn = classBook->getMethod(cxx::type::Book::fn::getPublishedOn::id);
             ASSERT_TRUE(oGetPublishedOn);
 
             rtl::method<rtl::RObject, rtl::Return()> getPublishedOn = oGetPublishedOn->targetT().argsT().returnT();

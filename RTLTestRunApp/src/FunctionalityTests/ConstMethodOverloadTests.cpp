@@ -11,36 +11,36 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
     TEST(ConstMethodOverload, explicitly_making_const_call__on_wrong_target)
     {
         {
-            optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+            optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
             ASSERT_TRUE(classBook);
 
             auto [err0, book] = classBook->ctorT()(alloc::Stack);
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(book.isEmpty());
 
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            optional<Method> oUpdateLastName = classPerson->getMethod(cxx::type::Person::fn::updateLastName::id);
             ASSERT_TRUE(oUpdateLastName);
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
             method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
             EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName(book)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(book)(person::LAST_NAME.data());
                 // Only const method exits for this function, no non-const overload.
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
-                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME);
+                auto [err, ret] = updateLastName(std::cref(book))(person::LAST_NAME.data());
 
                 EXPECT_TRUE(err == error::TargetTypeMismatch);
                 ASSERT_TRUE(ret.isEmpty());
@@ -52,10 +52,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicitly_making_const_call__on_empty_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(std::string(rtcl::type::Person::id));
+            optional<Record> classPerson = cxx::mirror().getRecord(std::string(cxx::type::Person::id));
             ASSERT_TRUE(classPerson);
 			
-            optional<Method> oUpdateLastName = classPerson->getMethod(std::string(rtcl::type::Person::method::updateLastName));
+            optional<Method> oUpdateLastName = classPerson->getMethod(std::string(cxx::type::Person::fn::updateLastName::id));
             ASSERT_TRUE(oUpdateLastName);
             EXPECT_TRUE(oUpdateLastName->hasSignature<string>());
 
@@ -65,7 +65,7 @@ namespace rtl_tests
                 // only const-overload exists, this tries to call the non-const version since 
                 // the 'robj' is non-const.
                 RObject robj;
-                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME.data());
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
@@ -73,7 +73,7 @@ namespace rtl_tests
                 // it automatically binds to const-overload, however the 'robj' is empty
                 // hence the expecetd return error is error::EmptyRObject.
                 const RObject robj;
-                auto [err, ret] = updateLastName(robj)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(robj)(person::LAST_NAME.data());
                 EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());
             }
@@ -85,13 +85,13 @@ namespace rtl_tests
     {
         auto testWithAllocOn = [](alloc alloc)->void
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> oUpdateLastName = classPerson->getMethod(person::str_updateLastName);
+            optional<Method> oUpdateLastName = classPerson->getMethod(cxx::type::Person::fn::updateLastName::id);
             ASSERT_TRUE(oUpdateLastName);
 
-            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
 
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
@@ -100,13 +100,13 @@ namespace rtl_tests
             method<RObject, Return(string)> updateLastName = oUpdateLastName->targetT().argsT<string>().returnT();
             EXPECT_TRUE(updateLastName);
             {
-                auto [err, ret] = updateLastName(person)(person::LAST_NAME);
+                auto [err, ret] = updateLastName(person)(person::LAST_NAME.data());
                 // only const method exists, no non-const overload found.
                 EXPECT_TRUE(err == error::NonConstOverloadMissing);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 // explicit call to const method.
-                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME);
+                auto [err, ret] = updateLastName(std::cref(person))(person::LAST_NAME.data());
 
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
@@ -128,14 +128,14 @@ namespace rtl_tests
     {
         auto testWithAllocOn = [](alloc alloc)->void
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME);
+            auto [err0, person] = classPerson->ctorT<std::string>()(alloc, person::FIRST_NAME.data());
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(person.isEmpty());
 
-            optional<Method> oUpdateAddress = classPerson->getMethod(person::str_updateAddress);
+            optional<Method> oUpdateAddress = classPerson->getMethod(cxx::type::Person::fn::updateAddress::id);
             ASSERT_TRUE(oUpdateAddress);
             EXPECT_TRUE(oUpdateAddress->hasSignature<string>());
 
@@ -143,12 +143,12 @@ namespace rtl_tests
             EXPECT_TRUE(updateAddress);
             {
                 // sending 'person' as const (using std::cref) calls the const-method overload.
-                auto [err, ret] = updateAddress(cref(person))(person::ADDRESS);
+                auto [err, ret] = updateAddress(cref(person))(person::ADDRESS.data());
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
             } {
                 // sending 'person' as non-const calls the non-const-method overload.
-                auto [err, ret] = updateAddress(person)(person::ADDRESS);
+                auto [err, ret] = updateAddress(person)(person::ADDRESS.data());
                 EXPECT_TRUE(err == error::None);
                 ASSERT_TRUE(ret.isEmpty());
             }
@@ -167,10 +167,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> createConstPerson = classPerson->getMethod(person::str_createConst);
+            optional<Method> createConstPerson = classPerson->getMethod(cxx::type::Person::fn::createConst::id);
             ASSERT_TRUE(createConstPerson);
 
             static_method<Return()> createPerson = createConstPerson->argsT().returnT();
@@ -181,7 +181,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPerson.isEmpty());
 
-            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(cxx::type::Person::fn::getFirstName::id);
             ASSERT_TRUE(oGetFirstName);
             EXPECT_TRUE(oGetFirstName->hasSignature<>());
 
@@ -209,10 +209,10 @@ namespace rtl_tests
     TEST(ConstMethodOverload, explicit_method_resolution__only_non_const_method_exists__call_on_returned_const_pointer_target)
     {
         {
-            optional<Record> classPerson = cxx::mirror().getRecord(person::class_);
+            optional<Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
             ASSERT_TRUE(classPerson);
 
-            optional<Method> createConstPtrPerson = classPerson->getMethod(person::str_createPtr);
+            optional<Method> createConstPtrPerson = classPerson->getMethod(cxx::type::Person::fn::createPtr::id);
             ASSERT_TRUE(createConstPtrPerson);
 
             static_method<Return()> createPerson = createConstPtrPerson->argsT().returnT();
@@ -224,7 +224,7 @@ namespace rtl_tests
             EXPECT_TRUE(err0 == error::None);
             ASSERT_FALSE(constPersonPtr.isEmpty());
 
-            optional<Method> oGetFirstName = classPerson->getMethod(person::str_getFirstName);
+            optional<Method> oGetFirstName = classPerson->getMethod(cxx::type::Person::fn::getFirstName::id);
             ASSERT_TRUE(oGetFirstName);
             EXPECT_TRUE(oGetFirstName->hasSignature<>());
 
@@ -253,7 +253,7 @@ namespace rtl_tests
     {
         {
             // Retrieve the metadata for the "Animal" class.
-            optional<Record> classAnimal = cxx::mirror().getRecord(animal::class_);
+            optional<Record> classAnimal = cxx::mirror().getRecord(cxx::type::Animal::id);
             ASSERT_TRUE(classAnimal);
 
             // Create an instance of the "Animal" class.
@@ -262,7 +262,7 @@ namespace rtl_tests
             ASSERT_FALSE(animal.isEmpty());
 
             // Retrieve the "setAnimalName" method.
-            optional<Method> oSetAnimalName = classAnimal->getMethod(animal::str_setAnimalName);
+            optional<Method> oSetAnimalName = classAnimal->getMethod(cxx::type::Animal::fn::setAnimalName::id);
             ASSERT_TRUE(oSetAnimalName);
             // Verify that the method has the correct signature for a const L-value reference.
             EXPECT_TRUE((oSetAnimalName->hasSignature<const std::string&>()));
@@ -271,7 +271,7 @@ namespace rtl_tests
             EXPECT_TRUE(setAnimalName);
 
             // Invoke the method with a const L-value reference.
-            auto [err1, ret1] = setAnimalName(std::cref(animal))(animal::NAME);
+            auto [err1, ret1] = setAnimalName(std::cref(animal))(animal::NAME.data());
 
             EXPECT_EQ(err1, error::None);
             EXPECT_EQ(ret1, std::nullopt);

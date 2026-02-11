@@ -57,9 +57,9 @@ namespace rtl
         std::optional<Record> getRecord(const traits::uid_t pRecordId) const;
 
         // Returns a valid Record if the type is found by name in default namespace group; otherwise, std::nullopt.
-        std::optional<Record> getRecord(const std::string& pRecordName) const;
+        std::optional<Record> getRecord(const std::string_view pRecordName) const;
 
         // Returns a valid Function if found by name in default namespace group; otherwise, std::nullopt.
-        std::optional<Function> getFunction(const std::string& pFunctionName) const;
+        std::optional<Function> getFunction(const std::string_view pFunctionName) const;
     };
 }

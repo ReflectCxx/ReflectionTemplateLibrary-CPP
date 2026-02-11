@@ -71,7 +71,7 @@ namespace test_utils
 	{
 		if (pInstance.canViewAs<Date>()) {
 			const Date& rdate = pInstance.view<Date>()->get();
-			return (Date(DATE_STR0) == rdate);
+			return (Date(std::string(DATE_STR0)) == rdate);
 		}
 		return false;
 	}

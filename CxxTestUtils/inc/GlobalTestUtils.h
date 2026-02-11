@@ -13,46 +13,32 @@ namespace test_utils {
 	static constexpr double g_real = 3.92;
 	static constexpr double g_imaginary = 9.27;
 
-	static constexpr const char* STRA = "ReflectC++";
-	static constexpr const char* STRA_REVERSE = "++CtcelfeR";
+	inline constexpr std::string_view STRA = "ReflectC++";
+	inline constexpr std::string_view STRA_REVERSE = "++CtcelfeR";
 
-	static constexpr const char* STRB = "cxxReflection";
-	static constexpr const char* STRB_REVERSE = "noitcelfeRxxc";
+	inline constexpr std::string_view STRB = "cxxReflection";
+	inline constexpr std::string_view STRB_REVERSE = "noitcelfeRxxc";
 
-	static constexpr const char* str_reverseString = "reverseString"; 
-	static constexpr const char* str_revStrConstRefArg = "revStrConstRefArg";
-	static constexpr const char* str_revStrRValueRefArg = "revStrRValueRefArg";
-	static constexpr const char* str_revStrNonConstRefArg = "revStrNonConstRefArg";
-	static constexpr const char* str_revStrOverloadValRef = "revStrOverloadValRef";
-	static constexpr const char* str_revStrOverloadValCRef = "revStrOverloadValCRef";
-	static constexpr const char* str_revStrOverloadValRefAndCRef = "revStrOverloadValRefAndCRef";
+	inline constexpr std::string_view SUFFIX_void = "_void";
+	inline constexpr std::string_view SUFFIX_ctor = "_ctor";
+	inline constexpr std::string_view SUFFIX_const = "_const";
+	inline constexpr std::string_view SUFFIX_static = "_static";
+	inline constexpr std::string_view SUFFIX_const_char_ptr = "_const_char_*";
 
-	static constexpr const char* str_getComplexNumAsString = "getComplexNumAsString";
+	inline constexpr std::string_view SUFFIX_std_string = "_std::string";
 
-	static constexpr const char* str_setReal = "complex::setReal";
-	static constexpr const char* str_setImaginary = "complex::setImaginary";
-	static constexpr const char* str_getMagnitude = "complex::getMagnitude";
+	inline constexpr std::string_view SUFFIX_std_string_ptr = "_std::string*";
+	inline constexpr std::string_view SUFFIX_std_string_cptr = "_const_std::string*";
 
-	static const char* SUFFIX_void = "_void";
-	static const char* SUFFIX_ctor = "_ctor";
-	static const char* SUFFIX_const = "_const";
-	static const char* SUFFIX_static = "_static";
-	static const char* SUFFIX_const_char_ptr = "_const_char_*";
+	inline constexpr std::string_view SUFFIX_std_string_lvref = "_std::string&";
+	inline constexpr std::string_view SUFFIX_std_string_clvref = "_const_std::string&";
 
-	static const char* SUFFIX_std_string = "_std::string";
+	inline constexpr std::string_view SUFFIX_std_string_rvref = "_std::string&&";
 
-	static const char* SUFFIX_std_string_ptr = "_std::string*";
-	static const char* SUFFIX_std_string_cptr = "_const_std::string*";
+	inline constexpr std::string_view REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
 
-	static const char* SUFFIX_std_string_lvref = "_std::string&";
-	static const char* SUFFIX_std_string_clvref = "_const_std::string&";
-
-	static const char* SUFFIX_std_string_rvref = "_std::string&&";
-
-	static const char* REV_STR_VOID_RET = "func_reverseString(void)->[return_str]";
-
-	static const char* SUFFIX_std_string_view = "_std::string_view";
-	static const char* SUFFIX_std_string_view_lvref = "_std::string_view&";
-	static const char* SUFFIX_std_string_view_rvref = "_std::string_view&&";
-	static const char* SUFFIX_std_string_view_clvref = "_const_std::string_view&";
+	inline constexpr std::string_view SUFFIX_std_string_view = "_std::string_view";
+	inline constexpr std::string_view SUFFIX_std_string_view_lvref = "_std::string_view&";
+	inline constexpr std::string_view SUFFIX_std_string_view_rvref = "_std::string_view&&";
+	inline constexpr std::string_view SUFFIX_std_string_view_clvref = "_const_std::string_view&";
 }

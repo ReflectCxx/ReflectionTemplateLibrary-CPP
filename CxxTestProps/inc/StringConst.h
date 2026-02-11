@@ -5,7 +5,7 @@
 // 'StrConst' - String-Const, all methods are const.
 struct StrConst
 {
-	constexpr static const char* struct_ = "StrConst";
+	constexpr static std::string_view struct_ = "StrConst";
 
 	std::string reverseString() const;
 

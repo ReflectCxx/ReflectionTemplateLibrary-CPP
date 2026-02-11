@@ -16,7 +16,7 @@ const bool test_utils::animal::assert_zero_instance_count()
 template<>
 const bool test_utils::animal::test_method_updateZooKeeper<std::string&>(const std::string& pZooKeeper)
 {
-	std::string zooKeeper = ZOO_KEEPER;
+	std::string zooKeeper(ZOO_KEEPER);
 	return (pZooKeeper == Animal::updateZooKeeper(zooKeeper));
 }
 
@@ -24,14 +24,14 @@ const bool test_utils::animal::test_method_updateZooKeeper<std::string&>(const s
 template<>
 const bool test_utils::animal::test_method_updateZooKeeper<std::string&&>(const std::string& pZooKeeper)
 {
-	return (pZooKeeper == Animal::updateZooKeeper(ZOO_KEEPER));
+	return (pZooKeeper == Animal::updateZooKeeper(std::string(ZOO_KEEPER)));
 }
 
 
 template<>
 const bool test_utils::animal::test_method_updateZooKeeper<const std::string&>(const std::string& pZooKeeper)
 {
-	const std::string zooKeeper = ZOO_KEEPER;
+	const std::string zooKeeper(ZOO_KEEPER);
 	return (pZooKeeper == Animal::updateZooKeeper(zooKeeper));
 }
 

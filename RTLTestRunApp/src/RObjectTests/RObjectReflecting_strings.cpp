@@ -7,7 +7,7 @@ using namespace rtl;
 namespace
 {
     static const std::string STR_STD_STRING = "string_type: std::string";
-    static constexpr const char* STR_CONST_CHAR_POINTER = "string_type: const_char_*.";
+    inline constexpr std::string_view STR_CONST_CHAR_POINTER = "string_type: const_char_*.";
 
     static char STR_CHAR_ARRAY[] = "string_type: const_char_array.";
     static constexpr const char STR_CONST_CHAR_ARRAY[] = "string_type: const_char_array.";
@@ -283,7 +283,7 @@ namespace unit_test
     TEST(RObject_view_as_std_string_and_string_view, init_with_constCharPtr)
     {
         // Create an RObject that reflects a string value (init with 'const char*').
-        RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER);
+        RObject robj = rtl::reflect(STR_CONST_CHAR_POINTER.data());
 
         // Check if the value can be accessed as 'std::string'.
         ASSERT_FALSE(robj.canViewAs<std::string>());
@@ -300,7 +300,7 @@ namespace unit_test
 
         // Validate the string content matches the original input.
         const char& str_addr = view->get();
-        ASSERT_EQ(&str_addr, STR_CONST_CHAR_POINTER);
+        ASSERT_EQ(&str_addr, STR_CONST_CHAR_POINTER.data());
     }
 
 

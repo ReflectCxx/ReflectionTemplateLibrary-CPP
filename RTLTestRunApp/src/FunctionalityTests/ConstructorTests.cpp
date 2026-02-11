@@ -10,7 +10,7 @@ using namespace std;
 using namespace rtl;
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests 
 {
@@ -19,7 +19,7 @@ namespace rtl_tests
 		optional<Function> badFunc = cxx::mirror().getFunction("wrong_date_struct");
 		EXPECT_FALSE(badFunc);
 
-		optional<Record> badRec = cxx::mirror().getRecord("wrong" + std::string(date::struct_));
+		optional<Record> badRec = cxx::mirror().getRecord("wrong" + std::string(cxx::type::nsdate::Date::id));
 		EXPECT_FALSE(badRec);
 	}
 
@@ -27,7 +27,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, wrong_args)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string, int> ctorT = classDate->ctorT<std::string, int>();
@@ -44,7 +44,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, wrong_args)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string, int> ctorT = classDate->ctorT<std::string, int>();
@@ -61,7 +61,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_void)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Heap);
@@ -78,7 +78,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_void)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Stack);
@@ -95,11 +95,11 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_string)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
-			auto [err, date] = ctorT(alloc::Heap, date::DATE_STR0);
+			auto [err, date] = ctorT(alloc::Heap, date::DATE_STR0.data());
 			
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -113,11 +113,11 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_string)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			rtl::constructor<std::string> ctorT = classDate->ctorT<std::string>();
-			auto [err, date] = ctorT(alloc::Stack, date::DATE_STR0);
+			auto [err, date] = ctorT(alloc::Stack, date::DATE_STR0.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(date.isEmpty());
@@ -131,7 +131,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			auto ctorT = classDate->ctorT<unsigned, unsigned, unsigned>();
@@ -151,7 +151,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorDate, args_unsigned_unsigned_unsigned)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			unsigned day = date::DAY;
@@ -175,7 +175,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_heap)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Heap);
@@ -192,7 +192,7 @@ namespace rtl_tests
 	TEST(DestructorDate, non_virtual_on_stack)
 	{
 		{
-			optional<Record> classDate = cxx::mirror().getRecord(date::struct_);
+			optional<Record> classDate = cxx::mirror().getRecord(cxx::type::nsdate::Date::id);
 			ASSERT_TRUE(classDate);
 
 			auto [err, date] = classDate->ctorT()(alloc::Stack);
@@ -209,7 +209,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT<float, int>()(alloc::Heap, 19.0, 87.5);
@@ -225,7 +225,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, wrong_args)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT<float, int>()(alloc::Stack, 19.0, 87.5);
@@ -241,7 +241,7 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_default)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Heap);
@@ -258,7 +258,7 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_default)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Stack);
@@ -275,11 +275,11 @@ namespace rtl_tests
 	TEST(HeapAllocConstructorBook, args_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
-			auto [err, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE);
+			auto [err, book] = ctorT(alloc::Heap, book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -295,11 +295,11 @@ namespace rtl_tests
 	TEST(StackAllocConstructorBook, args_double_string)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			rtl::constructor<double, std::string> ctorT = classBook->ctorT<double, std::string>();
-			auto [err, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE);
+			auto [err, book] = ctorT(alloc::Stack, book::PRICE, book::TITLE.data());
 
 			EXPECT_TRUE(err == error::None);
 			ASSERT_FALSE(book.isEmpty());
@@ -315,7 +315,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_heap)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Heap);
@@ -332,7 +332,7 @@ namespace rtl_tests
 	TEST(DestructorBook, non_virtual_on_stack)
 	{
 		{
-			optional<Record> classBook = cxx::mirror().getRecord(book::class_);
+			optional<Record> classBook = cxx::mirror().getRecord(cxx::type::Book::id);
 			ASSERT_TRUE(classBook);
 
 			auto [err, book] = classBook->ctorT()(alloc::Stack);

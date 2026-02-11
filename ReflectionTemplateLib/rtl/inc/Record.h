@@ -59,9 +59,9 @@ namespace rtl
         @param: const std::string& (name of the method)
         @return: std::optional<Method>
         * if the method isn't found by the given name, std::nullopt is returned.
-*/      std::optional<Method> getMethod(const std::string& pMethod) const
+*/      std::optional<Method> getMethod(std::string_view pMethod) const
         {
-            const auto& itr = m_methods.find(pMethod);
+            const auto& itr = m_methods.find(std::string(pMethod));
             if (itr != m_methods.end()) {
                 return std::optional(itr->second);
             }

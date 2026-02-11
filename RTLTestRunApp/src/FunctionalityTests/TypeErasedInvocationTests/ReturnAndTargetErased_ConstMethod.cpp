@@ -7,7 +7,7 @@
 #include "../CxxTestProps/inc/StringConstOverload.h"
 
 using namespace test_utils;
-using namespace test_mirror;
+
 
 namespace rtl_tests
 {
@@ -22,7 +22,7 @@ namespace rtl_tests
             EXPECT_EQ(err, rtl::error::None);
             EXPECT_TRUE(!robj.isEmpty());
 
-            std::optional<rtl::Method> oReverseString = recStrConstOverload->getMethod(str_reverseString);
+            std::optional<rtl::Method> oReverseString = recStrConstOverload->getMethod(cxx::fn::reverseString::id);
             ASSERT_TRUE(oReverseString);
 
             // Both const & non-const overloads are present for this method.
@@ -35,8 +35,7 @@ namespace rtl_tests
                 ASSERT_TRUE(ret.canViewAs<std::string>());
 
                 const std::string& retStr = ret.view<std::string>()->get();
-                const std::string& expectedStr = std::string(StrConstOverload::struct_) + REV_STR_VOID_RET +
-                                                 SUFFIX_void;
+                std::string expectedStr = std::string(StrConstOverload::struct_).append(REV_STR_VOID_RET).append(SUFFIX_void);
                 EXPECT_EQ(retStr, expectedStr);
             } {
                 auto [err, ret] = reverseString(std::cref(robj))();
@@ -45,8 +44,7 @@ namespace rtl_tests
                 ASSERT_TRUE(ret.canViewAs<std::string>());
 
                 const std::string& retStr = ret.view<std::string>()->get();
-                const std::string& expectedStr = std::string(StrConstOverload::struct_) + REV_STR_VOID_RET +
-                                                 SUFFIX_void + SUFFIX_const;
+                std::string expectedStr = std::string(StrConstOverload::struct_).append(REV_STR_VOID_RET).append(SUFFIX_void).append(SUFFIX_const);
                 EXPECT_EQ(retStr, expectedStr);
             }
         };

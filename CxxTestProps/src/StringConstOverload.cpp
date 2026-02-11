@@ -10,11 +10,11 @@ using namespace test_utils;
 
 std::string StrConstOverload::reverseString()
 {
-	return std::string(struct_) + REV_STR_VOID_RET + SUFFIX_void;
+	return std::string(struct_).append(REV_STR_VOID_RET).append(SUFFIX_void);
 }
 
 
 std::string StrConstOverload::reverseString() const
 {
-	return std::string(struct_) + REV_STR_VOID_RET + SUFFIX_void + SUFFIX_const;
+	return std::string(struct_).append(REV_STR_VOID_RET).append(SUFFIX_void).append(SUFFIX_const);
 }

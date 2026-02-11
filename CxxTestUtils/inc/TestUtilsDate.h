@@ -15,23 +15,12 @@ namespace test_utils
 {
 	struct event
 	{
-		static constexpr const char* struct_ = "nsdate::Event";
-		static constexpr const char* str_getDate = "getDate";
-		static constexpr const char* str_reset = "reset";
-
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
 	};
 
 	struct calender
 	{
-		static constexpr const char* struct_ = "nsdate::Calender";
-		static constexpr const char* str_create = "create";
-		static constexpr const char* str_getTheDate = "getTheDate";
-		static constexpr const char* str_getSavedDate = "getSavedDate";
-		static constexpr const char* str_getTheEvent = "getTheEvent";
-		static constexpr const char* str_getSavedEvent = "getSavedEvent";
-
 		static void reset_move_ops_counter();
 		static const bool assert_zero_instance_count();
 		static const std::size_t get_instance_count();
@@ -43,12 +32,8 @@ namespace test_utils
 		static constexpr const unsigned DAY = 1;
 		static constexpr const unsigned MONTH = 1;
 		static constexpr const unsigned YEAR = 2000;
-		static constexpr const char* DATE_STR0 = "23/12/2024";
-		static constexpr const char* DATE_STR1 = "04/05/2025";
-
-		static constexpr const char* struct_ = "nsdate::Date";
-		static constexpr const char* str_updateDate = "updateDate";
-		static constexpr const char* str_getAsString = "getAsString";
+		static constexpr std::string_view DATE_STR0 = "23/12/2024";
+		static constexpr std::string_view DATE_STR1 = "04/05/2025";
 
 		static const std::size_t get_instance_count();
 
