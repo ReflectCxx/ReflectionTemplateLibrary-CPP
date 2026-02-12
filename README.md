@@ -148,7 +148,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors—are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors – are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
 
