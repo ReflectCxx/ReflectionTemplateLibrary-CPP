@@ -32,11 +32,11 @@ if(cToStr) {   // Functor valid?
 
 ## Design Highlights
 
-* ***Zero-Overhead by Design*** – Reflection metadata is registered and resolved lazily. You only pay for what you actually use.
+* **Zero-Overhead by Design** – Reflection metadata is registered and resolved lazily. You only pay for what you actually use.
 
-* ***Non-Intrusive & Macro-Free*** – No macros, base classes, or intrusive user-type annotations required.
+* **Non-Intrusive & Macro-Free** – No macros, base classes, or intrusive user-type annotations required.
 
-* ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
+* **Performance** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
   See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
   
