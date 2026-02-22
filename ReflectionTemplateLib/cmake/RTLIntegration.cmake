@@ -1,6 +1,7 @@
-# ========================
-# RTL Integration Helpers
-# ========================
+# ==========================================
+# RTL Integration Helpers with clang-mirror 
+# generated registration boilerplate code.
+# ==========================================
 
 # --------------------------------------------------
 # Attach generated registration sources to a target
