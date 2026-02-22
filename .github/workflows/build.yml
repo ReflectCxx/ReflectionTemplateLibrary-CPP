@@ -131,4 +131,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          gh release upload release-latest artifacts/** --clobber
+          find artifacts -type f -print0 | xargs -0 gh release upload release-latest --clobber
