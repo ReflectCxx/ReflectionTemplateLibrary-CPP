@@ -82,14 +82,53 @@ jobs:
           name: rtl-test-binaries-${{ matrix.compiler }}
           path: bin/
 
-      # Publish to GitHub Release (release branch only)
-      - name: Publish to GitHub Release (All binaries)
-        if: github.ref == 'refs/heads/release'
-        uses: softprops/action-gh-release@v2
+  release:
+    if: github.ref == 'refs/heads/release'
+    needs: build
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: rolling-release-lock
+      cancel-in-progress: false
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
         with:
-          tag_name: latest
-          name: Latest RTL Build
-          files: |
-            bin/**
+          fetch-depth: 0
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Update rolling tag
+        run: |
+          git tag -f release-latest
+          git push origin release-latest --force
+
+      - name: Delete existing release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view release-latest > /dev/null 2>&1; then
+            gh release delete release-latest -y
+          fi
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create release-latest \
+            --title "Rolling Release" \
+            --notes "Latest build from release branch - Updated $(date -u)" \
+            --verify-tag
+
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          gh release upload release-latest artifacts/** --clobber
