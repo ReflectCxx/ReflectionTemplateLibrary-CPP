@@ -78,7 +78,7 @@ Lookup the `Person` class by its registered name using a string literal:
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
-When using `clang-mirror` output, prefer the generated compile-time identifier: `cxx::type::Person::id`
+When using `clang-mirror` output, prefer the generated compile-time identifier– `cxx::type::Person::id`:
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 if (!classPerson) { /* Class not registered. */ }
