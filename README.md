@@ -1,162 +1,210 @@
-# Reflection Template Library C++
+# Reflection Template Library (RTL) – A Run-Time Reflection System for C++.
 
-The **Reflection Template Library for C++** enables introspection of user-defined types, allowing modification of objects at runtime without needing to know their actual types at compile time.
+[![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?logo=open-source-initiative&logoColor=white)](LICENSE)
+&nbsp;
+[![CMake](https://img.shields.io/badge/CMake-Enabled-064F8C?logo=cmake&logoColor=white)](https://cmake.org)
+&nbsp;
+[![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org)
+&nbsp;
+[![Build](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml/badge.svg?branch=release)](https://github.com/ReflectCxx/ReflectionTemplateLibrary-CPP/actions/workflows/build.yml?query=branch%3Arelease)
+&nbsp;
+[![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
+&nbsp;
+[![Try RTL Online](https://img.shields.io/badge/Try%20Online-RTL-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
 
-Static library, the core design maintains several tables of function pointers(registered by the user) wrapped in lambdas and providing a mechanism to access at runtime.
+RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
-## Key Features
-
-- **Builder Pattern**: Manual registration of types is simple and intuitive, with no mysterious macros involved.
-- **Clean Code**: No reflection-related code needs to be added to class, struct, or function declarations or implementations— keeping your codebase clean and free of clutter.
-- **Centralized Registration**: Manage all manual registrations in a single implementation unit, separate from the rest of your project code.
-- **Simple Integration**: Just create an instance of `CxxMirror`, pass all type information to reflect as a constructor parameter, and you’re done!
-  ```c++
-  rtl::CxxMirror cxxReflection({/*.. Pass all type information ..*/});
-  ```
-  The *cxxReflection* object provides interface to query and instantiate registered types.
-- **Thread-Safe & Exception-Safe**: The library is designed to be thread-safe and exception-safe, providing error codes on possible failures to ensure robust operation.
-- **Automatic Code Generation**: To generate manual registration code automatically, `clang-reflect` can be used. It is a work-in-progress tool available here: *https://github.com/ReflectCxx/clang-reflect*. This tool will generate registration code for any large project without requiring changes to your project’s code.
-
-## How To build (Windows/Linux),
-
-Create a build directory in project root folder.
-```sh
-    mkdir build && cd build
-```
-Generate a build system using **Unix Makefiles** or **Visual Studio**, in CMake. (Use compiler with C++20)
-```sh
-    cmake -G "<Generator>"
-```   
-to build, any IDE applicable to the generator can be used or you can also just build straight from CMake.
-```sh
-    cmake --build .
-```
-Run **CxxReflectionTests** binary, generated in ../bin folder. *(tested on windows and Ubuntu-20)*
-## How To Use,
-In this example, we'll reflect a simple Person class. `Person.h`,
+It enables name-based discovery and invocation of functions, constructors, and object members through a non-intrusive, type-safe reflection system that follows modern C++ idioms. For example, consider the following function:
 ```c++
-class Person {
-    int age;
-    std::string name;
-	
-public:
-    Person();
-    Person(std::string, int);
-
-    void setAge(int);
-    void setName(std::string);
-
-    int getAge() const;
-    std::string getName() const;
-};
+std::string complexToStr(float real, float img);
 ```
-### Step 1: Register the Class with 'CxxMirror'
-Manually register the class and its members when creating a **`CxxMirror`** object.
+Using RTL, you can discover this function by name and call it dynamically:
 ```c++
-#include "CxxMirrorBuilder.h"    // Provides registration interface.
-#include "Person.h"              // User-defined types to be reflected.
-
-using namespace rtl;
-
-const CxxMirror& MyReflection() 
-{
-    static const CxxMirror cxxMirror({
-        // Register member functions
-        Reflect().record<Person>("Person").method("setAge").build(&Person::setAge),
-        Reflect().record<Person>("Person").method("getAge").build(&Person::getAge),
-        Reflect().record<Person>("Person").method("setName").build(&Person::setName),
-        Reflect().record<Person>("Person").method("getName").build(&Person::getName),
-	
-        // Register constructors
-        Reflect().record<Person>("Person").constructor<Person>().build(),  // Default constructor
-        Reflect().record<Person>("Person").constructor<Person>().build<std::string, int>()  // Constructor with parameters
-    });
-
-    return cxxMirror;
+rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
+                                                               ->argsT<float, float>()
+                                                               .returnT<std::string>();
+if(cToStr) {   // Functor valid?
+    std::string result = cToStr(61, 35);  // Works!
 }
+// cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
-Registration syntax,
-```c++
-Reflect().nameSpace("..")   // Optional: specify namespace if the type is enclosed in one.
-         .record<..>("..")  // Register class/struct type (template parameter) and its name (string).
-         .method("..")      // Register function by name.
-         .build(*);         // Pass function pointer.
+> *No compile-time coupling to target symbols. No unsafe casting. No guesswork. Just run-time lookup and type-safe invocation.*
 
-Reflect().nameSpace("..")
-         .record<..>("..")
-         .constructor<..>() // Register constructor with template parameters as signature.
-         .build<..>();      // No function pointer needed for constructors.
-```
-### Step 2: Use the 'Person' Class via Reflection
-In main.cpp, use the **`Person`** class without directly exposing its type.
-```c++
-#include "RTLibInterface.h"  // Single header including reflection access interface.
-extern const rtl::CxxMirror& MyReflection();
+## Design Highlights
 
-int main() 
-{
- // Get 'class Person', Returns 'Record' object associated with 'class Person'
-    std::optional<Record> classPerson = MyReflection().getClass("Person");
+* **Zero-Overhead by Design** – Reflection metadata is registered and resolved lazily. You only pay for what you actually use.
 
- /* Create an instance of 'class Person' via reflection using the default constructor.
-    Returns 'RStatus' and 'Instance' objects.
- */ auto [status, personObj] = classPerson->instance();
-	
-```
-- `RStatus` provides an error code `(rtl::Error)` that indicates the success or failure of the reflection call, and it also contains the return value (if any) wrapped in `std::any`.
-- `Instance` holds the created object (with its type erased), managed on the heap using `std::shared_ptr`.
-```c++
+* **Non-Intrusive & Macro-Free** – No macros, base classes, or intrusive user-type annotations required.
 
- /* Create an instance via reflection using a parameterized constructor. 
-    Argument types/order must match else call will fail, returning error-code in 'status'.
- */ auto [status, personObj] = classPerson->instance(std::string("John Doe"), int(42));
+* **Performance** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
 
- // Get method of 'class Person'. Returns a callable 'Method' object.
-    std::optional<Method> setAge = classPerson->getMethod("setAge");
-
- // Call methods on the 'Person' object. returns 'RStatus'.
-    RStatus rst = setAge->on(personObj).call(int(42));
- // or with different syntax,
-    RStatus rst = (*setAge)(personObj)(int(42));
-
- // Get method of 'class Person' that returns a value.
-    std::optional<Method> getName = classPerson->getMethod("getName");
-
- // Call method, returns 'RStatus' containing return value.
-    RStatus retName = getName->on(personObj).call();
- // or with different syntax,
-    RStatus retName = (*getName)(personObj)();
+  See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
   
- // Extract the return value.
-    std::string nameStr = std::any_cast<std::string>(retName.getReturn());
+## A Quick Preview: Reflection That Looks and Feels Like C++
+
+First, create an instance of `rtl::CxxMirror`:
+```c++
+auto cxx_mirror = rtl::CxxMirror({ /* ...register all types here... */ });
+```
+The `cxx_mirror` object provides access to the runtime reflection system. It references metadata for all registered entities and supports name-based lookup. The object may reside in any translation unit. To make it globally accessible while ensuring lazy initialization, a singleton access interface can be used:
+```c++
+// MyReflection.h
+namespace rtl { class CxxMirror; }	// Forward declaration, no includes here.
+struct cxx { static rtl::CxxMirror& mirror(); };	// The singleton interface.
+```
+define and register everything in an isolated translation unit:
+```c++
+// MyReflection.cpp
+rtl::CxxMirror& cxx::mirror() {
+    static auto cxx_mirror = rtl::CxxMirror({   // Inherently thread safe.
+        // Register free(C-Style) function -
+	    rtl::type().function("complexToStr").build(complexToStr),
+	    // Register class 'Person' ('record' is general term used for 'struct/class') -
+	    rtl::type().record<Person>("Person").build(), // Registers default/copy ctor as well.
+	    // Register user defined ctor -
+	    rtl::type().member<Person>().constructor<std::string, int>().build(),
+        // Register method -
+	    rtl::type().member<Person>().method("getName").build(&Person::getName)
+    });
+    return cxx_mirror;
 }
 ```
-- `std::any_cast` will throw an exception if correct type is not specified.
-- Check, `CxxTypeRegistration/src/MyReflection.cpp` for all sort of type registrations.
-- Check, `CxxReflectionTests/src` for test cases.
+Manual registration with string-based type identifiers can become error-prone and difficult to maintain in larger codebases. The [clang-mirror](https://github.com/ReflectCxx/clang-mirror) tool can auto-generate the registration boilerplate and derive these identifiers directly from the source AST, preserving developer-written names and emitting them as compile-time `constexpr` values validated against the parsed code.
+
+### RTL in action:
+
+Lookup the `Person` class by its registered name using a string literal:
+```c++ 
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
+if (!classPerson) { /* Class not registered. */ }
+```
+When using `clang-mirror` output, prefer the generated compile-time identifier (`cxx::type::Person::id`):
+```c++ 
+std::optional<rtl::Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
+if (!classPerson) { /* Class not registered. */ }
+```
+`rtl::CxxMirror` returns two reflection metadata objects: `rtl::Record` for any registered type (class, struct, or POD) and `rtl::Function` for non-member functions.
+
+From `rtl::Record`, registered member functions can be obtained as `rtl::Method`. These are metadata descriptors, not callables. Callable entities – i.e., functors, are produced by explicitly providing the argument types we intend to pass.
+
+For example, the overloaded constructor `Person(std::string, int)`:
+```c++
+rtl::constructor<std::string, int> personCtor = classPerson->ctorT<std::string, int>();
+```
+Or the default constructor:
+```c++
+rtl::constructor<> personCtor = classPerson->ctorT<>();
+```
+Instances can be created on the `Heap` or `Stack` with automatic lifetime management:
+```c++
+auto [err, robj] = personCtor(rtl::alloc::Stack, "John", 42);
+if (err != rtl::error::None) { std::cerr << rtl::to_string(err); } // Construction failed.
+```
+The constructed object is returned as an `rtl::RObject` in the variable `robj`.
+
+Looking up a member function by name:
+```c++
+std::optional<rtl::Method> oGetName = classPerson->getMethod("getName");
+if (!oGetName) { /* Member function not registered */ }
+```
+Or, preferably, using the generated member-function identifier:
+```c++
+std::optional<rtl::Method> oGetName = classPerson->getMethod(cxx::type::Person::fn::getName::id);
+if (!oGetName) { /* Member function not registered */ }
+```
+And obtain a complete type-aware functor:
+```c++
+rtl::method<Person, std::string()> getName = oGetName->targetT<Person>().argsT()
+                                                     .returnT<std::string>();
+if (!getName) { // Member function with expected signature not found.
+    std::cerr << rtl::to_string(getName.get_init_err()); 
+}
+else {
+    Person person("Alex", 23);
+    std::string nameStr = getName(person)(); // Returns string 'Alex'.
+}
+```
+The above `getName` invocation is effectively a **native function-pointer hop**, since all types are known at compile time.
+
+If the concrete type `Person` is not accessible at the call site, its member functions can still be invoked by erasing the target type and using `rtl::RObject` instead. The previously constructed instance (`robj`) is passed as the target:
+```c++
+rtl::method<rtl::RObject, std::string()> getName = oGetName->targetT().argsT()
+                                                           .returnT<std::string>();
+auto [err, ret] = getName(robj)();	// Invoke and receive return as std::optional<std::string>.
+if (err == rtl::error::None && ret.has_value()) {
+    std::string nameStr = ret.value();
+}
+```
+If the return type is also not known at compile time,`rtl::Return` can be used:
+```c++
+rtl::method<rtl::RObject, rtl::Return()> getName = oGetName->targetT().argsT().returnT();
+
+auto [err, ret] = getName(robj)();	// Invoke and receive rtl::RObject as return, wrapping std::string underneath.
+if (err == rtl::error::None && ret.canViewAs<std::string>()) {
+    std::string nameStr = ret.view<std::string>()->get(); // Safely view the returned std::string.
+}
+```
+**[Explore the demo code here](https://github.com/ReflectCxx/RTL-Demo)**
+
+### How RTL Fits Together
+
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors – are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+
+👉 Deep Dive
+
+[![Design Traits](https://img.shields.io/badge/Doc-Design%20Traits-blue)](./docs/DESIGN_PRINCIPLES_AND_FEATURES.md)
+&nbsp;
+[![RTL Syntax & Semantics](https://img.shields.io/badge/Doc-Syntax_&_Semantics-blueviolet)](./docs/RTL_SYNTAX_AND_SEMANTICS.md)
+&nbsp;
+[![Benchmarks](https://img.shields.io/badge/Doc-Benchmarks-teal)](./docs/benchmark_summary.md)
+
+### How to Build (Windows / Linux)
+```sh
+mkdir build && cd build
+cmake ../ -G "<Generator>"    # Use a C++20-compatible compiler
+cmake --build .
+```
+Run the generated binaries from `bin/`:
+
+* `RTLTestRunApp` – Reflection tests and examples
+* `RTLBenchmarkApp` – Performance benchmarks
+
+Additional resources:
+
+* `RTLTestRunApp/src` – Detailed test cases
+* `RTLTestRunApp/src/MyReflectionTests/` – Tutorial example
+* `RTLBenchmarkApp/src` – Benchmark implementations
+* `run_benchmarks.sh` – Automated benchmark runs
 
 ## Reflection Features
-- ✅ Register and invoke functions, supporting all overloads.
-- ✅ Register classes/structs and reflect their methods, constructors, and destructors.
-- ✅ Invoke the default constructor.
-- ✅ Invoke the copy constructor with a non-const reference argument.
-- ✅ Invoke the copy constructor with a const reference argument.
-- ✅ Invoke any overloaded constructor.
-- ✅ Invoke non-const member functions.
-- ✅ Invoke const member functions.
-- ✅ Invoke static member functions.
-- ✅ Automatically invokes destructor for objects created on the heap via reflection.
-- ❌ Reflect properties of classes/structs, providing getter/setter methods.
-- ❌ Invoke functions with perfect forwarding.
-- ❌ Reflect enums.
-- ❌ Reflect classes with composite types that are also reflected.
-- ❌ Support single, multiple, multilevel, and virtual inheritance.
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+* ✅ **Function Reflection** – Register and invoke C-style functions, supporting all kinds of overloads.
+* ✅ **Class and Struct Reflection** – Register and dynamically reflect their methods, constructors, and destructors.
+* ✅ **Complete Constructor Support** :
+  * Default construction.
+  * Copy/Move construction.
+  * Any overloaded constructor.
+  * Automatic destruction.
 
-## Contributions
-Contributions are welcome! If you find a bug, have a feature request, or want to contribute to the project, feel free to open an issue or submit a pull request on GitHub.
+* ✅ **Allocation Strategies & Ownership** :
+  * Choose between `Heap` or `Stack` allocation.
+  * Automatic move semantics for ownership transfers.
+  * Scope-based destruction for `Heap` allocated instances.
 
-## Contact
-For any questions, suggestions, or feedback, you can reach out via GitHub or email at `neeraj.singh31285@outlook.com`.
+* ✅ **Member Function Invocation** :
+  * Static methods.
+  * Const/Non-const methods.
+  * Any overloaded method, Const/Non-Const based as well.
+
+* ✅ **Perfect Forwarding**  – Binds LValue/RValue to correct overload.
+* ✅ **Zero Overhead Forwarding** – No temporaries or copies during dispatch and arguments forwarding.
+* ✅ **Failure Semantics** – Explicit `rtl::error` diagnostics for all reflection operations (no exceptions, no silent failures).
+* ✅ **Smart Pointer Reflection** – Reflect `std::shared_ptr` and `std::unique_ptr`, transparently access the underlying type, with full sharing and cloning semantics.
+* 🟨 **Conservative Conversions** – Safely reinterpret reflected values. For example: treat an `int` as a `char`, or a `std::string` as a `std::string_view` / `const char*` *(In Progress)*
+* 🚧 **STL Wrapper Support** – support for wrappers like `std::optional` and `std::reference_wrapper`. Return them, forward them as parameters, and access wrapped entities transparently. *(In Progress)*
+* 🚧 **Relaxed Argument Matching** – Flexible parameter matching for reflective calls, enabling safe conversions (ex- base/derived) and overload resolution. *(In Progress)*
+* ❌ **Inheritance Support**: Next in line.
+* ❌ **Composition Support**: Planned.
+* ❌ **Property Reflection**: Planned.
+* ❌ **Enum Reflection**: Planned.
+* ❌ **Metadata iterators**: Planned.

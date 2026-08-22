@@ -1,0 +1,294 @@
+
+#include <vector>
+#include <string>
+#include <cstring>
+#include <iostream>
+#include <rtl_builder.h>
+
+#include "../../CxxTestProps/inc/Date.h"
+#include "../../CxxTestProps/inc/Book.h"
+#include "../../CxxTestProps/inc/Animal.h"
+#include "../../CxxTestProps/inc/Person.h"
+#include "../../CxxTestProps/inc/Library.h"
+#include "../../CxxTestProps/inc/Complex.h"
+#include "../../CxxTestProps/inc/StringOps.h"
+#include "../MyReflectionTests/MyReflectingType.h"
+
+#include "reg_ids.h"
+
+#include "TestUtilsBook.h"
+#include "TestUtilsDate.h"
+#include "TestUtilsPerson.h"
+#include "TestUtilsAnimal.h"
+#include "GlobalTestUtils.h"
+
+#include "CxxMirrorThreadingTest.h"
+
+using namespace test_utils;
+
+namespace rtl_tests
+{
+    void InitMirror::reflectingEvent()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<nsdate::Event>(cxx::type::nsdate::Event::id).build(),
+
+            rtl::type().member<nsdate::Event>().method(cxx::type::nsdate::Event::fn::reset::id).build(&nsdate::Event::reset),
+        });
+
+        std::cout << "\n  [t2]\trtl_tests::InitMirror::reflectingEvent() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingLibrary()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<Library>(cxx::type::Library::id).build(),
+
+            rtl::type().member<Library>().methodStatic(cxx::type::Library::fn::addBook::id).build(&Library::addBook),
+
+            rtl::type().member<Library>().methodStatic(cxx::type::Library::fn::getBookByTitle::id).build(&Library::getBookByTitle)
+        });
+
+        std::cout << "\n  [t5]\trtl_tests::InitMirror::reflectingLibrary() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingDate()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<nsdate::Date>(cxx::type::nsdate::Date::id).build(),
+
+            rtl::type().member<nsdate::Date>().constructor<std::string>().build(),
+
+            rtl::type().member<nsdate::Date>().constructor<unsigned, unsigned, unsigned>().build(),
+
+            rtl::type().member<nsdate::Date>().method(cxx::type::nsdate::Date::fn::updateDate::id).build(&nsdate::Date::updateDate),
+
+            rtl::type().member<nsdate::Date>().methodConst(cxx::type::nsdate::Date::fn::getAsString::id).build(&nsdate::Date::getAsString)
+        });
+
+        std::cout << "\n  [t1]\trtl_tests::InitMirror::reflectingDate() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingCalender()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<nsdate::Calender>(cxx::type::nsdate::Calender::id).build(),
+
+            rtl::type().member<nsdate::Calender>().methodStatic(cxx::type::nsdate::Calender::fn::create::id).build(&nsdate::Calender::create),
+
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getTheEvent::id).build(&nsdate::Calender::getTheEvent),
+
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getTheDate::id).build(&nsdate::Calender::getTheDate),
+
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getSavedEvent::id).build(&nsdate::Calender::getSavedEvent),
+
+            rtl::type().member<nsdate::Calender>().method(cxx::type::nsdate::Calender::fn::getSavedDate::id).build(&nsdate::Calender::getSavedDate)
+        });
+
+        std::cout << "\n  [t7]\trtl_tests::InitMirror::reflectingCalender() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingPodsStl()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().function("strlen").build(std::strlen),
+
+            rtl::type().record<char>("char").build(),
+
+            rtl::type().record<std::vector<int>>("vector_int").build(),
+
+            rtl::type().record<std::string>("std::string").build(),
+
+            rtl::type().record<std::string_view>("std::string_view").build(),
+
+            rtl::type().member<std::string>().methodConst("empty").build(&std::string::empty),
+
+            rtl::type().member<std::string_view>().methodConst("empty").build(&std::string_view::empty),
+
+            rtl::type().member<std::vector<int>>().methodConst("empty").build(&std::vector<int>::empty),
+
+            rtl::type().member<std::vector<int>>().method<const int&>("push_back").build(&std::vector<int>::push_back)
+        });
+
+        std::cout << "\n  [t6]\trtl_tests::InitMirror::reflectingPodsStl() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingCStyleFunctions()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().function<void>(cxx::fn::reverseString::id).build(reverseString),
+
+            rtl::type().function<std::string>(cxx::fn::reverseString::id).build(reverseString),
+
+            rtl::type().function<const char*>(cxx::fn::reverseString::id).build(reverseString),
+
+            rtl::type().function(cxx::fn::getComplexNumAsString::id).build(getComplexNumAsString),
+
+            rtl::type().function(cxx::fn::complex::setReal::id).build(complex::setReal),
+
+            rtl::type().function(cxx::fn::complex::setImaginary::id).build(complex::setImaginary),
+
+            rtl::type().function(cxx::fn::complex::getMagnitude::id).build(complex::getMagnitude),
+
+            rtl::type().function("ext::sendString").build(my_type::ext::sendString),
+
+            rtl::type().function<const char*>("ext::sendAsString").build(my_type::ext::sendAsString),
+
+            rtl::type().function<my_type::Person>("ext::sendAsString").build(my_type::ext::sendAsString),
+
+            rtl::type().function<my_type::Person&&>("ext::sendAsString").build(my_type::ext::sendAsString)
+        });
+
+        std::cout << "\n  [t9]\trtl_tests::InitMirror::reflectingCStyleFunctions() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingBook()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<Book>(cxx::type::Book::id).build(),
+
+            rtl::type().member<Book>().constructor<double, std::string>().build(),
+
+            rtl::type().member<Book>().method(cxx::type::Book::fn::setAuthor::id).build(&Book::setAuthor),
+
+            rtl::type().member<Book>().method(cxx::type::Book::fn::addPreface::id).build(&Book::addPreface),
+
+            rtl::type().member<Book>().method(cxx::type::Book::fn::setDescription::id).build(&Book::setDescription),
+            
+            rtl::type().member<Book>().method(cxx::type::Book::fn::getPublishedOn::id).build(&Book::getPublishedOn),
+            
+            rtl::type().member<Book>().method(cxx::type::Book::fn::addCopyrightTag::id).build(&Book::addCopyrightTag),
+
+            rtl::type().member<Book>().method<void>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo),
+            
+            rtl::type().member<Book>().method<const char*, double, std::string>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo),
+            
+            rtl::type().member<Book>().method<std::string, double, const char*>(cxx::type::Book::fn::updateBookInfo::id).build(&Book::updateBookInfo)
+        });
+
+        std::cout << "\n  [t0]\trtl_tests::InitMirror::reflectingBook() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingMyTypePerson()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<my_type::Person>("Person").build(),
+
+            rtl::type().member<my_type::Person>().constructor<std::string>().build(),
+
+            rtl::type().member<my_type::Person>().method("getName").build(&my_type::Person::getName),
+
+            rtl::type().member<my_type::Person>().methodStatic("getDefaults").build(&my_type::Person::getDefaults),
+
+            rtl::type().member<my_type::Person>().method("updateAddress").build(&my_type::Person::updateAddress),
+
+            rtl::type().member<my_type::Person>().methodConst("updateAddress").build(&my_type::Person::updateAddress),
+
+            rtl::type().member<my_type::Person>().method("setTitle").build(&my_type::Person::setTitle),
+
+            rtl::type().member<my_type::Person>().method<std::string&&>("setOccupation").build(&my_type::Person::setOccupation),
+
+            rtl::type().member<my_type::Person>().method<const std::string&>("setOccupation").build(&my_type::Person::setOccupation),
+
+            rtl::type().member<my_type::Person>().method<std::string>("setProfile").build(&my_type::Person::setProfile),
+
+            rtl::type().member<my_type::Person>().method<std::string&>("setProfile").build(&my_type::Person::setProfile),
+
+            rtl::type().member<my_type::Person>().methodConst("getProfile").build(&my_type::Person::getProfile)
+        });
+
+        std::cout << "\n  [t8]\trtl_tests::InitMirror::reflectingMyTypePerson() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingPerson()
+    {
+        auto _ = rtl::CxxMirror({
+
+            rtl::type().record<Person>(cxx::type::Person::id).build(),
+
+            rtl::type().member<Person>().constructor<std::string>().build(),
+
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::createPtr::id).build(&Person::createPtr),
+
+            rtl::type().member<Person>().method<void>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
+
+            rtl::type().member<Person>().method<std::string>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
+
+            rtl::type().member<Person>().method(cxx::type::Person::fn::getFirstName::id).build(&Person::getFirstName),
+
+            rtl::type().member<Person>().methodConst(cxx::type::Person::fn::updateLastName::id).build(&Person::updateLastName),
+
+            rtl::type().member<Person>().methodConst<void>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
+
+            rtl::type().member<Person>().methodConst<std::string>(cxx::type::Person::fn::updateAddress::id).build(&Person::updateAddress),
+
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::getDefaults::id).build(&Person::getDefaults),
+
+            rtl::type().member<Person>().methodStatic(cxx::type::Person::fn::createConst::id).build(&Person::createConst),
+
+            rtl::type().member<Person>().methodStatic<void>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile),
+
+            rtl::type().member<Person>().methodStatic<bool>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile),
+
+            rtl::type().member<Person>().methodStatic<std::string, size_t>(cxx::type::Person::fn::getProfile::id).build(&Person::getProfile)
+        });
+
+        std::cout << "\n  [t4]\trtl_tests::InitMirror::reflectingPerson() ==> Done.\n";
+    }
+
+
+    void InitMirror::reflectingAnimal()
+    {
+        auto _ = rtl::CxxMirror({
+            
+            rtl::type().record<Animal>(cxx::type::Animal::id).build(),
+
+            rtl::type().member<Animal>().constructor<std::string>().build(),
+
+            rtl::type().member<Animal>().method(cxx::type::Animal::fn::setFamilyName::id).build(&Animal::setFamilyName),
+
+            rtl::type().member<Animal>().methodConst(cxx::type::Animal::fn::getFamilyName::id).build(&Animal::getFamilyName),
+
+            rtl::type().member<Animal>().method<const std::string&>(cxx::type::Animal::fn::setAnimalName::id).build(&Animal::setAnimalName),
+
+            rtl::type().member<Animal>().methodStatic<const std::string&>(cxx::type::Animal::fn::updateZooKeeper::id).build(&Animal::updateZooKeeper),
+
+        /*  GCC fails to automatically identify the correct overloaded functor to pick. (non-const-lvalue-ref & rvalue as argument)
+            we need to explicitly cast the functor like, static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName).
+        */  rtl::type().member<Animal>()
+                       .method<std::string&>(cxx::type::Animal::fn::setAnimalName::id)
+                       .build(static_cast<void(Animal::*)(std::string&)>(&Animal::setAnimalName)),  //overloaded method, taking non-const lvalue reference as argument.
+
+            rtl::type().member<Animal>()
+                       .method<std::string&&>(cxx::type::Animal::fn::setAnimalName::id)
+                       .build(static_cast<void(Animal::*)(std::string&&)>(&Animal::setAnimalName)),  //overloaded method, taking rvalue reference as argument.
+
+            rtl::type().member<Animal>()
+                       .methodStatic<std::string&>(cxx::type::Animal::fn::updateZooKeeper::id)
+                       .build(static_cast<std::string(*)(std::string&)>(&Animal::updateZooKeeper)),  //static method, taking non-const lvalue reference as argument.
+
+            rtl::type().member<Animal>()
+                       .methodStatic<std::string&&>(cxx::type::Animal::fn::updateZooKeeper::id)
+                       .build(static_cast<std::string(*)(std::string&&)>(&Animal::updateZooKeeper)), //static method, taking rvalue reference as argument.
+
+        });
+
+        std::cout << "\n  [t3]\trtl_tests::InitMirror::reflectingAnimal() ==> Done.\n";
+    }
+}

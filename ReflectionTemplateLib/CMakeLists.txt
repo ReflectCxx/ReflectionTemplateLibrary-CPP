@@ -1,23 +1,22 @@
-# CMakeLists.txt for ReflectionTemplateLib
-
-# Set the minimum required CMake version
 cmake_minimum_required(VERSION 3.20)
 
-# Set the project name
-project(ReflectionTemplateLib)
+project(ReflectionTemplateLib LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+add_library(${PROJECT_NAME} STATIC)
 
-SET(CXX_LIB_NAME ReflectionTemplateLib)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
-ADD_LIBRARY(${PROJECT_NAME} STATIC "")
+set(LOCAL_HEADERS
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_access.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rtl_builder.h"
+)
 
-INCLUDE_DIRECTORIES(common)
-INCLUDE_DIRECTORIES(detail/inc)
-INCLUDE_DIRECTORIES(access/inc)
-INCLUDE_DIRECTORIES(builder/inc)
+target_sources(${PROJECT_NAME} PRIVATE ${LOCAL_HEADERS})
 
-# Add the source directory
-INCLUDE(detail/src/CMakeLists.txt)
-INCLUDE(access/src/CMakeLists.txt)
-INCLUDE(builder/CMakeLists.txt)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/rtl
+)
+
+add_subdirectory(rtl)
