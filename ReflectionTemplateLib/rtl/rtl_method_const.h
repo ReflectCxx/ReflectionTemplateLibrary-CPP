@@ -29,6 +29,10 @@ namespace rtl
             return (m_functor != nullptr);
         }
 
+        constexpr const rtl::error get_init_error() const {
+            return m_init_err;
+        }
+
         struct invoker
         {
             fptr_t functor;
@@ -60,8 +64,6 @@ namespace rtl
         const_method& operator=(const_method&&) = default;
         const_method& operator=(const const_method&) = default;
 
-        GETTER(rtl::error, _init_error, m_init_err)
-
     private:
 
         fptr_t m_functor = nullptr;
@@ -73,7 +75,7 @@ namespace rtl
             m_init_err = p_err;
         }
 
-        template<detail::member, class, class ...>
+        template<detail::member, class, class...>
         friend struct detail::InitMethodHop;
 
         static_assert(!std::is_const_v<record_t>, "rtl::const_method<...>: 'record_t' must not be specified as 'const'.");

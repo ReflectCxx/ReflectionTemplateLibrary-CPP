@@ -29,6 +29,10 @@ namespace rtl
             return (m_functor != nullptr);
         }
 
+        constexpr const rtl::error get_init_error() const {
+            return m_init_err;
+        }
+
         template<class ...args_t>
         [[nodiscard]] [[gnu::hot]]
         constexpr decltype(auto) operator()(args_t&&...params) const noexcept
@@ -48,8 +52,6 @@ namespace rtl
         function& operator=(function&&) = default;
         function& operator=(const function&) = default;
 
-        GETTER(rtl::error, _init_error, m_init_err)
-
     protected:
 
         fptr_t m_functor = nullptr;
@@ -59,7 +61,7 @@ namespace rtl
             m_init_err = p_err;
         }
 
-        template<detail::member, class ...>
+        template<detail::member, class...>
         friend struct detail::InitFunctionHop;
     };
 }
@@ -82,7 +84,7 @@ namespace rtl
         static_method& operator=(static_method&&) = default;
         static_method& operator=(const static_method&) = default;
 
-        template<detail::member, class ...>
+        template<detail::member, class...>
         friend struct detail::InitFunctionHop;
     };
 }

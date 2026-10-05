@@ -48,17 +48,9 @@ namespace rtl
 
         bool hasSignatureId(const traits::uid_t pSignatureId) const;
 
-        GETTER_REF_C(std::vector<type_meta>, Functors, m_functorsMeta)
+        constexpr std::vector<type_meta>& getFunctors() const;
 
     public:
-
-        //simple inlined getters.
-        GETTER(detail::member, MemberKind, m_member_kind);
-        GETTER(traits::uid_t, RecordTypeId, m_recordTypeId);
-
-        GETTER_CREF(std::string, RecordName, m_recordStr);
-        GETTER_CREF(std::string, FunctionName, m_function);
-        GETTER_CREF(std::vector<type_meta>, FunctorsMeta, m_functorsMeta)
 
         Function() = default;
         Function(Function&&) = default;
@@ -72,7 +64,45 @@ namespace rtl
         template<class ..._args>
         constexpr bool hasSignature() const;
 
+        constexpr const std::string& getRecordName() const;
+
+        constexpr const std::string& getFunctionName() const;
+
+        constexpr const detail::member getMemberKind() const;
+
+        constexpr const traits::uid_t getRecordTypeId() const;
+
+        constexpr const std::vector<type_meta>& getFunctorsMeta() const;
+
         friend detail::CxxReflection;
         friend builder::ReflectionBuilder;
     };
+}
+
+
+namespace rtl
+{
+    constexpr std::vector<type_meta>& Function::getFunctors() const {
+        return m_functorsMeta;
+    }
+
+    constexpr const detail::member Function::getMemberKind() const {
+        return m_member_kind;
+    };
+
+    constexpr const traits::uid_t Function::getRecordTypeId() const {
+        return m_recordTypeId;
+    };
+
+    constexpr const std::string& Function::getRecordName() const {
+        return m_recordStr;
+    };
+
+    constexpr const std::string& Function::getFunctionName() const {
+        return m_function;
+    };
+
+    constexpr const std::vector<type_meta>& Function::getFunctorsMeta() const {
+        return m_functorsMeta;
+    }
 }
