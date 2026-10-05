@@ -17,11 +17,25 @@ namespace rtl::dispatch
 {
     struct functor
     {
-        GETTER_BOOL(_void, m_is_void)
-        GETTER_BOOL(_any_arg_ncref, m_is_any_arg_ncref)
-        GETTER(traits::uid_t, _record_id, m_record_id)
-        GETTER(traits::uid_t, _strict_sign_id, m_strict_args_id)
-        GETTER(traits::uid_t, _normal_sign_id, m_normal_args_id)
+        constexpr const bool is_void() const {
+            return m_is_void;
+        }
+
+        constexpr const bool is_any_arg_ncref() const {
+            return m_is_any_arg_ncref;
+        }
+
+        constexpr const traits::uid_t get_record_id() const {
+            return m_record_id;
+        }
+
+        constexpr const traits::uid_t get_strict_sign_id() const {
+            return m_strict_args_id;
+        }
+
+        constexpr const traits::uid_t get_normal_sign_id() const {
+            return m_normal_args_id;
+        }
 
     protected:
 

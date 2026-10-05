@@ -45,7 +45,7 @@ namespace rtl
         template<class T>
         std::optional<rtl::view<T>> performConversion(const std::size_t pIndex) const;
 
-        GETTER_BOOL(ConstCastSafe, m_objectId.m_isConstCastSafe)
+        constexpr const bool isConstCastSafe() const;
 
     public:
 
@@ -56,11 +56,13 @@ namespace rtl
         RObject(RObject&&) noexcept;
         RObject& operator=(RObject&&) noexcept;
         
-        GETTER_BOOL(Empty, (m_object == std::nullopt || !m_object->has_value()))
-        GETTER_BOOL(OnHeap, (m_objectId.m_allocatedOn == alloc::Heap))
-        GETTER_BOOL(AllocatedByRtl, (m_objectId.m_allocatedOn == alloc::Heap))
-        GETTER(std::size_t, TypeId, m_objectId.m_typeId)
-        GETTER_CREF(std::optional<std::any>, Any, m_object)
+        constexpr const bool isEmpty() const;
+
+        constexpr const bool isOnHeap() const;
+
+        constexpr const bool isAllocatedByRtl() const;
+
+        constexpr const std::size_t getTypeId() const;
 
         template <class _asType>
         bool canViewAs() const;
@@ -99,9 +101,42 @@ namespace rtl
         template<class , class, class ...>
         friend struct method;
     };
+}
 
+
+namespace rtl
+{
     struct [[nodiscard]] Return {
         error err;
         RObject robject;
     };
+}
+
+
+namespace rtl
+{
+    constexpr const bool RObject::isConstCastSafe() const
+    {
+        return m_objectId.m_isConstCastSafe;
+    }
+
+    constexpr const bool RObject::isEmpty() const
+    {
+        return (m_object == std::nullopt || !m_object->has_value());
+    }
+    
+    constexpr const bool RObject::isOnHeap() const
+    {
+        return (m_objectId.m_allocatedOn == alloc::Heap);
+    }
+    
+    constexpr const bool RObject::isAllocatedByRtl() const
+    {
+        return (m_objectId.m_allocatedOn == alloc::Heap);
+    }
+    
+    constexpr const std::size_t RObject::getTypeId() const
+    {
+        return m_objectId.m_typeId;
+    }
 }

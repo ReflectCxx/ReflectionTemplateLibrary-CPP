@@ -57,7 +57,7 @@ namespace rtl_tests
             // 'Event' has a unique_ptr<Date> and two 'Event' instances exists, So-
             EXPECT_TRUE(date::get_instance_count() == 2);
             {
-                // Cloning a moved-from object ie an empty object;
+                // Deliberatly cloning a moved-from object ie an empty object;
                 auto [err, ret] = calender0.clone<alloc::Stack>();
                 EXPECT_TRUE(err == error::EmptyRObject);
                 ASSERT_TRUE(ret.isEmpty());

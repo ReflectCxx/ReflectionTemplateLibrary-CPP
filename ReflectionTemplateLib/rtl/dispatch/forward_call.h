@@ -68,8 +68,13 @@ namespace rtl::dispatch
             }
         }
 
-        GETTER(error, _init_error, m_init_err)
-        GETTER(traits::uid_t, _record_id, m_record_id)
+        constexpr const error get_init_error() const {
+            return m_init_err;
+        }
+
+        constexpr const traits::uid_t get_record_id() const {
+            return m_record_id;
+        }
 
     private:
 
@@ -81,8 +86,13 @@ namespace rtl::dispatch
         std::vector<lambda_t> m_hopper = {};
         std::vector<const functor*> m_functors = {};
 
-        GETTER_REF(std::vector<lambda_t>, _hopper, m_hopper)
-        GETTER_REF(std::vector<const functor*>, _overloads, m_functors)
+        constexpr std::vector<lambda_t>& get_hopper() {
+            return m_hopper;
+        }
+
+        constexpr std::vector<const functor*>& get_overloads() {
+            return m_functors;
+        }
 
         void set_init_error(error p_err) {
             m_init_err = p_err;
@@ -92,10 +102,10 @@ namespace rtl::dispatch
             m_record_id = p_recid;
         }
 
-        template<detail::member, class ...>
+        template<detail::member, class...>
         friend struct detail::InitFunctionHop;
 
-        template<detail::member, class, class ...>
+        template<detail::member, class, class...>
         friend struct detail::InitMethodHop;
 	};
 }

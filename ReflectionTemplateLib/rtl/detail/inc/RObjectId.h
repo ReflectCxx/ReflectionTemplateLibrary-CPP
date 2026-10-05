@@ -31,8 +31,13 @@ namespace rtl::detail
 
         const std::vector<traits::ConverterPair>* m_converters = nullptr;
 
-        GETTER(traits::uid_t, TypeId, m_typeId)
-        GETTER(EntityKind, ContainedAs, m_containsAs)
+        constexpr const traits::uid_t getTypeId() const {
+            return m_typeId;
+        }
+
+        constexpr const EntityKind getContainedAs() const {
+            return m_containsAs;
+        }
 
         template<class T>
         static constexpr const std::vector<traits::ConverterPair>& getConverters() noexcept

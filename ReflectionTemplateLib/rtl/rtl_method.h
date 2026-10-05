@@ -29,6 +29,10 @@ namespace rtl
             return (m_functor != nullptr);
         }
 
+        constexpr const rtl::error get_init_error() const {
+            return m_init_err;
+        }
+
         struct invoker
         {
             fptr_t functor;
@@ -64,8 +68,6 @@ namespace rtl
 
         method& operator=(method&&) = default;
         method& operator=(const method&) = default;
-
-        GETTER(rtl::error, _init_error, m_init_err)
 
     private:
     

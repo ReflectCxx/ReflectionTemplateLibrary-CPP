@@ -132,8 +132,13 @@ namespace rtl
         hopper_t m_const_hops;
         hopper_t m_non_const_hops;
 
-        GETTER_REF(hopper_t, _c_hops, m_const_hops)
-        GETTER_REF(hopper_t, _nc_hops, m_non_const_hops)
+        constexpr hopper_t& get_c_hops() {
+            return m_const_hops;
+        }
+        
+        constexpr hopper_t& get_nc_hops() {
+            return m_non_const_hops;
+        }
 
         template<detail::member, class, class ...>
         friend struct detail::InitMethodHop;

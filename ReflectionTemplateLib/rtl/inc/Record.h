@@ -39,7 +39,7 @@ namespace rtl
             , m_recordName(pRecordName)
         { }
 
-        GETTER_REF_C(MethodMap, FunctionsMap, m_methods)
+        constexpr MethodMap& getFunctionsMap() const;
 
     public:
 
@@ -49,8 +49,8 @@ namespace rtl
         Record& operator=(Record&&) = default;
         Record& operator=(const Record&) = default;
 
-        GETTER_CREF(MethodMap, MethodMap, m_methods)
-        GETTER_CREF(std::string, RecordName, m_recordName)
+        constexpr const MethodMap& getMethodMap() const;
+        constexpr const std::string& getRecordName() const;
         
         template<class ...args_t>
         constructor<args_t...> ctorT() const;
@@ -71,4 +71,20 @@ namespace rtl
         //only class which can create objects of this class & manipulates 'm_methods'.
         friend class detail::CxxReflection;
     };
+}
+
+
+namespace rtl
+{
+    constexpr Record::MethodMap& Record::getFunctionsMap() const {
+        return m_methods;
+    }
+
+    constexpr const Record::MethodMap& Record::getMethodMap() const {
+        return m_methods;
+    }
+
+    constexpr const std::string& Record::getRecordName() const {
+        return m_recordName;
+    }
 }

@@ -17,7 +17,7 @@
 namespace rtl 
 {
     template<class ...signatureT>
-    inline constexpr const detail::InitFunctionHop<detail::member::None, signatureT...> Function::argsT() const
+    constexpr const detail::InitFunctionHop<detail::member::None, signatureT...> Function::argsT() const
     {
         return detail::HopBuilder<detail::member::None>{ m_functorsMeta }.argsT<signatureT...>();
     }
@@ -29,7 +29,7 @@ namespace rtl
     * a single 'Function' object can be associated with multiple overloads of same function.
     * the set of arguments passed is checked against all registered overloads, returns true if matched with any one.
 */  template<class ..._args>
-    inline constexpr bool Function::hasSignature() const
+    constexpr bool Function::hasSignature() const
     {
         return hasSignatureId(traits::uid<traits::strict_sign_id_t<_args...>>::value);
     }
@@ -37,7 +37,6 @@ namespace rtl
 
     inline bool Function::hasSignatureId(const traits::uid_t pSignatureId) const
     {
-        //simple linear-search, efficient for small set of elements.
         for (const auto& fnMeta : m_functorsMeta) {
             if (fnMeta.get_strict_args_id() == pSignatureId) [[likely]] {
                 return true;
