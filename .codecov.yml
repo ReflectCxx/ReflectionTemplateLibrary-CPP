@@ -1,0 +1,19 @@
+coverage:
+  status:
+    project:
+      rtl:
+        paths:
+          - ReflectionTemplateLib/rtl
+        target: 85%
+        informational: true
+
+comment:
+  layout: "diff, flags, files"
+  behavior: default
+
+ignore:
+  - "CxxTestProps/**"
+  - "CxxTestUtils/**"
+  - "RTLTestRunApp/**"
+  - "RTLBenchmarkApp/**"
+  - "ReflectionTemplateLib/rtl/detail/src/RObjectConverters_string.cpp"

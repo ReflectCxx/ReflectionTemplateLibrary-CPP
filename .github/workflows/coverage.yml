@@ -1,0 +1,71 @@
+name: RTL Coverage
+
+on:
+  pull_request:
+    branches: [ release, develop ]
+    paths-ignore:
+      - '**/*.md'
+  push:
+    branches: [ release ]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  coverage:
+    name: RTL Coverage (Linux / GCC)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install coverage tools
+        run: |
+          sudo apt update
+          sudo apt install -y lcov gcovr ninja-build g++
+
+      - name: Configure (Coverage)
+        run: |
+          cmake -B build -G Ninja \
+                -DENABLE_COVERAGE=ON \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DCMAKE_CXX_COMPILER=g++
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        run: |
+          ./bin/RTLTestRunApp
+
+      - name: Capture RTL coverage
+        run: |
+          lcov --capture --directory . \
+               --output-file coverage.info \
+               --ignore-errors=inconsistent,negative,mismatch
+
+          lcov --extract coverage.info \
+               '*ReflectionTemplateLib/rtl/*' \
+               -o coverage_rtl.info
+
+      - name: Generate HTML report
+        run: |
+          genhtml coverage_rtl.info \
+            --output-directory coverage_rtl \
+            --ignore-errors inconsistent,corrupt
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-coverage-report
+          path: coverage_rtl
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage_rtl.info
+          flags: rtl
+          name: RTL-Core-Coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true

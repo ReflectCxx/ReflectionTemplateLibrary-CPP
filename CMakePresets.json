@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    }
+  ]
+}
