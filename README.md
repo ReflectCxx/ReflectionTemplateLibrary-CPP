@@ -10,7 +10,7 @@
 &nbsp;
 [![Codecov](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP/branch/release/graph/badge.svg)](https://codecov.io/gh/ReflectCxx/ReflectionTemplateLibrary-CPP)
 &nbsp;
-[![Try RTL Online](https://img.shields.io/badge/Try-RTL%20Online-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
+[![Try RTL Online](https://img.shields.io/badge/Try%20Online-RTL-f48024?logo=github&logoColor=white)](https://github.com/codespaces/new?repo=ReflectCxx/RTL-Demo&quickstart=1)
 
 RTL provides type-safe run-time reflection for C++, combining compile-time guarantees with run-time flexibility.
 
@@ -80,7 +80,7 @@ Lookup the `Person` class by its registered name using a string literal:
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord("Person");
 if (!classPerson) { /* Class not registered. */ }
 ```
-When using `clang-mirror` output, prefer the generated compile-time identifier:
+When using `clang-mirror` output, prefer the generated compile-time identifier (`cxx::type::Person::id`):
 ```c++ 
 std::optional<rtl::Record> classPerson = cxx::mirror().getRecord(cxx::type::Person::id);
 if (!classPerson) { /* Class not registered. */ }
@@ -150,7 +150,7 @@ if (err == rtl::error::None && ret.canViewAs<std::string>()) {
 
 ### How RTL Fits Together
 
-At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors—are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
+At a high level, every registered C++ type is encapsulated as an `rtl::Record`. Callable entities – functions, member functions, and constructors – are obtained through `rtl::Function`, `rtl::Method`, and `rtl::Record`, all of which are discoverable via `rtl::CxxMirror`.
 
 👉 Deep Dive
 
