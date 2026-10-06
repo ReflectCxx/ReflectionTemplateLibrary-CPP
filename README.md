@@ -34,7 +34,7 @@ if(cToStr) {   // Functor valid?
 
 * ***Non-Intrusive & Macro-Free*** – No macros, base classes, or intrusive user-type annotations required.
 
-* ***Lazy Reflection*** – Reflection metadata is registered and resolved lazily, so runtime costs are incurred only when reflection is used.
+* ***Pay for What You Use*** – Reflection metadata is registered and resolved lazily, so runtime costs are incurred only when reflection is used.
 
 * ***Zero Overhead Invocation*** – When argument and return types are fully specified, reflective calls reduce to a single function-pointer hop.
 
