@@ -26,6 +26,7 @@ namespace rtl
         type_meta(const type_meta&) = default;
         type_meta& operator=(type_meta&&) = default;
         type_meta& operator=(const type_meta&) = default;
+        const bool operator==(const type_meta& pOther) const;
 
         constexpr const bool is_void() const;
         constexpr const bool is_empty() const;
@@ -42,6 +43,7 @@ namespace rtl
         constexpr const traits::uid_t get_normal_args_id() const;
         constexpr const traits::uid_t get_strict_args_id() const;
 
+
         template<class return_t, class ...signature_t>
         static type_meta add_function(return_t(*p_fptr)(signature_t...),
                                       traits::uid_t p_record_uid, detail::member p_member_kind);
@@ -54,14 +56,6 @@ namespace rtl
 
         template<detail::member mem_kind, class record_t, class return_t, class ...signature_t>
         static type_meta add_constructor();
-
-        const bool operator==(const type_meta& pOther) const {
-            return (!is_empty() && !pOther.is_empty() &&
-                    get_functor().m_return_id == pOther.get_functor().m_return_id &&
-                    get_functor().m_record_id == pOther.get_functor().m_record_id &&
-                    get_functor().m_strict_args_id == pOther.get_functor().m_strict_args_id &&
-                    get_functor().m_member_kind == pOther.get_functor().m_member_kind);
-        }
 
     private:
 
@@ -118,5 +112,14 @@ namespace rtl
 
     constexpr const std::vector<std::size_t>& type_meta::get_args_id_arr() const {
         return m_functor->get().m_args_type_ids;
+    }
+
+    inline const bool type_meta::operator==(const type_meta& pOther) const
+    {
+        return (!is_empty() && !pOther.is_empty() &&
+                get_functor().m_return_id == pOther.get_functor().m_return_id &&
+                get_functor().m_record_id == pOther.get_functor().m_record_id &&
+                get_functor().m_strict_args_id == pOther.get_functor().m_strict_args_id &&
+                get_functor().m_member_kind == pOther.get_functor().m_member_kind);
     }
 }
