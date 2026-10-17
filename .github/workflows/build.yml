@@ -1,0 +1,134 @@
+name: RTL Build
+
+permissions:
+  contents: write
+
+on:
+  pull_request:
+    branches: [ release, develop ]
+    paths-ignore:
+      - '**/*.md'
+  push:
+    branches: [ release ]
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }} / ${{ matrix.compiler }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        compiler: [gcc, clang, msvc]
+        exclude:
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+          - os: ubuntu-latest
+            compiler: msvc
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # Linux dependencies
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y ninja-build g++ clang
+
+      # Configure (Linux)
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++;
+          else
+            cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++;
+          fi
+
+      # Configure (Windows / MSVC)
+      - name: Configure (Windows / MSVC)
+        if: runner.os == 'Windows'
+        run: cmake -B build -G "Visual Studio 18 2026" -A x64 -DCMAKE_BUILD_TYPE=Release
+
+      # Build
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      # Rename binaries (Linux)
+      - name: Rename binaries (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mv bin/RTLTestRunApp bin/RTLTestRunApp-${{ matrix.compiler }}
+          mv bin/RTLBenchmarkApp bin/RTLBenchmarkApp-${{ matrix.compiler }}
+
+      # Rename binaries (Windows / MSVC)
+      - name: Rename binaries (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          ren bin\Release\RTLTestRunApp.exe RTLTestRunApp-msvc.exe
+          ren bin\Release\RTLBenchmarkApp.exe RTLBenchmarkApp-msvc.exe
+
+      # Upload artifacts (all builds)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-test-binaries-${{ matrix.compiler }}
+          path: bin/
+
+  release:
+    if: github.ref == 'refs/heads/release'
+    needs: build
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: rolling-release-lock
+      cancel-in-progress: false
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Update rolling tag
+        run: |
+          git tag -f release-latest
+          git push origin release-latest --force
+
+      - name: Delete existing release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view release-latest > /dev/null 2>&1; then
+            gh release delete release-latest -y
+          fi
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create release-latest \
+            --title "Rolling Release" \
+            --notes "Latest build from release branch - Updated $(date -u)" \
+            --verify-tag
+
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          find artifacts -type f -print0 | xargs -0 gh release upload release-latest --clobber

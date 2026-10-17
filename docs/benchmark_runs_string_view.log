@@ -1,0 +1,3167 @@
+Starting benchmark runs...
+Binary: ./bin/RTLBenchmarkApp
+Log: ./benchmark_runs.log
+===================================
+[2026-01-19 22:16:59] >>> Run 1: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2026-01-19T22:16:59+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2685.07 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.63, 0.46, 0.19
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                        0.614 ns        0.614 ns   1000000000
+
+bm_call::via_function_ptr__Function::set_string               1.02 ns         1.02 ns    683568677
+bm_call::via_function_ptr____Method::set_string               1.23 ns         1.23 ns    576541050
+
+bm_std::function_calls__Function::set_string                  1.23 ns         1.23 ns    569030602
+bm_std::function_calls____Method::set_string                  1.52 ns         1.52 ns    467624796
+
+bm_rtl::function_calls__Function::set_string                  1.02 ns         1.02 ns    684146847
+bm_rtl::method_calls______Method::set_string                  1.43 ns         1.43 ns    488587084
+
+bm_rtl::function__ErasedReturnType::set_string                2.82 ns         2.82 ns    249372110
+bm_rtl::method____ErasedReturnType::set_string                3.31 ns         3.31 ns    212147428
+bm_rtl::method____ErasedTargetType::set_string                3.89 ns         3.89 ns    180614166
+bm_rtl::method____ErasedTargetAndReturnType::set_string       4.54 ns         4.54 ns    155811336
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1.44 ns         1.44 ns    488611796
+
+bm_call::via_function_ptr__Function::get_string               2.66 ns         2.66 ns    263520027
+bm_call::via_function_ptr____Method::get_string               2.46 ns         2.46 ns    285111058
+
+bm_std::function_calls__Function::get_string                  2.46 ns         2.46 ns    285121216
+bm_std::function_calls____Method::get_string                  3.20 ns         3.20 ns    219769186
+
+bm_rtl::function_calls__Function::get_string                  2.26 ns         2.26 ns    310201816
+bm_rtl::method_calls______Method::get_string                  2.76 ns         2.76 ns    260137507
+
+bm_rtl::function__ErasedReturnType::get_string                13.7 ns         13.7 ns     51217947
+bm_rtl::method____ErasedReturnType::get_string                14.0 ns         14.0 ns     49918633
+bm_rtl::method____ErasedTargetType::get_string                6.75 ns         6.75 ns    103663468
+bm_rtl::method____ErasedTargetAndReturnType::get_string       15.5 ns         15.5 ns     45414826
+-----------------------------------
+[2026-01-19 22:17:19] >>> Run 2: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2026-01-19T22:17:19+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.74, 0.50, 0.21
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                        0.615 ns        0.615 ns   1000000000
+
+bm_call::via_function_ptr__Function::set_string               1.03 ns         1.03 ns    684181498
+bm_call::via_function_ptr____Method::set_string               1.21 ns         1.21 ns    569642730
+
+bm_std::function_calls__Function::set_string                  1.23 ns         1.23 ns    569800978
+bm_std::function_calls____Method::set_string                  1.52 ns         1.52 ns    450875649
+
+bm_rtl::function_calls__Function::set_string                  1.02 ns         1.02 ns    683995818
+bm_rtl::method_calls______Method::set_string                  1.43 ns         1.43 ns    488611687
+
+bm_rtl::function__ErasedReturnType::set_string                2.83 ns         2.83 ns    246485658
+bm_rtl::method____ErasedReturnType::set_string                3.30 ns         3.30 ns    214354534
+bm_rtl::method____ErasedTargetType::set_string                3.89 ns         3.89 ns    180045506
+bm_rtl::method____ErasedTargetAndReturnType::set_string       4.51 ns         4.51 ns    154404330
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1.44 ns         1.44 ns    487781988
+
+bm_call::via_function_ptr__Function::get_string               2.66 ns         2.66 ns    263194125
+bm_call::via_function_ptr____Method::get_string               2.46 ns         2.46 ns    285136636
+
+bm_std::function_calls__Function::get_string                  2.46 ns         2.46 ns    285136994
+bm_std::function_calls____Method::get_string                  3.18 ns         3.18 ns    228110017
+
+bm_rtl::function_calls__Function::get_string                  2.26 ns         2.26 ns    310208330
+bm_rtl::method_calls______Method::get_string                  2.72 ns         2.72 ns    256333628
+
+bm_rtl::function__ErasedReturnType::get_string                13.8 ns         13.8 ns     51058389
+bm_rtl::method____ErasedReturnType::get_string                14.1 ns         14.1 ns     49524008
+bm_rtl::method____ErasedTargetType::get_string                6.75 ns         6.75 ns    103685569
+bm_rtl::method____ErasedTargetAndReturnType::get_string       15.1 ns         15.1 ns     46352459
+-----------------------------------
+[2026-01-19 22:17:39] >>> Run 3: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2026-01-19T22:17:39+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.81, 0.53, 0.22
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                        0.614 ns        0.614 ns   1000000000
+
+bm_call::via_function_ptr__Function::set_string               1.02 ns         1.02 ns    683812844
+bm_call::via_function_ptr____Method::set_string               1.22 ns         1.21 ns    577612805
+
+bm_std::function_calls__Function::set_string                  1.23 ns         1.23 ns    569775056
+bm_std::function_calls____Method::set_string                  1.59 ns         1.59 ns    434079632
+
+bm_rtl::function_calls__Function::set_string                  1.02 ns         1.02 ns    683787447
+bm_rtl::method_calls______Method::set_string                  1.42 ns         1.42 ns    488613617
+
+bm_rtl::function__ErasedReturnType::set_string                7.37 ns         7.37 ns     95035791
+bm_rtl::method____ErasedReturnType::set_string                7.78 ns         7.78 ns     90042208
+bm_rtl::method____ErasedTargetType::set_string                3.90 ns         3.90 ns    180433649
+bm_rtl::method____ErasedTargetAndReturnType::set_string       8.60 ns         8.60 ns     81448564
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1.44 ns         1.44 ns    488585969
+
+bm_call::via_function_ptr__Function::get_string               2.66 ns         2.66 ns    265152552
+bm_call::via_function_ptr____Method::get_string               2.46 ns         2.46 ns    284574733
+
+bm_std::function_calls__Function::get_string                  2.46 ns         2.46 ns    285006675
+bm_std::function_calls____Method::get_string                  3.15 ns         3.15 ns    222331260
+
+bm_rtl::function_calls__Function::get_string                  2.26 ns         2.26 ns    310066005
+bm_rtl::method_calls______Method::get_string                  2.67 ns         2.67 ns    253455004
+
+bm_rtl::function__ErasedReturnType::get_string                13.7 ns         13.7 ns     50596278
+bm_rtl::method____ErasedReturnType::get_string                14.1 ns         14.1 ns     49241845
+bm_rtl::method____ErasedTargetType::get_string                6.76 ns         6.76 ns    103534631
+bm_rtl::method____ErasedTargetAndReturnType::get_string       15.2 ns         15.2 ns     46787119
+-----------------------------------
+[2026-01-19 22:17:59] >>> Run 4: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2026-01-19T22:17:59+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.87, 0.56, 0.24
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                        0.615 ns        0.614 ns   1000000000
+
+bm_call::via_function_ptr__Function::set_string               1.02 ns         1.02 ns    682977689
+bm_call::via_function_ptr____Method::set_string               1.23 ns         1.23 ns    563075836
+
+bm_std::function_calls__Function::set_string                  1.23 ns         1.23 ns    569603803
+bm_std::function_calls____Method::set_string                  1.54 ns         1.54 ns    460593978
+
+bm_rtl::function_calls__Function::set_string                  1.02 ns         1.02 ns    683892125
+bm_rtl::method_calls______Method::set_string                  1.43 ns         1.43 ns    488236125
+
+bm_rtl::function__ErasedReturnType::set_string                7.37 ns         7.37 ns     95016114
+bm_rtl::method____ErasedReturnType::set_string                7.78 ns         7.78 ns     90024009
+bm_rtl::method____ErasedTargetType::set_string                3.89 ns         3.89 ns    180054936
+bm_rtl::method____ErasedTargetAndReturnType::set_string       8.60 ns         8.60 ns     81331959
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1.43 ns         1.43 ns    488678219
+
+bm_call::via_function_ptr__Function::get_string               2.66 ns         2.66 ns    264051337
+bm_call::via_function_ptr____Method::get_string               2.46 ns         2.46 ns    285120509
+
+bm_std::function_calls__Function::get_string                  2.46 ns         2.46 ns    285112848
+bm_std::function_calls____Method::get_string                  3.23 ns         3.23 ns    226611386
+
+bm_rtl::function_calls__Function::get_string                  2.26 ns         2.26 ns    310198473
+bm_rtl::method_calls______Method::get_string                  2.70 ns         2.70 ns    258499213
+
+bm_rtl::function__ErasedReturnType::get_string                13.6 ns         13.6 ns     51481253
+bm_rtl::method____ErasedReturnType::get_string                14.1 ns         14.1 ns     50116508
+bm_rtl::method____ErasedTargetType::get_string                6.76 ns         6.76 ns    103642665
+bm_rtl::method____ErasedTargetAndReturnType::get_string       15.1 ns         15.1 ns     46654405
+-----------------------------------
+[2026-01-19 22:18:18] >>> Run 5: workload scale = 0
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 0 iterations
+=============================================
+
+2026-01-19T22:18:18+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.90, 0.59, 0.26
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                        0.614 ns        0.614 ns   1000000000
+
+bm_call::via_function_ptr__Function::set_string               1.02 ns         1.02 ns    680343092
+bm_call::via_function_ptr____Method::set_string               1.23 ns         1.23 ns    575099292
+
+bm_std::function_calls__Function::set_string                  1.23 ns         1.23 ns    569190838
+bm_std::function_calls____Method::set_string                  1.49 ns         1.49 ns    452799580
+
+bm_rtl::function_calls__Function::set_string                  1.02 ns         1.02 ns    684190319
+bm_rtl::method_calls______Method::set_string                  1.43 ns         1.43 ns    490962912
+
+bm_rtl::function__ErasedReturnType::set_string                2.82 ns         2.82 ns    246594378
+bm_rtl::method____ErasedReturnType::set_string                3.33 ns         3.33 ns    211691857
+bm_rtl::method____ErasedTargetType::set_string                3.89 ns         3.89 ns    180435897
+bm_rtl::method____ErasedTargetAndReturnType::set_string       4.52 ns         4.52 ns    156477629
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1.43 ns         1.43 ns    487577300
+
+bm_call::via_function_ptr__Function::get_string               2.66 ns         2.66 ns    263417306
+bm_call::via_function_ptr____Method::get_string               2.46 ns         2.46 ns    285094736
+
+bm_std::function_calls__Function::get_string                  2.46 ns         2.46 ns    285121796
+bm_std::function_calls____Method::get_string                  3.16 ns         3.16 ns    215202059
+
+bm_rtl::function_calls__Function::get_string                  2.26 ns         2.26 ns    310197791
+bm_rtl::method_calls______Method::get_string                  2.76 ns         2.76 ns    258111711
+
+bm_rtl::function__ErasedReturnType::get_string                13.7 ns         13.7 ns     51303361
+bm_rtl::method____ErasedReturnType::get_string                14.1 ns         14.1 ns     50044327
+bm_rtl::method____ErasedTargetType::get_string                6.76 ns         6.76 ns    103673181
+bm_rtl::method____ErasedTargetAndReturnType::get_string       15.1 ns         15.1 ns     46222419
+-----------------------------------
+[2026-01-19 22:18:39] >>> Run 1: workload scale = 1
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 1 iterations
+=============================================
+
+2026-01-19T22:18:39+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.93, 0.62, 0.28
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         14.2 ns         14.2 ns     47602979
+
+bm_call::via_function_ptr__Function::set_string               14.7 ns         14.7 ns     47551280
+bm_call::via_function_ptr____Method::set_string               14.5 ns         14.5 ns     48814713
+
+bm_std::function_calls__Function::set_string                  14.8 ns         14.8 ns     48125351
+bm_std::function_calls____Method::set_string                  15.0 ns         15.0 ns     45842215
+
+bm_rtl::function_calls__Function::set_string                  14.6 ns         14.6 ns     47596122
+bm_rtl::method_calls______Method::set_string                  14.8 ns         14.8 ns     47688533
+
+bm_rtl::function__ErasedReturnType::set_string                16.3 ns         16.3 ns     43204263
+bm_rtl::method____ErasedReturnType::set_string                17.4 ns         17.4 ns     39803981
+bm_rtl::method____ErasedTargetType::set_string                17.4 ns         17.4 ns     40619050
+bm_rtl::method____ErasedTargetAndReturnType::set_string       17.5 ns         17.5 ns     39261182
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         19.8 ns         19.8 ns     35318159
+
+bm_call::via_function_ptr__Function::get_string               19.9 ns         19.9 ns     34920150
+bm_call::via_function_ptr____Method::get_string               19.9 ns         19.9 ns     35041102
+
+bm_std::function_calls__Function::get_string                  20.3 ns         20.3 ns     34279465
+bm_std::function_calls____Method::get_string                  20.7 ns         20.7 ns     33535205
+
+bm_rtl::function_calls__Function::get_string                  20.0 ns         20.0 ns     34773001
+bm_rtl::method_calls______Method::get_string                  20.0 ns         20.0 ns     34838388
+
+bm_rtl::function__ErasedReturnType::get_string                32.0 ns         32.0 ns     22025260
+bm_rtl::method____ErasedReturnType::get_string                32.3 ns         32.3 ns     21635178
+bm_rtl::method____ErasedTargetType::get_string                24.1 ns         24.1 ns     29030859
+bm_rtl::method____ErasedTargetAndReturnType::get_string       33.7 ns         33.6 ns     20685409
+-----------------------------------
+[2026-01-19 22:18:59] >>> Run 2: workload scale = 1
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 1 iterations
+=============================================
+
+2026-01-19T22:18:59+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.95, 0.65, 0.29
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         14.3 ns         14.3 ns     48584646
+
+bm_call::via_function_ptr__Function::set_string               15.0 ns         15.0 ns     46029690
+bm_call::via_function_ptr____Method::set_string               14.9 ns         14.9 ns     46651918
+
+bm_std::function_calls__Function::set_string                  15.5 ns         15.5 ns     46957480
+bm_std::function_calls____Method::set_string                  15.3 ns         15.3 ns     43780461
+
+bm_rtl::function_calls__Function::set_string                  15.0 ns         15.0 ns     47249334
+bm_rtl::method_calls______Method::set_string                  14.8 ns         14.8 ns     47018811
+
+bm_rtl::function__ErasedReturnType::set_string                16.6 ns         16.6 ns     41801460
+bm_rtl::method____ErasedReturnType::set_string                17.4 ns         17.4 ns     41245734
+bm_rtl::method____ErasedTargetType::set_string                17.4 ns         17.4 ns     40022891
+bm_rtl::method____ErasedTargetAndReturnType::set_string       17.9 ns         17.9 ns     39375751
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         25.0 ns         25.0 ns     27910450
+
+bm_call::via_function_ptr__Function::get_string               25.0 ns         25.0 ns     27970128
+bm_call::via_function_ptr____Method::get_string               25.2 ns         25.1 ns     27845622
+
+bm_std::function_calls__Function::get_string                  25.2 ns         25.2 ns     27757309
+bm_std::function_calls____Method::get_string                  25.3 ns         25.3 ns     27601367
+
+bm_rtl::function_calls__Function::get_string                  25.0 ns         25.0 ns     28025612
+bm_rtl::method_calls______Method::get_string                  25.2 ns         25.2 ns     27785388
+
+bm_rtl::function__ErasedReturnType::get_string                31.7 ns         31.7 ns     22028623
+bm_rtl::method____ErasedReturnType::get_string                32.3 ns         32.3 ns     21724774
+bm_rtl::method____ErasedTargetType::get_string                29.4 ns         29.4 ns     23749156
+bm_rtl::method____ErasedTargetAndReturnType::get_string       33.4 ns         33.4 ns     20507660
+-----------------------------------
+[2026-01-19 22:19:19] >>> Run 3: workload scale = 1
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 1 iterations
+=============================================
+
+2026-01-19T22:19:19+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.97, 0.67, 0.31
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         14.5 ns         14.5 ns     48240969
+
+bm_call::via_function_ptr__Function::set_string               14.9 ns         14.9 ns     46922624
+bm_call::via_function_ptr____Method::set_string               14.9 ns         14.9 ns     46873657
+
+bm_std::function_calls__Function::set_string                  15.0 ns         15.0 ns     46979264
+bm_std::function_calls____Method::set_string                  14.8 ns         14.8 ns     46821025
+
+bm_rtl::function_calls__Function::set_string                  14.9 ns         14.9 ns     47090225
+bm_rtl::method_calls______Method::set_string                  14.9 ns         14.9 ns     47324383
+
+bm_rtl::function__ErasedReturnType::set_string                16.5 ns         16.4 ns     42457769
+bm_rtl::method____ErasedReturnType::set_string                16.6 ns         16.6 ns     41747381
+bm_rtl::method____ErasedTargetType::set_string                17.3 ns         17.3 ns     40942180
+bm_rtl::method____ErasedTargetAndReturnType::set_string       19.2 ns         19.2 ns     36853482
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         20.2 ns         20.2 ns     34838734
+
+bm_call::via_function_ptr__Function::get_string               20.1 ns         20.1 ns     34908842
+bm_call::via_function_ptr____Method::get_string               20.2 ns         20.2 ns     34891499
+
+bm_std::function_calls__Function::get_string                  20.3 ns         20.3 ns     34489947
+bm_std::function_calls____Method::get_string                  20.5 ns         20.5 ns     34164828
+
+bm_rtl::function_calls__Function::get_string                  20.1 ns         20.1 ns     34860515
+bm_rtl::method_calls______Method::get_string                  20.1 ns         20.1 ns     34509987
+
+bm_rtl::function__ErasedReturnType::get_string                32.0 ns         32.0 ns     21715254
+bm_rtl::method____ErasedReturnType::get_string                32.5 ns         32.5 ns     21786883
+bm_rtl::method____ErasedTargetType::get_string                24.6 ns         24.6 ns     28372972
+bm_rtl::method____ErasedTargetAndReturnType::get_string       33.7 ns         33.7 ns     20781704
+-----------------------------------
+[2026-01-19 22:19:40] >>> Run 1: workload scale = 5
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 5 iterations
+=============================================
+
+2026-01-19T22:19:40+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4865.77 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.98, 0.69, 0.32
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          105 ns          105 ns      6653489
+
+bm_call::via_function_ptr__Function::set_string                107 ns          107 ns      6492983
+bm_call::via_function_ptr____Method::set_string                107 ns          107 ns      6535246
+
+bm_std::function_calls__Function::set_string                   107 ns          107 ns      6557447
+bm_std::function_calls____Method::set_string                   108 ns          107 ns      6525899
+
+bm_rtl::function_calls__Function::set_string                   107 ns          107 ns      6529877
+bm_rtl::method_calls______Method::set_string                   107 ns          107 ns      6500537
+
+bm_rtl::function__ErasedReturnType::set_string                 109 ns          109 ns      6433512
+bm_rtl::method____ErasedReturnType::set_string                 109 ns          109 ns      6441045
+bm_rtl::method____ErasedTargetType::set_string                 109 ns          109 ns      6430367
+bm_rtl::method____ErasedTargetAndReturnType::set_string        110 ns          110 ns      6367909
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          141 ns          141 ns      4992850
+
+bm_call::via_function_ptr__Function::get_string                141 ns          141 ns      4947770
+bm_call::via_function_ptr____Method::get_string                140 ns          140 ns      5010278
+
+bm_std::function_calls__Function::get_string                   141 ns          141 ns      4978328
+bm_std::function_calls____Method::get_string                   141 ns          141 ns      4892890
+
+bm_rtl::function_calls__Function::get_string                   141 ns          141 ns      4969715
+bm_rtl::method_calls______Method::get_string                   140 ns          140 ns      4989739
+
+bm_rtl::function__ErasedReturnType::get_string                 150 ns          150 ns      4643950
+bm_rtl::method____ErasedReturnType::get_string                 150 ns          150 ns      4635435
+bm_rtl::method____ErasedTargetType::get_string                 143 ns          143 ns      4896326
+bm_rtl::method____ErasedTargetAndReturnType::get_string        151 ns          151 ns      4619363
+-----------------------------------
+[2026-01-19 22:19:58] >>> Run 2: workload scale = 5
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 5 iterations
+=============================================
+
+2026-01-19T22:19:58+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.98, 0.71, 0.34
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          103 ns          103 ns      6802745
+
+bm_call::via_function_ptr__Function::set_string                105 ns          105 ns      6625968
+bm_call::via_function_ptr____Method::set_string                105 ns          105 ns      6695044
+
+bm_std::function_calls__Function::set_string                   105 ns          105 ns      6624223
+bm_std::function_calls____Method::set_string                   105 ns          105 ns      6663752
+
+bm_rtl::function_calls__Function::set_string                   105 ns          105 ns      6681833
+bm_rtl::method_calls______Method::set_string                   105 ns          105 ns      6668827
+
+bm_rtl::function__ErasedReturnType::set_string                 107 ns          107 ns      6536747
+bm_rtl::method____ErasedReturnType::set_string                 107 ns          107 ns      6504031
+bm_rtl::method____ErasedTargetType::set_string                 108 ns          108 ns      6469742
+bm_rtl::method____ErasedTargetAndReturnType::set_string        109 ns          109 ns      6479236
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          123 ns          123 ns      5698362
+
+bm_call::via_function_ptr__Function::get_string                123 ns          123 ns      5718997
+bm_call::via_function_ptr____Method::get_string                122 ns          122 ns      5745089
+
+bm_std::function_calls__Function::get_string                   123 ns          123 ns      5703641
+bm_std::function_calls____Method::get_string                   122 ns          122 ns      5715659
+
+bm_rtl::function_calls__Function::get_string                   123 ns          123 ns      5702709
+bm_rtl::method_calls______Method::get_string                   123 ns          123 ns      5717900
+
+bm_rtl::function__ErasedReturnType::get_string                 131 ns          131 ns      5383228
+bm_rtl::method____ErasedReturnType::get_string                 130 ns          130 ns      5398546
+bm_rtl::method____ErasedTargetType::get_string                 125 ns          125 ns      5610784
+bm_rtl::method____ErasedTargetAndReturnType::get_string        132 ns          132 ns      5317235
+-----------------------------------
+[2026-01-19 22:20:16] >>> Run 3: workload scale = 5
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 5 iterations
+=============================================
+
+2026-01-19T22:20:16+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 1814.12 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.99, 0.73, 0.35
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          103 ns          103 ns      6759777
+
+bm_call::via_function_ptr__Function::set_string                105 ns          105 ns      6599680
+bm_call::via_function_ptr____Method::set_string                105 ns          105 ns      6637960
+
+bm_std::function_calls__Function::set_string                   105 ns          105 ns      6634870
+bm_std::function_calls____Method::set_string                   105 ns          105 ns      6629614
+
+bm_rtl::function_calls__Function::set_string                   105 ns          105 ns      6700534
+bm_rtl::method_calls______Method::set_string                   105 ns          105 ns      6641565
+
+bm_rtl::function__ErasedReturnType::set_string                 107 ns          107 ns      6489816
+bm_rtl::method____ErasedReturnType::set_string                 107 ns          107 ns      6457036
+bm_rtl::method____ErasedTargetType::set_string                 108 ns          108 ns      6480403
+bm_rtl::method____ErasedTargetAndReturnType::set_string        109 ns          109 ns      6477196
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          123 ns          123 ns      5671951
+
+bm_call::via_function_ptr__Function::get_string                123 ns          123 ns      5695007
+bm_call::via_function_ptr____Method::get_string                123 ns          123 ns      5701825
+
+bm_std::function_calls__Function::get_string                   123 ns          123 ns      5623063
+bm_std::function_calls____Method::get_string                   122 ns          122 ns      5746720
+
+bm_rtl::function_calls__Function::get_string                   123 ns          123 ns      5685952
+bm_rtl::method_calls______Method::get_string                   122 ns          122 ns      5737821
+
+bm_rtl::function__ErasedReturnType::get_string                 130 ns          130 ns      5363587
+bm_rtl::method____ErasedReturnType::get_string                 130 ns          130 ns      5405976
+bm_rtl::method____ErasedTargetType::get_string                 125 ns          125 ns      5623858
+bm_rtl::method____ErasedTargetAndReturnType::get_string        132 ns          132 ns      5294497
+-----------------------------------
+[2026-01-19 22:20:35] >>> Run 1: workload scale = 10
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 10 iterations
+=============================================
+
+2026-01-19T22:20:35+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 0.99, 0.75, 0.37
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          180 ns          180 ns      3892288
+
+bm_call::via_function_ptr__Function::set_string                175 ns          175 ns      4013942
+bm_call::via_function_ptr____Method::set_string                175 ns          175 ns      4038326
+
+bm_std::function_calls__Function::set_string                   175 ns          175 ns      4011236
+bm_std::function_calls____Method::set_string                   176 ns          176 ns      3969974
+
+bm_rtl::function_calls__Function::set_string                   175 ns          175 ns      4008955
+bm_rtl::method_calls______Method::set_string                   175 ns          175 ns      4005545
+
+bm_rtl::function__ErasedReturnType::set_string                 178 ns          178 ns      3913334
+bm_rtl::method____ErasedReturnType::set_string                 178 ns          178 ns      3957340
+bm_rtl::method____ErasedTargetType::set_string                 178 ns          178 ns      3958988
+bm_rtl::method____ErasedTargetAndReturnType::set_string        179 ns          179 ns      3910029
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          236 ns          236 ns      2973260
+
+bm_call::via_function_ptr__Function::get_string                236 ns          236 ns      2986989
+bm_call::via_function_ptr____Method::get_string                235 ns          235 ns      2980300
+
+bm_std::function_calls__Function::get_string                   236 ns          235 ns      2959537
+bm_std::function_calls____Method::get_string                   236 ns          236 ns      2952611
+
+bm_rtl::function_calls__Function::get_string                   235 ns          235 ns      2982781
+bm_rtl::method_calls______Method::get_string                   236 ns          236 ns      2962352
+
+bm_rtl::function__ErasedReturnType::get_string                 241 ns          241 ns      2897516
+bm_rtl::method____ErasedReturnType::get_string                 242 ns          242 ns      2911112
+bm_rtl::method____ErasedTargetType::get_string                 239 ns          240 ns      2930612
+bm_rtl::method____ErasedTargetAndReturnType::get_string        242 ns          242 ns      2885077
+-----------------------------------
+[2026-01-19 22:20:55] >>> Run 2: workload scale = 10
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 10 iterations
+=============================================
+
+2026-01-19T22:20:55+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.77, 0.38
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          165 ns          165 ns      4275197
+
+bm_call::via_function_ptr__Function::set_string                168 ns          168 ns      4170135
+bm_call::via_function_ptr____Method::set_string                167 ns          167 ns      4163825
+
+bm_std::function_calls__Function::set_string                   169 ns          169 ns      4159852
+bm_std::function_calls____Method::set_string                   170 ns          170 ns      4124142
+
+bm_rtl::function_calls__Function::set_string                   169 ns          169 ns      4126732
+bm_rtl::method_calls______Method::set_string                   169 ns          169 ns      4134774
+
+bm_rtl::function__ErasedReturnType::set_string                 172 ns          172 ns      4038085
+bm_rtl::method____ErasedReturnType::set_string                 171 ns          171 ns      4105946
+bm_rtl::method____ErasedTargetType::set_string                 171 ns          171 ns      4105870
+bm_rtl::method____ErasedTargetAndReturnType::set_string        178 ns          178 ns      3951279
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          207 ns          207 ns      3403062
+
+bm_call::via_function_ptr__Function::get_string                206 ns          206 ns      3379512
+bm_call::via_function_ptr____Method::get_string                206 ns          206 ns      3363220
+
+bm_std::function_calls__Function::get_string                   206 ns          206 ns      3434973
+bm_std::function_calls____Method::get_string                   205 ns          205 ns      3398931
+
+bm_rtl::function_calls__Function::get_string                   206 ns          206 ns      3390234
+bm_rtl::method_calls______Method::get_string                   205 ns          205 ns      3428973
+
+bm_rtl::function__ErasedReturnType::get_string                 212 ns          212 ns      3290226
+bm_rtl::method____ErasedReturnType::get_string                 213 ns          213 ns      3308638
+bm_rtl::method____ErasedTargetType::get_string                 213 ns          213 ns      3278298
+bm_rtl::method____ErasedTargetAndReturnType::get_string        213 ns          213 ns      3265716
+-----------------------------------
+[2026-01-19 22:21:15] >>> Run 3: workload scale = 10
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 10 iterations
+=============================================
+
+2026-01-19T22:21:15+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.78, 0.40
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          165 ns          165 ns      4267506
+
+bm_call::via_function_ptr__Function::set_string                160 ns          160 ns      4395709
+bm_call::via_function_ptr____Method::set_string                159 ns          159 ns      4430252
+
+bm_std::function_calls__Function::set_string                   159 ns          159 ns      4404565
+bm_std::function_calls____Method::set_string                   160 ns          160 ns      4313674
+
+bm_rtl::function_calls__Function::set_string                   160 ns          160 ns      4373147
+bm_rtl::method_calls______Method::set_string                   159 ns          159 ns      4369703
+
+bm_rtl::function__ErasedReturnType::set_string                 161 ns          161 ns      4305630
+bm_rtl::method____ErasedReturnType::set_string                 162 ns          162 ns      4292450
+bm_rtl::method____ErasedTargetType::set_string                 161 ns          161 ns      4356887
+bm_rtl::method____ErasedTargetAndReturnType::set_string        168 ns          168 ns      4182174
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          204 ns          204 ns      3454724
+
+bm_call::via_function_ptr__Function::get_string                204 ns          204 ns      3439998
+bm_call::via_function_ptr____Method::get_string                205 ns          205 ns      3428085
+
+bm_std::function_calls__Function::get_string                   204 ns          204 ns      3444872
+bm_std::function_calls____Method::get_string                   205 ns          205 ns      3434997
+
+bm_rtl::function_calls__Function::get_string                   204 ns          204 ns      3420037
+bm_rtl::method_calls______Method::get_string                   204 ns          204 ns      3419836
+
+bm_rtl::function__ErasedReturnType::get_string                 213 ns          213 ns      3283998
+bm_rtl::method____ErasedReturnType::get_string                 213 ns          213 ns      3295983
+bm_rtl::method____ErasedTargetType::get_string                 211 ns          211 ns      3308046
+bm_rtl::method____ErasedTargetAndReturnType::get_string        214 ns          214 ns      3280155
+-----------------------------------
+[2026-01-19 22:21:35] >>> Run 1: workload scale = 15
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 15 iterations
+=============================================
+
+2026-01-19T22:21:35+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.80, 0.41
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          213 ns          213 ns      3278456
+
+bm_call::via_function_ptr__Function::set_string                209 ns          209 ns      3352560
+bm_call::via_function_ptr____Method::set_string                209 ns          209 ns      3360691
+
+bm_std::function_calls__Function::set_string                   209 ns          209 ns      3361073
+bm_std::function_calls____Method::set_string                   210 ns          210 ns      3318972
+
+bm_rtl::function_calls__Function::set_string                   209 ns          209 ns      3369433
+bm_rtl::method_calls______Method::set_string                   209 ns          209 ns      3354692
+
+bm_rtl::function__ErasedReturnType::set_string                 211 ns          211 ns      3314566
+bm_rtl::method____ErasedReturnType::set_string                 217 ns          217 ns      3200487
+bm_rtl::method____ErasedTargetType::set_string                 210 ns          210 ns      3339407
+bm_rtl::method____ErasedTargetAndReturnType::set_string        213 ns          213 ns      3272485
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          290 ns          290 ns      2399152
+
+bm_call::via_function_ptr__Function::get_string                292 ns          292 ns      2391389
+bm_call::via_function_ptr____Method::get_string                294 ns          294 ns      2387165
+
+bm_std::function_calls__Function::get_string                   292 ns          292 ns      2385012
+bm_std::function_calls____Method::get_string                   293 ns          293 ns      2370217
+
+bm_rtl::function_calls__Function::get_string                   290 ns          290 ns      2389109
+bm_rtl::method_calls______Method::get_string                   291 ns          291 ns      2413141
+
+bm_rtl::function__ErasedReturnType::get_string                 293 ns          293 ns      2376124
+bm_rtl::method____ErasedReturnType::get_string                 294 ns          294 ns      2372537
+bm_rtl::method____ErasedTargetType::get_string                 296 ns          296 ns      2363057
+bm_rtl::method____ErasedTargetAndReturnType::get_string        295 ns          295 ns      2377778
+-----------------------------------
+[2026-01-19 22:21:57] >>> Run 2: workload scale = 15
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 15 iterations
+=============================================
+
+2026-01-19T22:21:57+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 801.32 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.81, 0.42
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          212 ns          212 ns      3309102
+
+bm_call::via_function_ptr__Function::set_string                207 ns          207 ns      3394006
+bm_call::via_function_ptr____Method::set_string                207 ns          207 ns      3370944
+
+bm_std::function_calls__Function::set_string                   207 ns          207 ns      3376717
+bm_std::function_calls____Method::set_string                   207 ns          207 ns      3373440
+
+bm_rtl::function_calls__Function::set_string                   207 ns          207 ns      3397337
+bm_rtl::method_calls______Method::set_string                   207 ns          207 ns      3366295
+
+bm_rtl::function__ErasedReturnType::set_string                 209 ns          209 ns      3341976
+bm_rtl::method____ErasedReturnType::set_string                 215 ns          215 ns      3250934
+bm_rtl::method____ErasedTargetType::set_string                 209 ns          209 ns      3356043
+bm_rtl::method____ErasedTargetAndReturnType::set_string        213 ns          213 ns      3302810
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          290 ns          290 ns      2434486
+
+bm_call::via_function_ptr__Function::get_string                290 ns          290 ns      2418544
+bm_call::via_function_ptr____Method::get_string                292 ns          292 ns      2391400
+
+bm_std::function_calls__Function::get_string                   290 ns          290 ns      2419226
+bm_std::function_calls____Method::get_string                   292 ns          292 ns      2384728
+
+bm_rtl::function_calls__Function::get_string                   289 ns          289 ns      2421073
+bm_rtl::method_calls______Method::get_string                   289 ns          289 ns      2407117
+
+bm_rtl::function__ErasedReturnType::get_string                 291 ns          291 ns      2407608
+bm_rtl::method____ErasedReturnType::get_string                 292 ns          292 ns      2397277
+bm_rtl::method____ErasedTargetType::get_string                 297 ns          297 ns      2375795
+bm_rtl::method____ErasedTargetAndReturnType::get_string        293 ns          293 ns      2389315
+-----------------------------------
+[2026-01-19 22:22:18] >>> Run 3: workload scale = 15
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 15 iterations
+=============================================
+
+2026-01-19T22:22:18+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.83, 0.44
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          213 ns          213 ns      3296227
+
+bm_call::via_function_ptr__Function::set_string                214 ns          214 ns      3263923
+bm_call::via_function_ptr____Method::set_string                205 ns          205 ns      3257153
+
+bm_std::function_calls__Function::set_string                   197 ns          197 ns      3565329
+bm_std::function_calls____Method::set_string                   196 ns          196 ns      3566944
+
+bm_rtl::function_calls__Function::set_string                   197 ns          197 ns      3533127
+bm_rtl::method_calls______Method::set_string                   198 ns          198 ns      3543068
+
+bm_rtl::function__ErasedReturnType::set_string                 200 ns          200 ns      3486313
+bm_rtl::method____ErasedReturnType::set_string                 199 ns          199 ns      3506394
+bm_rtl::method____ErasedTargetType::set_string                 201 ns          201 ns      3461289
+bm_rtl::method____ErasedTargetAndReturnType::set_string        207 ns          207 ns      3387381
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          255 ns          255 ns      2755617
+
+bm_call::via_function_ptr__Function::get_string                256 ns          256 ns      2766715
+bm_call::via_function_ptr____Method::get_string                255 ns          255 ns      2753165
+
+bm_std::function_calls__Function::get_string                   254 ns          254 ns      2746618
+bm_std::function_calls____Method::get_string                   254 ns          254 ns      2759317
+
+bm_rtl::function_calls__Function::get_string                   254 ns          254 ns      2751392
+bm_rtl::method_calls______Method::get_string                   255 ns          255 ns      2749046
+
+bm_rtl::function__ErasedReturnType::get_string                 259 ns          259 ns      2716598
+bm_rtl::method____ErasedReturnType::get_string                 260 ns          260 ns      2686400
+bm_rtl::method____ErasedTargetType::get_string                 260 ns          260 ns      2691016
+bm_rtl::method____ErasedTargetAndReturnType::get_string        261 ns          261 ns      2691710
+-----------------------------------
+[2026-01-19 22:22:39] >>> Run 1: workload scale = 20
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 20 iterations
+=============================================
+
+2026-01-19T22:22:39+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.84, 0.45
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          327 ns          327 ns      2130827
+
+bm_call::via_function_ptr__Function::set_string                297 ns          297 ns      2358942
+bm_call::via_function_ptr____Method::set_string                297 ns          297 ns      2362573
+
+bm_std::function_calls__Function::set_string                   297 ns          297 ns      2350215
+bm_std::function_calls____Method::set_string                   297 ns          297 ns      2358479
+
+bm_rtl::function_calls__Function::set_string                   297 ns          297 ns      2357670
+bm_rtl::method_calls______Method::set_string                   298 ns          298 ns      2345741
+
+bm_rtl::function__ErasedReturnType::set_string                 302 ns          302 ns      2338843
+bm_rtl::method____ErasedReturnType::set_string                 301 ns          301 ns      2320729
+bm_rtl::method____ErasedTargetType::set_string                 302 ns          302 ns      2324269
+bm_rtl::method____ErasedTargetAndReturnType::set_string        303 ns          303 ns      2309848
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          423 ns          423 ns      1656887
+
+bm_call::via_function_ptr__Function::get_string                421 ns          421 ns      1661981
+bm_call::via_function_ptr____Method::get_string                422 ns          422 ns      1656660
+
+bm_std::function_calls__Function::get_string                   422 ns          422 ns      1657954
+bm_std::function_calls____Method::get_string                   423 ns          423 ns      1656490
+
+bm_rtl::function_calls__Function::get_string                   421 ns          420 ns      1661494
+bm_rtl::method_calls______Method::get_string                   421 ns          421 ns      1661180
+
+bm_rtl::function__ErasedReturnType::get_string                 431 ns          431 ns      1619090
+bm_rtl::method____ErasedReturnType::get_string                 431 ns          431 ns      1620223
+bm_rtl::method____ErasedTargetType::get_string                 431 ns          431 ns      1619311
+bm_rtl::method____ErasedTargetAndReturnType::get_string        432 ns          432 ns      1616884
+-----------------------------------
+[2026-01-19 22:23:03] >>> Run 2: workload scale = 20
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 20 iterations
+=============================================
+
+2026-01-19T22:23:03+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.85, 0.47
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          328 ns          328 ns      2133046
+
+bm_call::via_function_ptr__Function::set_string                297 ns          297 ns      2336742
+bm_call::via_function_ptr____Method::set_string                297 ns          297 ns      2330893
+
+bm_std::function_calls__Function::set_string                   299 ns          299 ns      2338388
+bm_std::function_calls____Method::set_string                   299 ns          299 ns      2361470
+
+bm_rtl::function_calls__Function::set_string                   299 ns          299 ns      2355328
+bm_rtl::method_calls______Method::set_string                   299 ns          299 ns      2354178
+
+bm_rtl::function__ErasedReturnType::set_string                 309 ns          309 ns      2248700
+bm_rtl::method____ErasedReturnType::set_string                 307 ns          307 ns      2263835
+bm_rtl::method____ErasedTargetType::set_string                 305 ns          305 ns      2290845
+bm_rtl::method____ErasedTargetAndReturnType::set_string        309 ns          309 ns      2270160
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          420 ns          420 ns      1667713
+
+bm_call::via_function_ptr__Function::get_string                419 ns          419 ns      1665420
+bm_call::via_function_ptr____Method::get_string                420 ns          420 ns      1661441
+
+bm_std::function_calls__Function::get_string                   420 ns          420 ns      1665206
+bm_std::function_calls____Method::get_string                   423 ns          423 ns      1659447
+
+bm_rtl::function_calls__Function::get_string                   419 ns          419 ns      1666035
+bm_rtl::method_calls______Method::get_string                   419 ns          419 ns      1667963
+
+bm_rtl::function__ErasedReturnType::get_string                 431 ns          431 ns      1622118
+bm_rtl::method____ErasedReturnType::get_string                 433 ns          432 ns      1624592
+bm_rtl::method____ErasedTargetType::get_string                 431 ns          430 ns      1630012
+bm_rtl::method____ErasedTargetAndReturnType::get_string        433 ns          433 ns      1616972
+-----------------------------------
+[2026-01-19 22:23:28] >>> Run 3: workload scale = 20
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 20 iterations
+=============================================
+
+2026-01-19T22:23:28+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.87, 0.48
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          290 ns          290 ns      2424105
+
+bm_call::via_function_ptr__Function::set_string                268 ns          268 ns      2627333
+bm_call::via_function_ptr____Method::set_string                266 ns          266 ns      2656460
+
+bm_std::function_calls__Function::set_string                   264 ns          264 ns      2608421
+bm_std::function_calls____Method::set_string                   268 ns          268 ns      2624303
+
+bm_rtl::function_calls__Function::set_string                   264 ns          264 ns      2641920
+bm_rtl::method_calls______Method::set_string                   264 ns          264 ns      2648786
+
+bm_rtl::function__ErasedReturnType::set_string                 270 ns          270 ns      2603193
+bm_rtl::method____ErasedReturnType::set_string                 274 ns          274 ns      2555196
+bm_rtl::method____ErasedTargetType::set_string                 270 ns          270 ns      2629662
+bm_rtl::method____ErasedTargetAndReturnType::set_string        275 ns          275 ns      2558749
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          365 ns          365 ns      1916083
+
+bm_call::via_function_ptr__Function::get_string                365 ns          365 ns      1921180
+bm_call::via_function_ptr____Method::get_string                366 ns          366 ns      1904972
+
+bm_std::function_calls__Function::get_string                   365 ns          365 ns      1911332
+bm_std::function_calls____Method::get_string                   368 ns          368 ns      1884370
+
+bm_rtl::function_calls__Function::get_string                   366 ns          366 ns      1923206
+bm_rtl::method_calls______Method::get_string                   366 ns          366 ns      1908881
+
+bm_rtl::function__ErasedReturnType::get_string                 375 ns          375 ns      1863335
+bm_rtl::method____ErasedReturnType::get_string                 375 ns          375 ns      1858239
+bm_rtl::method____ErasedTargetType::get_string                 376 ns          376 ns      1870789
+bm_rtl::method____ErasedTargetAndReturnType::get_string        378 ns          378 ns      1847908
+-----------------------------------
+[2026-01-19 22:23:51] >>> Run 1: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2026-01-19T22:23:51+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.88, 0.50
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          329 ns          329 ns      2137193
+
+bm_call::via_function_ptr__Function::set_string                314 ns          314 ns      2240187
+bm_call::via_function_ptr____Method::set_string                314 ns          314 ns      2262194
+
+bm_std::function_calls__Function::set_string                   309 ns          309 ns      2250921
+bm_std::function_calls____Method::set_string                   306 ns          306 ns      2305127
+
+bm_rtl::function_calls__Function::set_string                   311 ns          311 ns      2239465
+bm_rtl::method_calls______Method::set_string                   310 ns          310 ns      2237918
+
+bm_rtl::function__ErasedReturnType::set_string                 317 ns          317 ns      2168950
+bm_rtl::method____ErasedReturnType::set_string                 305 ns          305 ns      2289661
+bm_rtl::method____ErasedTargetType::set_string                 324 ns          324 ns      2180611
+bm_rtl::method____ErasedTargetAndReturnType::set_string        324 ns          324 ns      2167254
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          425 ns          425 ns      1646554
+
+bm_call::via_function_ptr__Function::get_string                428 ns          428 ns      1646159
+bm_call::via_function_ptr____Method::get_string                425 ns          425 ns      1640333
+
+bm_std::function_calls__Function::get_string                   427 ns          427 ns      1644658
+bm_std::function_calls____Method::get_string                   427 ns          427 ns      1645683
+
+bm_rtl::function_calls__Function::get_string                   426 ns          426 ns      1647963
+bm_rtl::method_calls______Method::get_string                   435 ns          435 ns      1609578
+
+bm_rtl::function__ErasedReturnType::get_string                 436 ns          436 ns      1607688
+bm_rtl::method____ErasedReturnType::get_string                 437 ns          437 ns      1609148
+bm_rtl::method____ErasedTargetType::get_string                 438 ns          438 ns      1604011
+bm_rtl::method____ErasedTargetAndReturnType::get_string        438 ns          438 ns      1600233
+-----------------------------------
+[2026-01-19 22:24:15] >>> Run 2: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2026-01-19T22:24:16+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.89, 0.51
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          361 ns          361 ns      1941242
+
+bm_call::via_function_ptr__Function::set_string                346 ns          346 ns      2027125
+bm_call::via_function_ptr____Method::set_string                346 ns          346 ns      2031783
+
+bm_std::function_calls__Function::set_string                   347 ns          347 ns      2034513
+bm_std::function_calls____Method::set_string                   341 ns          341 ns      2049239
+
+bm_rtl::function_calls__Function::set_string                   347 ns          347 ns      2018577
+bm_rtl::method_calls______Method::set_string                   346 ns          346 ns      2020807
+
+bm_rtl::function__ErasedReturnType::set_string                 357 ns          357 ns      1960365
+bm_rtl::method____ErasedReturnType::set_string                 344 ns          344 ns      2030461
+bm_rtl::method____ErasedTargetType::set_string                 359 ns          359 ns      1955218
+bm_rtl::method____ErasedTargetAndReturnType::set_string        358 ns          358 ns      1947898
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          484 ns          484 ns      1444771
+
+bm_call::via_function_ptr__Function::get_string                486 ns          486 ns      1441287
+bm_call::via_function_ptr____Method::get_string                485 ns          485 ns      1446433
+
+bm_std::function_calls__Function::get_string                   487 ns          487 ns      1441524
+bm_std::function_calls____Method::get_string                   487 ns          487 ns      1433549
+
+bm_rtl::function_calls__Function::get_string                   487 ns          487 ns      1436284
+bm_rtl::method_calls______Method::get_string                   485 ns          485 ns      1444218
+
+bm_rtl::function__ErasedReturnType::get_string                 498 ns          498 ns      1405236
+bm_rtl::method____ErasedReturnType::get_string                 501 ns          501 ns      1399059
+bm_rtl::method____ErasedTargetType::get_string                 495 ns          495 ns      1394477
+bm_rtl::method____ErasedTargetAndReturnType::get_string        501 ns          501 ns      1394723
+-----------------------------------
+[2026-01-19 22:24:40] >>> Run 3: workload scale = 25
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 25 iterations
+=============================================
+
+2026-01-19T22:24:40+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.90, 0.52
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          317 ns          317 ns      2207040
+
+bm_call::via_function_ptr__Function::set_string                326 ns          326 ns      2156299
+bm_call::via_function_ptr____Method::set_string                326 ns          326 ns      2165496
+
+bm_std::function_calls__Function::set_string                   326 ns          326 ns      2167831
+bm_std::function_calls____Method::set_string                   326 ns          326 ns      2153224
+
+bm_rtl::function_calls__Function::set_string                   324 ns          324 ns      2151706
+bm_rtl::method_calls______Method::set_string                   326 ns          326 ns      2121751
+
+bm_rtl::function__ErasedReturnType::set_string                 339 ns          339 ns      2052762
+bm_rtl::method____ErasedReturnType::set_string                 325 ns          325 ns      2159375
+bm_rtl::method____ErasedTargetType::set_string                 344 ns          344 ns      2023497
+bm_rtl::method____ErasedTargetAndReturnType::set_string        339 ns          339 ns      2051367
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          438 ns          438 ns      1606262
+
+bm_call::via_function_ptr__Function::get_string                440 ns          440 ns      1578140
+bm_call::via_function_ptr____Method::get_string                439 ns          439 ns      1584218
+
+bm_std::function_calls__Function::get_string                   439 ns          439 ns      1581952
+bm_std::function_calls____Method::get_string                   452 ns          452 ns      1551649
+
+bm_rtl::function_calls__Function::get_string                   442 ns          442 ns      1602573
+bm_rtl::method_calls______Method::get_string                   440 ns          440 ns      1587330
+
+bm_rtl::function__ErasedReturnType::get_string                 458 ns          458 ns      1517252
+bm_rtl::method____ErasedReturnType::get_string                 463 ns          463 ns      1508769
+bm_rtl::method____ErasedTargetType::get_string                 455 ns          455 ns      1531543
+bm_rtl::method____ErasedTargetAndReturnType::get_string        460 ns          460 ns      1534110
+-----------------------------------
+[2026-01-19 22:25:05] >>> Run 1: workload scale = 30
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 30 iterations
+=============================================
+
+2026-01-19T22:25:05+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.91, 0.54
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          426 ns          426 ns      1642971
+
+bm_call::via_function_ptr__Function::set_string                340 ns          340 ns      2060776
+bm_call::via_function_ptr____Method::set_string                340 ns          340 ns      2054856
+
+bm_std::function_calls__Function::set_string                   342 ns          342 ns      2047289
+bm_std::function_calls____Method::set_string                   356 ns          356 ns      1968053
+
+bm_rtl::function_calls__Function::set_string                   340 ns          340 ns      2054394
+bm_rtl::method_calls______Method::set_string                   342 ns          342 ns      2051463
+
+bm_rtl::function__ErasedReturnType::set_string                 351 ns          351 ns      1991950
+bm_rtl::method____ErasedReturnType::set_string                 350 ns          350 ns      2009636
+bm_rtl::method____ErasedTargetType::set_string                 353 ns          353 ns      1976671
+bm_rtl::method____ErasedTargetAndReturnType::set_string        358 ns          358 ns      1959273
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          493 ns          493 ns      1418974
+
+bm_call::via_function_ptr__Function::get_string                495 ns          495 ns      1415006
+bm_call::via_function_ptr____Method::get_string                495 ns          495 ns      1417840
+
+bm_std::function_calls__Function::get_string                   495 ns          495 ns      1409827
+bm_std::function_calls____Method::get_string                   498 ns          498 ns      1407422
+
+bm_rtl::function_calls__Function::get_string                   495 ns          495 ns      1419100
+bm_rtl::method_calls______Method::get_string                   496 ns          496 ns      1409543
+
+bm_rtl::function__ErasedReturnType::get_string                 512 ns          512 ns      1364679
+bm_rtl::method____ErasedReturnType::get_string                 510 ns          510 ns      1368522
+bm_rtl::method____ErasedTargetType::get_string                 510 ns          510 ns      1372916
+bm_rtl::method____ErasedTargetAndReturnType::get_string        512 ns          512 ns      1365261
+-----------------------------------
+[2026-01-19 22:25:28] >>> Run 2: workload scale = 30
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 30 iterations
+=============================================
+
+2026-01-19T22:25:28+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4445.26 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.92, 0.55
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          433 ns          433 ns      1616498
+
+bm_call::via_function_ptr__Function::set_string                352 ns          352 ns      1985642
+bm_call::via_function_ptr____Method::set_string                353 ns          353 ns      1978449
+
+bm_std::function_calls__Function::set_string                   353 ns          353 ns      1991516
+bm_std::function_calls____Method::set_string                   371 ns          371 ns      1867726
+
+bm_rtl::function_calls__Function::set_string                   353 ns          353 ns      1989083
+bm_rtl::method_calls______Method::set_string                   354 ns          354 ns      1969449
+
+bm_rtl::function__ErasedReturnType::set_string                 352 ns          352 ns      1984958
+bm_rtl::method____ErasedReturnType::set_string                 353 ns          353 ns      1986122
+bm_rtl::method____ErasedTargetType::set_string                 354 ns          354 ns      1980813
+bm_rtl::method____ErasedTargetAndReturnType::set_string        362 ns          362 ns      1931931
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          510 ns          510 ns      1375075
+
+bm_call::via_function_ptr__Function::get_string                511 ns          511 ns      1390317
+bm_call::via_function_ptr____Method::get_string                510 ns          510 ns      1360743
+
+bm_std::function_calls__Function::get_string                   511 ns          511 ns      1368314
+bm_std::function_calls____Method::get_string                   518 ns          518 ns      1350815
+
+bm_rtl::function_calls__Function::get_string                   509 ns          509 ns      1380089
+bm_rtl::method_calls______Method::get_string                   508 ns          508 ns      1383110
+
+bm_rtl::function__ErasedReturnType::get_string                 521 ns          521 ns      1350743
+bm_rtl::method____ErasedReturnType::get_string                 523 ns          523 ns      1345324
+bm_rtl::method____ErasedTargetType::get_string                 517 ns          517 ns      1363384
+bm_rtl::method____ErasedTargetAndReturnType::get_string        522 ns          522 ns      1343674
+-----------------------------------
+[2026-01-19 22:25:49] >>> Run 3: workload scale = 30
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 30 iterations
+=============================================
+
+2026-01-19T22:25:49+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.92, 0.56
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          414 ns          414 ns      1697314
+
+bm_call::via_function_ptr__Function::set_string                345 ns          345 ns      2021772
+bm_call::via_function_ptr____Method::set_string                346 ns          346 ns      2022304
+
+bm_std::function_calls__Function::set_string                   346 ns          346 ns      2023585
+bm_std::function_calls____Method::set_string                   347 ns          347 ns      2008508
+
+bm_rtl::function_calls__Function::set_string                   346 ns          346 ns      2014818
+bm_rtl::method_calls______Method::set_string                   348 ns          348 ns      2017748
+
+bm_rtl::function__ErasedReturnType::set_string                 365 ns          365 ns      1925260
+bm_rtl::method____ErasedReturnType::set_string                 374 ns          374 ns      1876867
+bm_rtl::method____ErasedTargetType::set_string                 354 ns          354 ns      1985581
+bm_rtl::method____ErasedTargetAndReturnType::set_string        371 ns          371 ns      1878339
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          499 ns          499 ns      1407970
+
+bm_call::via_function_ptr__Function::get_string                497 ns          497 ns      1405740
+bm_call::via_function_ptr____Method::get_string                497 ns          497 ns      1403761
+
+bm_std::function_calls__Function::get_string                   500 ns          500 ns      1000000
+bm_std::function_calls____Method::get_string                   499 ns          499 ns      1391338
+
+bm_rtl::function_calls__Function::get_string                   497 ns          497 ns      1412667
+bm_rtl::method_calls______Method::get_string                   497 ns          497 ns      1409384
+
+bm_rtl::function__ErasedReturnType::get_string                 515 ns          515 ns      1356884
+bm_rtl::method____ErasedReturnType::get_string                 515 ns          515 ns      1353416
+bm_rtl::method____ErasedTargetType::get_string                 511 ns          511 ns      1375675
+bm_rtl::method____ErasedTargetAndReturnType::get_string        517 ns          516 ns      1363123
+-----------------------------------
+[2026-01-19 22:26:12] >>> Run 1: workload scale = 35
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 35 iterations
+=============================================
+
+2026-01-19T22:26:12+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.93, 0.57
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          710 ns          710 ns       981145
+
+bm_call::via_function_ptr__Function::set_string                692 ns          692 ns      1013095
+bm_call::via_function_ptr____Method::set_string                692 ns          692 ns      1011763
+
+bm_std::function_calls__Function::set_string                   691 ns          691 ns      1013638
+bm_std::function_calls____Method::set_string                   714 ns          714 ns       972767
+
+bm_rtl::function_calls__Function::set_string                   691 ns          691 ns      1011286
+bm_rtl::method_calls______Method::set_string                   693 ns          693 ns      1015686
+
+bm_rtl::function__ErasedReturnType::set_string                 706 ns          706 ns       990586
+bm_rtl::method____ErasedReturnType::set_string                 707 ns          707 ns       990922
+bm_rtl::method____ErasedTargetType::set_string                 711 ns          711 ns       985971
+bm_rtl::method____ErasedTargetAndReturnType::set_string        717 ns          717 ns       976150
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          922 ns          922 ns       759196
+
+bm_call::via_function_ptr__Function::get_string                924 ns          924 ns       759281
+bm_call::via_function_ptr____Method::get_string                922 ns          922 ns       759827
+
+bm_std::function_calls__Function::get_string                   924 ns          924 ns       759626
+bm_std::function_calls____Method::get_string                   927 ns          927 ns       752753
+
+bm_rtl::function_calls__Function::get_string                   925 ns          925 ns       756943
+bm_rtl::method_calls______Method::get_string                   923 ns          923 ns       760058
+
+bm_rtl::function__ErasedReturnType::get_string                 960 ns          960 ns       730468
+bm_rtl::method____ErasedReturnType::get_string                 961 ns          961 ns       728306
+bm_rtl::method____ErasedTargetType::get_string                 950 ns          950 ns       737199
+bm_rtl::method____ErasedTargetAndReturnType::get_string        973 ns          973 ns       719799
+-----------------------------------
+[2026-01-19 22:26:29] >>> Run 2: workload scale = 35
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 35 iterations
+=============================================
+
+2026-01-19T22:26:29+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.93, 0.58
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          688 ns          688 ns      1012792
+
+bm_call::via_function_ptr__Function::set_string                696 ns          696 ns      1003588
+bm_call::via_function_ptr____Method::set_string                696 ns          696 ns      1007834
+
+bm_std::function_calls__Function::set_string                   696 ns          696 ns      1006928
+bm_std::function_calls____Method::set_string                   722 ns          722 ns       974459
+
+bm_rtl::function_calls__Function::set_string                   697 ns          697 ns      1004193
+bm_rtl::method_calls______Method::set_string                   696 ns          696 ns      1007755
+
+bm_rtl::function__ErasedReturnType::set_string                 704 ns          704 ns       993190
+bm_rtl::method____ErasedReturnType::set_string                 703 ns          703 ns       992625
+bm_rtl::method____ErasedTargetType::set_string                 709 ns          709 ns       988352
+bm_rtl::method____ErasedTargetAndReturnType::set_string        707 ns          707 ns       992378
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          886 ns          886 ns       790128
+
+bm_call::via_function_ptr__Function::get_string                887 ns          887 ns       790635
+bm_call::via_function_ptr____Method::get_string                886 ns          886 ns       790890
+
+bm_std::function_calls__Function::get_string                   886 ns          886 ns       790529
+bm_std::function_calls____Method::get_string                   892 ns          892 ns       786318
+
+bm_rtl::function_calls__Function::get_string                   885 ns          885 ns       790710
+bm_rtl::method_calls______Method::get_string                   887 ns          886 ns       789776
+
+bm_rtl::function__ErasedReturnType::get_string                 910 ns          909 ns       767868
+bm_rtl::method____ErasedReturnType::get_string                 911 ns          910 ns       769923
+bm_rtl::method____ErasedTargetType::get_string                 903 ns          903 ns       776352
+bm_rtl::method____ErasedTargetAndReturnType::get_string        910 ns          910 ns       767263
+-----------------------------------
+[2026-01-19 22:26:46] >>> Run 3: workload scale = 35
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 35 iterations
+=============================================
+
+2026-01-19T22:26:46+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4826.63 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.94, 0.59
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          687 ns          687 ns      1012333
+
+bm_call::via_function_ptr__Function::set_string                698 ns          698 ns      1001974
+bm_call::via_function_ptr____Method::set_string                699 ns          699 ns      1001002
+
+bm_std::function_calls__Function::set_string                   699 ns          699 ns      1003186
+bm_std::function_calls____Method::set_string                   695 ns          695 ns      1008207
+
+bm_rtl::function_calls__Function::set_string                   698 ns          698 ns      1000755
+bm_rtl::method_calls______Method::set_string                   700 ns          700 ns      1003123
+
+bm_rtl::function__ErasedReturnType::set_string                 713 ns          713 ns       983307
+bm_rtl::method____ErasedReturnType::set_string                 705 ns          705 ns       986819
+bm_rtl::method____ErasedTargetType::set_string                 721 ns          721 ns       973763
+bm_rtl::method____ErasedTargetAndReturnType::set_string        719 ns          718 ns       972130
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          868 ns          868 ns       808143
+
+bm_call::via_function_ptr__Function::get_string                873 ns          873 ns       802283
+bm_call::via_function_ptr____Method::get_string                873 ns          873 ns       802368
+
+bm_std::function_calls__Function::get_string                   871 ns          871 ns       803251
+bm_std::function_calls____Method::get_string                   875 ns          875 ns       800165
+
+bm_rtl::function_calls__Function::get_string                   875 ns          875 ns       799948
+bm_rtl::method_calls______Method::get_string                   875 ns          875 ns       798701
+
+bm_rtl::function__ErasedReturnType::get_string                 906 ns          906 ns       772812
+bm_rtl::method____ErasedReturnType::get_string                 905 ns          905 ns       773400
+bm_rtl::method____ErasedTargetType::get_string                 896 ns          896 ns       779165
+bm_rtl::method____ErasedTargetAndReturnType::get_string        910 ns          910 ns       767525
+-----------------------------------
+[2026-01-19 22:27:04] >>> Run 1: workload scale = 40
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 40 iterations
+=============================================
+
+2026-01-19T22:27:04+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.94, 0.60
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          802 ns          802 ns       868548
+
+bm_call::via_function_ptr__Function::set_string                807 ns          807 ns       867844
+bm_call::via_function_ptr____Method::set_string                812 ns          812 ns       863363
+
+bm_std::function_calls__Function::set_string                   807 ns          807 ns       867775
+bm_std::function_calls____Method::set_string                   824 ns          824 ns       850370
+
+bm_rtl::function_calls__Function::set_string                   807 ns          807 ns       869726
+bm_rtl::method_calls______Method::set_string                   812 ns          811 ns       861708
+
+bm_rtl::function__ErasedReturnType::set_string                 820 ns          820 ns       853781
+bm_rtl::method____ErasedReturnType::set_string                 821 ns          821 ns       851633
+bm_rtl::method____ErasedTargetType::set_string                 821 ns          821 ns       853270
+bm_rtl::method____ErasedTargetAndReturnType::set_string        821 ns          821 ns       852568
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1060 ns         1060 ns       658475
+
+bm_call::via_function_ptr__Function::get_string               1065 ns         1064 ns       657487
+bm_call::via_function_ptr____Method::get_string               1064 ns         1063 ns       658536
+
+bm_std::function_calls__Function::get_string                  1065 ns         1065 ns       657326
+bm_std::function_calls____Method::get_string                  1068 ns         1068 ns       654286
+
+bm_rtl::function_calls__Function::get_string                  1065 ns         1065 ns       656003
+bm_rtl::method_calls______Method::get_string                  1064 ns         1064 ns       658205
+
+bm_rtl::function__ErasedReturnType::get_string                1094 ns         1094 ns       640286
+bm_rtl::method____ErasedReturnType::get_string                1094 ns         1094 ns       640985
+bm_rtl::method____ErasedTargetType::get_string                1087 ns         1087 ns       644549
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1101 ns         1101 ns       636794
+-----------------------------------
+[2026-01-19 22:27:21] >>> Run 2: workload scale = 40
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 40 iterations
+=============================================
+
+2026-01-19T22:27:21+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.95, 0.61
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          786 ns          786 ns       883972
+
+bm_call::via_function_ptr__Function::set_string                774 ns          774 ns       903846
+bm_call::via_function_ptr____Method::set_string                778 ns          778 ns       899190
+
+bm_std::function_calls__Function::set_string                   774 ns          774 ns       903053
+bm_std::function_calls____Method::set_string                   774 ns          773 ns       907756
+
+bm_rtl::function_calls__Function::set_string                   773 ns          773 ns       906453
+bm_rtl::method_calls______Method::set_string                   778 ns          778 ns       899327
+
+bm_rtl::function__ErasedReturnType::set_string                 780 ns          780 ns       897281
+bm_rtl::method____ErasedReturnType::set_string                 782 ns          782 ns       895546
+bm_rtl::method____ErasedTargetType::set_string                 785 ns          785 ns       890456
+bm_rtl::method____ErasedTargetAndReturnType::set_string        785 ns          785 ns       892386
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                          988 ns          988 ns       709044
+
+bm_call::via_function_ptr__Function::get_string                991 ns          991 ns       707835
+bm_call::via_function_ptr____Method::get_string                988 ns          988 ns       708817
+
+bm_std::function_calls__Function::get_string                   991 ns          991 ns       707988
+bm_std::function_calls____Method::get_string                   993 ns          992 ns       705658
+
+bm_rtl::function_calls__Function::get_string                   989 ns          989 ns       706853
+bm_rtl::method_calls______Method::get_string                   988 ns          988 ns       709751
+
+bm_rtl::function__ErasedReturnType::get_string                1016 ns         1016 ns       690073
+bm_rtl::method____ErasedReturnType::get_string                1012 ns         1012 ns       692075
+bm_rtl::method____ErasedTargetType::get_string                1012 ns         1012 ns       694173
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1015 ns         1015 ns       690549
+-----------------------------------
+[2026-01-19 22:27:39] >>> Run 3: workload scale = 40
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 40 iterations
+=============================================
+
+2026-01-19T22:27:39+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.95, 0.61
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          771 ns          771 ns       885667
+
+bm_call::via_function_ptr__Function::set_string                793 ns          793 ns       878508
+bm_call::via_function_ptr____Method::set_string                800 ns          800 ns       874309
+
+bm_std::function_calls__Function::set_string                   794 ns          794 ns       887848
+bm_std::function_calls____Method::set_string                   779 ns          778 ns       901238
+
+bm_rtl::function_calls__Function::set_string                   793 ns          792 ns       880417
+bm_rtl::method_calls______Method::set_string                   799 ns          799 ns       873660
+
+bm_rtl::function__ErasedReturnType::set_string                 786 ns          786 ns       894928
+bm_rtl::method____ErasedReturnType::set_string                 801 ns          800 ns       877038
+bm_rtl::method____ErasedTargetType::set_string                 788 ns          788 ns       887908
+bm_rtl::method____ErasedTargetAndReturnType::set_string        806 ns          806 ns       866137
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1016 ns         1016 ns       691784
+
+bm_call::via_function_ptr__Function::get_string               1000 ns         1000 ns       697377
+bm_call::via_function_ptr____Method::get_string               1000 ns         1000 ns       698055
+
+bm_std::function_calls__Function::get_string                  1001 ns         1001 ns       700875
+bm_std::function_calls____Method::get_string                  1003 ns         1003 ns       695781
+
+bm_rtl::function_calls__Function::get_string                  1001 ns         1000 ns       701247
+bm_rtl::method_calls______Method::get_string                   999 ns          999 ns       700681
+
+bm_rtl::function__ErasedReturnType::get_string                1023 ns         1023 ns       684652
+bm_rtl::method____ErasedReturnType::get_string                1022 ns         1022 ns       685580
+bm_rtl::method____ErasedTargetType::get_string                1016 ns         1016 ns       686936
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1031 ns         1031 ns       680324
+-----------------------------------
+[2026-01-19 22:27:57] >>> Run 1: workload scale = 45
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 45 iterations
+=============================================
+
+2026-01-19T22:27:57+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.95, 0.62
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          843 ns          842 ns       829422
+
+bm_call::via_function_ptr__Function::set_string                826 ns          826 ns       847271
+bm_call::via_function_ptr____Method::set_string                830 ns          830 ns       841956
+
+bm_std::function_calls__Function::set_string                   828 ns          828 ns       845355
+bm_std::function_calls____Method::set_string                   832 ns          832 ns       840493
+
+bm_rtl::function_calls__Function::set_string                   826 ns          826 ns       845523
+bm_rtl::method_calls______Method::set_string                   831 ns          831 ns       842934
+
+bm_rtl::function__ErasedReturnType::set_string                 837 ns          837 ns       835998
+bm_rtl::method____ErasedReturnType::set_string                 861 ns          861 ns       813815
+bm_rtl::method____ErasedTargetType::set_string                 845 ns          845 ns       828408
+bm_rtl::method____ErasedTargetAndReturnType::set_string        845 ns          844 ns       829014
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1061 ns         1061 ns       659854
+
+bm_call::via_function_ptr__Function::get_string               1059 ns         1059 ns       661004
+bm_call::via_function_ptr____Method::get_string               1059 ns         1058 ns       660856
+
+bm_std::function_calls__Function::get_string                  1059 ns         1059 ns       659554
+bm_std::function_calls____Method::get_string                  1065 ns         1065 ns       657328
+
+bm_rtl::function_calls__Function::get_string                  1059 ns         1059 ns       660814
+bm_rtl::method_calls______Method::get_string                  1058 ns         1058 ns       661209
+
+bm_rtl::function__ErasedReturnType::get_string                1083 ns         1083 ns       645463
+bm_rtl::method____ErasedReturnType::get_string                1083 ns         1083 ns       645790
+bm_rtl::method____ErasedTargetType::get_string                1075 ns         1075 ns       649976
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1082 ns         1082 ns       645611
+-----------------------------------
+[2026-01-19 22:28:14] >>> Run 2: workload scale = 45
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 45 iterations
+=============================================
+
+2026-01-19T22:28:14+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.96, 0.63
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          873 ns          873 ns       798150
+
+bm_call::via_function_ptr__Function::set_string                818 ns          818 ns       855496
+bm_call::via_function_ptr____Method::set_string                822 ns          822 ns       851194
+
+bm_std::function_calls__Function::set_string                   820 ns          820 ns       853680
+bm_std::function_calls____Method::set_string                   826 ns          826 ns       848997
+
+bm_rtl::function_calls__Function::set_string                   820 ns          819 ns       855357
+bm_rtl::method_calls______Method::set_string                   822 ns          822 ns       850380
+
+bm_rtl::function__ErasedReturnType::set_string                 829 ns          829 ns       843995
+bm_rtl::method____ErasedReturnType::set_string                 833 ns          833 ns       841065
+bm_rtl::method____ErasedTargetType::set_string                 835 ns          835 ns       836950
+bm_rtl::method____ErasedTargetAndReturnType::set_string        835 ns          835 ns       838849
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1106 ns         1106 ns       633211
+
+bm_call::via_function_ptr__Function::get_string               1106 ns         1106 ns       632481
+bm_call::via_function_ptr____Method::get_string               1106 ns         1105 ns       633333
+
+bm_std::function_calls__Function::get_string                  1106 ns         1106 ns       632483
+bm_std::function_calls____Method::get_string                  1114 ns         1114 ns       628515
+
+bm_rtl::function_calls__Function::get_string                  1106 ns         1106 ns       633284
+bm_rtl::method_calls______Method::get_string                  1105 ns         1105 ns       633066
+
+bm_rtl::function__ErasedReturnType::get_string                1136 ns         1136 ns       615606
+bm_rtl::method____ErasedReturnType::get_string                1134 ns         1134 ns       616323
+bm_rtl::method____ErasedTargetType::get_string                1129 ns         1129 ns       621462
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1140 ns         1139 ns       614829
+-----------------------------------
+[2026-01-19 22:28:32] >>> Run 3: workload scale = 45
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 45 iterations
+=============================================
+
+2026-01-19T22:28:32+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2371.34 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.96, 0.64
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          848 ns          848 ns       821823
+
+bm_call::via_function_ptr__Function::set_string                849 ns          849 ns       823432
+bm_call::via_function_ptr____Method::set_string                848 ns          848 ns       826357
+
+bm_std::function_calls__Function::set_string                   849 ns          849 ns       825248
+bm_std::function_calls____Method::set_string                   834 ns          834 ns       840820
+
+bm_rtl::function_calls__Function::set_string                   847 ns          847 ns       826081
+bm_rtl::method_calls______Method::set_string                   848 ns          848 ns       821829
+
+bm_rtl::function__ErasedReturnType::set_string                 868 ns          867 ns       806472
+bm_rtl::method____ErasedReturnType::set_string                 848 ns          847 ns       823741
+bm_rtl::method____ErasedTargetType::set_string                 872 ns          872 ns       802754
+bm_rtl::method____ErasedTargetAndReturnType::set_string        876 ns          876 ns       799331
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1064 ns         1064 ns       658715
+
+bm_call::via_function_ptr__Function::get_string               1066 ns         1066 ns       655833
+bm_call::via_function_ptr____Method::get_string               1066 ns         1066 ns       656046
+
+bm_std::function_calls__Function::get_string                  1067 ns         1067 ns       655205
+bm_std::function_calls____Method::get_string                  1069 ns         1068 ns       655293
+
+bm_rtl::function_calls__Function::get_string                  1066 ns         1065 ns       658227
+bm_rtl::method_calls______Method::get_string                  1065 ns         1065 ns       657248
+
+bm_rtl::function__ErasedReturnType::get_string                1088 ns         1088 ns       643258
+bm_rtl::method____ErasedReturnType::get_string                1087 ns         1087 ns       644904
+bm_rtl::method____ErasedTargetType::get_string                1078 ns         1078 ns       647611
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1078 ns         1078 ns       649254
+-----------------------------------
+[2026-01-19 22:28:50] >>> Run 1: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2026-01-19T22:28:50+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.96, 0.65
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          934 ns          934 ns       748128
+
+bm_call::via_function_ptr__Function::set_string                903 ns          903 ns       774622
+bm_call::via_function_ptr____Method::set_string                901 ns          901 ns       775359
+
+bm_std::function_calls__Function::set_string                   904 ns          904 ns       774547
+bm_std::function_calls____Method::set_string                   883 ns          883 ns       790621
+
+bm_rtl::function_calls__Function::set_string                   902 ns          902 ns       774979
+bm_rtl::method_calls______Method::set_string                   901 ns          900 ns       777221
+
+bm_rtl::function__ErasedReturnType::set_string                 919 ns          919 ns       763272
+bm_rtl::method____ErasedReturnType::set_string                 895 ns          895 ns       782345
+bm_rtl::method____ErasedTargetType::set_string                 924 ns          923 ns       759790
+bm_rtl::method____ErasedTargetAndReturnType::set_string        927 ns          927 ns       754650
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1137 ns         1137 ns       617257
+
+bm_call::via_function_ptr__Function::get_string               1139 ns         1139 ns       614025
+bm_call::via_function_ptr____Method::get_string               1137 ns         1137 ns       615042
+
+bm_std::function_calls__Function::get_string                  1134 ns         1134 ns       617301
+bm_std::function_calls____Method::get_string                  1141 ns         1141 ns       614301
+
+bm_rtl::function_calls__Function::get_string                  1135 ns         1134 ns       617395
+bm_rtl::method_calls______Method::get_string                  1137 ns         1137 ns       616732
+
+bm_rtl::function__ErasedReturnType::get_string                1162 ns         1162 ns       601555
+bm_rtl::method____ErasedReturnType::get_string                1163 ns         1163 ns       602718
+bm_rtl::method____ErasedTargetType::get_string                1214 ns         1214 ns       577226
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1200 ns         1199 ns       572903
+-----------------------------------
+[2026-01-19 22:29:08] >>> Run 2: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2026-01-19T22:29:08+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 4884.6 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.97, 0.65
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          948 ns          948 ns       735867
+
+bm_call::via_function_ptr__Function::set_string                874 ns          874 ns       801342
+bm_call::via_function_ptr____Method::set_string                876 ns          876 ns       799863
+
+bm_std::function_calls__Function::set_string                   875 ns          875 ns       798701
+bm_std::function_calls____Method::set_string                   885 ns          885 ns       792333
+
+bm_rtl::function_calls__Function::set_string                   874 ns          874 ns       800998
+bm_rtl::method_calls______Method::set_string                   876 ns          875 ns       798915
+
+bm_rtl::function__ErasedReturnType::set_string                 888 ns          888 ns       789682
+bm_rtl::method____ErasedReturnType::set_string                 888 ns          888 ns       788441
+bm_rtl::method____ErasedTargetType::set_string                 894 ns          894 ns       783465
+bm_rtl::method____ErasedTargetAndReturnType::set_string        898 ns          898 ns       779245
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1134 ns         1134 ns       618460
+
+bm_call::via_function_ptr__Function::get_string               1135 ns         1135 ns       615819
+bm_call::via_function_ptr____Method::get_string               1133 ns         1132 ns       614053
+
+bm_std::function_calls__Function::get_string                  1133 ns         1133 ns       616594
+bm_std::function_calls____Method::get_string                  1139 ns         1139 ns       614250
+
+bm_rtl::function_calls__Function::get_string                  1133 ns         1133 ns       616500
+bm_rtl::method_calls______Method::get_string                  1134 ns         1134 ns       618471
+
+bm_rtl::function__ErasedReturnType::get_string                1161 ns         1161 ns       603369
+bm_rtl::method____ErasedReturnType::get_string                1159 ns         1159 ns       603518
+bm_rtl::method____ErasedTargetType::get_string                1154 ns         1154 ns       607749
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1166 ns         1166 ns       598245
+-----------------------------------
+[2026-01-19 22:29:26] >>> Run 3: workload scale = 50
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 50 iterations
+=============================================
+
+2026-01-19T22:29:26+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.97, 0.66
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                          939 ns          939 ns       742183
+
+bm_call::via_function_ptr__Function::set_string                881 ns          881 ns       795159
+bm_call::via_function_ptr____Method::set_string                881 ns          881 ns       794504
+
+bm_std::function_calls__Function::set_string                   882 ns          882 ns       793816
+bm_std::function_calls____Method::set_string                   882 ns          882 ns       794659
+
+bm_rtl::function_calls__Function::set_string                   881 ns          881 ns       795593
+bm_rtl::method_calls______Method::set_string                   881 ns          881 ns       793528
+
+bm_rtl::function__ErasedReturnType::set_string                 891 ns          891 ns       785351
+bm_rtl::method____ErasedReturnType::set_string                 911 ns          910 ns       770850
+bm_rtl::method____ErasedTargetType::set_string                 895 ns          895 ns       780967
+bm_rtl::method____ErasedTargetAndReturnType::set_string        899 ns          899 ns       779662
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1198 ns         1198 ns       584557
+
+bm_call::via_function_ptr__Function::get_string               1202 ns         1202 ns       583020
+bm_call::via_function_ptr____Method::get_string               1199 ns         1199 ns       583407
+
+bm_std::function_calls__Function::get_string                  1199 ns         1199 ns       583877
+bm_std::function_calls____Method::get_string                  1197 ns         1197 ns       584932
+
+bm_rtl::function_calls__Function::get_string                  1199 ns         1199 ns       584180
+bm_rtl::method_calls______Method::get_string                  1200 ns         1200 ns       583120
+
+bm_rtl::function__ErasedReturnType::get_string                1217 ns         1217 ns       574509
+bm_rtl::method____ErasedReturnType::get_string                1218 ns         1218 ns       573906
+bm_rtl::method____ErasedTargetType::get_string                1210 ns         1210 ns       579508
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1219 ns         1219 ns       575157
+-----------------------------------
+[2026-01-19 22:29:44] >>> Run 1: workload scale = 58
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 58 iterations
+=============================================
+
+2026-01-19T22:29:44+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 0.97, 0.67
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1035 ns         1035 ns       674729
+
+bm_call::via_function_ptr__Function::set_string               1008 ns         1008 ns       693696
+bm_call::via_function_ptr____Method::set_string               1006 ns         1006 ns       696133
+
+bm_std::function_calls__Function::set_string                  1008 ns         1008 ns       694435
+bm_std::function_calls____Method::set_string                  1032 ns         1032 ns       677461
+
+bm_rtl::function_calls__Function::set_string                  1008 ns         1008 ns       695440
+bm_rtl::method_calls______Method::set_string                  1006 ns         1006 ns       695446
+
+bm_rtl::function__ErasedReturnType::set_string                1017 ns         1017 ns       688023
+bm_rtl::method____ErasedReturnType::set_string                1021 ns         1021 ns       684886
+bm_rtl::method____ErasedTargetType::set_string                1022 ns         1022 ns       685121
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1023 ns         1023 ns       685964
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1283 ns         1283 ns       545681
+
+bm_call::via_function_ptr__Function::get_string               1289 ns         1289 ns       543451
+bm_call::via_function_ptr____Method::get_string               1289 ns         1289 ns       543536
+
+bm_std::function_calls__Function::get_string                  1289 ns         1289 ns       543144
+bm_std::function_calls____Method::get_string                  1289 ns         1289 ns       542843
+
+bm_rtl::function_calls__Function::get_string                  1289 ns         1289 ns       543220
+bm_rtl::method_calls______Method::get_string                  1288 ns         1288 ns       543490
+
+bm_rtl::function__ErasedReturnType::get_string                1310 ns         1310 ns       534100
+bm_rtl::method____ErasedReturnType::get_string                1310 ns         1310 ns       534021
+bm_rtl::method____ErasedTargetType::get_string                1300 ns         1300 ns       537670
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1314 ns         1314 ns       532015
+-----------------------------------
+[2026-01-19 22:30:02] >>> Run 2: workload scale = 58
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 58 iterations
+=============================================
+
+2026-01-19T22:30:02+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.07, 0.99, 0.68
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1032 ns         1032 ns       678112
+
+bm_call::via_function_ptr__Function::set_string                996 ns          995 ns       702900
+bm_call::via_function_ptr____Method::set_string                994 ns          994 ns       706621
+
+bm_std::function_calls__Function::set_string                   997 ns          997 ns       702773
+bm_std::function_calls____Method::set_string                  1018 ns         1018 ns       687379
+
+bm_rtl::function_calls__Function::set_string                   996 ns          996 ns       704180
+bm_rtl::method_calls______Method::set_string                   994 ns          994 ns       704523
+
+bm_rtl::function__ErasedReturnType::set_string                1009 ns         1009 ns       694404
+bm_rtl::method____ErasedReturnType::set_string                1011 ns         1011 ns       692029
+bm_rtl::method____ErasedTargetType::set_string                1011 ns         1011 ns       691866
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1015 ns         1015 ns       689500
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1289 ns         1289 ns       542977
+
+bm_call::via_function_ptr__Function::get_string               1293 ns         1293 ns       540961
+bm_call::via_function_ptr____Method::get_string               1292 ns         1292 ns       541764
+
+bm_std::function_calls__Function::get_string                  1294 ns         1294 ns       540441
+bm_std::function_calls____Method::get_string                  1296 ns         1296 ns       540693
+
+bm_rtl::function_calls__Function::get_string                  1294 ns         1294 ns       540763
+bm_rtl::method_calls______Method::get_string                  1293 ns         1293 ns       542121
+
+bm_rtl::function__ErasedReturnType::get_string                1314 ns         1314 ns       532124
+bm_rtl::method____ErasedReturnType::get_string                1312 ns         1312 ns       533500
+bm_rtl::method____ErasedTargetType::get_string                1305 ns         1305 ns       536094
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1316 ns         1316 ns       531529
+-----------------------------------
+[2026-01-19 22:30:20] >>> Run 3: workload scale = 58
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 58 iterations
+=============================================
+
+2026-01-19T22:30:20+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.06, 0.99, 0.69
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1034 ns         1034 ns       675093
+
+bm_call::via_function_ptr__Function::set_string               1003 ns         1003 ns       697584
+bm_call::via_function_ptr____Method::set_string               1002 ns         1002 ns       697925
+
+bm_std::function_calls__Function::set_string                  1004 ns         1004 ns       696678
+bm_std::function_calls____Method::set_string                  1007 ns         1007 ns       693877
+
+bm_rtl::function_calls__Function::set_string                  1004 ns         1004 ns       697377
+bm_rtl::method_calls______Method::set_string                  1003 ns         1003 ns       698516
+
+bm_rtl::function__ErasedReturnType::set_string                1018 ns         1018 ns       687788
+bm_rtl::method____ErasedReturnType::set_string                1034 ns         1034 ns       677095
+bm_rtl::method____ErasedTargetType::set_string                1020 ns         1020 ns       686724
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1026 ns         1026 ns       681885
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1365 ns         1365 ns       512813
+
+bm_call::via_function_ptr__Function::get_string               1366 ns         1366 ns       512341
+bm_call::via_function_ptr____Method::get_string               1365 ns         1365 ns       512596
+
+bm_std::function_calls__Function::get_string                  1366 ns         1366 ns       512693
+bm_std::function_calls____Method::get_string                  1368 ns         1368 ns       511225
+
+bm_rtl::function_calls__Function::get_string                  1366 ns         1366 ns       512277
+bm_rtl::method_calls______Method::get_string                  1364 ns         1364 ns       512854
+
+bm_rtl::function__ErasedReturnType::get_string                1388 ns         1388 ns       504445
+bm_rtl::method____ErasedReturnType::get_string                1387 ns         1387 ns       505198
+bm_rtl::method____ErasedTargetType::get_string                1379 ns         1379 ns       507994
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1392 ns         1392 ns       502637
+-----------------------------------
+[2026-01-19 22:30:38] >>> Run 1: workload scale = 66
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 66 iterations
+=============================================
+
+2026-01-19T22:30:38+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.04, 0.99, 0.69
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1636 ns         1636 ns       427486
+
+bm_call::via_function_ptr__Function::set_string               1628 ns         1628 ns       430101
+bm_call::via_function_ptr____Method::set_string               1629 ns         1629 ns       430065
+
+bm_std::function_calls__Function::set_string                  1628 ns         1628 ns       429723
+bm_std::function_calls____Method::set_string                  1649 ns         1649 ns       424517
+
+bm_rtl::function_calls__Function::set_string                  1627 ns         1627 ns       430133
+bm_rtl::method_calls______Method::set_string                  1628 ns         1628 ns       430349
+
+bm_rtl::function__ErasedReturnType::set_string                1640 ns         1640 ns       427551
+bm_rtl::method____ErasedReturnType::set_string                1646 ns         1646 ns       425782
+bm_rtl::method____ErasedTargetType::set_string                1646 ns         1646 ns       425327
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1655 ns         1655 ns       423077
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1990 ns         1990 ns       351983
+
+bm_call::via_function_ptr__Function::get_string               1992 ns         1992 ns       351406
+bm_call::via_function_ptr____Method::get_string               1992 ns         1992 ns       351688
+
+bm_std::function_calls__Function::get_string                  1993 ns         1993 ns       351092
+bm_std::function_calls____Method::get_string                  1997 ns         1997 ns       350755
+
+bm_rtl::function_calls__Function::get_string                  1994 ns         1993 ns       350789
+bm_rtl::method_calls______Method::get_string                  1991 ns         1990 ns       351526
+
+bm_rtl::function__ErasedReturnType::get_string                2012 ns         2012 ns       348023
+bm_rtl::method____ErasedReturnType::get_string                2014 ns         2014 ns       347409
+bm_rtl::method____ErasedTargetType::get_string                2006 ns         2006 ns       349290
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2017 ns         2017 ns       347043
+-----------------------------------
+[2026-01-19 22:30:58] >>> Run 2: workload scale = 66
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 66 iterations
+=============================================
+
+2026-01-19T22:30:58+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.03, 1.00, 0.70
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1633 ns         1632 ns       428557
+
+bm_call::via_function_ptr__Function::set_string               1638 ns         1638 ns       427508
+bm_call::via_function_ptr____Method::set_string               1637 ns         1637 ns       427652
+
+bm_std::function_calls__Function::set_string                  1639 ns         1639 ns       424126
+bm_std::function_calls____Method::set_string                  1655 ns         1654 ns       423338
+
+bm_rtl::function_calls__Function::set_string                  1640 ns         1640 ns       427633
+bm_rtl::method_calls______Method::set_string                  1637 ns         1637 ns       427542
+
+bm_rtl::function__ErasedReturnType::set_string                1651 ns         1651 ns       424262
+bm_rtl::method____ErasedReturnType::set_string                1654 ns         1654 ns       423134
+bm_rtl::method____ErasedTargetType::set_string                1653 ns         1653 ns       424141
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1655 ns         1655 ns       423152
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1929 ns         1929 ns       363024
+
+bm_call::via_function_ptr__Function::get_string               1930 ns         1930 ns       360634
+bm_call::via_function_ptr____Method::get_string               1928 ns         1927 ns       363245
+
+bm_std::function_calls__Function::get_string                  1934 ns         1934 ns       362508
+bm_std::function_calls____Method::get_string                  1933 ns         1933 ns       362322
+
+bm_rtl::function_calls__Function::get_string                  1933 ns         1933 ns       362483
+bm_rtl::method_calls______Method::get_string                  1927 ns         1927 ns       362975
+
+bm_rtl::function__ErasedReturnType::get_string                1955 ns         1955 ns       358477
+bm_rtl::method____ErasedReturnType::get_string                1954 ns         1954 ns       358280
+bm_rtl::method____ErasedTargetType::get_string                1948 ns         1948 ns       359867
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1956 ns         1955 ns       357971
+-----------------------------------
+[2026-01-19 22:31:18] >>> Run 3: workload scale = 66
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 66 iterations
+=============================================
+
+2026-01-19T22:31:18+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.02, 1.00, 0.71
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1645 ns         1644 ns       425112
+
+bm_call::via_function_ptr__Function::set_string               1637 ns         1637 ns       426452
+bm_call::via_function_ptr____Method::set_string               1634 ns         1634 ns       428366
+
+bm_std::function_calls__Function::set_string                  1638 ns         1638 ns       428140
+bm_std::function_calls____Method::set_string                  1643 ns         1643 ns       426062
+
+bm_rtl::function_calls__Function::set_string                  1637 ns         1636 ns       427885
+bm_rtl::method_calls______Method::set_string                  1627 ns         1627 ns       430136
+
+bm_rtl::function__ErasedReturnType::set_string                1649 ns         1649 ns       424893
+bm_rtl::method____ErasedReturnType::set_string                1654 ns         1654 ns       420943
+bm_rtl::method____ErasedTargetType::set_string                1647 ns         1647 ns       424746
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1652 ns         1652 ns       424812
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         1924 ns         1924 ns       363906
+
+bm_call::via_function_ptr__Function::get_string               1928 ns         1928 ns       363891
+bm_call::via_function_ptr____Method::get_string               1923 ns         1923 ns       364281
+
+bm_std::function_calls__Function::get_string                  1928 ns         1928 ns       363618
+bm_std::function_calls____Method::get_string                  1927 ns         1927 ns       362893
+
+bm_rtl::function_calls__Function::get_string                  1928 ns         1928 ns       363817
+bm_rtl::method_calls______Method::get_string                  1923 ns         1923 ns       363994
+
+bm_rtl::function__ErasedReturnType::get_string                1949 ns         1948 ns       359235
+bm_rtl::method____ErasedReturnType::get_string                1949 ns         1949 ns       357588
+bm_rtl::method____ErasedTargetType::get_string                1942 ns         1942 ns       360625
+bm_rtl::method____ErasedTargetAndReturnType::get_string       1951 ns         1951 ns       359255
+-----------------------------------
+[2026-01-19 22:31:38] >>> Run 1: workload scale = 74
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 74 iterations
+=============================================
+
+2026-01-19T22:31:38+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.01, 1.00, 0.72
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1704 ns         1704 ns       410694
+
+bm_call::via_function_ptr__Function::set_string               1719 ns         1718 ns       407996
+bm_call::via_function_ptr____Method::set_string               1716 ns         1716 ns       407893
+
+bm_std::function_calls__Function::set_string                  1719 ns         1719 ns       407912
+bm_std::function_calls____Method::set_string                  1725 ns         1725 ns       405488
+
+bm_rtl::function_calls__Function::set_string                  1715 ns         1715 ns       407851
+bm_rtl::method_calls______Method::set_string                  1717 ns         1716 ns       405912
+
+bm_rtl::function__ErasedReturnType::set_string                1729 ns         1729 ns       405040
+bm_rtl::method____ErasedReturnType::set_string                1749 ns         1749 ns       400776
+bm_rtl::method____ErasedTargetType::set_string                1731 ns         1731 ns       404458
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1742 ns         1741 ns       402397
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2149 ns         2148 ns       325819
+
+bm_call::via_function_ptr__Function::get_string               2155 ns         2155 ns       325341
+bm_call::via_function_ptr____Method::get_string               2152 ns         2151 ns       325266
+
+bm_std::function_calls__Function::get_string                  2155 ns         2155 ns       324846
+bm_std::function_calls____Method::get_string                  2158 ns         2158 ns       324258
+
+bm_rtl::function_calls__Function::get_string                  2152 ns         2152 ns       325164
+bm_rtl::method_calls______Method::get_string                  2151 ns         2151 ns       323536
+
+bm_rtl::function__ErasedReturnType::get_string                2180 ns         2180 ns       321132
+bm_rtl::method____ErasedReturnType::get_string                2184 ns         2184 ns       320612
+bm_rtl::method____ErasedTargetType::get_string                2170 ns         2170 ns       322408
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2191 ns         2191 ns       320089
+-----------------------------------
+[2026-01-19 22:31:58] >>> Run 2: workload scale = 74
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 74 iterations
+=============================================
+
+2026-01-19T22:31:58+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.01, 1.00, 0.73
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1687 ns         1687 ns       414957
+
+bm_call::via_function_ptr__Function::set_string               1692 ns         1692 ns       414692
+bm_call::via_function_ptr____Method::set_string               1690 ns         1690 ns       414379
+
+bm_std::function_calls__Function::set_string                  1692 ns         1692 ns       414244
+bm_std::function_calls____Method::set_string                  1697 ns         1697 ns       412772
+
+bm_rtl::function_calls__Function::set_string                  1689 ns         1688 ns       414394
+bm_rtl::method_calls______Method::set_string                  1691 ns         1690 ns       410590
+
+bm_rtl::function__ErasedReturnType::set_string                1700 ns         1699 ns       412056
+bm_rtl::method____ErasedReturnType::set_string                1723 ns         1722 ns       406836
+bm_rtl::method____ErasedTargetType::set_string                1700 ns         1700 ns       411498
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1704 ns         1704 ns       411937
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2042 ns         2042 ns       342973
+
+bm_call::via_function_ptr__Function::get_string               2047 ns         2046 ns       341626
+bm_call::via_function_ptr____Method::get_string               2048 ns         2048 ns       341905
+
+bm_std::function_calls__Function::get_string                  2047 ns         2047 ns       341688
+bm_std::function_calls____Method::get_string                  2049 ns         2049 ns       341249
+
+bm_rtl::function_calls__Function::get_string                  2047 ns         2046 ns       342026
+bm_rtl::method_calls______Method::get_string                  2047 ns         2047 ns       340194
+
+bm_rtl::function__ErasedReturnType::get_string                2071 ns         2071 ns       338168
+bm_rtl::method____ErasedReturnType::get_string                2070 ns         2070 ns       338474
+bm_rtl::method____ErasedTargetType::get_string                2065 ns         2065 ns       339303
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2075 ns         2075 ns       337545
+-----------------------------------
+[2026-01-19 22:32:18] >>> Run 3: workload scale = 74
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 74 iterations
+=============================================
+
+2026-01-19T22:32:18+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.73
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1713 ns         1713 ns       408838
+
+bm_call::via_function_ptr__Function::set_string               1737 ns         1737 ns       402892
+bm_call::via_function_ptr____Method::set_string               1736 ns         1736 ns       403689
+
+bm_std::function_calls__Function::set_string                  1738 ns         1738 ns       403157
+bm_std::function_calls____Method::set_string                  1757 ns         1757 ns       394167
+
+bm_rtl::function_calls__Function::set_string                  1736 ns         1736 ns       403487
+bm_rtl::method_calls______Method::set_string                  1738 ns         1738 ns       403093
+
+bm_rtl::function__ErasedReturnType::set_string                1718 ns         1718 ns       407569
+bm_rtl::method____ErasedReturnType::set_string                1728 ns         1728 ns       405368
+bm_rtl::method____ErasedTargetType::set_string                1709 ns         1709 ns       409316
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1722 ns         1722 ns       406715
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2169 ns         2169 ns       322266
+
+bm_call::via_function_ptr__Function::get_string               2173 ns         2173 ns       322587
+bm_call::via_function_ptr____Method::get_string               2174 ns         2173 ns       321966
+
+bm_std::function_calls__Function::get_string                  2174 ns         2174 ns       321859
+bm_std::function_calls____Method::get_string                  2190 ns         2190 ns       319040
+
+bm_rtl::function_calls__Function::get_string                  2174 ns         2174 ns       321952
+bm_rtl::method_calls______Method::get_string                  2174 ns         2174 ns       322166
+
+bm_rtl::function__ErasedReturnType::get_string                2154 ns         2154 ns       324962
+bm_rtl::method____ErasedReturnType::get_string                2156 ns         2156 ns       324748
+bm_rtl::method____ErasedTargetType::get_string                2144 ns         2144 ns       326407
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2163 ns         2163 ns       323836
+-----------------------------------
+[2026-01-19 22:32:38] >>> Run 1: workload scale = 82
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 82 iterations
+=============================================
+
+2026-01-19T22:32:38+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.74
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1789 ns         1789 ns       391131
+
+bm_call::via_function_ptr__Function::set_string               1763 ns         1763 ns       397562
+bm_call::via_function_ptr____Method::set_string               1761 ns         1760 ns       397612
+
+bm_std::function_calls__Function::set_string                  1761 ns         1761 ns       397459
+bm_std::function_calls____Method::set_string                  1766 ns         1765 ns       395213
+
+bm_rtl::function_calls__Function::set_string                  1761 ns         1761 ns       397571
+bm_rtl::method_calls______Method::set_string                  1765 ns         1764 ns       397363
+
+bm_rtl::function__ErasedReturnType::set_string                1769 ns         1769 ns       395691
+bm_rtl::method____ErasedReturnType::set_string                1771 ns         1771 ns       395643
+bm_rtl::method____ErasedTargetType::set_string                1770 ns         1770 ns       395133
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1774 ns         1774 ns       395280
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2245 ns         2244 ns       311980
+
+bm_call::via_function_ptr__Function::get_string               2248 ns         2248 ns       312148
+bm_call::via_function_ptr____Method::get_string               2246 ns         2246 ns       311894
+
+bm_std::function_calls__Function::get_string                  2246 ns         2246 ns       311496
+bm_std::function_calls____Method::get_string                  2262 ns         2261 ns       309168
+
+bm_rtl::function_calls__Function::get_string                  2244 ns         2244 ns       311773
+bm_rtl::method_calls______Method::get_string                  2248 ns         2248 ns       310230
+
+bm_rtl::function__ErasedReturnType::get_string                2282 ns         2282 ns       306813
+bm_rtl::method____ErasedReturnType::get_string                2290 ns         2290 ns       305848
+bm_rtl::method____ErasedTargetType::get_string                2274 ns         2274 ns       307761
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2290 ns         2290 ns       305896
+-----------------------------------
+[2026-01-19 22:32:59] >>> Run 2: workload scale = 82
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 82 iterations
+=============================================
+
+2026-01-19T22:32:59+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.74
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1778 ns         1778 ns       393210
+
+bm_call::via_function_ptr__Function::set_string               1748 ns         1748 ns       399918
+bm_call::via_function_ptr____Method::set_string               1747 ns         1747 ns       400516
+
+bm_std::function_calls__Function::set_string                  1750 ns         1750 ns       400672
+bm_std::function_calls____Method::set_string                  1755 ns         1755 ns       398944
+
+bm_rtl::function_calls__Function::set_string                  1750 ns         1750 ns       400631
+bm_rtl::method_calls______Method::set_string                  1749 ns         1749 ns       399395
+
+bm_rtl::function__ErasedReturnType::set_string                1760 ns         1760 ns       397764
+bm_rtl::method____ErasedReturnType::set_string                1760 ns         1760 ns       397768
+bm_rtl::method____ErasedTargetType::set_string                1762 ns         1762 ns       397246
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1763 ns         1763 ns       397178
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2151 ns         2151 ns       325324
+
+bm_call::via_function_ptr__Function::get_string               2149 ns         2148 ns       325850
+bm_call::via_function_ptr____Method::get_string               2148 ns         2148 ns       326230
+
+bm_std::function_calls__Function::get_string                  2149 ns         2149 ns       326263
+bm_std::function_calls____Method::get_string                  2162 ns         2162 ns       323736
+
+bm_rtl::function_calls__Function::get_string                  2147 ns         2147 ns       325662
+bm_rtl::method_calls______Method::get_string                  2147 ns         2147 ns       325369
+
+bm_rtl::function__ErasedReturnType::get_string                2176 ns         2176 ns       322001
+bm_rtl::method____ErasedReturnType::get_string                2180 ns         2180 ns       320718
+bm_rtl::method____ErasedTargetType::get_string                2168 ns         2168 ns       322879
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2179 ns         2179 ns       321455
+-----------------------------------
+[2026-01-19 22:33:19] >>> Run 3: workload scale = 82
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 82 iterations
+=============================================
+
+2026-01-19T22:33:19+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.75
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1789 ns         1789 ns       391009
+
+bm_call::via_function_ptr__Function::set_string               1774 ns         1773 ns       395022
+bm_call::via_function_ptr____Method::set_string               1773 ns         1773 ns       394648
+
+bm_std::function_calls__Function::set_string                  1774 ns         1774 ns       394608
+bm_std::function_calls____Method::set_string                  1776 ns         1776 ns       394117
+
+bm_rtl::function_calls__Function::set_string                  1773 ns         1773 ns       394842
+bm_rtl::method_calls______Method::set_string                  1773 ns         1773 ns       393793
+
+bm_rtl::function__ErasedReturnType::set_string                1783 ns         1782 ns       392453
+bm_rtl::method____ErasedReturnType::set_string                1781 ns         1781 ns       393171
+bm_rtl::method____ErasedTargetType::set_string                1784 ns         1784 ns       392212
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1784 ns         1784 ns       392357
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2259 ns         2259 ns       309811
+
+bm_call::via_function_ptr__Function::get_string               2262 ns         2262 ns       309475
+bm_call::via_function_ptr____Method::get_string               2261 ns         2261 ns       309595
+
+bm_std::function_calls__Function::get_string                  2263 ns         2263 ns       309747
+bm_std::function_calls____Method::get_string                  2275 ns         2275 ns       307808
+
+bm_rtl::function_calls__Function::get_string                  2265 ns         2265 ns       309079
+bm_rtl::method_calls______Method::get_string                  2262 ns         2262 ns       309463
+
+bm_rtl::function__ErasedReturnType::get_string                2302 ns         2302 ns       304220
+bm_rtl::method____ErasedReturnType::get_string                2303 ns         2303 ns       303903
+bm_rtl::method____ErasedTargetType::get_string                2286 ns         2286 ns       306033
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2299 ns         2299 ns       303954
+-----------------------------------
+[2026-01-19 22:33:39] >>> Run 1: workload scale = 90
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 90 iterations
+=============================================
+
+2026-01-19T22:33:39+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.76
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1861 ns         1860 ns       375999
+
+bm_call::via_function_ptr__Function::set_string               1835 ns         1835 ns       382030
+bm_call::via_function_ptr____Method::set_string               1834 ns         1834 ns       381859
+
+bm_std::function_calls__Function::set_string                  1836 ns         1836 ns       381565
+bm_std::function_calls____Method::set_string                  1840 ns         1840 ns       380541
+
+bm_rtl::function_calls__Function::set_string                  1836 ns         1835 ns       381728
+bm_rtl::method_calls______Method::set_string                  1834 ns         1834 ns       381897
+
+bm_rtl::function__ErasedReturnType::set_string                1847 ns         1847 ns       379564
+bm_rtl::method____ErasedReturnType::set_string                1873 ns         1873 ns       373534
+bm_rtl::method____ErasedTargetType::set_string                1847 ns         1847 ns       379013
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1846 ns         1846 ns       377722
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2372 ns         2371 ns       295210
+
+bm_call::via_function_ptr__Function::get_string               2375 ns         2374 ns       295181
+bm_call::via_function_ptr____Method::get_string               2371 ns         2371 ns       295161
+
+bm_std::function_calls__Function::get_string                  2373 ns         2373 ns       295444
+bm_std::function_calls____Method::get_string                  2375 ns         2374 ns       294851
+
+bm_rtl::function_calls__Function::get_string                  2375 ns         2375 ns       295197
+bm_rtl::method_calls______Method::get_string                  2371 ns         2370 ns       295144
+
+bm_rtl::function__ErasedReturnType::get_string                2402 ns         2402 ns       291878
+bm_rtl::method____ErasedReturnType::get_string                2401 ns         2401 ns       291746
+bm_rtl::method____ErasedTargetType::get_string                2394 ns         2394 ns       292974
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2405 ns         2405 ns       291092
+-----------------------------------
+[2026-01-19 22:34:00] >>> Run 2: workload scale = 90
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 90 iterations
+=============================================
+
+2026-01-19T22:34:00+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.76
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1849 ns         1849 ns       378261
+
+bm_call::via_function_ptr__Function::set_string               1823 ns         1823 ns       383390
+bm_call::via_function_ptr____Method::set_string               1826 ns         1826 ns       383423
+
+bm_std::function_calls__Function::set_string                  1826 ns         1826 ns       383591
+bm_std::function_calls____Method::set_string                  1831 ns         1831 ns       381967
+
+bm_rtl::function_calls__Function::set_string                  1825 ns         1825 ns       383713
+bm_rtl::method_calls______Method::set_string                  1827 ns         1826 ns       383181
+
+bm_rtl::function__ErasedReturnType::set_string                1834 ns         1834 ns       381783
+bm_rtl::method____ErasedReturnType::set_string                1864 ns         1864 ns       375810
+bm_rtl::method____ErasedTargetType::set_string                1837 ns         1837 ns       380838
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1836 ns         1836 ns       381270
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2263 ns         2263 ns       309522
+
+bm_call::via_function_ptr__Function::get_string               2263 ns         2263 ns       309279
+bm_call::via_function_ptr____Method::get_string               2264 ns         2263 ns       309468
+
+bm_std::function_calls__Function::get_string                  2264 ns         2264 ns       308991
+bm_std::function_calls____Method::get_string                  2268 ns         2268 ns       308743
+
+bm_rtl::function_calls__Function::get_string                  2264 ns         2263 ns       309197
+bm_rtl::method_calls______Method::get_string                  2263 ns         2263 ns       309007
+
+bm_rtl::function__ErasedReturnType::get_string                2293 ns         2293 ns       305398
+bm_rtl::method____ErasedReturnType::get_string                2295 ns         2294 ns       305011
+bm_rtl::method____ErasedTargetType::get_string                2282 ns         2282 ns       306678
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2293 ns         2292 ns       305219
+-----------------------------------
+[2026-01-19 22:34:20] >>> Run 3: workload scale = 90
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 90 iterations
+=============================================
+
+2026-01-19T22:34:20+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.77
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1848 ns         1847 ns       379051
+
+bm_call::via_function_ptr__Function::set_string               1834 ns         1834 ns       381757
+bm_call::via_function_ptr____Method::set_string               1840 ns         1840 ns       380947
+
+bm_std::function_calls__Function::set_string                  1836 ns         1835 ns       381485
+bm_std::function_calls____Method::set_string                  1868 ns         1868 ns       375302
+
+bm_rtl::function_calls__Function::set_string                  1834 ns         1834 ns       381787
+bm_rtl::method_calls______Method::set_string                  1837 ns         1836 ns       381079
+
+bm_rtl::function__ErasedReturnType::set_string                1845 ns         1844 ns       379011
+bm_rtl::method____ErasedReturnType::set_string                1846 ns         1846 ns       379197
+bm_rtl::method____ErasedTargetType::set_string                1848 ns         1848 ns       379779
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1848 ns         1847 ns       379216
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2293 ns         2292 ns       305828
+
+bm_call::via_function_ptr__Function::get_string               2290 ns         2290 ns       305261
+bm_call::via_function_ptr____Method::get_string               2296 ns         2296 ns       305268
+
+bm_std::function_calls__Function::get_string                  2293 ns         2293 ns       305575
+bm_std::function_calls____Method::get_string                  2302 ns         2302 ns       304368
+
+bm_rtl::function_calls__Function::get_string                  2291 ns         2290 ns       305721
+bm_rtl::method_calls______Method::get_string                  2295 ns         2295 ns       305440
+
+bm_rtl::function__ErasedReturnType::get_string                2322 ns         2322 ns       301402
+bm_rtl::method____ErasedReturnType::get_string                2325 ns         2325 ns       300979
+bm_rtl::method____ErasedTargetType::get_string                2313 ns         2313 ns       301214
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2321 ns         2321 ns       301863
+-----------------------------------
+[2026-01-19 22:34:41] >>> Run 1: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2026-01-19T22:34:41+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.77
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1997 ns         1997 ns       348547
+
+bm_call::via_function_ptr__Function::set_string               1990 ns         1990 ns       352058
+bm_call::via_function_ptr____Method::set_string               1990 ns         1990 ns       351866
+
+bm_std::function_calls__Function::set_string                  1989 ns         1989 ns       351920
+bm_std::function_calls____Method::set_string                  1954 ns         1954 ns       358559
+
+bm_rtl::function_calls__Function::set_string                  1989 ns         1989 ns       352081
+bm_rtl::method_calls______Method::set_string                  1992 ns         1992 ns       351760
+
+bm_rtl::function__ErasedReturnType::set_string                1963 ns         1962 ns       357063
+bm_rtl::method____ErasedReturnType::set_string                1960 ns         1960 ns       357847
+bm_rtl::method____ErasedTargetType::set_string                1946 ns         1946 ns       359612
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1962 ns         1961 ns       356847
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2504 ns         2504 ns       278402
+
+bm_call::via_function_ptr__Function::get_string               2501 ns         2501 ns       279911
+bm_call::via_function_ptr____Method::get_string               2502 ns         2502 ns       279036
+
+bm_std::function_calls__Function::get_string                  2500 ns         2499 ns       280151
+bm_std::function_calls____Method::get_string                  2459 ns         2458 ns       283683
+
+bm_rtl::function_calls__Function::get_string                  2501 ns         2501 ns       279874
+bm_rtl::method_calls______Method::get_string                  2504 ns         2504 ns       279888
+
+bm_rtl::function__ErasedReturnType::get_string                2482 ns         2481 ns       282147
+bm_rtl::method____ErasedReturnType::get_string                2485 ns         2485 ns       282054
+bm_rtl::method____ErasedTargetType::get_string                2467 ns         2467 ns       283637
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2488 ns         2487 ns       281941
+-----------------------------------
+[2026-01-19 22:35:01] >>> Run 2: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2026-01-19T22:35:01+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.00, 1.00, 0.78
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1947 ns         1947 ns       359187
+
+bm_call::via_function_ptr__Function::set_string               1938 ns         1938 ns       361868
+bm_call::via_function_ptr____Method::set_string               1935 ns         1935 ns       361960
+
+bm_std::function_calls__Function::set_string                  1937 ns         1936 ns       361911
+bm_std::function_calls____Method::set_string                  1944 ns         1943 ns       360138
+
+bm_rtl::function_calls__Function::set_string                  1934 ns         1934 ns       361967
+bm_rtl::method_calls______Method::set_string                  1935 ns         1935 ns       360915
+
+bm_rtl::function__ErasedReturnType::set_string                1945 ns         1945 ns       360218
+bm_rtl::method____ErasedReturnType::set_string                1942 ns         1942 ns       358792
+bm_rtl::method____ErasedTargetType::set_string                1947 ns         1946 ns       359434
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1949 ns         1949 ns       359796
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2451 ns         2450 ns       285493
+
+bm_call::via_function_ptr__Function::get_string               2453 ns         2453 ns       285744
+bm_call::via_function_ptr____Method::get_string               2451 ns         2451 ns       285759
+
+bm_std::function_calls__Function::get_string                  2456 ns         2455 ns       285718
+bm_std::function_calls____Method::get_string                  2469 ns         2469 ns       283176
+
+bm_rtl::function_calls__Function::get_string                  2456 ns         2456 ns       285646
+bm_rtl::method_calls______Method::get_string                  2451 ns         2451 ns       285771
+
+bm_rtl::function__ErasedReturnType::get_string                2500 ns         2500 ns       281548
+bm_rtl::method____ErasedReturnType::get_string                2599 ns         2599 ns       274914
+bm_rtl::method____ErasedTargetType::get_string                2587 ns         2586 ns       270912
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2595 ns         2595 ns       269299
+-----------------------------------
+[2026-01-19 22:35:22] >>> Run 3: workload scale = 100
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 100 iterations
+=============================================
+
+2026-01-19T22:35:22+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 2685.67 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.08, 1.02, 0.79
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         1940 ns         1940 ns       359624
+
+bm_call::via_function_ptr__Function::set_string               1944 ns         1944 ns       360107
+bm_call::via_function_ptr____Method::set_string               1942 ns         1942 ns       360542
+
+bm_std::function_calls__Function::set_string                  1942 ns         1942 ns       357815
+bm_std::function_calls____Method::set_string                  1963 ns         1963 ns       356515
+
+bm_rtl::function_calls__Function::set_string                  1947 ns         1947 ns       360618
+bm_rtl::method_calls______Method::set_string                  1943 ns         1943 ns       360619
+
+bm_rtl::function__ErasedReturnType::set_string                1977 ns         1976 ns       358735
+bm_rtl::method____ErasedReturnType::set_string                1946 ns         1945 ns       358855
+bm_rtl::method____ErasedTargetType::set_string                1949 ns         1949 ns       359699
+bm_rtl::method____ErasedTargetAndReturnType::set_string       1949 ns         1949 ns       359356
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2458 ns         2458 ns       284033
+
+bm_call::via_function_ptr__Function::get_string               2457 ns         2457 ns       285086
+bm_call::via_function_ptr____Method::get_string               2458 ns         2458 ns       285013
+
+bm_std::function_calls__Function::get_string                  2455 ns         2455 ns       285133
+bm_std::function_calls____Method::get_string                  2462 ns         2462 ns       284508
+
+bm_rtl::function_calls__Function::get_string                  2457 ns         2457 ns       285057
+bm_rtl::method_calls______Method::get_string                  2456 ns         2456 ns       285020
+
+bm_rtl::function__ErasedReturnType::get_string                2486 ns         2486 ns       281798
+bm_rtl::method____ErasedReturnType::get_string                2487 ns         2486 ns       281683
+bm_rtl::method____ErasedTargetType::get_string                2470 ns         2470 ns       283091
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2492 ns         2492 ns       280955
+-----------------------------------
+[2026-01-19 22:35:43] >>> Run 1: workload scale = 120
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 120 iterations
+=============================================
+
+2026-01-19T22:35:43+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.06, 1.01, 0.80
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         2137 ns         2137 ns       326829
+
+bm_call::via_function_ptr__Function::set_string               2125 ns         2124 ns       329605
+bm_call::via_function_ptr____Method::set_string               2125 ns         2125 ns       329665
+
+bm_std::function_calls__Function::set_string                  2124 ns         2124 ns       329576
+bm_std::function_calls____Method::set_string                  2157 ns         2157 ns       324516
+
+bm_rtl::function_calls__Function::set_string                  2123 ns         2123 ns       329881
+bm_rtl::method_calls______Method::set_string                  2125 ns         2124 ns       329448
+
+bm_rtl::function__ErasedReturnType::set_string                2129 ns         2129 ns       328759
+bm_rtl::method____ErasedReturnType::set_string                2131 ns         2130 ns       305340
+bm_rtl::method____ErasedTargetType::set_string                2131 ns         2131 ns       328500
+bm_rtl::method____ErasedTargetAndReturnType::set_string       2132 ns         2132 ns       328066
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         3007 ns         3007 ns       232978
+
+bm_call::via_function_ptr__Function::get_string               3011 ns         3010 ns       232634
+bm_call::via_function_ptr____Method::get_string               3012 ns         3011 ns       232464
+
+bm_std::function_calls__Function::get_string                  3014 ns         3013 ns       232339
+bm_std::function_calls____Method::get_string                  3019 ns         3019 ns       231831
+
+bm_rtl::function_calls__Function::get_string                  3014 ns         3013 ns       232535
+bm_rtl::method_calls______Method::get_string                  3008 ns         3008 ns       232654
+
+bm_rtl::function__ErasedReturnType::get_string                3051 ns         3051 ns       229522
+bm_rtl::method____ErasedReturnType::get_string                3040 ns         3040 ns       230285
+bm_rtl::method____ErasedTargetType::get_string                3040 ns         3040 ns       230408
+bm_rtl::method____ErasedTargetAndReturnType::get_string       3042 ns         3041 ns       230091
+-----------------------------------
+[2026-01-19 22:36:05] >>> Run 2: workload scale = 120
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 120 iterations
+=============================================
+
+2026-01-19T22:36:05+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.04, 1.01, 0.80
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         2128 ns         2128 ns       329355
+
+bm_call::via_function_ptr__Function::set_string               2125 ns         2125 ns       329104
+bm_call::via_function_ptr____Method::set_string               2128 ns         2128 ns       329260
+
+bm_std::function_calls__Function::set_string                  2126 ns         2126 ns       329537
+bm_std::function_calls____Method::set_string                  2159 ns         2158 ns       325160
+
+bm_rtl::function_calls__Function::set_string                  2126 ns         2126 ns       329470
+bm_rtl::method_calls______Method::set_string                  2125 ns         2125 ns       329217
+
+bm_rtl::function__ErasedReturnType::set_string                2134 ns         2134 ns       326337
+bm_rtl::method____ErasedReturnType::set_string                2140 ns         2140 ns       327348
+bm_rtl::method____ErasedTargetType::set_string                2137 ns         2137 ns       327992
+bm_rtl::method____ErasedTargetAndReturnType::set_string       2150 ns         2150 ns       325220
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2895 ns         2894 ns       242080
+
+bm_call::via_function_ptr__Function::get_string               2892 ns         2892 ns       242012
+bm_call::via_function_ptr____Method::get_string               2897 ns         2897 ns       241915
+
+bm_std::function_calls__Function::get_string                  2894 ns         2894 ns       242013
+bm_std::function_calls____Method::get_string                  2897 ns         2897 ns       241621
+
+bm_rtl::function_calls__Function::get_string                  2891 ns         2891 ns       242113
+bm_rtl::method_calls______Method::get_string                  2970 ns         2939 ns       241649
+
+bm_rtl::function__ErasedReturnType::get_string                2922 ns         2922 ns       239779
+bm_rtl::method____ErasedReturnType::get_string                2924 ns         2924 ns       238642
+bm_rtl::method____ErasedTargetType::get_string                2911 ns         2911 ns       240434
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2937 ns         2937 ns       237304
+-----------------------------------
+[2026-01-19 22:36:26] >>> Run 3: workload scale = 120
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 120 iterations
+=============================================
+
+2026-01-19T22:36:26+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.02, 1.01, 0.81
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         2123 ns         2123 ns       330104
+
+bm_call::via_function_ptr__Function::set_string               2119 ns         2118 ns       331108
+bm_call::via_function_ptr____Method::set_string               2143 ns         2142 ns       327007
+
+bm_std::function_calls__Function::set_string                  2117 ns         2117 ns       330772
+bm_std::function_calls____Method::set_string                  2123 ns         2123 ns       329985
+
+bm_rtl::function_calls__Function::set_string                  2118 ns         2118 ns       331201
+bm_rtl::method_calls______Method::set_string                  2123 ns         2123 ns       330834
+
+bm_rtl::function__ErasedReturnType::set_string                2132 ns         2131 ns       328810
+bm_rtl::method____ErasedReturnType::set_string                2157 ns         2156 ns       324121
+bm_rtl::method____ErasedTargetType::set_string                2135 ns         2134 ns       321782
+bm_rtl::method____ErasedTargetAndReturnType::set_string       2130 ns         2130 ns       328678
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         2890 ns         2890 ns       242683
+
+bm_call::via_function_ptr__Function::get_string               2892 ns         2891 ns       237467
+bm_call::via_function_ptr____Method::get_string               2891 ns         2891 ns       242306
+
+bm_std::function_calls__Function::get_string                  2891 ns         2891 ns       242434
+bm_std::function_calls____Method::get_string                  2893 ns         2892 ns       242299
+
+bm_rtl::function_calls__Function::get_string                  2888 ns         2887 ns       242305
+bm_rtl::method_calls______Method::get_string                  2897 ns         2897 ns       242416
+
+bm_rtl::function__ErasedReturnType::get_string                2918 ns         2918 ns       239887
+bm_rtl::method____ErasedReturnType::get_string                3088 ns         3087 ns       238252
+bm_rtl::method____ErasedTargetType::get_string                2907 ns         2907 ns       236594
+bm_rtl::method____ErasedTargetAndReturnType::get_string       2929 ns         2928 ns       239651
+-----------------------------------
+[2026-01-19 22:36:48] >>> Run 1: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2026-01-19T22:36:48+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.10, 1.03, 0.82
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         3502 ns         3502 ns       200154
+
+bm_call::via_function_ptr__Function::set_string               3514 ns         3514 ns       199717
+bm_call::via_function_ptr____Method::set_string               3511 ns         3511 ns       198567
+
+bm_std::function_calls__Function::set_string                  3515 ns         3515 ns       199394
+bm_std::function_calls____Method::set_string                  3485 ns         3485 ns       200801
+
+bm_rtl::function_calls__Function::set_string                  3511 ns         3510 ns       199483
+bm_rtl::method_calls______Method::set_string                  3515 ns         3514 ns       199409
+
+bm_rtl::function__ErasedReturnType::set_string                3524 ns         3524 ns       196051
+bm_rtl::method____ErasedReturnType::set_string                3496 ns         3495 ns       200018
+bm_rtl::method____ErasedTargetType::set_string                3531 ns         3531 ns       197723
+bm_rtl::method____ErasedTargetAndReturnType::set_string       3534 ns         3533 ns       198440
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         4399 ns         4399 ns       159236
+
+bm_call::via_function_ptr__Function::get_string               4399 ns         4398 ns       159393
+bm_call::via_function_ptr____Method::get_string               4393 ns         4392 ns       159311
+
+bm_std::function_calls__Function::get_string                  4393 ns         4393 ns       158980
+bm_std::function_calls____Method::get_string                  4394 ns         4394 ns       159365
+
+bm_rtl::function_calls__Function::get_string                  4391 ns         4391 ns       159379
+bm_rtl::method_calls______Method::get_string                  4400 ns         4399 ns       159263
+
+bm_rtl::function__ErasedReturnType::get_string                4437 ns         4436 ns       157746
+bm_rtl::method____ErasedReturnType::get_string                4434 ns         4434 ns       157288
+bm_rtl::method____ErasedTargetType::get_string                4426 ns         4425 ns       158114
+bm_rtl::method____ErasedTargetAndReturnType::get_string       4434 ns         4434 ns       157500
+-----------------------------------
+[2026-01-19 22:37:13] >>> Run 2: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2026-01-19T22:37:13+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.06, 1.02, 0.83
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         3527 ns         3526 ns       198689
+
+bm_call::via_function_ptr__Function::set_string               3483 ns         3483 ns       200998
+bm_call::via_function_ptr____Method::set_string               3488 ns         3487 ns       201053
+
+bm_std::function_calls__Function::set_string                  3485 ns         3484 ns       200867
+bm_std::function_calls____Method::set_string                  3490 ns         3489 ns       200690
+
+bm_rtl::function_calls__Function::set_string                  3483 ns         3482 ns       200910
+bm_rtl::method_calls______Method::set_string                  3487 ns         3487 ns       200961
+
+bm_rtl::function__ErasedReturnType::set_string                3493 ns         3493 ns       200445
+bm_rtl::method____ErasedReturnType::set_string                3491 ns         3491 ns       199857
+bm_rtl::method____ErasedTargetType::set_string                3495 ns         3495 ns       200225
+bm_rtl::method____ErasedTargetAndReturnType::set_string       3495 ns         3494 ns       199782
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         4404 ns         4404 ns       159253
+
+bm_call::via_function_ptr__Function::get_string               4394 ns         4394 ns       159252
+bm_call::via_function_ptr____Method::get_string               4504 ns         4504 ns       159232
+
+bm_std::function_calls__Function::get_string                  4571 ns         4570 ns       153180
+bm_std::function_calls____Method::get_string                  4586 ns         4585 ns       152353
+
+bm_rtl::function_calls__Function::get_string                  4578 ns         4578 ns       153148
+bm_rtl::method_calls______Method::get_string                  4571 ns         4571 ns       153119
+
+bm_rtl::function__ErasedReturnType::get_string                4602 ns         4601 ns       152206
+bm_rtl::method____ErasedReturnType::get_string                4607 ns         4606 ns       151999
+bm_rtl::method____ErasedTargetType::get_string                4589 ns         4588 ns       152669
+bm_rtl::method____ErasedTargetAndReturnType::get_string       4600 ns         4600 ns       152200
+-----------------------------------
+[2026-01-19 22:37:38] >>> Run 3: workload scale = 150
+
+======== RTL Benchmark Configuration ========
+Workload: concatenate string of length 500
+Scale   : 150 iterations
+=============================================
+
+2026-01-19T22:37:38+05:30
+Running ./bin/RTLBenchmarkApp
+Run on (16 X 800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 1280 KiB (x8)
+  L3 Unified 20480 KiB (x1)
+Load Average: 1.04, 1.02, 0.83
+--------------------------------------------------------------------------------------------------
+Benchmark                                                        Time             CPU   Iterations
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::set_string                         3547 ns         3547 ns       197337
+
+bm_call::via_function_ptr__Function::set_string               3484 ns         3484 ns       200911
+bm_call::via_function_ptr____Method::set_string               3484 ns         3484 ns       200978
+
+bm_std::function_calls__Function::set_string                  3484 ns         3484 ns       200913
+bm_std::function_calls____Method::set_string                  3485 ns         3485 ns       200887
+
+bm_rtl::function_calls__Function::set_string                  3482 ns         3482 ns       201096
+bm_rtl::method_calls______Method::set_string                  3485 ns         3484 ns       200963
+
+bm_rtl::function__ErasedReturnType::set_string                3490 ns         3490 ns       200491
+bm_rtl::method____ErasedReturnType::set_string                3491 ns         3491 ns       200589
+bm_rtl::method____ErasedTargetType::set_string                3496 ns         3495 ns       200278
+bm_rtl::method____ErasedTargetAndReturnType::set_string       3496 ns         3496 ns       200227
+--------------------------------------------------------------------------------------------------
+bm_call::direct__Function::get_string                         4561 ns         4560 ns       153507
+
+bm_call::via_function_ptr__Function::get_string               4560 ns         4559 ns       153553
+bm_call::via_function_ptr____Method::get_string               4559 ns         4559 ns       153622
+
+bm_std::function_calls__Function::get_string                  4559 ns         4559 ns       153581
+bm_std::function_calls____Method::get_string                  4578 ns         4578 ns       152921
+
+bm_rtl::function_calls__Function::get_string                  4627 ns         4627 ns       153630
+bm_rtl::method_calls______Method::get_string                  4486 ns         4484 ns       158892
+
+bm_rtl::function__ErasedReturnType::get_string                4433 ns         4433 ns       156084
+bm_rtl::method____ErasedReturnType::get_string                4433 ns         4432 ns       157643
+bm_rtl::method____ErasedTargetType::get_string                4403 ns         4403 ns       158980
+bm_rtl::method____ErasedTargetAndReturnType::get_string       4422 ns         4421 ns       157853
+-----------------------------------
+All benchmarks completed.
