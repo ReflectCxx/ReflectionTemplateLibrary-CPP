@@ -20,11 +20,11 @@ std::string complexToStr(float real, float img);
 ```
 Using RTL, you can discover this function by name and call it dynamically:
 ```c++
-rtl::function<std::string(float, float)> cToStr = cxx::mirror().getFunction("complexToStr")
-                                                               ->argsT<float, float>()
-                                                               .returnT<std::string>();
-if(cToStr) {   // Functor valid?
-    std::string result = cToStr(61, 35);  // Works!
+auto cmpToStr = cxx::mirror().getFunction("complexToStr")
+							 ->argsT<float, float>()
+							 .returnT<std::string>();
+if(cmpToStr) {   // Functor valid?
+    std::string result = cmpToStr(61, 35);  // Works!
 }
 // cxx::mirror() returns an instance of 'rtl::CxxMirror' (explained in Quick-Preview section)
 ```
