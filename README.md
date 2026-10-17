@@ -38,8 +38,8 @@ if(cmpToStr) {   // Functor valid?
 
 * ***Zero Overhead Invocation*** – When argument and return types are fully specified, reflective calls reduce to a single function-pointer hop.
 
-* ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when argument and return types are fully specified.
-
+* ***Performance*** – Reflective calls are on par with `std::function`, and can be even faster when reduced to a function pointer.
+  
   See the [Performance Summary](docs/benchmark_summary.md) for benchmark details.
   
 ## A Quick Preview: Reflection That Looks and Feels Like C++
